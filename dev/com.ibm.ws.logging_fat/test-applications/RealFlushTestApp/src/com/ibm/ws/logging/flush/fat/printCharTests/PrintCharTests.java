@@ -1,4 +1,4 @@
-package com.ibm.ws.logging.flush.fat.printFloatTests;
+package com.ibm.ws.logging.flush.fat.printCharTests;
 
 import java.util.Set;
 import java.util.SortedMap;
@@ -17,17 +17,27 @@ import com.ibm.websphere.logging.hpel.LogRecordContext;
 
 
 @ApplicationScoped
-@Path("/printFloatSmall")
-public class PrintFloatSmall {
+@Path("/printCharTests")
+public class PrintCharTests {
 
-    private static final Logger MYlOGGER = Logger.getLogger(PrintFloatSmall.class.getName());
+    private static final Logger MYlOGGER = Logger.getLogger(PrintCharTests.class.getName());
     
     @GET
-    @Path("/printFloatSmall")
-    public String makeString() {
+    @Path("/printChar")
+    public String printChar() {
     	
-    	float num = 222222222;
-    	System.out.print(num);
+    	char c = 'z';
+    	System.out.println(c);
+    	
+        return "---- DONE ----";
+    }
+
+    @GET
+    @Path("/printlnChar")
+    public String printlnChar() {
+    	
+    	char c = 'z';
+    	System.out.println(c);
     	
         return "---- DONE ----";
     }

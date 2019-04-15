@@ -1,4 +1,4 @@
-package com.ibm.ws.logging.flush.fat.printCharArrayTests;
+package com.ibm.ws.logging.flush.fat.printLongTests;
 
 import java.util.Set;
 import java.util.SortedMap;
@@ -17,17 +17,27 @@ import com.ibm.websphere.logging.hpel.LogRecordContext;
 
 
 @ApplicationScoped
-@Path("/printCharArraySmall")
-public class PrintCharArraySmall {
+@Path("/printLongTests")
+public class PrintLongTests {
 
-    private static final Logger MYlOGGER = Logger.getLogger(PrintCharArraySmall.class.getName());
+    private static final Logger MYlOGGER = Logger.getLogger(PrintLongTests.class.getName());
     
     @GET
-    @Path("/printCharArraySmall")
-    public String makeString() {
+    @Path("/printLong")
+    public String printLong() {
     	
-    	char[] str = "smallStr".toCharArray();
-    	System.out.print(str);
+    	long num = 222222222;
+    	System.out.print(num);
+    	
+        return "---- DONE ----";
+    }
+
+    @GET
+    @Path("/printlnLong")
+    public String printlnLong() {
+    	
+    	long num = 222222222;
+    	System.out.println(num);
     	
         return "---- DONE ----";
     }

@@ -1,4 +1,4 @@
-package com.ibm.ws.logging.flush.fat.printObjectTests;
+package com.ibm.ws.logging.flush.fat.printIntTests;
 
 import java.util.Set;
 import java.util.SortedMap;
@@ -17,17 +17,27 @@ import com.ibm.websphere.logging.hpel.LogRecordContext;
 
 
 @ApplicationScoped
-@Path("/printlnObjectSmall")
-public class PrintlnObjectSmall {
+@Path("/printIntTests")
+public class PrintIntTests {
 
-    private static final Logger MYlOGGER = Logger.getLogger(PrintlnObjectSmall.class.getName());
+    private static final Logger MYlOGGER = Logger.getLogger(PrintIntTests.class.getName());
     
     @GET
-    @Path("/printlnObjectSmall")
-    public String makeString() {
+    @Path("/printInt")
+    public String printInt() {
     	
-    	DummyObject obj = new DummyObject();
-    	System.out.println(obj.toStringSmall());
+    	int num = 222222222;
+    	System.out.print(num);
+    	
+        return "---- DONE ----";
+    }
+
+    @GET
+    @Path("/printlnInt")
+    public String printlnInt() {
+    	
+    	int num = 222222222;
+    	System.out.println(num);
     	
         return "---- DONE ----";
     }

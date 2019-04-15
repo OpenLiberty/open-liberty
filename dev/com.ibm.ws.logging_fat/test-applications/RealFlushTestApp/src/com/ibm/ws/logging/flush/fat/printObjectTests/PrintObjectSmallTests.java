@@ -17,17 +17,27 @@ import com.ibm.websphere.logging.hpel.LogRecordContext;
 
 
 @ApplicationScoped
-@Path("/printlnObject8193")
-public class PrintlnObject8193 {
+@Path("/printObjectSmallTests")
+public class PrintObjectSmallTests {
 
-    private static final Logger MYlOGGER = Logger.getLogger(PrintlnObject8193.class.getName());
+    private static final Logger MYlOGGER = Logger.getLogger(PrintObjectSmallTests.class.getName());
     
     @GET
-    @Path("/printlnObject8193")
-    public String makeString() {
+    @Path("/printlnObjectSmall")
+    public String printlnObjectSmall() {
     	
     	DummyObject obj = new DummyObject();
-    	System.out.println(obj.toString8193());
+    	System.out.println(obj.toStringSmall());
+    	
+        return "---- DONE ----";
+    }
+
+    @GET
+    @Path("/printObjectSmall")
+    public String printObjectSmall() {
+    	
+    	DummyObject obj = new DummyObject();
+    	System.out.print(obj.toStringSmall());
     	
         return "---- DONE ----";
     }

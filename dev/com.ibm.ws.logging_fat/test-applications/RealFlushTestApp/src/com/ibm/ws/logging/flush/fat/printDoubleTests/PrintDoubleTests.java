@@ -1,4 +1,4 @@
-package com.ibm.ws.logging.flush.fat.printIntTests;
+package com.ibm.ws.logging.flush.fat.printDoubleTests;
 
 import java.util.Set;
 import java.util.SortedMap;
@@ -17,17 +17,27 @@ import com.ibm.websphere.logging.hpel.LogRecordContext;
 
 
 @ApplicationScoped
-@Path("/printIntSmall")
-public class PrintIntSmall {
+@Path("/printDoubleTests")
+public class PrintDoubleTests {
 
-    private static final Logger MYlOGGER = Logger.getLogger(PrintIntSmall.class.getName());
+    private static final Logger MYlOGGER = Logger.getLogger(PrintDoubleTests.class.getName());
     
     @GET
-    @Path("/printIntSmall")
-    public String makeString() {
+    @Path("/printDouble")
+    public String printDoubleSmall() {
     	
-    	int num = 222222222;
+    	double num = 222222222;
     	System.out.print(num);
+    	
+        return "---- DONE ----";
+    }
+
+    @GET
+    @Path("/printlnDouble")
+    public String printlnDoubleSmall() {
+    	
+    	double num = 222222222;
+    	System.out.println(num);
     	
         return "---- DONE ----";
     }
