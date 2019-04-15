@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -99,6 +100,7 @@ public class SecurityServiceImplBasedOnServerXMLTest {
         appProperties.put(SecurityConfiguration.CFG_KEY_USERREGISTRY_REF, "appUserRegistryService");
         appDomainSecConfig.activate(appProperties);
 
+        final BundleContext mockBundleContext = mock.mock(BundleContext.class);
         mock.checking(new Expectations() {
             {
                 allowing(appAuthenticationServiceRef).getProperty(Constants.SERVICE_ID);
@@ -211,6 +213,10 @@ public class SecurityServiceImplBasedOnServerXMLTest {
                 will(returnValue("appUserRegistryServiceRealm"));
                 allowing(appUserRegistryServiceRef).getProperty("config.displayId");
                 will(returnValue("userRegistry[appUserRegistryServiceRealm]"));
+
+                allowing(cc).getBundleContext();
+                will(returnValue(mockBundleContext));
+                ignoring(mockBundleContext);
             }
         });
 

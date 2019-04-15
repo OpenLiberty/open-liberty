@@ -11,14 +11,15 @@
 package com.ibm.ws.security.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -47,8 +48,8 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
  */
 @Component(configurationPid = "com.ibm.ws.security.service",
            property = "service.vendor=IBM",
-           immediate = true)
-@DSExt.ConfigurableServiceProperties
+           immediate = true,
+           service = {})
 public class SecurityServiceImpl implements SecurityService {
     private static final TraceComponent tc = Tr.register(SecurityServiceImpl.class);
 
@@ -75,9 +76,35 @@ public class SecurityServiceImpl implements SecurityService {
     final AtomicReference<UserRegistryService> userRegistryService = new AtomicReference<UserRegistryService>();
 
     private volatile String cfgSystemDomain = null;
-    private volatile String cfgDefaultAppDomain = null;
 
     private Map<String, Object> props;
+
+    private ServiceRegistration<SecurityService> securityServiceRegistration;
+
+    private synchronized void updateRegistration(final ComponentContext cCtx) {
+        Dictionary<String, Object> properties = getServiceProperties();
+        if (properties == null) {
+            return;
+        }
+        if (cCtx != null) {
+            if (securityServiceRegistration == null) {
+                securityServiceRegistration = cCtx.getBundleContext().registerService(SecurityService.class, this, properties);
+                return;
+            }
+        }
+        if (securityServiceRegistration != null) {
+            securityServiceRegistration.setProperties(properties);
+        } else {
+            // TODO FFDC?
+        }
+    }
+
+    private synchronized void unregister() {
+        if (securityServiceRegistration != null) {
+            securityServiceRegistration.unregister();
+            securityServiceRegistration = null;
+        }
+    }
 
     /**
      * Method will be called for each SecurityConfiguration that is registered
@@ -90,14 +117,14 @@ public class SecurityServiceImpl implements SecurityService {
      * @param ref Reference to a registered SecurityConfiguration
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
-    protected Map<String, Object> setConfiguration(ServiceReference<SecurityConfiguration> ref) {
+    protected void setConfiguration(ServiceReference<SecurityConfiguration> ref) {
         String id = (String) ref.getProperty(KEY_ID);
         if (id != null) {
             configs.putReference(id, ref);
         } else {
             Tr.error(tc, "SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID", "securityConfiguration");
         }
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     /**
@@ -107,9 +134,9 @@ public class SecurityServiceImpl implements SecurityService {
      *
      * @param ref Reference to an unregistered SecurityConfiguration
      */
-    protected Map<String, Object> unsetConfiguration(ServiceReference<SecurityConfiguration> ref) {
+    protected void unsetConfiguration(ServiceReference<SecurityConfiguration> ref) {
         configs.removeReference((String) ref.getProperty(KEY_ID), ref);
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     /**
@@ -130,7 +157,7 @@ public class SecurityServiceImpl implements SecurityService {
      * @param ref Reference to a registered AuthenticationService
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
-    protected Map<String, Object> setAuthentication(ServiceReference<AuthenticationService> ref) {
+    protected void setAuthentication(ServiceReference<AuthenticationService> ref) {
         if (hasPropertiesFromFile(ref)) {
             String id = (String) ref.getProperty(KEY_ID);
             if (id != null) {
@@ -144,7 +171,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new authentication service
         authnService.set(null);
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     /**
@@ -154,13 +181,13 @@ public class SecurityServiceImpl implements SecurityService {
      *
      * @param ref Reference to an unregistered AuthenticationService
      */
-    protected Map<String, Object> unsetAuthentication(ServiceReference<AuthenticationService> ref) {
+    protected void unsetAuthentication(ServiceReference<AuthenticationService> ref) {
         authentication.removeReference((String) ref.getProperty(KEY_ID), ref);
         authentication.removeReference(String.valueOf(ref.getProperty(KEY_SERVICE_ID)), ref);
 
         // determine a new authentication service
         authnService.set(null);
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     /**
@@ -171,7 +198,7 @@ public class SecurityServiceImpl implements SecurityService {
      * @param ref Reference to a registered AuthorizationService
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
-    protected Map<String, Object> setAuthorization(ServiceReference<AuthorizationService> ref) {
+    protected void setAuthorization(ServiceReference<AuthorizationService> ref) {
         if (hasPropertiesFromFile(ref)) {
             String id = (String) ref.getProperty(KEY_ID);
             if (id != null) {
@@ -185,7 +212,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new authorization service
         authzService.set(null);
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     /**
@@ -195,13 +222,13 @@ public class SecurityServiceImpl implements SecurityService {
      *
      * @param ref Reference to an unregistered AuthorizationService
      */
-    protected Map<String, Object> unsetAuthorization(ServiceReference<AuthorizationService> ref) {
+    protected void unsetAuthorization(ServiceReference<AuthorizationService> ref) {
         authorization.removeReference((String) ref.getProperty(KEY_ID), ref);
         authorization.removeReference(String.valueOf(ref.getProperty(KEY_SERVICE_ID)), ref);
 
         // determine a new authorization service
         authzService.set(null);
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     /**
@@ -212,12 +239,12 @@ public class SecurityServiceImpl implements SecurityService {
      * @param ref Reference to a registered UserRegistryService
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, target = "(config.displayId=*)")
-    protected Map<String, Object> setUserRegistry(ServiceReference<UserRegistryService> ref) {
+    protected void setUserRegistry(ServiceReference<UserRegistryService> ref) {
         adjustUserRegistryServiceRef(ref);
 
         // determine a new user registry service
         userRegistryService.set(null);
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     private void adjustUserRegistryServiceRef(ServiceReference<UserRegistryService> ref) {
@@ -234,11 +261,11 @@ public class SecurityServiceImpl implements SecurityService {
         }
     }
 
-    protected Map<String, Object> updatedUserRegistry(ServiceReference<UserRegistryService> ref) {
+    protected void updatedUserRegistry(ServiceReference<UserRegistryService> ref) {
         // determine a new user registry service
         adjustUserRegistryServiceRef(ref);
         userRegistryService.set(null);
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     /**
@@ -248,17 +275,23 @@ public class SecurityServiceImpl implements SecurityService {
      *
      * @param ref Reference to an unregistered UserRegistryService
      */
-    protected Map<String, Object> unsetUserRegistry(ServiceReference<UserRegistryService> ref) {
+    protected void unsetUserRegistry(ServiceReference<UserRegistryService> ref) {
         userRegistry.removeReference((String) ref.getProperty(KEY_ID), ref);
         userRegistry.removeReference(String.valueOf(ref.getProperty(KEY_SERVICE_ID)), ref);
 
         // determine a new user registry service
         userRegistryService.set(null);
+        updateRegistration(null);
+    }
+
+    // TODO only for unit testing
+    protected Map<String, Object> activate(ComponentContext cc, Map<String, Object> props) {
+        doActivate(cc, props);
         return getServiceProperties();
     }
 
     @Activate
-    protected Map<String, Object> activate(ComponentContext cc, Map<String, Object> props) {
+    protected void doActivate(ComponentContext cc, Map<String, Object> props) {
         this.cc = cc;
         this.props = props;
         configs.activate(cc);
@@ -268,11 +301,11 @@ public class SecurityServiceImpl implements SecurityService {
 
         setAndValidateProperties((String) props.get(CFG_KEY_SYSTEM_DOMAIN),
                                  (String) props.get(CFG_KEY_DEFAULT_APP_DOMAIN));
-        return getServiceProperties();
+        updateRegistration(cc);
     }
 
     @Modified
-    protected Map<String, Object> modify(Map<String, Object> newProperties) {
+    protected void modify(Map<String, Object> newProperties) {
         this.props = newProperties;
         // determine a new set of services
         authnService.set(null);
@@ -280,11 +313,12 @@ public class SecurityServiceImpl implements SecurityService {
         userRegistryService.set(null);
         setAndValidateProperties((String) newProperties.get(CFG_KEY_SYSTEM_DOMAIN),
                                  (String) newProperties.get(CFG_KEY_DEFAULT_APP_DOMAIN));
-        return getServiceProperties();
+        updateRegistration(null);
     }
 
     @Deactivate
-    protected Map<String, Object> deactivate(ComponentContext cc, Map<String, Object> props) {
+    protected void deactivate(ComponentContext cc, Map<String, Object> props) {
+        unregister();
         this.cc = null;
         this.props = props;
         configs.deactivate(cc);
@@ -292,17 +326,15 @@ public class SecurityServiceImpl implements SecurityService {
         authorization.deactivate(cc);
         userRegistry.deactivate(cc);
         cfgSystemDomain = null;
-        cfgDefaultAppDomain = null;
-        return getServiceProperties();
     }
 
     /**
      * @return
      */
-    private Map<String, Object> getServiceProperties() {
+    private Hashtable<String, Object> getServiceProperties() {
         if (props == null)
             return null;
-        Map<String, Object> result = new HashMap<String, Object>(props);
+        Hashtable<String, Object> result = new Hashtable<String, Object>(props);
         if (!authentication.isEmpty()) {
             result.put(KEY_AUTHENTICATION, authentication.keySet().toArray(new String[authentication.size()]));
         }
@@ -356,11 +388,6 @@ public class SecurityServiceImpl implements SecurityService {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE", CFG_KEY_SYSTEM_DOMAIN));
             }
             this.cfgSystemDomain = systemDomain;
-            if ((defaultAppDomain == null) || defaultAppDomain.isEmpty()) {
-                this.cfgDefaultAppDomain = systemDomain;
-            } else {
-                this.cfgDefaultAppDomain = defaultAppDomain;
-            }
         }
     }
 
@@ -395,7 +422,7 @@ public class SecurityServiceImpl implements SecurityService {
      * case which "auto-detect" can not resolve.
      *
      * @param serviceName name of the service
-     * @param map ConcurrentServiceReferenceMap of registered services
+     * @param map         ConcurrentServiceReferenceMap of registered services
      * @return id of the single service registered in map. Will not return null.
      */
     private <V> V autoDetectService(String serviceName, ConcurrentServiceReferenceMap<String, V> map) {
