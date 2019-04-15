@@ -13,4 +13,6 @@
 		<feature>localConnector-1.0</feature>
 	</featureManager>
 	
+    <logging traceSpecification="*=info=enabled:com.ibm.ws.session.*=all"/>
+
  </server>
