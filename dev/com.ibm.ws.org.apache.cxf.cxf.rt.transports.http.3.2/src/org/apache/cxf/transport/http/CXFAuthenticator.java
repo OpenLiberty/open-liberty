@@ -39,6 +39,8 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.transport.Conduit;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 /**
  *
  */
@@ -49,6 +51,7 @@ public class CXFAuthenticator extends Authenticator {
     public CXFAuthenticator() {
     }
 
+    @FFDCIgnore({Exception.class, Exception.class, InvocationTargetException.class, Throwable.class, Throwable.class})
     public static synchronized void addAuthenticator() {
         if (instance == null) {
             instance = new CXFAuthenticator();
