@@ -37,12 +37,8 @@ Import-Package: \
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
   com.ibm.ws.jaxrs2x.concurrent.*
-   
-
+  
 -dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*
- 
-
--dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*    
  
 -buildpath: \
 	org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
