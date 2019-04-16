@@ -61,7 +61,12 @@ public class TestResource {
     @Path("stringset")
     public Response stringSetParam(@QueryParam("ids") @StringSetParam final Set<String> ids) {
         System.out.println("stringSetParam ids=" + ids);
-        return Response.ok(ids).build();
+        if (ids == null) {
+            return Response.ok(ids).build();
+        }
+        SortedSet<String> sortedIds = new TreeSet<String>(ids);
+        System.out.println("stringSetParam sorted ids=" + sortedIds);
+        return Response.ok(sortedIds).build();
     }
 
     @GET
