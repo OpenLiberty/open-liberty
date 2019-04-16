@@ -111,6 +111,47 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertNotNull(err, array = cf.getJsonArray("properties.tca.ConnectionFactory"));
         assertEquals(err, 1, array.size());
         assertNotNull(err, props = array.getJsonObject(0));
-        // TODO generated JCA properties
+        assertEquals(err, 3, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, true, props.getBoolean("enableBetaContent"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+        assertEquals(err, 7766, props.getInt("portNumber"));
+    }
+
+    // Test the output of the /ibm/api/config/connectionFactory REST endpoint.
+    @Test
+    public void testMultipleConnectionFactories() throws Exception {
+        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory").run(JsonArray.class);
+        String err = "unexpected response: " + cfs;
+        assertEquals(err, 2, cfs.size()); // increase this if additional connectionFactory elements are added
+
+        JsonObject cf;
+        assertNotNull(err, cf = cfs.getJsonObject(0));
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "cf1", cf.getString("uid"));
+        assertEquals(err, "cf1", cf.getString("id"));
+        assertEquals(err, "eis/cf1", cf.getString("jndiName"));
+        // cf1 is already tested by testConfigConnectionFactory
+
+        assertNotNull(err, cf = cfs.getJsonObject(1));
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "connectionFactory[default-0]", cf.getString("uid"));
+        assertNull(err, cf.get("id"));
+        assertEquals(err, "eis/ds2", cf.getString("jndiName"));
+
+        assertNull(err, cf.get("connectionManagerRef"));
+        assertNull(err, cf.get("containerAuthDataRef"));
+        assertNull(err, cf.get("recoveryAuthDataRef"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = cf.getJsonArray("properties.tca.DataSource"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "$", props.getString("escapeChar"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+        // assertEquals(err, 7654, props.getInt("portNumber")); // TODO include the internal default for portNumber?
+        assertEquals(err, "user2", props.getString("userName"));
+        assertEquals(err, "pwd2", props.getString("password")); // TODO obscure password values
     }
 }

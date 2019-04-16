@@ -32,4 +32,8 @@
 
   <connectionManager id="cm1" maxPoolSize="101"/>
 
+  <connectionFactory jndiName="eis/ds2">
+    <properties.tca.DataSource userName="user2" password="pwd2" escapeChar="$"/>
+  </connectionFactory>
+
 </server>
