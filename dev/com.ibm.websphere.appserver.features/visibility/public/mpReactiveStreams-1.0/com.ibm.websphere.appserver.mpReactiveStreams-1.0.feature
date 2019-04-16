@@ -18,5 +18,5 @@ IBM-API-Package: \
   com.ibm.ws.microprofile.reactive.streams.operators, \
   com.ibm.ws.io.smallrye.reactive.streams.operators.1.0, \
   com.ibm.ws.io.reactivex.rxjava.2.2
-kind=beta
+kind=ga
 edition=core
