@@ -223,12 +223,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         // libraryRef - scan shared libraries from the application
         className = updateWithLibraries(bundleContext, application, declaringApplication, className, url, driverProps, dsSvcProps);
 
-        //TODO remove no-ship guard before GA
-        boolean isUCP = className.startsWith("oracle.ucp") && vendorProps.containsKey("internalDevNonshipFunctionDoNotUseProduction");
-        if(isUCP) {
-            vendorProps.remove("internalDevNonshipFunctionDoNotUseProduction");
-            dsSvcProps.put("internalDevNonshipFunctionDoNotUseProduction", "true");
-        }
+        boolean isUCP = className.startsWith("oracle.ucp");
         
         for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS) {
             //keep the datasource definition conn manager props in vender props when using UCP so they are passed to UCP
