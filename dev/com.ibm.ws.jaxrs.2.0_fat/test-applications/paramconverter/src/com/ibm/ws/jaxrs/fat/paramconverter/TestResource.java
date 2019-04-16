@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -83,7 +84,9 @@ public class TestResource {
                                 @QueryParam("set") @StringSetParam final Set<String> set) {
         System.out.println("multiParams list=" + list);
         System.out.println("multiParams set=" + set);
-        return Response.ok(list.toString() + "," + set.toString()).build();
+        SortedSet<String> sortedSet = new TreeSet<String>(set);
+        System.out.println("multiParams sorted set=" + sortedSet);
+        return Response.ok(list.toString() + "," + sortedSet.toString()).build();
     }
 
     @GET
