@@ -84,13 +84,13 @@ public class ContextManagerImpl implements ContextManager {
         available.add(ThreadContext.CDI);
         contextProviders.add(cmProvider.securityContextProvider);
         available.add(ThreadContext.SECURITY);
-        // ThreadIdentity must come after Security and Application as it depends on both.
+        // SYNC_TO_OS_THREAD must come after Security and Application as it depends on both.
         contextProviders.add(cmProvider.threadIdendityContextProvider);
-        available.add(ThreadIdentityContextProvider.THREADIDENTITY);
+        available.add(ThreadIdentityContextProvider.SYNC_TO_OS_THREAD);
         contextProviders.add(cmProvider.transactionContextProvider);
         available.add(ThreadContext.TRANSACTION);
         contextProviders.add(cmProvider.wlmContextProvider);
-        available.add(WLMContextProvider.WORKLOAD);
+        available.add(WLMContextProvider.CLASSIFICATION);
 
         // Thread context providers for the supplied class loader
         for (ThreadContextProvider provider : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
@@ -135,7 +135,7 @@ public class ContextManagerImpl implements ContextManager {
         if (ThreadContext.TRANSACTION.equals(conflictingType))
             return cmProvider.transactionContextProvider;
 
-        if (WLMContextProvider.WORKLOAD.equals(conflictingType))
+        if (WLMContextProvider.CLASSIFICATION.equals(conflictingType))
             return cmProvider.wlmContextProvider;
 
         // should be unreachable
