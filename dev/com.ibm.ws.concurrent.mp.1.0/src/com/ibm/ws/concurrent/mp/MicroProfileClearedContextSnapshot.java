@@ -26,6 +26,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.mp.context.ThreadIdentityContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 
 /**
@@ -42,6 +43,7 @@ public class MicroProfileClearedContextSnapshot implements com.ibm.wsspi.threadc
      ThreadContext.APPLICATION,
      ThreadContext.CDI,
      ThreadContext.SECURITY,
+     ThreadIdentityContextProvider.SYNC_TO_OS_THREAD,
      ThreadContext.TRANSACTION,
      WLMContextProvider.CLASSIFICATION //
     ));
