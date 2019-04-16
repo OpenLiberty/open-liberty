@@ -1,0 +1,35 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>jca-1.7</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+
+  <resourceAdapter id="tca" location="${server.config.dir}/connectors/TestConfigAdapter.rar"/>
+
+  <connectionFactory id="cf1" jndiName="eis/cf1" connectionManagerRef="cm1">
+    <containerAuthData user="containerUser1" password="pwd1"/>
+    <recoveryAuthData user="recoveryUser1" password="pwd1"/>
+    <properties.tca.ConnectionFactory enableBetaContent="true" portNumber="7766"/>
+  </connectionFactory>
+
+  <connectionManager id="cm1" maxPoolSize="101"/>
+
+</server>

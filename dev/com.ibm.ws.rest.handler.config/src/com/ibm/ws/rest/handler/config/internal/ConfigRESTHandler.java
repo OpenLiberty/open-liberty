@@ -351,7 +351,7 @@ public class ConfigRESTHandler implements RESTHandler {
 
         String elementName = path.length() < 8 ? "" : URLDecoder.decode(path.substring(8, endElementName), "UTF-8");
 
-        StringBuilder filter = new StringBuilder("(&");
+        StringBuilder filter = new StringBuilder("(&(!(ibm.extends.source.pid=*))");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
             filter.append(FilterUtils.createPropertyFilter("config.displayId", uid));
         else if (elementName.length() > 0) {
