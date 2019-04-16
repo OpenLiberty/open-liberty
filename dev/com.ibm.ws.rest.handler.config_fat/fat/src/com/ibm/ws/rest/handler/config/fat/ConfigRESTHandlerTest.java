@@ -784,40 +784,40 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         // Parse the usr_child elements.
         JsonArray childArr = parent.getJsonArray("usr_child");
         assertEquals(err, 3, childArr.size());
-        boolean found_dflt_config = false, found_usr_config = false, found_merged_config = false;
+        boolean found_dfltConfig = false, found_usrConfig = false, found_mergedConfig = false;
         for (int i = 0; i < 3; i++) {
             JsonObject child = childArr.getJsonObject(i);
-            if (!found_dflt_config && "dfltConfig".equals(child.getString("id"))) {
-                found_dflt_config = true;
+            if (!found_dfltConfig && "dfltConfig".equals(child.getString("id"))) {
+                found_dfltConfig = true;
                 JsonArray grandchildArr = child.getJsonArray("usr_grandchild");
                 assertEquals(err, 1, grandchildArr.size());
                 JsonObject grandchild = grandchildArr.getJsonObject(0);
                 assertEquals(err, "x", grandchild.getString("value"));
-            } else if (!found_usr_config && "usrConfig".equals(child.getString("id"))) {
-                found_usr_config = true;
+            } else if (!found_usrConfig && "usrConfig".equals(child.getString("id"))) {
+                found_usrConfig = true;
                 JsonArray grandchildArr = child.getJsonArray("usr_grandchild");
                 assertEquals(err, 1, grandchildArr.size());
                 JsonObject grandchild = grandchildArr.getJsonObject(0);
                 assertEquals(err, "a", grandchild.getString("value"));
-            } else if (!found_merged_config && "mergedConfig".equals(child.getString("id")) && "mergedChild".equals(child.getString("name"))
+            } else if (!found_mergedConfig && "mergedConfig".equals(child.getString("id")) && "mergedChild".equals(child.getString("name"))
                        && "dfltOption".equals(child.getString("option"))) {
-                found_merged_config = true;
+                found_mergedConfig = true;
 
                 // Parse the usr_grandchild elements.
                 JsonArray grandchildArr = child.getJsonArray("usr_grandchild");
                 assertEquals(err, 4, grandchildArr.size());
-                boolean found_three = false, found_four = false, found_five = false, found_six = false;
+                boolean found_one = false, found_two = false, found_three = false, found_four = false;
                 for (int j = 0; j < 4; j++) {
                     JsonObject grandchild = grandchildArr.getJsonObject(j);
-                    if (!found_three && "one".equals(grandchild.getString("id")) && "b".equals(grandchild.getString("value"))) {
+                    if (!found_one && "one".equals(grandchild.getString("id")) && "b".equals(grandchild.getString("value"))) {
+                        found_one = true;
+                    } else if (!found_two && "two".equals(grandchild.getString("id")) && "c".equals(grandchild.getString("value"))) {
+                        found_two = true;
+                    } else if (!found_three && "three".equals(grandchild.getString("id")) && "y".equals(grandchild.getString("value"))) {
                         found_three = true;
-                    } else if (!found_four && "two".equals(grandchild.getString("id")) && "c".equals(grandchild.getString("value"))) {
-                        found_four = true;
-                    } else if (!found_five && "three".equals(grandchild.getString("id")) && "y".equals(grandchild.getString("value"))) {
-                        found_five = true;
-                    } else if (!found_six && "four".equals(grandchild.getString("id")) && "z".equals(grandchild.getString("value"))
+                    } else if (!found_four && "four".equals(grandchild.getString("id")) && "z".equals(grandchild.getString("value"))
                                && "grandchildOpt".equals(grandchild.getString("name"))) {
-                        found_six = true;
+                        found_four = true;
                     } else {
                         fail("Unexpected or duplicate usr_grandchild element found: " + grandchild.toString());
                     }
