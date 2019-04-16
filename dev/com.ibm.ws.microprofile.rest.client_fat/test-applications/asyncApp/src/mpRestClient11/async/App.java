@@ -10,9 +10,13 @@
  *******************************************************************************/
 package mpRestClient11.async;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 @ApplicationPath("/")
 public class App extends Application {
+    static final AtomicReference<ExecutorService> executorService = new AtomicReference<>();
 }

@@ -322,8 +322,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 /*
                  * New with jdbc 4.1 support, if the connection was aborted, skip the entire pool connection purge.
                  */
-                boolean aborted = mcWrapper != null && mcWrapper.getManagedConnection() instanceof WSManagedConnection
-                                  && ((WSManagedConnection) mcWrapper.getManagedConnection()).isAborted();
+                boolean aborted = mcWrapper != null && mcWrapper.getManagedConnectionWithoutStateCheck() instanceof WSManagedConnection
+                                  && ((WSManagedConnection) mcWrapper.getManagedConnectionWithoutStateCheck()).isAborted();
                 if (gConfigProps.getPurgePolicy() == PurgePolicy.EntirePool
                     && !aborted) {
 

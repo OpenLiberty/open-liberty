@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.config.ServletConfigurator;
 import com.ibm.ws.container.service.config.ServletConfiguratorHelper;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
@@ -165,6 +166,7 @@ public class JspConfiguratorHelper implements ServletConfiguratorHelper, JspXmlE
         return getVersion(webAppVersion) >= 2.5;
     }
 
+    @Trivial
     public JspOptions getJspOptions() {
         return options;
     }        

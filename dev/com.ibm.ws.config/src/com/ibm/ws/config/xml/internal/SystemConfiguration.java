@@ -108,7 +108,7 @@ class SystemConfiguration {
 
         this.validator.setConfiguration(serverXMLConfig);
 
-        bundleProcessor = new BundleProcessor(bc, this, locationService, variableRegistryService, configUpdater, changeHandler, validator, configRetriever);
+        bundleProcessor = new BundleProcessor(bc, this, locationService, configUpdater, changeHandler, validator, configRetriever);
 
         this.configRefresher = new ConfigRefresher(bc, changeHandler, serverXMLConfig);
 

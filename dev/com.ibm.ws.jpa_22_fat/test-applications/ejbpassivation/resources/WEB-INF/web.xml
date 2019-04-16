@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************
+-->
+<web-app version="2.5" 
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID">
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="JpaPassivationServlet">
+    <servlet-name>JpaPassivationServlet</servlet-name>
+    <servlet-class>ejbpassivation.web.JpaPassivationServlet</servlet-class>
+    <load-on-startup/>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JpaPassivationServlet</servlet-name>
+    <url-pattern>/JpaPassivationServlet</url-pattern>
+  </servlet-mapping>
+  
+  <ejb-local-ref>
+        <ejb-ref-name>ejb/StatefulSessionBean</ejb-ref-name>
+        <local>ejbpassivation.ejb.StatefulSessionBeanLocal</local>
+        <ejb-link>StatefulSessionBean</ejb-link>
+  </ejb-local-ref>
+  <ejb-local-ref>
+        <ejb-ref-name>ejb/StatefulSessionPUBean</ejb-ref-name>
+        <local>ejbpassivation.ejb.StatefulSessionPUBeanLocal</local>
+        <ejb-link>StatefulSessionPUBean</ejb-link>
+  </ejb-local-ref>
+</web-app>

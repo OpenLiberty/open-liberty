@@ -43,7 +43,7 @@ public class ReactiveJaxRSTest extends FATServletClient {
 
     public static final String APP_NAME = "ReactiveWithJaxRS";
 
-    @Server("ReactiveStreamsTestServer")
+    @Server("ReactiveJaxRSTestServer")
     public static LibertyServer server;
 
     @BeforeClass

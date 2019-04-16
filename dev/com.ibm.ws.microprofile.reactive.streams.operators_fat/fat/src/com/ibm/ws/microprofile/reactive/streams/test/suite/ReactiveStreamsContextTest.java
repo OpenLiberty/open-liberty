@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,7 +56,9 @@ public class ReactiveStreamsContextTest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "com.ibm.ws.microprofile.reactive.streams.test.context");
+                        .addPackages(true, "com.ibm.ws.microprofile.reactive.streams.test.context")
+                        .addAsResource(new StringAsset("test/AsyncConfigValue=foobar"), "META-INF/microprofile-config.properties")
+                        .addAsManifestResource(ReactiveStreamsContextTestServlet.class.getResource("permissions.xml"), "permissions.xml");
 
         ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY);
 

@@ -356,11 +356,9 @@ public class TestEnableDisableFeaturesTest {
     	serverEDF10.setMarkToEndOfLog();
     	serverEDF10.setServerConfigurationFile("server_noJaxWs.xml");
     	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF10.waitForStringInLogUsingMark("CWWKF0008I"));
-    	Assert.assertNotNull("Web application /metrics not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testJDBCApp.*"));
-        Assert.assertNotNull("Web application /metrics not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testSessionApp.*"));
+    	Assert.assertNotNull("testJDBCApp not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testJDBCApp.*"));
+        Assert.assertNotNull("testSessionApp not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testSessionApp.*"));
     	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
-    	Thread.sleep(10000);
-    	System.out.println("***** RIGHT HERE *****");
     	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF10), 
     		new String[] { "vendor:" }, 
     		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});       	
@@ -478,7 +476,7 @@ public class TestEnableDisableFeaturesTest {
     @After
     public void tearDown() throws Exception {
         if (currentServ != null && currentServ.isStarted()) {
-        	currentServ.stopServer("CWWKS4000E", "CWWKZ0014W");
+        	currentServ.stopServer("CWWKS4000E", "CWWKZ0014W", "CWNEN0049W");
         	currentServ.removeAllInstalledAppsForValidation();
         }
     }

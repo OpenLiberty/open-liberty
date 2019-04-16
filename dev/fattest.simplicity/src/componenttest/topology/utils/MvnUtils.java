@@ -58,32 +58,32 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * A set of mostly static utility functions.
+ * A set of mostly static utility functions... TODO it's got loads of state so it shouldn't be static!
  * This exists partly as there is more than one test class
  * in development that share these functions.
  */
 public class MvnUtils {
 
-    public static final Class<MvnUtils> c = MvnUtils.class;
+    private static final Class<MvnUtils> c = MvnUtils.class;
 
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "180";
     private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "60";
     private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
-    public static File resultsDir;
-    public static File componentRootDir;
-    public static String wlp;
-    public static File tckRunnerDir;
-    public static File pomXml;
-    public static boolean init;
-    public static String[] mvnCliRaw;
-    public static String[] mvnCliRoot;
-    public static String[] mvnCliTckRoot;
-    public static String mvnOutputFilename = "mvnOutput_TCK";
-    public static String defaultSuiteFile = "tck-suite.xml";
-    public static String defaultTargetFolder = "tck";
-    public static String targetFolder = defaultTargetFolder;
-    static List<String> jarsFromWlp = new ArrayList<String>(3);
+    private static File resultsDir;
+    private static File componentRootDir;
+    private static String wlp;
+    private static File tckRunnerDir;
+    private static File pomXml;
+    private static boolean init;
+    private static String[] mvnCliRaw;
+    private static String[] mvnCliRoot;
+    private static String[] mvnCliTckRoot;
+    private static String mvnOutputFilename = "mvnOutput_TCK";
+    private static final String defaultSuiteFile = "tck-suite.xml";
+    private static final String defaultTargetFolder = "tck";
+    private static String targetFolder = defaultTargetFolder;
+    private static List<String> jarsFromWlp = new ArrayList<String>(3);
     private static File mvnOutput;
     private static String apiVersion;
     private static String implVersion;
@@ -100,7 +100,6 @@ public class MvnUtils {
      */
     public static void setAdditionalMvnProps(String[] propDefs, LibertyServer server) throws Exception {
         additionalMvnProps = propDefs;
-        init(server);
     }
 
     /**
@@ -116,7 +115,6 @@ public class MvnUtils {
         overrideSuiteFileName = newName;
         mvnOutputFilename = "mvnOutput_" + newName.replace(".xml", "");
         targetFolder = defaultTargetFolder + "_" + newName.replace(".xml", "");
-        init(server);
     }
 
     /**
@@ -127,21 +125,8 @@ public class MvnUtils {
      * @param server Simplicity LibertyServer
      * @throws Exception
      */
-    public static void init(LibertyServer server) throws Exception {
+    private static void init(LibertyServer server) throws Exception {
         String pomRelativePath = "tck/pom.xml";
-        init(server, pomRelativePath);
-    }
-
-    /**
-     * Initialise shared values for a particular server.
-     * This enables us to set up things like the Liberty install
-     * directory and jar locations once.
-     *
-     * @param server          Simplicity LibertyServer
-     * @param pomRelativePath relative to "publish/tckRunner" path to pom - usually "tck/pom.xml"
-     * @throws Exception
-     */
-    public static void init(LibertyServer server, String pomRelativePath) throws Exception {
         wlp = server.getInstallRoot();
         resultsDir = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
         componentRootDir = Props.getInstance().getFileProperty(Props.DIR_COMPONENT_ROOT);
@@ -163,7 +148,7 @@ public class MvnUtils {
                                    "-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT,
                                    "-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT,
                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost),
-                                   "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/" + targetFolder,
+                                   "-DtargetDirectory=" + getResultsDir() + "/" + getTargetFolderName(),
                                    "-DcomponentRootDir=" + componentRootDir,
                                    "-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT
         };
@@ -180,9 +165,13 @@ public class MvnUtils {
         // add any properties passed in through addMvnProps()
         mvnCliTckRoot = concatStringArray(mvnCliTckRoot, additionalMvnProps);
 
-        mvnOutput = new File(resultsDir, mvnOutputFilename);
+        mvnOutput = new File(getResultsDir(), getMVNOutputFilename());
 
         init = true;
+    }
+
+    private static File getResultsDir() {
+        return resultsDir;
     }
 
     /**
@@ -277,7 +266,7 @@ public class MvnUtils {
      * @param b
      * @return cat a b
      */
-    public static String[] concatStringArray(String[] a, String[] b) {
+    private static String[] concatStringArray(String[] a, String[] b) {
         if (a == null && b != null) {
             return Arrays.copyOf(b, b.length);
         } else if (a != null && b == null) {
@@ -326,9 +315,7 @@ public class MvnUtils {
      * @param addedProps java properties to set when running the mvn command
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> addedProps) throws Exception {
-        if (!init) {
-            init(server);
-        }
+        init(server);
 
         String[] cmd = mvnCliTckRoot;
         if (addedProps != null) {
@@ -347,10 +334,32 @@ public class MvnUtils {
         if (rc != 0 && failingTestsList.isEmpty()) {
             Assert.fail("In " + bucketName + ":" + testName + " the TCK (" + Arrays.toString(cmd) + ") has returned non-zero return code of: " + rc + "\n"
                         + "but did not report any failing tests.\n"
-                        + "see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename + " for more details");
+                        + "see: ...autoFVT/results/" + getMVNOutputFilename() + " for more details");
         }
 
         return rc;
+    }
+
+    private static String getMVNOutputFilename() {
+        return mvnOutputFilename + getRepeatID();
+    }
+
+    private static String getMVNCleanFilename() {
+        return "mvnCleanInstall.out" + getRepeatID();
+    }
+
+    private static String getRepeatID() {
+        String id;
+        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == null || RepeatTestFilter.CURRENT_REPEAT_ACTION.equals(EmptyAction.ID)) {
+            id = "";
+        } else {
+            id = "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        }
+        return id;
+    }
+
+    private static String getTargetFolderName() {
+        return targetFolder + getRepeatID();
     }
 
     /**
@@ -367,14 +376,9 @@ public class MvnUtils {
     private static List<String> postProcessTestResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
 
         List<File> resultsFiles = findJunitResultFiles();
-        File targetDir = new File(MvnUtils.resultsDir, "junit");
+        File targetDir = new File(getResultsDir(), "junit");
 
-        String id;
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == null || RepeatTestFilter.CURRENT_REPEAT_ACTION.equals(EmptyAction.ID)) {
-            id = "";
-        } else {
-            id = "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
-        }
+        String id = getRepeatID();
 
         copyResultsAndAppendId(targetDir, resultsFiles, id);
 
@@ -395,12 +399,12 @@ public class MvnUtils {
     }
 
     private static List<File> findJunitResultFiles() {
-        File resultsDir = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports/junitreports"); // TestNG result location
-        if (!resultsDir.exists()) {
-            resultsDir = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports"); // JUnit result location
+        File surefileResultsDir = new File(getResultsDir(), getTargetFolderName() + "/surefire-reports/junitreports"); // TestNG result location
+        if (!surefileResultsDir.exists()) {
+            surefileResultsDir = new File(getResultsDir(), getTargetFolderName() + "/surefire-reports"); // JUnit result location
         }
 
-        File[] resultsFiles = resultsDir.listFiles(new FilenameFilter() {
+        File[] resultsFiles = surefileResultsDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return name.matches("TEST.*\\.xml");
@@ -409,7 +413,7 @@ public class MvnUtils {
 
         if (resultsFiles == null || resultsFiles.length == 0) {
             Assert.fail("No TCK test JUnit result files were found in the results directory which suggests the TCK tests did not run - check build logs.\n"
-                        + "ResultsDir: " + resultsDir.getAbsolutePath());
+                        + "ResultsDir: " + surefileResultsDir.getAbsolutePath());
         }
 
         return Arrays.asList(resultsFiles);
@@ -667,8 +671,8 @@ public class MvnUtils {
 
         String[] mvnCleanInstall = new String[] { mvn, "clean", "install" };
 
-        File results = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
-        File output = new File(results, "mvnCleanInstall.out");
+        File results = getResultsDir();
+        File output = new File(results, getMVNCleanFilename());
 
         // Everything under autoFVT/results is collected from the child build machine
         int rc = -1;

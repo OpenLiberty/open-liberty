@@ -64,7 +64,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
         // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
         // so that the FFDC is not considered a test failure.
-        new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource").run(JsonObject.class);
+        new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource").run(JsonObject.class);
     }
 
     @AfterClass
@@ -219,7 +219,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(err, ja = j.getJsonArray("api"));
         boolean found = false;
         for (JsonValue jv : ja)
-            if ("/ibm/api/validator/dataSource/DataSourceWithoutJDBCDriver".equals(((JsonString) jv).getString()))
+            if ("/ibm/api/validation/dataSource/DataSourceWithoutJDBCDriver".equals(((JsonString) jv).getString()))
                 if (found)
                     fail("Duplicate value in api list");
                 else
@@ -268,7 +268,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(err, ja = j.getJsonArray("api"));
         found = false;
         for (JsonValue jv : ja)
-            if ("/ibm/api/validator/dataSource/DefaultDataSource".equals(((JsonString) jv).getString()))
+            if ("/ibm/api/validation/dataSource/DefaultDataSource".equals(((JsonString) jv).getString()))
                 if (found)
                     fail("Duplicate value in api list");
                 else
@@ -349,7 +349,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(ja = j.getJsonArray("api"));
         found = false;
         for (JsonValue jv : ja)
-            if ("/ibm/api/validator/dataSource/WrongDefaultAuth".equals(((JsonString) jv).getString()))
+            if ("/ibm/api/validation/dataSource/WrongDefaultAuth".equals(((JsonString) jv).getString()))
                 if (found)
                     fail("Duplicate value in api list");
                 else
@@ -394,7 +394,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(ja = j.getJsonArray("api"));
         found = false;
         for (JsonValue jv : ja)
-            if ("/ibm/api/validator/dataSource/dataSource%5Bdefault-0%5D".equals(((JsonString) jv).getString()))
+            if ("/ibm/api/validation/dataSource/dataSource%5Bdefault-0%5D".equals(((JsonString) jv).getString()))
                 if (found)
                     fail("Duplicate value in api list");
                 else
@@ -461,7 +461,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(ja = j.getJsonArray("api"));
         found = false;
         for (JsonValue jv : ja)
-            if ("/ibm/api/validator/dataSource/jdbc%2Fnonexistentdb".equals(((JsonString) jv).getString()))
+            if ("/ibm/api/validation/dataSource/jdbc%2Fnonexistentdb".equals(((JsonString) jv).getString()))
                 if (found)
                     fail("Duplicate value in api list");
                 else
@@ -527,7 +527,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(ja = j.getJsonArray("api"));
         found = false;
         for (JsonValue jv : ja)
-            if ("/ibm/api/validator/dataSource/transaction%2FdataSource%5Bdefault-0%5D".equals(((JsonString) jv).getString()))
+            if ("/ibm/api/validation/dataSource/transaction%2FdataSource%5Bdefault-0%5D".equals(((JsonString) jv).getString()))
                 if (found)
                     fail("Duplicate value in api list");
                 else
@@ -578,7 +578,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(ja = j.getJsonArray("api"));
         boolean found = false;
         for (JsonValue jv : ja)
-            if ("/ibm/api/validator/dataSource/DataSourceWithoutJDBCDriver".equals(((JsonString) jv).getString()))
+            if ("/ibm/api/validation/dataSource/DataSourceWithoutJDBCDriver".equals(((JsonString) jv).getString()))
                 if (found)
                     fail("Duplicate value in api list");
                 else

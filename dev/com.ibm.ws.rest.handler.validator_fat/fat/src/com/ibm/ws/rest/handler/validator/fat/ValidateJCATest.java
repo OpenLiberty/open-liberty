@@ -44,14 +44,16 @@ public class ValidateJCATest extends FATServletClient {
     @Server("com.ibm.ws.rest.handler.validator.jca.fat")
     public static LibertyServer server;
 
-    private static String VERSION_REGEX = "[0-9]+\\.[0-9]+.*";
-
     @BeforeClass
     public static void setUp() throws Exception {
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValidationAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.validator.adapter"));
         ShrinkHelper.exportToServer(server, "dropins", rar);
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "customLoginModule.jar");
+        jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
+        ShrinkHelper.exportToServer(server, "/", jar);
 
         server.startServer();
 
@@ -74,11 +76,120 @@ public class ValidateJCATest extends FATServletClient {
     }
 
     /**
+     * Validate a connectionFactory using application authentication, but not specifying a user or password,
+     * and instead relying on the built-in user/password of the mock resource adapter.
+     */
+    @Test
+    public void testApplicationAuthForConnectionFactoryWithDefaultUser() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "DefaultUserName", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory using application authentication and specify a user/password.
+     */
+    @Test
+    public void testApplicationAuthForConnectionFactoryWithSpecifiedUser() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application")
+                        .requestProp("X-Validation-User", "user1")
+                        .requestProp("X-Validation-Password", "1user");
+        JsonObject json = request.method("GET").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "user1", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory for a JCA data source using application authentication and specify a user/password,
+     * where the validation fails and raises an exception with a SQL State and error code.
+     */
+    @AllowedFFDC("java.sql.SQLNonTransientConnectionException")
+    @Test
+    public void testApplicationAuthForJCADataSourceWithSpecifiedUserFails() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=application")
+                        .requestProp("X-Validation-User", "user5")
+                        .requestProp("X-Validation-Password", "5user");
+        JsonObject json = request.method("GET").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "ds5", json.getString("uid"));
+        assertEquals(err, "ds5", json.getString("id"));
+        assertEquals(err, "eis/ds5", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.getJsonObject("info"));
+
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertEquals(err, "08001", json.getString("sqlState"));
+        assertEquals(err, 127, json.getInt("errorCode"));
+        assertEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
+        assertEquals(err, "Connection rejected for user names that end in '5'.", json.getString("message"));
+        JsonArray stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.JDBCConnectionImpl.invoke("));
+        assertTrue(err, stack.getString(1).startsWith("com.sun.proxy.$Proxy"));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertNull(err, json.get("sqlState"));
+        assertEquals(err, "ERR_SEC_USR5", json.getString("errorCode"));
+        assertEquals(err, "javax.resource.spi.SecurityException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Not accepting user names that end with '5'."));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.JDBCConnectionImpl.invoke("));
+        assertTrue(err, stack.getString(1).startsWith("com.sun.proxy.$Proxy"));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        // cause
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertEquals(err, "28000", json.getString("sqlState"));
+        assertEquals(err, 0, json.getInt("errorCode"));
+        assertEquals(err, "java.sql.SQLInvalidAuthorizationSpecException", json.getString("class"));
+        assertEquals(err, "The database is unable to accept user names that include a '5'.", json.getString("message"));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.JDBCConnectionImpl.invoke("));
+        assertTrue(err, stack.getString(1).startsWith("com.sun.proxy.$Proxy"));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+        assertNull(err, json.getJsonObject("cause"));
+    }
+
+    /**
      * Attempt to validate a connectionFactory that does not exist in server configuration.
      */
     @Test
     public void testConnectionFactoryNotFound() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/NotAConfiguredConnectionFactory").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/NotAConfiguredConnectionFactory").run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "NotAConfiguredConnectionFactory", json.getString("uid"));
         assertNull(err, json.get("id"));
@@ -90,7 +201,80 @@ public class ValidateJCATest extends FATServletClient {
     }
 
     /**
-     * Use /ibm/api/validator/connectionFactory to validate all connection factories
+     * Validate a connectionFactory using container authentication, relying on the default containerAuthData from server config.
+     */
+    @Test
+    public void testContainerAuthForConnectionFactoryWithDefaultAuthData() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=container").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "containerAuthUser1", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory using container authentication and explicitly specifying the authData element from server config to use.
+     */
+    @Test
+    public void testContainerAuthForConnectionFactoryWithSpecifiedAuthData() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=container&authAlias=auth2").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "containerAuthUser2", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory for a JCA data source using container authentication with a custom login module
+     * and custom login properties.
+     */
+    @Test
+    public void testCustomLoginModuleForJCADataSource() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry");
+        JsonObject json = request.method("GET")
+                        .jsonBody("{ \"loginConfigProperties\": { \"loginName\": \"lmUser\", \"loginNum\": 6 } }")
+                        .run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "ds5", json.getString("uid"));
+        assertEquals(err, "ds5", json.getString("id"));
+        assertEquals(err, "eis/ds5", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationEIS", json.getString("databaseProductName"));
+        assertEquals(err, "33.56.65", json.getString("databaseProductVersion"));
+        assertEquals(err, "TestValidationJDBCAdapter", json.getString("driverName"));
+        assertEquals(err, "36.77.85", json.getString("driverVersion"));
+        assertEquals(err, "TestValDB", json.getString("catalog"));
+        assertEquals(err, "LMUSER6", json.getString("schema"));
+        assertEquals(err, "lmUser6", json.getString("user"));
+    }
+
+    /**
+     * Use /ibm/api/validation/connectionFactory to validate all connection factories
      */
     @AllowedFFDC({
                    "java.lang.IllegalArgumentException", // intentionally raised by mock resource adapter to cover exception paths
@@ -100,13 +284,11 @@ public class ValidateJCATest extends FATServletClient {
     })
     @Test
     public void testMultipleConnectionFactories() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory")
-                        .requestProp("X-Validator-User", "dbuser")
-                        .requestProp("X-Validator-Password", "dbpass");
-        JsonArray json = request.method("POST").run(JsonArray.class);
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory");
+        JsonArray json = request.method("GET").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
-        assertEquals(err, 4, json.size()); // Increase this if you add more connection factories to server.xml
+        assertEquals(err, 5, json.size()); // Increase this if you add more connection factories to server.xml
 
         // Order is currently alphabetical based on config.displayId
 
@@ -204,6 +386,22 @@ public class ValidateJCATest extends FATServletClient {
         assertNull(err, j.get("info"));
         assertNotNull(err, j.getJsonObject("failure"));
         // connectionFactory[default-1] is already tested under testTopLevelConnectionFactoryWithoutIDWithChainedExceptions
+
+        // [4]: config.displayId=connectionFactory[ds5]
+        j = json.getJsonObject(4);
+        assertEquals(err, "ds5", j.getString("uid"));
+        assertEquals(err, "ds5", j.getString("id"));
+        assertEquals(err, "eis/ds5", j.getString("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "TestValidationEIS", j.getString("databaseProductName"));
+        assertEquals(err, "33.56.65", j.getString("databaseProductVersion"));
+        assertEquals(err, "TestValidationJDBCAdapter", j.getString("driverName"));
+        assertEquals(err, "36.77.85", j.getString("driverVersion"));
+        assertEquals(err, "TestValDB", j.getString("catalog"));
+        assertEquals(err, "DEFAULTUSERNAME", j.getString("schema"));
+        assertEquals(err, "DefaultUserName", j.getString("user"));
     }
 
     /**
@@ -211,7 +409,7 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testTopLevelConnectionFactoryWithID() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/cf1").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "cf1", json.getString("uid"));
         assertEquals(err, "cf1", json.getString("id"));
@@ -239,7 +437,7 @@ public class ValidateJCATest extends FATServletClient {
     })
     @Test
     public void testTopLevelConnectionFactoryWithoutIDWithChainedExceptions() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/connectionFactory[default-1]").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/connectionFactory[default-1]").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "connectionFactory[default-1]", json.getString("uid"));
         assertNull(err, json.get("id"));

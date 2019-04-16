@@ -1,16 +1,13 @@
 package com.ibm.ws.rest.handler.validator.loginmodule;
 
-import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
 
-import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
@@ -45,40 +42,37 @@ public class TestLoginModule implements LoginModule {
     public boolean login() throws LoginException {
         System.out.println(c + " >>> login");
         try {
-            Callback[] callbacks = getHandledCallbacks();
-            setPasswordCredentialInSubject(callbacks);
-            Map<?, ?> properties = ((WSMappingPropertiesCallback) callbacks[1]).getProperties();
+            WSManagedConnectionFactoryCallback mcfCallback = new WSManagedConnectionFactoryCallback("Target ManagedConnectionFactory: ");
+            WSMappingPropertiesCallback mpropsCallback = new WSMappingPropertiesCallback("Mapping Properties (HashMap): ");
+            callbackHandler.handle(new Callback[] { mcfCallback, mpropsCallback });
+
+            Map<?, ?> properties = mpropsCallback.getProperties();
             System.out.println("   properties=" + properties);
             // Check for specific custom login module prop set by testCustomLoginModuleProperties
             String customProp = (String) properties.get(CUSTOM_PROPERTY_KEY);
             if (customProp != null)
                 System.out.println("  TEST_CHECK " + CUSTOM_PROPERTY_KEY + "=" + customProp);
+
+            // Compute a user name and password based on some login properties
+            Object loginName = properties.get("loginName");
+            Object loginNum = properties.get("loginNum");
+            String user = loginNum == null ? DB_USERNAME : (loginName + loginNum.toString());
+            String pwd = loginNum == null ? DB_PASSWORD : (loginNum.toString() + loginName);
+
+            final PasswordCredential passwordCredential = new PasswordCredential(user, pwd.toCharArray());
+            passwordCredential.setManagedConnectionFactory(mcfCallback.getManagedConnectionFacotry());
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    subject.getPrivateCredentials().add(passwordCredential);
+                    return null;
+                }
+            });
         } catch (Exception e) {
             throw (LoginException) new LoginException(e.getMessage()).initCause(e);
         }
 
         return true;
-    }
-
-    private Callback[] getHandledCallbacks() throws IOException, UnsupportedCallbackException {
-        Callback callbacks[] = new Callback[2];
-        callbacks[0] = new WSManagedConnectionFactoryCallback("Target ManagedConnectionFactory: ");
-        callbacks[1] = new WSMappingPropertiesCallback("Mapping Properties (HashMap): ");
-        callbackHandler.handle(callbacks);
-        return callbacks;
-    }
-
-    private void setPasswordCredentialInSubject(Callback[] callbacks) {
-        ManagedConnectionFactory managedConnectionFactory = ((WSManagedConnectionFactoryCallback) callbacks[0]).getManagedConnectionFacotry();
-        final PasswordCredential passwordCredential = new PasswordCredential(DB_USERNAME, DB_PASSWORD.toCharArray());
-        passwordCredential.setManagedConnectionFactory(managedConnectionFactory);
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                subject.getPrivateCredentials().add(passwordCredential);
-                return null;
-            }
-        });
     }
 
     /** {@inheritDoc} */

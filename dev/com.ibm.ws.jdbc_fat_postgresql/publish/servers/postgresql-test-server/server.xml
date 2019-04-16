@@ -6,41 +6,68 @@
         <feature>jdbc-4.2</feature>
         <feature>jndi-1.0</feature>
     </featureManager>
-    
-    <library id="PostgresLib">
-        <fileset dir="${shared.resource.dir}/postgres"/>
-    </library>
+
+    <application location="postgresqlApp.war"/>
     
     <dataSource jndiName="jdbc/postgres/genericprops">
       <jdbcDriver libraryRef="PostgresLib" />
-      <properties serverName="localhost" portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+      <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
     </dataSource>
 
     <!-- Uses an anonymously named postgres JDBC driver, so that the file name heuristic doesn't discover the driver type -->    
-    <library id="AnonymousPostgresLib">
+    <library id="PostgresLib">
         <fileset dir="${server.config.dir}/jdbc"/>
     </library>
     
     <!-- datasource type auto-detection should locate the java.sql.Driver in the driver.jar -->
     <dataSource jndiName="jdbc/anonymous/Driver">
-      <jdbcDriver libraryRef="AnonymousPostgresLib" />
-      <properties serverName="localhost" portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/anonymous/XADataSource" type="javax.sql.XADataSource">
-      <jdbcDriver libraryRef="AnonymousPostgresLib" />
-      <properties serverName="localhost" portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                  defaultRowFetchSize="5" applicationName="postgresqlApp"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/minimal">
-      <jdbcDriver libraryRef="AnonymousPostgresLib" />
-      <properties.postgresql portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/ConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/DataSource" type="javax.sql.DataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/readOnly">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             readOnly="true"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/defaultAutoCommit" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             defaultAutoCommit="true"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/defaultAutoCommitOff" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             defaultAutoCommit="false"/>
     </dataSource>
     
     <include location="../fatTestPorts.xml"/>
     
     <!-- TODO use a doPriv in com.ibm.ws.jdbc.osgi.v42.JDBC42Runtime.doGetSchema(JDBC42Runtime.java:132) -->
-    <javaPermission codeBase="${server.config.dir}/dropins/postgresqlApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}/apps/postgresqlApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
     
     <javaPermission codeBase="${server.config.dir}/jdbc/driver.jar" className="java.security.AllPermission"/>
     <javaPermission codeBase="${shared.resource.dir}/postgres/postgresql.jar" className="java.security.AllPermission"/>

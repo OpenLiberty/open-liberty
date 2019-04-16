@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -149,6 +151,119 @@ public class ZipFileReaper {
 
     //
 
+    // Locking note:
+    //
+    // 'Tr.warning' can cause a bundle load, which can cause a call to 'AppClassLoader.loadClass'.
+    //
+    // But, 'AppClassLoader.loadClass' can obtain an entry's input stream, which causes
+    // a call to 'ZipFileReaper.open'.
+    //
+    // See below for stacks which show typical deadlocked threads.
+    //
+    // To avoid the deadlock, the stall warning is issued from a new thread.
+    //
+    // zip file reaper 55 BLOCKED
+    // com.ibm.ws.classloading.internal.AppClassLoader.loadClass(AppClassLoader.java:480)
+    // java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:1032)
+    // java.base/java.util.ResourceBundle$Control.newBundle(ResourceBundle.java:3170)
+    // java.base/java.util.ResourceBundle.loadBundle(ResourceBundle.java:1994)
+    // ...
+    // java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1509)
+    // ...
+    // com.ibm.ws.logging.internal.impl.BaseTraceService.warning(BaseTraceService.java:512)
+    // com.ibm.websphere.ras.Tr.warning(Tr.java:653)
+    // com.ibm.ws.artifact.zip.cache.internal.ZipFileReaper$ReaperRunnable.run(ZipFileReaper.java:235)
+    // 
+    // Default Executor-thread-2 40 BLOCKED
+    // com.ibm.ws.artifact.zip.cache.internal.ZipFileReaper.open(ZipFileReaper.java:1018)
+    // ...
+    // com.ibm.ws.artifact.zip.internal.ZipFileEntry.getInputStream(ZipFileEntry.java:176)
+    // com.ibm.ws.classloading.internal.ContainerClassLoader$ArtifactEntryUniversalResource.getByteResourceInformation(ContainerClassLoader.java:517)
+    // ...
+    // com.ibm.ws.classloading.internal.AppClassLoader.loadClass(AppClassLoader.java:482)
+    // java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:1032)
+    // org.apache.derby.impl.sql.compile.SQLParser.insertColumnsAndSource(SQLParser.java:8249)
+    // ...
+    // com.ibm.ws.rsadapter.jdbc.WSJdbcStatement.executeUpdate(WSJdbcStatement.java:608)
+    // ...
+    // javax.servlet.http.HttpServlet.service(HttpServlet.java:575)
+
+    private static class DeferredLogRecord {
+        // Currently only defer warnings.  Other log record types could be
+        // made asynchronous, but so far that hasn't been necessary.
+
+        private final String msgKey;
+        private final Object[] msgArgs;
+
+        public DeferredLogRecord(String msgKey, Object... msgArgs) {
+            this.msgKey = msgKey;
+            this.msgArgs = msgArgs;
+        }
+
+        public void emit() {
+            Tr.warning(tc, msgKey, msgArgs);
+        }
+    }
+
+    private static class DeferredLogEmitter implements Runnable {
+        public DeferredLogEmitter() {
+            this.deferredLogQueue = new LinkedBlockingQueue<DeferredLogRecord>();
+        }
+
+        public void run() {
+            try {
+                while ( true ) {
+                    take().emit(); // 'take' throws InterruptedException
+                }
+            } catch ( InterruptedException e ) {
+                // Handle interruption *OUTSIDE* of the loop.  We
+                // want interruption to cause an exit.
+                //
+                // FFDC and ignore
+            }
+        }
+
+        //
+
+        protected final BlockingQueue<DeferredLogRecord> deferredLogQueue;
+
+        public void post(String msgKey, Object... msgArgs) {
+            try {
+                deferredLogQueue.put( new DeferredLogRecord(msgKey, msgArgs) );
+            } catch ( InterruptedException e ) {
+                // Don't really care if a put is interrupted.  That means
+                // that a warning was not emitted.  If that is a problem,
+                // the warning would need to be emitted outside of usual
+                // trace.
+                //
+                // FFDC and ignore
+            }
+        }
+
+        public DeferredLogRecord take() throws InterruptedException {
+            return deferredLogQueue.take();
+        }
+    }
+
+    private static final DeferredLogEmitter logEmitter;
+    private static final Thread logThread;
+
+    // Should this initialization be done only when constructing the first
+    // reaper?
+
+    static {
+        logEmitter = new DeferredLogEmitter();
+        logThread = new Thread(logEmitter);
+        logThread.setDaemon(true);
+        logThread.start();
+    }
+
+    protected static void asyncWarning(final String msgKey, final Object ... msgArgs) {
+        logEmitter.post(msgKey, msgArgs);
+    }
+
+    //
+
     private static class ReaperRunnable implements Runnable {
         @Trivial
         public ReaperRunnable(ZipFileReaper reaper) {
@@ -228,11 +343,10 @@ public class ZipFileReaper {
                         if ( actualDelay > reapDelay ) {
                             long overage = actualDelay - reapDelay;
                             if ( overage > STALL_LIMIT ) {
-                                // Tr.warning(tc, methodName +
-                                //    " Excessive delay processing pending zip file closes:" +
-                                //    " Actual delay [ " + toAbsSec(actualDelay) + " (s) ];" +
-                                //    " Requested delay [ " + toAbsSec(reapDelay) + " (s) ]");
-                                Tr.warning(tc, "reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
+                                asyncWarning("reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay)); 
+                                // "Excessive delay processing pending zip file closes:"
+                                // " Actual delay [ " + toAbsSec(actualDelay) + " (s) ];"
+                                // " Requested delay [ " + toAbsSec(reapDelay) + " (s) ]"
                             }
                         }
                     }
@@ -1017,8 +1131,8 @@ public class ZipFileReaper {
 
         synchronized ( reaperLock ) {
             if ( !getIsActive() ) {
-                // Tr.warning(tc, methodName + " Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive");
-                Tr.warning(tc, "reaper.inactive", path, reaperName);
+                asyncWarning("reaper.inactive", path, reaperName);
+                // "Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive"
                 throw new IOException("Cannot open [ " + path + " ]: ZipFile cache is inactive");
             }
 
@@ -1123,16 +1237,16 @@ public class ZipFileReaper {
             ZipFileData data = storage.get(path);
 
             if ( data == null ) {
-                // Tr.warning(tc, methodName + " Unregistered [ " + path + " ]: Ignore");
-                Tr.warning(tc, "reaper.unregistered.path", path);
+                asyncWarning("reaper.unregistered.path", path);
+                // "Unregistered [ " + path + " ]: Ignore"
 
             } else if ( data.isFullyClosed() ) {
-                // Tr.warning(tc, methodName + " Fully closed [ " + path + " ]: Ignore");
-                Tr.warning(tc, "reaper.closed.path", path);
+                asyncWarning("reaper.closed.path", path);
+                // "Fully closed [ " + path + " ]: Ignore"
 
             } else if ( data.isPending() ) {
-                // Tr.warning(tc, methodName + " Pending [ " + path + " ]: No active opens: Ignore");
-                Tr.warning(tc, "reaper.pending.path", path);
+                asyncWarning("reaper.pending.path", path);
+                // "Pending [ " + path + " ]: No active opens: Ignore"
 
             } else if ( data.isOpen() ) {
                 if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
