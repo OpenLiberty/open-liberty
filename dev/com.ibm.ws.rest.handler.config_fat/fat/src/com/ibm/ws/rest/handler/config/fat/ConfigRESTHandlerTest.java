@@ -148,31 +148,30 @@ public class ConfigRESTHandlerTest extends FATServletClient {
 
     //Test the config api when a configuration element's feature is not enabled
     @Test
-    public void testConfigCloudantNotEnabled() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/cloudant").run(JsonArray.class);
-        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/cloudantDatabase").run(JsonArray.class);
+    public void testConfigMongoNotEnabled() throws Exception {
+        JsonArray json = new HttpsRequest(server, "/ibm/api/config/mongo").run(JsonArray.class);
+        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/mongoDB").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 1, json.size());
         assertEquals(err, 1, json2.size());
 
         JsonObject j = json.getJsonObject(0);
-        assertEquals(err, "cloudant", j.getString("configElementName"));
+        assertEquals(err, "mongo", j.getString("configElementName"));
         assertEquals(err, "builder", j.getString("uid"));
         assertEquals(err, "builder", j.getString("id"));
         assertNull(err, j.get("jndiName"));
         assertEquals(err, "Check that the spelling is correct and that the right features are enabled for this configuration.", j.getString("error"));
         assertEquals(err, "DerbyLib", j.getString("libraryRef"));
         assertEquals(err, "pwd1", j.getString("password")); //TODO Don't reveal password here
-        assertEquals(err, "http://douc.hursley.ibm.com:5984", j.getString("url"));
-        assertEquals(err, "u1", j.getString("username"));
+        assertEquals(err, "u1", j.getString("user"));
 
         j = json2.getJsonObject(0);
-        assertEquals(err, "cloudantDatabase", j.getString("configElementName"));
-        assertEquals(err, "CloudantDBNotEnabled", j.getString("uid"));
-        assertEquals(err, "CloudantDBNotEnabled", j.getString("id"));
-        assertEquals(err, "cloudant/db", j.getString("jndiName"));
+        assertEquals(err, "mongoDB", j.getString("configElementName"));
+        assertEquals(err, "MongoDBNotEnabled", j.getString("uid"));
+        assertEquals(err, "MongoDBNotEnabled", j.getString("id"));
+        assertEquals(err, "mongo/db", j.getString("jndiName"));
         assertEquals(err, "Check that the spelling is correct and that the right features are enabled for this configuration.", j.getString("error"));
-        assertEquals(err, "builder", j.getString("cloudantRef"));
+        assertEquals(err, "builder", j.getString("mongoRef"));
         assertEquals(err, "testdb", j.getString("databaseName"));
     }
 
