@@ -191,14 +191,22 @@ public class ConfigRESTHandler implements RESTHandler {
 
         for (Map.Entry<String, SortedSet<String>> entry : flattenedPids.entrySet()) {
             String pid = entry.getKey();
+            boolean registryEntryExistsForFlattenedConfig = configHelper.registryEntryExists(pid);
             JSONArray list = new JSONArray();
             String prefix = null;
             for (String flatConfigPrefix : entry.getValue()) {
                 JSONObject j = new OrderedJSONObject();
                 SortedMap<String, Object> flattenedConfigProps = flattened.get(prefix = flatConfigPrefix);
                 if (flattenedConfigProps != null)
-                    for (Map.Entry<String, Object> prop : flattenedConfigProps.entrySet())
-                        j.put(prop.getKey(), getJSONValue(prop.getValue(), processed));
+                    for (Map.Entry<String, Object> prop : flattenedConfigProps.entrySet()) {
+                        String key = prop.getKey();
+                        String metaTypeName = configHelper.getMetaTypeAttributeName(pid, key);
+                        if (metaTypeName == null // add unknown attributes added by the user
+                            || !metaTypeName.equalsIgnoreCase("internal") // add externalized attributes
+                            || !registryEntryExistsForFlattenedConfig) { // or all attributes if there is an error in the config
+                            j.put(key, getJSONValue(prop.getValue(), processed));
+                        }
+                    }
                 list.add(j);
             }
             // TODO would be better to get the flattened config element name from config internals rather than hardcoding/approximating it
@@ -294,7 +302,7 @@ public class ConfigRESTHandler implements RESTHandler {
                         value = configInfo;
                 }
             }
-        } else if (value instanceof Number || value instanceof Boolean || value instanceof Character)
+        } else if (value instanceof Number || value instanceof Boolean)
             ; // common paths - no special handling
         else if (value instanceof SerializableProtectedString)
             value = "******"; // hide passwords
