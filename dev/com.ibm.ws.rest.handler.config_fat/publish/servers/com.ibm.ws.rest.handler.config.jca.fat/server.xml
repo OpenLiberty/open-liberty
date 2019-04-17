@@ -38,4 +38,10 @@
     <properties.tca.DataSource userName="user2" password="pwd2" escapeChar="$"/>
   </connectionFactory>
 
+  <resourceAdapter location="${server.config.dir}/connectors/AnotherTestAdapter.rar"/>
+
+  <connectionFactory id="cf3" jndiName="eis/cf3">
+    <properties.AnotherTestAdapter.ConnectionFactory enableBetaContent="false"/>
+  </connectionFactory>
+
 </server>
