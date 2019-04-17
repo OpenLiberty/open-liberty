@@ -18,7 +18,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -26,6 +28,7 @@ import componenttest.topology.utils.HttpUtils;
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class ConfigExtensionsTest {
 
     /**

@@ -21,11 +21,13 @@ import java.io.InputStreamReader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -33,6 +35,7 @@ import componenttest.topology.utils.HttpUtils;
 /**
  * Schema product extension tests.
  */
+@RunWith(FATRunner.class)
 public class ProductExtensionsTest {
     public static final Class<?> c = ProductExtensionsTest.class;
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.product.extension");
@@ -299,7 +302,7 @@ public class ProductExtensionsTest {
     /**
      * Prints an extended debug output.
      *
-     * @param po The programOutput
+     * @param po       The programOutput
      * @param fileName
      * @throws Exception
      */

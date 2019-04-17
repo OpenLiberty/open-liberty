@@ -23,13 +23,16 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class FeatureUpdateTests {
     private void test(LibertyServer server, String testUri) throws Exception {
         HttpURLConnection con = null;
@@ -67,7 +70,7 @@ public class FeatureUpdateTests {
 
     private final Set<String> emptySet = Collections.emptySet();
 
-    // Just make sure we don't get an FFDC when we remove a feature that something else has a reference to. 
+    // Just make sure we don't get an FFDC when we remove a feature that something else has a reference to.
     // In this test, the reference is also ibm:flat
     @Test
     public void testFeatureRemovalFlat() throws Exception {
@@ -85,9 +88,9 @@ public class FeatureUpdateTests {
 
     }
 
-    // Just make sure we don't get an FFDC when we remove a feature that something else has a reference to. 
+    // Just make sure we don't get an FFDC when we remove a feature that something else has a reference to.
     // In this test, the reference is not marked ibm:flat
-    // We're also removing the configuration that the OpenID feature config points to. 
+    // We're also removing the configuration that the OpenID feature config points to.
     @Test
     public void testFeatureRemoval() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.features");
