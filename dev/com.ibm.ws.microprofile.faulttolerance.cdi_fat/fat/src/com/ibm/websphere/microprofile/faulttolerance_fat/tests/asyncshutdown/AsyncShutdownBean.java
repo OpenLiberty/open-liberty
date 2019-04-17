@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.tests.asyncshutdown;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,6 +33,16 @@ public class AsyncShutdownBean {
             throw new RuntimeException(ex);
         }
         return self.runAsyncTask();
+    }
+
+    @Asynchronous
+    public CompletionStage<String> runFiniteAsyncTask(int repeats) {
+        System.out.println("Running finite async task");
+        if (repeats > 0) {
+            return this.runFiniteAsyncTask(repeats - 1);
+        } else {
+            return CompletableFuture.completedFuture("OK");
+        }
     }
 
 }
