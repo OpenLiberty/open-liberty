@@ -1369,12 +1369,16 @@ public class BaseTraceService implements TrService {
     public static class TrOutputStream extends ByteArrayOutputStream {
         final SystemLogHolder holder;
         final BaseTraceService service;
-        public static ThreadLocal<Boolean> isPrinting = new ThreadLocal<>();
+        public static ThreadLocal<Boolean> isPrinting = new ThreadLocal<Boolean>() {
+            @Override
+            protected Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
 
         public TrOutputStream(SystemLogHolder slh, BaseTraceService service) {
             this.holder = slh;
             this.service = service;
-            this.isPrinting.set(false);
         }
 
         @Override
