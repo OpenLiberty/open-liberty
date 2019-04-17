@@ -939,16 +939,14 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             Tr.debug(tc, "Clearing standard javax.net.ssl.SSLContext cached object containing keystores: " + new Object[] { modifiedFiles });
         for (File modifiedKeystoreFile : modifiedFiles) {
             String filePath = null;
-            String comparePath = null;
             try {
                 filePath = modifiedKeystoreFile.getCanonicalPath();
-                comparePath = filePath.replace('\\', '/');
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Exception comparing file path.");
                 continue;
             }
-            removeEntryFromSSLContextMap(comparePath);
+            removeEntryFromSSLContextMap(filePath);
         }
     }
 
@@ -957,6 +955,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
      * truststore then remove those SSLContexts from the cache.
      */
     public static void removeEntryFromSSLContextMap(String keyStorePath) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "removeEntryFromSSLContextMap: " + new Object[] { keyStorePath });
 
         List<SSLConfig> removeList = new ArrayList<SSLConfig>();
 
@@ -977,6 +977,9 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         }
         if (!removeList.isEmpty()) {
             for (SSLConfig removeEntry : removeList) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "removing from sslContext cache: " + removeEntry.toString());
+
                 sslContextCacheJAVAX.remove(removeEntry);
             }
         }
