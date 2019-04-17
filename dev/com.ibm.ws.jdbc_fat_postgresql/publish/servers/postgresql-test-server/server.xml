@@ -36,6 +36,12 @@
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
     </dataSource>
     
+    <dataSource jndiName="jdbc/postgres/xa" type="javax.sql.XADataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <connectionManager enableSharingForDirectLookups="false"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
     <dataSource jndiName="jdbc/postgres/ConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">
       <jdbcDriver libraryRef="PostgresLib" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
@@ -60,8 +66,14 @@
     
     <dataSource jndiName="jdbc/postgres/defaultAutoCommitOff" type="javax.sql.ConnectionPoolDataSource">
       <jdbcDriver libraryRef="PostgresLib" />
+      <connectionManager enableSharingForDirectLookups="false"/>
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
                              defaultAutoCommit="false"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/urlOnly">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql URL="${env.POSTGRES_URL}"/>
     </dataSource>
     
     <include location="../fatTestPorts.xml"/>
