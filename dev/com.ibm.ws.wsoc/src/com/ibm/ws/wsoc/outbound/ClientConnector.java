@@ -74,7 +74,10 @@ public class ClientConnector {
 
         try {
             requestor.connect();
-            requestor.sendRequest();
+
+            // PH10279 - pass things to get populated with request parameters
+            requestor.sendRequest(things);
+
         } catch (InvalidChainNameException ice) {
             String msg = Tr.formatMessage(tc, "client.connection.nossl", endpointAddress.toString(), ice);
             throw new IOException(msg, ice);
