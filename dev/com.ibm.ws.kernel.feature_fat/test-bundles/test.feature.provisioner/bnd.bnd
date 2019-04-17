@@ -1,0 +1,13 @@
+-include= ~../../../ant_build/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: FeatureProvisioner
+Bundle-SymbolicName: test.feature.provisioner; singleton:=true
+Bundle-Description: This bundle provides a web interface for the tests to refresh the autofeatures in the features directory; version=${bVersion}
+Web-ContextPath: feature
+
+# hide the implementation packages
+Private-Package: \
+ test.kernel.feature

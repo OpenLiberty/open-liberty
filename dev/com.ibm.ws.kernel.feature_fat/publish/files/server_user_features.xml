@@ -1,0 +1,9 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>usr:usertest</feature>
+    </featureManager>
+    
+</server>

@@ -1,0 +1,15 @@
+-include= ~../../../ant_build/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: test.service.consumer
+Bundle-SymbolicName: test.service.consumer
+
+# hide the implementation packages
+Private-Package: \
+ test.service.consumer
+
+-dsannotations: \
+ test.service.consumer.ApiServiceConsumer, \
+ test.service.consumer.NotApiServiceConsumer

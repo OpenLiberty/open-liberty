@@ -1,0 +1,8 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: test.service.provider-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: test.service.provider
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package:com.ibm.ws.kernel.feature.test.api
+IBM-API-Service: com.ibm.ws.kernel.feature.test.api.ApiService
+IBM-Feature-Version: 2
