@@ -13,6 +13,7 @@ package com.ibm.ws.rest.handler.config.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +153,37 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "localhost", props.getString("hostName"));
         // assertEquals(err, 7654, props.getInt("portNumber")); // TODO include the internal default for portNumber?
         assertEquals(err, "user2", props.getString("userName"));
-        assertEquals(err, "pwd2", props.getString("password")); // TODO obscure password values
+        assertEquals(err, "******", props.getString("password"));
+    }
+
+    // Test the output of the /ibm/api/config/resourceAdapter/{uid} REST endpoint.
+    @Test
+    public void testConfigResourceAdapter() throws Exception {
+        JsonObject adapter = new HttpsRequest(server, "/ibm/api/config/resourceAdapter/tca").run(JsonObject.class);
+        String err = "unexpected response: " + adapter;
+        assertEquals(err, "resourceAdapter", adapter.getString("configElementName"));
+        assertEquals(err, "tca", adapter.getString("uid"));
+        assertEquals(err, "tca", adapter.getString("id"));
+        assertTrue(err, adapter.getString("location").endsWith("TestConfigAdapter.rar"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = adapter.getJsonArray("properties.tca"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, true, props.getBoolean("debugMode"));
+        assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
+    }
+
+    // Test the output of the /ibm/api/config/properties.{id of resourceAdapter}/{config display id} REST endpoint
+    @Test
+    public void testConfigResourceAdapterProperties() throws Exception {
+        JsonObject props = new HttpsRequest(server, "/ibm/api/config/properties.tca/resourceAdapter[tca]%2Fproperties.tca[tca]").run(JsonObject.class);
+        String err = "unexpected response: " + props;
+        assertEquals(err, "properties.tca", props.getString("configElementName"));
+        assertEquals(err, "resourceAdapter[tca]/properties.tca[tca]", props.getString("uid"));
+        assertNull(err, props.get("id"));
+        assertEquals(err, true, props.getBoolean("debugMode"));
+        assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
     }
 }
