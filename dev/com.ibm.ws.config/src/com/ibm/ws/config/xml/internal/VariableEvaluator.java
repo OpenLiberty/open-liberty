@@ -39,36 +39,12 @@ public class VariableEvaluator {
         this.configEvaluator = configEvaluator;
     }
 
-    String lookupVariable(String variableName, boolean useEnvironment) {
+    String lookupVariableFromRegistry(String variableName, boolean useEnvironment) {
         if (variableRegistry == null)
             return null;
 
         String originalVariableName = variableName;
         String value = variableRegistry.lookupVariable(variableName);
-
-        if (useEnvironment) {
-            // Try to resolve as an env variable ( resolve env.var-Name )
-            if (value == null) {
-                value = variableRegistry.lookupVariable("env." + variableName);
-            }
-
-            // Try to resolve with non-alpha characters replaced ( resolve env.var_Name )
-            if (value == null) {
-                variableName = stringUtils.replaceNonAlpha(variableName);
-                value = variableRegistry.lookupVariable("env." + variableName);
-            }
-
-            // Try to resolve with upper case ( resolve env.VAR_NAME )
-            if (value == null) {
-                variableName = variableName.toUpperCase();
-                value = variableRegistry.lookupVariable("env." + variableName);
-            }
-
-            // Finally, try a default value
-            if (value == null) {
-                value = variableRegistry.lookupVariableDefaultValue(originalVariableName);
-            }
-        }
 
         return value;
     }
@@ -137,7 +113,7 @@ public class VariableEvaluator {
 
             context.push(variable);
 
-            realValue = lookupVariable(variable, useEnvironment);
+            realValue = lookupVariableFromRegistry(variable, useEnvironment);
 
             if (realValue == null) {
                 // Try checking the properties. This will pick up already evaluated attributes, including flattened config
@@ -197,6 +173,16 @@ public class VariableEvaluator {
                         // Try again now that everything should be evaluated
                         realValue = context.getProperties().get(variable);
                     }
+                }
+
+                // Try to get an environment variable ( env.MYVAR )
+                if (realValue == null && useEnvironment) {
+                    realValue = lookupEnvironmentVariable(variable);
+                }
+
+                // Try to get a default value (<variable name="var" default="defaultValue"/>)
+                if (realValue == null) {
+                    realValue = lookupDefaultVariable(variable);
                 }
 
                 if (realValue == null) {
@@ -318,4 +304,37 @@ public class VariableEvaluator {
         }
         return null;
     }
+
+    Object lookupEnvironmentVariable(String variableName) {
+        if (variableRegistry == null)
+            return null;
+        Object value = null;
+
+        // Try to resolve as an env variable ( resolve env.var-Name )
+
+        value = variableRegistry.lookupVariable("env." + variableName);
+
+        // Try to resolve with non-alpha characters replaced ( resolve env.var_Name )
+        if (value == null) {
+            variableName = stringUtils.replaceNonAlpha(variableName);
+            value = variableRegistry.lookupVariable("env." + variableName);
+        }
+
+        // Try to resolve with upper case ( resolve env.VAR_NAME )
+        if (value == null) {
+            variableName = variableName.toUpperCase();
+            value = variableRegistry.lookupVariable("env." + variableName);
+        }
+
+        return value;
+
+    }
+
+    Object lookupDefaultVariable(String variableName) {
+        if (variableRegistry == null)
+            return null;
+
+        return variableRegistry.lookupVariableDefaultValue(variableName);
+    }
+
 }
