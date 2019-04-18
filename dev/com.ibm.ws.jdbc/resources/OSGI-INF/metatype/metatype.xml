@@ -1337,18 +1337,20 @@
  </Designate>
 
  <OCD ibm:beta="true" id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
-  <AD id="databaseName"                       required="true"  type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
-  <AD id="portNumber"                         required="false" type="Integer" name="%portNumber" description="%portNumber.desc"/>
+  <AD id="databaseName"            required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
+  <AD id="serverName"              required="false" type="String"  name="%serverName"   description="%serverName.desc"/>
+  <AD id="portNumber"              required="false" type="Integer" name="%portNumber"   description="%portNumber.desc"/>
   <!-- Advanced properties for properties.postgresql -->
-  <AD id="applicationName"                    ibmui:group="Advanced" required="false" type="String"  name="%applicationName" description="%applicationName.desc"/>
-  <AD id="currentSchema"                      ibmui:group="Advanced" required="false" type="String"  name="%currentSchema" description="%currentSchema.desc"/>
-  <AD id="defaultAutoCommit"                  ibmui:group="Advanced" required="false" type="Boolean" name="%defaultAutoCommit" description="%defaultAutoCommit.desc"/>
-  <AD id="defaultRowFetchSize"                ibmui:group="Advanced" required="false" type="Integer" name="%defaultRowFetchSize" min="0" description="%defaultRowFetchSize.desc"/>
-  <AD id="loginTimeout"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" min="0" name="%loginTimeout" description="%loginTimeout.desc"/>
-  <AD id="password"                           ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%password" description="%password.desc"/>
-  <AD id="readOnly"                           ibmui:group="Advanced" required="false" type="Boolean" name="%readOnly" description="%readOnly.desc"/>
-  <AD id="targetServerType"                   ibmui:group="Advanced" required="false" type="String"  name="%targetServerType" description="%targetServerType.desc">
+  <AD id="applicationName"         ibmui:group="Advanced" required="false" type="String"                         name="%applicationName"     description="%applicationName.desc"/>
+  <AD id="cancelSignalTimeout"     ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%cancelSignalTimeout" description="%cancelSignalTimeout.desc"/>
+  <AD id="connectTimeout"          ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%connectTimeout"      description="%connectTimeout.desc"/>
+  <AD id="currentSchema"           ibmui:group="Advanced" required="false" type="String"                         name="%currentSchema"       description="%currentSchema.desc"/>
+  <AD id="defaultRowFetchSize"     ibmui:group="Advanced" required="false" type="Integer" min="0"                name="%defaultRowFetchSize" description="%defaultRowFetchSize.desc"/>
+  <AD id="loginTimeout"            ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%loginTimeout"        description="%loginTimeout.desc"/>
+  <AD id="password"                ibmui:group="Advanced" required="false" type="String"  ibm:type="password"    name="%password"            description="%password.desc"/>
+  <AD id="readOnly"                ibmui:group="Advanced" required="false" type="Boolean"                        name="%readOnly"            description="%readOnly.desc"/>
+  <AD id="socketTimeout"           ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%socketTimeout"       description="%socketTimeout.desc"/>
+  <AD id="targetServerType"        ibmui:group="Advanced" required="false" type="String"                         name="%targetServerType"    description="%targetServerType.desc">
    <Option value="any"             label="any"/>
    <Option value="master"          label="master"/>
    <Option value="slave"           label="slave"/>
@@ -1365,12 +1367,6 @@
   <!-- kerberosServerName -->
   <!-- useSpnego -->
   <!-- gsslib -->
-
-  <!-- TODO: Props that may need to be blocked or have special consideration -->  
-  <!-- preparedStatementCacheQueries  preparedStatementCacheSizeMiB -->
-  <!-- connectTimeout -->
-  <!-- socketTimeout -->
-  <!-- cancelSignalTimeout -->
  </OCD>
 
 </metatype:MetaData>

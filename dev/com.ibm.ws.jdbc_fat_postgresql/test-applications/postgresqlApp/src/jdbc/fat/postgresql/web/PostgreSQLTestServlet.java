@@ -73,6 +73,13 @@ public class PostgreSQLTestServlet extends FATServlet {
         ds.getConnection().close();
     }
 
+    // Verify that we can configure a <properties.postgresql> element by specifying only the 'URL' property
+    @Test
+    public void testPostgresURLOnly() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/urlOnly");
+        ds.getConnection().close();
+    }
+
     // Verify that basic unwrap patterns work for the 3 DataSource types: reg, CP, and XA
     @Test
     public void testUnwrap() throws Exception {
@@ -217,6 +224,51 @@ public class PostgreSQLTestServlet extends FATServlet {
         }
     }
 
-    // TODO: Add a test for defaultAutoCommit setting in a global transaction
+    // Ensure defaultAutoCommit=false behaves properly across global transaction boundaries.
+    // Insert/read data with two different DataSources, expect writes to auto-commit
+    @Test
+    public void testDefaultAutoCommitOffGlobalTran() throws Exception {
+        DataSource regularDS = InitialContext.doLookup("jdbc/postgres/xa");
+        DataSource autoCommitDS = InitialContext.doLookup("jdbc/postgres/defaultAutoCommitOff");
+
+        // Get a new connection, intentionally leave it open over a transaction boundary
+        Connection boundaryPassingConnection = autoCommitDS.getConnection();
+
+        tx.begin();
+        try (Connection readingConn = regularDS.getConnection()) {
+            // Insert and select some data to confirm the DB behaves as auto-commit=false
+            Statement insert = boundaryPassingConnection.createStatement();
+            insert.execute("INSERT INTO people(id,name) VALUES(15,'testDefaultAutoCommitOffGlobalTran')");
+
+            Statement query = readingConn.createStatement();
+            ResultSet rs = query.executeQuery("SELECT * FROM people WHERE id=15");
+            assertFalse("Should not find uncommitted row in database during global transaction", rs.next());
+        }
+        tx.commit();
+
+        // After global tran is committed, row should be readable in DB
+        try (Connection readingConn = regularDS.getConnection()) {
+            Statement query = readingConn.createStatement();
+            ResultSet rs = query.executeQuery("SELECT * FROM people WHERE id=15");
+            assertTrue("Did not find expected row in database after global transaction was committed", rs.next());
+            assertEquals("testDefaultAutoCommitOffGlobalTran", rs.getString(2));
+        }
+
+        // Connection obtained before tx scope should have same autoCommit value
+        assertFalse("DataSource with autoCommit=false set in server.xml should have autoCommit=false", boundaryPassingConnection.getAutoCommit());
+        Statement boundaryPassingInsert = boundaryPassingConnection.createStatement();
+        boundaryPassingInsert.execute("INSERT INTO people(id,name) VALUES(16,'testDefaultAutoCommitOffGlobalTran')");
+        try (Connection readingConn = regularDS.getConnection()) {
+            Statement query = readingConn.createStatement();
+            ResultSet rs = query.executeQuery("SELECT * FROM people WHERE id=16");
+            assertFalse("Should not find uncommitted row in database during global transaction", rs.next());
+
+            boundaryPassingConnection.commit();
+            rs = query.executeQuery("SELECT * FROM people WHERE id=16");
+            assertTrue("Did not find expected row in database after issuing a local Connection.commit()", rs.next());
+            assertEquals("testDefaultAutoCommitOffGlobalTran", rs.getString(2));
+        }
+        boundaryPassingConnection.close();
+    }
 
 }
