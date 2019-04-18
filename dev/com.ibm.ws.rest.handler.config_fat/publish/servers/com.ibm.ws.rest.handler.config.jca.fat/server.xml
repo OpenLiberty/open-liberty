@@ -26,6 +26,18 @@
     <properties.tca debugMode="true"/>
   </resourceAdapter>
 
+  <adminObject id="conspec1" jndiName="eis/conspec1">
+    <properties.tca.ConnectionSpec connectionTimeout="10000" userName="1user" password="password1"/>
+  </adminObject>
+
+  <adminObject id="conspec2" jndiName="eis/conspec2">
+    <!-- It is an error to omit the properties.* element which identifies the resource adapter -->
+  </adminObject>
+
+  <adminObject jndiName="eis/conspec3">
+    <properties.tca.ConnectionSpec/>
+  </adminObject>
+
   <connectionFactory id="cf1" jndiName="eis/cf1" connectionManagerRef="cm1">
     <containerAuthData user="containerUser1" password="pwd1"/>
     <recoveryAuthData user="recoveryUser1" password="pwd1"/>

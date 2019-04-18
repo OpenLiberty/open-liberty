@@ -14,20 +14,16 @@ import javax.resource.cci.ConnectionSpec;
 import javax.resource.spi.AdministeredObject;
 import javax.resource.spi.ConfigProperty;
 
-/**
- * Example ConnectionSpec implementation with a single property, readOnly,
- * which determines whether or not the connection is in read only mode.
- */
 @AdministeredObject
 public class ConnectionSpecImpl implements ConnectionSpec {
     @ConfigProperty
     private Long connectionTimeout;
 
-    @ConfigProperty
+    @ConfigProperty(confidential = true)
     private String password;
 
-    @ConfigProperty
-    private Boolean readOnly = false;
+    @ConfigProperty(defaultValue = "false")
+    private Boolean readOnly;
 
     @ConfigProperty
     private String userName;

@@ -124,6 +124,48 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, 7766, props.getInt("portNumber"));
     }
 
+    // Test the output of the /ibm/api/config/adminObject REST endpoint.
+    @Test
+    public void testMultipleAdminObjects() throws Exception {
+        JsonArray adminObjects = new HttpsRequest(server, "/ibm/api/config/adminObject").run(JsonArray.class);
+        String err = "unexpected response: " + adminObjects;
+        assertEquals(err, 3, adminObjects.size()); // increase this if additional adminObject elements are added
+
+        JsonObject conspec;
+        assertNotNull(err, conspec = adminObjects.getJsonObject(0));
+        assertEquals(err, "adminObject", conspec.getString("configElementName"));
+        assertEquals(err, "conspec1", conspec.getString("uid"));
+        assertEquals(err, "conspec1", conspec.getString("id"));
+        assertEquals(err, "eis/conspec1", conspec.getString("jndiName"));
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, 10000, props.getInt("connectionTimeout"));
+        assertEquals(err, false, props.getBoolean("readOnly"));
+        assertEquals(err, "1user", props.getString("userName"));
+        assertEquals(err, "******", props.getString("password"));
+
+        assertNotNull(err, conspec = adminObjects.getJsonObject(1));
+        assertEquals(err, "adminObject", conspec.getString("configElementName"));
+        assertEquals(err, "conspec2", conspec.getString("uid"));
+        assertEquals(err, "conspec2", conspec.getString("id"));
+        assertEquals(err, "eis/conspec2", conspec.getString("jndiName"));
+        assertNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
+
+        assertNotNull(err, conspec = adminObjects.getJsonObject(2));
+        assertEquals(err, "adminObject", conspec.getString("configElementName"));
+        assertEquals(err, "adminObject[default-0]", conspec.getString("uid"));
+        assertNull(err, conspec.get("id"));
+        assertEquals(err, "eis/conspec3", conspec.getString("jndiName"));
+        assertNotNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, false, props.getBoolean("readOnly"));
+    }
+
     // Test the output of the /ibm/api/config/connectionFactory REST endpoint.
     @Test
     public void testMultipleConnectionFactories() throws Exception {
@@ -249,4 +291,22 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
     }
 
+    // Test the output of the /ibm/api/config/adminObject/{uid} REST endpoint.
+    @Test
+    public void testSingleAdminObject() throws Exception {
+        JsonObject conspec = new HttpsRequest(server, "/ibm/api/config/adminObject/adminObject[default-0]").run(JsonObject.class);
+        String err = "unexpected response: " + conspec;
+
+        assertEquals(err, "adminObject", conspec.getString("configElementName"));
+        assertEquals(err, "adminObject[default-0]", conspec.getString("uid"));
+        assertNull(err, conspec.get("id"));
+        assertEquals(err, "eis/conspec3", conspec.getString("jndiName"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, false, props.getBoolean("readOnly"));
+    }
 }
