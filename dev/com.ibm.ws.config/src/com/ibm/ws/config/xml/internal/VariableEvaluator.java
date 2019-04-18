@@ -39,14 +39,8 @@ public class VariableEvaluator {
         this.configEvaluator = configEvaluator;
     }
 
-    String lookupVariableFromRegistry(String variableName, boolean useEnvironment) {
-        if (variableRegistry == null)
-            return null;
-
-        String originalVariableName = variableName;
-        String value = variableRegistry.lookupVariable(variableName);
-
-        return value;
+    String lookupVariableFromRegistry(String variableName) {
+        return variableRegistry == null ? null : variableRegistry.lookupVariable(variableName);
     }
 
     String resolveVariables(String str, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
@@ -113,7 +107,7 @@ public class VariableEvaluator {
 
             context.push(variable);
 
-            realValue = lookupVariableFromRegistry(variable, useEnvironment);
+            realValue = lookupVariableFromRegistry(variable);
 
             if (realValue == null) {
                 // Try checking the properties. This will pick up already evaluated attributes, including flattened config
