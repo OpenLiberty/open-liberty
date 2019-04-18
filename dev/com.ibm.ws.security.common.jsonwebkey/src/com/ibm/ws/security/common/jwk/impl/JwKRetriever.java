@@ -210,12 +210,23 @@ public class JwKRetriever {
 
         try {
 
+            String cachekey = null;
             final String keyFile;
             if (location.startsWith("file:")) {
                 URI uri = new URI(location);
                 keyFile = uri.getPath();
+                cachekey = keyFile;
             } else {
                 keyFile = location;
+                cachekey = (new File(keyFile).getCanonicalPath());
+            }
+            
+            // try cache first
+            synchronized (jwkSet) {
+                publicKey = getJwkFromJWKSet(cachekey, kid, x5t, use);                
+            }
+            if (publicKey != null) {
+                return publicKey;
             }
 
             try {
