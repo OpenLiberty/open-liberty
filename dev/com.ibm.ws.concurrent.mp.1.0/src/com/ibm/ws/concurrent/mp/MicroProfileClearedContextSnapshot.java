@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,14 +18,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.RejectedExecutionException;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextController;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextController;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.mp.context.ThreadIdentityContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 
 /**
@@ -42,16 +43,17 @@ public class MicroProfileClearedContextSnapshot implements com.ibm.wsspi.threadc
      ThreadContext.APPLICATION,
      ThreadContext.CDI,
      ThreadContext.SECURITY,
+     ThreadIdentityContextProvider.SYNC_TO_OS_THREAD,
      ThreadContext.TRANSACTION,
-     WLMContextProvider.WORKLOAD //
+     WLMContextProvider.CLASSIFICATION //
     ));
 
     private final ArrayList<ThreadContextController> contextRestorers = new ArrayList<ThreadContextController>();
     private final ArrayList<ThreadContextSnapshot> contextSnapshots;
 
-    MicroProfileClearedContextSnapshot(ConcurrencyManagerImpl concurrencyMgr) {
+    MicroProfileClearedContextSnapshot(ContextManagerImpl contextMgr) {
         contextSnapshots = new ArrayList<ThreadContextSnapshot>();
-        for (ThreadContextProvider provider : concurrencyMgr.contextProviders)
+        for (ThreadContextProvider provider : contextMgr.contextProviders)
             if (!DO_NOT_CLEAR.contains(provider.getThreadContextType()))
                 contextSnapshots.add(provider.clearedContext(Collections.emptyMap()));
     }

@@ -80,6 +80,7 @@ public class PropertyService extends Properties {
                                                                            "memberConnectTimeout",
                                                                            "queryTimeout",
                                                                            "retryIntervalForClientReroute",
+                                                                           "secondsToTrustIdleConnection",
                                                                            "soLinger",
                                                                            "timeoutCheckInterval",
                                                                            "timeToLiveConnectionTimeout"
@@ -99,9 +100,14 @@ public class PropertyService extends Properties {
      * Vendor properties of type String that use the ibm:type="password" type.
      */
     private static final List<String> PASSWORD_PROPS = Arrays.asList(DataSourceDef.password.name(),
+                                                                     "accessToken",
+                                                                     "apiKey",
                                                                      "keyStoreSecret",
                                                                      "trustStorePassword",
-                                                                     "connectionProperties"
+                                                                     "sslTrustStorePassword",
+                                                                     "sslKeyStorePassword",
+                                                                     "connectionProperties",
+                                                                     "connectionFactoryProperties"
                                                                      );
 
     /**

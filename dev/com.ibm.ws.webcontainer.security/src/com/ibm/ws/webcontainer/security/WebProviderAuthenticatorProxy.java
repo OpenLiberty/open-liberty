@@ -31,7 +31,6 @@ import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
-import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
@@ -76,7 +75,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     @Override
     public AuthenticationResult authenticate(WebRequest webRequest) {
         AuthenticationResult authResult = handleTAI(webRequest, true);
-        if (authResult.getStatus() == AuthResult.CONTINUE) {
+        if ((authResult.getStatus() == AuthResult.CONTINUE) && continueAfterUnprotectedURI(webRequest)) {
             authResult = handleSSO(webRequest, null);
             if (authResult.getStatus() == AuthResult.CONTINUE) {
                 webRequest.setCallAfterSSO(true);
@@ -86,6 +85,33 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
         return authResult;
 
+    }
+
+    /*
+     * This method returns false when unprotectedURI is not further evaluated by special TAI (SAML,OAUTH,OIDC..). Default is true.
+     *
+     * @param webRequest
+     *
+     * @return boolean
+     *
+     */
+    public boolean continueAfterUnprotectedURI(WebRequest webRequest) {
+
+        if (taiServiceRef.getService() != null) {
+            TAIService taiService = taiServiceRef.getService();
+            if (!taiService.isContinueAfterUnprotectedURI() && taiService.isInvokeForUnprotectedURI() && webRequest.isUnprotectedURI()
+                && !webRequest.isProviderSpecialUnprotectedURI()) {
+                webRequest.setContinueAfterUnprotectedURI(false);
+            } else {
+                webRequest.setContinueAfterUnprotectedURI(true);
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "continueAfterUnprotectedURI from configuration=" + taiService.isContinueAfterUnprotectedURI() +
+                             " Caclulated value: isContinueAfterUnprotectedURI= " + webRequest.isContinueAfterUnprotectedURI());
+            }
+        }
+
+        return webRequest.isContinueAfterUnprotectedURI();
     }
 
     /**

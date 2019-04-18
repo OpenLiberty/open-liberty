@@ -23,7 +23,6 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.AppClassLoaderFactory;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
-import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedEARApplicationInfo;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -77,36 +76,14 @@ public class ApplicationInfoFactoryImpl implements ApplicationInfoFactory {
     }
 
     @Override
-    @Deprecated
     public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName,
                                                          Container container,
                                                          ApplicationClassesContainerInfo appClassesContainerInfo,
                                                          NestedConfigHelper configHelper) {
-        return createApplicationInfo(appName,
-                                     preferredName,
-                                     container,
-                                     appClassesContainerInfo,
-                                     configHelper,
-                                     new ApplicationInfoForContainer() {
-                                         @Override
-                                         public boolean getUseJandex() {
-                                             return false;
-                                         }
-                                     });
-    }
-
-    @Override
-    public ExtendedApplicationInfo createApplicationInfo(String appName,
-                                                         String preferredName,
-                                                         Container container,
-                                                         ApplicationClassesContainerInfo appClassesContainerInfo,
-                                                         NestedConfigHelper configHelper,
-                                                         ApplicationInfoForContainer applicationInformation) {
-
         J2EEName j2eeName = j2eeNameFactory.getService().create(appName, null, null);
         String name = reserveName(preferredName);
 
-        ExtendedApplicationInfo appInfo = new ApplicationInfoImpl(name, j2eeName, container, configHelper, applicationInformation);
+        ExtendedApplicationInfo appInfo = new ApplicationInfoImpl(name, j2eeName, container, configHelper);
         try {
             NonPersistentCache cache = container.adapt(NonPersistentCache.class);
             cache.addToCache(ApplicationInfo.class, appInfo);
@@ -121,14 +98,13 @@ public class ApplicationInfoFactoryImpl implements ApplicationInfoFactory {
     public ExtendedEARApplicationInfo createEARApplicationInfo(String appName, String preferredName, Container container,
                                                                ApplicationClassesContainerInfo appClassesContainerInfo,
                                                                NestedConfigHelper configHelper,
-                                                               ApplicationInfoForContainer applicationInformation,
                                                                Container libDirContainer,
                                                                AppClassLoaderFactory classLoaderFactory) {
         J2EEName j2eeName = j2eeNameFactory.getService().create(appName, null, null);
         ExtendedEARApplicationInfo appInfo = null;
         try {
             String name = reserveName(preferredName);
-            appInfo = new EARApplicationInfoImpl(name, j2eeName, container, configHelper, libDirContainer, classLoaderFactory, applicationInformation);
+            appInfo = new EARApplicationInfoImpl(name, j2eeName, container, configHelper, libDirContainer, classLoaderFactory);
 
             NonPersistentCache cache = container.adapt(NonPersistentCache.class);
             cache.addToCache(ApplicationInfo.class, appInfo);

@@ -20,8 +20,8 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Die Validierung f\u00fcr das von [{0}] angeforderte ID-Token ist fehlgeschlagen, weil der im Token angegebene Aussteller (iss) [{1}] nicht mit dem [issuerIdentifier]-Attribut  [{2}] f\u00fcr den in der OpenID Connect-Clientkonfiguration angegebenen Provider \u00fcbereinstimmt. \u00dcberpr\u00fcfen Sie das Attribut issuerIdentifier in der Clientkonfiguration.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Die Validierung des ID-Tokens ist fehlgeschlagen, weil der in der OpenID Connect-Clientkonfiguration (RP, Relying Party) angegebene Aussteller und der Aussteller im Token nicht \u00fcbereinstimmen.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Stellen Sie sicher, dass das in der OpenID Connect-Clientkonfiguration (RP) angegebene [issuerIdentifier]-Attribut mit dem Aussteller f\u00fcr den verwendeten OpenID Connect-Provider (OP) \u00fcbereinstimmt.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Die Validierung des ID-Tokens ist fehlgeschlagen, weil der in der OpenID Connect-Clientkonfiguration (RP, Relying Party) bzw. in der Social Login-Clientkonfiguration angegebene Aussteller und der Aussteller im Token nicht \u00fcbereinstimmen.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Stellen Sie sicher, dass das in der OpenID Connect-Clientkonfiguration (RP) bzw. in der Social Login-Clientkonfiguration angegebene [issuerIdentifier]-Attribut mit dem Aussteller f\u00fcr den verwendeten OpenID Connect-Provider (OP) \u00fcbereinstimmt.
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Beim Versuch, ein ID-Token mit dem Algorithmus [{0}] zu signieren, ist ein Fehler aufgetreten: [{1}].
@@ -182,3 +182,8 @@ TOKEN_ISSUER_NOT_TRUSTED.useraction=Vergewissern Sie sich, dass der Anspruchswer
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht ausf\u00fchren, weil das Token den Anspruch [{0}] enth\u00e4lt, aber der Wert des Clientkonfigurationsattributs [{1}] angibt, dass das Token den Anspruch nicht enthalten darf.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Das Token darf wegen des Werts des angegebenen Konfigurationsattributs den angegebenen Anspruch nicht enthalten.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Fordern Sie ein neues Token an, das den angegebenen Anspruch nicht enth\u00e4lt, oder \u00e4ndern Sie den angegebenen Konfigurationsattributwert so, dass der Anspruch in das Token eingeschlossen werden kann.
+
+# 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Der OpenID Connect-Client [{0}] enth\u00e4lt {1} in den Werten, die \u00fcber das Konfigurationsattribut [{2}] angegeben sind. Die angegebenen Werte werden ignoriert.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Die OAuth 2.0-Spezifikation definiert eine Reihe von reservierten Parametern, die vom Client f\u00fcr Berechtigungsanforderungen bereitgestellt werden m\u00fcssen. Werte f\u00fcr diese Parameter k\u00f6nnen nicht vom Benutzer bereitgestellt werden.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Entfernen Sie die angegebenen Werte aus der Liste mit den Werte, die in der OpenID Connect-Clientkonfiguration.

@@ -626,11 +626,9 @@ error.variable.name.missing.explanation=Konfiguracja \
 serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu nazwy.
 error.variable.name.missing.useraction=Dodaj atrybut nazwy do zmiennej.
 
-error.variable.value.missing=CWWKG0092E: Dla zmiennej w \
-wierszu {0} zasobu {1} musi by\u0107 okre\u015blony atrybut warto\u015bci.
-error.variable.value.missing.explanation=Konfiguracja \
-serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu warto\u015bci.
-error.variable.value.missing.useraction=Dodaj atrybut warto\u015bci do zmiennej.
+error.variable.value.missing=CWWKG0092E: Dla zmiennej w wierszu {0} zasobu {1} musi by\u0107 okre\u015blony atrybut value lub defaultValue.
+error.variable.value.missing.explanation=Konfiguracja serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu value ani defaultValue.
+error.variable.value.missing.useraction=Dodaj atrybut value lub defaultValue do zmiennej.
 
 audit.dropin.being.processed=CWWKG0093A: Przetwarzanie zasobu element\u00f3w upuszczanych konfiguracji: {0}
 audit.dropin.being.processed.explanation=Tre\u015b\u0107 okre\u015blonego zasobu zostanie do\u0142\u0105czona do konfiguracji serwera.

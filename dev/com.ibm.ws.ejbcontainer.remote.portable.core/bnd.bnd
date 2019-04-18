@@ -30,5 +30,7 @@ instrument.disabled: true
 publish.wlp.jar.disabled: true
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

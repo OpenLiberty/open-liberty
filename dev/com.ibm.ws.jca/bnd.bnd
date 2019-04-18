@@ -158,6 +158,7 @@ Service-Component: \
 instrument.classesExcludes: com/ibm/ws/jca/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.validation.1.0;version=latest,\

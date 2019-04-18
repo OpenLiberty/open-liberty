@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: Ugyanazt a(z) {0} sz\u00e1lkontextust\u00edpust t\u00f6bb, az alkalmaz\u00e1s sz\u00e1m\u00e1ra rendelkez\u00e9sre \u00e1ll\u00f3 sz\u00e1lkontextus szolg\u00e1ltat\u00f3 is biztos\u00edtja. Sz\u00e1lkontextus szolg\u00e1ltat\u00f3k: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=A MicroProfile egyidej\u0171s\u00e9g meghat\u00e1roz\u00e1s legfeljebb csak egy ThreadContextProvider szolg\u00e1ltat\u00f3t tesz lehet\u0151v\u00e9 az egyes kontextust\u00edpusokra vonatkoz\u00f3an.
+CWWKC1150.duplicate.context.explanation=A MicroProfile kontextus terjeszt\u00e9si specifik\u00e1ci\u00f3 legfeljebb csak egy ThreadContextProvider szolg\u00e1ltat\u00f3t tesz lehet\u0151v\u00e9 az egyes kontextust\u00edpusokra vonatkoz\u00f3an.
 CWWKC1150.duplicate.context.useraction=Friss\u00edtse az el\u00e9rhet\u0151 alkalmaz\u00e1sokat, k\u00f6nyvt\u00e1rakat vagy mindkett\u0151t, hogy legfeljebb egy megadott t\u00edpus\u00fa ThreadContextProvider \u00e1lljon rendelkez\u00e9sre.
 
 # do not translate: cleared, propagated

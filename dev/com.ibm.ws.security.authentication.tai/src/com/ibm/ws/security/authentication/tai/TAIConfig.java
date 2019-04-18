@@ -26,4 +26,6 @@ public interface TAIConfig {
     public boolean isInvokeForUnprotectedURI();
 
     public boolean isInvokeForFormLogin();
+
+    public boolean isContinueAfterUnprotectedURI();
 }

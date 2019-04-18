@@ -13,7 +13,7 @@ repositories {
     } else {
         mavenCentral()
         maven {
-            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/")
+            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
         }
     }
 }

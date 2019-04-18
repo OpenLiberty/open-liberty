@@ -51,6 +51,8 @@ import com.ibm.ws.classloading.internal.providers.Providers;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
@@ -102,6 +104,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final ClassGenerator generator;
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     protected final ClassLoader parent;
+    private final ClassLoaderHook hook;
 
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig) {
         super(containers, parent, redefiner, globalConfig);
@@ -113,6 +116,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.privateLibraries = Providers.getPrivateLibraries(config);
         this.delegateLoaders = Providers.getDelegateLoaders(config, apiAccess);
         this.generator = generator;
+        hook = ClassLoaderHookFactory.getClassLoaderHook(this);
     }
 
     /** Provides the delegate loaders so the {@link ShadowClassLoader} can mimic the structure. */
@@ -345,8 +349,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             cltc = getClassLoadingTraceComponent(DEFAULT_PACKAGE);
         }
 
-        URL resourcePath = byteResourceInformation.getResourceUrl();
-        ProtectionDomain pd = getClassSpecificProtectionDomain(name, resourcePath);
+        URL resourceURL = byteResourceInformation.getResourceUrl();
+        ProtectionDomain pd = getClassSpecificProtectionDomain(name, resourceURL);
 
         Class<?> clazz = null;
         try {
@@ -363,8 +367,14 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 Tr.debug(cltc, String.format("%s: [%s] [%s] [%s]", message, getKey(), loc, name));
             }
         }
-        if (hook != null && resourcePath != null && Arrays.equals(bytes, byteResourceInformation.getBytes())) {
-            hook.storeClass(resourcePath, clazz);
+        if (!byteResourceInformation.foundInClassCache() && hook != null) {
+            URL sharedClassCacheURL = getSharedClassCacheURL(resourceURL, byteResourceInformation.getResourcePath());
+            if (sharedClassCacheURL != null && Arrays.equals(bytes, byteResourceInformation.getBytes())) {
+                hook.storeClass(sharedClassCacheURL, clazz);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Called shared class cache to store class", new Object[] {clazz.getName(), sharedClassCacheURL});
+                }
+            }
         }
         return clazz;
     }
@@ -447,7 +457,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     final ByteResourceInformation findClassBytes(String className) throws ClassNotFoundException {
         String resourceName = Util.convertClassNameToResourceName(className);
         try {
-            ByteResourceInformation result = findBytes(resourceName);
+            ByteResourceInformation result = findClassBytes(className, resourceName, hook);
             if (result == null) {
                 String message = String.format("Could not find class '%s' as resource '%s'", className, resourceName);
                 throw new ClassNotFoundException(message);

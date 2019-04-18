@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -33,31 +33,36 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 public class ThreadContextBuilderImpl implements ThreadContext.Builder {
     private static final TraceComponent tc = Tr.register(ThreadContextBuilderImpl.class);
 
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    // TODO decide whether or not to have vendor-specific defaults
+    static final Set<String> DEFAULT_CLEARED = Collections.singleton(ThreadContext.TRANSACTION);
+    static final Set<String> DEFAULT_PROPAGATED = Collections.singleton(ThreadContext.ALL_REMAINING);
+    static final Set<String> DEFAULT_UNCHANGED = Collections.emptySet();
+
+    private final ContextManagerImpl contextManager;
     private final ArrayList<ThreadContextProvider> contextProviders;
 
-    private final HashSet<String> cleared = new HashSet<String>();
+    private Set<String> cleared;
     private String name;
-    private final HashSet<String> propagated = new HashSet<String>();
-    private final HashSet<String> unchanged = new HashSet<String>();
+    private Set<String> propagated;
+    private Set<String> unchanged;
 
-    ThreadContextBuilderImpl(ConcurrencyProviderImpl concurrencyProvider, ArrayList<ThreadContextProvider> contextProviders) {
-        this.concurrencyProvider = concurrencyProvider;
+    ThreadContextBuilderImpl(ContextManagerImpl contextManager, ArrayList<ThreadContextProvider> contextProviders) {
+        this.contextManager = contextManager;
         this.contextProviders = contextProviders;
-
-        // built-in defaults from spec:
-        cleared.add(ThreadContext.TRANSACTION);
-        propagated.add(ThreadContext.ALL_REMAINING);
     }
 
     @Override
     public ThreadContext build() {
+        Set<String> cleared = this.cleared == null ? contextManager.getDefault("ThreadContext/cleared", DEFAULT_CLEARED) : this.cleared;
+        Set<String> propagated = this.propagated == null ? contextManager.getDefault("ThreadContext/propagated", DEFAULT_PROPAGATED) : this.propagated;
+        Set<String> unchanged = this.unchanged == null ? contextManager.getDefault("ThreadContext/unchanged", DEFAULT_UNCHANGED) : this.unchanged;
+
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);
         unknown.addAll(propagated);
 
         if (unknown.size() < cleared.size() + propagated.size() || !Collections.disjoint(unknown, unchanged))
-            failOnOverlapOfClearedPropagatedUnchanged();
+            failOnOverlapOfClearedPropagatedUnchanged(cleared, propagated, unchanged);
 
         // Determine what to with remaining context types that are not explicitly configured
         ContextOp remaining;
@@ -93,7 +98,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
         // or for instance created via the builder,
         //  ThreadContext@INSTANCEID_AppName(propagated=[Security],cleared=[Application, CDI, Transaction],unchanged=[Remaining])
 
-        int hash = ConcurrencyManagerImpl.instanceCount.incrementAndGet();
+        int hash = ContextManagerImpl.instanceCount.incrementAndGet();
         StringBuilder nameBuilder = new StringBuilder("ThreadContext@").append(Integer.toHexString(hash));
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String appName = cData == null ? null : cData.getJ2EEName().getApplication();
@@ -109,12 +114,15 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
 
         String threadContextName = nameBuilder.toString();
 
-        return new ThreadContextImpl(threadContextName, hash, concurrencyProvider, configPerProvider);
+        return new ThreadContextImpl(threadContextName, hash, contextManager.cmProvider, configPerProvider);
     }
 
     @Override
     public ThreadContext.Builder cleared(String... types) {
-        cleared.clear();
+        if (cleared == null)
+            cleared = new HashSet<String>();
+        else
+            cleared.clear();
         Collections.addAll(cleared, types);
         return this;
     }
@@ -125,7 +133,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
      *
      * @throws IllegalStateException identifying the overlap.
      */
-    private void failOnOverlapOfClearedPropagatedUnchanged() {
+    private void failOnOverlapOfClearedPropagatedUnchanged(Set<String> cleared, Set<String> propagated, Set<String> unchanged) {
         HashSet<String> overlap = new HashSet<String>(cleared);
         overlap.retainAll(propagated);
         HashSet<String> s = new HashSet<String>(cleared);
@@ -169,14 +177,20 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
 
     @Override
     public ThreadContext.Builder propagated(String... types) {
-        propagated.clear();
+        if (propagated == null)
+            propagated = new HashSet<String>();
+        else
+            propagated.clear();
         Collections.addAll(propagated, types);
         return this;
     }
 
     @Override
     public ThreadContext.Builder unchanged(String... types) {
-        unchanged.clear();
+        if (unchanged == null)
+            unchanged = new HashSet<String>();
+        else
+            unchanged.clear();
         Collections.addAll(unchanged, types);
         return this;
     }

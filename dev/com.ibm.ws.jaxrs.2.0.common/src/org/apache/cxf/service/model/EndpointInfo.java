@@ -36,7 +36,7 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
 
     // Liberty #3669:  Store address in a theadLocal to avoid issue where redirected URL is mismatched when accessed
     // from both IP address and machine name.
-    private static ThreadLocal<EndpointReferenceType> threadLocal = new ThreadLocal<EndpointReferenceType>();
+    private final ThreadLocal<EndpointReferenceType> threadLocal = new ThreadLocal<EndpointReferenceType>();
 
     public EndpointInfo() {
     }

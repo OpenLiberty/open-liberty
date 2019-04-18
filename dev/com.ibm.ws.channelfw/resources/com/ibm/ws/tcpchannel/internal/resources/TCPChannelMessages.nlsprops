@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: TCP Channel {0} has stopped listening for reques
 TCP_CHANNEL_STOPPED.explanation=This message is for informational purposes only.
 TCP_CHANNEL_STOPPED.useraction=No action is required.
 
-BIND_ERROR=CWWKO0221E: TCP Channel {0} initialization did not succeed.  The socket bind did not succeed for host {1} and port {2}.  The port might already be in use.
-BIND_ERROR.explanation=The socket bind operation did not succeed. A common cause is that the port number is already in use.
+BIND_ERROR=CWWKO0221E: TCP Channel {0} initialization did not succeed.  The socket bind did not succeed for host {1} and port {2}.  The port might already be in use.  Exception Message: {3}
+BIND_ERROR.explanation=The socket bind operation did not succeed. A common cause is that the port number is already in use.  Check the Exception Message text in the error message for more information.
 BIND_ERROR.useraction=Check that the TCP Channel has been configured to use the correct port number.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: TCP Channel {0} has exceeded the maximum number of open connections {1}.

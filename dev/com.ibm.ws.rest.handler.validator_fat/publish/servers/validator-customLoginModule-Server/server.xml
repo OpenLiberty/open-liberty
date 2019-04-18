@@ -1,0 +1,49 @@
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>jdbc-4.2</feature>
+    <feature>appSecurity-2.0</feature>
+    <feature>jca-1.7</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+  
+  <library id="Derby">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+
+  <jaasLoginModule id="customLoginModule" className="com.ibm.ws.rest.handler.validator.loginmodule.TestLoginModule" controlFlag="REQUIRED">
+    <library>
+      <fileset dir="${server.config.dir}" includes="customLoginModule.jar"/>
+    </library>
+  </jaasLoginModule>
+  
+  <jaasLoginContextEntry id="customLoginEntry" name="customLoginEntry" loginModuleRef="customLoginModule" />
+  
+  <dataSource id="customLoginDS" jndiName="jdbc/customLoginDS" jaasLoginContextEntry="customLoginEntry">
+    <jdbcDriver libraryRef="Derby"/>
+    <!-- user/password settings propagated by custom login module -->
+    <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
+  </dataSource>
+  
+  <!-- This datasource intentionally has no auth data associated in server.xml, to simulate a <custom-login-configuration>
+       being applied in an app's ibm-web-bnd.xml like so:
+       <resource-ref name="jdbc/customLoginDSWebBnd" binding-name="jdbc/customLoginDSWebBnd">
+         <custom-login-configuration name="customLoginEntry">
+       </resource-ref>
+  -->
+  <dataSource id="customLoginDSWebBnd" jndiName="jdbc/customLoginDSWebBnd">
+    <jdbcDriver libraryRef="Derby"/>
+    <!-- user/password settings propagated by custom login module -->
+    <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
+  </dataSource>
+  
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/customLoginModule.jar" className="java.security.AllPermission"/>
+</server>

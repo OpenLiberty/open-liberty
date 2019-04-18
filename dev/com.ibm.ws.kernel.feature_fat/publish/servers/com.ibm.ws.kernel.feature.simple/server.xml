@@ -1,0 +1,11 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiConsole-1.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>jdbc-4.1</feature>
+    </featureManager>
+    
+</server>

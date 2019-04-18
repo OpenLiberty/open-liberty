@@ -235,7 +235,7 @@ public class ZipCachingProperties {
             String methodName,
             String propertyName, Object propertyValue, boolean defaulted) {
 
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             String propertyText =
                 "Property [ " + propertyName + " ]" +
                 " [ " + propertyValue + " ]" +

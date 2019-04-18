@@ -17,14 +17,15 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
+import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ConnectorModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -39,15 +40,15 @@ class RARDeployedAppInfo extends DeployedAppInfoBase {
 
 
     RARDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation,
-                       RARDeployedAppInfoFactoryImpl factory) throws UnableToAdaptException {
-        super(applicationInformation, factory);
+                       DeployedAppServices deployedAppServices, ModuleHandler rarModuleHandler) throws UnableToAdaptException {
+        super(applicationInformation, deployedAppServices);
 
         String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(applicationInformation.getLocation());
-        rarContainerModuleInfo = new ConnectorModuleContainerInfo(factory.rarModuleHandler,
-                        factory.getModuleMetaDataExtenders().get("connector"),
-                        factory.getNestedModuleMetaDataFactories().get("connector"),
+        rarContainerModuleInfo = new ConnectorModuleContainerInfo(rarModuleHandler,
+                        deployedAppServices.getModuleMetaDataExtenders("connector"),
+                        deployedAppServices.getNestedModuleMetaDataFactories("connector"),
                         applicationInformation.getContainer(), null,
-                        moduleURI, moduleClassesInfo);
+                        moduleURI, this, moduleClassesInfo);
         moduleContainerInfos.add(rarContainerModuleInfo);
     }
 
@@ -100,8 +101,7 @@ class RARDeployedAppInfo extends DeployedAppInfoBase {
                                                                        rarContainerModuleInfo.moduleName,
                                                                        getContainer(),
                                                                        this,
-                                                                       getConfigHelper(),
-                                                                       (ApplicationInfoForContainer)applicationInformation);
+                                                                       getConfigHelper());
         rarContainerModuleInfo.moduleName = appInfo.getName();
         return appInfo;
     }

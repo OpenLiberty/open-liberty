@@ -639,11 +639,22 @@ public class KeyStoreManager {
                 continue;
             }
 
-            for (Entry<String, WSKeyStore> entry : keyStoreMap.entrySet()) {
-                WSKeyStore ws = entry.getValue();
-                if (ws.getLocation().equals(comparePath)) {
-                    ws.clearJavaKeyStore();
-                }
+            findKeyStoreInMapAndClear(comparePath);
+        }
+    }
+
+    /***
+     * This method is used to clear the Java KeyStores held within the WSKeyStores
+     * in the KeyStoreMap based on the files
+     ***/
+    public void findKeyStoreInMapAndClear(String keyStorePath) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "findKeyStoreInMapAndClear ", new Object[] { keyStorePath });
+
+        for (Entry<String, WSKeyStore> entry : keyStoreMap.entrySet()) {
+            WSKeyStore ws = entry.getValue();
+            if (WSKeyStore.getCannonicalPath(ws.getLocation(), ws.getFileBased()).equals(keyStorePath)) {
+                ws.clearJavaKeyStore();
             }
         }
     }

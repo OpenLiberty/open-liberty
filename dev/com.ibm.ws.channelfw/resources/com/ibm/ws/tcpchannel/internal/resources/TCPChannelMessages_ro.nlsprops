@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: Canalul TCP {0} a oprit ascultarea cererilor pe 
 TCP_CHANNEL_STOPPED.explanation=Acest mesaj este pur informativ.
 TCP_CHANNEL_STOPPED.useraction=Nici o ac\u0163iune nu este necesar\u0103.
 
-BIND_ERROR=CWWKO0221E: Ini\u0163ializarea canalului TCP {0} nu a avut succes.  Legarea socket-ului nu a avut succes pentru gazda {1} \u015fi portul {2}.  Portul ar putea fi deja \u00een uz.
-BIND_ERROR.explanation=Opera\u0163ia de legare socket nu a avut succes. O cauz\u0103 comun\u0103 este aceea c\u0103 num\u0103rul portului este deja \u00een uz.
+BIND_ERROR=CWWKO0221E: Ini\u0163ializarea canalului TCP {0} nu a avut succes.  Legarea socket-ului nu a avut succes pentru gazda {1} \u015fi portul {2}.  Portul ar putea fi deja \u00een uz.  Mesaj excep\u0163ie: {3}
+BIND_ERROR.explanation=Opera\u0163ia de legare socket nu a avut succes. O cauz\u0103 comun\u0103 este aceea c\u0103 num\u0103rul portului este deja \u00een uz.  Pentru mai multe informa\u0163ii, verifica\u0163i mesajul de eroare din mesajul excep\u0163iei.
 BIND_ERROR.useraction=Verifica\u0163i c\u0103 Canalul TCP a fost configurat s\u0103 utilizeze num\u0103rul de port corect.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: Canalul TCP {0} a dep\u0103\u015fit num\u0103rul maxim de conexiuni deschise {1}.

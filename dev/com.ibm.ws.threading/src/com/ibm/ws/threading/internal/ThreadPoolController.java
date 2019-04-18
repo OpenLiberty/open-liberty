@@ -397,6 +397,12 @@ public final class ThreadPoolController {
     private double cpuUtil = -1.0;
 
     /**
+     * The controller uses the threadpool queue depth as an input to some of the
+     * decisions it makes.
+     */
+    private int queueDepth = 0;
+
+    /**
      * Maximum intervals that we'll allow without changing the thread pool
      * size. By forcing the pool size to change every few intervals we can
      * prevent the pool from getting stuck in one spot when historic data
@@ -875,24 +881,16 @@ public final class ThreadPoolController {
      * @param poolSize the current thread pool size
      * @param forecast the throughput forecast at the current thread pool size
      * @param throughput the throughput of the current interval
-     * @param queueDepth - the current depth of the work queue for the thread pool
      * @param cpuHigh - whether current cpu usage exceeds the 'high' threshold
      * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
      *
      * @return the shrink score
      */
-    double getShrinkScore(int poolSize, double forecast, double throughput, int queueDepth, boolean cpuHigh, boolean lowTput) {
+    double getShrinkScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput) {
         double shrinkScore = 0.0;
         double shrinkMagic = 0.0;
         boolean flippedCoin = false;
         int downwardCompareSpan = 0;
-
-        // Count the number of consecutive times we've seen an empty queue
-        if (queueDepth > 0) {
-            consecutiveQueueEmptyCount = 0;
-        } else if (lastAction != LastAction.SHRINK) { // 9/5/2012
-            consecutiveQueueEmptyCount++;
-        }
 
         if (poolSize >= coreThreads + poolDecrement) {
             // compareSpan is poolSize range used for throughput comparison
@@ -1031,13 +1029,12 @@ public final class ThreadPoolController {
      * @param poolSize the current thread pool size
      * @param forecast the throughput forecast at the current thread pool size
      * @param throughput the throughput of the current interval
-     * @param queueDepth - the current depth of the work queue for the thread pool
      * @param cpuHigh - whether current cpu usage exceeds the 'high' threshold
      * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
      *
      * @return the grow score
      */
-    double getGrowScore(int poolSize, double forecast, double throughput, int queueDepth, boolean cpuHigh, boolean lowTput) {
+    double getGrowScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput) {
         double growScore = 0.0;
         boolean flippedCoin = false;
         int upwardCompareSpan = 0;
@@ -1255,7 +1252,6 @@ public final class ThreadPoolController {
             return "poolSize < coreThreads";
         }
 
-        controllerCycle++;
         long currentTime = System.currentTimeMillis();
         long completedWork = threadPool.getCompletedTaskCount();
 
@@ -1264,8 +1260,26 @@ public final class ThreadPoolController {
         long deltaCompleted = completedWork - previousCompleted;
         double throughput = 1000.0 * deltaCompleted / deltaTime;
         try {
-            int queueDepth = threadPool.getQueue().size();
-            boolean queueEmpty = (queueDepth == 0);
+            queueDepth = threadPool.getQueue().size();
+            boolean queueEmpty = (queueDepth <= 0);
+
+            // Count the number of consecutive times we've seen an empty queue
+            if (!queueEmpty) {
+                consecutiveQueueEmptyCount = 0;
+            } else if (lastAction != LastAction.SHRINK) { // 9/5/2012
+                consecutiveQueueEmptyCount++;
+            }
+
+            // update cpu utilization info
+            boolean cpuHigh = false;
+
+            processCpuUtil = CpuInfo.getJavaCpuUsage();
+            systemCpuUtil = CpuInfo.getSystemCpuUsage();
+            cpuUtil = Math.max(systemCpuUtil, processCpuUtil);
+
+            if (cpuUtil > highCpu) {
+                cpuHigh = true;
+            }
 
             // Handle pausing the task if the pool has been idle
             if (manageIdlePool(threadPool, deltaCompleted)) {
@@ -1292,6 +1306,7 @@ public final class ThreadPoolController {
                 return "poolSize != targetPoolSize";
             }
 
+            controllerCycle++;
             ThroughputDistribution currentStats = getThroughputDistribution(poolSize, true);
 
             // handleOutliers will mark this 'true' if it resets the distribution
@@ -1309,16 +1324,6 @@ public final class ThreadPoolController {
                 currentStats.addDataPoint(throughput, controllerCycle);
             }
 
-            boolean cpuHigh = false;
-
-            processCpuUtil = CpuInfo.getJavaCpuUsage();
-            systemCpuUtil = CpuInfo.getSystemCpuUsage();
-            cpuUtil = Math.max(systemCpuUtil, processCpuUtil);
-
-            if (cpuUtil > highCpu) {
-                cpuHigh = true;
-            }
-
             boolean lowTput = false;
             if (queueDepth == 0 && throughput < poolSize * lowTputThreadsRatio) {
                 lowTput = true;
@@ -1332,8 +1337,8 @@ public final class ThreadPoolController {
             setPoolIncrementDecrement(poolSize);
 
             double forecast = currentStats.getMovingAverage();
-            double shrinkScore = getShrinkScore(poolSize, forecast, throughput, queueDepth, cpuHigh, lowTput);
-            double growScore = getGrowScore(poolSize, forecast, throughput, queueDepth, cpuHigh, lowTput);
+            double shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowTput);
+            double growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowTput);
 
             // Adjust the poolsize only if one of the scores is both larger than the scoreFilterLevel
             // and sufficiently larger than the other score. These conditions reduce poolsize fluctuation
@@ -1350,7 +1355,7 @@ public final class ThreadPoolController {
 
             // Format an event level trace point with the most useful data
             if (tc.isEventEnabled()) {
-                Tr.event(tc, "Interval data", toIntervalData(throughput, forecast, shrinkScore, growScore, queueDepth, poolSize, poolAdjustment));
+                Tr.event(tc, "Interval data", toIntervalData(throughput, forecast, shrinkScore, growScore, poolSize, poolAdjustment));
             }
 
             // Change the pool size and save the result, will check it at start of next control cycle
@@ -1368,7 +1373,7 @@ public final class ThreadPoolController {
      * Utility method used to format interval level statistic trace points.
      */
     @Trivial
-    private String toIntervalData(double throughput, double forecast, double shrinkScore, double growScore, int queueDepth, int poolSize, int poolAdjustment) {
+    private String toIntervalData(double throughput, double forecast, double shrinkScore, double growScore, int poolSize, int poolAdjustment) {
         final int RANGE = 25;
 
         StringBuilder sb = new StringBuilder();
@@ -1501,9 +1506,7 @@ public final class ThreadPoolController {
 
             setPoolIncrementDecrement(poolSize);
             if (poolSize + poolIncrement <= maxThreads && poolSize < MAX_THREADS_TO_BREAK_HANG) {
-                poolSize += poolIncrement;
-                setPoolSize(poolSize);
-                targetPoolSize = poolSize;
+                targetPoolSize = adjustPoolSize(poolSize, poolIncrement);
                 // update the poolSize set to resolve the hang, plus a buffer amount
                 int targetSize = poolSize + (compareRange * poolIncrement);
                 if (hangBufferPoolSize < targetSize) {
@@ -1884,6 +1887,7 @@ public final class ThreadPoolController {
         out.println(INDENT + "consecutiveQueueEmptyCount = " + consecutiveQueueEmptyCount);
         out.println(INDENT + "threadPool");
         out.println(INDENT + INDENT + "poolSize = " + threadPool.getPoolSize());
+        out.println(INDENT + INDENT + "queueDepth = " + queueDepth);
         out.println(INDENT + INDENT + "activeCount = " + threadPool.getActiveCount());
         out.println(INDENT + INDENT + "corePoolSize = " + threadPool.getCorePoolSize());
         out.println(INDENT + INDENT + "maxPoolSize = " + threadPool.getMaximumPoolSize());

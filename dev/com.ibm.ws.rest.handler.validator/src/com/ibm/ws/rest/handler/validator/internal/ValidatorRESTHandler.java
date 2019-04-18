@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.internal;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -24,11 +27,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -44,6 +47,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.rest.config.ConfigBasedRESTHandler;
 import com.ibm.wsspi.rest.handler.RESTHandler;
@@ -57,14 +61,14 @@ import com.ibm.wsspi.validator.Validator;
 @Component(name = "com.ibm.ws.rest.handler.validator",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
-           property = { "com.ibm.wsspi.rest.handler.context.root=/ibm/api", "com.ibm.wsspi.rest.handler.root=/validator" }) // TODO switch to /openapi/platform
+           property = { "com.ibm.wsspi.rest.handler.context.root=/ibm/api", "com.ibm.wsspi.rest.handler.root=/validation" })
 public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
 
-    @Reference
-    private ConfigurationAdmin configAdmin;
-
     private ComponentContext context;
+
+    @Reference
+    VariableRegistry variableRegistry;
 
     @Activate
     protected void activate(ComponentContext context) {
@@ -74,6 +78,11 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     @Deactivate
     protected void deactivate(ComponentContext context) {
         this.context = null;
+    }
+
+    @Override
+    public final String getAPIRoot() {
+        return "/validation";
     }
 
     @Override
@@ -173,7 +182,19 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             targetRefs = null; // same error handling as not found
         }
 
-        Object target = validatorRefs.isEmpty() || targetRefs == null ? null : getService(context, targetRefs[0]);
+        // There can be multiple services with the same service.pid!
+        // For resource types that are accessible via ResourceFactory, the JNDI/OSGi implementation registers a
+        // resource instance reusing the same server.pid that the ResourceFactory has in order to add osgi.jndi.service.name.
+        // In this case, we want the resource factory, not the resource instance that is registered with the same service.pid.
+        // The resource factory will have a creates.objectClass property to indicate which resource type(s) it creates.
+        ServiceReference<?> targetRef = null;
+        if (targetRefs != null)
+            for (ServiceReference<?> ref : targetRefs) {
+                if (targetRef == null || ref.getProperty("creates.objectClass") != null)
+                    targetRef = ref;
+            }
+
+        Object target = validatorRefs.isEmpty() || targetRef == null ? null : getService(context, targetRef);
         if (target == null) {
             json.put("successful", false);
             json.put("failure",
@@ -182,14 +203,18 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         } else {
             // Build a map of params for the testable service
             Map<String, Object> params = new HashMap<String, Object>();
-            String user = request.getHeader("X-Validator-User");
-            if (user != null)
-                params.put("user", user);
-            String pass = request.getHeader("X-Validator-Password");
-            if (pass != null)
-                params.put("password", pass);
             for (String key : request.getParameterMap().keySet()) {
-                params.put(key, request.getParameter(key)); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
+                params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
+            }
+            String user = request.getHeader("X-Validation-User");
+            if (user != null)
+                params.put("user", resolvePotentialVariable(user));
+            String pass = request.getHeader("X-Validation-Password");
+            if (pass != null)
+                params.put("password", resolvePotentialVariable(pass));
+            String contentType = request.getContentType();
+            if ("application/json".equalsIgnoreCase(contentType)) {
+                params.put(Validator.JSON_BODY_KEY, read(request.getInputStream()));
             }
 
             Validator validator = getService(context, validatorRefs.iterator().next());
@@ -265,7 +290,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
      * Populate JSON object for a top level exception or error.
      *
      * @param errorInfo additional information to append to exceptions and causes
-     * @param error the top level exception or error.
+     * @param error     the top level exception or error.
      * @return JSON object representing the Throwable.
      */
     @SuppressWarnings("unchecked")
@@ -312,5 +337,24 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         }
 
         return json;
+    }
+
+    @Trivial
+    private static String read(InputStream input) throws IOException {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+            return buffer.lines().collect(Collectors.joining("\n"));
+        }
+    }
+
+    @Trivial
+    private String resolvePotentialVariable(String value) {
+        if (value == null)
+            return value;
+
+        String resolvedVariable = variableRegistry.resolveRawString(value);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Was a variable value found for " + value + "?  " + !value.equals(resolvedVariable));
+        }
+        return resolvedVariable;
     }
 }

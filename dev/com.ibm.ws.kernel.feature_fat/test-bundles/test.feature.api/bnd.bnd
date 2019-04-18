@@ -1,0 +1,10 @@
+-include= ~../../../ant_build/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: test.feature.api
+Bundle-SymbolicName: test.feature.api
+Bundle-Description: test feature bundle that exports some API
+
+Export-Package: test.feature.api

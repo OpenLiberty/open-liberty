@@ -14,10 +14,12 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 
+import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.microprofile.config13.impl.Config13BuilderImpl;
+import com.ibm.ws.microprofile.config14.converters.Config14DefaultConverters;
 
 public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBuilder {
 
@@ -35,5 +37,10 @@ public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBu
     protected WebSphereConfig buildConfig(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval) {
         WebSphereConfig config = new Config14Impl(conversionManager, sources, executor, refreshInterval);
         return config;
+    }
+
+    @Override
+    protected PriorityConverterMap getDefaultConverters() {
+        return Config14DefaultConverters.getDefaultConverters();
     }
 }

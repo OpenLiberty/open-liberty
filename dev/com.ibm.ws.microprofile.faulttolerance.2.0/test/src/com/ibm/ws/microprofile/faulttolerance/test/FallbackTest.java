@@ -36,7 +36,7 @@ public class FallbackTest extends AbstractFTTest {
         TestFallback fallbackCallable = new TestFallback();
         fallback.setFallbackFunction(fallbackCallable);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setFallbackPolicy(fallback);
         Executor<String> executor = builder.build();
 
@@ -59,7 +59,7 @@ public class FallbackTest extends AbstractFTTest {
         TestFallbackFactory fallbackFactory = new TestFallbackFactory();
         fallback.setFallbackHandler(TestFallback.class, fallbackFactory);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setFallbackPolicy(fallback);
 
         Executor<String> executor = builder.build();

@@ -16,7 +16,6 @@ src: \
 
 fat.project: true
 
-
 -buildpath: \
 	com.ibm.ws.org.apache.directory.server;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\

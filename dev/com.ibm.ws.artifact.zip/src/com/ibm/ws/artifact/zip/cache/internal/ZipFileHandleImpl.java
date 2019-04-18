@@ -280,7 +280,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         String entryName = zipEntry.getName();
 
         if ( zipEntry.isDirectory() ) {
-            if ( tc.isDebugEnabled() ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 debug(methodName, "Entry [ " + entryName + " ] [ null ] (Not using cache: Directory entry)");
             }
             return null;
@@ -288,7 +288,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
         long entrySize = zipEntry.getSize();
         if ( entrySize == 0 ) {
-            if ( tc.isDebugEnabled() ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 debug(methodName, "Entry [ " + entryName + " ] [ empty stream ] (Not using cache: Empty entry)");
             }
             return EMPTY_STREAM;
@@ -312,7 +312,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
             doNotCache = true;
             doNotCacheReason = "Do not cache: Not manifest or class resource";
         }
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             debug(methodName, "Entry [ " + entryName + " ] [ non-null ] [ " + doNotCacheReason + " ]");
         }
 

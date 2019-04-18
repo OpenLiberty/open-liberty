@@ -725,6 +725,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public int getRequestedPort() {
+
         // Get the requested port: this takes into consideration whether or not we should trust the
         // contents of Host and $WS* headers..
         if (useTrustedHeaders()) {
@@ -733,20 +734,33 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 return Integer.parseInt(pluginPort);
         }
 
-        // Get the port from the absolute URI or Host header
         int port = request.getVirtualPort();
+
         if (port > 0) {
             return port;
-        } else if (request.getHeader(HttpHeaderKeys.HDR_HOST.getName()) != null) {
-            // There was a host header, but it had no port: infer it..
-            String scheme = request.getScheme();
+        } else {
+            //No port found from URL or host header, infer it..
+
+            //Scheme as defined by X-Forwarded-Proto or Forwarded "proto", or null
+            //if remoteIp is not enabled or client address not verified as trusted.
+            String scheme = getRemoteProto();
+
+            if (scheme == null && isc != null && !isc.useForwardedHeaders()) {
+                //if remoteIp is not enabled, still verify for the x-forwarded-proto
+                scheme = request.getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+            }
+
+            if (scheme == null && request.getHeader(HttpHeaderKeys.HDR_HOST.getName()) != null) {
+                scheme = request.getScheme();
+
+            }
+
             if ("http".equals(scheme)) {
                 return 80;
             } else if ("https".equals(scheme)) {
                 return 443;
             }
         }
-
         return getLocalPort();
     }
 
@@ -974,7 +988,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
             }
         } else {
-            synchronized (WebConnCanCloseSync) { 
+            synchronized (WebConnCanCloseSync) {
                 if (WebConnCanClose) {
                     error = closeStreams();
                 }

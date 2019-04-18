@@ -27,7 +27,7 @@ import org.apache.commons.codec.binary.StringUtils;
 import org.joda.time.Duration;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
-import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.InvalidJwtException; 
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;

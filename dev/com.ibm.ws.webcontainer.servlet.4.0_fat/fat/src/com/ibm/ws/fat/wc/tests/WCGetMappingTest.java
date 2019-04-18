@@ -58,15 +58,9 @@ public class WCGetMappingTest extends LoggingTest {
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestGetMapping.war", false,
                                                   "testgetmapping.war.servlets");
 
-        if (!SHARED_SERVER.getLibertyServer().isStarted())
-            SHARED_SERVER.getLibertyServer().startServer();
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestGetMapping", 10000);
-
-        LOG.info("Setup : ready to start tests");
-
+        SHARED_SERVER.startIfNotStarted();
+        WCApplicationHelper.waitForAppStart("TestGetMapping", WCGetMappingTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass

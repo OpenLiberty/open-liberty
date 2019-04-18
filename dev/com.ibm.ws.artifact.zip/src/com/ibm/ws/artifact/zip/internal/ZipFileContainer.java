@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2018 IBM Corporation and others.
+ * Copyright (c) 2011,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.Manifest;
 import java.util.zip.ZipFile;
 
 import com.ibm.websphere.ras.Tr;
@@ -39,6 +40,8 @@ import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
 import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
@@ -147,8 +150,6 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
     static final TraceComponent tc = Tr.register(ZipFileContainer.class);
 
-    //
-    
     /**
      * Tuning parameter: Used to enable and disable the use
      * of a hash map as a faster way to locate paths.  Enabling
@@ -239,7 +240,15 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
     }
 
-    //
+    private final String archiveName;
+    
+    private volatile Boolean isMultiRelease = null;
+    private final Integer multiReleaseLock = new Integer(0);
+    
+    private static final int CURRENT_JAVA_VERSION = JavaInfo.majorVersion();
+    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+    // JDK-defined system property for controlling MR. Possible values: true (default), force, false
+    private static final boolean JDK_DISABLE_MULTI_RELEASE = "false".equalsIgnoreCase(priv.getProperty("jdk.util.jar.enableMultiRelease", "true"));
 
     /**
      * Create a root zip file type container which is not an enclosed container.
@@ -271,12 +280,13 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         this.archiveFile = archiveFile;
         String useArchivePath = archiveFile.getAbsolutePath();
         this.archiveFilePath = useArchivePath;
+        this.archiveName = archiveFile.getName();
 
         this.zipFileNotifier = new ZipFileArtifactNotifier(this, useArchivePath);
 
         this.nestedContainerEntries = new HashMap<String, ZipFileEntry>();
 
-        if ( tc.isDebugEnabled() ) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " ZipContainer (root-of-root)");
             Tr.debug(tc, methodName + " Archive file [ " + archiveFilePath + " ]");
             Tr.debug(tc, methodName + " Cache [ " + cacheDir.getAbsolutePath() + " ]");
@@ -329,14 +339,16 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             String useArchivePath =  archiveFile.getAbsolutePath();
             this.archiveFilePath = useArchivePath;
             this.zipFileNotifier = new ZipFileArtifactNotifier(this, useArchivePath);
+            this.archiveName = archiveFile.getName();
         } else {
             this.archiveFileLock = new ArchiveFileLock();
             this.zipFileNotifier = new ZipFileArtifactNotifier(this, entryInEnclosingContainer);
+            this.archiveName = entryInEnclosingContainer.getName();
         }
 
         this.nestedContainerEntries = new HashMap<String, ZipFileEntry>();
 
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " ZipContainer (enclosed root)");
             Tr.debug(tc, methodName + " Enclosing container [ " + enclosingContainer.getPath() + " ]");
             Tr.debug(tc, methodName + " Enclosing entry [ " + entryInEnclosingContainer.getName() + " ]");
@@ -594,21 +606,20 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                     try {
                         archiveFile = extractEntry( entryInEnclosingContainer, getCacheDir() );
                         // 'extractEntry' throws IOException
-                    } catch ( IOException e ) {
-                        Tr.error(tc, "extract.cache.fail", e.getMessage());
-                    }
 
-                    // The archive file will be null if an exception occurred,
-                    // or if the extraction failed.
-
-                    if ( archiveFile != null ) {
-                        archiveFilePath = archiveFile.getAbsolutePath();
-                        if ( tc.isDebugEnabled() ) {
-                            Tr.debug(tc, "methodName + Archive file [ " + archiveFilePath + " ]");
+                        if ( archiveFile != null ) {
+                            archiveFilePath = archiveFile.getAbsolutePath();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                                Tr.debug(tc, methodName + " Archive file [ " + archiveFilePath + " ]");
+                            }
+                        } else {
+                            archiveFileFailed = true;
+                            Tr.error(tc, "extract.cache.null", entryInEnclosingContainer.getPath());
                         }
-                    } else {
+
+                    } catch ( IOException e ) {
                         archiveFileFailed = true;
-                        Tr.warning(tc, methodName + " Failed to extract [ " + entryInEnclosingContainer.getPath() + " ]");
+                        Tr.error(tc, "extract.cache.fail", e.getMessage());
                     }
                 }
             }
@@ -882,6 +893,19 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     @Trivial
     public int locatePath(String r_path) {
+        // If this is an MRJAR, check under /META-INF/versions/n/<r_path>
+        if (isMultiRelease != null && isMultiRelease) {
+            int mrPath = locateMultiReleasePath(r_path);
+            if (mrPath >= 0) {
+                return mrPath;
+            }
+        }
+        
+        return locateDirectPath(r_path);
+    }
+
+    @Trivial
+    private int locateDirectPath(String r_path) { 
         if ( USE_EXTRA_PATH_CACHE ) {
             long mapLookupStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
             ZipEntryData entryData = fastGetZipEntryData(r_path);
@@ -901,6 +925,25 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             record(Timings.ARRAY_LOOKUP_TIME, lookupStart, System.nanoTime(), null, ARRAY_LOOKUP_FREQUENCY);
         }
         return location;
+    }
+    
+    @Trivial
+    private int locateMultiReleasePath(String path) {
+        // Multi-release files may be at /com/foo/A.class and /META-INF/versions/9/com/foo/A.class
+        // Since we commonly blindly try-load META-INF and java.* entries, optimize those out
+        if (path == null || path.startsWith("META-INF") || path.startsWith("java/")) {
+            return -1;
+        }
+        for (int currentVersion = CURRENT_JAVA_VERSION; currentVersion >= 9; currentVersion--) {
+            int versionPath = locateDirectPath("META-INF/versions/" + currentVersion + "/" + path);
+            if (versionPath >= 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found MR path: META-INF/versions/" + currentVersion + "/" + path);
+                }
+                return versionPath;
+            }
+        } 
+        return -1;
     }
 
     @Trivial
@@ -928,13 +971,66 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         try {
             return ZipFileContainerUtils.collectZipEntries(useZipFile);
-
         } finally {
             closeZipFileHandle(); // throws IOException
         }
     }
 
-    //
+    private boolean initializeMultiRelease() {
+        if (isMultiRelease != null)
+            return isMultiRelease;
+
+        // Multi-Release jars only apply to JDK 9+
+        if (CURRENT_JAVA_VERSION < 9) {
+            isMultiRelease = false;
+            return isMultiRelease;
+        }
+
+        // Multi-Release jars can be disabled with JDK system properties
+        if (JDK_DISABLE_MULTI_RELEASE) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "JDK system property set to globally disable multi-release jars");
+           isMultiRelease = false;
+           return isMultiRelease;
+        }
+        
+        // Only .jar files can be multi-release (not .war or .ear)
+        if (!archiveName.endsWith(".jar")) {
+            isMultiRelease = false;
+            return isMultiRelease;
+        }
+
+        synchronized (multiReleaseLock) {
+            if (isMultiRelease != null)
+                return isMultiRelease;
+
+            ZipFileEntry mfEntry = getEntry("META-INF/MANIFEST.MF");
+            if (mfEntry == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "No MANIFEST.MF found in container. Assuming not multi-release");
+                isMultiRelease = false;
+                return isMultiRelease;
+            }
+
+            // Manifest was found, check it for 'Multi-Release: true' attribute
+            boolean isMR = false;
+            if (mfEntry != null) {
+                try (InputStream mfStream = mfEntry.getInputStream()) {
+                    Manifest mf = new Manifest(mfStream);
+                    String isMultiReleaseAttr = mf.getMainAttributes().getValue("Multi-Release");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Raw value for 'Multi-Release' attribute: " + isMultiReleaseAttr);
+                    if (isMultiReleaseAttr != null) {
+                        isMR = Boolean.parseBoolean(isMultiReleaseAttr.trim());
+                    }
+                } catch (IOException e) {
+                    isMR = false;
+                }
+            }
+            isMultiRelease = isMR;
+            return isMultiRelease;
+        }
+    }
 
     private class IteratorDataLock {
         // EMPTY
@@ -1083,6 +1179,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         } else {
             a_entryPath = null; // Maybe won't need it.
             r_entryPath = entryPath; // The path is already relative.
+        }
+        
+        if (isMultiRelease == null && !entryPath.startsWith("META-INF")) {
+            initializeMultiRelease();
         }
 
         int location = locatePath(r_entryPath);
@@ -1403,7 +1503,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         File outputFile = new File( outputDir, inputEntry.getName() );
         String outputPath = getCanonicalPath(outputFile); // throws IOException
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, "Extraction: [ " + outputPath + " ]");
         }
 
@@ -1414,22 +1514,26 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         if ( !extractionGuard.isPrimary ) {
             if ( !extractionGuard.waitForCompletion() ) {
-                Tr.warning(tc, "Secondary extraction timeout [ " + outputPath + " ]");
+                // Tr.warning(tc, "Secondary extraction timeout [ " + outputPath + " ]");
+                Tr.warning(tc, "extract.secondary.timeout", outputPath);
                 throw new IOException("Secondary extraction timeout [ " + outputPath + " ]");
 
             } else {
                 if ( !FileUtils.fileExists(outputFile) ) {
-                    Tr.warning(tc, "Failed secondary extraction [ " + outputPath + " ]");
+                    // Tr.warning(tc, "Failed secondary extraction [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.secondary.failed", outputPath);
                     throw new IOException("Failed secondary extraction [ " + outputPath + " ]");
                 } else if ( !FileUtils.fileIsFile(outputFile) ) {
-                    Tr.warning(tc, "Secondary extraction did not create a simple file [ " + outputPath + " ]");
+                    // Tr.warning(tc, "Secondary extraction did not create a simple file [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.secondary.notfile", outputPath);
                     throw new IOException("Secondary extraction did not create a simple file [ " + outputPath + " ]");
 
                 } else {
                     if ( isModified(inputEntry, outputFile) ) {
-                        Tr.warning(tc, "Secondary extraction inconsistent times [ " + outputPath + " ]");
+                        // Tr.warning(tc, "Secondary extraction inconsistent times [ " + outputPath + " ]");
+                        Tr.warning(tc, "extract.secondary.inconsistent", outputPath);
                     } else {
-                        if ( tc.isDebugEnabled() ) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                             Tr.debug(tc, "Secondary extraction: [ " + outputPath + " ]");
                         }
                     }
@@ -1462,12 +1566,12 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                     doRemove = true;
                     doExtract = true;
                     extractCase = "Abnormal: Prior extraction is a directory";
-                    Tr.warning(tc, "Prior extraction is a directory [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.primary.directory", outputPath);
                 } else {
                     doRemove = true;
                     doExtract = true;
                     extractCase = "Abnormal: Prior extraction is untyped";
-                    Tr.warning(tc, "Prior extraction cannot be typed [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.primary.untyped", outputPath);
                 }
             } else {
                 doRemove = false;
@@ -1475,7 +1579,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 extractCase = "Normal: No prior extraction";
             }
 
-            if ( tc.isDebugEnabled() ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, "Primary extraction: [ " + outputPath + " ] (" + extractCase + ")");
             }
 
@@ -1565,7 +1669,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     @Trivial
     private boolean deleteAll(File rootFile) {
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, "Delete [ " + rootFile.getAbsolutePath() + " ]");
         }
 
@@ -1574,7 +1678,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             if ( !didDelete ) {
                 Tr.error(tc, "Could not delete file [ " + rootFile.getAbsolutePath() + " ]");
             } else {
-                if ( tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, "Deleted");
                 }
             }
@@ -1609,7 +1713,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 Tr.error(tc, "Could not delete directory [ " + rootFile.getAbsolutePath() + " ]");
             }
 
-            if ( tc.isDebugEnabled() ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, "Deleted [ " + Integer.valueOf(deleteCount) + " ]" +
                              " of [ " + Integer.valueOf(childCount) + " ]");
             }

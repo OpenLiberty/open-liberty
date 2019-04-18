@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	metadata-complete="false" version="3.1">
+	<display-name>EJB31AppExMix</display-name>
+	<assembly-descriptor>
+		<application-exception>
+			<exception-class>com.ibm.ws.ejbcontainer.app_exception.mix.ejb.XMLOverridesTrue</exception-class>
+			<rollback>false</rollback>
+			<inherited>false</inherited>
+		</application-exception>
+		<application-exception>
+			<exception-class>com.ibm.ws.ejbcontainer.app_exception.mix.ejb.XMLOverridesFalse</exception-class>
+			<rollback>true</rollback>
+			<inherited>true</inherited>
+		</application-exception>
+	</assembly-descriptor>
+</ejb-jar>

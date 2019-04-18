@@ -189,7 +189,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
      */
     private boolean isUCP;
     
-    //TODO move so we only output messages once
     private boolean sentUCPConnMgrPropsIgnoredInfoMessage;
     private boolean sentUCPDataSourcePropsIgnoredInfoMessage;
 
@@ -660,9 +659,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 }
             }
 
-            //TODO remove noship/beta guard before GA
-            isUCP = vendorImplClassName.startsWith("oracle.ucp.jdbc.") && 
-                            (vProps.containsKey("internal.dev.nonship.function.do.not.use.production") || (vProps.getFactoryPID() != null && vProps.getFactoryPID().equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")));
+            isUCP = vendorImplClassName.startsWith("oracle.ucp");
             if (isUCP) {
                 if (!createdDefaultConnectionManager && !sentUCPConnMgrPropsIgnoredInfoMessage) {
                     Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used");
@@ -763,7 +760,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     // Reinitialize with a new MCF and let the old connections go away via agedTimeout or claim victim
                     // Defer the destroy until later, unless we are using Derby Embedded, in which case we need
                     // to issue a shutdown of the Derby database in order to free it up for other class loaders.
-                    destroyConnectionFactories(isDerbyEmbedded);
+                    // Destroy now if switching to/from UCP to ensure that the connection manager is initialized
+                    // with the proper properties to disable/enable Liberty connection pooling
+                    isUCP = isUCP || "com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(newProperties.get("properties.0.config.referenceType"));
+                    destroyConnectionFactories(isDerbyEmbedded || isUCP);
                 } else {
                     parseIsolationLevel(wProps, vendorImplClassName);
                     
@@ -800,6 +800,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         NavigableMap<String, Object> wProps = new TreeMap<String, Object>();
 
         String vPropsPID = null;
+        
+        boolean recommendAuthAlias = false;
         for (Map.Entry<String, Object> entry : configProps.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -827,7 +829,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                             value = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(password);
                         }
                         if (DataSourceDef.password.name().equals(key))
-                            ConnectorService.logMessage(Level.INFO, "RECOMMEND_AUTH_ALIAS_J2CA8050", id);
+                            recommendAuthAlias = true;
                     } else if (trace && tc.isDebugEnabled()) {
                         if(key.toLowerCase().equals("url")) {
                             if(value instanceof String)
@@ -842,6 +844,11 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             } else if (key.indexOf('.') == -1 && !WPROPS_TO_SKIP.contains(key))
                 wProps.put(key, value);
         }
+        
+        //Don't send out auth alias recommendation message with UCP since it may be required to set the 
+        //user and password as ds props
+        if(recommendAuthAlias && !"com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vPropsPID))
+            ConnectorService.logMessage(Level.INFO, "RECOMMEND_AUTH_ALIAS_J2CA8050", id);
 
         if (vPropsPID == null)
             vProps.setFactoryPID(PropertyService.FACTORY_PID);
@@ -1051,6 +1058,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 sentUCPDataSourcePropsIgnoredInfoMessage = true;
             }
         }
+        
         Object statementCacheSize = wProps.get(DSConfig.STATEMENT_CACHE_SIZE);
         if(statementCacheSize != null) {
             long numericVal = -1;

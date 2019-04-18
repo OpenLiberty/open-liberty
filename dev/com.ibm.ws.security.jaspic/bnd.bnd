@@ -25,7 +25,16 @@ Export-Package: \
   com.ibm.ws.security.jaspi;thread-context=true, \
   com.ibm.ws.security.jaspi.client
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
+Import-Package: \
+  com.ibm.ws.common.internal.encoder,\
+  !*.internal.*,\
+  !com.ibm.ws.kernel.boot.cmdline,\
+  javax.xml.bind;version=!,\
+  javax.xml.bind.annotation;version=!,\
+  *
  
 Private-Package: \
   com.ibm.ws.security.jaspi.internal.resources
@@ -39,6 +48,7 @@ com.ibm.ws.security.jaspi.JaspiServletContainerInitializer
 instrument.classesExcludes: com/ibm/ws/security/jaspi/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
@@ -62,7 +72,7 @@ instrument.classesExcludes: com/ibm/ws/security/jaspi/internal/resources/*.class
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.7, \
+	cglib:cglib-nodep;version=3.2.10, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.container.service;version=latest, \
 	com.ibm.ws.security.registry;version=latest

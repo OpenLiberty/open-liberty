@@ -74,8 +74,8 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Validates configuration of a resource and returns the result as a JSON object.
      *
-     * @param uid unique identifier.
-     * @param config configuration of a resource instance.
+     * @param uid       unique identifier.
+     * @param config    configuration of a resource instance.
      * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return JSON representing the configuration. Null if not an external configuration element.
      * @throws IOException
@@ -191,14 +191,22 @@ public class ConfigRESTHandler implements RESTHandler {
 
         for (Map.Entry<String, SortedSet<String>> entry : flattenedPids.entrySet()) {
             String pid = entry.getKey();
+            boolean registryEntryExistsForFlattenedConfig = configHelper.registryEntryExists(pid);
             JSONArray list = new JSONArray();
             String prefix = null;
             for (String flatConfigPrefix : entry.getValue()) {
                 JSONObject j = new OrderedJSONObject();
                 SortedMap<String, Object> flattenedConfigProps = flattened.get(prefix = flatConfigPrefix);
                 if (flattenedConfigProps != null)
-                    for (Map.Entry<String, Object> prop : flattenedConfigProps.entrySet())
-                        j.put(prop.getKey(), getJSONValue(prop.getValue(), processed));
+                    for (Map.Entry<String, Object> prop : flattenedConfigProps.entrySet()) {
+                        String key = prop.getKey();
+                        String metaTypeName = configHelper.getMetaTypeAttributeName(pid, key);
+                        if (metaTypeName == null // add unknown attributes added by the user
+                            || !metaTypeName.equalsIgnoreCase("internal") // add externalized attributes
+                            || !registryEntryExistsForFlattenedConfig) { // or all attributes if there is an error in the config
+                            j.put(key, getJSONValue(prop.getValue(), processed));
+                        }
+                    }
                 list.add(j);
             }
             // TODO would be better to get the flattened config element name from config internals rather than hardcoding/approximating it
@@ -266,7 +274,7 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Converts the specified value to one that can be included in JSON
      *
-     * @param value the value to convert
+     * @param value     the value to convert
      * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return a String, primitive wrapper, JSONArray, or JSONObject.
      * @throws IOException
@@ -294,10 +302,10 @@ public class ConfigRESTHandler implements RESTHandler {
                         value = configInfo;
                 }
             }
-        } else if (value instanceof Number || value instanceof Boolean || value instanceof Character)
+        } else if (value instanceof Number || value instanceof Boolean)
             ; // common paths - no special handling
         else if (value instanceof SerializableProtectedString)
-            value = "***"; // hide passwords
+            value = "******"; // hide passwords
         else if (value.getClass().isArray()) { // list supplied as an array for positive cardinality
             JSONArray a = new JSONArray();
             int length = Array.getLength(value);
@@ -321,7 +329,7 @@ public class ConfigRESTHandler implements RESTHandler {
      * Otherwise, the config.displayId is the unique identifier.
      *
      * @param configDisplayId config.displayId of configuration element.
-     * @param id id of configuration element. Null if none.
+     * @param id              id of configuration element. Null if none.
      * @return the unique identifier (uid)
      */
     @Trivial
@@ -351,7 +359,7 @@ public class ConfigRESTHandler implements RESTHandler {
 
         String elementName = path.length() < 8 ? "" : URLDecoder.decode(path.substring(8, endElementName), "UTF-8");
 
-        StringBuilder filter = new StringBuilder("(&");
+        StringBuilder filter = new StringBuilder("(&(!(ibm.extends.source.pid=*))");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
             filter.append(FilterUtils.createPropertyFilter("config.displayId", uid));
         else if (elementName.length() > 0) {

@@ -8,6 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply plugin: 'com.gradle.build-scan'
+
+
+buildScan {
+    termsOfServiceUrl   = 'https://gradle.com/terms-of-service'
+    apply from: './.build-scans.gradle'
+}
+
 /*
  * Master Gradle build script
  *
@@ -21,6 +29,10 @@ ext {
 subprojects {
   apply plugin: 'java'
 
+  test {
+  ignoreFailures = true
+  }
+
   def bndProject = bndWorkspace.getProject(name)
 
   if (bndProject != null) {
@@ -32,9 +44,16 @@ subprojects {
     task copyPiiFiles { }
   }
 
-  /* For Java 9 builds, set the --release compiler flag to keep bootclasspath in sync */
   tasks.withType(JavaCompile) {
     doFirst {
+      // javac 12 has a min target of 1.7, so upgrade any 1.6 projects to 1.7 if running on Java 12
+      if (JavaVersion.current().isJava12Compatible()) {
+        if ('1.6'.equals(sourceCompatibility)) {
+          sourceCompatibility = "1.7"
+          targetCompatibility = "1.7"
+        }
+      }
+      // For Java 9+ builds, set the --release compiler flag to keep bootclasspath in sync/ 
       if(JavaVersion.current().isJava9Compatible() && !'off'.equals(bnd('javac.args.release'))) {
         def release = sourceCompatibility
         if(sourceCompatibility.startsWith('1.'))
@@ -82,36 +101,29 @@ subprojects {
 }
 
 task testReport(type: TestReport) {
-    // make sure this task is run after all subproject test tasks
-    mustRunAfter subprojects.test
 
+    // make sure this task is run after all subproject test tasks
+    mustRunAfter subprojects*.test
     destinationDir = cnf.file('generated/testReports/allUnitTests')
     // Include the results from the `test` task in all subprojects
-    reportOn subprojects.test
-}
-
-task zipTestReport(type: Zip) {
-  dependsOn testReport
-    baseName 'openliberty_test_report'
-    from cnf.file('generated/testReports/allUnitTests')
-    destinationDir cnf.file('generated/testReports')
-    userProps.setProperty('gradle.test.report.zip', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        userProps.store(propsFile.newWriter(), null)
-}
-
-task testResults {
-  dependsOn subprojects.test
-
-  doLast {
+    reportOn subprojects*.test.binResultsDir
     userProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
     userProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
 
     File propsFile = new File('generated.properties')
     userProps.store(propsFile.newWriter(), null)
-  }
+    
 }
-testResults.dependsOn zipTestReport
+subprojects {
+  test.finalizedBy testReport
+}
+
+
+task testResults {
+  dependsOn subprojects.test
+  
+}
+
 
 wrapper {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')

@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.rest.client.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -19,6 +20,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpRestClient11.produceConsume.ProduceConsumeTestServlet;
@@ -31,8 +34,17 @@ import mpRestClient11.produceConsume.ProduceConsumeTestServlet;
 public class ProduceConsumeTest extends FATServletClient {
 
     private static final String appName = "produceConsumeApp";
+    final static String SERVER_NAME = "mpRestClient11.produceConsume";
 
-    @Server("mpRestClient11.produceConsume")
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+        .andWith(new FeatureReplacementAction()
+                 .withID("mpRestClient-1.2")
+                 .addFeature("mpRestClient-1.2")
+                 .removeFeature("mpRestClient-1.1")
+                 .forServers(SERVER_NAME));
+
+    @Server(SERVER_NAME)
     @TestServlet(servlet = ProduceConsumeTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 

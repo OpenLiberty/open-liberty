@@ -2910,49 +2910,6 @@ public class LdapConfigManager {
 
     }
 
-    public String getLdapRDNFilter(LdapEntity ldapEntity, String rdnFilter) {
-        StringBuffer ldapRDNFilter = new StringBuffer();
-        List<String> RDNs = new ArrayList<String>();
-        char[] RDNChars = rdnFilter.toCharArray();
-        int startPos = 0;
-        for (int i = 0; i < RDNChars.length; i++) {
-            if (RDNChars[i] == '+' && RDNChars[i - 1] != '\\') {
-                RDNs.add(rdnFilter.substring(startPos, i));
-                startPos = i + 1;
-            }
-        }
-        RDNs.add(rdnFilter.substring(startPos));
-        for (int i = 0; i < RDNs.size(); i++) {
-            String RDN = RDNs.get(i);
-            int pos = RDN.indexOf('=');
-            if (pos > 0) {
-
-                String RDNName = RDN.substring(0, pos);
-                String RDNValue = RDN.substring(pos + 1);
-                if (ldapEntity != null) {
-                    String ldapRDNName = getAttributeName(ldapEntity, RDNName);
-                    ldapRDNFilter.append("(").append(ldapRDNName).append("=").append(RDNValue).append(")");
-                } else {
-                    Set<String> ldapRDNNames = getAttributeNames(RDNName);
-                    if (ldapRDNNames.size() > 1) {
-                        ldapRDNFilter.append("(|");
-                    }
-                    for (String ldapRDNName : ldapRDNNames)
-                        ldapRDNFilter.append("(").append(ldapRDNName).append("=").append(RDNValue).append(")");
-
-                    if (ldapRDNNames.size() > 1) {
-                        ldapRDNFilter.append(")");
-                    }
-                }
-            }
-        }
-        if (RDNs.size() > 1) {
-            ldapRDNFilter.insert(0, "(&").append(")");
-        }
-
-        return ldapRDNFilter.toString();
-    }
-
     @Trivial
     public String[] getDynamicMemberAttributes() {
         return iDynaMbrAttrs.clone();

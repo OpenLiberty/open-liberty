@@ -16,15 +16,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
 @ApplicationScoped
 public class CDICompletionStageBean {
+
+    private final AtomicInteger concurrentCsBulkheadMethods = new AtomicInteger(0);
 
     @Asynchronous
     public <T> CompletionStage<T> serviceCs(CompletableFuture<Void> latch, CompletableFuture<T> returnValue) {
@@ -39,6 +43,31 @@ public class CDICompletionStageBean {
     @Asynchronous
     @Timeout(500)
     public CompletionStage<Void> serviceCsTimeout(CompletableFuture<Void> returnValue) {
+        return returnValue;
+    }
+
+    @Asynchronous
+    @Bulkhead(value = 1, waitingTaskQueue = 1)
+    public CompletionStage<Void> serviceCsBulkhead(CompletableFuture<Void> returnValue) {
+        try {
+            concurrentCsBulkheadMethods.incrementAndGet();
+            return returnValue;
+        } finally {
+            concurrentCsBulkheadMethods.decrementAndGet();
+        }
+    }
+
+    /**
+     * @return the current number of calls to serviceCsBulkhead which are currently running
+     */
+    public int getConcurrentServiceCsBulkhead() {
+        return concurrentCsBulkheadMethods.get();
+    }
+
+    @Asynchronous
+    @Bulkhead(value = 1, waitingTaskQueue = 1)
+    @Timeout(500)
+    public CompletionStage<Void> serviceCsBulkheadTimeout(CompletableFuture<Void> returnValue) {
         return returnValue;
     }
 

@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2014 IBM Corporation and others.
+ * Copyright (c) 2002, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
+import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
@@ -33,6 +34,7 @@ import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.OnePhaseXAResource;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.TransactionSynchronizationRegistryFactory;
 import com.ibm.tx.jta.impl.TimeoutManager.TimeoutInfo;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.alarm.Alarm;
@@ -247,9 +249,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     int _txType = UOWCoordinator.TXTYPE_INTEROP_GLOBAL;
 
-    // Used to call back into the CDI code to destroy anything created within
-    // a Transaction Scope associated with this transaction.
-    private static volatile TransactionScopeDestroyer tScopeDestroyer = null;
+    private final TransactionSynchronizationRegistry tsr = TransactionSynchronizationRegistryFactory.getTransactionSynchronizationRegistry();
 
     private static TraceComponent tc = Tr.register(com.ibm.tx.jta.impl.TransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
     private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
@@ -2470,8 +2470,11 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         // call back into the CDI transaction scope code, telling it to destroy bean instances
         // created within the scope of this tran.
         try {
-            if (tScopeDestroyer != null) {
-                tScopeDestroyer.destroy();
+            if (!_inRecovery) {
+                Object tScopeDestroyer = tsr.getResource("transactionScopeDestroyer");
+                if (tScopeDestroyer != null && tScopeDestroyer instanceof TransactionScopeDestroyer) {
+                    ((TransactionScopeDestroyer) tScopeDestroyer).destroy();
+                }
             }
         } catch (RuntimeException e) {
             // WELD currently eats (and logs) runtime errors coming out of bean instance destructors
@@ -3410,9 +3413,5 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     protected void traceCreate() {
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "Transaction created.", new Object[] { this, _xid, Util.stackToDebugString(new Throwable()) });
-    }
-
-    public static void registerTransactionScopeDestroyer(TransactionScopeDestroyer tScopeDestroyer) {
-        TransactionImpl.tScopeDestroyer = tScopeDestroyer;
     }
 }

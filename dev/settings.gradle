@@ -13,7 +13,6 @@
  *
  * Depends on bnd_* values from gradle.properties.
  */
-
 pluginManagement {
   def userProperties = {
     Properties props = new Properties()
@@ -72,6 +71,7 @@ pluginManagement {
     if (System.properties['is.remote.publishing']!=null) {
       isRemotePublishing = System.properties['is.remote.publishing'];
     }
+    def isUnittestsDisabled = false
 
     def fetchRepoPublic =  ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl=https://repo.maven.apache.org/maven2/;index=${build}/oss_dependencies.maven')
     def fetchRepoIBM =     ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;local=~/.ibmdhe/repository;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/;index=${build}/oss_ibm.maven')
@@ -151,6 +151,11 @@ pluginManagement {
         isPublicPublishing = 'on'.equalsIgnoreCase(props.getProperty('is.public.publishing')) || 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
       }
 
+      if (props.getProperty('disable.run.runUnitTests') != null) {
+        isUnittestsDisabled = 'on'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests')) || 
+        'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
+      }
+
       props.setProperty('javac.bootclasspath.1.4', '${internaljavac.bootclasspath.1.4}')
       props.setProperty('javac.bootclasspath.1.6', '${internaljavac.bootclasspath.1.6}')
       props.setProperty('javac.bootclasspath.1.7', '${internaljavac.bootclasspath.1.7}')
@@ -182,6 +187,7 @@ pluginManagement {
     props.setProperty('is.remote.publishing',          isRemotePublishing.toString())
     props.setProperty('is.public.publishing',          isPublicPublishing.toString())
     props.setProperty('is.using.artifactory',          isUsingArtifactory.toString())
+	props.setProperty('disable.run.runUnitTests',          isUnittestsDisabled.toString())
 
     return props
   }
@@ -193,12 +199,13 @@ pluginManagement {
     rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")
     rootProject.ext.matrixParams = gradle.userProps.getProperty("artifactory.matrix.parameters")
     rootProject.ext.isAutomatedBuild =   'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.automated.build"))   || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.automated.build"))
-	  rootProject.ext.isPersonal = 'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal")) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal"))
+    rootProject.ext.isPersonal = 'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal")) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal"))
     rootProject.ext.isContinuousBuild =  'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.continuous.build"))  || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.continuous.build"))
     rootProject.ext.isRelease =          'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.release'))           || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.release'))
     rootProject.ext.isUsingArtifactory = 'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory')) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))
     rootProject.ext.isRemotePublishing = 'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.remote.publishing')) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.remote.publishing'))
     rootProject.ext.isPublicPublishing = 'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.public.publishing')) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.public.publishing'))
+    rootProject.ext.isUnittestsDisabled = 'on'.equalsIgnoreCase(gradle.userProps.getProperty('disable.run.runUnitTests')) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('disable.run.runUnitTests'))
     rootProject.ext.releaseVersionOverride = gradle.userProps.getProperty('release.version.override')
     // Test results for this run
     rootProject.ext.testCountTotal = 0
@@ -224,6 +231,18 @@ pluginManagement {
     }
   }
 }
+
+// Require Java 11
+if (!JavaVersion.current().isJava11Compatible()) {
+  println "WARNING: Building this repository will soon require Java 11. To use Java 11 follow these steps:\n" + 
+                            "  1) You can download a copy for your OS here if you don't already have it: " + 
+                            "https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=openj9\n" + 
+                            "  2) run 'export JAVA_HOME=/path/to/your/java11' in the shell, or set in ~/.bashrc\n" + 
+                            "  3) [MACOS ONLY] Set 'ulimit -Sn 1024' in your ~/.bashrc\n" + 
+                            "  4) Restart your gradle daemon with './gradlew --stop'\n";
+}
+
+
 
 /* Construct a properties file to store build-time variables. generated.properties is used to pass information from
  * Gradle during initialization into bnd during configuration for use in cnf/build.bnd.
@@ -257,6 +276,7 @@ buildscript {
   dependencies {
     classpath bnd_plugin
     classpath 'net.ossindex.audit:net.ossindex.audit.gradle.plugin:0.3.8-beta'
+    classpath 'com.gradle:build-scan-plugin:2.1'
   }
 
   /* Since the files in the repository change with each build, we need to recheck for changes */

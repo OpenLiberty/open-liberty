@@ -39,6 +39,7 @@ public class PackageCommandTest {
 
     private static String serverName = "com.ibm.ws.kernel.boot.root.fat";
     private static String archivePackage = "MyPackage.zip";
+    private static String archivePackageNoExtension = "MyPackage";
 
     @Before
     public void before() throws Exception {
@@ -470,6 +471,111 @@ public class PackageCommandTest {
                 } catch (IOException ex) {
                 }
             }
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    /**
+     * This tests that when --include=runnable is supplied, and --archive is supplied with
+     * a file extension not ending with .jar that an error is returned.
+     *
+     */
+    @Test
+    public void testCorrectErrorMessageWhenRunnableAndNonJARArchiveSpecified() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
+            File prodExtensionDir = null;
+            try {
+                server.getFileFromLibertyInstallRoot("etc/extension/");
+            } catch (FileNotFoundException ex) {
+                // The /etc/extension directory does not exist - so create it for this test.
+                String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
+                prodExtensionDir = new File(pathToProdExt);
+                prodExtensionDir.mkdirs();
+            }
+
+            String[] cmd = new String[] { "--archive=" + archivePackage,
+                                          "--include=runnable" };
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+
+            assertTrue("Did not find expected failure message, CWWKE0950E.  STDOUT = " + stdout, stdout.contains("CWWKE0950E"));
+
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    /**
+     * This tests that when the --archive value has no extension, and --include=runnable
+     * that a .jar archive is created by default.
+     */
+    @Test
+    public void testDefaultingToJar() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
+            File prodExtensionDir = null;
+            try {
+                server.getFileFromLibertyInstallRoot("etc/extension/");
+            } catch (FileNotFoundException ex) {
+                // The /etc/extension directory does not exist - so create it for this test.
+                String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
+                prodExtensionDir = new File(pathToProdExt);
+                prodExtensionDir.mkdirs();
+            }
+
+            String[] cmd = new String[] { "--archive=" + archivePackageNoExtension,
+                                          "--include=runnable" };
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+
+            assertTrue("Did not find expected 'package complete' success message.  STDOUT = " + stdout, stdout.contains("package complete"));
+            assertTrue("Did not find expected .jar archive.  STDOUT = " + stdout, stdout.contains(archivePackageNoExtension + ".jar"));
+
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    /**
+     * This tests that when the --archive value has no extension, and --include != runnable
+     * that a .zip archive is created by default.
+     */
+    @Test
+    public void testDefaultingToZip() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
+            File prodExtensionDir = null;
+            try {
+                server.getFileFromLibertyInstallRoot("etc/extension/");
+            } catch (FileNotFoundException ex) {
+                // The /etc/extension directory does not exist - so create it for this test.
+                String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
+                prodExtensionDir = new File(pathToProdExt);
+                prodExtensionDir.mkdirs();
+            }
+
+            String[] cmd = new String[] { "--archive=" + archivePackageNoExtension,
+                                          "--include=usr" };
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+
+            assertTrue("Did not find expected 'package complete' success message.  STDOUT = " + stdout, stdout.contains("package complete"));
+            assertTrue("Did not find expected .zip archive.  STDOUT = " + stdout, stdout.contains(archivePackageNoExtension + ".zip"));
+
         } catch (FileNotFoundException ex) {
             assumeTrue(false); // the directory does not exist, so we skip this test.
         }

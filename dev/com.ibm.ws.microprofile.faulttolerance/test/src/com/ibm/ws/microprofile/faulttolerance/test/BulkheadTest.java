@@ -47,7 +47,7 @@ public class BulkheadTest extends AbstractFTTest {
         BulkheadPolicy bulkhead = FaultToleranceProvider.newBulkheadPolicy();
         bulkhead.setMaxThreads(2);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setBulkheadPolicy(bulkhead);
         Executor<String> executor = builder.build();
 
@@ -106,7 +106,7 @@ public class BulkheadTest extends AbstractFTTest {
         retryPolicy.setRetryOn(BulkheadException.class);
         retryPolicy.setDelay(Duration.ofMillis(100));
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setBulkheadPolicy(bulkhead);
         builder.setRetryPolicy(retryPolicy);
         Executor<String> executor = builder.build();
@@ -163,7 +163,7 @@ public class BulkheadTest extends AbstractFTTest {
         retryPolicy.setJitter(Duration.ofMillis(499));
         retryPolicy.setMaxDuration(Duration.ofMillis(20000)); //maximum duration of 20seconds
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setBulkheadPolicy(bulkhead);
         builder.setRetryPolicy(retryPolicy);
         Executor<String> executor = builder.build();
@@ -207,7 +207,7 @@ public class BulkheadTest extends AbstractFTTest {
         bulkhead.setMaxThreads(20);
         bulkhead.setQueueSize(20);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setBulkheadPolicy(bulkhead);
 
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
@@ -243,7 +243,7 @@ public class BulkheadTest extends AbstractFTTest {
         bulkhead.setMaxThreads(2);
         bulkhead.setQueueSize(2);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setBulkheadPolicy(bulkhead);
 
         Executor<Future<String>> executor = builder.buildAsync(Future.class);

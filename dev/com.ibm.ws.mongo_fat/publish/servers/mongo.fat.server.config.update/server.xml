@@ -38,8 +38,35 @@
     <mongoDB jndiName="mongo/testdb-auth" mongoRef="mongo-auth" databaseName="default" />
     <mongoDB jndiName="mongo/testdb-auth-jndi" mongoRef="mongo-auth" databaseName="default" />
     
-    <javaPermission codebase="${shared.resource.dir}/mongo-1.0/mongo-java-driver-1.0.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/mongo-2.9/mongo-java-driver-2.9.3.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.9/mongo-java-driver-2.9.3.jar" className="java.util.PropertyPermission" name="com.mongodb.cleanerIntervalMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.cleanerIntervalMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.cleanerIntervalMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.slaveAcceptableLatencyMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.slaveAcceptableLatencyMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterConnectTimeoutMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterConnectTimeoutMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterIntervalMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterIntervalMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterIntervalNoMasterMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterIntervalNoMasterMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterSocketTimeoutMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="com.mongodb.updaterSocketTimeoutMS" actions="read"/> 
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="DB.TRACE" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="DB.TRACE" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="DEBUG.MONGO" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="DEBUG.MONGO" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="MONGO.POOLSIZE" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="java.util.PropertyPermission" name="MONGO.POOLSIZE" actions="read"/>
+
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanPermission" name="*" actions="unregisterMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanPermission" name="*" actions="unregisterMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanTrustPermission" name="register"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13-updated/mongo-java-driver-2.13.3.jar" className="javax.management.MBeanTrustPermission" name="register"/>
 </server>

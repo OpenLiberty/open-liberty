@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.jdbc;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -20,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.resource.ResourceConfig;
@@ -37,7 +38,7 @@ import com.ibm.wsspi.validator.Validator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { Validator.class },
-           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validator", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jdbc.dataSource" })
+           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jdbc.dataSource" })
 public class DataSourceValidator implements Validator {
     private final static TraceComponent tc = Tr.register(DataSourceValidator.class);
 
@@ -49,24 +50,48 @@ public class DataSourceValidator implements Validator {
      */
     @Override
     public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
+        final String methodName = "validate";
         String user = (String) props.get("user");
         String pass = (String) props.get("password");
         String auth = (String) props.get("auth");
         String authAlias = (String) props.get("authAlias");
+        String loginConfig = (String) props.get("loginConfig");
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "test", user, pass == null ? null : "***", auth, authAlias);
+            Tr.entry(this, tc, methodName, user, pass == null ? null : "******", auth, authAlias, loginConfig);
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         try {
             ResourceConfig config = null;
-            int authType = "container".equals(auth) ? 0 : "application".equals(auth) ? 1 : -1;
+            int authType = "container".equals(auth) ? 0 //
+                            : "application".equals(auth) ? 1 //
+                                            : -1;
             if (authType >= 0) {
                 config = resourceConfigFactory.createResourceConfig(DataSource.class.getName());
                 config.setResAuthType(authType);
                 if (authAlias != null)
                     config.addLoginProperty("DefaultPrincipalMapping", authAlias); // set provided auth alias
+                if (loginConfig != null) {
+                    // Add custom login module name and properties
+                    config.setLoginConfigurationName(loginConfig);
+                    String requestBodyString = (String) props.get(Validator.JSON_BODY_KEY);
+                    JSONObject requestBodyJson = requestBodyString == null ? null : JSONObject.parse(requestBodyString);
+                    if (requestBodyJson != null && requestBodyJson.containsKey("loginConfigProperties")) {
+                        Object loginConfigProperties = requestBodyJson.get("loginConfigProperties");
+                        if (loginConfigProperties instanceof JSONObject) {
+                            JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
+                            for (Object entry : loginConfigProps.entrySet()) {
+                                @SuppressWarnings("unchecked")
+                                Entry<String, String> e = (Entry<String, String>) entry;
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
+                                Object value = e.getValue();
+                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
+                            }
+                        }
+                    }
+                }
             }
 
             DataSource ds = (DataSource) ((ResourceFactory) instance).createResource(config);
@@ -83,24 +108,14 @@ public class DataSourceValidator implements Validator {
                     String catalog = con.getCatalog();
                     if (catalog != null && catalog.length() > 0)
                         result.put("catalog", catalog);
-                } catch (SQLFeatureNotSupportedException x) {
+                } catch (SQLFeatureNotSupportedException ignore) {
                 }
 
                 try {
-                    // Don't need to use reflection here when we don't support java 6 anymore
-                    String schema = (String) con.getClass().getMethod("getSchema").invoke(con);
+                    String schema = con.getSchema();
                     if (schema != null && schema.length() > 0)
                         result.put("schema", schema);
-                } catch (NoSuchMethodException ignore) {
-                } catch (InvocationTargetException x) {
-                    Throwable cause = x.getCause();
-                    if (cause instanceof SQLFeatureNotSupportedException) {
-                        // ignore
-                    } else if (cause instanceof IncompatibleClassChangeError) {
-                        // ignore
-                    } else {
-                        throw cause;
-                    }
+                } catch (SQLFeatureNotSupportedException ignore) {
                 }
 
                 String userName = metadata.getUserName();
@@ -134,7 +149,7 @@ public class DataSourceValidator implements Validator {
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "test", result);
+            Tr.exit(this, tc, methodName, result);
         return result;
     }
 }

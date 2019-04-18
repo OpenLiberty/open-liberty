@@ -34,7 +34,7 @@ public interface DefaultSSLCertificateCreator {
      * implementations.
      */
     static final int MINIMUM_PASSWORD_LENGTH = 6;
-    static final int MINIMUM_VALIDITY = 365;
+    static final int MINIMUM_VALIDITY = 15;
     static final int DEFAULT_VALIDITY = 365;
     static final int DEFAULT_SIZE = 2048;
     static final String KEYALG = KEYALG_RSA_TYPE;

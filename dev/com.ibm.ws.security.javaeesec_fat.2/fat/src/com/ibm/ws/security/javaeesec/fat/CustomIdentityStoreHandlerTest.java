@@ -52,6 +52,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
     protected DefaultHttpClient httpclient;
 
     protected static LocalLdapServer ldapServer;
+    protected static String portNumber = "";
 
     public CustomIdentityStoreHandlerTest() {
         super(myServer, logClass);
@@ -63,11 +64,13 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        portNumber = System.getProperty("ldap.1.port");
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
         WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.basic", "web.war.identitystores.ldap.ldap1",
-                                               "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystorehandler");
+                                               "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystorehandler",
+                                               "web.war.identitystores.ldap");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -126,9 +129,9 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
                                                           LocalLdapServer.PASSWORD,
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/"); // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/grantedgroup, group:127.0.0.1:10389/group1");
+        verifyRealm(response, "127.0.0.1:" + portNumber);
+        verifyNotInGroups(response, "group:localhost:" + portNumber + "/"); // make sure that there is no realm name from the second IdentityStore.
+        verifyGroups(response, "group:127.0.0.1:" + portNumber + "/grantedgroup2, group:127.0.0.1:" + portNumber + "/grantedgroup, group:127.0.0.1:" + portNumber + "/group1");
         verifyMessageReceivedInMessageLog("CustomIdentityStoreHandler is being used.");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -154,9 +157,10 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
                                                           LocalLdapServer.ANOTHERPASSWORD,
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/"); // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup");
+        verifyRealm(response, "localhost:" + portNumber);
+        verifyNotInGroups(response, "group:127.0.0.1:" + portNumber + "/"); // make sure that there is no realm name from the second IdentityStore.
+        verifyGroups(response,
+                     "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -182,9 +186,10 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
                                                           LocalLdapServer.ANOTHERPASSWORD,
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/"); // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup");
+        verifyRealm(response, "localhost:" + portNumber);
+        verifyNotInGroups(response, "group:127.0.0.1:" + portNumber + "/"); // make sure that there is no realm name from the second IdentityStore.
+        verifyGroups(response,
+                     "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

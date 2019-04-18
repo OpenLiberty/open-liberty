@@ -302,8 +302,8 @@ public class FileLogSet {
      * This method is intended to be overridden by unit tests.
      */
     protected String getDateString() {
-        synchronized (LoggingFileUtils.FILE_DATE) {
-            return LoggingFileUtils.FILE_DATE.format(new Date());
+        synchronized (DateFormatProvider.FILE_DATE) {
+            return DateFormatProvider.FILE_DATE.format(new Date());
         }
     }
 

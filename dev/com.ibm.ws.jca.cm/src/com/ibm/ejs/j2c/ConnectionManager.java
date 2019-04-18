@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ejs.j2c;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -484,7 +487,10 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                 mcWrapper.setThreadName(myThread.getName());
                 if (connLeakOrmaxNumThreads) {
                     // add current time and stack information
-                    mcWrapper.setLastAllocationTime(System.currentTimeMillis());
+                    if (mcWrapper.getLastAllocationTime() == 0)
+                        mcWrapper.setLastAllocationTime(mcWrapper.getHoldTimeStart());
+                    else
+                        mcWrapper.setLastAllocationTime(System.currentTimeMillis());
                     if (mcWrapper.getInitialRequestStackTrace() == null) {
                         Throwable t = new Throwable();
                         mcWrapper.setInitialRequestStackTrace(t);
@@ -1619,22 +1625,19 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * @throws ResourceException
      */
     private final Subject getFinalSubject(ConnectionRequestInfo requestInfo,
-                                          ManagedConnectionFactory mangedConnectionFactory, Object CM) throws ResourceException {
+                                          final ManagedConnectionFactory mangedConnectionFactory, Object CM) throws ResourceException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         Subject subj = null;
         if (this.containerManagedAuth) {
-            Map<String, Object> loginConfigProps = (Map<String, Object>) this.cmConfig.getLoginConfigProperties().clone();
-            String loginConfigurationName = this.cmConfig.getLoginConfigurationName();
+            final Map<String, Object> loginConfigProps = (Map<String, Object>) this.cmConfig.getLoginConfigProperties().clone();
+            String name = this.cmConfig.getLoginConfigurationName();
+            final String loginConfigurationName = name == null ? connectionFactorySvc.getJaasLoginContextEntryName() : name;
 
             String authDataID = (String) loginConfigProps.get("DefaultPrincipalMapping");
 
             // If no authentication-alias is found in the bindings, then use the default container managed auth alias (if any)
             if (authDataID == null)
                 authDataID = connectionFactorySvc.getContainerAuthDataID();
-
-            if (loginConfigurationName == null) {
-                loginConfigurationName = connectionFactorySvc.getJaasLoginContextEntryName();
-            }
 
             if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "login configuration name", loginConfigurationName);
@@ -1643,11 +1646,17 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             if (authDataID != null || loginConfigurationName != null) {
                 loginConfigProps.put("com.ibm.mapping.authDataAlias", authDataID);
+                final AuthDataService authSvc = _pm.connectorSvc.authDataServiceRef.getServiceWithException();
                 try {
-                    subj = _pm.connectorSvc.authDataServiceRef.getServiceWithException().getSubject(mangedConnectionFactory, loginConfigurationName, loginConfigProps);
-                } catch (LoginException e) {
-                    FFDCFilter.processException(e, getClass().getName(), "3070", this, new Object[] { this });
-                    ResourceException r = new ResourceException(e);
+                    subj = AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
+                        @Override
+                        public Subject run() throws LoginException {
+                            return authSvc.getSubject(mangedConnectionFactory, loginConfigurationName, loginConfigProps);
+                        }
+                    });
+                } catch (PrivilegedActionException e) {
+                    FFDCFilter.processException(e.getCause(), getClass().getName(), "3070", this, new Object[] { this });
+                    ResourceException r = new ResourceException(e.getCause());
                     throw r;
                 }
             }

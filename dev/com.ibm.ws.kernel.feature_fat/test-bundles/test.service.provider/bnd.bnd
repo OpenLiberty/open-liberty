@@ -1,0 +1,18 @@
+-include= ~../../../ant_build/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: test.service.provider
+Bundle-SymbolicName: test.service.provider
+
+Export-Package: \
+ com.ibm.ws.kernel.feature.test.api
+
+# hide the implementation packages
+Private-Package: \
+ test.service.provider
+
+-dsannotations: \
+ test.service.provider.ApiServiceImpl, \
+ test.service.provider.NotApiServiceImpl

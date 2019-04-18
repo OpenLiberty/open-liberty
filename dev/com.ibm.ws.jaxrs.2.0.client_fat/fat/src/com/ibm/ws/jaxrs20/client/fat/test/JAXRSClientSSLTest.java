@@ -13,7 +13,6 @@ package com.ibm.ws.jaxrs20.client.fat.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,9 +37,9 @@ public class JAXRSClientSSLTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, appname,
-                                                       "com.ibm.ws.jaxrs20.client.JAXRSClientSSL.client",
-                                                       "com.ibm.ws.jaxrs20.client.JAXRSClientSSL.service");
+        ShrinkHelper.defaultDropinApp(server, appname,
+                                      "com.ibm.ws.jaxrs20.client.JAXRSClientSSL.client",
+                                      "com.ibm.ws.jaxrs20.client.JAXRSClientSSL.service");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -96,7 +95,7 @@ public class JAXRSClientSSLTest extends AbstractTest {
         this.runTestOnServer(target, "testClientBasicSSL_InvalidSSLRef", p, "the SSL configuration reference \"invalidSSLConfig\" is invalid.");
     }
 
-    @Test
+//    @Test
     public void testClientBasicSSL_CustomizedSSLContext() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");

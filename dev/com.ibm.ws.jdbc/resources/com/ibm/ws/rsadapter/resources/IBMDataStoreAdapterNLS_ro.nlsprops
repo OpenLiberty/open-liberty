@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -278,6 +278,18 @@ DSRA4012.ignored.datasource.config.used.useraction=\u00cenl\u0103tura\u0163i pro
 DSRA4013.ignored.connection.manager.config.used=DSRA4013I: C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de manager de conexiuni sunt ignorate: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
 DSRA4013.ignored.connection.manager.config.used.explanation=Propriet\u0103\u0163ile de manager de conexiuni listate nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
 DSRA4013.ignored.connection.manager.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de manager de conexiuni \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: A fost specificat tipul java.sql.Driver pentru sursa de date {0}, dar nu a fost specificat niciun atribut URL.
+DSRA4014.URL.for.Driver.missing.explanation=Trebuie specificat un URL de conexiune pentru o surs\u0103 de date care este de tipul java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=Ad\u0103uga\u0163i un URL valid URL la sursa de date.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Sursa de date {0} a fost configurat\u0103 cu tipul ConnectionPoolDataSource, care nu este suportat de Oracle UCP. Folosi\u0163i \u00een locul lui tipul XADataSource sau DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=Sursa de date a fost configurat\u0103 cu tipul ConnectionPoolDataSource, care nu este implementat de driver-ul Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualiza\u0163i sursa de date pentru a utiliza tipul XADataSource sau DataSource.
+
+DSRA4016.no.ucp.driver.datasource=DSRA4016E: Sursa de date {0} a fost configurat\u0103 cu tipul Driver, care nu este suportat de Oracle UCP. Folosi\u0163i \u00een locul lui tipul XADataSource sau DataSource.
+DSRA4016.no.ucp.driver.datasource.explanation=Sursa de date a fost configurat\u0103 cu tipul Driver, care nu este implementat de driver-ul Oracle UCP.
+DSRA4016.no.ucp.driver.datasource.useraction=Actualiza\u0163i sursa de date pentru a utiliza tipul XADataSource sau DataSource.
 
 # ----------------------------------------------------------------------------
 # 

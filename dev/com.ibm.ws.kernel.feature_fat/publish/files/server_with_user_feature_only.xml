@@ -1,0 +1,7 @@
+<server>
+
+    <featureManager>
+        <feature>usr:usertest</feature>
+    </featureManager>
+    
+</server>

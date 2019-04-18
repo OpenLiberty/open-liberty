@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,26 +14,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.concurrent.CompletionStage;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.Providers;
+
+import org.apache.cxf.jaxrs.model.ProviderInfo;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -44,13 +46,12 @@ import com.ibm.websphere.ras.TraceComponent;
 public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
 
     private final static TraceComponent tc = Tr.register(JsonBProvider.class);
-
     private final Jsonb jsonb;
+    private final Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers;
 
-    @Context
-    private Providers providers;
+    public JsonBProvider(JsonbProvider jsonbProvider, Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers) {
+        this.contextResolvers = contextResolvers;
 
-    public JsonBProvider(JsonbProvider jsonbProvider) {
         if(jsonbProvider != null) {
             this.jsonb = jsonbProvider.create().build();
         } else {
@@ -114,7 +115,16 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] annotations,
                            MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
         Object obj = null;
-        obj = getJsonb().fromJson(entityStream, genericType);
+        // For most generic return types, we want to use the genericType so as to ensure
+        // that the generic value is not lost on conversion - specifically in collections.
+        // But for CompletionStage<SomeType> we want to use clazz to pull the right value
+        // - and then client code will handle the result, storing it in the CompletionStage.
+        if ((genericType instanceof ParameterizedType) &&
+            CompletionStage.class.equals( ((ParameterizedType)genericType).getRawType())) {
+            obj = getJsonb().fromJson(entityStream, clazz);
+        } else {
+            obj = getJsonb().fromJson(entityStream, genericType);
+        }
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
@@ -150,7 +160,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         }
         return untouchable;
     }
-    
+
     private boolean isJsonType(MediaType mediaType) {
         return mediaType.getSubtype().toLowerCase().startsWith("json")
                         || mediaType.getSubtype().toLowerCase().contains("+json");
@@ -167,12 +177,15 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     }
 
     private Jsonb getJsonb() {
-        if (providers != null) {
-            ContextResolver<Jsonb> cr = providers.getContextResolver(Jsonb.class, MediaType.WILDCARD_TYPE);
-            if (cr != null) {
-                return cr.getContext(null);
+        for (ProviderInfo<ContextResolver<?>> crPi : contextResolvers) {
+            ContextResolver<?> cr = crPi.getProvider();
+            Object o = cr.getContext(null);
+            if (o instanceof Jsonb) {
+                return (Jsonb) o;
             }
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Context-injected Providers is null");
         }
         return this.jsonb;

@@ -1,0 +1,5 @@
+<libertyFixMetadata>
+  <bundles>
+    <bundle id="lib/usertest_1.0.0.v20120424-1542.jar" size="1785213" date="2012-04-24 15:42" MD5hash="0d7c9b00066e183d0eaec191e492dcaa" symbolicName="usertest" version="1.0.0.v20120424-1542" isBaseBundle="false"/>
+  </bundles>
+</libertyFixMetadata>

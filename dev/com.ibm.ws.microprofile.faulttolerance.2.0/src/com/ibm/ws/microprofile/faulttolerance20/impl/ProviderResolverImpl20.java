@@ -21,7 +21,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProviderResolver
 public class ProviderResolverImpl20 extends ProviderResolverImpl {
 
     @Override
-    public <T, R> ExecutorBuilder<T, R> newExecutionBuilder() {
+    public <R> ExecutorBuilder<R> newExecutionBuilder() {
         return new ExecutorBuilderImpl20<>(contextService, policyExecutorProvider, getScheduledExecutorService());
     }
 

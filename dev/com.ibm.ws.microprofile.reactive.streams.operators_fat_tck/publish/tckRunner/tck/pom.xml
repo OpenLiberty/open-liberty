@@ -176,6 +176,7 @@
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                     </systemPropertyVariables>
                     <!--These did not get picked up by the server and have been set in ReactiveStreamsTCKLauncher.java. 
                     <environmentVariables>  

@@ -20,8 +20,8 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd po\u017eaduje [{0}], se nezda\u0159ilo, proto\u017ee vydavatel (iss) [{1}] uveden\u00fd v tokenu neodpov\u00edd\u00e1 atributu [issuerIdentifier] [{2}] poskytovatele uveden\u00e9ho v konfiguraci klienta OpenID Connect. Zkontrolujte atribut issuerIdentifier v konfiguraci klienta.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Ov\u011b\u0159en\u00ed tokenu ID se nezda\u0159ilo, proto\u017ee vydavatel ur\u010den\u00fd v konfiguraci klienta OpenID Connect (z\u00e1visl\u00e1 strana - RP) neodpov\u00edd\u00e1 vydavateli uveden\u00e9mu v tokenu.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Zkontrolujte, zda atribut [issuerIdentifier] uveden\u00fd v konfiguraci klienta OpenID Connect (RP) odpov\u00edd\u00e1 vydavateli pou\u017e\u00edvan\u00e9ho poskytovatele OpenID (OP).
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Ov\u011b\u0159en\u00ed tokenu ID se nezda\u0159ilo, proto\u017ee vydavatel ur\u010den\u00fd v konfiguraci klienta OpenID Connect (z\u00e1visl\u00e1 strana - RP) nebo konfiguraci klienta pro soci\u00e1ln\u00ed p\u0159ipojen\u00ed neodpov\u00edd\u00e1 vydavateli uveden\u00e9mu v tokenu.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Zkontrolujte, zda atribut [issuerIdentifier] uveden\u00fd v konfiguraci klienta OpenID Connect (RP) nebo konfiguraci klienta pro soci\u00e1ln\u00ed p\u0159ipojen\u00ed odpov\u00edd\u00e1 vydavateli pou\u017e\u00edvan\u00e9ho poskytovatele OpenID (OP).
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: P\u0159i pokusu o podeps\u00e1n\u00ed tokenu ID s pomoc\u00ed algoritmu [{0}] do\u0161lo k chyb\u011b: [{1}].
@@ -182,3 +182,8 @@ TOKEN_ISSUER_NOT_TRUSTED.useraction=Ov\u011b\u0159te, \u017ee hodnota n\u00e1rok
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee token obsahuje n\u00e1rok [{0}], ale hod nota atributu konfigurace klienta [{1}] ozna\u010duje, \u017ee token nesm\u00ed obsahovat n\u00e1rok.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Token nem\u016f\u017ee obsahovat ur\u010den\u00fd n\u00e1rok kv\u016fli hodnot\u011b ur\u010den\u00e9ho atributu konfigurace.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Bu\u010f z\u00edskejte nov\u00fd token, kter\u00fd neobsahuje uveden\u00fd n\u00e1rok, nebo zm\u011b\u0148te uvedenou hodnotu atributu konfigurace, abyste povolili n\u00e1rok, kter\u00fd m\u00e1 b\u00fdt zahrnut do tokenu.
+
+# 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zahrnuje {1} v hodnot\u00e1ch ur\u010den\u00fdch atributem konfigurace [{2}]. Ur\u010den\u00e9ho hodnoty budou ignorov\u00e1ny.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specifikace OAuth 2.0 definuje sadu vyhrazen\u00fdch parametr\u016f po\u017eadavku, kter\u00e9 mus\u00ed b\u00fdt dod\u00e1ny klientem pro autoriza\u010dn\u00ed po\u017eadavky. Hodnoty pro tyto vyhrazen\u00e9 parametry nelze dodat u\u017eivatelem.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Odeberte ur\u010den\u00e9 hodnoty ze seznamu hodnot definovan\u00fdch v konfiguraci klienta OpenID Connect.

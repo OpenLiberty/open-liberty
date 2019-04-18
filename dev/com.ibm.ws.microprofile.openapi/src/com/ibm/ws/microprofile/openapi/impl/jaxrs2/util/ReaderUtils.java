@@ -36,6 +36,7 @@ public class ReaderUtils {
     private static final String DELETE_METHOD = "delete";
     private static final String HEAD_METHOD = "head";
     private static final String OPTIONS_METHOD = "options";
+    private static final String PATCH_METHOD = "patch";
     private static final String PATH_DELIMITER = "/";
 
     /**
@@ -183,8 +184,15 @@ public class ReaderUtils {
 
             b.append(parentPath);
         }
-        if (classLevelPath != null) {
-            b.append(classLevelPath.value());
+        if (classLevelPath != null && !"/".equals(classLevelPath.value())) {
+            String classPath = classLevelPath.value();
+            if (!classPath.startsWith("/") && !b.toString().endsWith("/")) {
+                b.append("/");
+            }
+            if (classPath.endsWith("/")) {
+                classPath = classPath.substring(0, classPath.length() - 1);
+            }
+            b.append(classPath);
         }
         if (methodLevelPath != null && !"/".equals(methodLevelPath.value())) {
             String methodPath = methodLevelPath.value();
@@ -208,6 +216,12 @@ public class ReaderUtils {
     }
 
     public static String extractOperationMethod(Operation operation, Method method, Iterator<OpenAPIExtension> chain) {
+
+        for (Annotation annotation : method.getAnnotations()) {
+            if (annotation.getClass().getName().equals("javax.ws.rs.PATCH")) {
+                return PATCH_METHOD;
+            }
+        }
         if (method.getAnnotation(javax.ws.rs.GET.class) != null) {
             return GET_METHOD;
         } else if (method.getAnnotation(javax.ws.rs.PUT.class) != null) {

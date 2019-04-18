@@ -198,6 +198,7 @@ public class AutomaticTimerBean {
                 // Reflection is needed here so that ejbcontainer can avoid a dependency on JAX-B, which
                 // is being removed from the JDK in Java 9.  If we are JDK <9 we will continue to use JAX-B,
                 // and if we are JDK >=9 we will use the java.time APIs that were introduced in JDK 8.
+                // NOTE: We still need JAXB for JDK < 8 as java.time does not exist.
                 boolean isJAXBAvailable = System.getProperty("java.version").startsWith("1.");
                 if (isJAXBAvailable) {
                     if (!initialized) {

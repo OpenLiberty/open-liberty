@@ -937,35 +937,49 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     public static void clearSSLContextCache(Collection<File> modifiedFiles) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Clearing standard javax.net.ssl.SSLContext cached object containing keystores: " + new Object[] { modifiedFiles });
-        List<SSLConfig> removeList = new ArrayList<SSLConfig>();
         for (File modifiedKeystoreFile : modifiedFiles) {
             String filePath = null;
-            String comparePath = null;
             try {
                 filePath = modifiedKeystoreFile.getCanonicalPath();
-                comparePath = filePath.replace('\\', '/');
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Exception comparing file path.");
                 continue;
             }
+            removeEntryFromSSLContextMap(filePath);
+        }
+    }
 
-            for (Entry<SSLConfig, SSLContext> entry : sslContextCacheJAVAX.entrySet()) {
-                SSLConfig cachedConfig = entry.getKey();
+    /**
+     * Give a keyStoreFile location look for the SSLContexts that reference it as either a keystore or
+     * truststore then remove those SSLContexts from the cache.
+     */
+    public static void removeEntryFromSSLContextMap(String keyStorePath) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "removeEntryFromSSLContextMap: " + new Object[] { keyStorePath });
 
-                if (cachedConfig != null) {
-                    String ksPropValue = cachedConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
-                    String tsPropValue = cachedConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
+        List<SSLConfig> removeList = new ArrayList<SSLConfig>();
 
-                    if ((ksPropValue != null && comparePath.equals(ksPropValue)) ||
-                        (tsPropValue != null && comparePath.equals(tsPropValue))) {
-                        removeList.add(cachedConfig);
-                    }
+        for (Entry<SSLConfig, SSLContext> entry : sslContextCacheJAVAX.entrySet()) {
+            SSLConfig cachedConfig = entry.getKey();
+
+            if (cachedConfig != null) {
+                String ksPropValue = cachedConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
+                boolean ksFileBased = Boolean.parseBoolean(cachedConfig.getProperty(Constants.SSLPROP_KEY_STORE_FILE_BASED));
+                String tsPropValue = cachedConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
+                boolean tsFileBased = Boolean.parseBoolean(cachedConfig.getProperty(Constants.SSLPROP_TRUST_STORE_FILE_BASED));
+
+                if ((ksPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(ksPropValue, ksFileBased))) ||
+                    (tsPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(tsPropValue, tsFileBased)))) {
+                    removeList.add(cachedConfig);
                 }
             }
         }
         if (!removeList.isEmpty()) {
             for (SSLConfig removeEntry : removeList) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "removing from sslContext cache: " + removeEntry.toString());
+
                 sslContextCacheJAVAX.remove(removeEntry);
             }
         }

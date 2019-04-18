@@ -37,6 +37,7 @@ import com.ibm.ws.jaxrs20.fat.jackson1x.JacksonPOJOwithUserJacksonLib1xTest;
 import com.ibm.ws.jaxrs20.fat.jackson2x.JacksonPOJOwithUserJacksonLib2xTest;
 import com.ibm.ws.jaxrs20.fat.jacksonJsonIgnore.JacksonJsonIgnoreTest;
 import com.ibm.ws.jaxrs20.fat.json.UTF8Test;
+import com.ibm.ws.jaxrs20.fat.paramconverter.ParamConverterTest;
 import com.ibm.ws.jaxrs20.fat.params.ParamsTest;
 import com.ibm.ws.jaxrs20.fat.providercache.ProviderCacheTest;
 import com.ibm.ws.jaxrs20.fat.readerwriterprovider.ReaderWriterProvidersTest;
@@ -50,6 +51,7 @@ import com.ibm.ws.jaxrs20.fat.servletcoexist.JAXRSServletCoexistTest;
 import com.ibm.ws.jaxrs20.fat.standard.StandardProvidersTest;
 import com.ibm.ws.jaxrs20.fat.subresource.ExceptionsSubresourcesTest;
 import com.ibm.ws.jaxrs20.fat.thirdpartyjersey.JerseyTest;
+import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
 
@@ -83,6 +85,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRSValidationDisabledTest.class,
                 JAXRSWebContainerTest.class,
                 JerseyTest.class,
+                ParamConverterTest.class,
                 ParamsTest.class,
                 ProviderCacheTest.class,
                 ReaderWriterProvidersTest.class,
@@ -95,6 +98,7 @@ import componenttest.rules.repeater.RepeatTests;
                 SecuritySSLTest.class,
                 ServiceScopeTest.class,
                 StandardProvidersTest.class,
+                UriInfoTest.class,
                 UTF8Test.class,
                 //ValidationTest.class, //TODO: fix up and reenable tests - 6325
                 WADLTest.class

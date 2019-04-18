@@ -17,6 +17,7 @@
 package com.ibm.ws.webcontainer.osgi.webapp;
 
 import java.security.Principal;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,20 +31,33 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
  */
 public class WebAppDispatcherContext extends com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext
 {
+    private static final String CLASS_NAME="com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext"; 
   private Principal principal;
 
   public WebAppDispatcherContext()
   {
-    this._webapp = null;
+      if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+          logger.logp(Level.FINE, CLASS_NAME,"constructor", "webapp is null, this -> " + this);
+      }
+
+      super.setWebApp(null);
   }
 
   public WebAppDispatcherContext(WebApp webapp)
   {
-    this._webapp = webapp;
+      if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+          logger.logp(Level.FINE, CLASS_NAME,"constructor", "webapp -> " +webapp+ " , this -> " + this);
+      }
+
+      super.setWebApp(webapp);
   }
 
   public WebAppDispatcherContext(IExtendedRequest req)
   {
+      if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+          logger.logp(Level.FINE, CLASS_NAME,"constructor", "req -> " + req + " , this -> " + this);
+      }
+      
     this._request = req;
     this.initForNextDispatch(req);
   }

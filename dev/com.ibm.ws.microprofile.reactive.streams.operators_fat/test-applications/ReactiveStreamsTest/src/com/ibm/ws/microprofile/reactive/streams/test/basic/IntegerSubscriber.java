@@ -25,6 +25,7 @@ public class IntegerSubscriber implements Subscriber<Integer> {
     private Subscription sub;
     private final ArrayList<Integer> results = new ArrayList<Integer>();
     private boolean complete = false;
+    private boolean alreadyUsed = false;
 
     @Override
     public void onComplete() {
@@ -34,21 +35,32 @@ public class IntegerSubscriber implements Subscriber<Integer> {
 
     @Override
     public void onError(Throwable arg0) {
-        System.out.println("onError");
+        System.out.println("onError: " + arg0);
+        this.complete = true;
     }
 
     @Override
     public void onNext(Integer arg0) {
-        System.out.println("Number received: " + arg0);
+        System.out.println("onNext: " + arg0);
         assertTrue(arg0 >= 3);
         results.add(arg0);
         sub.request(1);
     }
 
     @Override
-    public void onSubscribe(Subscription arg0) {
-        sub = arg0;
-        System.out.println("onSubscribe" + sub);
+    public void onSubscribe(Subscription sub_parm) {
+
+        System.out.println("onSubscribe" + sub_parm);
+
+        if (alreadyUsed) {
+            throw new RuntimeException("Please don't reuse this instance");
+        }
+
+        alreadyUsed = true;
+
+        this.sub = sub_parm;
+
+        startConsuming();
     }
 
     public void startConsuming() {
@@ -56,10 +68,12 @@ public class IntegerSubscriber implements Subscriber<Integer> {
     }
 
     public boolean isComplete() {
+        System.out.println("isComplete");
         return this.complete;
     }
 
     public ArrayList<Integer> getResults() {
+        System.out.println("results" + results.toArray().toString());
         return results;
     }
 

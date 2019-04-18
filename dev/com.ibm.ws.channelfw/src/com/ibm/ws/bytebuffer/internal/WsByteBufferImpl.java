@@ -73,8 +73,8 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
     protected int quickBufferAction = NOT_ACTIVATED;
 
     // min/max are inclusive, so threshold will be this number + 1
-    private int GET_THRESHOLD = 1023; // minimum amount to copy from Direct to NonDirect
-    private int PUT_THRESHOLD = 2047; // maximum number of bytes between non-contiguous puts that will be bridged.
+    private static final int GET_THRESHOLD = 1023; // minimum amount to copy from Direct to NonDirect
+    private static final int PUT_THRESHOLD = 2047; // maximum number of bytes between non-contiguous puts that will be bridged.
 
     private int status = WsByteBuffer.STATUS_BUFFER;
 
@@ -90,7 +90,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
     /**
      * Query the root buffer of this one, may or may not exist
      * depending on if this instance is a duplicate or a slice.
-     * 
+     *
      * @return PooledWsByteBufferImpl
      */
     public PooledWsByteBufferImpl getWsBBRoot() {
@@ -99,7 +99,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
 
     /**
      * Store the parent pooled buffer that spawned this one.
-     * 
+     *
      * @param wsbb
      */
     public void setWsBBRoot(PooledWsByteBufferImpl wsbb) {
@@ -110,7 +110,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
      * Query the RefCount buffer owner of this one, which may or may
      * not exist depending on if this instance was a duplicate or a
      * slice.
-     * 
+     *
      * @return RefCountWsByteBufferImpl
      */
     public RefCountWsByteBufferImpl getWsBBRefRoot() {
@@ -119,13 +119,14 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
 
     /**
      * Store the parent refcount buffer that spawned this one.
-     * 
+     *
      * @param wsbb
      */
     public void setWsBBRefRoot(RefCountWsByteBufferImpl wsbb) {
         this.wsBBRefRoot = wsbb;
     }
 
+    @Override
     public byte[] array() {
         if (!this.trusted)
             checkValidity();
@@ -138,6 +139,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.array();
     }
 
+    @Override
     public int arrayOffset() {
         if (!this.trusted)
             checkValidity();
@@ -147,6 +149,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.arrayOffset();
     }
 
+    @Override
     public WsByteBuffer compact() {
         if (!this.trusted) {
             checkValidity();
@@ -197,6 +200,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return super.hashCode();
     }
 
+    @Override
     public char getChar() {
         if (!this.trusted)
             checkValidity();
@@ -206,6 +210,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getChar();
     }
 
+    @Override
     public char getChar(int index) {
         if (!this.trusted)
             checkValidity();
@@ -215,6 +220,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getChar(index);
     }
 
+    @Override
     public WsByteBuffer putChar(char value) {
         if (!this.trusted) {
             checkValidity();
@@ -227,6 +233,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putChar(int index, char value) {
         if (!this.trusted) {
             checkValidity();
@@ -239,6 +246,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putChar(char[] values) {
         if (!this.trusted) {
             checkValidity();
@@ -250,6 +258,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return putChar(values, 0, values.length);
     }
 
+    @Override
     public WsByteBuffer putChar(char[] values, int off, int len) {
         if (!this.trusted) {
             checkValidity();
@@ -268,6 +277,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public double getDouble() {
         if (!this.trusted)
             checkValidity();
@@ -277,6 +287,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getDouble();
     }
 
+    @Override
     public double getDouble(int index) {
         if (!this.trusted)
             checkValidity();
@@ -286,6 +297,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getDouble(index);
     }
 
+    @Override
     public WsByteBuffer putDouble(double value) {
         if (!this.trusted) {
             checkValidity();
@@ -298,6 +310,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putDouble(int index, double value) {
         if (!this.trusted) {
             checkValidity();
@@ -310,6 +323,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public float getFloat() {
         if (!this.trusted)
             checkValidity();
@@ -319,6 +333,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getFloat();
     }
 
+    @Override
     public float getFloat(int index) {
         if (!this.trusted)
             checkValidity();
@@ -328,6 +343,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getFloat(index);
     }
 
+    @Override
     public WsByteBuffer putFloat(float value) {
         if (!this.trusted) {
             checkValidity();
@@ -340,6 +356,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putFloat(int index, float value) {
         if (!this.trusted) {
             checkValidity();
@@ -352,6 +369,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public int getInt() {
         if (!this.trusted)
             checkValidity();
@@ -361,6 +379,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getInt();
     }
 
+    @Override
     public int getInt(int index) {
         if (!this.trusted)
             checkValidity();
@@ -370,6 +389,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getInt(index);
     }
 
+    @Override
     public WsByteBuffer putInt(int value) {
         if (!this.trusted) {
             checkValidity();
@@ -382,6 +402,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putInt(int index, int value) {
         if (!this.trusted) {
             checkValidity();
@@ -394,6 +415,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public long getLong() {
         if (!this.trusted)
             checkValidity();
@@ -403,6 +425,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getLong();
     }
 
+    @Override
     public long getLong(int index) {
         if (!this.trusted)
             checkValidity();
@@ -412,6 +435,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getLong(index);
     }
 
+    @Override
     public WsByteBuffer putLong(long value) {
         if (!this.trusted) {
             checkValidity();
@@ -424,6 +448,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putLong(int index, long value) {
         if (!this.trusted) {
             checkValidity();
@@ -436,6 +461,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public short getShort() {
         if (!this.trusted)
             checkValidity();
@@ -445,6 +471,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getShort();
     }
 
+    @Override
     public short getShort(int index) {
         if (!this.trusted)
             checkValidity();
@@ -454,6 +481,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.getShort(index);
     }
 
+    @Override
     public WsByteBuffer putShort(short value) {
         if (!this.trusted) {
             checkValidity();
@@ -466,6 +494,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putShort(int index, short value) {
         if (!this.trusted) {
             checkValidity();
@@ -478,6 +507,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer putString(String value) {
         if (!this.trusted) {
             checkValidity();
@@ -490,16 +520,19 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public boolean hasArray() {
         // checkValidity();
         return this.oByteBuffer.hasArray();
     }
 
+    @Override
     public ByteOrder order() {
         // checkValidity();
         return this.oByteBuffer.order();
     }
 
+    @Override
     public WsByteBuffer order(ByteOrder bo) {
         if (!this.trusted)
             checkValidity();
@@ -507,6 +540,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer clear() {
         if (!this.trusted)
             checkValidity();
@@ -514,11 +548,13 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public int capacity() {
         // checkValidity();
         return (this.oByteBuffer.capacity());
     }
 
+    @Override
     public WsByteBuffer flip() {
         if (!this.trusted)
             checkValidity();
@@ -554,6 +590,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         }
     }
 
+    @Override
     public boolean setBufferAction(int newAction) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "setBufferAction(newAction): " + newAction);
@@ -656,7 +693,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         }
 
         if (((newPutMin >= wsBBRoot.putMin)
-               && (newPutMax <= wsBBRoot.putMax))
+             && (newPutMax <= wsBBRoot.putMax))
             || (wsBBRoot.putMax == -1)) {
 
             // if new put is completely inside putMin/putMax, or putMin/putMax
@@ -1075,6 +1112,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         }
     }
 
+    @Override
     public byte get() {
         if (!this.trusted)
             checkValidity();
@@ -1101,11 +1139,13 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return b;
     }
 
+    @Override
     public int position() {
         // checkValidity();
         return (this.oByteBuffer.position());
     }
 
+    @Override
     public WsByteBuffer position(int p) {
         if (!this.trusted)
             checkValidity();
@@ -1113,6 +1153,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer limit(int l) {
         if (!this.trusted)
             checkValidity();
@@ -1120,16 +1161,19 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public int limit() {
         // checkValidity();
         return (this.oByteBuffer.limit());
     }
 
+    @Override
     public int remaining() {
         // checkValidity();
         return this.oByteBuffer.remaining();
     }
 
+    @Override
     public WsByteBuffer mark() {
         if (!this.trusted)
             checkValidity();
@@ -1137,6 +1181,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer reset() {
         if (!this.trusted)
             checkValidity();
@@ -1144,6 +1189,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer rewind() {
         if (!this.trusted)
             checkValidity();
@@ -1151,16 +1197,19 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public boolean isReadOnly() {
         // checkValidity();
         return this.oByteBuffer.isReadOnly();
     }
 
+    @Override
     public boolean hasRemaining() {
         // checkValidity();
         return this.oByteBuffer.hasRemaining();
     }
 
+    @Override
     public WsByteBuffer get(byte[] dst) {
         if (!this.trusted)
             checkValidity();
@@ -1194,6 +1243,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer get(byte[] dst, int offset, int length) {
         if (!this.trusted)
             checkValidity();
@@ -1231,6 +1281,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public byte get(int index) {
         if (!this.trusted)
             checkValidity();
@@ -1240,11 +1291,13 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.get(index);
     }
 
+    @Override
     public boolean isDirect() {
         // checkValidity();
         return this.oByteBuffer.isDirect();
     }
 
+    @Override
     public WsByteBuffer put(byte b) {
         if (!this.trusted) {
             checkValidity();
@@ -1272,6 +1325,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer put(byte[] src) {
         if (!this.trusted) {
             checkValidity();
@@ -1305,6 +1359,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer put(byte[] src, int offset, int length) {
         if (!this.trusted) {
             checkValidity();
@@ -1339,6 +1394,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer put(int index, byte b) {
         if (!this.trusted) {
             checkValidity();
@@ -1351,6 +1407,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer put(ByteBuffer src) {
         if (!this.trusted) {
             checkValidity();
@@ -1363,6 +1420,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer put(WsByteBuffer src) {
         if (!this.trusted) {
             checkValidity();
@@ -1375,6 +1433,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public WsByteBuffer put(WsByteBuffer[] src) {
         if (!this.trusted) {
             checkValidity();
@@ -1389,12 +1448,14 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this;
     }
 
+    @Override
     public ByteBuffer getWrappedByteBuffer() {
         if (!this.trusted)
             checkValidity();
         return getWrappedByteBufferCommon(false);
     }
 
+    @Override
     public ByteBuffer getWrappedByteBufferNonSafe() {
         return getWrappedByteBufferCommon(true);
     }
@@ -1408,6 +1469,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer;
     }
 
+    @Override
     public WsByteBuffer duplicate() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "duplicate");
@@ -1463,6 +1525,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         }
     }
 
+    @Override
     public WsByteBuffer slice() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "slice");
@@ -1538,6 +1601,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         }
     }
 
+    @Override
     public void release() {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1632,10 +1696,12 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.isDirectPool;
     }
 
+    @Override
     public void setReadOnly(boolean value) {
         this.readOnly = value;
     }
 
+    @Override
     public boolean getReadOnly() {
         return this.readOnly;
     }
@@ -1655,7 +1721,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
 
     /**
      * Set the PoolManager reference.
-     * 
+     *
      * @param oManagerRef
      */
     public void setPoolManagerRef(WsByteBufferPoolManagerImpl oManagerRef) {
@@ -1669,7 +1735,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
 
     /**
      * Set the NIO ByteBuffer wrapped by this WsByteBuffer to the input.
-     * 
+     *
      * @param buffer
      */
     public void setByteBuffer(ByteBuffer buffer) {
@@ -1681,7 +1747,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
     /**
      * Set the NIO ByteBuffer wrapped by this WsByteBuffer to the input
      * and avoid the buffer validity checks.
-     * 
+     *
      * @param buffer
      */
     public void setByteBufferNonSafe(ByteBuffer buffer) {
@@ -1700,7 +1766,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
     /**
      * Set the direct bytebuffer that backs an indirect heap buffer to
      * the input buffer.
-     * 
+     *
      * @param buffer
      */
     public void setDirectShadowBuffer(ByteBuffer buffer) {
@@ -1720,11 +1786,11 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
 
     private void checkReadOnly() {
         if (readOnly) {
-            String id = "none";
-            if ((wsBBRoot != null) && (wsBBRoot.pool != null)) {
-                id = (wsBBRoot.getID().toString());
-            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                String id = "none";
+                if ((wsBBRoot != null) && (wsBBRoot.pool != null)) {
+                    id = Integer.toString(wsBBRoot.getID());
+                }
                 Tr.debug(tc, "Attempt to update a read only WsByteBuffer."
                              + "\nWsByteBuffer: ID: " + id
                              + "\nBuffer: " + this.oByteBuffer);
@@ -1739,23 +1805,21 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         if (booleanReleaseCalled.get()) {
             String id = "none";
             if ((wsBBRoot != null) && (wsBBRoot.pool != null)) {
-                id = (wsBBRoot.getID().toString());
+                id = Integer.toString(wsBBRoot.getID());
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc,
                          "Attempt to access WsByteBuffer that was already released."
-                                         + "\nWsByteBuffer: ID: "
-                                         + id
-                                         + " Sub ID: "
-                                         + this.oByteBuffer);
+                             + "\nWsByteBuffer: ID: "
+                             + id
+                             + " Sub ID: "
+                             + this.oByteBuffer);
             }
-            RuntimeException iae =
-                            new RuntimeException(
-                                            "Invalid call to WsByteBuffer method.  Buffer has already been released."
-                                                            + "\nWsByteBuffer: ID: "
-                                                            + id
-                                                            + "\nBuffer: "
-                                                            + this.oByteBuffer);
+            RuntimeException iae = new RuntimeException("Invalid call to WsByteBuffer method.  Buffer has already been released."
+                                                        + "\nWsByteBuffer: ID: "
+                                                        + id
+                                                        + "\nBuffer: "
+                                                        + this.oByteBuffer);
             FFDCFilter.processException(iae, getClass().getName() + ".checkValidity", "1", this);
             throw iae;
         }
@@ -1861,7 +1925,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
 
     /**
      * Copy the targeted number of bytes from the backing direct buffers.
-     * 
+     *
      * @param bytesRead
      */
     public void copyFromDirectBuffer(int bytesRead) {
@@ -1997,14 +2061,17 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         this.oByteBuffer.position(oWsBBDirect.position());
     }
 
+    @Override
     public int getType() {
         return WsByteBuffer.TYPE_WsByteBuffer;
     }
 
+    @Override
     public int getStatus() {
         return this.status;
     }
 
+    @Override
     public void setStatus(int value) {
         this.status = value;
     }
@@ -2020,6 +2087,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
         return this.oByteBuffer.toString();
     }
 
+    @Override
     public void removeFromLeakDetection() {
         // turn off leak detection for this WsByteBuffer
         if (ownerID != null) {
@@ -2036,6 +2104,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
     /*
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
+    @Override
     public void writeExternal(ObjectOutput s) throws IOException {
         if (!removedFromLeakDetection) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -2089,6 +2158,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
     /*
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
+    @Override
     public void readExternal(ObjectInput s) throws IOException, ClassNotFoundException {
         String type = (String) s.readObject();
         String endian = (String) s.readObject();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,8 +71,10 @@ public class PreMain {
                 return System.setProperty(PreMainUtil.KEY_SERIALFILTER_AGENT_ACTIVE, "true");
             }
         });
-        System.out.println(MessageFormat.format(ResourceBundle.getBundle("com.ibm.ws.kernel.instrument.serialfilter.agent.internal.resources.SerialFilterAgentMessages").getString("SFA_INFO_AGENT_LOADED"), ""));
 
+        if (PreMainUtil.isMessageEnabled()) {
+            System.out.println(MessageFormat.format(ResourceBundle.getBundle("com.ibm.ws.kernel.instrument.serialfilter.agent.internal.resources.SerialFilterAgentMessages").getString("SFA_INFO_AGENT_LOADED"), ""));
+        }
     }
 
     public static void agentmain(String args, Instrumentation instrumentation) throws Exception {
@@ -99,9 +101,21 @@ public class PreMain {
             Field factory = ObjectInputStream.class.getDeclaredField("serializationValidatorFactory");
             factory.setAccessible(true);
             int modifiers = factory.getModifiers();
-            Field modifierField = factory.getClass().getDeclaredField("modifiers");
-            modifierField.setAccessible(true);
-            modifierField.setInt(factory, modifiers	&~ Modifier.FINAL);
+            if (Modifier.isFinal(modifiers)) {
+                try {
+                    Field modifierField = factory.getClass().getDeclaredField("modifiers");
+                    modifierField.setAccessible(true);
+                    modifierField.setInt(factory, modifiers	&~ Modifier.FINAL);
+                } catch (NoSuchFieldException expectedForNonIbmJava) {
+                    if (debugEnabled) {
+                        System.out.println("Caught NoSuchFieldException while accessing ObjectInputStream modifiers fields from agent which is expected for non IBM JVM");
+                    }
+                }
+            } else {
+                if (debugEnabled) {
+                    System.out.println("Modifiers does not set as final.");
+                }                
+            }
             factory.set(null, validatorFactory);
             if (debugEnabled) {
                 System.out.println("Forcing ObjectInputStream initialisation.");
@@ -112,9 +126,11 @@ public class PreMain {
             } catch (NullPointerException ignored) {
             } catch (IOException ignored) {
             }
-
-        } catch (NoSuchFieldException expectedForNonIbmJava) {
         } catch (IllegalAccessException unexpected) {
+            if (debugEnabled) {
+                System.out.println("Caught unexpected IllegalAccessException while accessing ObjectInputStream fields from agent" + unexpected);
+            }
+        } catch (Exception unexpected) {
             if (debugEnabled) {
                 System.out.println("Caught unexpected exception while accessing ObjectInputStream fields from agent" + unexpected);
             }

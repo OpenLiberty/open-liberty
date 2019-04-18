@@ -48,7 +48,7 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
 
     /**
      * Used to build a FileContainer for a File, not present within an enclosing container.
-     * 
+     *
      * @param cacheDir location to host this containers cached data.
      * @param f the File to use.
      * @param c somewhere to obtain the current container factory from.
@@ -66,7 +66,7 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
 
     /**
      * Builds a FileContainer that is enclosed by another Container instance.
-     * 
+     *
      * @param cacheDir location for this container to use for cache data.
      * @param parent the enclosing ArtifactContainer.
      * @param e the ArtifactEntry in the enclosing ArtifactContainer representing this ArtifactContainer.
@@ -86,7 +86,7 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
     /**
      * Builds a FileContainer enclosed by another Container, where the Container created
      * may be a non-root Container.
-     * 
+     *
      * @param parent the enclosing Container.
      * @param e the entry in the enclosing Container representing this Container.
      * @param f the File object on disk representing this Container.
@@ -131,7 +131,7 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
             if (childs != null) {
                 children = Collections.unmodifiableList(Arrays.asList(childs)).iterator();
             } else {
-                //the directory this iterator refers to has been deleted.. 
+                //the directory this iterator refers to has been deleted..
                 //so we cannot iterate it.. we'll use an empty collection to maintain
                 //consistency.
                 children = Collections.unmodifiableList(new ArrayList<File>()).iterator();
@@ -199,16 +199,9 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
 
     @Override
     public ArtifactEntry getEntry(String pathAndName) {
-        return getEntry(pathAndName, false);
-    }
-
-    private ArtifactEntry getEntry(String pathAndName, boolean normalized) {
         //safeguard..
         //check the path is not trying to leave the archive
-        if (!normalized) {
-            pathAndName = PathUtils.normalizeUnixStylePath(pathAndName);
-            normalized = true;
-        }
+        pathAndName = PathUtils.normalizeUnixStylePath(pathAndName);
 
         if (pathAndName.equals("/") || pathAndName.equals("")) {
             return null;
@@ -254,8 +247,8 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
                 return null;
         }
 
-        //if it starts with a / it's an absolute path, so we walk back up our 
-        //parent chain until we find the one claiming to be our local root, 
+        //if it starts with a / it's an absolute path, so we walk back up our
+        //parent chain until we find the one claiming to be our local root,
         //then invoke getEntry there with the path =)
         if (pathAndName.startsWith("/")) {
             ArtifactContainer c = this;
@@ -268,8 +261,8 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
         //else.. it's a relative request to a non-root node..
         //  or.. it's a relative nested request to the root node..
 
-        //the request is valid, but we have to create the chain of Containers that 
-        //link from this node, to the Entry being returned. 
+        //the request is valid, but we have to create the chain of Containers that
+        //link from this node, to the Entry being returned.
 
         File top = dir;
         File container = target;

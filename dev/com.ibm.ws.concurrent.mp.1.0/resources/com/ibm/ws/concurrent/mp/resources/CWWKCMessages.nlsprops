@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: The same thread context type, {0}, is provided by multiple thread context providers which are available to the application. Thread context providers are: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=The MicroProfile Concurrency specification permits no more than one ThreadContextProvider for each context type.
+CWWKC1150.duplicate.context.explanation=The MicroProfile Context Propagation specification permits no more than one ThreadContextProvider for each context type.
 CWWKC1150.duplicate.context.useraction=Update the available application, libraries, or both so that no more than one ThreadContextProvider of the specified type exists.
 
 # do not translate: cleared, propagated

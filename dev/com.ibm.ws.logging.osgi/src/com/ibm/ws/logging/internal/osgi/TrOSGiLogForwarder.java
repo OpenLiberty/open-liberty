@@ -51,6 +51,9 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
     public static final int LOG_EVENT = -5;
 
     private static final Object COULD_NOT_OBTAIN_LOCK_EXCEPTION = "Could not obtain lock";
+	private static final String COULD_NOT_GET_SERVICE_FROM_REF = "could not get service from ref";
+	private static final String COULD_NOT_OBTAIN_ALL_REQ_DEPS = "could not obtain all required dependencies";
+	private static final String SERVICE_NOT_AVAILABLE = "service not available from service registry for servicereference";
 
     private final Map<Bundle, OSGiTraceComponent> traceComponents = new ConcurrentHashMap<Bundle, OSGiTraceComponent>();
 
@@ -96,7 +99,14 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         boolean isAnyTraceEnabled = TraceComponent.isAnyTracingEnabled();
         ExtendedLogEntry logEntry = (ExtendedLogEntry) le;
         Bundle b = logEntry.getBundle();
+        if (b == null) {
+            // This is possible in rare conditions;
+            // For example log entries for service events when the service is unregistered
+            // before we could get the bundle
+            return;
+        }
         OSGiTraceComponent tc = getTraceComponent(b);
+        
         try {
             if (logEntry.getLogLevel() != LogLevel.ERROR) {
                 // check for events specifically to log them with Tr.event
@@ -122,12 +132,16 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
     
                 case INFO:
                     if (tc.isInfoEnabled()) {
-                        Tr.info(tc, "OSGI_MSG001", getObjects(logEntry, true));
+                        if(shouldBeLogged(logEntry, tc)) {
+                            Tr.info(tc, "OSGI_MSG001", getObjects(logEntry, true));
+                        }
                     }
                     break;
     
                 case WARN:
-                    Tr.warning(tc, "OSGI_WARNING_MSG", getObjects(logEntry, true));
+                    if(shouldBeLogged(logEntry, tc)) {
+                        Tr.warning(tc, "OSGI_WARNING_MSG", getObjects(logEntry, true));
+                    }
                     break;
     
                 case ERROR:
@@ -214,7 +228,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
             if (t instanceof IllegalStateException && COULD_NOT_OBTAIN_LOCK_EXCEPTION.equals(t.getMessage())) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "DS could not obtain a lock. This is not an error, but may indicate high system load",
-                            getObjects(logEntry, true));
+                            getObjects(logEntry, false));
                 }
                 return false;
             }
@@ -228,5 +242,22 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         if (e.getType() == BundleEvent.UNINSTALLED) {
             traceComponents.remove(e.getBundle());
         }
+    }
+    
+    /*
+     * Squelch info / warnings related to circular references
+     */
+    private boolean shouldBeLogged(ExtendedLogEntry logEntry, OSGiTraceComponent tc) {
+        String message = logEntry.getMessage().toLowerCase();
+        if(message.contains(COULD_NOT_GET_SERVICE_FROM_REF) ||
+                message.contains(COULD_NOT_OBTAIN_ALL_REQ_DEPS) ||
+                message.contains(SERVICE_NOT_AVAILABLE)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "This is not an error, but may indicate high system load - " + logEntry.getMessage(),
+                        getObjects(logEntry, false));
+            }
+            return false;
+        }
+        return true;
     }
 }

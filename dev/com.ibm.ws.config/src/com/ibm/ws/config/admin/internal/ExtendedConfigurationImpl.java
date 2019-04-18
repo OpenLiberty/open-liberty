@@ -19,13 +19,23 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.Vector;
+import java.util.HashSet;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
@@ -34,6 +44,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
+
 
 /**
  * This represents a Configuration and implements Configuration.
@@ -45,6 +56,9 @@ import com.ibm.ws.config.admin.ExtendedConfiguration;
  *
  */
 class ExtendedConfigurationImpl implements ExtendedConfiguration {
+
+	// R7
+	private Set<Configuration.ConfigurationAttribute> attributes = new HashSet<Configuration.ConfigurationAttribute>();
 
     /** bundle location */
     private String bundleLocation = null;
@@ -718,4 +732,170 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
             return properties.matches(filter);
         return false;
     }
+
+ 	//
+ 	//
+	// R7 Upgrade
+	//
+	//
+
+	// TODO: Check IMPL of attributes...
+    @Override
+    public Set<ConfigurationAttribute> getAttributes() {
+
+		// TODO: security permissions check ???
+		exceptionIfDeleted();
+
+        return attributes;
+    }
+
+	@Override
+    public void addAttributes(Configuration.ConfigurationAttribute... attrs) throws IOException {
+
+		// TODO: security permissions check ???
+		exceptionIfDeleted();
+
+		for(int i = 0; i < attrs.length; i++) {
+			attributes.add(attrs[i]);
+	    }
+	}
+
+	@Override
+    public void removeAttributes(Configuration.ConfigurationAttribute... attrs) throws java.io.IOException {
+
+		// TODO: security permissions check ???
+		exceptionIfDeleted();
+
+		for (int i = 0; i < attrs.length; i++) {
+			attributes.remove(attrs[i]);
+		}
+	}
+
+
+	@Override
+	public boolean updateIfDifferent(java.util.Dictionary<java.lang.String,?> properties) throws java.io.IOException {
+		lock.lock();
+		try {
+			exceptionIfDeleted();
+
+			if(equalConfigProperties(this.properties, properties) == false) {
+				update(properties);
+				return true;
+			} else {
+				return false;
+			}
+		} finally {
+			lock.unlock();
+		}
+
+	}
+
+    @Override
+    public java.util.Dictionary<java.lang.String,java.lang.Object> getProcessedProperties(ServiceReference<?> reference) {
+
+		//TODO: This is for config plugins, which we dont support...
+
+		/* However, if this throws an illegal state exception then we get this exception:
+
+		[11/19/18 14:55:51:340 EST] 00000024 LogService-13-com.ibm.ws.org.apache.felix.scr                E CWWKE0701E: bundle
+		com.ibm.ws.org.apache.felix.scr:1.0.23.201811071104 (13)Error while loading components of bundle com.ibm.ws.event:1.0.23.201811021519 (15)
+		Bundle:com.ibm.ws.org.apache.felix.scr(id=13) java.lang.IllegalStateException: getProcessedProperties(ServiceReference<?> reference) in
+		ExtendedConfiguraitonImpl.java has not been implemented.
+			at com.ibm.ws.config.admin.internal.ExtendedConfigurationImpl.getProcessedProperties(ExtendedConfigurationImpl.java:789)
+		at org.apache.felix.scr.impl.manager.RegionConfigurationSupport.configureComponentHolder(RegionConfigurationSupport.java:211)
+
+		So for now, we'll just return a copy of the current config which lets the server start up.
+		*/
+
+		lock.lock();
+		try {
+			exceptionIfDeleted();
+			if(this.properties == null)
+				return null;
+
+				Dictionary<String, Object> copy = properties.copy();
+				return copy;
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private boolean equalConfigProperties(Dictionary<String, ?> oldProperties,
+			Dictionary<String, ?> newProperties) {
+		if ((oldProperties == null || oldProperties.isEmpty()) && (newProperties == null || newProperties.isEmpty())) {
+			return true;
+		}
+
+		Map<String, ?> oriMapC = toMap(oldProperties);
+		Map<String, ?> newMapC = toMap(newProperties);
+
+		// if the old map has never had properties set and we have properties, update
+		// it, even if all the keys are ignored.
+		if (oriMapC.isEmpty() && !newMapC.isEmpty()) {
+			return false;
+		}
+
+		// Go through keys in oriMapC and compare with newMapC.
+		// If same, remove key from newMapC
+		// If there are any different ones, return false.
+		// Then go through trimmed newMapC keys
+		// and check for equality in value. If != found, return false.
+		List<String> removeKeyList = new ArrayList<String>();
+		for (Map.Entry<String, ?> entry : oriMapC.entrySet()) {
+			String keyObj = entry.getKey();
+			if (newMapC.containsKey(keyObj)) {
+				if (equalConfigValues(entry.getValue(), newMapC.get(keyObj))) {
+					removeKeyList.add(keyObj);
+				} else
+					return false;
+			} else
+				return false;
+		}
+
+		for (Object keyObj : removeKeyList) {
+			if (keyObj != null)
+				newMapC.remove(keyObj);
+		}
+		for (Map.Entry<String, ?> entry : newMapC.entrySet()) {
+			String keyObj = entry.getKey();
+			if ((keyObj != null)) {
+				if (oriMapC.containsKey(keyObj)) {
+					if (!equalConfigValues(entry.getValue(), oriMapC.get(keyObj))) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+
+		return true;
+
+	}
+
+	private boolean equalConfigValues(Object c1, Object c2) {
+		if (c1 instanceof String && c2 instanceof String)
+			return c1.equals(c2);
+		if (c1 instanceof String[] && c2 instanceof String[])
+			return Arrays.equals((String[]) c1, (String[]) c2);
+		if (c1 instanceof Map && c2 instanceof Map)
+			return c1.equals(c2);
+		if (c1 != null)
+			return c1.equals(c2);
+		return (c2 == null);
+	}
+
+	private Map<String, ?> toMap(Dictionary<String, ?> d) {
+		if (d == null) {
+			return Collections.emptyMap();
+		}
+		HashMap<String, Object> ret = new HashMap<String, Object>(d.size());
+		for (Enumeration<String> keyIter = d.keys(); keyIter.hasMoreElements();) {
+			String key = keyIter.nextElement();
+			ret.put(key, d.get(key));
+		}
+		return ret;
+	}
+
+
 }

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;

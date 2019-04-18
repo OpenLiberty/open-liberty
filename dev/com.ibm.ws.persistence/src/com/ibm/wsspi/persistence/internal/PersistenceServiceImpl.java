@@ -43,7 +43,10 @@ public class PersistenceServiceImpl implements PersistenceService {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) throws Exception {
-        _handler.getServiceWithException().clear();
+        InMemoryUrlStreamHandler handler = _handler.getService();
+        if (handler != null ) {
+            handler.clear();
+        }
         _handler.deactivate(cc);
     }
 

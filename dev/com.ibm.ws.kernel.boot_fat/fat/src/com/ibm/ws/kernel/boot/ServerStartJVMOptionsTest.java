@@ -490,6 +490,80 @@ public class ServerStartJVMOptionsTest {
         server.stopServer();
     }
 
+    @Test
+    public void testStartServerCmdlineJVMOptionsAndSystemProps() throws Exception {
+        Log.entering(c, testName.getMethodName());
+
+        String[] parms = new String[6];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+        parms[2] = "-Dfoo=bar";
+        parms[3] = "--";
+        parms[4] = "--wom=bat";
+        parms[5] = "--help=me";
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        initialize();
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        server.serverDump();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
+        File dumpFile = new File("");
+        for (File f : filesAfterDump) {
+            String fileName = f.getName();
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
+            if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
+                dumpFile = f;
+                break;
+            }
+        }
+
+        if (dumpFile.getPath().compareTo("") == 0) {
+            fail("The Dump File was not found");
+        }
+
+        ZipFile zipFile = new ZipFile(dumpFile);
+
+        boolean foundTest1 = false;
+        for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+            ZipEntry entry = en.nextElement();
+            String entryName = entry.getName();
+            if (entryName.endsWith("ConfigVariables.txt")) {
+                InputStream inputstream = zipFile.getInputStream(entry);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+                String line;
+                int i = 0;
+                boolean afterSystemProperies = false;
+                while ((line = reader.readLine()) != null) {
+                    Log.info(c, testName.getMethodName(), "Run" + i + ": " + line);
+                    if (line.contains("User Config Variables"))
+                        afterSystemProperies = true;
+                    if (afterSystemProperies && line.contains("wom=bat")) {
+                        foundTest1 = true;
+                        break;
+                    }
+                    i++;
+                }
+
+                reader.close();
+                inputstream.close();
+            }
+        }
+
+        zipFile.close();
+        dumpFile.delete();
+        assertTrue("The config variable wom=bat was not found", foundTest1);
+
+        server.stopServer();
+    }
+
     public void initialize() {
         File dirs = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/defaults");
         File dirs2 = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/overrides");

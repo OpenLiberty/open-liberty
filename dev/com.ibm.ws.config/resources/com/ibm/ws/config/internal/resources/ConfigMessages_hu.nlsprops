@@ -31,8 +31,7 @@
 
 copyright=\n\
 Copyright (c) 2010 IBM Corporation \u00e9s m\u00e1sok. \n\
-Minden jog fenntartva. \
-Ez a program \u00e9s a kapcsol\u00f3d\u00f3 anyagok \n\
+Minden jog fenntartva. Ez a program \u00e9s a kapcsol\u00f3d\u00f3 anyagok \n\
 az Eclipse Public License v1.0 alapj\u00e1n \u00e1llnak rendelkez\u00e9sre,\n\
 amely a jelen k\u00f6zz\u00e9t\u00e9telt k\u00eds\u00e9ri, \u00e9s a k\u00f6vetkez\u0151 helyen \u00e9rhet\u0151 el:\n\
 http://www.eclipse.org/legal/epl-v10.html
@@ -433,9 +432,9 @@ error.variable.name.missing=CWWKG0091E: Egy name attrib\u00fatumot meg kell adni
 error.variable.name.missing.explanation=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 olyan variable konfigur\u00e1ci\u00f3s elemet tartalmaz, amely nem rendelkezik name attrib\u00fatummal.
 error.variable.name.missing.useraction=Adjon hozz\u00e1 egy name attrib\u00fatumot a variable elemhez.
 
-error.variable.value.missing=CWWKG0092E: Egy value attrib\u00fatumot meg kell adni a variable elemhez a(z) {1} er\u0151forr\u00e1s {0}. sor\u00e1ban.
-error.variable.value.missing.explanation=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 olyan variable konfigur\u00e1ci\u00f3s elemet tartalmaz, amely nem rendelkezik value attrib\u00fatummal.
-error.variable.value.missing.useraction=Adjon hozz\u00e1 egy value attrib\u00fatumot a variable elemhez.
+error.variable.value.missing=CWWKG0092E: Meg kell adni egy value attrib\u00fatumot vagy defaultValue attrib\u00fatumot a(z) {1} er\u0151forr\u00e1s {0}. sor\u00e1ban tal\u00e1lhat\u00f3 v\u00e1ltoz\u00f3hoz.
+error.variable.value.missing.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 olyan v\u00e1ltoz\u00f3konfigur\u00e1ci\u00f3s elemet tartalmaz, amely nem rendelkezik value attrib\u00fatummal vagy defaultValue attrib\u00fatummal.
+error.variable.value.missing.useraction=Adjon hozz\u00e1 egy value attrib\u00fatumot vagy defaultValue attrib\u00fatumot a v\u00e1ltoz\u00f3hoz.
 
 audit.dropin.being.processed=CWWKG0093A: Konfigur\u00e1ci\u00f3s hozz\u00e1ad\u00e1sok er\u0151forr\u00e1s feldolgoz\u00e1sa: {0}
 audit.dropin.being.processed.explanation=A megadott er\u0151forr\u00e1s tartalm\u00e1t a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmazni fogja.

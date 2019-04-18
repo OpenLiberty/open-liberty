@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,8 +42,9 @@ import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.RealmPropertyMapping;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -73,7 +73,7 @@ public class URAPIs_RealmPropertyMappingTest {
      */
     private static ServerConfiguration EMPTY_SERVER_CONFIGURATION = null;
 
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryLDAPServer ds;
 
     // LDAP registry variables.
     private static final String LDAP_BASE_DN = "o=ldap";
@@ -130,12 +130,12 @@ public class URAPIs_RealmPropertyMappingTest {
                 libertyServer.stopServer();
             }
         } finally {
-            if (ldapServer != null) {
-                try {
-                    ldapServer.stopService();
-                } catch (Exception e) {
-                    Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+            try {
+                if (ds != null) {
+                    ds.shutDown(true);
                 }
+            } catch (Exception e) {
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
             }
         }
 
@@ -211,36 +211,31 @@ public class URAPIs_RealmPropertyMappingTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupLDAPServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("test");
-        ldapServer.addPartition("testing", LDAP_BASE_DN);
-        ldapServer.startServer();
+        ds = new InMemoryLDAPServer(LDAP_BASE_DN);
 
-        /*
-         * Add the partition entries.
-         */
-        Entry entry = ldapServer.newEntry(LDAP_BASE_DN);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        ldapServer.add(entry);
+        Entry entry = new Entry(LDAP_BASE_DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        ds.add(entry);
 
         /*
          * Create a user.
          */
-        entry = ldapServer.newEntry(LDAP_USER_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", LDAP_USER_UID);
-        entry.add("sn", LDAP_USER_SN);
-        entry.add("cn", LDAP_USER_CN);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_USER_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", LDAP_USER_UID);
+        entry.addAttribute("sn", LDAP_USER_SN);
+        entry.addAttribute("cn", LDAP_USER_CN);
+        ds.add(entry);
 
         /*
          * Create a group.
          */
-        entry = ldapServer.newEntry(LDAP_GROUP_DN);
-        entry.add("objectclass", "groupofnames");
-        entry.add("cn", LDAP_GROUP_CN);
-        entry.add("member", LDAP_USER_DN);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_GROUP_DN);
+        entry.addAttribute("objectclass", "groupofnames");
+        entry.addAttribute("cn", LDAP_GROUP_CN);
+        entry.addAttribute("member", LDAP_USER_DN);
+        ds.add(entry);
     }
 
     /**
@@ -303,10 +298,10 @@ public class URAPIs_RealmPropertyMappingTest {
         server.getLdapRegistries().add(ldap);
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_BASE_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 

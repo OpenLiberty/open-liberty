@@ -134,12 +134,12 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
     @Override
     public W execute(Callable<W> callable, ExecutionContext context) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Fault tolerance asynchronous execution started for {0}", context.getMethod());
-        }
-
         @SuppressWarnings("unchecked")
         AsyncExecutionContextImpl<W> executionContext = (AsyncExecutionContextImpl<W>) context;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Execution {0} Fault tolerance asynchronous execution started for {1}", executionContext.getId(), context.getMethod());
+        }
 
         executionContext.setCallable(callable);
 
@@ -179,7 +179,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      */
     private void prepareExecutionAttempt(AsyncExecutionContextImpl<W> executionContext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} enqueuing new execution attempt", executionContext.getMethod());
+            Tr.event(tc, "Execution {0} enqueuing new execution attempt", executionContext.getId());
         }
 
         AsyncAttemptContextImpl<W> attemptContext = new AsyncAttemptContextImpl<>(executionContext);
@@ -189,7 +189,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         if (!circuitBreaker.requestPermissionToExecute()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} Circuit Breaker open, not executing", executionContext.getMethod());
+                Tr.event(tc, "Execution {0} Circuit Breaker open, not executing", executionContext.getId());
             }
 
             MethodResult<W> result = MethodResult.failure(new CircuitBreakerOpenException());
@@ -197,13 +197,15 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             return;
         }
 
+        attemptContext.setCircuitBreakerPermittedExecution(true);
+
         timeout.start();
 
         ExecutionReference ref = bulkhead.submit((reservation) -> runExecutionAttempt(attemptContext, reservation), getExceptionHandler(attemptContext));
 
         if (!ref.wasAccepted()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} bulkhead rejected execution", executionContext.getMethod());
+                Tr.event(tc, "Execution {0} bulkhead rejected execution", executionContext.getId());
             }
 
             processEndOfAttempt(attemptContext, MethodResult.failure(new BulkheadException()));
@@ -229,7 +231,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         AsyncExecutionContextImpl<W> executionContext = attemptContext.getExecutionContext();
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} running execution attempt", executionContext.getMethod());
+                Tr.event(tc, "Execution {0} running execution attempt", executionContext.getId());
             }
 
             ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
@@ -246,14 +248,14 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} attempt execution reuslt: {1}", executionContext.getMethod(), methodResult);
+                Tr.event(tc, "Execution {0} attempt result: {1}", executionContext.getId(), methodResult);
             }
 
             processMethodResult(attemptContext, methodResult, reservation);
 
             if (attemptContext.getTimeoutState().isTimedOut()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Method {0} timed out, clearing interrupted flag", executionContext.getMethod());
+                    Tr.debug(tc, "Execution {0} timed out, clearing interrupted flag", executionContext.getId());
                 }
 
                 Thread.interrupted(); // Clear interrupted thread
@@ -294,7 +296,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      */
     private void timeout(AsyncAttemptContextImpl<W> attemptContext, ExecutionReference ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} timed out, attempting to cancel execution attempt", attemptContext.getExecutionContext().getMethod());
+            Tr.event(tc, "Execution {0} timed out, attempting to cancel execution attempt", attemptContext.getExecutionContext().getId());
         }
 
         ref.abort(true);
@@ -329,17 +331,20 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} processing end of attempt execution. Result: {1}", executionContext.getMethod(), result);
+                Tr.event(tc, "Execution {0} processing end of attempt execution. Result: {1}", executionContext.getId(), result);
             }
 
-            circuitBreaker.recordResult(result);
+            if (attemptContext.getCircuitBreakerPermittedExecution()) {
+                // Only record a circuit breaker result if it allowed us to run in the first place
+                circuitBreaker.recordResult(result);
+            }
 
             // Note: don't process retries or fallback for internal failures or if the user has cancelled the execution
             if (!result.isInternalFailure() && !executionContext.isCancelled()) {
                 RetryResult retryResult = executionContext.getRetryState().recordResult(result);
                 if (retryResult.shouldRetry()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(tc, "Method {0} retrying with delay: {1} {2}", executionContext.getMethod(), retryResult.getDelay(), retryResult.getDelayUnit());
+                        Tr.event(tc, "Execution {0} retrying with delay: {1} {2}", executionContext.getId(), retryResult.getDelay(), retryResult.getDelayUnit());
                     }
                     if (retryResult.getDelay() > 0) {
                         executorService.schedule(handleExceptions(() -> prepareExecutionAttempt(executionContext), null, executionContext),
@@ -352,7 +357,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                     return;
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(tc, "Method {0} not retrying", executionContext.getMethod());
+                        Tr.event(tc, "Execution {0} not retrying: {1}", executionContext.getId(), retryResult);
                     }
                 }
 
@@ -389,7 +394,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      */
     private void prepareFallback(MethodResult<W> result, AsyncExecutionContextImpl<W> executionContext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} fallback is required", executionContext.getMethod());
+            Tr.event(tc, "Execution {0} fallback is required", executionContext.getId());
         }
 
         executorService.submit(() -> runFallback(result, executionContext));
@@ -401,7 +406,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         try {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
+                Tr.event(tc, "Execution {0} calling fallback", executionContext.getId());
             }
 
             metricRecorder.incrementFallbackCalls();
@@ -421,7 +426,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} fallback result: {1}", executionContext.getMethod(), fallbackResult);
+                Tr.event(tc, "Execution {0} fallback result: {1}", executionContext.getId(), fallbackResult);
             }
 
             processEndOfExecution(executionContext, fallbackResult);
@@ -438,7 +443,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
     @Override
     public FTExecutionContext newExecutionContext(String id, Method method, Object... parameters) {
-        return new AsyncExecutionContextImpl<W>(method, parameters);
+        return new AsyncExecutionContextImpl<W>(id, method, parameters);
     }
 
     @Override

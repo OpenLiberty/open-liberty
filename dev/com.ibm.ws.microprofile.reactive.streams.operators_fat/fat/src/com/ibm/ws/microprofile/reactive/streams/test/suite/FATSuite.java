@@ -16,8 +16,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ReactiveStreamsContextTest.class,
                 ReactiveStreamsTest.class,
-                ReactiveJaxRSTest.class
+                ReactiveJaxRSTest.class,
+                ReactiveConcurrentWorkTest.class
 })
 public class FATSuite {
     // this page intentionally left blank

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import static com.ibm.ws.concurrent.mp.ThreadContextBuilderImpl.DEFAULT_CLEARED;
+import static com.ibm.ws.concurrent.mp.ThreadContextBuilderImpl.DEFAULT_PROPAGATED;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -32,26 +36,30 @@ import com.ibm.ws.threading.PolicyExecutor;
 public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
     private static final TraceComponent tc = Tr.register(ManagedExecutorBuilderImpl.class);
 
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    // Represents that no value is defined for an int config attribute (maxAsync or maxQueued)
+    private static final int UNDEFINED = -2;
+
+    private final ContextManagerImpl contextManager;
     private final ArrayList<ThreadContextProvider> contextProviders;
 
-    private final HashSet<String> cleared = new HashSet<String>();
-    private int maxAsync = -1; // unlimited
-    private int maxQueued = -1; // unlimited
+    private Set<String> cleared;
+    private int maxAsync = UNDEFINED;
+    private int maxQueued = UNDEFINED;
     private String name;
-    private final HashSet<String> propagated = new HashSet<String>();
+    private Set<String> propagated;
 
-    ManagedExecutorBuilderImpl(ConcurrencyProviderImpl concurrencyProvider, ArrayList<ThreadContextProvider> contextProviders) {
-        this.concurrencyProvider = concurrencyProvider;
+    ManagedExecutorBuilderImpl(ContextManagerImpl contextManager, ArrayList<ThreadContextProvider> contextProviders) {
+        this.contextManager = contextManager;
         this.contextProviders = contextProviders;
-
-        // built-in defaults from spec:
-        cleared.add(ThreadContext.TRANSACTION);
-        propagated.add(ThreadContext.ALL_REMAINING);
     }
 
     @Override
     public ManagedExecutor build() {
+        Set<String> cleared = this.cleared == null ? contextManager.getDefault("ManagedExecutor/cleared", DEFAULT_CLEARED) : this.cleared;
+        int maxAsync = this.maxAsync == UNDEFINED ? contextManager.getDefault("ManagedExecutor/maxAsync", -1) : this.maxAsync;
+        int maxQueued = this.maxQueued == UNDEFINED ? contextManager.getDefault("ManagedExecutor/maxQueued", -1) : this.maxQueued;
+        Set<String> propagated = this.propagated == null ? contextManager.getDefault("ManagedExecutor/propagated", DEFAULT_PROPAGATED) : this.propagated;
+
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);
         unknown.addAll(propagated);
@@ -91,7 +99,7 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         // or for instance created via the builder,
         //  ManagedExecutor@INSTANCEID_AppName(maxAsync=5,maxQueued=max,propagated=[CDI,Security])
 
-        int hash = ConcurrencyManagerImpl.instanceCount.incrementAndGet();
+        int hash = ContextManagerImpl.instanceCount.incrementAndGet();
         StringBuilder nameBuilder = new StringBuilder("ManagedExecutor@").append(Integer.toHexString(hash));
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String appName = cData == null ? null : cData.getJ2EEName().getApplication();
@@ -115,18 +123,22 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         String executorName = nameBuilder.toString();
         String threadContextName = nameBuilder.replace(2, 15, "ThreadContext").substring(2);
 
-        PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(executorName, appName) //
+        ContextManagerProviderImpl cmProvider = contextManager.cmProvider;
+        PolicyExecutor policyExecutor = cmProvider.policyExecutorProvider.create(executorName, appName) //
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        ThreadContextImpl mpThreadContext = new ThreadContextImpl(threadContextName, hash, concurrencyProvider, configPerProvider);
+        ThreadContextImpl mpThreadContext = new ThreadContextImpl(threadContextName, hash, cmProvider, configPerProvider);
 
-        return new ManagedExecutorImpl(executorName, hash, policyExecutor, mpThreadContext, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
+        return new ManagedExecutorImpl(executorName, hash, policyExecutor, mpThreadContext, cmProvider.transactionContextProvider.transactionContextProviderRef);
     }
 
     @Override
     public ManagedExecutor.Builder cleared(String... types) {
-        cleared.clear();
+        if (cleared == null)
+            cleared = new HashSet<String>();
+        else
+            cleared.clear();
         Collections.addAll(cleared, types);
         return this;
     }
@@ -174,7 +186,10 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
 
     @Override
     public ManagedExecutor.Builder propagated(String... types) {
-        propagated.clear();
+        if (propagated == null)
+            propagated = new HashSet<String>();
+        else
+            propagated.clear();
         Collections.addAll(propagated, types);
         return this;
     }

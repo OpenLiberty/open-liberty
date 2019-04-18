@@ -207,7 +207,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * - FFDCs should be emitted because the JWT signature is not valid
      */
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
-                    "com.ibm.ws.security.authentication.AuthenticationException" })
+                   "com.ibm.ws.security.authentication.AuthenticationException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @Test
     public void test_reaccessResource_jwtCookieWithEmptySignature() throws Exception {
 
@@ -228,8 +228,8 @@ public class ReplayCookieTests extends CommonSecurityFat {
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
-        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT + ".+"
-                                                                                        + "Problem verifying signature"));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6041E_JWT_INVALID_SIGNATURE));
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, truncatedCookie);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -245,7 +245,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * - FFDCs should be emitted because the JWT is not formatted correctly
      */
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
-                    "com.ibm.ws.security.authentication.AuthenticationException" })
+                   "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_signatureRemovedFromJwtCookie() throws Exception {
 
@@ -462,8 +462,8 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * Expects:
      * - Should receive the login page because the token does not contain all of the required claims
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException"})
-    @AllowedFFDC({"com.ibm.ws.security.authentication.AuthenticationException" })
+    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException" })
+    @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_missingClaims_accessProtectedResource() throws Exception {
 
@@ -493,7 +493,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * - Should receive the login page because the issuer in the token is not trusted
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
-                    "com.ibm.ws.security.authentication.AuthenticationException" })
+                   "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_accessProtectedResource_defaultMpJwtConsumer() throws Exception {
 
@@ -550,7 +550,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * - Should receive the login page because the token signature cannot be validated
      */
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException",
-                    "com.ibm.ws.security.authentication.AuthenticationException" })
+                   "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_signedWithNonDefaultKey_accessProtectedResource() throws Exception {
 

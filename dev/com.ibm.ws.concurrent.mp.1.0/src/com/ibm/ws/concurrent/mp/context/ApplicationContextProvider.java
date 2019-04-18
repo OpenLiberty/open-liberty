@@ -12,7 +12,7 @@ package com.ibm.ws.concurrent.mp.context;
 
 import java.util.ArrayList;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;
@@ -23,6 +23,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Classloader Context and JEE Metadata Context.
  */
 @Trivial
+@SuppressWarnings("deprecation")
 public class ApplicationContextProvider extends ContainerContextProvider {
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> classloaderContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("ClassloaderContextProvider");
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> jeeMetadataContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("JeeMetadataContextProvider");

@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.openapi.impl.core.util;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -821,6 +823,7 @@ public abstract class AnnotationsUtils {
         }
     }
 
+    @FFDCIgnore({ NoSuchMethodException.class, SecurityException.class })
     public static Optional<Content> getContent(org.eclipse.microprofile.openapi.annotations.media.Content[] annotationContents, String[] classTypes, String[] methodTypes,
                                                Schema schema) {
         if (annotationContents == null || annotationContents.length == 0) {
@@ -838,6 +841,25 @@ public abstract class AnnotationsUtils {
         for (ExampleObject example : examples) {
             getExample(example).ifPresent(exampleObject -> mediaType.addExample(getNameOfReferenceableItem(example), exampleObject));
         }
+
+        Method getExampleMethod = null;
+        try {
+            getExampleMethod = annotationContent.getClass().getMethod("example");
+        } catch (NoSuchMethodException e) {
+        } catch (SecurityException e) {
+        }
+        if (getExampleMethod != null) {
+            try {
+                String example = (String) getExampleMethod.invoke(annotationContent);
+                if (example != null && !example.isEmpty()) {
+                    mediaType.example(example);
+                }
+            } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException e) {
+            } catch (InvocationTargetException e) {
+            }
+        }
+
         org.eclipse.microprofile.openapi.annotations.media.Encoding[] encodings = annotationContent.encoding();
         for (org.eclipse.microprofile.openapi.annotations.media.Encoding encoding : encodings) {
             addEncodingToMediaType(mediaType, encoding);

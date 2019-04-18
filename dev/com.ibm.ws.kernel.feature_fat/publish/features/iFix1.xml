@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?metadata version='0.0.4'?>
+<fix id='iFix1' version='8.5.0.20120424_1542'>
+  <applicability>
+    <offering id='com.ibm.websphere.BASE.v85' tolerance='[8.5.0,8.6.0)'/>
+    <offering id='com.ibm.websphere.EXPRESS.v85' tolerance='[8.5.0,8.6.0)'/> 
+    <offering id='com.ibm.websphere.ND.v85' tolerance='[8.5.0,8.6.0)'/>
+  </applicability>
+  <categories/>
+  <information name='iFix1' version='8.5.0.20120424_1542'>  
+    iFix 1 with two APARs
+  </information>
+  <property name='recommended' value='true'/>
+  <resolves problemCount='3' description='This fix resolves APARS:' showList='true'> 
+    <problem id='com.ibm.ws.apar.1' displayId='1' description='1'/>  
+    <problem id='com.ibm.ws.apar.2' displayId='2' description='2'/>
+  </resolves>
+  <property name='com.ibm.ws.superseded.apars' value='2'/>
+  <updates> <!-- list of files included in the fix with size, date and MD5 has values -->
+      <file id='lib/usertest_1.0.0.v20120424-1542.jar' size='1785213' date="2012-04-24 15:42" MD5hash='0d7c9b00066e183d0eaec191e492dcaa'/>
+  </updates>        
+</fix>
