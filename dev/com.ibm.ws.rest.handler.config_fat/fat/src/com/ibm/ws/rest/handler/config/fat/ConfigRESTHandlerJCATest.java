@@ -13,6 +13,7 @@ package com.ibm.ws.rest.handler.config.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +44,15 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestConfigAdapter.rar")
+        ResourceAdapterArchive tca_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestConfigAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.config.adapter"));
-        ShrinkHelper.exportToServer(server, "connectors", rar);
+        ShrinkHelper.exportToServer(server, "connectors", tca_rar);
+
+        ResourceAdapterArchive ata_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "AnotherTestAdapter.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("org.test.config.adapter"));
+        ShrinkHelper.exportToServer(server, "connectors", ata_rar);
 
         server.startServer();
 
@@ -58,6 +64,7 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         messages.add("CWWKO0219I: .* defaultHttpEndpoint-ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
         messages.add("CWWKT0016I"); // CWWKT0016I: Web application available (default_host): http://9.10.111.222:8010/ibm/api/
         messages.add("J2CA7001I: .* tca"); // J2CA7001I: Resource adapter tca installed in # seconds.
+        messages.add("J2CA7001I: .* AnotherTestAdapter"); // J2CA7001I: Resource adapter AnotherTestAdapter installed in # seconds.
 
         server.waitForStringsInLogUsingMark(messages);
     }
@@ -122,7 +129,7 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
     public void testMultipleConnectionFactories() throws Exception {
         JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory").run(JsonArray.class);
         String err = "unexpected response: " + cfs;
-        assertEquals(err, 2, cfs.size()); // increase this if additional connectionFactory elements are added
+        assertEquals(err, 3, cfs.size()); // increase this if additional connectionFactory elements are added
 
         JsonObject cf;
         assertNotNull(err, cf = cfs.getJsonObject(0));
@@ -134,6 +141,20 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
 
         assertNotNull(err, cf = cfs.getJsonObject(1));
         assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "cf3", cf.getString("uid"));
+        assertEquals(err, "cf3", cf.getString("id"));
+        assertEquals(err, "eis/cf3", cf.getString("jndiName"));
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = cf.getJsonArray("properties.AnotherTestAdapter.ConnectionFactory"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, false, props.getBoolean("enableBetaContent"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+
+        assertNotNull(err, cf = cfs.getJsonObject(2));
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
         assertEquals(err, "connectionFactory[default-0]", cf.getString("uid"));
         assertNull(err, cf.get("id"));
         assertEquals(err, "eis/ds2", cf.getString("jndiName"));
@@ -142,8 +163,6 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertNull(err, cf.get("containerAuthDataRef"));
         assertNull(err, cf.get("recoveryAuthDataRef"));
 
-        JsonArray array;
-        JsonObject props;
         assertNotNull(err, array = cf.getJsonArray("properties.tca.DataSource"));
         assertEquals(err, 1, array.size());
         assertNotNull(err, props = array.getJsonObject(0));
@@ -152,6 +171,82 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "localhost", props.getString("hostName"));
         // assertEquals(err, 7654, props.getInt("portNumber")); // TODO include the internal default for portNumber?
         assertEquals(err, "user2", props.getString("userName"));
-        assertEquals(err, "pwd2", props.getString("password")); // TODO obscure password values
+        // assertEquals(err, "******", props.getString("password")); // TODO enable once other tests are updated (16601) and this can be changed
     }
+
+    // Test the output of the /ibm/api/config/resourceAdapter/{uid} REST endpoint.
+    @Test
+    public void testConfigResourceAdapter() throws Exception {
+        JsonObject adapter = new HttpsRequest(server, "/ibm/api/config/resourceAdapter/tca").run(JsonObject.class);
+        String err = "unexpected response: " + adapter;
+        assertEquals(err, "resourceAdapter", adapter.getString("configElementName"));
+        assertEquals(err, "tca", adapter.getString("uid"));
+        assertEquals(err, "tca", adapter.getString("id"));
+        assertTrue(err, adapter.getString("location").endsWith("TestConfigAdapter.rar"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = adapter.getJsonArray("properties.tca"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, true, props.getBoolean("debugMode"));
+        assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
+    }
+
+    // Test the output of the /ibm/api/config/properties.{id of resourceAdapter}/{config display id} REST endpoint
+    // Test the output of the /ibm/api/config/properties.{generated identifier for resourceAdapter}/{config display id} REST endpoint
+    @Test
+    public void testConfigResourceAdapterPropertiesByIdentifier() throws Exception {
+        JsonObject props = new HttpsRequest(server, "/ibm/api/config/properties.tca/resourceAdapter[tca]%2Fproperties.tca[tca]").run(JsonObject.class);
+        String err = "unexpected response: " + props;
+        assertEquals(err, "properties.tca", props.getString("configElementName"));
+        assertEquals(err, "resourceAdapter[tca]/properties.tca[tca]", props.getString("uid"));
+        assertNull(err, props.get("id"));
+        assertEquals(err, true, props.getBoolean("debugMode"));
+        assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
+
+        props = new HttpsRequest(server, "/ibm/api/config/properties.AnotherTestAdapter/resourceAdapter[default-0]%2Fproperties.AnotherTestAdapter[AnotherTestAdapter]")
+                        .run(JsonObject.class);
+        err = "unexpected response: " + props;
+        assertEquals(err, "properties.AnotherTestAdapter", props.getString("configElementName"));
+        assertEquals(err, "resourceAdapter[default-0]/properties.AnotherTestAdapter[AnotherTestAdapter]", props.getString("uid"));
+        assertNull(err, props.get("id"));
+        assertNull(err, props.get("debugMode"));
+        assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
+    }
+
+    // Test the output of the /ibm/api/config/properties.{generated identifier for resourceAdapter}
+    @Test
+    public void testConfigResourceAdapterPropertiesFromDefaultInstance() throws Exception {
+        JsonArray array = new HttpsRequest(server, "/ibm/api/config/properties.AnotherTestAdapter").run(JsonArray.class);
+        String err = "unexpected response: " + array;
+        assertEquals(err, 1, array.size());
+        JsonObject props;
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, "properties.AnotherTestAdapter", props.getString("configElementName"));
+        assertEquals(err, "resourceAdapter[default-0]/properties.AnotherTestAdapter[AnotherTestAdapter]", props.getString("uid"));
+        assertNull(err, props.get("id"));
+        assertNull(err, props.get("debugMode"));
+        assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
+    }
+
+    // Test the output of the /ibm/api/config/resourceAdapter/{config display id} REST endpoint.
+    @Test
+    public void testConfigResourceAdapterWithoutId() throws Exception {
+        JsonObject adapter = new HttpsRequest(server, "/ibm/api/config/resourceAdapter/resourceAdapter[default-0]").run(JsonObject.class);
+        String err = "unexpected response: " + adapter;
+        assertEquals(err, "resourceAdapter", adapter.getString("configElementName"));
+        assertEquals(err, "resourceAdapter[default-0]", adapter.getString("uid"));
+        assertNull(err, adapter.get("id"));
+        assertTrue(err, adapter.getString("location").endsWith("AnotherTestAdapter.rar"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = adapter.getJsonArray("properties.AnotherTestAdapter"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertNull(err, props.get("debugMode"));
+        assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
+    }
+
 }
