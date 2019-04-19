@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,6 +144,9 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
         cv.visitField(FACTORY_ACCESS, FACTORY_FIELD, FACTORY_DESC, FACTORY_SIG, null).visitEnd();
         cv.visitField(VALIDATOR_ACCESS, VALIDATOR_FIELD, VALIDATOR_DESC, VALIDATOR_SIG, null).visitEnd();
         validatorFieldAdded = true;
+        if(PreMainUtil.isDebugEnabled()) {
+            System.out.println("Required fields have been added.");
+        }
     }
 
     @Override
@@ -155,6 +158,9 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         // visitMethod() should be called immediately after all the visitField() calls
+        if(PreMainUtil.isDebugEnabled()) {
+            System.out.println("Entering visitMethod : " + name);
+        }
         // Add the field the first time around.
         addFieldsOnlyOnce();
 

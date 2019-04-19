@@ -211,6 +211,8 @@ final class ConfigImpl implements Config {
     @Override
     public ValidationMode getModeForStack(Class<?> caller) {
         Logger log = Logger.getLogger(ConfigImpl.class.getName());
+        if (log.isLoggable(FINER))
+            log.finer("Entering getModeForStack.");
         // Avoid examining the stack if there are no context-specific settings
         if (validationModes.isEmpty()) return defaultValidationMode;
         CallStackWalker stack = CallStackWalker.forCurrentThread().skipTo(ObjectInputStream.class);
@@ -221,9 +223,11 @@ final class ConfigImpl implements Config {
         Set<Class<?>> streamClasses = new LinkedHashSet<Class<?>>();
 
         // Loop 1: Visit the superclasses up to and including ObjectInputStream
-        for(Class<?> c = caller; c != InputStream.class; c = c.getSuperclass())
+        for(Class<?> c = caller; c != InputStream.class; c = c.getSuperclass()) {
             streamClasses.add(c);
-
+            if (log.isLoggable(FINER))
+                log.finer("Adding stream class : " + c);
+        }
         // Loop 2: Skip past stream constructors in call stack
         while (stack.size() > 0
                 && streamClasses.contains(stack.topClass())

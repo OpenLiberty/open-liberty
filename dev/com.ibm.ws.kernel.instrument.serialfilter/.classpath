@@ -4,5 +4,19 @@
 	<classpathentry kind="src" output="bin_test" path="test"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/Users/yammer@us.ibm.com/.m2/repository/org/ow2/asm/asm/7.1/asm-7.1.jar">
+		<attributes>
+			<attribute name="bsn" value="org.objectweb.asm"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.org.objectweb.asm"/>
+			<attribute name="version" value="7.1"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/objectweb/asm/*"/>
+			<accessrule kind="accessible" pattern="org/objectweb/asm/signature/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.kernel.instrument.serialfilter.store"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

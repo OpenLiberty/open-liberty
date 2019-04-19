@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
 package com.ibm.ws.kernel.instrument.serialfilter.config;
 
 import com.ibm.ws.kernel.instrument.serialfilter.agenthelper.ObjectInputStreamClassInjector;
+import com.ibm.ws.kernel.instrument.serialfilter.agenthelper.ObjectInputStreamClassWithHolderInjector;
 import com.ibm.ws.kernel.instrument.serialfilter.config.ConfigSetting.*;
-
-import java.util.Map;
+import java.io.ObjectInputStream;
 import java.util.Properties;
 
 import static com.ibm.ws.kernel.instrument.serialfilter.config.ConfigSetting.PropertiesSetter.LOAD;
@@ -23,10 +23,13 @@ class ConfigProxy implements SimpleConfig {
     private final Configurator<SimpleConfig> cfg;
 
     private ConfigProxy() {
-        // retrieve the map from ObjectInputStream.class
-        final Map<?, ?> configMap = ObjectInputStreamClassInjector.getConfigMap();
+        // retrieve the map from ObjectInputStream.class or Holder
         // create the cfg using that map as the config target
-        cfg = new Configurator<SimpleConfig>(configMap);
+        if (ObjectInputStreamClassInjector.hasModified(ObjectInputStream.class)) {
+            cfg = new Configurator<SimpleConfig>(ObjectInputStreamClassInjector.getConfigMap());
+        } else {
+            cfg = new Configurator<SimpleConfig>(ObjectInputStreamClassWithHolderInjector.getConfigMapFromHolder());
+        }
     }
 
     public static ConfigProxy getConfigProxy() {
