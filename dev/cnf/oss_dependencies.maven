@@ -418,3 +418,7 @@ org.osgi:org.osgi.core:4.2.0
 org.glassfish.hk2:osgi-resource-locator:1.0.1
 javax.persistence:persistence-api:1.0.2
 javax.validation:validation-api:1.1.0.Final
+com.cloudant:cloudant-client:2.16.0
+com.cloudant:cloudant-client:2.8.0
+com.cloudant:cloudant-http:2.16.0
+com.cloudant:cloudant-http:2.8.0
