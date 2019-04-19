@@ -76,7 +76,7 @@ public class KernelBootstrap {
 
     /**
      * @param bootProps BootstrapProperties carry forward all of the parameters and
-     *            options used to launch the kernel.
+     *                      options used to launch the kernel.
      */
     public KernelBootstrap(BootstrapConfig bootProps) {
         this.bootProps = bootProps;
@@ -154,6 +154,8 @@ public class KernelBootstrap {
             boolean logVersionInfo = (logLevel == null || !logLevel.equalsIgnoreCase("off"));
             processVersion(bootProps, "info.serverLaunch", kernelVersion, productInfo, logVersionInfo);
             if (logVersionInfo) {
+                // if serial filter agent is loaded, log the information.
+                logSerialFilterMessage();
                 List<String> cmdArgs = bootProps.getCmdArgs();
                 if (cmdArgs != null && !cmdArgs.isEmpty()) {
                     System.out.println("\t" + MessageFormat.format(BootstrapConstants.messages.getString("info.cmdArgs"), cmdArgs));
@@ -690,5 +692,24 @@ public class KernelBootstrap {
         } catch (Exception t) { /* Eat the issue and rely on users to report */
         }
         return null;
+    }
+
+    private void logSerialFilterMessage() {
+        if (isSerialFilterLoaded()) {
+            System.out.println(BootstrapConstants.messages.getString("info.serialFilterLoaded"));
+        }
+    }
+
+    private boolean isSerialFilterLoaded() {
+        String activeSerialFilter = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("com.ibm.websphere.serialfilter.active");
+            }
+        });
+        if ("true".equalsIgnoreCase(activeSerialFilter)) {
+            return true;
+        }
+        return false;
     }
 }
