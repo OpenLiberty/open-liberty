@@ -21,8 +21,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
@@ -30,6 +32,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
+import javax.transaction.RollbackException;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -39,6 +43,8 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/PostgreSQLTestServlet")
 public class PostgreSQLTestServlet extends FATServlet {
+
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     @Resource(lookup = "jdbc/anonymous/XADataSource")
     DataSource resRefDS;
@@ -377,6 +383,149 @@ public class PostgreSQLTestServlet extends FATServlet {
         try (Connection con = ds.getConnection()) {
             verifyClean(con);
         }
+    }
+
+    // When a connection is involved in a transaction which times out, the transaction will call abort()
+    // on any XAResource(s). Verify that upon transaction timeout, the connection is aborted.
+    @Test
+    public void testTransactionTimeoutAbort() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
+
+        Connection conn = ds.getConnection();
+        tx.setTransactionTimeout(8);
+        tx.begin();
+
+        Statement insert = conn.createStatement();
+        insert.execute("INSERT INTO people(id,name) VALUES(17,'testTransactionTimeoutAbort')");
+        insert.close();
+
+        System.out.println("Wait up to 2 minutes for transaction to be marked for rollback");
+        for (long start = System.nanoTime(); //
+                        tx.getStatus() != Status.STATUS_MARKED_ROLLBACK && System.nanoTime() - start < TIMEOUT_NS; //
+                        TimeUnit.MILLISECONDS.sleep(200))
+            System.out.println("Transaction status: " + tx.getStatus());
+
+        System.out.println("Done waiting. Connection should now be aborted due to timeout");
+
+        try {
+            tx.commit();
+            throw new Exception("Expected transaction to be timed out but it was not.");
+        } catch (RollbackException expected) {
+            System.out.println("Got expected RollbackException");
+        }
+        // Don't need to close connection, it should be aborted by now
+
+        // Now get a new connection to make sure the pool is still usable
+        conn = ds.getConnection();
+        try {
+            tx.begin();
+            Statement query = conn.createStatement();
+            ResultSet rs = query.executeQuery("SELECT * FROM people WHERE id=17");
+            assertFalse("Should not have found row in DB because transaction should have timed out and rolled back", rs.next());
+            query.close();
+            tx.commit();
+        } finally {
+            conn.close();
+        }
+    }
+
+    // Execute 3 PreparedStatements with different SQL queries. Expect statements to NOT be shared
+    // Execute 3 PreparedStatements with the same SQL query and expect statements to be shared.
+    @Test
+    public void testPStmtCaching() throws Exception {
+        DataSource ds1 = InitialContext.doLookup("jdbc/postgres/xa");
+        try (Connection conn = ds1.getConnection()) {
+            HashSet<PreparedStatement> postgreStmts = new HashSet<>();
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=18")) {
+                postgreStmts.add(getUnderlyingPStmt(stmt));
+            }
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=19")) {
+                postgreStmts.add(getUnderlyingPStmt(stmt));
+            }
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=20")) {
+                postgreStmts.add(getUnderlyingPStmt(stmt));
+            }
+            assertEquals("Should have 3 unique PostgreSQL statements created for 3 different prepared statements, but got: " + postgreStmts,
+                         3, postgreStmts.size());
+        }
+
+        try (Connection conn = ds1.getConnection()) {
+            HashSet<PreparedStatement> postgreStmts = new HashSet<>();
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=(?)")) {
+                stmt.setInt(1, 18);
+                postgreStmts.add(getUnderlyingPStmt(stmt));
+            }
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=(?)")) {
+                stmt.setInt(1, 19);
+                postgreStmts.add(getUnderlyingPStmt(stmt));
+            }
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=(?)")) {
+                stmt.setInt(1, 20);
+                postgreStmts.add(getUnderlyingPStmt(stmt));
+            }
+            assertEquals("Multiple prepared statements with the same query should share a single undleriny PostgreSQL statement" + postgreStmts,
+                         1, postgreStmts.size());
+        }
+    }
+
+    // Verify that PreparedStatement caching accounts for the schema which the statements were created with.
+    // PreparedStatements created under the same schema should have the opportunity to be reused.
+    // PreparedStatements created with different schemas will never be shared.
+    @Test
+    public void testSchemaPStmtCaching() throws Exception {
+        DataSource ds1 = InitialContext.doLookup("jdbc/postgres/xa");
+        try (Connection conn = ds1.getConnection()) {
+            // Change to non-default schema and create new table with that schema
+            String originalSchema = conn.getSchema();
+            System.out.println("Original schema is: " + originalSchema);
+            conn.createStatement().execute("CREATE SCHEMA testSchemaPStmtCaching");
+            conn.setSchema("testSchemaPStmtCaching");
+
+            String sql = "values (current_date)";
+
+            // Get a PreparedStatement, locate the cache key, then close the statement.
+            PreparedStatement pstmt1 = conn.prepareStatement(sql);
+            Object key1 = getUnderlyingPStmt(pstmt1);
+            pstmt1.getUpdateCount(); // Need to process all results in order for statement to be cached.
+            pstmt1.close();
+            System.out.println("key1=" + key1);
+
+            // Get another PreparedStatement with the same sql.
+            // Expect statement to be cached since the schema is still the same.
+            PreparedStatement pstmt2 = conn.prepareStatement(sql);
+            Object key2 = getUnderlyingPStmt(pstmt2);
+            pstmt2.getUpdateCount(); // Need to process all results in order for statement to be cached.
+            pstmt2.close();
+            System.out.println("key2=" + key2);
+
+            // Verify that cache keys are the same
+            if (key1 == null || key2 == null || !key1.equals(key2))
+                throw new Exception("Statement keys did not match.  pstmt1: " + key1 + "   pstmt2: " + key2);
+
+            // Do a schema change, and retrieve another PreparedStatement and check the cache key
+            conn.setSchema(originalSchema);
+            PreparedStatement pstmt3 = conn.prepareStatement(sql);
+            Object key3 = getUnderlyingPStmt(pstmt3);
+            pstmt3.getUpdateCount(); // Need to process all results in order for statement to be cached.
+            pstmt3.close();
+            System.out.println("key3=" + key3);
+
+            // Verify that pstmt3 cache key is different than the first 2
+            if (key3 == null || key3.equals(key1))
+                throw new Exception("Statement was cached but it should not have been cached.  Key3=" + key3 + " Key1=" + key1);
+        }
+    }
+
+    private PreparedStatement getUnderlyingPStmt(PreparedStatement stmt) throws Exception {
+        for (Class<?> clazz = stmt.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
+            try {
+                Field field1 = clazz.getDeclaredField("pstmtImpl");
+                field1.setAccessible(true);
+                return (PreparedStatement) field1.get(stmt);
+            } catch (Exception ignore) {
+            }
+        }
+        throw new RuntimeException("Did not find field 'cstmtImpl' on " + stmt.getClass());
     }
 
     // Verifies spec-standard JDBC properties are at their default values originally
