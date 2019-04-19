@@ -443,6 +443,10 @@ public class HttpDispatcher {
         if (!wcTrusted) {
             return false;
         }
+        if (hostAddr == null) {
+            // no host address information passed in; return the default value 
+            return this.usePrivateHeaders;
+        }
         if (HttpHeaderKeys.isSensitivePrivateHeader(headerName)) {
             // if this is a sensitive private header, check trustedSensitiveHeaderOrigin values
             return isTrustedForSensitiveHeaders(hostAddr);

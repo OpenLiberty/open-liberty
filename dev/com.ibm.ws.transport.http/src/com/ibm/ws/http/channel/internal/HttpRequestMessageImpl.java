@@ -113,6 +113,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     private transient int iHdrPort = NOT_TESTED;
     /** Map of the query name/value pieces */
     private transient Map<String, String[]> queryParams = null;
+    /** Marked true if this object was populated from a serialized stream */
+    private transient boolean deserialized = false;
 
     /**
      * Default constructor with no service context.
@@ -278,6 +280,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         this.sHdrHost = null;
         this.iUrlPort = HeaderStorage.NOTSET;
         this.iHdrPort = NOT_TESTED;
+        this.deserialized = false;
     }
 
     /*
@@ -1755,6 +1758,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "De-serializing into: " + this);
         }
+        this.deserialized = true;
         super.readExternal(input);
         deserializeMethod(input);
         deserializeScheme(input);
@@ -2154,7 +2158,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     protected boolean filterAdd(HeaderKeys key, byte[] value) {
         boolean rc = super.filterAdd(key, value);
 
-        if (HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
+        if (HttpHeaderKeys.isWasPrivateHeader(key.getName()) && !this.deserialized) {
             rc = isPrivateHeaderTrusted(key);
         }
         return rc;
@@ -2175,10 +2179,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             address = remoteAddr.getHostAddress();
         }
 
-        boolean trusted = false;
-        if (address != null) {
-            trusted = HttpDispatcher.usePrivateHeaders(address, key.getName());
-        }
+        boolean trusted = HttpDispatcher.usePrivateHeaders(address, key.getName());
 
         if (!trusted) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
