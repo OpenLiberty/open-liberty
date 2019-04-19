@@ -11,41 +11,31 @@
 
 package com.ibm.ws.jpa;
 
-import java.io.File;
-
-import com.ibm.websphere.simplicity.log.Log;
-
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.rules.repeater.RepeatTestAction;
 
 /**
  *
  */
-public class RepeatWithJPA20 extends FeatureReplacementAction {
-    public static final String ID = "JPA20";
+public class RepeatWithJPA21 implements RepeatTestAction {
+    public static final String ID = "JPA21";
 
-    public RepeatWithJPA20() {
+    public RepeatWithJPA21() {
 
     }
 
     @Override
     public boolean isEnabled() {
-        LibertyServer server = LibertyServerFactory.getLibertyServer("JPAServer");
-
-        File jpa20Feature = new File(server.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
-        Log.info(getClass(), "isEnabled", "Does the jpa-2.0 feature exist? " + jpa20Feature.exists());
-        return jpa20Feature.exists();
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Set JPA feature to 2.0 version";
+        return "JPA 2.1";
     }
 
     @Override
     public void setup() throws Exception {
-        FATSuite.repeatPhase = "jpa20.xml";
+        FATSuite.repeatPhase = "jpa21.xml";
     }
 
     @Override

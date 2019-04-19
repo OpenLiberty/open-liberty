@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
@@ -84,6 +86,8 @@ public class JPA10Injection_DFI_YesInheritance_WebLib extends JPAFATServletClien
         PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
         bannerStart(JPA10Injection_DFI_YesInheritance_WebLib.class);
         timestart = System.currentTimeMillis();
+
+        server1.addEnvVar("repeat_phase", FATSuite.repeatPhase);
 
         server1.startServer();
 
@@ -180,6 +184,13 @@ public class JPA10Injection_DFI_YesInheritance_WebLib extends JPAFATServletClien
         Application appRecord = new Application();
         appRecord.setLocation(applicationName + ".ear");
         appRecord.setName(applicationName);
+
+        if (FATSuite.repeatPhase != null && FATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        }
 
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
