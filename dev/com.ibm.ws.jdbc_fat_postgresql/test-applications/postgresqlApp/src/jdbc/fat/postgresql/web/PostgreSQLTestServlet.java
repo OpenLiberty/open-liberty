@@ -15,11 +15,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
@@ -269,6 +272,157 @@ public class PostgreSQLTestServlet extends FATServlet {
             assertEquals("testDefaultAutoCommitOffGlobalTran", rs.getString(2));
         }
         boundaryPassingConnection.close();
+    }
+
+    @Test
+    public void testPropertyCleanup_readOnly() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        // Verify readOnly can be set and is reset on new connection
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+            con.setReadOnly(true);
+            assertTrue(con.isReadOnly());
+            assertEquals(con.isReadOnly(), getUnderlyingPGConnection(con).isReadOnly());
+        }
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+        }
+    }
+
+    // Verify autoCommit can be set and is reset on new connection
+    @Test
+    public void testPropertyCleanup_autoCommit() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+            con.setAutoCommit(false);
+            assertFalse(con.getAutoCommit());
+            assertEquals(con.getAutoCommit(), getUnderlyingPGConnection(con).getAutoCommit());
+            con.commit();
+        }
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+        }
+    }
+
+    // Verify transaction isolation level can be set and is reset on new connection
+    @Test
+    public void testPropertyCleanup_transactionIsolation() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+            con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE, con.getTransactionIsolation());
+            assertEquals(con.getTransactionIsolation(), getUnderlyingPGConnection(con).getTransactionIsolation());
+        }
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+        }
+    }
+
+    // Verify ResultSet holdability can be set and is reset on new connection
+    @Test
+    public void testPropertyCleanup_holdability() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+            con.setHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT);
+            assertEquals(ResultSet.HOLD_CURSORS_OVER_COMMIT, con.getHoldability());
+            assertEquals(con.getHoldability(), getUnderlyingPGConnection(con).getHoldability());
+        }
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+        }
+    }
+
+    // Verify network timeout can be set and is reset on new connection
+    @Test
+    public void testPropertyCleanup_networkTimeout() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        Executor exec = Executors.newSingleThreadExecutor();
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+            con.setNetworkTimeout(exec, 5000);
+            assertEquals(5000, con.getNetworkTimeout());
+            assertEquals(con.getNetworkTimeout(), getUnderlyingPGConnection(con).getNetworkTimeout());
+        }
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+        }
+    }
+
+    // Verify schema can be set and is reset on new connection
+    @Test
+    public void testPropertyCleanup_schema() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+            con.createStatement().execute("CREATE SCHEMA fooschema");
+            con.setSchema("fooschema");
+            assertEquals("fooschema", con.getSchema());
+            assertEquals(con.getSchema(), getUnderlyingPGConnection(con).getSchema());
+        }
+        try (Connection con = ds.getConnection()) {
+            verifyClean(con);
+        }
+    }
+
+    // Verifies spec-standard JDBC properties are at their default values originally
+    // and that our WSJdbcConnection properties are in sync with the underlying PostgreSQL connection's properties
+    private void verifyClean(Connection con) throws Exception {
+        // Always "do some work" with the connection before we verify it's underlying state.
+        // The JDBC code intentionally lazily resets connection values, so our wrapper may be out of sync with the underlying
+        // connection between getting the initial connection and actually driving some work on it
+        con.createStatement().close();
+
+        // Verify WSJdbcConnection values are all at the proper initial state
+        assertTrue("Default auto-commit value on a connection should be 'true'", con.getAutoCommit());
+        assertFalse("Default readOnly value on a connection should be 'false'", con.isReadOnly());
+        assertEquals("Default tx isolation level on a connection should be TRANSACTION_READ_COMMITTED (2)", Connection.TRANSACTION_READ_COMMITTED, con.getTransactionIsolation());
+        assertEquals("Default ResultSet holdability on a connection should be CLOSE_CURSORS_AT_COMMIT (2)", ResultSet.CLOSE_CURSORS_AT_COMMIT, con.getHoldability());
+        assertEquals("Default network timeout on a connection should be 0", 0, con.getNetworkTimeout());
+        assertEquals("Default schema on a connection should be 'public", "public", con.getSchema());
+
+        // Verify the underlying PostgreSQL connection is in a consistent state with our tracking
+        assertEquals("Liberty JDBC connection wrapper auto-commit value did not match the underlying PostgreSQL connection value",
+                     con.getAutoCommit(), getUnderlyingPGConnection(con).getAutoCommit());
+        assertEquals("Liberty JDBC connection wrapper isReadOnly value did not match the underlying PostgreSQL connection value",
+                     con.isReadOnly(), getUnderlyingPGConnection(con).isReadOnly());
+        assertEquals("Liberty JDBC connection wrapper tx isolation level value did not match the underlying PostgreSQL connection value",
+                     con.getTransactionIsolation(), getUnderlyingPGConnection(con).getTransactionIsolation());
+        assertEquals("Liberty JDBC connection wrapper ResultSet holdability value did not match the underlying PostgreSQL connection value",
+                     con.getHoldability(), getUnderlyingPGConnection(con).getHoldability());
+        assertEquals("Liberty JDBC connection wrapper network timeout value did not match the underlying PostgreSQL connection value",
+                     con.getNetworkTimeout(), getUnderlyingPGConnection(con).getNetworkTimeout());
+        assertEquals("Liberty JDBC connection wrapper schema value did not match the underlying PostgreSQL connection value",
+                     con.getSchema(), getUnderlyingPGConnection(con).getSchema());
+    }
+
+    private Connection getUnderlyingPGConnection(Connection wsJdbcConnection) throws Exception {
+        Field connImplField = null;
+        for (Class<?> clazz = wsJdbcConnection.getClass(); connImplField == null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+            try {
+                connImplField = clazz.getDeclaredField("connImpl");
+            } catch (Exception ignore) {
+            }
+        }
+        if (connImplField == null)
+            fail("Did not find 'connImpl' field on " + wsJdbcConnection.getClass() + " or any of its super classes." +
+                 " This is probably not a product issue, but may require a test update if the JDBC classes are being refactored.");
+        connImplField.setAccessible(true);
+        return (Connection) connImplField.get(wsJdbcConnection);
     }
 
 }
