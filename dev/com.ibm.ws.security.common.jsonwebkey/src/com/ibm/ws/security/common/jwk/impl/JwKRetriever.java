@@ -201,65 +201,94 @@ public class JwKRetriever {
         }
         return isHttp;
     }
-
-    @FFDCIgnore({ PrivilegedActionException.class, Exception.class })
+    @FFDCIgnore({  Exception.class })
     protected PublicKey getPublicKeyFromFile(String location, String kid, String x5t, String use) {
         PublicKey publicKey = null;
         String keyString = null;
-        InputStream inputStream = null;
-
+        String classLoadingCacheSelector = null;
+        String fileSystemCacheSelector = null;
+        
+        File jwkFile = null;
         try {
-
-            final String keyFile;
+            // figure out which cache to use for jwk from classloading
+            URL resourceURL = Thread.currentThread().getContextClassLoader().getResource(location);
+            if (resourceURL != null) {  // resource is present.
+                classLoadingCacheSelector = resourceURL.getPath();                 
+            }            
+            //figure out which cache to use for jwk from file system            
+            final String keyFile;                
             if (location.startsWith("file:")) {
                 URI uri = new URI(location);
                 keyFile = uri.getPath();
             } else {
                 keyFile = location;
-            }
-            
-            // look on classpath first
-            URL resourceURL = Thread.currentThread().getContextClassLoader().getResource(location);
-            if (resourceURL != null) {
-                locationUsed = resourceURL.getPath();
-                inputStream = resourceURL.openStream();
-            }
-            
-            // next try the file system
-            if (inputStream == null) {
-                try {
-                    final File jwkFile = new File(keyFile);
-                    inputStream = (FileInputStream) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                        @Override
-                        public Object run() throws Exception {
-                            if (jwkFile.exists()) {
-                                return new FileInputStream(jwkFile);
-                            } else {
-                                return null;
-                            }
-                        }
-                    });
-                    locationUsed = jwkFile.getCanonicalPath();
-                } catch (PrivilegedActionException e1) {
+            }                
+            jwkFile = new File(keyFile);
+            fileSystemCacheSelector = jwkFile.getCanonicalPath();              
+                  
+            synchronized (jwkSet) {                
+                publicKey = getJwkFromJWKSet(fileSystemCacheSelector, kid, x5t, use);  // try the cache.
+                if (publicKey == null) {                    
+                    publicKey = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use);  
                 }
-            }
-
-            if (inputStream != null) {
-                synchronized (jwkSet) {
-                    publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);  // try the cache.
-                    if (publicKey == null) {  // cache miss, read the key
-                        keyString = getKeyAsString(inputStream);
-                        parseJwk(keyString, null, jwkSet, sigAlg);
+                if (publicKey == null) {  // cache miss, read the jwk if we can,  &  update locationUsed
+                    InputStream is = getInputStream(jwkFile, fileSystemCacheSelector, resourceURL, classLoadingCacheSelector);  
+                    if(is != null) {
+                        keyString = getKeyAsString(is);
+                        parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
                         publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                     }
                 }
             }
+            
         } catch (Exception e2) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2.getMessage());
             }
         }
         return publicKey;
+    }
+    
+    /**
+     * open an input stream to either a file on the file system or a url on the classpath.
+     * Update the locationUsed class variable to note where we got the stream from so it can be cached properly
+     *
+     */
+    @FFDCIgnore({ PrivilegedActionException.class })
+    protected InputStream getInputStream(final File f, String fileCacheSelector, URL u, String classLoadingSelector ) throws IOException {      
+        // check file system first like we used to do
+        if (f != null) {
+            InputStream is = null;
+            try { 
+                is = (FileInputStream) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    @Override
+                    public Object run() throws Exception {
+                        if (f.exists()) {
+                            return new FileInputStream(f);
+                        } else {
+                            return null;
+                        }
+                    }
+                });
+                
+            } catch (PrivilegedActionException e1) {
+            }
+            if (is != null) { 
+                locationUsed = fileCacheSelector;
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "input stream obtained from file system and locationUsed set to: "+ locationUsed);
+                }
+                return is;
+            }
+        }
+        if (u != null) {            
+            locationUsed = classLoadingSelector;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "input stream obtained from classLoader and locationUsed set to: "+ locationUsed);
+            }
+            return u.openStream();
+        } 
+        return null;
     }
 
     protected PublicKey getJwkLocal(String kid, String x5t, String publicKeyText, String location, String use) {
