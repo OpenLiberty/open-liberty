@@ -29,7 +29,7 @@ public class ObjectInputStreamClassInjectorTest {
 
     @BeforeClass
     public static void setupTransformMethod() throws Exception {
-        TRANSFORM_METHOD = ObjectInputStreamTransformer.class.getDeclaredMethod("transformObjectInputStreamClass", byte[].class);
+        TRANSFORM_METHOD = ObjectInputStreamTransformer.class.getDeclaredMethod("transformObjectInputStreamClass", byte[].class, boolean.class);
         TRANSFORM_METHOD.setAccessible(true);
     }
 
@@ -39,7 +39,19 @@ public class ObjectInputStreamClassInjectorTest {
         printAsm("build/Before.java", new ClassReader(beforeBytes));
         printBytes("build/Before.class", beforeBytes);
         String before = getAsm(new ClassReader(beforeBytes));
-        byte[] afterBytes = (byte[]) TRANSFORM_METHOD.invoke(null, beforeBytes);
+        byte[] afterBytes = (byte[]) TRANSFORM_METHOD.invoke(null, beforeBytes, false);
+        printAsm("build/After.java", new ClassReader(afterBytes));
+        printBytes("build/After.class", afterBytes);
+        String after = getAsm(new ClassReader(afterBytes));
+        Assert.assertTrue("After image should have more (injected) content than before image", after.length() > before.length());
+    }
+    @Test
+    public void testTransformationChangesObjectInputStreamWithHolder() throws Exception {
+        byte[] beforeBytes = getObjectInputStreamClassBytes();
+        printAsm("build/Before.java", new ClassReader(beforeBytes));
+        printBytes("build/Before.class", beforeBytes);
+        String before = getAsm(new ClassReader(beforeBytes));
+        byte[] afterBytes = (byte[]) TRANSFORM_METHOD.invoke(null, beforeBytes, true);
         printAsm("build/After.java", new ClassReader(afterBytes));
         printBytes("build/After.class", afterBytes);
         String after = getAsm(new ClassReader(afterBytes));
