@@ -26,6 +26,15 @@
     <properties.tca debugMode="true"/>
   </resourceAdapter>
 
+  <activationSpec id="App1/EJB1/MyMDB" autoStart="false">
+    <authData user="actspecU1" password="act1v5p3c"/>
+    <properties.tca maxSize="8192" messageSelector="*"/>
+  </activationSpec>
+
+  <activationSpec id="MyDefaultMessageListener">
+    <properties.tca/>
+  </activationSpec>
+
   <adminObject id="conspec1" jndiName="eis/conspec1">
     <properties.tca.ConnectionSpec connectionTimeout="10000" userName="1user" password="password1"/>
   </adminObject>

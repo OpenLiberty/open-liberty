@@ -124,6 +124,38 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, 7766, props.getInt("portNumber"));
     }
 
+    // Test the output of the /ibm/api/config/activationSpec REST endpoint.
+    @Test
+    public void testMultipleActivationSpecs() throws Exception {
+        JsonArray aspecs = new HttpsRequest(server, "/ibm/api/config/activationSpec").run(JsonArray.class);
+        String err = "unexpected response: " + aspecs;
+        assertEquals(err, 2, aspecs.size()); // increase this if additional activationSpec elements are added
+
+        JsonObject aspec;
+        assertNotNull(err, aspec = aspecs.getJsonObject(0));
+        assertEquals(err, "activationSpec", aspec.getString("configElementName"));
+        assertEquals(err, "App1/EJB1/MyMDB", aspec.getString("uid"));
+        assertEquals(err, "App1/EJB1/MyMDB", aspec.getString("id"));
+        assertNull(err, aspec.get("jndiName"));
+        // App1/EJB1/MyMDB is already tested by testSingleActivationSpec
+
+        assertNotNull(err, aspec = aspecs.getJsonObject(1));
+        assertEquals(err, "activationSpec", aspec.getString("configElementName"));
+        assertEquals(err, "MyDefaultMessageListener", aspec.getString("uid"));
+        assertEquals(err, "MyDefaultMessageListener", aspec.getString("id"));
+        assertNull(err, aspec.get("jndiName"));
+        assertNull(err, aspec.get("containerAuthDataRef"));
+        assertNull(err, aspec.get("recoveryAuthDataRef"));
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = aspec.getJsonArray("properties.tca"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, 8, props.getInt("minSize"));
+        assertEquals(err, 1.618, props.getJsonNumber("multiplicationFactor").doubleValue(), 0.0001);
+    }
+
     // Test the output of the /ibm/api/config/adminObject REST endpoint.
     @Test
     public void testMultipleAdminObjects() throws Exception {
@@ -289,6 +321,39 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertNotNull(err, props = array.getJsonObject(0));
         assertNull(err, props.get("debugMode"));
         assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
+    }
+
+    // Test the output of the /ibm/api/config/activationSpec/{uid} REST endpoint.
+    @Test
+    public void testSingleActivationSpec() throws Exception {
+        JsonObject aspec = new HttpsRequest(server, "/ibm/api/config/activationSpec/App1%2FEJB1%2FMyMDB").run(JsonObject.class);
+        String err = "unexpected response: " + aspec;
+
+        assertEquals(err, "activationSpec", aspec.getString("configElementName"));
+        assertEquals(err, "App1/EJB1/MyMDB", aspec.getString("uid"));
+        assertEquals(err, "App1/EJB1/MyMDB", aspec.getString("id"));
+        assertNull(err, aspec.get("jndiName"));
+
+        JsonArray array;
+        JsonObject authData;
+        assertNotNull(err, array = aspec.getJsonArray("authDataRef"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, authData = array.getJsonObject(0));
+        assertEquals(err, "authData", authData.getString("configElementName"));
+        assertEquals(err, "activationSpec[App1/EJB1/MyMDB]/authData[default-0]", authData.getString("uid"));
+        assertNull(err, authData.getJsonObject("id"));
+        assertEquals(err, "actspecU1", authData.getString("user"));
+        assertEquals(err, "******", authData.getString("password"));
+
+        JsonObject props;
+        assertNotNull(err, array = aspec.getJsonArray("properties.tca"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, 8192, props.getInt("maxSize"));
+        assertEquals(err, "*", props.getString("messageSelector"));
+        assertEquals(err, 8, props.getInt("minSize"));
+        assertEquals(err, 1.618, props.getJsonNumber("multiplicationFactor").doubleValue(), 0.0001);
     }
 
     // Test the output of the /ibm/api/config/adminObject/{uid} REST endpoint.
