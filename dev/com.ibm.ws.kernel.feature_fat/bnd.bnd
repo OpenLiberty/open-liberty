@@ -44,7 +44,6 @@ tested.features: featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-
 	com.ibm.wsspi.thirdparty.equinox;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.kernel.service.location;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
 	com.ibm.ws.runtime.update;version=latest,\
