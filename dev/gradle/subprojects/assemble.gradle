@@ -1,0 +1,152 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',
+ * 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',
+ * and 'publishLibNative' tasks.
+ *
+ * Configure 'assemble' to depend on above tasks.
+ */
+task publishWLPJars(type: Copy) {
+    dependsOn jar
+    def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
+    enabled bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
+    from project.buildDir
+    into buildImage.file('wlp/' + bnd('publish.wlp.jar.suffix', 'lib'))
+    include bnd('publish.wlp.jar.include', '*.jar')
+    if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
+        // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
+        // next to the base version of the jar, *except* for jars that are directly
+        // referenced in a tool script's classpath...
+        if (((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty))
+                || (project.name.equals("com.ibm.ws.kernel.boot"))
+                || (project.name.equals("com.ibm.ws.appclient.boot"))
+                || (project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
+            rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
+        }
+        else {
+            rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
+        }
+    }
+    if (!bnd('-sub', '').empty) {
+        def hasIFIXHeaders = [:]
+        fileTree(dir: projectDir, include: bnd('-sub', '')).each { subBndFile ->
+            Properties subBndProperties = new Properties()
+            subBndFile.withInputStream { subBndProperties.load(it) }
+            if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
+                    || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
+                hasIFIXHeaders.put(subBndProperties.getProperty("Bundle-SymbolicName"), true)
+            }
+        }
+
+        eachFile {
+            // If the sub.bnd that built this jar contains iFix headers, rename it with a qualifer.
+            def symbolicName = it.getSourceName().substring(0, it.getSourceName().lastIndexOf("."))
+            if (!hasIFIXHeaders.get(symbolicName)) {
+                it.setName(symbolicName + "_${bnd.bFullVersion}.jar")
+            } else {
+                it.setName(symbolicName + "_${bnd.bFullVersion}.${qualifier}.jar")
+            }
+        }
+    }
+}
+
+task publishJavadoc(type: Copy) {
+    dependsOn zipJavadoc
+    from zipJavadoc
+    into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
+    rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
+}
+
+task publishToolScripts(type: Copy) {
+    dependsOn jar
+    enabled !bnd('publish.tool.script', '').empty
+    from cnf.file('resources/bin')
+    into buildImage.file('wlp/bin/' + bnd('publish.tool.script.subdir', ''))
+    fileMode 0755
+    rename 'tool(.*)', bnd('publish.tool.script') + '$1'
+    filter(org.apache.tools.ant.filters.ReplaceTokens,
+            tokens: [TOOL_JAR: bnd('publish.tool.script.subdir', '') + 'tools/' + bnd('publish.tool.jar', ''),
+                     TOOL_SCRIPT: bnd('publish.tool.script.subdir', '') + bnd('publish.tool.script', ''),
+                     TOOL_SCRIPT_DIR_LENGTH: bnd('publish.tool.script.dir.length', '5'),
+                     TOOL_SCRIPT_RELATIVE: bnd('publish.tool.script.relative', '')])
+}
+
+task publishToolJars(type: Copy) {
+    dependsOn jar
+    dependsOn publishToolScripts
+    enabled !bnd('publish.tool.jar', '').empty
+    from project.buildDir
+    into buildImage.file('wlp/bin/' + bnd('publish.tool.script.subdir', '') + 'tools')
+    include bnd('publish.tool.jar', '')
+}
+
+task publishSchemaResources(type: Copy) {
+    dependsOn jar
+    from project.file('resources/schemas')
+    into buildImage.file('wlp/dev/api/ibm/schema')
+}
+
+task publishPlatformManifests(type: Copy) {
+    dependsOn jar
+    from project.file('publish/platform')
+    into buildImage.file('wlp/lib/platform')
+    include '*.mf'
+    filter(org.apache.tools.ant.filters.ConcatFilter,
+            append: file(cnf.file('resources/IBM-ProductID.txt')))
+}
+
+task publishPlatformFiles(type: Copy) {
+    dependsOn jar
+    dependsOn publishPlatformManifests
+    from project.file('publish/platform')
+    into buildImage.file('wlp/lib/platform')
+    exclude '*.mf'
+}
+
+task publishTemplates(type: Copy) {
+    dependsOn jar
+    from project.file('publish/templates')
+    into buildImage.file('wlp/templates')
+}
+
+task publishBinScripts(type: Copy) {
+    dependsOn jar
+    from project.file('publish/bin')
+    into buildImage.file('wlp/bin')
+    fileMode 0755
+}
+
+task publishClientScripts(type: Copy) {
+    dependsOn jar
+    enabled parseBoolean(bnd('publish.wlp.clients', 'true'))
+    from project.file('publish/clients')
+    into buildImage.file('wlp/clients')
+}
+
+task publishLibNative(type: Copy) {
+    dependsOn jar
+    from project.file('lib/native')
+    into buildImage.file('wlp/lib/native')
+}
+
+assemble {
+    dependsOn publishWLPJars
+    dependsOn publishJavadoc
+    dependsOn publishToolJars
+    dependsOn publishSchemaResources
+    dependsOn publishPlatformFiles
+    dependsOn publishTemplates
+    dependsOn publishBinScripts
+    dependsOn publishClientScripts
+    dependsOn publishLibNative
+}

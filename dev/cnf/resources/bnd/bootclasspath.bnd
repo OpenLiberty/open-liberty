@@ -1,0 +1,64 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-buildpath.bootclasspath: ${javac.bootclasspath.${javac.source}}
+
+javac.bootclasspath.1.4: ${defaultjdklib.bootclasspath}
+javac.bootclasspath.1.6: ${defaultjdklib.bootclasspath}
+javac.bootclasspath.1.7: ${defaultjdklib.bootclasspath}
+javac.bootclasspath.1.8: ${defaultjdklib.bootclasspath}
+javac.bootclasspath.9:
+javac.bootclasspath.10:
+javac.bootclasspath.11:
+
+javac.bootclasspath.java6:
+javac.bootclasspath.java7:
+javac.bootclasspath.java8:
+
+# catch-all if something goes wrong. This should be updated in
+# settings.gradle
+defaultjdklib.bootclasspath:
+
+internaljavac.bootclasspath.1.4: \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.6.0;boot=true
+
+internaljavac.bootclasspath.1.6: \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.6.0;boot=true
+
+internaljavac.bootclasspath.1.7: \
+    com.ibm.ws.internal.prereq.java:java.ibmcertpathfw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjcefw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssfw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssprovider;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjssefw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmorbapi;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmpkcs;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.jlm;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.math;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.vm;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xml;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xmldsigfw;strategy=exact;version=1.7.0;boot=true
+
+internaljavac.bootclasspath.1.8: \
+    com.ibm.ws.internal.prereq.java:java.ibmcertpathfw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjcefw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssfw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssprovider;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjssefw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmorbapi;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmpkcs;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.jlm;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.math;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.vm;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xml;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xmldsigfw;strategy=exact;version=1.8.0;boot=true

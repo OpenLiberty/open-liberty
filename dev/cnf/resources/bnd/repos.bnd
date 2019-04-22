@@ -1,0 +1,64 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-connection-settings: \
+  ${if;${artifactory.download.token};server;-dummy}; \
+    id       = https://${artifactory.download.server}; \
+    username = ${artifactory.download.user}; \
+    password = ${artifactory.download.token}, \
+  ${if;${artifactory.upload.token};server;-dummy}; \
+    id       = https://${artifactory.upload.server}; \
+    username = ${artifactory.upload.user}; \
+    password = ${artifactory.upload.token}, \
+  -bnd
+
+-plugin.1.Local: \
+  aQute.bnd.repository.maven.provider.MavenBndRepository; \
+    name              = Local; \
+    noupdateOnRelease = true; \
+    local             = ${build}/local
+
+-plugin.2.Release: \
+  aQute.bnd.repository.maven.provider.MavenBndRepository; \
+    name              = Release; \
+    noupdateOnRelease = true; \
+    releaseUrl        = ${fileuri;${build}/release}; \
+    snapshotUrl       = ${fileuri;${build}/release}; \
+    local             = ${build}/local
+
+fetch.oss.repository: \
+  aQute.bnd.repository.maven.provider.MavenBndRepository; \
+    name              = RemotePublic; \
+    releaseUrl        = https://repo.maven.apache.org/maven2/; \
+    index             = ${build}/oss_dependencies.maven
+
+fetch.oss.ibm.repository: \
+  aQute.bnd.repository.maven.provider.MavenBndRepository; \
+    name              = RemoteIBM; \
+    local             = ~/.ibmdhe/repository; \
+    releaseUrl        = http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
+    index             = ${build}/oss_ibm.maven
+
+fetch.ibm.java.repository:
+
+push.ibm.repository:
+
+-plugin.3.RemotePublic:  ${fetch.oss.repository}
+
+-plugin.4.RemoteIBM:     ${fetch.oss.ibm.repository}
+
+-plugin.5.RemoteIBMJava: ${fetch.ibm.java.repository}
+
+-plugin.6.RemotePublish: ${push.ibm.repository}
+
+-releaserepo: Release
+-baselinerepo: Release
+-buildrepo: Local
