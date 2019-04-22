@@ -291,10 +291,6 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: \u914d\u7f6e\u4e86 Connect
 DSRA4015.no.ucp.connection.pool.datasource.explanation=\u914d\u7f6e\u4e86 ConnectionPoolDataSource \u985e\u578b\u7d66\u8cc7\u6599\u4f86\u6e90\uff0c\u4f46 Oracle UCP \u9a45\u52d5\u7a0b\u5f0f\u4e0d\u5be6\u4f5c\u8a72\u985e\u578b\u3002
 DSRA4015.no.ucp.connection.pool.datasource.useraction=\u8acb\u66f4\u65b0\u8cc7\u6599\u4f86\u6e90\uff0c\u4ee5\u4f7f\u7528 XADataSource \u6216 DataSource \u985e\u578b\u3002
 
-DSRA4016.no.ucp.driver.datasource=DSRA4016E: \u914d\u7f6e\u4e86 Driver \u985e\u578b\u7d66 {0} \u8cc7\u6599\u4f86\u6e90\uff0c\u4f46 Oracle UCP \u4e0d\u652f\u63f4\u8a72\u985e\u578b\u3002\u8acb\u6539\u7528 XADataSource \u6216 DataSource \u985e\u578b\u3002
-DSRA4016.no.ucp.driver.datasource.explanation=\u914d\u7f6e\u4e86 Driver \u985e\u578b\u7d66\u8cc7\u6599\u4f86\u6e90\uff0c\u4f46 Oracle UCP \u9a45\u52d5\u7a0b\u5f0f\u4e0d\u5be6\u4f5c\u8a72\u985e\u578b\u3002
-DSRA4016.no.ucp.driver.datasource.useraction=\u8acb\u66f4\u65b0\u8cc7\u6599\u4f86\u6e90\uff0c\u4ee5\u4f7f\u7528 XADataSource \u6216 DataSource \u985e\u578b\u3002
-
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
