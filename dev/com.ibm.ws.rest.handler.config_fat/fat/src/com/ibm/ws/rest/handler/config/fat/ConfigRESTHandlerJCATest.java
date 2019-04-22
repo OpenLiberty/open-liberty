@@ -213,7 +213,7 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "localhost", props.getString("hostName"));
         // assertEquals(err, 7654, props.getInt("portNumber")); // TODO include the internal default for portNumber?
         assertEquals(err, "user2", props.getString("userName"));
-        // assertEquals(err, "******", props.getString("password")); // TODO enable once other tests are updated (16601) and this can be changed
+        assertEquals(err, "******", props.getString("password"));
     }
 
     // Test the output of the /ibm/api/config/resourceAdapter/{uid} REST endpoint.
