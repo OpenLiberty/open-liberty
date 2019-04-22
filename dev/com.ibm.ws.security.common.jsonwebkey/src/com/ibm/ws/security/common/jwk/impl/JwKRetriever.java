@@ -211,10 +211,7 @@ public class JwKRetriever {
         File jwkFile = null;
         try {
             // figure out which cache to use for jwk from classloading
-            URL resourceURL = Thread.currentThread().getContextClassLoader().getResource(location);
-            if (resourceURL != null) {  // resource is present.
-                classLoadingCacheSelector = resourceURL.getPath();                 
-            }            
+            classLoadingCacheSelector = Thread.currentThread().getContextClassLoader().toString() + location;
             //figure out which cache to use for jwk from file system            
             final String keyFile;                
             if (location.startsWith("file:")) {
@@ -232,7 +229,7 @@ public class JwKRetriever {
                     publicKey = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use);  
                 }
                 if (publicKey == null) {  // cache miss, read the jwk if we can,  &  update locationUsed
-                    InputStream is = getInputStream(jwkFile, fileSystemCacheSelector, resourceURL, classLoadingCacheSelector);  
+                    InputStream is = getInputStream(jwkFile, fileSystemCacheSelector,  location, classLoadingCacheSelector);  
                     if(is != null) {
                         keyString = getKeyAsString(is);
                         parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
@@ -251,11 +248,11 @@ public class JwKRetriever {
     
     /**
      * open an input stream to either a file on the file system or a url on the classpath.
-     * Update the locationUsed class variable to note where we got the stream from so it can be cached properly
+     * Update the locationUsed class variable to note where we got the stream from so results of reading it can be cached properly
      *
      */
     @FFDCIgnore({ PrivilegedActionException.class })
-    protected InputStream getInputStream(final File f, String fileCacheSelector, URL u, String classLoadingSelector ) throws IOException {      
+    protected InputStream getInputStream(final File f, String fileSystemSelector,  String location, String classLoadingSelector ) throws IOException {      
         // check file system first like we used to do
         if (f != null) {
             InputStream is = null;
@@ -274,20 +271,23 @@ public class JwKRetriever {
             } catch (PrivilegedActionException e1) {
             }
             if (is != null) { 
-                locationUsed = fileCacheSelector;
+                locationUsed = fileSystemSelector;
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "input stream obtained from file system and locationUsed set to: "+ locationUsed);
                 }
                 return is;
             }
+        }        
+        // do the expensive classpath search
+        // performant: we're avoiding calling getResource if entry was previously cached.
+        URL u = Thread.currentThread().getContextClassLoader().getResource(location);  
+        locationUsed = classLoadingSelector;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "input stream obtained from classloader and  locationUsed set to: "+ locationUsed);
         }
         if (u != null) {            
-            locationUsed = classLoadingSelector;
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "input stream obtained from classLoader and locationUsed set to: "+ locationUsed);
-            }
             return u.openStream();
-        } 
+        }
         return null;
     }
 
