@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,7 +174,7 @@ public class LibertyServerFactory {
                             //copy any shared content
                             LocalFile sharedFolder = new LocalFile(LibertyServer.PATH_TO_AUTOFVT_SHARED);
                             if (sharedFolder.exists())
-                                recursivelyCopyDirectory(ls.getMachine(), sharedFolder, new RemoteFile(ls.getMachine(), ls.getServerSharedPath()));
+                                recursivelyCopyDirectory(ls.getMachine(), sharedFolder, new RemoteFile(ls.getMachine(), ls.getServerSharedPath()), true);
                         }
 
                         RemoteFile[] autoInstall = applicationsToVerify(ls);
@@ -440,9 +440,17 @@ public class LibertyServerFactory {
     }
 
     public static void recursivelyCopyDirectory(Machine machine, LocalFile localDirectory, RemoteFile destination) throws Exception {
+        recursivelyCopyDirectory(machine, localDirectory, destination, false);
+    }
+
+    public static void recursivelyCopyDirectory(Machine machine, LocalFile localDirectory, RemoteFile destination, boolean cleanup) throws Exception {
         String method = "recursivelyCopyDirectory";
         Log.entering(c, method);
-        destination.mkdir();
+
+        if (cleanup) {
+            cleanupFiles(localDirectory, destination);
+        }
+
         ArrayList<String> logs = new ArrayList<String>();
         logs = listDirectoryContents(localDirectory);
         for (String l : logs) {
@@ -451,13 +459,33 @@ public class LibertyServerFactory {
             RemoteFile toReceive = new RemoteFile(machine, destination, l);
             if (toCopy.isDirectory()) {
                 // Recurse
-                recursivelyCopyDirectory(machine, toCopy, toReceive);
+                recursivelyCopyDirectory(machine, toCopy, toReceive, cleanup);
             } else {
                 toReceive.copyFromSource(toCopy);
                 Log.finer(c, "recursivelyCopyDirectory", l + " copied to " + toReceive.getAbsolutePath());
             }
         }
         Log.exiting(c, method);
+    }
+
+    private static void cleanupFiles(LocalFile localDirectory, RemoteFile destination) throws Exception {
+        //Will we be copying any files (excluding dirs) into this directory?
+        boolean sourceContainsFiles = false;
+        for (RemoteFile localFile : localDirectory.list(false)) {
+            if (localFile.isFile()) {
+                sourceContainsFiles = true;
+                break;
+            }
+        }
+
+        if (!destination.mkdir() && sourceContainsFiles) {
+            //Folder already exists so cleanup any existing files in this folder, but leave folders.
+            for (RemoteFile remoteFile : destination.list(false)) {
+                if (remoteFile.isFile()) {
+                    remoteFile.delete();
+                }
+            }
+        }
     }
 
     @Deprecated
