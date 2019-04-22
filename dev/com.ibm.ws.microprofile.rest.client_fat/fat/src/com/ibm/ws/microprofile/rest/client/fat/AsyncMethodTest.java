@@ -71,13 +71,7 @@ public class AsyncMethodTest extends FATServletClient {
             assertTrue("Found JsonBProvider errors in log file", 
                        jsonbProviderErrors == null || jsonbProviderErrors.isEmpty());
         } finally {
-            server.dumpServer("dump.zip");
             server.stopServer("CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
         }
-    }
-
-    @Before
-    public synchronized void obtainServerDumps() throws Exception {
-        server.dumpServerOnSchedule("dump", 3, 100, 1000, TimeUnit.MILLISECONDS);
     }
 }
