@@ -117,7 +117,7 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.0 and monitor-1.0: vendor metrics should not be available ------");
     	server.setServerConfigurationFile("server_mpMetric10Monitor10.xml");
     	server.startServer();
-    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	Log.info(c, testName, server.waitForStringInLog("SRVE9103I",60000));
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
