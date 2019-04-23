@@ -121,24 +121,25 @@ public class FaultToleranceGitTckLauncher {
 
         String apiVersion = MvnUtils.getApiSpecVersionAfterClone(repo);
         System.out.println("Queried api.version is : " + apiVersion);
-        addedProps.put("api.version", apiVersion);
+        addedProps.put(MvnUtils.API_VERSION, apiVersion);
 
         String tckVersion = MvnUtils.getTckVersionAfterClone(repo);
         System.out.println("Queried tck.version is : " + tckVersion);
-        addedProps.put("tck.version", tckVersion);
+        addedProps.put(MvnUtils.TCK_VERSION, tckVersion);
 
         // A command line -Dprop=value actually gets to here as a environment variable...
         String implVersion = System.getenv("impl.version");
         System.out.println("Passed in impl.version is : " + implVersion);
-        addedProps.put("impl.version", implVersion);
+        addedProps.put(MvnUtils.IMPL_VERSION, implVersion);
 
         // We store a set of keys that we want the system to add "1.1" or "1.2" etc to
         // depending on the pom.xml contents.
         HashSet<String> versionedLibraries = new HashSet<>(Arrays.asList("com.ibm.websphere.org.eclipse.microprofile.faulttolerance"));
         String backStopImpl = "1.0"; // Used if there is no impl matching the spec/pom.xml <version> AND impl.version is not set
+        addedProps.put(MvnUtils.BACKSTOP_VERSION, backStopImpl);
 
-        MvnUtils.runTCKMvnCmdWithProps(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK",
-                                       addedProps, versionedLibraries, backStopImpl);
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this
+                        .getClass() + ":launchFaultToleranceTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
     }
 
     @Mode(TestMode.LITE)
