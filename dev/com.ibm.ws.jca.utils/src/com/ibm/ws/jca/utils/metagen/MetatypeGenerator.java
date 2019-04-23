@@ -1101,8 +1101,8 @@ public class MetatypeGenerator {
         else
             ad_configProperty.setRequired(false);
 
-        if (configProperty.getConfidential() != null && configProperty.getConfidential())
-            // || propName.toUpperCase().contains("PASSWORD")) // TODO add this once all tests are updated
+        if (configProperty.getConfidential() != null && configProperty.getConfidential()
+            || propName.toUpperCase().contains("PASSWORD"))
             ad_configProperty.setIbmType("password");
 
         if (configProperty.getIgnore() != null && configProperty.getIgnore()) {
