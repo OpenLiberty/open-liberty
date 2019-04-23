@@ -23,6 +23,9 @@ src: \
 	test-applications/AppExcExtendsThrowableErrBean.jar/src, \
 	test-applications/JitDeployEJB.jar/src, \
 	test-applications/JitDeployWeb.war/src, \
+	test-applications/RemoteClientWeb.war/src, \
+	test-applications/RemoteServerEJB.jar/src, \
+	test-applications/RemoteServerShared.jar/src, \
 	test-applications/StatelessAnnEJB.jar/src, \
 	test-applications/StatelessAnnWeb.war/src, \
 	test-applications/StatelessMixEJB.jar/src, \
