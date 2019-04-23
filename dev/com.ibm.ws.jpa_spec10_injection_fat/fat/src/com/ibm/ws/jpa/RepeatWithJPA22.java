@@ -19,10 +19,6 @@ import componenttest.rules.repeater.RepeatTestAction;
 public class RepeatWithJPA22 implements RepeatTestAction {
     public static final String ID = "JPA22";
 
-    public RepeatWithJPA22() {
-
-    }
-
     @Override
     public boolean isEnabled() {
         return true;

@@ -19,10 +19,6 @@ import componenttest.rules.repeater.RepeatTestAction;
 public class RepeatWithJPA21 implements RepeatTestAction {
     public static final String ID = "JPA21";
 
-    public RepeatWithJPA21() {
-
-    }
-
     @Override
     public boolean isEnabled() {
         return true;

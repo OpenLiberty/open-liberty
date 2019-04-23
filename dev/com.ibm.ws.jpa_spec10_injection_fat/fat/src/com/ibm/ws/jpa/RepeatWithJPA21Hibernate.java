@@ -19,10 +19,6 @@ import componenttest.rules.repeater.RepeatTestAction;
 public class RepeatWithJPA21Hibernate implements RepeatTestAction {
     public static final String ID = "JPA21_HIBERNATE";
 
-    public RepeatWithJPA21Hibernate() {
-
-    }
-
     @Override
     public boolean isEnabled() {
         return true;

@@ -15,19 +15,15 @@ import java.io.File;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
-public class RepeatWithJPA20 extends FeatureReplacementAction {
+public class RepeatWithJPA20 implements RepeatTestAction {
     public static final String ID = "JPA20";
-
-    public RepeatWithJPA20() {
-
-    }
 
     @Override
     public boolean isEnabled() {

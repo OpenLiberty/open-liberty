@@ -10,7 +10,7 @@
  -->
 <server description="JPA Injection Tests Server">
     <include location="../fatTestPorts.xml"/>
-    <include location="${env.repeat_phase}"/>
+    <include location="${shared.config.dir}/${env.repeat_phase}"/>
     
     <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true">
     	    <jdbcDriver libraryRef="DerbyLib"/>
