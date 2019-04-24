@@ -12,6 +12,9 @@ package com.ibm.ejs.j2c;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.DissociatableManagedConnection;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
+import javax.resource.spi.ResourceAllocationException;
 import javax.resource.spi.SharingViolationException;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
@@ -141,6 +145,7 @@ import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
  * </table>
  */
 public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
+    public static final ThreadLocal<Boolean> isValidating = new ThreadLocal<Boolean>();
 
     protected final HashMap<Object, HandleList> mcwHandleList = new HashMap<Object, HandleList>();
 
@@ -458,8 +463,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     /**
      * Enlists a RRS XA resource with the transaction manager.
      *
-     * @param recoveryId The recovery id representing the registration of the resource with
-     *            the transaction manager.
+     * @param recoveryId     The recovery id representing the registration of the resource with
+     *                           the transaction manager.
      * @param branchCoupling The resource's branch coupling support indicator.
      *
      * @return The XA resource enlisted with the transaction manager.
@@ -1902,7 +1907,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * Also keeps track of the PMI data relative to the number of handles in use.
      *
      * @param subj Security Subject
-     * @param cri ConnectionRequestInfo object.
+     * @param cri  ConnectionRequestInfo object.
      * @return Connection handle.
      * @exception ResourceException
      */
@@ -1920,6 +1925,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         // number of open connections for this ManagedConnection.
         try {
             connection = mc.getConnection(subj, cri);
+            if (isValidating.get() != null && Boolean.FALSE.equals(testConnection()))
+                throw new ResourceAllocationException("ManagedConnection.testConnection() indicates connection is not valid.");
             if (_supportsReAuth) {
                 /*
                  * If we have a userDataPending userData, we need
@@ -2053,7 +2060,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * It is expected that this method will be used by the ConnectionManager
      * in processing a reassociate call or an associateConnection call.
      *
-     * @param handle Connection handle to associate with this wrappers ManagedConnection.
+     * @param handle      Connection handle to associate with this wrappers ManagedConnection.
      * @param fromWrapper MCWrapper which this handle is currently associated with.
      *
      * @exception ResourceException if the connection association fails.
@@ -3297,5 +3304,53 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             }
         }
         return cm;
+    }
+
+    /**
+     * Attempts to validate the ManagedConnection via a vendor-specific testConnection() interface.
+     *
+     * @param con     connection handle that was successfully obtained from a connection factory.
+     * @param cfSvc   connection factory service that created the connection factory.
+     * @param resInfo resource reference info (if any) of the connection factory from which the connection was obtained.
+     * @return the result of the testConnection operation, if any. If a testConnection operation is not found, returns NULL.
+     * @throws ResourceException if an error occurs attempting to test the connection.
+     */
+    private Boolean testConnection() throws ResourceException {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "testConnection");
+
+        try {
+            Boolean result = AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+                @Override
+                public Boolean run() throws Exception {
+                    return (Boolean) mc.getClass().getMethod("testConnection").invoke(mc);
+                }
+            });
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "testConnection", result);
+            return result;
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            if (cause instanceof IllegalAccessException || cause instanceof NoSuchMethodException || cause instanceof SecurityException) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "testConnection", "method unavailable");
+                return null;
+            } else if (cause instanceof InvocationTargetException) {
+                cause = cause.getCause();
+            }
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "testConnection", cause);
+            if (cause instanceof ResourceException)
+                throw (ResourceException) cause;
+            if (cause instanceof RuntimeException)
+                throw (RuntimeException) cause;
+            if (cause instanceof Error)
+                throw (Error) cause;
+            else
+                throw new ResourceAllocationException(cause);
+        }
     }
 }
