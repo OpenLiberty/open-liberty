@@ -287,10 +287,6 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: La source de donn\u00e9es 
 DSRA4015.no.ucp.connection.pool.datasource.explanation=La source de donn\u00e9es a \u00e9t\u00e9 configur\u00e9e avec le type ConnectionPoolDataSource, qui n'est pas impl\u00e9ment\u00e9 par le pilote du pool de connexions universelles (UCP) Oracle.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Mettez \u00e0 jour la source de donn\u00e9es pour qu'elle utilise le type XADataSource ou DataSource.
 
-DSRA4016.no.ucp.driver.datasource=DSRA4016E: La source de donn\u00e9es {0} a \u00e9t\u00e9 configur\u00e9e avec le type Driver, qui n''est pas pris en charge par le pool de connexions universelles (UCP) Oracle. A la place, utilisez le type XADataSource ou DataSource.
-DSRA4016.no.ucp.driver.datasource.explanation=La source de donn\u00e9es a \u00e9t\u00e9 configur\u00e9e avec le type Driver, qui n'est pas impl\u00e9ment\u00e9 par le pilote du pool de connexions universelles (UCP) Oracle.
-DSRA4016.no.ucp.driver.datasource.useraction=Mettez \u00e0 jour la source de donn\u00e9es pour qu'elle utilise le type XADataSource ou DataSource.
-
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
