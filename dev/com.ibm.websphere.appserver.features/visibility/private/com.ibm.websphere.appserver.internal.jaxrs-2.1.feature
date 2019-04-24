@@ -15,7 +15,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.httpcommons-1.0, \
  com.ibm.websphere.appserver.javaeeCompatible-8.0, \
- com.ibm.websphere.appserver.internal.optional.jaxb-2.2,\
+ com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \
  com.ibm.websphere.appserver.internal.cxf.common-3.2
 -bundles=\
  com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \

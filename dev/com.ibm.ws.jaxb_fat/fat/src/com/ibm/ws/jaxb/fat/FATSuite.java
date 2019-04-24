@@ -22,7 +22,8 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 LibertyJAXBTest.class,
                 ThirdPartyJAXBTest.class,
-                JAXBToolsTest.class
+                JAXBToolsTest.class,
+                LibertyJAXBTolerationTest.class
 })
 public class FATSuite {
     @ClassRule

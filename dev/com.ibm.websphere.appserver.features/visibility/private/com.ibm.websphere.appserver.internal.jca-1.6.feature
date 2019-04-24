@@ -14,7 +14,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.connectionManagement-1.0,\
   com.ibm.websphere.appserver.contextService-1.0, \
   com.ibm.websphere.appserver.dynamicBundle-1.0, \
-  com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
+  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \
   com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:=1.2
 -bundles=\
   com.ibm.ws.jca, \
