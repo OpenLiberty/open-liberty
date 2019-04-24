@@ -12,6 +12,7 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.tests.asyncshutdown;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -24,6 +25,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -46,20 +49,56 @@ public class AsyncShutdownTest {
 
     @Test
     public void testAsyncShutdown() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackage(AsyncShutdownTest.class.getPackage());
-        ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY);
 
-        beginAsyncTask();
+        deployApp();
+
+        HttpUtils.findStringInReadyUrl(server, APP_NAME + "/begin-async-task", "OK");
+
+        removeApp();
 
         // Async task should keep starting new async methods until one of them fails with the expected error because the application has shut down
-        server.deleteDirectoryFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
-        assertNotNull("application did not stop", server.waitForStringInLog("CWWKZ0009I.*" + APP_NAME));
         assertNotNull("Error was not logged", server.waitForStringInLog("CWMFT0002W"));
     }
 
-    private void beginAsyncTask() throws Exception {
-        HttpUtils.findStringInReadyUrl(server, APP_NAME + "/begin-async-task", "OK");
+    @Test
+    @Mode(TestMode.FULL)
+    public void testAsyncRequestWaits() throws Exception {
+        deployApp();
+
+        // This request should not return until request is complete
+        HttpUtils.findStringInReadyUrl(server, APP_NAME + "/async-task-wait", "OK");
+
+        removeApp();
+
+        // Wait 8 seconds to assert that the error does not occur
+        assertNull("Error was logged", server.waitForStringInLog("CWMFT0002W", 8000));
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testAsyncRequestWaitsAtShutdown() throws Exception {
+        deployApp();
+
+        // This request should return immediately
+        HttpUtils.findStringInReadyUrl(server, APP_NAME + "/async-task-wait-at-shutdown", "OK");
+
+        removeApp();
+
+        // Wait 8 seconds to assert that the error does not occur
+        assertNull("Error was logged", server.waitForStringInLog("CWMFT0002W", 8000));
+    }
+
+    private void deployApp() throws Exception {
+        // Set mark to avoid seeing log messages from previous deployments
+        server.setMarkToEndOfLog();
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addPackage(AsyncShutdownTest.class.getPackage());
+        ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY);
+    }
+
+    private void removeApp() throws Exception {
+        server.deleteDirectoryFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
+        assertNotNull("application did not stop", server.waitForStringInLog("CWWKZ0009I.*" + APP_NAME));
     }
 
     @AfterClass
