@@ -109,6 +109,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.session.SessionCookieConfigImpl;
+import com.ibm.ws.session.utils.IDGeneratorImpl;
 import com.ibm.ws.session.utils.LoggingUtil;
 import com.ibm.ws.util.WSThreadLocal;
 import com.ibm.ws.webcontainer.WebContainer;
@@ -936,6 +937,11 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         // PK63920 End
         serverInfo = getServerInfo(); // NEVER INVOKED BY WEBSPHERE APPLICATION
         // SERVER (Common Component Specific)
+
+        // Initialize the Logger for IDGeneratorImpl before setting Thread context ClassLoader
+        // in order to avoid using the application ClassLoader to load the Logger's resource bundle.
+        IDGeneratorImpl.init();
+
         ClassLoader origClassLoader = null; // NEVER INVOKED BY WEBSPHERE
         // APPLICATION SERVER (Common
         // Component Specific)
