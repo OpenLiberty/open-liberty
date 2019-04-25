@@ -185,7 +185,7 @@ public class SSOAuthenticator implements WebAuthenticator {
                     Tr.audit(tc, LoggedOutMsg, new Object[] {});
                     req.setAttribute(LoggedOutMsg, "true");
                 }
-
+                cleanupLoggedOutToken(req, res);
                 return new AuthenticationResult(AuthResult.FAILURE, Tr.formatMessage(tc, LoggedOutMsg));
             }
             return authenticateWithJwt(req, res, encodedjwtssotoken);
