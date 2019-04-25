@@ -25,8 +25,10 @@ import java.security.Permissions;
 import java.security.Policy;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PropertyPermission;
@@ -42,9 +44,14 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.url.URLStreamHandlerService;
 
@@ -53,230 +60,115 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 
 public class PermissionManagerTest {
 
-    /**
-     * The permission manager object
-     */
-    PermissionManager permissionManager = new PermissionManager();
-
-    /**
-     * The Mock framework
-     */
     private final Mockery mock = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
 
-    /**
-     * Component Context mock object
-     */
-    private final ComponentContext cc = mock.mock(ComponentContext.class);
-
-    private final BundleContext bc = mock.mock(BundleContext.class);
-
-    /**
-     * Service Reference Mock Object
-     */
     @SuppressWarnings("unchecked")
     private final ServiceReference<JavaPermissionsConfiguration> permissionRef = mock.mock(ServiceReference.class, "permissionRef");
-
-    /**
-     * Permisison Object
-     */
-    JavaPermissionsConfiguration permission = new JavaPermissionsConfiguration();
-
-    /**
-     * Service Reference Mock Object
-     */
-    @SuppressWarnings("unchecked")
-    private final ServiceReference<JavaPermissionsConfiguration> permission1Ref = mock.mock(ServiceReference.class, "permission1Ref");
-
-    /**
-     * Permisison Object
-     */
-    JavaPermissionsConfiguration permission1 = new JavaPermissionsConfiguration();
-
-    /**
-     * ClassLoading service
-     *
-     * @throws IOException
-     */
-    private final ClassLoadingService classLoadingService = mock.mock(ClassLoadingService.class, "classLoadingService");
 
     @SuppressWarnings("unchecked")
     private final ServiceReference<URLStreamHandlerService> urlStreamHandlerServiceRef = mock.mock(ServiceReference.class, "urlStreamHandlerServiceRef");
 
+    private PermissionManager permissionManager = new PermissionManager();
+    private final ComponentContext componentContext = mock.mock(ComponentContext.class);
+    private final BundleContext bundleContext = mock.mock(BundleContext.class);
+    private final ClassLoadingService classLoadingService = mock.mock(ClassLoadingService.class, "classLoadingService");
     private final WLPDynamicPolicy wlpDynamicPolicy = mock.mock(WLPDynamicPolicy.class);
-
+    private final FrameworkWiring frameworkWiring = mock.mock(FrameworkWiring.class);
     private Policy savedPolicy;
     private final Permission fileReadPermission = new FilePermission("", "read");
     private final Permission propertyReadPermission = new PropertyPermission("os.name", "read");
+    private final Collection<BundleCapability> matchingCapabilities = new HashSet<BundleCapability>();
 
     @Before
     public void setup() throws IOException {
-        permissionManager = new PermissionManager();
-        savedPolicy = Policy.getPolicy();
+        inServerProcess();
+        withSharedLibraryProtectionDomains();
+        withSystemBundleAndCapabilities();
 
+        savedPolicy = Policy.getPolicy();
+        permissionManager = new PermissionManager();
+        permissionManager.setWsjarURLStreamHandler(urlStreamHandlerServiceRef);
+        permissionManager.setClassLoadingService(classLoadingService);
+        permissionManager.activate(componentContext, null);
+    }
+
+    private void inServerProcess() {
+        mock.checking(new Expectations() {
+            {
+                allowing(componentContext).getBundleContext();
+                will(returnValue(bundleContext));
+                allowing(bundleContext).getProperty("wlp.process.type");
+                will(returnValue("server"));
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void withSharedLibraryProtectionDomains() {
         mock.checking(new Expectations() {
             {
                 one(classLoadingService).setSharedLibraryProtectionDomains(with(any(Map.class)));
+            }
+        });
+    }
 
-                allowing(cc).getBundleContext();
-                will(returnValue(bc));
-
-                allowing(bc).getProperty("wlp.process.type");
-                will(returnValue("server"));
+    private void withSystemBundleAndCapabilities() {
+        final Bundle systemBundle = mock.mock(Bundle.class);
+        mock.checking(new Expectations() {
+            {
+                allowing(bundleContext).getBundle(org.osgi.framework.Constants.SYSTEM_BUNDLE_LOCATION);
+                will(returnValue(systemBundle));
+                allowing(systemBundle).adapt(FrameworkWiring.class);
+                will(returnValue(frameworkWiring));
+                allowing(frameworkWiring).findProviders(with(any(org.osgi.resource.Requirement.class)));
+                will(returnValue(matchingCapabilities));
 
             }
         });
-
-        permissionManager.setWsjarURLStreamHandler(urlStreamHandlerServiceRef);
-        permissionManager.setClassLoadingService(classLoadingService);
-        permissionManager.activate(cc, null);
     }
 
     @After
     public void tearDown() {
         Policy.setPolicy(savedPolicy);
-        permissionManager.deactivate(cc);
+        permissionManager.deactivate(componentContext);
         mock.assertIsSatisfied();
-    }
-
-    private void grantExitVM() {
-        mock.checking(new Expectations() {
-            {
-                allowing(permissionRef).getProperty(Constants.SERVICE_ID);
-                will(returnValue(1L));
-
-                allowing(permissionRef).getProperty(Constants.SERVICE_RANKING);
-                will(returnValue(0));
-
-                allowing(cc).locateService("permission", permissionRef);
-                will(returnValue(permission));
-            }
-        });
-
-        HashMap<String, Object> permissionProperties = new HashMap<String, Object>();
-        permissionProperties.put(JavaPermissionsConfiguration.PERMISSION, "java.lang.RuntimePermission");
-        permissionProperties.put(JavaPermissionsConfiguration.TARGET_NAME, "exitVM");
-        permission.activate(permissionProperties, cc);
-
-        permissionManager.setPermission(permissionRef);
-        permissionManager.deactivate(cc);
-        permissionManager.activate(cc, null);
-    }
-
-    private void grantReadProperty(String codeBase, boolean restrict) {
-        mock.checking(new Expectations() {
-            {
-                allowing(permissionRef).getProperty(Constants.SERVICE_ID);
-                will(returnValue(1L));
-
-                allowing(permissionRef).getProperty(Constants.SERVICE_RANKING);
-                will(returnValue(0));
-
-                allowing(cc).locateService("permission", permissionRef);
-                will(returnValue(permission));
-            }
-        });
-
-        HashMap<String, Object> permissionProperties = new HashMap<String, Object>();
-        permissionProperties.put(JavaPermissionsConfiguration.PERMISSION, "java.util.PropertyPermission");
-        permissionProperties.put(JavaPermissionsConfiguration.TARGET_NAME, "os.name");
-        permissionProperties.put(JavaPermissionsConfiguration.ACTIONS, "read");
-        if (restrict) {
-            permissionProperties.put(JavaPermissionsConfiguration.RESTRICTION, Boolean.TRUE);
-        }
-        if (codeBase != null) {
-            permissionProperties.put(JavaPermissionsConfiguration.CODE_BASE, codeBase);
-        }
-
-        permission.activate(permissionProperties, cc);
-
-        permissionManager.setPermission(permissionRef);
-        permissionManager.deactivate(cc);
-        permissionManager.activate(cc, null);
-    }
-
-    private void grantAndRestrictReadProperty() {
-        mock.checking(new Expectations() {
-            {
-                allowing(permissionRef).getProperty(Constants.SERVICE_ID);
-                will(returnValue(1L));
-
-                allowing(permissionRef).getProperty(Constants.SERVICE_RANKING);
-                will(returnValue(0));
-
-                allowing(cc).locateService("permission", permissionRef);
-                will(returnValue(permission));
-
-                allowing(permission1Ref).getProperty(Constants.SERVICE_ID);
-                will(returnValue(1L));
-
-                allowing(permission1Ref).getProperty(Constants.SERVICE_RANKING);
-                will(returnValue(0));
-
-                allowing(cc).locateService("permission", permission1Ref);
-                will(returnValue(permission1));
-            }
-        });
-
-        HashMap<String, Object> permissionProperties = new HashMap<String, Object>();
-        permissionProperties.put(JavaPermissionsConfiguration.PERMISSION, "java.util.PropertyPermission");
-        permissionProperties.put(JavaPermissionsConfiguration.TARGET_NAME, "os.name");
-        permissionProperties.put(JavaPermissionsConfiguration.ACTIONS, "read");
-
-        permission.activate(permissionProperties, cc);
-
-        permissionProperties = new HashMap<String, Object>();
-        permissionProperties.put(JavaPermissionsConfiguration.PERMISSION, "java.util.PropertyPermission");
-        permissionProperties.put(JavaPermissionsConfiguration.TARGET_NAME, "os.name");
-        permissionProperties.put(JavaPermissionsConfiguration.ACTIONS, "read");
-        permissionProperties.put(JavaPermissionsConfiguration.RESTRICTION, "true");
-
-        permission1.activate(permissionProperties, cc);
-
-        permissionManager.setPermission(permissionRef);
-        permissionManager.setPermission(permission1Ref);
-        permissionManager.deactivate(cc);
-        permissionManager.activate(cc, null);
     }
 
     @Test
     public void restrictablePermissionsDefault() {
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
+
         assertEquals("Number of permissions mismatched", 4, permissions.size());
     }
 
     @Test
     public void restrictablePermissionsWithExitVMGrant() {
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         grantExitVM();
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
-        assertEquals("Number of permissions mismatched", 4, permissions.size());
-    }
 
-    private void createClassLoadingServiceExpectations() {
-        mock.checking(new Expectations() {
-            {
-                one(classLoadingService).setSharedLibraryProtectionDomains(with(any(Map.class)));
-            }
-        });
+        assertEquals("Number of permissions mismatched", 4, permissions.size());
     }
 
     @Test
     public void restrictablePermissionsWithReadPropertyRestrict() {
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         grantReadProperty(null, true);
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
+
         assertEquals("Number of permissions mismatched", 5, permissions.size());
     }
 
     @Test
     public void restrictablePermissionsWithReadPropertyGrantAndRestrict() {
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         grantAndRestrictReadProperty();
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
+
         assertEquals("Number of permissions mismatched", 4, permissions.size());
 
         permissions = permissionManager.getEffectivePermissions(permissions, "dummyCodebase");
@@ -285,9 +177,10 @@ public class PermissionManagerTest {
 
     @Test
     public void restrictablePermissionsWithReadpropertyGrant() {
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         grantReadProperty(null, false);
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
+
         assertEquals("Number of restrictable permissions mismatched", 4, permissions.size());
 
         permissions = permissionManager.getEffectivePermissions(permissions, "dummyCodebase");
@@ -296,7 +189,7 @@ public class PermissionManagerTest {
 
     @Test
     public void getEffectivePermissionsMergeAllGrantedPermissions() throws Exception {
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         grantReadProperty(null, false);
         CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/appWAR"), (java.security.cert.Certificate[]) null);
         PermissionCollection staticPolicyPermissions = Policy.getPolicy().getPermissions(appCodeSource);
@@ -315,7 +208,7 @@ public class PermissionManagerTest {
 
     @Test
     public void getEffectivePermissionsMergeAllGrantedPermissionsExceptStatic() throws Exception {
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         grantReadProperty(null, false);
         CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/appWAR"), (java.security.cert.Certificate[]) null);
         PermissionCollection staticPolicyPermissions = Policy.getPolicy().getPermissions(appCodeSource);
@@ -324,7 +217,7 @@ public class PermissionManagerTest {
         List<Permission> permissionsList = Collections.list(permissions.elements());
         List<Permission> staticPermissionsList = Collections.list(staticPolicyPermissions.elements());
 
-        assertFalse("The permissions must nost be merged with the static permissions.", permissionsList.containsAll(staticPermissionsList));
+        assertFalse("The permissions must not be merged with the static permissions.", permissionsList.containsAll(staticPermissionsList));
         assertTrue("The permissions must be merged with the permissions.xml permissions.", permissionsList.contains(fileReadPermission));
         assertTrue("The permissions must be merged with the server.xml permissions.", permissionsList.contains(propertyReadPermission));
     }
@@ -342,7 +235,6 @@ public class PermissionManagerTest {
         }
         final String normalizedCodebase = codeBase.replace("\\", "/").replace("//", "/");
 
-        permissionManager.setClassLoadingService(classLoadingService);
         mock.checking(new Expectations() {
             {
                 one(classLoadingService).setSharedLibraryProtectionDomains(with(new BaseMatcher<Map<String, ProtectionDomain>>() {
@@ -358,7 +250,8 @@ public class PermissionManagerTest {
                     }
 
                     @Override
-                    public void describeTo(Description arg0) {}
+                    public void describeTo(Description arg0) {
+                    }
                 }));
             }
         });
@@ -389,23 +282,23 @@ public class PermissionManagerTest {
             }
         });
 
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         anotherPermissionManager.setClassLoadingService(classLoadingService);
-        anotherPermissionManager.activate(cc, null);
-        anotherPermissionManager.deactivate(cc);
+        anotherPermissionManager.activate(componentContext, null);
+        anotherPermissionManager.deactivate(componentContext);
     }
 
     @Test
     public void wsjarUrlStreamHandlerRemoved() throws Exception {
-        createClassLoadingServiceExpectations();
+        withSharedLibraryProtectionDomains();
         grantReadProperty(null, false);
 
         permissionManager.unsetWsjarURLStreamHandler(urlStreamHandlerServiceRef);
         permissionManager.unsetPermission(permissionRef);
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
         permissions = permissionManager.getEffectivePermissions(permissions, "dummyCodebase");
-        assertEquals("Number of granted permissions mismatched", 1, permissions.size());
 
+        assertEquals("Number of granted permissions mismatched", 1, permissions.size());
     }
 
     @Test
@@ -417,13 +310,133 @@ public class PermissionManagerTest {
         permissionManager.addPermissionsXMLPermission(earCodeSource, new AuthPermission("wssecurity.getRunAsSubject"));
         permissionManager.addPermissionsXMLPermission(codeSource, new AuthPermission("wssecurity.getRunAsSubject"));
         List<Permission> permissions = permissionManager.getEffectivePermissions(codeBase);
+
         assertTrue(new AuthPermission("wssecurity.getRunAsSubject").implies(permissions.get(0)));
     }
 
-//    @Test
-    public void getProtectionDomain() throws Exception {
-        CodeSource codeSource = null;
-//        ProtectionDomain protectionDomain = permissionManager.getProtectionDomain(codeSource);
+    @Test
+    public void testPermissionFromBundle() throws Exception {
+        withSharedLibraryProtectionDomains();
+        String bundlePermissionClassName = "class.from.bundle.PermissionClass";
+        usesBundleClassLoaderToLoadPermissionClass(bundlePermissionClassName);
+
+        setupPermission(bundlePermissionClassName, "someName", null, false, null);
+    }
+
+    private void grantExitVM() {
+        setupPermission("java.lang.RuntimePermission", "exitVM", null, false, null);
+    }
+
+    private void grantReadProperty(String codeBase, boolean restrict) {
+        setupPermission("java.util.PropertyPermission", "os.name", "read", restrict, codeBase);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void grantAndRestrictReadProperty() {
+        ServiceReference<JavaPermissionsConfiguration> permissionRef = createPermissionRef("java.util.PropertyPermission", "os.name", "read", false, null);
+        ServiceReference<JavaPermissionsConfiguration> permission1Ref = createPermissionRef("java.util.PropertyPermission", "os.name", "read", true, null);
+        setPermissions(permissionRef, permission1Ref);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setupPermission(String className, String name, String actions, boolean restrict, String codeBase) {
+        ServiceReference<JavaPermissionsConfiguration> permissionRef = createPermissionRef(className, name, actions, restrict, codeBase);
+        setPermissions(permissionRef);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ServiceReference<JavaPermissionsConfiguration> createPermissionRef(String className, String name, String actions, boolean restrict, String codeBase) {
+        final ServiceReference<JavaPermissionsConfiguration> permissionRef = mock.mock(ServiceReference.class,
+                                                                                       "permissionRef:" + className + ":" + name + ":" + actions + ":" + restrict + ":" + codeBase);
+        final JavaPermissionsConfiguration permission = new JavaPermissionsConfiguration();
+
+        mock.checking(new Expectations() {
+            {
+                allowing(permissionRef).getProperty(Constants.SERVICE_ID);
+                will(returnValue(1L));
+
+                allowing(permissionRef).getProperty(Constants.SERVICE_RANKING);
+                will(returnValue(0));
+
+                allowing(componentContext).locateService("permission", permissionRef);
+                will(returnValue(permission));
+            }
+        });
+
+        HashMap<String, Object> permissionProperties = createPermissionProperties(className, name, actions, restrict, codeBase);
+        permission.activate(permissionProperties, componentContext);
+
+        return permissionRef;
+    }
+
+    private HashMap<String, Object> createPermissionProperties(String className, String name, String actions, boolean restrict, String codeBase) {
+        HashMap<String, Object> permissionProperties = new HashMap<String, Object>();
+        permissionProperties.put(JavaPermissionsConfiguration.PERMISSION, className);
+        permissionProperties.put(JavaPermissionsConfiguration.TARGET_NAME, name);
+        permissionProperties.put(JavaPermissionsConfiguration.ACTIONS, actions);
+        permissionProperties.put(JavaPermissionsConfiguration.RESTRICTION, restrict);
+        permissionProperties.put(JavaPermissionsConfiguration.CODE_BASE, codeBase);
+
+        return permissionProperties;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setPermissions(ServiceReference<JavaPermissionsConfiguration>... permissionRefs) {
+        for (ServiceReference<JavaPermissionsConfiguration> permissionRef : permissionRefs) {
+            permissionManager.setPermission(permissionRef);
+        }
+
+        permissionManager.deactivate(componentContext);
+        permissionManager.activate(componentContext, null);
+    }
+
+    private void usesBundleClassLoaderToLoadPermissionClass(final String bundlePermissionClassName) throws ClassNotFoundException {
+        final BundleCapability bundleCapability = mock.mock(BundleCapability.class);
+        final BundleRevision bundleRevision = mock.mock(BundleRevision.class);
+        final BundleWiring providerBundleWiring = mock.mock(BundleWiring.class);
+        final ClassLoader classloader = mock.mock(ClassLoader.class);
+        matchingCapabilities.add(bundleCapability);
+
+        mock.checking(new Expectations() {
+            {
+                one(bundleCapability).getRevision();
+                will(returnValue(bundleRevision));
+                one(bundleRevision).getWiring();
+                will(returnValue(providerBundleWiring));
+                one(providerBundleWiring).getClassLoader();
+                will(returnValue(classloader));
+                one(classloader).loadClass(bundlePermissionClassName);
+                will(returnValue(TestBundlePermission.class));
+            }
+        });
+    }
+
+    private class TestBundlePermission extends Permission {
+
+        public TestBundlePermission(String name) {
+            super(name);
+        }
+
+        @Override
+        public boolean implies(Permission permission) {
+            return false;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public String getActions() {
+            return null;
+        }
+
     }
 
 }

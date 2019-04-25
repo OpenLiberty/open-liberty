@@ -92,7 +92,7 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     }
 
     @Override
-    public PrintWriter getLogWriter() throws ResourceException {
+    public PrintWriter getLogWriter() {
         return null;
     }
 
@@ -126,7 +126,8 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     }
 
     @Override
-    public void setLogWriter(PrintWriter logWriter) throws ResourceException {}
+    public void setLogWriter(PrintWriter logWriter) {
+    }
 
     public void setPassword(String password) {
         this.password = password;

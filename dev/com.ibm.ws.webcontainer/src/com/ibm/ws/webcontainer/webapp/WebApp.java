@@ -4738,6 +4738,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         // VirtualHost
         String partialUri = fullUri;
 
+        dispatchContext.setWebApp(this);
+
         if (!contextPath.equals("/")) {
             int index = 0;
             if (contextPath.endsWith("/*")) {
@@ -4767,7 +4769,6 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         if (partialUri.length() == 0)
             partialUri = "/";
-        dispatchContext.setWebApp(this);
         dispatchContext.setRelativeUri(partialUri);
         
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {

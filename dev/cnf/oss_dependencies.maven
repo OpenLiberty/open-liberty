@@ -47,6 +47,7 @@ com.sun.xml.stream.buffer:streambuffer:1.5.3
 com.sun.xml.ws:jaxws-rt:2.2.10
 com.sun.xml.ws:jaxws-tools:2.2.10
 com.sun.xml.ws:policy:2.4
+com.unboundid:unboundid-ldapsdk:4.0.9
 commons-beanutils:commons-beanutils:1.8.3
 commons-codec:commons-codec:1.3
 commons-codec:commons-codec:1.4
@@ -135,12 +136,13 @@ org.apache.cxf:cxf-rt-transports-http:3.1.18
 org.apache.cxf:cxf-tools-common:3.1.18
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.18
 org.apache.cxf:cxf-core:3.3.0
-org.apache.cxf:cxf-rt-bindings-soap:3.2.6
-org.apache.cxf:cxf-rt-bindings-xml:3.2.6
-org.apache.cxf:cxf-rt-databinding-jaxb:3.2.6
+org.apache.cxf:cxf-rt-bindings-soap:3.3.0
+org.apache.cxf:cxf-rt-bindings-xml:3.3.0
+org.apache.cxf:cxf-rt-databinding-jaxb:3.3.0
 org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.0
-org.apache.cxf:cxf-rt-frontend-jaxws:3.2.6
-org.apache.cxf:cxf-rt-frontend-simple:3.2.6
+org.apache.cxf:cxf-rt-frontend-jaxws:3.3.0
+org.apache.cxf:cxf-rt-frontend-simple:3.3.0
+org.apache.cxf:cxf-rt-management:3.3.0
 org.apache.cxf:cxf-rt-rs-client:3.3.0
 org.apache.cxf:cxf-rt-rs-mp-client:3.2.6
 org.apache.cxf:cxf-rt-rs-mp-client:3.3.0
@@ -148,9 +150,9 @@ org.apache.cxf:cxf-rt-rs-service-description:3.3.0
 org.apache.cxf:cxf-rt-rs-sse:3.3.0
 org.apache.cxf:cxf-rt-transports-http:3.3.0
 org.apache.cxf:cxf-rt-transports-http-hc:3.3.0
-org.apache.cxf:cxf-rt-ws-addr:3.2.6
-org.apache.cxf:cxf-rt-ws-policy:3.2.6
-org.apache.cxf:cxf-rt-wsdl:3.2.6
+org.apache.cxf:cxf-rt-ws-addr:3.3.0
+org.apache.cxf:cxf-rt-ws-policy:3.3.0
+org.apache.cxf:cxf-rt-wsdl:3.3.0
 org.apache.cxf:cxf-tools-common:3.3.0
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.3.0
 org.apache.derby:derby:10.11.1.1
@@ -334,6 +336,7 @@ org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0
 org.quartz-scheduler:quartz:2.2.1
 org.reactivestreams:reactive-streams:1.0.2
 org.reactivestreams:reactive-streams-examples:1.0.2
+org.rnorth.duct-tape:duct-tape:1.0.7
 org.springframework:spring-core:4.3.13.RELEASE
 org.springframework:spring-context:4.3.13.RELEASE
 org.springframework:spring-aop:4.3.13.RELEASE
@@ -375,6 +378,7 @@ org.springframework:spring-webflux:5.1.4.RELEASE
 org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework.boot:spring-boot:2.1.2.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.1.2.RELEASE
+org.testcontainers:database-commons:1.11.1
 org.testcontainers:jdbc:1.11.1
 org.testcontainers:postgresql:1.11.1
 org.testcontainers:testcontainers:1.11.1
@@ -414,3 +418,7 @@ org.osgi:org.osgi.core:4.2.0
 org.glassfish.hk2:osgi-resource-locator:1.0.1
 javax.persistence:persistence-api:1.0.2
 javax.validation:validation-api:1.1.0.Final
+com.cloudant:cloudant-client:2.16.0
+com.cloudant:cloudant-client:2.8.0
+com.cloudant:cloudant-http:2.16.0
+com.cloudant:cloudant-http:2.8.0

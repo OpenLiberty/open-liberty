@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.operators.spi.impl;
 
-import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
@@ -34,6 +34,7 @@ import org.reactivestreams.Publisher;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 import io.smallrye.reactive.streams.Engine;
 
@@ -49,6 +50,9 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
     private final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>(
             "executorService");
 
+    private final AtomicServiceReference<WSContextService> contextServiceRef = new AtomicServiceReference<WSContextService>(
+            "contextService");
+
     /**
      * The OSGi component active call
      *
@@ -56,6 +60,7 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
      */
     public void activate(ComponentContext cc) {
         executorServiceRef.activate(cc);
+        contextServiceRef.activate(cc);
         ReactiveStreamsFactoryResolver.setInstance(new ReactiveStreamsFactoryImpl());
         ReactiveStreamsEngineResolver.setInstance(this);
         singleton = this;
@@ -71,11 +76,22 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
         ReactiveStreamsEngineResolver.setInstance(null);
         ReactiveStreamsFactoryResolver.setInstance(null);
         executorServiceRef.deactivate(cc);
+        contextServiceRef.deactivate(cc);
     }
 
     @Reference(name = "executorService", service = ExecutorService.class)
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorServiceRef.setReference(ref);
+    }
+
+    /**
+     * Declarative Services method for setting the context service reference
+     *
+     * @param ref reference to the service
+     */
+    @Reference(name = "contextService", service = WSContextService.class)
+    protected void setContextService(ServiceReference<WSContextService> ref) {
+        contextServiceRef.setReference(ref);
     }
 
     public WASReactiveStreamsEngineImpl() {
@@ -121,13 +137,28 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
     /** {@inheritDoc} */
     @Override
     public <T> CompletionStage<T> buildCompletion(Graph graph) throws UnsupportedStageException {
-        CompletionStage<T> stage = AccessController.doPrivileged(new PrivilegedAction<CompletionStage<T>>() {
+
+        PrivilegedAction<CompletionStage<T>> action = new PrivilegedAction<CompletionStage<T>>() {
             @Override
             public CompletionStage<T> run() {
                 return WASReactiveStreamsEngineImpl.super.buildCompletion(graph);
             }
-        });
-        return stage;
+        };
+
+        WSContextService contextService;
+        if (contextServiceRef != null) {
+            contextService = contextServiceRef.getService();
+        } else {
+            contextService = null;
+        }
+
+        StreamRunner<T> runner = new StreamRunner<>(getExecutor(), contextService, action);
+
+        StreamTask<?> streamTask = runner.startStream();
+
+        CompletableFuture<T> wrapper = (CompletableFuture<T>) streamTask.getWrapperCompletableFuture();
+
+        return wrapper;
     }
 
     /** {@inheritDoc} */

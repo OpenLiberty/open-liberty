@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.eclipse.microprofile.reactive.streams.operators.CompletionRunner;
@@ -34,21 +35,26 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
     @Test
     public void testPubSub() {
         MyPublisher<String> publisher = new MyPublisher<String>();
-        MySubscriber<String> subscriber = new MySubscriber<String>();
+        MySubscriber<String> subscriber = new MySubscriber<String>(publisher);
 
         PublisherBuilder<String> pBuilder = ReactiveStreams.fromPublisher(publisher);
         SubscriberBuilder<String, Void> sBuilder = ReactiveStreams.fromSubscriber(subscriber);
 
         CompletionRunner<Void> runner = pBuilder.to(sBuilder);
-        runner.run();
+        CompletionStage<Void> result = runner.run();
 
-        publisher.publish("one");
-        publisher.publish("two");
-        publisher.publish("three");
+        int loops = 0;
 
-        subscriber.request(3);
+        while (!subscriber.isComplete() && loops++ < 10 * 60 * 5) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         List<String> messages = subscriber.getMessages();
+
         assertTrue(messages.contains("one"));
         assertTrue(messages.contains("two"));
         assertTrue(messages.contains("three"));
@@ -63,12 +69,24 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void subscribe(Subscriber<? super T> arg0) {
             System.out.println("subscribe: " + arg0);
             this.subscription = new MySubscription<T>(arg0);
+            publish("one");
+            publish("two");
+            publish("three");
+            quiesce();
+
             arg0.onSubscribe(this.subscription);
         }
 
-        public void publish(T value) {
-            System.out.println("publish: " + value);
-            subscription.queue(value);
+        public synchronized void publish(String string) {
+            if (subscription.isQuiesced()) {
+                throw new UnsupportedOperationException("Attempt to publish after quiesce");
+            }
+            System.out.println("publish: " + string);
+            subscription.queue(string);
+        }
+
+        public void quiesce() {
+            subscription.quiesce();
         }
     }
 
@@ -78,6 +96,10 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
 
         private final Subscriber<? super T> subscriber;
 
+        private boolean quiesce = false;
+
+        private int outstandingRequests = 0;
+
         /**
          * @param myPublisher
          */
@@ -86,11 +108,16 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         }
 
         /**
-         * @param value
+         * @param string
          */
-        public void queue(T value) {
+        public void queue(String string) {
             try {
-                this.queue.put(value);
+                if (outstandingRequests > 0) {
+                    subscriber.onNext((T) string);
+                    outstandingRequests--;
+                } else {
+                    this.queue.put((T) string);
+                }
             } catch (InterruptedException e) {
                 this.subscriber.onError(e);
             }
@@ -107,12 +134,35 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void request(long arg0) {
             for (int i = 0; i < arg0; i++) {
                 try {
-                    T value = queue.take();
-                    subscriber.onNext(value);
+                    if (!queue.isEmpty()) {
+                        T value = queue.take();
+                        subscriber.onNext(value);
+                    } else {
+                        System.out.println("request on empty queue!");
+                        outstandingRequests++;
+                    }
                 } catch (InterruptedException e) {
                     this.subscriber.onError(e);
                 }
             }
+            if (quiesce && queue.isEmpty()) {
+                subscriber.onComplete();
+            }
+
+        }
+
+        public synchronized void quiesce() {
+            quiesce = true;
+            if (queue.isEmpty()) {
+                subscriber.onComplete();
+            }
+        }
+
+        /**
+         * @return the quiesce
+         */
+        public synchronized boolean isQuiesced() {
+            return quiesce;
         }
 
     }
@@ -121,10 +171,27 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
 
         private final List<T> messages = new ArrayList<T>();
         private Subscription subscription;
+        private final MyPublisher<String> publisher;
+        private boolean complete = false;
+
+        /**
+         * @param publisher
+         */
+        public MySubscriber(MyPublisher<String> publisher) {
+            this.publisher = publisher;
+        }
+
+        /**
+         * @return
+         */
+        public boolean isComplete() {
+            return complete;
+        }
 
         /** {@inheritDoc} */
         @Override
         public void onComplete() {
+            complete = true;
             System.out.println("onComplete");
         }
 
@@ -132,6 +199,7 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         @Override
         public void onError(Throwable arg0) {
             System.out.println("onError");
+            complete = true;
             arg0.printStackTrace();
         }
 
@@ -140,6 +208,7 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void onNext(T arg0) {
             System.out.println("onNext: " + arg0);
             this.messages.add(arg0);
+            subscription.request(1);
         }
 
         /** {@inheritDoc} */
@@ -147,6 +216,7 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void onSubscribe(Subscription arg0) {
             System.out.println("onSubscribe: " + arg0);
             this.subscription = arg0;
+            subscription.request(1);
         }
 
         public List<T> getMessages() {

@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -542,8 +543,13 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                 if (constructors.length == 0) {
                     return true;
                 }
+                boolean hasDependent = clazz.isAnnotationPresent(Dependent.class);
+
                 for (Constructor<?> c : constructors) {
                     boolean hasInject = c.isAnnotationPresent(Inject.class);
+                    if (hasInject && hasDependent) {
+                        return true;
+                    }
                     Class<?>[] params = c.getParameterTypes();
                     Annotation[][] anns = c.getParameterAnnotations();
                     boolean match = true;
@@ -563,7 +569,6 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                     if (match) {
                         return true;
                     }
-
                 }
                 return false;
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,9 +33,10 @@ import com.ibm.websphere.simplicity.config.wim.LdapFilters;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -56,7 +56,7 @@ public class LDAPRegressionTest {
     private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.ldap.fat.regression");
     private static UserRegistryServletConnection servlet;
     private static ServerConfiguration basicConfiguration = null;
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryLDAPServer ds;
     private static final String BASE_DN = "o=ibm,c=us";
     private static final String USER = "user1";
     private static final String USER_DN = "uid=" + USER + "," + BASE_DN;
@@ -77,18 +77,17 @@ public class LDAPRegressionTest {
      */
     @AfterClass
     public static void teardownClass() throws Exception {
-        if (libertyServer != null) {
-            try {
+        try {
+            if (libertyServer != null) {
                 libertyServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
             }
-        }
-        if (ldapServer != null) {
-            try {
-                ldapServer.stopService();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+        } finally {
+            if (ds != null) {
+                try {
+                    ds.shutDown(true);
+                } catch (Exception e) {
+                    Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
+                }
             }
         }
 
@@ -141,29 +140,27 @@ public class LDAPRegressionTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupLdapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("myLDAP");
-        ldapServer.addPartition("partition1", BASE_DN);
-        ldapServer.startServer();
+        ds = new InMemoryLDAPServer(BASE_DN);
 
         /*
          * Add the partition entries.
          */
-        Entry entry = ldapServer.newEntry(BASE_DN);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        ldapServer.add(entry);
+        Entry entry = new Entry(BASE_DN);
+        entry.addAttribute("objectclass", "organization");
+        entry.addAttribute("o", "ibm");
+        ds.add(entry);
 
         /*
          * Create the user.
          */
-        entry = ldapServer.newEntry(USER_DN);
-        entry.add("objectclass", "wiminetorgperson");
-        entry.add("uid", USER);
-        entry.add("sn", USER);
-        entry.add("cn", USER);
-        entry.add("nickName", USER + " nick name");
-        entry.add("userPassword", "password");
-        ldapServer.add(entry);
+        entry = new Entry(USER_DN);
+        entry.addAttribute("objectclass", "wiminetorgperson");
+        entry.addAttribute("uid", USER);
+        entry.addAttribute("sn", USER);
+        entry.addAttribute("cn", USER);
+        entry.addAttribute("nickName", USER + " nick name");
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
     }
 
     /**
@@ -187,9 +184,9 @@ public class LDAPRegressionTest {
         ldapRegistry.setLdapType("Custom");
         ldapRegistry.setRealm("LdapRealm");
         ldapRegistry.setHost("localhost");
-        ldapRegistry.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
-        ldapRegistry.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldapRegistry.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldapRegistry.setPort(String.valueOf(ds.getListenPort()));
+        ldapRegistry.setBindDN(ds.getBindDN());
+        ldapRegistry.setBindPassword(ds.getBindPassword());
         ldapRegistry.setCustomFilters(new LdapFilters("(&(uid=%v)(objectclass=wiminetorgperson))", "(&(cn=%v)(objectclass=groupofnames))", null, null, null));
 
         return ldapRegistry;

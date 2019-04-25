@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: InvalidSubsystemTypeFeature-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.featureA-1.0))",
+ osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.featureB-1.0))"
+IBM-Install-Policy: when-satisfied
+Subsystem-Content: Bundle1; version="[1,2)"
+Subsystem-Type: com.ibm.websphere.feature
+IBM-Feature-Version: 2

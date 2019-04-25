@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
@@ -50,7 +54,10 @@ public class AccountsPayableService {
         accountBalances.put("12300444", 250.00);
         accountBalances.put("12300963", 2287.35);
         
-        bankAccountClient = RestClientBuilder.newBuilder().baseUri(URI.create(AsyncTestServlet.URI_CONTEXT_ROOT)).build(BankAccountClient.class);
+        bankAccountClient = RestClientBuilder.newBuilder()
+                                             .baseUri(URI.create(AsyncTestServlet.URI_CONTEXT_ROOT))
+                                             .executorService(App.executorService.get())
+                                             .build(BankAccountClient.class);
     }
     
     @GET
@@ -92,7 +99,18 @@ public class AccountsPayableService {
         }
 
         Double paymentAmt = payment.getAmount();
-        bankAccountClient.withdraw(paymentAmt);
+        try {
+            Double remainingBalanceInAccount = bankAccountClient.withdraw(paymentAmt)
+                                                                .toCompletableFuture()
+                                                                .get(AsyncTestServlet.TIMEOUT, TimeUnit.SECONDS);
+            _log.info("balance remaining in bank after withdrawal: " + remainingBalanceInAccount);
+        } catch (ExecutionException | InterruptedException | TimeoutException ex) {
+            Throwable t = ex.getCause();
+            if (t != null && t instanceof InsufficientFundsException) {
+                throw (InsufficientFundsException) t;
+            }
+            _log.log(Level.WARNING, "Caught unexpected exception: ", t);
+        }
 
         Double remainingBalance = balance - paymentAmt;
         accountBalances.put(acctNumber, remainingBalance);

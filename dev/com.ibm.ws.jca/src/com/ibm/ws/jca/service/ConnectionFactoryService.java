@@ -442,7 +442,17 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      *
      * @param ref reference to the service
      */
-    protected void setSslConfig(ServiceReference<?> ref) {}
+    protected void setSslConfig(ServiceReference<?> ref) {
+    }
+
+    /**
+     * Indicates to the connection manager whether validation is occurring on the current thread.
+     *
+     * @param isValidating true if validation is occurring on the current thread. Otherwise false.
+     */
+    public void setValidating(boolean isValidating) {
+        conMgrSvc.setValidating(isValidating);
+    }
 
     /**
      * Declarative Services method for unsetting the BootstrapContext reference
@@ -467,7 +477,8 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      *
      * @param ref reference to the service
      */
-    protected void unsetSslConfig(ServiceReference<?> ref) {}
+    protected void unsetSslConfig(ServiceReference<?> ref) {
+    }
 
     /** {@inheritDoc} */
     @Override

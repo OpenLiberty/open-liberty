@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.postgresql;
 
+import java.sql.Connection;
+import java.sql.Statement;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -32,26 +34,45 @@ public class PostgreSQLTest extends FATServletClient {
     private static final Class<?> c = PostgreSQLTest.class;
 
     public static final String APP_NAME = "postgresqlApp";
+    private static final String POSTGRES_DB = "testdb";
+    private static final String POSTGRES_USER = "postgresUser";
+    private static final String POSTGRES_PASS = "superSecret";
 
     @Server("postgresql-test-server")
     @TestServlet(servlet = PostgreSQLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RequireDockerRule<PostgreSQLContainer<?>> postgre = new RequireDockerRule<>(() -> new PostgreSQLContainer<>("postgres:11.2-alpine")
-                    .withDatabaseName("testdb")
-                    .withUsername("postgresUser")
-                    .withPassword("superSecret")
+    public static CustomPostgreSQLContainer<?> postgre = new CustomPostgreSQLContainer<>("postgres:11.2-alpine")
+                    .withDatabaseName(POSTGRES_DB)
+                    .withUsername(POSTGRES_USER)
+                    .withPassword(POSTGRES_PASS)
                     .withExposedPorts(5432)
-                    .withLogConsumer(PostgreSQLTest::log));
+                    .withConfigOption("max_prepared_transactions", "2")
+                    .withLogConsumer(PostgreSQLTest::log);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Log.info(c, "@AGG", "instance 1: " + postgre.get());
-        Log.info(c, "@AGG", "instance 2: " + postgre.get());
-        Log.info(c, "@AGG", "instance 3: " + postgre.get());
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.fat.postgresql.web");
-        server.addEnvVar("POSTGRES_PORT", String.valueOf(postgre.get().getMappedPort(5432)));
+        ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.postgresql.web");
+
+        String host = postgre.getContainerIpAddress();
+        String port = String.valueOf(postgre.getMappedPort(5432));
+        String jdbcURL = postgre.getJdbcUrl() + "?user=" + POSTGRES_USER + "&password=" + POSTGRES_PASS;
+        Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port + ",  URL=" + jdbcURL);
+        server.addEnvVar("POSTGRES_HOST", host);
+        server.addEnvVar("POSTGRES_PORT", port);
+        server.addEnvVar("POSTGRES_DB", POSTGRES_DB);
+        server.addEnvVar("POSTGRES_USER", POSTGRES_USER);
+        server.addEnvVar("POSTGRES_PASS", POSTGRES_PASS);
+        server.addEnvVar("POSTGRES_URL", jdbcURL);
+
+        // Create tables for the DB
+        try (Connection conn = postgre.createConnection("")) {
+            Statement stmt = conn.createStatement();
+            stmt.execute("CREATE TABLE people( id integer UNIQUE NOT NULL, name VARCHAR (50) );");
+            stmt.close();
+        }
+
         server.startServer();
     }
 

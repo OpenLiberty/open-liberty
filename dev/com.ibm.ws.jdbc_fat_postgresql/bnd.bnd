@@ -22,6 +22,9 @@ fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+	org.testcontainers:database-commons;version=1.11.1,\
 	org.testcontainers:jdbc;version=1.11.1,\
 	org.testcontainers:postgresql;version=1.11.1,\
 	org.testcontainers:testcontainers;version=1.11.1,\

@@ -720,6 +720,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     state.releaseShared(SUCCESSFUL);
                     if (latch != null)
                         latch.countDown(t);
+                } else if (Integer.valueOf(CANCELED).equals(result.get())) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "canceled during/after run");
+                    // Prevent dirty read of state during onEnd before the canceling thread transitions the state to CANCELING/CANCELED
+                    while (state.get() == RUNNING)
+                        Thread.yield();
                 }
 
                 if (trace && tc.isDebugEnabled())

@@ -38,7 +38,7 @@ import com.ibm.wsspi.validator.Validator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { Validator.class },
-           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validator", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jdbc.dataSource" })
+           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jdbc.dataSource" })
 public class DataSourceValidator implements Validator {
     private final static TraceComponent tc = Tr.register(DataSourceValidator.class);
 
@@ -86,7 +86,8 @@ public class DataSourceValidator implements Validator {
                                 Entry<String, String> e = (Entry<String, String>) entry;
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
-                                config.addLoginProperty(e.getKey(), e.getValue());
+                                Object value = e.getValue();
+                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
                             }
                         }
                     }

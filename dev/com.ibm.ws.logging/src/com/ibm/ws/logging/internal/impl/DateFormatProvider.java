@@ -14,11 +14,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class DateFormatProvider {
+    /** Simple date format for file names: use only while synchronized */
+    final static SimpleDateFormat FILE_DATE = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss");
 
     /**
      * Return a format string that will produce a reasonable standard way for
      * formatting time (but still using the current locale)
-     * 
+     *
      * @return The format string
      */
     public static DateFormat getDateFormat() {

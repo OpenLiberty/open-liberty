@@ -15,6 +15,8 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.readEntity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
@@ -37,6 +39,8 @@ import com.ibm.ws.jaxrs.fat.duplicateuris.MyRegularResource;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 
 @AllowedFFDC("java.lang.ClassNotFoundException")
@@ -59,6 +63,11 @@ public class AnnotationScanTest {
         app.addAsLibraries(jar);
         ShrinkHelper.exportDropinAppToServer(server, app);
 
+        // Conditionally apply for non-Hotspot JVMs, since Hotspot does not support -Xdump
+        if (JavaInfo.forServer(server).vendor() != Vendor.SUN_ORACLE) {
+            server.setJvmOptions(Collections.singletonList("-Xdump:java+system+snap:events=throw+systhrow,filter=java/lang/reflect/GenericSignatureFormatError"));
+        }
+
         // Make sure we don't fail because we try to start an
         // already started server
         try {
@@ -70,9 +79,7 @@ public class AnnotationScanTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null) {
-            server.stopServer("CWWKW0101W", "CWWKW0102W", "SRVE8052E", "SRVE0276E", "SRVE0190E");
-        }
+        server.stopServer("CWWKW0101W", "CWWKW0102W", "SRVE8052E", "SRVE0276E", "SRVE0190E");
     }
 
     @Before

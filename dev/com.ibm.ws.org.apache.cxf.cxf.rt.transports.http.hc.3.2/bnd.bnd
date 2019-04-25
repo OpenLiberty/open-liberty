@@ -20,7 +20,7 @@ javac.target: 1.8
 -buildpath: org.apache.cxf:cxf-rt-transports-http-hc;version=3.3.0,\
  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
- com.ibm.ws.jaxrs.2.0.client;version=latest,\
+ com.ibm.ws.cxf.client,\
  com.ibm.ws.org.apache.httpcomponents;version=latest,\
  com.ibm.ws.logging.core;version=latest
  

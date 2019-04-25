@@ -21,6 +21,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cloudant.CloudantDatabaseService;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
@@ -28,7 +30,7 @@ import com.ibm.wsspi.validator.Validator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { Validator.class },
-           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validator", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.cloudant.cloudantDatabase" })
+           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.cloudant.cloudantDatabase" })
 public class CloudantDatabaseValidator implements Validator {
     private final static TraceComponent tc = Tr.register(CloudantDatabaseValidator.class);
 
@@ -39,6 +41,7 @@ public class CloudantDatabaseValidator implements Validator {
      * @see com.ibm.wsspi.validator.Validator#validate(java.lang.Object, java.util.Map, java.util.Locale)
      */
     @Override
+    @FFDCIgnore(java.lang.NoSuchMethodException.class)
     public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
         String auth = (String) props.get("auth");
         String authAlias = (String) props.get("authAlias");
@@ -60,12 +63,39 @@ public class CloudantDatabaseValidator implements Validator {
             }
 
             Object database = ((ResourceFactory) instance).createResource(config);
+
             //There isn't anything particularly useful in the DB Info, but invoking the method
             //ensures that the database exists (or it will be created if create="true")
             database.getClass().getMethod("info").invoke(database);
 
             URI dbURI = (URI) database.getClass().getMethod("getDBUri").invoke(database);
             result.put("uri", dbURI == null ? "null" : dbURI.toString());
+
+            Object cloudantClient = ((CloudantDatabaseService) instance).getCloudantClient(config);
+
+            if (cloudantClient != null) {
+                try {
+                    Object metaInfo = cloudantClient.getClass().getMethod("metaInformation").invoke(cloudantClient);
+                    result.put("serverVersion", metaInfo.getClass().getMethod("getVersion").invoke(metaInfo));
+                    Object metaInfoVendor = metaInfo.getClass().getMethod("getVendor").invoke(metaInfo);
+                    result.put("vendorName", metaInfoVendor.getClass().getMethod("getName").invoke(metaInfoVendor));
+                    String metaInfoVendorVersion = (String) metaInfoVendor.getClass().getMethod("getVersion").invoke(metaInfoVendor);
+                    if (metaInfoVendorVersion != null) {
+                        result.put("vendorVersion", metaInfoVendorVersion);
+                    }
+                    String metaInfoVendorVarient = (String) metaInfoVendor.getClass().getMethod("getVariant").invoke(metaInfoVendor);
+                    if (metaInfoVendorVarient != null) {
+                        result.put("vendorVariant", metaInfoVendorVarient);
+                    }
+                } catch (NoSuchMethodException ex) {
+                    try {
+                        result.put("serverVersion", cloudantClient.getClass().getMethod("serverVersion").invoke(cloudantClient));
+                    } catch (NoSuchMethodException ignore) {
+
+                    }
+                }
+            }
+
         } catch (Throwable x) {
             result.put("failure", x);
         }
