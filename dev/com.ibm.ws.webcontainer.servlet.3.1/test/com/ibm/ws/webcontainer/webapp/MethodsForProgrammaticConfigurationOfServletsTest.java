@@ -262,6 +262,11 @@ public class MethodsForProgrammaticConfigurationOfServletsTest {
      */
     private class WebContainer extends com.ibm.ws.webcontainer.osgi.WebContainer {
 
+        public WebContainer() {
+            super();
+            self.set(this);
+            selfInit.countDown();
+        }
         @Override
         public void setURIMatcherFactory(URIMatcherFactory factory) {
             super.setURIMatcherFactory(factory);
