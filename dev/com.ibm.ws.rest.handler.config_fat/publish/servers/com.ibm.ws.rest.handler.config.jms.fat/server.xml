@@ -1,0 +1,51 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>jms-2.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+
+  <resourceAdapter id="jmsra" location="${server.config.dir}/connectors/TestConfigJMSAdapter.rar">
+    <properties.jmsra debugMode="true"/>
+  </resourceAdapter>
+
+  <authData id="jmsUser1" user="jmsU1" password="1jmsU"/>
+
+  <jmsConnectionFactory id="cf1" jndiName="jms/cf1" containerAuthDataRef="jmsUser1" recoveryAuthDataRef="jmsUser1">
+    <connectionManager id="cm" maxPoolSize="14" minPoolSize="4"/>
+    <properties.jmsra escapeChar="^" portNumber="4455"/>
+  </jmsConnectionFactory>
+
+  <!-- merges with above -->
+  <jmsConnectionFactory id="cf1" containerAuthDataRef="jmsUser1" recoveryAuthDataRef="jmsUser1"/>
+
+  <jmsQueueConnectionFactory jndiName="jms/qcf2">
+    <properties.jmsra/>
+  </jmsQueueConnectionFactory>
+
+  <jmsTopicConnectionFactory id="cf3" jndiName="jms/tcf3">
+    <properties.jmsra escapeChar="%" userName="user3" password="3user"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsTopicConnectionFactory id="cf4" jndiName="jms/tcf4" containerAuthDataRef="jmsUser1">
+    <properties.jmsra hostName="host4.rchland.ibm.com"/>
+  </jmsTopicConnectionFactory>
+
+</server>
