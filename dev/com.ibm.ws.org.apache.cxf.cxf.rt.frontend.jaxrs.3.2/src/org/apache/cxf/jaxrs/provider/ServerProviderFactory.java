@@ -18,6 +18,7 @@
  */
 package org.apache.cxf.jaxrs.provider;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ import org.apache.cxf.message.MessageUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public final class ServerProviderFactory extends ProviderFactory {
     private static final TraceComponent tc = Tr.register(ServerProviderFactory.class);
@@ -105,8 +107,38 @@ public final class ServerProviderFactory extends ProviderFactory {
         wadlGenerator = createWadlGenerator(bus);
     }
 
+    // Liberty Change for CXF Begin
+    @FFDCIgnore(value = { Throwable.class })
     private static ProviderInfo<ContainerRequestFilter> createWadlGenerator(Bus bus) {
-        Object provider = createProvider(WADL_PROVIDER_NAME, bus);
+        // Don't use the application ClassLoader for creating the Wadl Provider because
+        // the class will not be in the application ClassLoader.
+        // Object provider = createProvider(WADL_PROVIDER_NAME, bus);
+        // Doing similar logic to what is done in createProvider
+        Object provider = null;
+        try {
+            Class<?> cls = Class.forName(WADL_PROVIDER_NAME);
+            for (Constructor<?> c : cls.getConstructors()) {
+                if (c.getParameterTypes().length == 1 && c.getParameterTypes()[0] == Bus.class) {
+                    provider = c.newInstance(bus);
+                    break;
+                }
+            }
+            if (provider == null) {
+                provider = cls.newInstance();
+            }
+        } catch (Throwable ex) {
+            String message = "Problem with creating the default provider " + WADL_PROVIDER_NAME;
+            if (ex.getMessage() != null) {
+                message += ": " + ex.getMessage();
+            } else {
+                message += ", exception class : " + ex.getClass().getName();
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, message);
+            }
+        }
+        // Liberty Change for CXF End
+
         if (provider == null) {
             return null;
         }

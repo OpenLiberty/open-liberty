@@ -84,7 +84,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         extensions.put(JaxRsModuleMetaData.class, moduleMetaData);
         extensions.put(LibertyApplicationBus.Type.class, LibertyApplicationBus.Type.SERVER);
 
-        LibertyApplicationBus bus = createBus(extensions, properties, moduleInfo.getClassLoader());
+        LibertyApplicationBus bus = createBus(extensions, properties, LibertyApplicationBusFactory.class.getClassLoader());
 
         return bus;
     }
@@ -173,7 +173,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
     /**
      * register LibertyApplicationBusListener to bus factory, those methods will be invoked with the bus lifecycle
-     * 
+     *
      * @param initializer
      */
     public void registerApplicationBusListener(LibertyApplicationBusListener listener) {
@@ -204,7 +204,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
      * The static method from parent class BusFactory also tries to change the thread bus, which is not required.
      * Use BusFactory.class as the synchronized lock due to the signature of the BusFactory.setDefaultBus is
      * public static void synchronized setDefaultBus(Bus bus)
-     * 
+     *
      * @param bus
      */
     public static void setDefaultBus(Bus bus) {

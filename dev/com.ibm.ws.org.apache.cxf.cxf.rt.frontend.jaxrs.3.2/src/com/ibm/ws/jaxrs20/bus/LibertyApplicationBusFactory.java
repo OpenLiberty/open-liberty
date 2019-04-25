@@ -84,7 +84,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         extensions.put(JaxRsModuleMetaData.class, moduleMetaData);
         extensions.put(LibertyApplicationBus.Type.class, LibertyApplicationBus.Type.SERVER);
 
-        LibertyApplicationBus bus = createBus(extensions, properties, moduleInfo.getClassLoader());
+        LibertyApplicationBus bus = createBus(extensions, properties, LibertyApplicationBusFactory.class.getClassLoader());
 
         return bus;
     }
