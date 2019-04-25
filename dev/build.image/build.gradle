@@ -556,10 +556,8 @@ task zipTestReport(type: Zip) {
     destinationDir cnf.file('generated/testReports')
     userProps.setProperty('gradle.test.report.zip', archivePath.toString())
     props.setProperty('gradle.test.report.zip', archivePath.toString()) //set in memory props too
-    File propsFile = rootProject.file('generated.properties')
-    userProps.store(propsFile.newWriter(), null)
-    println "test report is at:"
-    println archivePath.toString()
+        File propsFile = rootProject.file('generated.properties')
+        userProps.store(propsFile.newWriter(), null)
 }
 
 
@@ -569,7 +567,6 @@ task createJSONForPublicArtifacts {
     dependsOn zipTestReport
 
     doLast {
-        println "running createJSONForPublicArtifacts"
         delete "${buildDir}/info.json"
         File json = new File("${buildDir}/info.json")
         json.createNewFile()
@@ -577,24 +574,18 @@ task createJSONForPublicArtifacts {
         String testsPassed = "0"
         if (props.getProperty("tests.total.successful") != null) {
             testsPassed = props.getProperty("tests.total.successful")
-	    println "testsPassed is ${testsPassed}"
         }
         String testsTotal = "0"
         if ((props.getProperty("tests.total.successful") != null) &&
                 (props.getProperty("tests.total.failed") != null)) {
             def sum = Integer.valueOf(props.getProperty("tests.total.successful")) + Integer.valueOf(props.getProperty("tests.total.failed"))
             testsTotal = sum.toString()
-	    println "testsTotal is ${testsTotal}"
         }
 
         String junitPath = props.getProperty("junit.report.zip")
         String testReportPath = props.getProperty("gradle.test.report.zip");
         String logPath = props.getProperty("published.gradle.log")
         String driverLocation = props.getProperty("zipopenliberty.archivename")
-	println "junitPath is ${junitPath}"
-	println "testReportPath is ${testReportPath}"
-	println "logPath is ${logPath}"
-	println "driverLocation is ${driverLocation}"
 
         if (junitPath == null) {
             raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
@@ -618,7 +609,6 @@ task createJSONForPublicArtifacts {
         } else {
             testResultName = new File(junitPath).getName()
         }
-	println "testResultName is ${testResultName}"
         String logName = new File(logPath).getName()
         String driverLocationName = new File(driverLocation).getName()
 
@@ -635,14 +625,152 @@ task createJSONForPublicArtifacts {
         json.text = JsonOutput.prettyPrint(JsonOutput.toJson(object))
 
         props.setProperty('published.json', json.toString())
-	println "json output is:"
-	println json.toString()
 
         File propsFile = new File('generated.properties')
         props.store(propsFile.newWriter(), null)
     }
 }
 
-task gatherTestResults {
+buildscript {
+    repositories {
+        if (isUsingArtifactory) {
+            maven {
+                credentials {
+                    username userProps.getProperty("artifactory.download.user")
+                    password userProps.getProperty("artifactory.download.token")
+                }
+                url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            }
+        } else {
+            jcenter()
+        }
+    }
+
+    dependencies {
+        classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
+        classpath 'org.hidetake:groovy-ssh:2.9.0'
+        classpath 'com.jcraft:jsch:0.1.54'
+    }
+}
+
+apply plugin: 'org.hidetake.ssh'
+
+remotes {
+    dhe {
+        host = props.getProperty("dhe.server")
+        user = props.getProperty("intranet.user")
+        password = props.getProperty("intranet.password")
+        knownHosts = allowAnyHosts
+    }
+}
+
+ssh.settings {
+    jschLog = true
+    logging = "stdout"
+    fileTransfer = "scp"
+    retryCount = 3
+    retryWaitSec = 5
+}
+
+task publishPublicArtifactsOnDhe {
     dependsOn zipTestReport,createJSONForPublicArtifacts
+    enabled isAutomatedBuild && isPublicPublishing && (isPersonal || isContinuousBuild || isRelease)
+
+    doLast {
+        // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
+        def (yr, mo, d, t) = [bnd.buildLabel.substring(0,4), bnd.buildLabel.substring(4,6), bnd.buildLabel.substring(6,8), bnd.buildLabel.substring(8)]
+        String version = "${yr}-${mo}-${d}_${t}"
+        String packageName = null
+        if (isRelease) {
+            packageName = props.getProperty("published.package.nightly")
+        } else {
+            packageName = props.getProperty("published.package.personal")
+            version = props.getProperty("buildResultUUID")
+        }
+
+        String userAtHost = props.getProperty("intranet.user") + "@" + props.getProperty("dhe.server")
+        String dir = "/www/stage/export/pub/software/openliberty/runtime"
+        String publicDHEUrl = "http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime"
+        String dest = userAtHost + ":" + dir
+
+        def artifactList = [props.getProperty("published.json"),
+                            props.getProperty("published.gradle.log")]
+
+        artifactList.add(props.getProperty("zipopenliberty.archivename"))
+
+        if (isPersonal) {
+            artifactList.add(props.getProperty("gradle.test.report.zip"))
+        } else {
+            artifactList.add(props.getProperty("junit.report.zip"))
+            // add runtime, javaee8, and webprofile8 images to publish list for release builds only
+            if (isRelease) {
+                artifactList.add(props.getProperty("zipopenliberty.runtime.archivename"))
+                artifactList.add(props.getProperty("zipopenliberty.javaee8.archivename"))
+                artifactList.add(props.getProperty("zipopenliberty.webprofile8.archivename"))
+            }
+        }
+
+        mkdir("${buildDir}/${version}")
+        artifactList.each { filePath ->
+            copy {
+                from filePath
+                into "${buildDir}/${version}"
+                println "Copied $filePath to ${buildDir}/${version}" 
+                print "isUnittestsDisabled = "
+                print isUnittestsDisabled
+				println()
+                if (!isUnittestsDisabled && props.getProperty("gradle.test.report.zip") != null && props.getProperty("gradle.test.report.zip").equals(filePath)) {
+                    def reportZip = file(props.getProperty("gradle.test.report.zip"))
+                    from zipTree(reportZip)
+                    mkdir("${buildDir}/${version}/junit")
+                    into "${buildDir}/${version}/junit"
+                }
+            }
+        }
+
+        // Upload build artifacts
+        println "Uploading build artifacts"
+        ssh.run {
+            session(remotes.dhe) {
+                put from: "${buildDir}/${version}", into: "${dir}/${packageName}/"
+            }
+        }
+        println "Completed upload of artifacts"
+
+        delete "${buildDir}/${version}"
+        delete "${buildDir}/info.json"
+
+        // Update build listing json with the newly uploaded build
+        println "Updating build listing json with newly uploaded build"
+        exec {
+            commandLine "curl", "-o", "${buildDir}/info.json", "${publicDHEUrl}/${packageName}/info.json"
+        }
+
+        File json = new File("${buildDir}/info.json")
+        if (json.getText().contains("404 Not Found")) {
+            json.text = ""
+        }
+
+        def object = [:]
+        if (json.getText() != "") {
+            object = new JsonSlurper().parseText(json.getText())
+        }
+
+        List versionsList = object['versions']
+        if (versionsList != null) {
+            versionsList.add("${version}")
+        } else {
+            versionsList = ["${version}"]
+        }
+        object['versions'] = versionsList
+        json.text = JsonOutput.toJson(object)
+
+        println "Uploading info.json"
+        ssh.run {
+            session(remotes.dhe) {
+                put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
+            }
+        }
+        println "Completed info.json upload"
+    }
 }
