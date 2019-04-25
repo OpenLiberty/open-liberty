@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -155,7 +156,6 @@ public class AutoFeaturesTest {
     private static final String TEST_MF = TEST_FEATURE + TEST_FEATURE_VERSION;
 
     private static final String CACHE_DIRECTORY = "workarea/platform/";
-    private static final String FEATURE_CACHE = CACHE_DIRECTORY + "feature.cache";
     private static final String FEATURE_BUNDLE_CACHE = CACHE_DIRECTORY + "feature.bundles.cache";
 
     /**
@@ -314,11 +314,9 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
 
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         assertTrue("featureA-1.0 was not installed and should have been: " + installedFeatures, installedFeatures.contains("featureA-1.0"));
@@ -585,10 +583,9 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         assertTrue("featureA-1.0 was not installed and should have been: " + installedFeatures, installedFeatures.contains("featureA-1.0"));
@@ -620,10 +617,9 @@ public class AutoFeaturesTest {
         // restart the server
         server.startServer(testName.getMethodName() + "-2.log"); // clean start
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
-        installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         // feature names are stored in the cache as lower case.
@@ -671,11 +667,9 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_usr_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
 
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         assertTrue("ufeatureA-1.0 was not installed and should have been: " + installedFeatures, installedFeatures.contains("ufeatureA-1.0"));
@@ -1035,11 +1029,10 @@ public class AutoFeaturesTest {
         // Now move the server xml with the all features available
         server.setServerConfigurationFile("server_usr_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
-        
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         // feature names are stored in the cache as lower case.
@@ -1072,10 +1065,9 @@ public class AutoFeaturesTest {
         // restart the server
         server.startServer(testName.getMethodName() + "-2.log"); // clean start
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
-        installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         assertTrue("ufeatureA-1.0 was not installed and should have been: " + installedFeatures, installedFeatures.contains("ufeatureA-1.0"));
@@ -1122,11 +1114,9 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_product_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
 
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         // feature names are stored in the cache as lower case.
@@ -1667,10 +1657,9 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_product_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         // feature names are stored in the cache as lower case.
@@ -1710,10 +1699,9 @@ public class AutoFeaturesTest {
         // restart the server
         server.startServer(testName.getMethodName() + "-2.log"); // clean start
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
-        installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         // feature names are stored in the cache as lower case.
@@ -1845,11 +1833,9 @@ public class AutoFeaturesTest {
         // Wait for the Feature Refresh servlet to start.
         String message = server.waitForStringInLog("CWWKT0016I.*http://.*/feature");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are
-        // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
 
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
-        assertNotNull("There is no installed features property in the feature.cache file",
+        assertNotNull("There are no installed features found in trace.log file",
                       installedFeatures);
 
         assertTrue("featureA-1.0 was not installed and should have been: " + installedFeatures, installedFeatures.contains("featureA-1.0"));
@@ -1875,7 +1861,10 @@ public class AutoFeaturesTest {
         server.setMarkToEndOfLog();
         server.waitForStringInLogUsingMark("CWWKF0008I");
 
-        installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
+        installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
+                      installedFeatures);
 
         assertTrue("featureE-1.0 was not installed and should have been: " + installedFeatures, installedFeatures.contains("featureE-1.0"));
 
@@ -1892,7 +1881,10 @@ public class AutoFeaturesTest {
         server.setMarkToEndOfLog();
         server.waitForStringInLogUsingMark("CWWKF0008I");
 
-        installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
+        installedFeatures = TestUtils.getInstalledFeatures(server);
+
+        assertNotNull("There are no installed features found in trace.log file",
+                      installedFeatures);
         assertTrue("featureG-1.0 was not installed and should have been: " + installedFeatures, installedFeatures.contains("featureG-1.0"));
 
         // Now check that we have the expected bundles installed.
@@ -1909,7 +1901,9 @@ public class AutoFeaturesTest {
         server.setMarkToEndOfLog();
         server.waitForStringInLogUsingMark("CWWKF0008I");
 
-        installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
+        installedFeatures = TestUtils.getInstalledFeatures(server);
+        assertNotNull("There are no installed features found in trace.log file",
+                      installedFeatures);
         assertFalse("featureE-1.0 was installed and should not have been: " + installedFeatures, installedFeatures.contains("featureE-1.0"));
         assertFalse("featureG-1.0 was installed and should not have been: " + installedFeatures, installedFeatures.contains("featureG-1.0"));
 
