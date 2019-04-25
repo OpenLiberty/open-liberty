@@ -23,7 +23,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 StackTraceFilteringForLoggedExceptionParametersTest.class, StackTraceFilteringForLoggedExceptionWithACauseParametersTest.class,
                 StackTraceFilteringForPrintedExceptionTest.class, StackTraceFilteringForPrintedExceptionWithIBMCodeAtTopTest.class,
-                StackTraceFilteringForNoClassDefFoundErrorTest.class, StackTraceFilteringForBadlyWrittenThrowableTest.class,
                 StackTraceFilteringForIBMFeatureExceptionTest.class, StackTraceFilteringForUserFeatureExceptionTest.class,
                 StackTraceFilteringForSpecificationClassesExceptionTest.class,
                 InvalidTraceSpecificationTest.class,
@@ -34,7 +33,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 HandlerTest.class,
                 HeaderFormatTest.class,
                 LogServiceTest.class,
-                RealFlushTest.class
+                RealFlushTest.class,
+                FieldNameTest.class
 })
 
 public class FATSuite {

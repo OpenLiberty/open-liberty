@@ -45,6 +45,7 @@ import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.WsLogRecord;
@@ -295,6 +296,7 @@ public class BaseTraceService implements TrService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
+        LogTraceData.setMessageFields(trConfig.getMessageFields());
         logHeader = trConfig.getLogHeader();
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
@@ -346,6 +348,8 @@ public class BaseTraceService implements TrService {
          */
         String messageFormat = trConfig.getMessageFormat();
         String consoleFormat = trConfig.getConsoleFormat();
+
+        String messageFields = trConfig.getMessageFields();
 
         //Retrieve the source lists of both message and console
         List<String> messageSourceList = new ArrayList<String>(trConfig.getMessageSource());

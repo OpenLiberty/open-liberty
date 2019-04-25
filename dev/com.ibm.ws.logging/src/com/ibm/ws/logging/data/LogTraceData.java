@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -181,15 +183,33 @@ public class LogTraceData extends GenericData {
     }
 
     public String getDatetimeKey() {
-        return NAMES[0];
+        if (nameMap == null || nameMap.get(LogFieldConstants.DATETIME) == null) {
+            //return default value
+            return NAMES[0];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.DATETIME);
+        }
     }
 
     public String getMessageIdKey() {
-        return NAMES[1];
+        if (nameMap == null || nameMap.get(LogFieldConstants.MESSAGEID) == null) {
+            //return default value
+            return NAMES[1];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.MESSAGEID);
+        }
     }
 
     public String getThreadIdKey() {
-        return NAMES[2];
+        if (nameMap == null || nameMap.get(LogFieldConstants.THREADID) == null) {
+            //return default value
+            return NAMES[2];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.THREADID);
+        }
     }
 
     public String getModuleKey() {
@@ -197,155 +217,383 @@ public class LogTraceData extends GenericData {
     }
 
     public String getSeverityKey() {
-        return NAMES[4];
+        if (nameMap == null || nameMap.get(LogFieldConstants.SEVERITY) == null) {
+            //return default value
+            return NAMES[4];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.SEVERITY);
+        }
     }
 
     public String getLoglevelKey() {
-        return NAMES[5];
+        if (nameMap == null || nameMap.get(LogFieldConstants.LOGLEVEL) == null) {
+            //return default value
+            return NAMES[5];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.LOGLEVEL);
+        }
     }
 
     public String getMethodNameKey() {
-        return NAMES[6];
+        if (nameMap == null || nameMap.get(LogFieldConstants.METHODNAME) == null) {
+            //return default value
+            return NAMES[6];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.METHODNAME);
+        }
     }
 
     public String getClassNameKey() {
-        return NAMES[7];
+        if (nameMap == null || nameMap.get(LogFieldConstants.CLASSNAME) == null) {
+            //return default value
+            return NAMES[7];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.CLASSNAME);
+        }
     }
 
     public String getLevelValueKey() {
-        return NAMES[8];
+        if (nameMap == null || nameMap.get(LogFieldConstants.LEVELVALUE) == null) {
+            //return default value
+            return NAMES[8];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.LEVELVALUE);
+        }
     }
 
     public String getThreadNameKey() {
-        return NAMES[9];
+        if (nameMap == null || nameMap.get(LogFieldConstants.THREADNAME) == null) {
+            //return default value
+            return NAMES[9];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.THREADNAME);
+        }
     }
 
     public String getCorrelationIdKey() {
-        return NAMES[10];
+        if (nameMap == null || nameMap.get(LogFieldConstants.CORRELATION_ID) == null) {
+            //return default value
+            return NAMES[10];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.CORRELATION_ID);
+        }
     }
 
     public String getOrgKey() {
-        return NAMES[11];
+        if (nameMap == null || nameMap.get(LogFieldConstants.ORG) == null) {
+            //return default value
+            return NAMES[11];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.ORG);
+        }
     }
 
     public String getProductKey() {
-        return NAMES[12];
+        if (nameMap == null || nameMap.get(LogFieldConstants.PRODUCT) == null) {
+            //return default value
+            return NAMES[12];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.PRODUCT);
+        }
     }
 
     public String getComponentKey() {
-        return NAMES[13];
+        if (nameMap == null || nameMap.get(LogFieldConstants.COMPONENT) == null) {
+            //return default value
+            return NAMES[13];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.COMPONENT);
+        }
     }
 
     public String getSequenceKey() {
-        return NAMES[14];
+        if (nameMap == null || nameMap.get(LogFieldConstants.SEQUENCE) == null) {
+            //return default value
+            return NAMES[14];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.SEQUENCE);
+        }
     }
 
     public String getThrowableKey() {
-        return NAMES[15];
+        if (nameMap == null || nameMap.get(LogFieldConstants.THROWABLE) == null) {
+            //return default value
+            return NAMES[15];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.THROWABLE);
+        }
     }
 
     public String getThrowableLocalizedKey() {
-        return NAMES[16];
+        if (nameMap == null || nameMap.get(LogFieldConstants.THROWABLE_LOCALIZED) == null) {
+            //return default value
+            return NAMES[16];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.THROWABLE_LOCALIZED);
+        }
     }
 
     public String getMessageKey() {
-        return NAMES[17];
+        if (nameMap == null || nameMap.get(LogFieldConstants.MESSAGE) == null) {
+            //return default value
+            return NAMES[17];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.MESSAGE);
+        }
     }
 
     public String getFormattedMsgKey() {
-        return NAMES[18];
+        if (nameMap == null || nameMap.get(LogFieldConstants.FORMATTEDMSG) == null) {
+            //return default value
+            return NAMES[18];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.FORMATTEDMSG);
+        }
     }
 
     public String getExtensionsKey() {
-        return NAMES[19];
+        if (nameMap == null || nameMap.get(LogFieldConstants.EXTENSIONS_KVPL) == null) {
+            //return default value
+            return NAMES[19];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.EXTENSIONS_KVPL);
+        }
     }
 
     public String getObjectIdKey() {
-        return NAMES[20];
+        if (nameMap == null || nameMap.get(LogFieldConstants.OBJECT_ID) == null) {
+            //return default value
+            return NAMES[20];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.OBJECT_ID);
+        }
     }
 
     public String getDatetimeKey1_1() {
-        return NAMES1_1[0];
+        if (nameMap == null || nameMap.get(LogFieldConstants.IBM_DATETIME) == null) {
+            //return default value
+            return NAMES1_1[0];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.IBM_DATETIME);
+        }
     }
 
     public String getMessageIdKey1_1() {
-        return NAMES1_1[1];
+        if (nameMap == null || nameMap.get(LogFieldConstants.IBM_MESSAGEID) == null) {
+            //return default value
+            return NAMES1_1[1];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.IBM_MESSAGEID);
+        }
     }
 
     public String getThreadIdKey1_1() {
-        return NAMES1_1[2];
+        if (nameMap == null || nameMap.get(LogFieldConstants.IBM_THREADID) == null) {
+            //return default value
+            return NAMES1_1[2];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.IBM_THREADID);
+        }
     }
 
     public String getModuleKey1_1() {
-        return NAMES1_1[3];
+        if (nameMap == null || nameMap.get(LogFieldConstants.MODULE) == null) {
+            //return default value
+            return NAMES1_1[3];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.MODULE);
+        }
     }
 
     public String getSeverityKey1_1() {
-        return NAMES1_1[4];
+        if (nameMap == null || nameMap.get(LogFieldConstants.SEVERITY) == null) {
+            //return default value
+            return NAMES1_1[4];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.SEVERITY);
+        }
     }
 
     public String getLoglevelKey1_1() {
-        return NAMES1_1[5];
+        if (nameMap == null || nameMap.get(LogFieldConstants.LOGLEVEL) == null) {
+            //return default value
+            return NAMES1_1[5];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.LOGLEVEL);
+        }
     }
 
     public String getMethodNameKey1_1() {
-        return NAMES1_1[6];
+        if (nameMap == null || nameMap.get(LogFieldConstants.IBM_METHODNAME) == null) {
+            //return default value
+            return NAMES1_1[6];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.IBM_METHODNAME);
+        }
     }
 
     public String getClassNameKey1_1() {
-        return NAMES1_1[7];
+        if (nameMap == null || nameMap.get(LogFieldConstants.IBM_CLASSNAME) == null) {
+            //return default value
+            return NAMES1_1[7];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.IBM_CLASSNAME);
+        }
     }
 
     public String getLevelValueKey1_1() {
-        return NAMES1_1[8];
+        if (nameMap == null || nameMap.get(LogFieldConstants.LEVELVALUE) == null) {
+            //return default value
+            return NAMES1_1[8];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.LEVELVALUE);
+        }
     }
 
     public String getThreadNameKey1_1() {
-        return NAMES1_1[9];
+        if (nameMap == null || nameMap.get(LogFieldConstants.THREADNAME) == null) {
+            //return default value
+            return NAMES1_1[9];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.THREADNAME);
+        }
     }
 
     public String getCorrelationIdKey1_1() {
-        return NAMES1_1[10];
+        if (nameMap == null || nameMap.get(LogFieldConstants.CORRELATION_ID) == null) {
+            //return default value
+            return NAMES1_1[10];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.CORRELATION_ID);
+        }
     }
 
     public String getOrgKey1_1() {
-        return NAMES1_1[11];
+        if (nameMap == null || nameMap.get(LogFieldConstants.ORG) == null) {
+            //return default value
+            return NAMES1_1[11];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.ORG);
+        }
     }
 
     public String getProductKey1_1() {
-        return NAMES1_1[12];
+        if (nameMap == null || nameMap.get(LogFieldConstants.PRODUCT) == null) {
+            //return default value
+            return NAMES1_1[12];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.PRODUCT);
+        }
     }
 
     public String getComponentKey1_1() {
-        return NAMES1_1[13];
+        if (nameMap == null || nameMap.get(LogFieldConstants.COMPONENT) == null) {
+            //return default value
+            return NAMES1_1[13];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.COMPONENT);
+        }
     }
 
     public String getSequenceKey1_1() {
-        return NAMES1_1[14];
+        if (nameMap == null || nameMap.get(LogFieldConstants.IBM_SEQUENCE) == null) {
+            //return default value
+            return NAMES1_1[14];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.IBM_SEQUENCE);
+        }
     }
 
     public String getThrowableKey1_1() {
-        return NAMES1_1[15];
+        if (nameMap == null || nameMap.get(LogFieldConstants.THROWABLE) == null) {
+            //return default value
+            return NAMES1_1[15];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.THROWABLE);
+        }
     }
 
     public String getThrowableLocalizedKey1_1() {
-        return NAMES1_1[16];
+        if (nameMap == null || nameMap.get(LogFieldConstants.THROWABLE_LOCALIZED) == null) {
+            //return default value
+            return NAMES1_1[16];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.THROWABLE_LOCALIZED);
+        }
     }
 
     public String getMessageKey1_1() {
-        return NAMES1_1[17];
+        if (nameMap == null || nameMap.get(LogFieldConstants.MESSAGE) == null) {
+            //return default value
+            return NAMES1_1[17];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.MESSAGE);
+        }
     }
 
     public String getFormattedMsgKey1_1() {
-        return NAMES1_1[18];
+        if (nameMap == null || nameMap.get(LogFieldConstants.FORMATTEDMSG) == null) {
+            //return default value
+            return NAMES1_1[18];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.FORMATTEDMSG);
+        }
     }
 
     public String getExtensionsKey1_1() {
-        return NAMES1_1[19];
+        if (nameMap == null || nameMap.get(LogFieldConstants.EXTENSIONS_KVPL) == null) {
+            //return default value
+            return NAMES1_1[19];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.EXTENSIONS_KVPL);
+        }
     }
 
     public String getObjectIdKey1_1() {
-        return NAMES1_1[20];
+        if (nameMap == null || nameMap.get(LogFieldConstants.OBJECT_ID) == null) {
+            //return default value
+            return NAMES1_1[20];
+        } else {
+            //return mapped value
+            return nameMap.get(LogFieldConstants.OBJECT_ID);
+        }
     }
 
     public long getDatetime() {
@@ -462,6 +710,35 @@ public class LogTraceData extends GenericData {
         if (matcher.find())
             messageId = msg.substring(matcher.start(), matcher.end() - 1);
         return messageId;
+    }
+
+    public static String messageFields;
+
+    public static void setMessageFields(String value) {
+        messageFields = value;
+        nameMap = convertStringtoMap(messageFields);
+    }
+
+    public static String getMessageFields() {
+        return messageFields;
+    }
+
+    static Map<String, String> nameMap = convertStringtoMap(messageFields);
+
+    public static Map<String, String> convertStringtoMap(String value) {
+        if (value == null || value == "") {
+            return null;
+        }
+        String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
+        Map<String, String> map = new HashMap<>();
+        for (String pair : keyValuePairs) //iterate over the pairs
+        {
+            String[] entry = pair.split(":"); //split the pairs to get key and value
+            if (entry.length == 2) {//if the mapped value is not null/correct format
+                map.put(entry[0].trim(), entry[1].trim()); //add them to the hashmap and trim whitespaces
+            }
+        }
+        return map;
     }
 
 }

@@ -105,6 +105,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Format to use for messages.log */
     protected volatile String messageFormat = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
 
+    /** Mapping to use for messages.fields */
+    protected volatile String messageFields = "";
+
     /** List of sources to route to console.log / console */
     protected volatile Collection<String> consoleSource = Arrays.asList(LoggingConstants.DEFAULT_CONSOLE_SOURCE);
 
@@ -149,6 +152,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FORMAT),
                                                           messageFormat);
+
+        messageFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FIELDS),
+                                                          messageFields);
 
         consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
                                                                  LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_SOURCE),
@@ -228,6 +234,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         messageFormat = InitConfgAttribute.MESSAGE_FORMAT.getStringValueAndSaveInit(c, messageFormat, isInit);
         consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValueAndSaveInit("consoleSource", c, consoleSource, isInit);
         consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValueAndSaveInit(c, consoleFormat, isInit);
+
+        messageFields = InitConfgAttribute.MESSAGE_FIELDS.getStringValueAndSaveInit(c, messageFields, isInit);
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
     }
@@ -389,6 +397,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return messageFormat;
     }
 
+    public String getMessageFields() {
+        return messageFields;
+    }
+
     public Collection<String> getConsoleSource() {
         return consoleSource;
     }
@@ -444,6 +456,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
         CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
+        MESSAGE_FIELDS("messageFields", "com.ibm.ws.logging.message.fields"),
         NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
 
         final String configKey;

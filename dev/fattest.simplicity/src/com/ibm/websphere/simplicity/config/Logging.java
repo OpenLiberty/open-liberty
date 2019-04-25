@@ -30,6 +30,7 @@ public class Logging extends ConfigElement {
     private String traceFormat;
     private String logDirectory;
     private boolean isoDateFormat;
+    private String messageFields;
 
     /**
      * @return the configured log directory
@@ -127,6 +128,23 @@ public class Logging extends ConfigElement {
     @XmlAttribute(name = "traceFormat")
     public void setTraceFormat(String traceFormat) {
         this.traceFormat = ConfigElement.getValue(traceFormat);
+    }
+
+    /**
+     * default="";
+     *
+     * @param messageFields the messageFields to set
+     */
+    @XmlAttribute(name = "messageFields")
+    public void setMessageFields(String messageFields) {
+        this.messageFields = ConfigElement.getValue(messageFields);
+    }
+
+    /**
+     * @return the message fields
+     */
+    public String getMessageFields() {
+        return this.messageFields;
     }
 
     /**
