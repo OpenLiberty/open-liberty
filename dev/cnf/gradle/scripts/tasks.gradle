@@ -375,27 +375,10 @@ test {
   }
   afterSuite { desc, result ->
     if (!desc.parent) { // will match the outermost suite
-      println "ANDY Adding result totals:"
-      print result.testCount
-      println " tests"
-      print result.successfulTestCount
-      println " passing"
-      print result.failedTestCount
-      println " failing"
-      print result.skippedTestCount
-      println " skipped"
       rootProject.ext.testCountTotal = rootProject.ext.testCountTotal + result.testCount
       rootProject.ext.successfulTestCountTotal = rootProject.ext.successfulTestCountTotal + result.successfulTestCount
       rootProject.ext.failedTestCountTotal = rootProject.ext.failedTestCountTotal + result.failedTestCount
       rootProject.ext.skippedTestCountTotal = rootProject.ext.skippedTestCountTotal + result.skippedTestCount
-      print rootProject.ext.testCountTotal
-      println " total tests"
-      print rootProject.ext.successfulTestCountTotal
-      println " total passing"
-      print rootProject.ext.failedTestCountTotal
-      println " total failing"
-      print rootProject.ext.skippedTestCountTotal
-      println " total skipped"
     }
   }
 }
