@@ -30,7 +30,7 @@ public class TestUtils {
     /**
      * This method loads the feature.cache file as properties.
      *
-     * @param server    TODO
+     * @param server TODO
      * @param cacheFile - The cache file to read.
      *
      * @return - A properties object containing the properties from the feature.cache file.
@@ -59,33 +59,14 @@ public class TestUtils {
     }
 
     /**
-     * This method finds the installed features from the cache file.
-     * Note this is sleazy and evil and not something that is in general good practice,
-     * as the cache file contents should be able to change at any time.
+     * This method finds the installed features from the trace.log file
      *
-     * @param cacheFile - The cache file to read.
+     * @param server - Liberty Server
      * @return The installed features list as a string
      * @throws Exception
      */
-    public static String getInstalledFeatures(LibertyServer server, String cacheFile) throws Exception {
-        InputStream cacheStream = null;
-        BufferedReader reader = null;
-        String installedFeatures = null;
-        String line = null;
-        try {
-            cacheStream = server.getFileFromLibertyServerRoot(cacheFile).openForReading();
-            reader = new BufferedReader(new InputStreamReader(cacheStream, "UTF-8"));
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith("@=")) {
-                    installedFeatures = line.substring(2);
-                    break;
-                }
-            }
-        } finally {
-            tryToClose(reader);
-            tryToClose(cacheStream);
-        }
-
+    public static String getInstalledFeatures(LibertyServer server) throws Exception {
+        String installedFeatures = server.waitForStringInTraceUsingLastOffset("all installed features \\[");
         return installedFeatures;
     }
 

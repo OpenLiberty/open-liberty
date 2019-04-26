@@ -43,8 +43,6 @@ public class FeatureProcessTypeTest {
 
     private static final String CLIENT_B_1_0 = "clientB-1.0";
 
-    private static final String FEATURE_CACHE = "workarea/platform/feature.cache";
-
     @BeforeClass
     public static void beforeClass() throws Exception {
         Log.info(c, "beforeClass", "Installing features");
@@ -96,7 +94,10 @@ public class FeatureProcessTypeTest {
 
         assertNotNull("No message indicating a conflict", server.waitForStringInLog("CWWKF0034E.*" + CLIENT_B_1_0));
 
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
+        assertNotNull("There are no installed features found in trace.log file",
+                      installedFeatures);
+
         assertFalse("Expected clientB-1.0 feature to not be installed, but it was: " + installedFeatures, installedFeatures.contains(CLIENT_B_1_0));
 
         Log.info(c, m, "successful exit");
@@ -113,7 +114,10 @@ public class FeatureProcessTypeTest {
 
         assertNotNull("No message indicating a conflict", server.waitForStringInLog("CWWKF0035E.*" + CLIENT_B_1_0));
 
-        String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
+        String installedFeatures = TestUtils.getInstalledFeatures(server);
+        assertNotNull("There are no installed features found in trace.log file",
+                      installedFeatures);
+
         assertTrue("Expected serverA-1.0 feature to be installed, but it was not: " + installedFeatures, installedFeatures.contains(SERVER_A_1_0));
 
         Log.info(c, m, "successful exit");
