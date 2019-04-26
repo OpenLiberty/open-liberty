@@ -23,6 +23,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jsp.JspCoreException;
 import com.ibm.ws.jsp.translator.visitor.xml.ParserFactory;
 import com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig;
@@ -101,6 +102,7 @@ public class TagLibCacheConfigParser extends DefaultHandler {
         }
     }
     
+    @Trivial
     public void characters(char[] ch, int start, int length) throws SAXException {
         for (int i = 0; i < length; i++) {
             if (chars != null)

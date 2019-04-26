@@ -68,6 +68,16 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
     }
 
     /**
+     * Returns the portion of the API root following /ibm/api.
+     * For example, for /ibm/api/validation/dataSource/ds1, this should return /validation
+     *
+     * @return the portion of the API root following /ibm/api
+     */
+    public String getAPIRoot() {
+        return "/validator"; // TODO remove this and make abstract once all other code is updated
+    }
+
+    /**
      * Returns the most deeply nested element name.
      *
      * @param configDisplayId config.displayId
@@ -125,7 +135,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         //String uid = request.getPathVariable("uid");
         //String elementName = request.getPathVariable("elementName");
 
-        String apiRoot = "/validator";
+        String apiRoot = getAPIRoot();
         String uid = null;
         int endElementName = path.indexOf('/', apiRoot.length() + 1);
         if (endElementName < 0) { // uid not specified

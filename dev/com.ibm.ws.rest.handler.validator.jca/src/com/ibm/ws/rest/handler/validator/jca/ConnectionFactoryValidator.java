@@ -49,7 +49,7 @@ import com.ibm.wsspi.validator.Validator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { Validator.class },
-           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validator", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.connectionFactory.supertype" })
+           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.connectionFactory.supertype" })
 public class ConnectionFactoryValidator implements Validator {
     private final static TraceComponent tc = Tr.register(ConnectionFactoryValidator.class);
 
@@ -121,10 +121,11 @@ public class ConnectionFactoryValidator implements Validator {
                             JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
                             for (Object entry : loginConfigProps.entrySet()) {
                                 @SuppressWarnings("unchecked")
-                                Entry<String, String> e = (Entry<String, String>) entry;
+                                Entry<String, Object> e = (Entry<String, Object>) entry;
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
-                                config.addLoginProperty(e.getKey(), e.getValue());
+                                Object value = e.getValue();
+                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
                             }
                         }
                     }
@@ -133,7 +134,7 @@ public class ConnectionFactoryValidator implements Validator {
 
             Object cf = ((ResourceFactory) instance).createResource(config);
             if (cf instanceof ConnectionFactory)
-                validateCCIConnectionFactory((ConnectionFactory) cf, user, password, result);
+                validateCCIConnectionFactory((ConnectionFactory) cf, (ConnectionFactoryService) instance, user, password, result);
             else if (cf instanceof DataSource)
                 validateDataSource((DataSource) cf, user, password, result);
             else // TODO other types of connection factory, such as custom or JMS (which should have used jmsConnectionFactory)
@@ -170,12 +171,14 @@ public class ConnectionFactoryValidator implements Validator {
      * Validate a connection factory that implements javax.resource.cci.ConnectionFactory.
      *
      * @param cf       connection factory instance.
+     * @param cfSvc    connection factory service.
      * @param user     user name, if any, that is specified in the header of the validation request.
      * @param password password, if any, that is specified in the header of the validation request.
      * @param result   validation result to which this method appends info.
      * @throws ResourceException if an error occurs.
      */
-    private void validateCCIConnectionFactory(ConnectionFactory cf, String user, @Sensitive String password,
+    private void validateCCIConnectionFactory(ConnectionFactory cf, ConnectionFactoryService cfSvc,
+                                              String user, @Sensitive String password,
                                               LinkedHashMap<String, Object> result) throws ResourceException {
         try {
             ResourceAdapterMetaData adapterData = cf.getMetaData();
@@ -210,7 +213,13 @@ public class ConnectionFactoryValidator implements Validator {
             }
         }
 
-        Connection con = conSpec == null ? cf.getConnection() : cf.getConnection(conSpec);
+        Connection con;
+        try {
+            cfSvc.setValidating(true); // initializes a ThreadLocal that instructs the allocate operation to perform additional validation
+            con = conSpec == null ? cf.getConnection() : cf.getConnection(conSpec);
+        } finally {
+            cfSvc.setValidating(false);
+        }
         try {
             try {
                 ConnectionMetaData conData = con.getMetaData();

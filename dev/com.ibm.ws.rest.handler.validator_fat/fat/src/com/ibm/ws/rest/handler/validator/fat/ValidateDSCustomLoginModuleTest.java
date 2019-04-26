@@ -70,7 +70,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
         // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
         // so that the FFDC is not considered a test failure.
-        JsonObject response = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource")
+        JsonObject response = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource")
                         .method("POST")
                         .run(JsonObject.class);
         Log.info(c, "setUp", "DefaultDataSource response: " + response);
@@ -95,7 +95,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
                     "javax.resource.spi.SecurityException",
                     "javax.resource.spi.ResourceAllocationException" })
     public void testCustomLoginModuleDirectLookupInvalid() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/customLoginDS")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS")
                         .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
@@ -126,7 +126,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testCustomLoginContainerAuth() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/customLoginDS?auth=container")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS?auth=container")
                         .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
@@ -142,7 +142,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testCustomLoginIBMWebBnd() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry")
                         .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
@@ -160,7 +160,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testCustomLoginModuleProperties() throws Exception {
-        String URL = "/ibm/api/validator/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry";
+        String URL = "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry";
         String propsJson = "{ \"loginConfigProperties\": { \"" + TestLoginModule.CUSTOM_PROPERTY_KEY + "\": \"foo\" } }";
         JsonObject json = new HttpsRequest(server, URL)
                         .method("POST")
@@ -181,7 +181,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
                     "javax.resource.ResourceException",
                     "java.sql.SQLException" })
     public void testCustomLoginIBMWebBndWrongName() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/customLoginDSWebBnd?auth=container&loginConfig=bogus")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=bogus")
                         .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);

@@ -1,0 +1,10 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager/>
+    <!--
+    Provide-Capability: com.acme.dict; from=nl; to=de; version:Version=1.2
+Require-Capability: osgi.ee; filter:="(osgi.ee=*)"
+-->
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import javax.resource.spi.ConnectionManager;
 
 import com.ibm.ejs.j2c.ConnectionManagerServiceImpl;
 import com.ibm.ejs.j2c.J2CConstants;
+import com.ibm.ejs.j2c.MCWrapper;
 import com.ibm.wsspi.resource.ResourceInfo;
 
 /**
@@ -122,4 +123,15 @@ public abstract class ConnectionManagerService extends Observable {
      */
     public abstract void addRaClassLoader(ClassLoader raClassLoader);
 
+    /**
+     * Indicates to the connection manager whether validation is occurring on the current thread.
+     *
+     * @param isValidating true if validation is occurring on the current thread. Otherwise false.
+     */
+    public void setValidating(boolean isValidating) {
+        if (isValidating)
+            MCWrapper.isValidating.set(true);
+        else
+            MCWrapper.isValidating.remove();
+    }
 }

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.mpjwt11.tck;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,10 +53,10 @@ public class Mpjwt11TCKLauncher_aud_noenv {
     public void launchMpjwt11TCKLauncher_aud_noenv() throws Exception {
         String port = String.valueOf(server.getBvtPort());
         String bucketAndTestName = this.getClass().getCanonicalName();
-        MvnUtils.setSuiteFileName("tck_suite_aud_noenv.xml", server);
+        Map<String, String> additionalProps = new HashMap<>();
         // need to pass the correct url for PublicKeyAsPEMLocationURLTest
-        MvnUtils.setAdditionalMvnProps(new String[] { "-Dmp.jwt.tck.jwks.baseURL=http://localhost:" + port + "/PublicKeyAsPEMLocationURLTest/" }, server);
-        MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName);
+        additionalProps.put("mp.jwt.tck.jwks.baseURL", "http://localhost:" + port + "/PublicKeyAsPEMLocationURLTest/");
+        MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_aud_noenv.xml", additionalProps, Collections.emptySet());
 
     }
 }

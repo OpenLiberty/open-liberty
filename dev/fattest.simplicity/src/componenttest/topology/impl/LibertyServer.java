@@ -2611,7 +2611,7 @@ public class LibertyServer implements LogMonitorClient {
         runJextract(serverFolder);
 
         // Copy the log files: try to move them instead if we can
-        recursivelyCopyDirectory(serverFolder, logFolder, false, true, true);
+        recursivelyCopyDirectory(serverFolder, logFolder, true, true, true);
 
         deleteServerMarkerFile();
 

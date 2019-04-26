@@ -1,0 +1,11 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>capabilityA-1.0</feature> <!-- Unnecessary to specify, since combo* adds this feature -->
+        <feature>capabilityB-1.1</feature> <!-- This version overrides the capB in the combo feature -->
+        <feature>comboA10B10-1.0</feature>
+    </featureManager>
+
+</server>

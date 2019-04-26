@@ -18,9 +18,12 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Observable;
@@ -659,12 +662,11 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 }
             }
 
-            //TODO remove noship/beta guard before GA
-            isUCP = vendorImplClassName.startsWith("oracle.ucp.jdbc.") && 
-                            (wProps.containsKey("internalDevNonshipFunctionDoNotUseProduction") || (vProps.getFactoryPID() != null && vProps.getFactoryPID().equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")));
+            isUCP = vendorImplClassName.startsWith("oracle.ucp");
             if (isUCP) {
                 if (!createdDefaultConnectionManager && !sentUCPConnMgrPropsIgnoredInfoMessage) {
-                    Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used");
+                    Set<String> connMgrPropsAllowed = Collections.singleton("enableSharingForDirectLookups");
+                    Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used", connMgrPropsAllowed);
                     sentUCPConnMgrPropsIgnoredInfoMessage = true;
                 }
                 updateConfigForUCP(wProps);
@@ -1055,8 +1057,11 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             Tr.debug(this, tc, "Updating config for UCP");
         
         if (wProps.remove(DSConfig.VALIDATION_TIMEOUT) != null) {
-            if(!sentUCPDataSourcePropsIgnoredInfoMessage) {
-                Tr.info(tc, "DSRA4012.ignored.datasource.config.used");
+            if(!sentUCPDataSourcePropsIgnoredInfoMessage) {     
+                Set<String> dsPropsIgnored = new LinkedHashSet<String>();
+                dsPropsIgnored.add("statementCacheSize");
+                dsPropsIgnored.add("validationTimeout");
+                Tr.info(tc, "DSRA4012.ignored.datasource.config.used", dsPropsIgnored);
                 sentUCPDataSourcePropsIgnoredInfoMessage = true;
             }
         }
@@ -1079,7 +1084,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 //To avoid always sending ignored ds config message, don't send it for a value of 10 since that's the default
                 if(numericVal != 10) {
                     if(!sentUCPDataSourcePropsIgnoredInfoMessage) {
-                        Tr.info(tc, "DSRA4012.ignored.datasource.config.used");
+                        Set<String> dsPropsIgnored = new LinkedHashSet<String>();
+                        dsPropsIgnored.add("statementCacheSize");
+                        dsPropsIgnored.add("validationTimeout");
+                        Tr.info(tc, "DSRA4012.ignored.datasource.config.used", dsPropsIgnored);
                         sentUCPDataSourcePropsIgnoredInfoMessage = true;
                     }
                 }

@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,9 +31,10 @@ import com.ibm.websphere.simplicity.config.wim.LdapCache;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -80,12 +80,12 @@ public class LDAPReferralTest {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
-    private static EmbeddedApacheDS delegateServer = null;
     private static final String DELEGATE_DN = "o=ibm,c=us";
 //    private static final String DELEGATE_USER_DN = "uid=user1," + DELEGATE_DN;
 //    private static final String DELEGATE_GROUP_DN = "cn=group1," + DELEGATE_DN;
+    private static InMemoryLDAPServer dsSubordinate;
+    private static InMemoryLDAPServer dsDelegate;
 
-    private static EmbeddedApacheDS subordinateServer = null;
     private static final String SUBORDINATE_DN = "ou=subtree,o=ibm,c=us";
     private static final String SUBORDINATE_USER_PRINCIPAL = "user2";
     private static final String SUBORDINATE_USER_DN = "uid=" + SUBORDINATE_USER_PRINCIPAL + "," + SUBORDINATE_DN;
@@ -114,16 +114,16 @@ public class LDAPReferralTest {
 
             }
         } finally {
-            if (delegateServer != null) {
+            if (dsDelegate != null) {
                 try {
-                    delegateServer.stopService();
+                    dsDelegate.shutDown(true);
                 } catch (Exception e) {
                     Log.error(c, "teardown", e, "Delegate LDAP server threw error while stopping. " + e.getMessage());
                 }
             }
-            if (subordinateServer != null) {
+            if (dsSubordinate != null) {
                 try {
-                    subordinateServer.stopService();
+                    dsSubordinate.shutDown(true);
                 } catch (Exception e) {
                     Log.error(c, "teardown", e, "Subordinate LDAP server threw error while stopping. " + e.getMessage());
                 }
@@ -178,35 +178,33 @@ public class LDAPReferralTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupSubordinateServer() throws Exception {
-        subordinateServer = new EmbeddedApacheDS("subordinate");
-        subordinateServer.addPartition("testing", SUBORDINATE_DN);
-        subordinateServer.startServer();
+        dsSubordinate = new InMemoryLDAPServer(SUBORDINATE_DN);
 
         /*
          * Add the partition entries.
          */
-        Entry entry = subordinateServer.newEntry(SUBORDINATE_DN);
-        entry.add("objectclass", "organizationalunit");
-        entry.add("ou", "subtree");
-        subordinateServer.add(entry);
+        Entry entry = new Entry(SUBORDINATE_DN);
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "subtree");
+        dsSubordinate.add(entry);
 
         /*
          * Create the user and group.
          */
-        entry = subordinateServer.newEntry(SUBORDINATE_USER_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", SUBORDINATE_USER_PRINCIPAL);
-        entry.add("sn", SUBORDINATE_USER_PRINCIPAL);
-        entry.add("cn", SUBORDINATE_USER_PRINCIPAL);
-        entry.add("userPassword", "password");
-        subordinateServer.add(entry);
+        entry = new Entry(SUBORDINATE_USER_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", SUBORDINATE_USER_PRINCIPAL);
+        entry.addAttribute("sn", SUBORDINATE_USER_PRINCIPAL);
+        entry.addAttribute("cn", SUBORDINATE_USER_PRINCIPAL);
+        entry.addAttribute("userPassword", "password");
+        dsSubordinate.add(entry);
 
-        entry = subordinateServer.newEntry(SUBORDINATE_GROUP_DN);
-        entry.add("objectclass", "groupofnames");
-        entry.add("cn", "group2");
-//        entry.add("member", DELEGATE_USER_DN);
-        entry.add("member", SUBORDINATE_USER_DN);
-        subordinateServer.add(entry);
+        entry = new Entry(SUBORDINATE_GROUP_DN);
+        entry.addAttribute("objectclass", "groupofnames");
+        entry.addAttribute("cn", "group2");
+//        entry.addAttribute("member", DELEGATE_USER_DN);
+        entry.addAttribute("member", SUBORDINATE_USER_DN);
+        dsSubordinate.add(entry);
     }
 
     /**
@@ -215,44 +213,39 @@ public class LDAPReferralTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupDelegateServer() throws Exception {
-        delegateServer = new EmbeddedApacheDS("delegate");
-        delegateServer.addPartition("testing", DELEGATE_DN);
-        delegateServer.startServer();
+        dsDelegate = new InMemoryLDAPServer(DELEGATE_DN);
 
-        /*
-         * Add the partition entries.
-         */
-        Entry entry = delegateServer.newEntry(DELEGATE_DN);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        delegateServer.add(entry);
+        Entry entry = new Entry(DELEGATE_DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        dsDelegate.add(entry);
 
         /*
          * Create the user and group.
          */
 //        entry = delegateServer.newEntry(DELEGATE_USER_DN);
-//        entry.add("objectclass", "inetorgperson");
-//        entry.add("uid", "user1");
-//        entry.add("sn", "user1");
-//        entry.add("cn", "user1");
-//        entry.add("userPassword", "password");
+//        entry.addAttribute("objectclass", "inetorgperson");
+//        entry.addAttribute("uid", "user1");
+//        entry.addAttribute("sn", "user1");
+//        entry.addAttribute("cn", "user1");
+//        entry.addAttribute("userPassword", "password");
 //        delegateServer.add(entry);
 //
 //        entry = delegateServer.newEntry(DELEGATE_GROUP_DN);
-//        entry.add("objectclass", "groupofnames");
-//        entry.add("cn", "group1");
-//        entry.add("member", DELEGATE_USER_DN);
-//        entry.add("member", SUBORDINATE_USER_DN);
+//        entry.addAttribute("objectclass", "groupofnames");
+//        entry.addAttribute("cn", "group1");
+//        entry.addAttribute("member", DELEGATE_USER_DN);
+//        entry.addAttribute("member", SUBORDINATE_USER_DN);
 //        delegateServer.add(entry);
 
         /*
          * Referral to the subordinate server that contains a subtree of this server's base DN.
          */
-        entry = subordinateServer.newEntry(SUBORDINATE_DN);
-        entry.add("objectclass", "referral", "extensibleobject");
-        entry.add("ou", "subtree");
-        entry.add("ref", "ldap://localhost:" + subordinateServer.getLdapServer().getPort() + "/" + SUBORDINATE_DN);
-        delegateServer.add(entry);
+        entry = new Entry(SUBORDINATE_DN);
+        entry.addAttribute("objectclass", "referral", "extensibleobject");
+        entry.addAttribute("ou", "subtree");
+        entry.addAttribute("ref", "ldap://localhost:" + dsSubordinate.getListenPort() + "/" + SUBORDINATE_DN);
+        dsDelegate.add(entry);
     }
 
     /**
@@ -270,10 +263,10 @@ public class LDAPReferralTest {
 
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(delegateServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(dsDelegate.getListenPort()));
         ldap.setBaseDN(SUBORDINATE_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 

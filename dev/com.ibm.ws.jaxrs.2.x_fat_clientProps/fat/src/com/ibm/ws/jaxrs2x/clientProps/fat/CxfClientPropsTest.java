@@ -27,6 +27,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs2x.cxfClientProps.CxfClientPropsTestServlet;
 
+import com.ibm.ws.jaxrs2x.clientProps.proxy.HttpProxyServer;
+
 @RunWith(FATRunner.class)
 public class CxfClientPropsTest extends FATServletClient {
 
@@ -38,6 +40,7 @@ public class CxfClientPropsTest extends FATServletClient {
     @Server("jaxrs20.cxfClientProps")
     @TestServlet(servlet = CxfClientPropsTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
+    private final static String proxyPort = "8888";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -45,11 +48,13 @@ public class CxfClientPropsTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, app);
         server.addInstalledAppForValidation(appName);
         server.startServer();
+        HttpProxyServer.startHttpProxyServer(Integer.valueOf(proxyPort));
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         server.stopServer();
+        HttpProxyServer.stopHttpProxyServer(Integer.valueOf(proxyPort));
     }
 
 }

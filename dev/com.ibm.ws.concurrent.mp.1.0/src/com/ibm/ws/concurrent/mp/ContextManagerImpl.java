@@ -23,6 +23,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.concurrent.mp.context.ThreadIdentityContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -83,10 +84,13 @@ public class ContextManagerImpl implements ContextManager {
         available.add(ThreadContext.CDI);
         contextProviders.add(cmProvider.securityContextProvider);
         available.add(ThreadContext.SECURITY);
+        // SYNC_TO_OS_THREAD must come after Security and Application as it depends on both.
+        contextProviders.add(cmProvider.threadIdendityContextProvider);
+        available.add(ThreadIdentityContextProvider.SYNC_TO_OS_THREAD);
         contextProviders.add(cmProvider.transactionContextProvider);
         available.add(ThreadContext.TRANSACTION);
         contextProviders.add(cmProvider.wlmContextProvider);
-        available.add(WLMContextProvider.WORKLOAD);
+        available.add(WLMContextProvider.CLASSIFICATION);
 
         // Thread context providers for the supplied class loader
         for (ThreadContextProvider provider : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
@@ -131,7 +135,7 @@ public class ContextManagerImpl implements ContextManager {
         if (ThreadContext.TRANSACTION.equals(conflictingType))
             return cmProvider.transactionContextProvider;
 
-        if (WLMContextProvider.WORKLOAD.equals(conflictingType))
+        if (WLMContextProvider.CLASSIFICATION.equals(conflictingType))
             return cmProvider.wlmContextProvider;
 
         // should be unreachable

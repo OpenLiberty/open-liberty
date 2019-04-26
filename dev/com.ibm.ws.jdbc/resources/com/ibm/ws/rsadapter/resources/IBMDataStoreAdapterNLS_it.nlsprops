@@ -287,10 +287,6 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: L''origine dati {0} \u00e8
 DSRA4015.no.ucp.connection.pool.datasource.explanation=L'origine dati \u00e8 stata configurata con il tipo ConnectionPoolDataSource, che non \u00e8 implementato dal driver Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Aggiornare l'origine dati per utilizzare il tipo XADataSource o DataSource.
 
-DSRA4016.no.ucp.driver.datasource=DSRA4016E: L''origine dati {0} \u00e8 stata configurata con il tipo Driver, che non \u00e8 supportato da Oracle UCP. Utilizzare, invece, il tipo XADataSource o DataSource.
-DSRA4016.no.ucp.driver.datasource.explanation=L'origine dati \u00e8 stata configurata con il tipo Driver, che non \u00e8 implementato dal driver Oracle UCP.
-DSRA4016.no.ucp.driver.datasource.useraction=Aggiornare l'origine dati per utilizzare il tipo XADataSource o DataSource.
-
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
