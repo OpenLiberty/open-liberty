@@ -36,9 +36,33 @@
   <!-- merges with above -->
   <jmsConnectionFactory id="cf1" containerAuthDataRef="jmsUser1" recoveryAuthDataRef="jmsUser1"/>
 
+  <jmsDestination id="dest1" jndiName="jms/dest1">
+    <properties.jmsra.JMSDestinationImpl destinationName="3605 Hwy 52N, Rochester, MN 55901"/>
+  </jmsDestination>
+
+  <jmsDestination id="dest2" jndiName="jms/dest2">
+    <properties.jmsra.JMSQueueImpl destinationName="201 4th St SE, Rochester, MN 55904" queueName="D2"/>
+  </jmsDestination>
+
+  <jmsQueue id="q1" jndiName="jms/q1">
+    <properties.jmsra.JMSQueueImpl queueName="Q1"/>
+  </jmsQueue>
+
+  <jmsQueue id="q2" jndiName="jms/q2">
+    <properties.jmsra.JMSOtherQueueImpl queueName="Q2" queueManager="qm"/>
+  </jmsQueue>
+
   <jmsQueueConnectionFactory jndiName="jms/qcf2">
     <properties.jmsra/>
   </jmsQueueConnectionFactory>
+
+  <jmsTopic id="topic1" jndiName="jms/topic1">
+    <properties.jmsra topicName="What's for dinner?"/>
+  </jmsTopic>
+
+  <jmsTopic id="topic2" jndiName="jms/topic2">
+    <properties.jmsra topicName="Who pays for free shipping?"/>
+  </jmsTopic>
 
   <jmsTopicConnectionFactory id="cf3" jndiName="jms/tcf3">
     <properties.jmsra escapeChar="%" userName="user3" password="3user"/>

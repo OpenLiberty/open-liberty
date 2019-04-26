@@ -141,6 +141,106 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         // cf1 is already tested by testJMSConnectionFactory
     }
 
+    // Test the output of the /ibm/api/config/jmsDestination/{uid} REST endpoint.
+    @Test
+    public void testJMSDestination() throws Exception {
+        JsonObject dest = new HttpsRequest(server, "/ibm/api/config/jmsDestination/dest1").run(JsonObject.class);
+        String err = "unexpected response: " + dest;
+        assertEquals(err, "jmsDestination", dest.getString("configElementName"));
+        assertEquals(err, "dest1", dest.getString("uid"));
+        assertEquals(err, "dest1", dest.getString("id"));
+        assertEquals(err, "jms/dest1", dest.getString("jndiName"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = dest.getJsonArray("properties.jmsra.JMSDestinationImpl"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "3605 Hwy 52N, Rochester, MN 55901", props.getString("destinationName"));
+    }
+
+    // Test the output of the /ibm/api/config/jmsDestination REST endpoint,
+    // which should return all configured JMS destinations.
+    @Test
+    public void testJMSDestinations() throws Exception {
+        JsonArray destinations = new HttpsRequest(server, "/ibm/api/config/jmsDestination").run(JsonArray.class);
+        String err = "unexpected response: " + destinations;
+        assertEquals(err, 2, destinations.size());
+
+        JsonObject dest;
+        assertNotNull(err, dest = destinations.getJsonObject(0));
+        assertEquals(err, "jmsDestination", dest.getString("configElementName"));
+        assertEquals(err, "dest1", dest.getString("uid"));
+        assertEquals(err, "dest1", dest.getString("id"));
+        assertEquals(err, "jms/dest1", dest.getString("jndiName"));
+        // dest1 already tested by testJMSDestination
+
+        assertNotNull(err, dest = destinations.getJsonObject(1));
+        assertEquals(err, "jmsDestination", dest.getString("configElementName"));
+        assertEquals(err, "dest2", dest.getString("uid"));
+        assertEquals(err, "dest2", dest.getString("id"));
+        assertEquals(err, "jms/dest2", dest.getString("jndiName"));
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = dest.getJsonArray("properties.jmsra.JMSQueueImpl"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "201 4th St SE, Rochester, MN 55904", props.getString("destinationName"));
+        assertEquals(err, "D2", props.getString("queueName"));
+    }
+
+    // Test the output of the /ibm/api/config/jmsQueue/{uid} REST endpoint.
+    @Test
+    public void testJMSQueue() throws Exception {
+        JsonObject q = new HttpsRequest(server, "/ibm/api/config/jmsQueue/q1").run(JsonObject.class);
+        String err = "unexpected response: " + q;
+        assertEquals(err, "jmsQueue", q.getString("configElementName"));
+        assertEquals(err, "q1", q.getString("uid"));
+        assertEquals(err, "q1", q.getString("id"));
+        assertEquals(err, "jms/q1", q.getString("jndiName"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = q.getJsonArray("properties.jmsra.JMSQueueImpl"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "Q1", props.getString("queueName"));
+    }
+
+    // Test the output of the /ibm/api/config/jmsQueue REST endpoint,
+    // which should return all configured JMS queues.
+    @Test
+    public void testJMSQueues() throws Exception {
+        JsonArray queues = new HttpsRequest(server, "/ibm/api/config/jmsQueue").run(JsonArray.class);
+        String err = "unexpected response: " + queues;
+        assertEquals(err, 2, queues.size());
+
+        JsonObject q;
+        assertNotNull(err, q = queues.getJsonObject(0));
+        assertEquals(err, "jmsQueue", q.getString("configElementName"));
+        assertEquals(err, "q1", q.getString("uid"));
+        assertEquals(err, "q1", q.getString("id"));
+        assertEquals(err, "jms/q1", q.getString("jndiName"));
+        // q1 already tested by testJMSQueue
+
+        assertNotNull(err, q = queues.getJsonObject(1));
+        assertEquals(err, "jmsQueue", q.getString("configElementName"));
+        assertEquals(err, "q2", q.getString("uid"));
+        assertEquals(err, "q2", q.getString("id"));
+        assertEquals(err, "jms/q2", q.getString("jndiName"));
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = q.getJsonArray("properties.jmsra.JMSOtherQueueImpl"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "qm", props.getString("queueManager"));
+        assertEquals(err, "Q2", props.getString("queueName"));
+    }
+
     // Test the output of the /ibm/api/config/jmsQueueConnectionFactory/{uid} REST endpoint.
     @Test
     public void testJMSQueueConnectionFactory() throws Exception {
@@ -177,6 +277,55 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertNull(err, cf.get("id"));
         assertEquals(err, "jms/qcf2", cf.getString("jndiName"));
         // cf1 is already tested by testJMSConnectionFactory
+    }
+
+    // Test the output of the /ibm/api/config/jmsTopic/{uid} REST endpoint.
+    @Test
+    public void testJMSTopic() throws Exception {
+        JsonObject topic = new HttpsRequest(server, "/ibm/api/config/jmsTopic/topic1").run(JsonObject.class);
+        String err = "unexpected response: " + topic;
+        assertEquals(err, "jmsTopic", topic.getString("configElementName"));
+        assertEquals(err, "topic1", topic.getString("uid"));
+        assertEquals(err, "topic1", topic.getString("id"));
+        assertEquals(err, "jms/topic1", topic.getString("jndiName"));
+
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = topic.getJsonArray("properties.jmsra"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "What's for dinner?", props.getString("topicName"));
+    }
+
+    // Test the output of the /ibm/api/config/jmsQueue REST endpoint,
+    // which should return all configured JMS queues.
+    @Test
+    public void testJMSTopics() throws Exception {
+        JsonArray topics = new HttpsRequest(server, "/ibm/api/config/jmsTopic").run(JsonArray.class);
+        String err = "unexpected response: " + topics;
+        assertEquals(err, 2, topics.size());
+
+        JsonObject q;
+        assertNotNull(err, q = topics.getJsonObject(0));
+        assertEquals(err, "jmsTopic", q.getString("configElementName"));
+        assertEquals(err, "topic1", q.getString("uid"));
+        assertEquals(err, "topic1", q.getString("id"));
+        assertEquals(err, "jms/topic1", q.getString("jndiName"));
+        // topic1 already tested by testJMSTopic
+
+        assertNotNull(err, q = topics.getJsonObject(1));
+        assertEquals(err, "jmsTopic", q.getString("configElementName"));
+        assertEquals(err, "topic2", q.getString("uid"));
+        assertEquals(err, "topic2", q.getString("id"));
+        assertEquals(err, "jms/topic2", q.getString("jndiName"));
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = q.getJsonArray("properties.jmsra"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "Who pays for free shipping?", props.getString("topicName"));
     }
 
     // Test the output of the /ibm/api/config/jmsTopicConnectionFactory/{uid} REST endpoint.
