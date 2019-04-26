@@ -19,4 +19,4 @@ Subsystem-Name: Config and Validator REST API 1.0
  com.ibm.ws.rest.handler.validator.openapi,\
  com.ibm.ws.rest.handler.validator.cloudant
 kind=beta
-edition=core
+edition=base
