@@ -41,16 +41,21 @@ public class SAFAuthorizationEvent extends AuditEvent {
                                         String safClass,
                                         Boolean authDecision,
                                         String principalName,
-                                        String accessLevel) {
+                                        String accessLevel,
+                                        String errorMessage) {
         this();
 
         // This is put in by default from AuditEvent, not needed so removing
         AuditEvent.STD_TARGET.remove(AuditEvent.TARGET_TYPEURI);
-
-        set(AuditEvent.TARGET_SAF_RETURN_CODE, safReturnCode);
-        set(AuditEvent.TARGET_RACF_RETURN_CODE, racfReturnCode);
-        set(AuditEvent.TARGET_RACF_REASON_CODE, racfReasonCode);
-
+        if (safReturnCode != -1) {
+            set(AuditEvent.TARGET_SAF_RETURN_CODE, safReturnCode);
+        }
+        if (racfReturnCode != -1) {
+            set(AuditEvent.TARGET_RACF_RETURN_CODE, racfReturnCode);
+        }
+        if (racfReasonCode != -1) {
+            set(AuditEvent.TARGET_RACF_REASON_CODE, racfReasonCode);
+        }
         if (userSecurityName != null) {
             set(AuditEvent.TARGET_USER_SECURITY_NAME, userSecurityName);
         }
@@ -77,6 +82,9 @@ public class SAFAuthorizationEvent extends AuditEvent {
         }
         if (accessLevel != null) {
             set(AuditEvent.TARGET_ACCESS_LEVEL, accessLevel);
+        }
+        if (errorMessage != null) {
+            set(AuditEvent.TARGET_SAF_ERROR_MESSAGE, errorMessage);
         }
     }
 }

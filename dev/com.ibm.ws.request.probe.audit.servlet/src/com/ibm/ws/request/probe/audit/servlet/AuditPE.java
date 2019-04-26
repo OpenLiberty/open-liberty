@@ -726,9 +726,9 @@ public class AuditPE implements ProbeExtension {
         String principleName = (String) varargs[7];
         String applid = (String) varargs[8];
         String accessLevel = (String) varargs[9];
-
+        String errorMessage = (String) varargs[10];
         if (auditServiceRef.getService() != null && auditServiceRef.getService().isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ, AuditConstants.SUCCESS)) {
-            SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode, userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel);
+            SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode, userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel, errorMessage);
             auditServiceRef.getService().sendEvent(safAuth);
         }
     }
