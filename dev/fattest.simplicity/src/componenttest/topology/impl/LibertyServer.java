@@ -1128,9 +1128,9 @@ public class LibertyServer implements LogMonitorClient {
         final Properties envVars = new Properties();
 
         envVars.putAll(this.envVars);
-        Log.info(c, "@AGG", "vars1: " + envVars);
+        if (!envVars.isEmpty())
+            Log.info(c, method, "Adding env vars: " + envVars);
         this.envVars.clear();
-        Log.info(c, "@AGG", "vars2: " + envVars);
 
         if (this.additionalSystemProperties != null && this.additionalSystemProperties.size() > 0) {
             envVars.putAll(this.additionalSystemProperties);
