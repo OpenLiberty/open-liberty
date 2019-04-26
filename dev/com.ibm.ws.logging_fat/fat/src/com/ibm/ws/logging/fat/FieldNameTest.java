@@ -45,17 +45,12 @@ public class FieldNameTest {
         server_env = LibertyServerFactory.getLibertyServer(SERVER_NAME_ENV);
         server_bootstrap = LibertyServerFactory.getLibertyServer(SERVER_NAME_BOOTSTRAP);
 
-//        System.out.println("Starting server...");
-//        server_xml.startServer();
-//        System.out.println("Started server.");
-
         // Preserve the original server configuration
         server_xml.saveServerConfiguration();
         server_env.saveServerConfiguration();
         server_bootstrap.saveServerConfiguration();
     }
 
-//    @Before
     public void setUp(LibertyServer server) throws Exception {
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
@@ -67,8 +62,8 @@ public class FieldNameTest {
 //    @After
     public void cleanUp(LibertyServer server) throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException", // testIsoDateFormatInFFDC
-                              "CWWKG0081E", "CWWKG0083W"); // testInvalidIsoDateFormatAttributeValue
+            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
+                              "CWWKG0081E", "CWWKG0083W");
         }
     }
 
@@ -87,19 +82,9 @@ public class FieldNameTest {
      */
     @Test
     public void testMessageFieldNamesBootstrap() throws Exception {
-//        RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
-//        // Update bootstrap.properties file with messageFields property
-//        Properties newBootstrapProps = new Properties();
-//        newBootstrapProps.put("com.ibm.ws.logging.message.fields", "message:log2");
-//
-//        System.out.println("****New props: " + newBootstrapProps);
-//        FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, true);
-//        writeProperties(newBootstrapProps, out);
         setUp(server_bootstrap);
         List<String> lines = server_bootstrap.findStringsInFileInLibertyServerRoot("log2", MESSAGE_LOG);
         assertTrue("The message field name was not formatted in the new configuration in messages.log.", lines.size() > 0);
-
-        //now restore original bootstrap properties?
     }
 
     /*
@@ -107,7 +92,6 @@ public class FieldNameTest {
      */
     @Test
     public void testMessageFieldNamesXML() throws Exception {
-        // Set messageFields property in server.xml
         setUp(server_xml);
         setServerConfiguration(true, "message:test1", server_xml);
 
@@ -120,7 +104,6 @@ public class FieldNameTest {
 
     @Test
     public void messageFieldsErrorChecking() throws Exception {
-        //server_xml.restoreServerConfiguration();
         // Set messageFields property in server.xml
         setUp(server_xml);
         //map the ibm_datetime field to blank field name
@@ -130,60 +113,6 @@ public class FieldNameTest {
         List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("ibm_datetime", MESSAGE_LOG);
         assertTrue("The default field name was not returned", lines.size() > 0);
     }
-
-//    private FileInputStream getFileInputStreamForRemoteFile(RemoteFile bootstrapPropFile) throws Exception {
-//        FileInputStream input = null;
-//        try {
-//            input = (FileInputStream) bootstrapPropFile.openForReading();
-//        } catch (Exception e) {
-//            throw new Exception("Error while getting the FileInputStream for the remote bootstrap properties file.");
-//        }
-//        return input;
-//    }
-//
-//    private Properties loadProperties(FileInputStream input) throws IOException {
-//        Properties props = new Properties();
-//        try {
-//            props.load(input);
-//        } catch (IOException e) {
-//
-//            throw new IOException("Error while loading properties from the remote bootstrap properties file.");
-//        } finally {
-//            try {
-//                input.close();
-//            } catch (IOException e1) {
-//                throw new IOException("Error while closing the input stream.");
-//            }
-//        }
-//        return props;
-//    }
-//
-//    private FileOutputStream getFileOutputStreamForRemoteFile(RemoteFile bootstrapPropFile, boolean append) throws Exception {
-//        // Open the remote file for writing with append as false
-//        FileOutputStream output = null;
-//        try {
-//            output = (FileOutputStream) bootstrapPropFile.openForWriting(append);
-//        } catch (Exception e) {
-//            throw new Exception("Error while getting FileOutputStream for the remote bootstrap properties file.");
-//        }
-//        return output;
-//    }
-//
-//    private void writeProperties(Properties props, FileOutputStream output) throws Exception {
-//        // Write the properties to remote bootstrap properties file
-//        try {
-//            props.store(output, null);
-//            System.out.println("****Written to the output stream");
-//        } catch (IOException e) {
-//            throw new Exception("Error while writing to the remote bootstrap properties file.");
-//        } finally {
-//            try {
-//                output.close();
-//            } catch (IOException e) {
-//                throw new IOException("Error while closing the output stream.");
-//            }
-//        }
-//    }
 
     private static void setServerConfiguration(boolean isMessageFields, String newFieldName, LibertyServer server) throws Exception {
         Logging loggingObj;
