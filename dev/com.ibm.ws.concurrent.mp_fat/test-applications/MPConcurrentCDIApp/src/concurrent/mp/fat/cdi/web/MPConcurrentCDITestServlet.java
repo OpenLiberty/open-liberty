@@ -73,17 +73,20 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
-    public @interface AppContext {}
+    public @interface AppContext {
+    }
 
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
-    public @interface CDIContext {}
+    public @interface CDIContext {
+    }
 
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
-    public @interface TxContext {}
+    public @interface TxContext {
+    }
 
     @Produces
     @ApplicationScoped
@@ -294,7 +297,10 @@ public class MPConcurrentCDITestServlet extends FATServlet {
                     throw x;
             }
         } finally {
-            tx.commit();
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
         }
 
         // valid to propagate empty transaction context
