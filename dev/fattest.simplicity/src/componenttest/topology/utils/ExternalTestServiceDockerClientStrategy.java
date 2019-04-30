@@ -39,6 +39,12 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
     private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker");
 
+    static {
+        // The default ping timeout for Testcontainers is 10s. Increase to 60s for remote Docker hosts.
+        if (useRemoteDocker())
+            System.setProperty("testcontainers.environmentprovider.timeout", "60");
+    }
+
     private EnvironmentAndSystemPropertyClientProviderStrategy strat = null;
 
     /**
@@ -116,7 +122,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     @Override
     protected int getPriority() {
-        return isFirstPriority() ? 900 : 0;
+        return useRemoteDocker() ? 900 : 0;
     }
 
     @Override
@@ -130,9 +136,9 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         return true;
     }
 
-    private static boolean isFirstPriority() {
+    private static boolean useRemoteDocker() {
         return System.getProperty("os.name", "unknown").toLowerCase().contains("windows") || // we are on windows (no docker support)
-               !FATRunner.FAT_TEST_LOCALRUN || // this is a remote runs
+               !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
                USE_REMOTE_DOCKER; // or if remote docker hosts are specifically requested
     }
 
