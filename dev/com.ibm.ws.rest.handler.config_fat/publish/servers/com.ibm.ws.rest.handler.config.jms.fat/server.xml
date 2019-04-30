@@ -72,4 +72,11 @@
     <properties.jmsra hostName="host4.rchland.ibm.com"/>
   </jmsTopicConnectionFactory>
 
+  <jmsActivationSpec id="App1/EJB1/MessageDrivenBean1" authDataRef="jmsUser1">
+    <properties.jmsra destinationRef="dest1"/>
+  </jmsActivationSpec>
+
+  <jmsActivationSpec id="App1/EJB1/MessageDrivenBean2">
+    <properties.jmsra destinationRef="topic1"/>
+  </jmsActivationSpec>
 </server>
