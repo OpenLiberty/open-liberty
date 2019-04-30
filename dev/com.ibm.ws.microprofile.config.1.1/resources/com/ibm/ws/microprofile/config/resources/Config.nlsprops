@@ -114,12 +114,12 @@ generic.type.variables.notsupported.CWMCG0018E.useraction=Instead, use a concret
 
 # Failed to start the {0} ConfigSource refresher process.
 failed.to.start.refresher.CWMCG0019E=CWMCG0019E: Failed to start the {0} ConfigSource refresher process.
-failed.to.start.refresher.CWMCG0019E.explanation=Changes in the specified ConfigSource will not be reflected in the Config instance.
+failed.to.start.refresher.CWMCG0019E.explanation=Changes in the specified ConfigSource are not reflected in the Config instance.
 failed.to.start.refresher.CWMCG0019E.useraction=Review the server message.log and FFDC logs to identify the problem.
 
 # Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
 failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
-failed.to.start.refresher.exception.CWMCG0020E.explanation=Changes in the specified ConfigSource will not be reflected in the Config instance.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=Changes in the specified ConfigSource are not reflected in the Config instance.
 failed.to.start.refresher.exception.CWMCG0020E.useraction=Review the server message.log and FFDC logs to identify the problem.
 
 # Environment Variables Config Source
