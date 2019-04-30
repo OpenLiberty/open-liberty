@@ -318,5 +318,38 @@ public class CxfClientPropsTestServlet extends FATServlet {
         } catch (ProcessingException expected) {
         }
         assertNull(r);   
-    }    
+    }
+    
+    @Test
+    public void testDecoupledEndpoint(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        int decoupledEndpointPort = req.getServerPort() + 1;
+        Client client1 = ClientBuilder.newBuilder()                        
+                        .build();        
+        
+        Response r1 = client1.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                        .path("echo")
+                        .path("Hello")
+                        .request()
+                        .get();
+        
+        String echoValue1 = r1.readEntity(String.class);        
+        assertEquals("hello", echoValue1.toLowerCase());
+        
+        // DecoupledEndpoint should have no effect on the response
+        
+        Client client2 = ClientBuilder.newBuilder()
+                        .property("client.DecoupledEndpoint", "http://localhost:" + decoupledEndpointPort + "/decoupled_endpoint")
+                        .build();        
+        
+        Response r2 = client2.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                        .path("echo")
+                        .path("Hello")
+                        .request()
+                        .get();
+        
+        String echoValue2 = r2.readEntity(String.class);        
+        assertEquals("hello", echoValue2.toLowerCase());
+       
+        assertEquals(r1.getHeaderString("Host"), r2.getHeaderString("Host"));        
+    }
 }
