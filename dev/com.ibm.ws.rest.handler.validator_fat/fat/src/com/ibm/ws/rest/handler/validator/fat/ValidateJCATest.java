@@ -71,7 +71,11 @@ public class ValidateJCATest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("J2CA0046E: .*eis/cf-port-not-in-range" // intentionally raised error to test exception path
+        server.stopServer("J2CA0046E: .*eis/cf-port-not-in-range", // intentionally raised error to test exception path
+                          "J2CA0021E: .*IllegalStateException: Connection was dropped", // testing exception path
+                          "J2CA0021E: .*javax.resource.ResourceException", // testing exception path
+                          "J2CA0021E: .*javax.resource.spi.ResourceAllocationException", // testing exception path
+                          "J2CA0021E: .*ResourceAdapterInternalException: Something bad has happened. See cause." // testing exception path
         );
     }
 
@@ -274,6 +278,82 @@ public class ValidateJCATest extends FATServletClient {
     }
 
     /**
+     * Validate a connectionFactory where the resource adapter implements an optional "testConnection()" method
+     * on its ManagedConnection, which in this case fails with an Error subclass.
+     */
+    @AllowedFFDC("java.io.IOError")
+    @Test
+    public void testErrorOnTestConnection() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+                        .requestProp("X-Validation-User", "testerruser1") // this user name is a signal to force a testConnection failure
+                        .requestProp("X-Validation-Password", "1testerruser");
+        JsonObject json = request.method("GET").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertNull(err, json.get("errorCode"));
+        assertEquals(err, "java.io.IOError", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("java.sql.SQLNonTransientConnectionException: Database appears to be down."));
+        JsonArray stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionImpl.testConnection(ManagedConnectionImpl.java:"));
+        assertNotNull(err, stack.getString(1));
+        assertNotNull(err, stack.getString(2));
+
+        // cause
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertEquals(err, -13579, json.getInt("errorCode"));
+        assertEquals(err, "08006", json.getString("sqlState"));
+        assertEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Database appears to be down."));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionImpl.testConnection(ManagedConnectionImpl.java:"));
+        assertNotNull(err, stack.getString(1));
+        assertNotNull(err, stack.getString(2));
+        assertNull(err, json.getJsonObject("cause"));
+    }
+
+    /**
+     * Validate a connectionFactory where the resource adapter implements an optional "testConnection()" method
+     * on its ManagedConnection, which in this case indicate failures by returning a false value rather than raising an exception.
+     */
+    @AllowedFFDC("javax.resource.spi.ResourceAllocationException")
+    @Test
+    public void testFailTestConnection() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+                        .requestProp("X-Validation-User", "testfailuser1") // this user name is a signal to force a testConnection failure
+                        .requestProp("X-Validation-Password", "1testfailuser");
+        JsonObject json = request.method("GET").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
+        assertNotNull(err, json.getString("message"));
+        JsonArray stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("com."));
+        assertNotNull(err, stack.getString(1));
+        assertNotNull(err, stack.getString(2));
+        assertNull(err, json.getJsonObject("cause"));
+    }
+
+    /**
      * Use /ibm/api/validation/connectionFactory to validate all connection factories
      */
     @AllowedFFDC({
@@ -402,6 +482,91 @@ public class ValidateJCATest extends FATServletClient {
         assertEquals(err, "TestValDB", j.getString("catalog"));
         assertEquals(err, "DEFAULTUSERNAME", j.getString("schema"));
         assertEquals(err, "DefaultUserName", j.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory where the resource adapter implements an optional "testConnection()" method
+     * on its ManagedConnection, which in this case fails with a ResourceException subclass.
+     */
+    @AllowedFFDC("javax.resource.spi.ResourceAdapterInternalException")
+    @Test
+    public void testResourceExceptionOnTestConnection() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+                        .requestProp("X-Validation-User", "testresxuser1") // this user name is a signal to force a testConnection failure
+                        .requestProp("X-Validation-Password", "1testresxuser");
+        JsonObject json = request.method("GET").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertNull(err, json.get("errorCode"));
+        assertEquals(err, "javax.resource.spi.ResourceAdapterInternalException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Something bad has happened. See cause."));
+        JsonArray stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionImpl.testConnection(ManagedConnectionImpl.java:"));
+        assertNotNull(err, stack.getString(1));
+        assertNotNull(err, stack.getString(2));
+
+        // cause
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertEquals(err, "ERR_CONNECT", json.getString("errorCode"));
+        assertEquals(err, "javax.resource.spi.CommException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Lost connection to host."));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionImpl.testConnection(ManagedConnectionImpl.java:"));
+        assertNotNull(err, stack.getString(1));
+        assertNotNull(err, stack.getString(2));
+        assertNull(err, json.getJsonObject("cause"));
+    }
+
+    /**
+     * Validate a connectionFactory where the resource adapter implements an optional "testConnection()" method
+     * on its ManagedConnection, which in this case fails with a RuntimeException subclass.
+     */
+    @AllowedFFDC({ "java.lang.IllegalStateException", "javax.resource.ResourceException" })
+    @Test
+    public void testRuntimeExceptionOnTestConnection() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+                        .requestProp("X-Validation-User", "testrunxuser1") // this user name is a signal to force a testConnection failure
+                        .requestProp("X-Validation-Password", "1testrunxuser");
+        JsonObject json = request.method("GET").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertEquals(err, "javax.resource.ResourceException", json.getString("class"));
+        JsonArray stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("com."));
+        assertNotNull(err, stack.getString(1));
+        assertNotNull(err, stack.getString(2));
+
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertNull(err, json.get("errorCode"));
+        assertEquals(err, "java.lang.IllegalStateException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Connection was dropped."));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionImpl.testConnection(ManagedConnectionImpl.java:"));
+        assertNotNull(err, stack.getString(1));
+        assertNotNull(err, stack.getString(2));
+        assertNull(err, json.getJsonObject("cause"));
     }
 
     /**

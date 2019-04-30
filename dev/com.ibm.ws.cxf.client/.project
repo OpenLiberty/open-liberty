@@ -11,13 +11,13 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.eclipse.wst.common.project.facet.core.builder</name>
+			<name>bndtools.core.bndbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>bndtools.core.bndnature</nature>
 	</natures>
 </projectDescription>

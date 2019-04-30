@@ -25,14 +25,21 @@ import java.security.SecurityPermission;
 import java.security.UnresolvedPermission;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.AuthPermission;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.namespace.PackageNamespace;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
@@ -51,6 +58,8 @@ public class PermissionManager implements PermissionsCombiner {
      * The trace component
      */
     private static final TraceComponent tc = Tr.register(PermissionManager.class);
+    
+    private BundleContext bundleContext;
 
     /**
      * Class Loader
@@ -119,7 +128,8 @@ public class PermissionManager implements PermissionsCombiner {
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
-        isServer = "server".equals(cc.getBundleContext().getProperty("wlp.process.type"));
+        bundleContext = cc.getBundleContext();
+        isServer = "server".equals(bundleContext.getProperty("wlp.process.type"));
 
         permissions.activate(cc);
         initializePermissions();
@@ -382,19 +392,19 @@ public class PermissionManager implements PermissionsCombiner {
                         targetString.append(principalName);
                         targetString.append("\"");
 
-                        permission = (Permission) Class.forName(permissionClass).getConstructor(String.class, String.class).newInstance(targetString.toString(), "read");
+                        permission = (Permission) getPermissionClass(permissionClass).getConstructor(String.class, String.class).newInstance(targetString.toString(), "read");
                     } else {
-                        permission = (Permission) Class.forName(permissionClass).getConstructor(String.class, String.class).newInstance(target, "read");
+                        permission = (Permission) getPermissionClass(permissionClass).getConstructor(String.class, String.class).newInstance(target, "read");
                     }
                 } else {
                     if (action == null || action.equalsIgnoreCase("null")) {
                         if (target == null || target.equalsIgnoreCase("null")) {
-                            permission = (Permission) Class.forName(permissionClass).newInstance();
+                            permission = (Permission) getPermissionClass(permissionClass).newInstance();
                         } else {
-                            permission = (Permission) Class.forName(permissionClass).getConstructor(String.class).newInstance(target);
+                            permission = (Permission) getPermissionClass(permissionClass).getConstructor(String.class).newInstance(target);
                         }
                     } else {
-                        permission = (Permission) Class.forName(permissionClass).getConstructor(String.class, String.class).newInstance(target, action);
+                        permission = (Permission) getPermissionClass(permissionClass).getConstructor(String.class, String.class).newInstance(target, action);
                     }
                 }
             }
@@ -423,6 +433,82 @@ public class PermissionManager implements PermissionsCombiner {
         }
 
         return permission;
+    }
+
+    private Class<?> getPermissionClass(String className) throws ClassNotFoundException {
+        Class<?> permissionClass = getPermissionClassUsingBundleClassLoader(className);
+
+        if (permissionClass == null) {
+            permissionClass = Class.forName(className);
+        }
+
+        return permissionClass;
+    }
+
+    private Class<?> getPermissionClassUsingBundleClassLoader(String className) throws ClassNotFoundException {
+        Class<?> permissionClass = null;
+        ClassLoader classloader = getBundleClassLoader(className);
+
+        if (classloader != null) {
+            permissionClass = classloader.loadClass(className);
+        }
+
+        return permissionClass;
+    }
+
+    private ClassLoader getBundleClassLoader(String className) {
+        ClassLoader classloader = null;
+
+        BundleCapability bundleCapability = getBundleProvidingPackage(className.substring(0, className.lastIndexOf(".")));
+        BundleWiring providerBundleWiring = getBundleWiring(bundleCapability);
+
+        if (providerBundleWiring != null) {
+            classloader = providerBundleWiring.getClassLoader();
+        }
+
+        return classloader;
+    }
+
+    private BundleCapability getBundleProvidingPackage(final String classPackage) {
+        BundleCapability bundleCapability = null;
+        FrameworkWiring frameworkWiring = bundleContext.getBundle(org.osgi.framework.Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class);
+
+        Collection<BundleCapability> matchingCapabilities = frameworkWiring.findProviders(new org.osgi.resource.Requirement() {
+            public org.osgi.resource.Resource getResource() {
+                return null;
+            }
+
+            public String getNamespace() {
+                return org.osgi.framework.namespace.PackageNamespace.PACKAGE_NAMESPACE;
+            }
+
+            public Map<String, String> getDirectives() {
+                return Collections.singletonMap(org.osgi.resource.Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                                                "(" + PackageNamespace.PACKAGE_NAMESPACE + "=" + classPackage + ")");
+            }
+
+            public Map<String, Object> getAttributes() {
+                return Collections.emptyMap();
+            }
+        });
+
+        Iterator<BundleCapability> capabilitiesIterator = matchingCapabilities.iterator();
+
+        if (capabilitiesIterator.hasNext()) {
+            bundleCapability = capabilitiesIterator.next();
+        }
+
+        return bundleCapability;
+    }
+
+    private BundleWiring getBundleWiring(BundleCapability bundleCapability) {
+        BundleWiring providerBundleWiring = null;
+
+        if (bundleCapability != null) {
+            providerBundleWiring = bundleCapability.getRevision().getWiring();
+        }
+
+        return providerBundleWiring;
     }
 
     /**

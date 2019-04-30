@@ -337,6 +337,7 @@ org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0
 org.quartz-scheduler:quartz:2.2.1
 org.reactivestreams:reactive-streams:1.0.2
 org.reactivestreams:reactive-streams-examples:1.0.2
+org.rnorth.duct-tape:duct-tape:1.0.7
 org.springframework:spring-core:4.3.13.RELEASE
 org.springframework:spring-context:4.3.13.RELEASE
 org.springframework:spring-aop:4.3.13.RELEASE
@@ -378,6 +379,7 @@ org.springframework:spring-webflux:5.1.4.RELEASE
 org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework.boot:spring-boot:2.1.2.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.1.2.RELEASE
+org.testcontainers:database-commons:1.11.1
 org.testcontainers:jdbc:1.11.1
 org.testcontainers:postgresql:1.11.1
 org.testcontainers:testcontainers:1.11.1
@@ -417,3 +419,7 @@ org.osgi:org.osgi.core:4.2.0
 org.glassfish.hk2:osgi-resource-locator:1.0.1
 javax.persistence:persistence-api:1.0.2
 javax.validation:validation-api:1.1.0.Final
+com.cloudant:cloudant-client:2.16.0
+com.cloudant:cloudant-client:2.8.0
+com.cloudant:cloudant-http:2.16.0
+com.cloudant:cloudant-http:2.8.0

@@ -17,7 +17,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -44,11 +43,12 @@ public class PostgreSQLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static PostgreSQLContainer<?> postgre = new PostgreSQLContainer<>("postgres:11.2-alpine")
+    public static CustomPostgreSQLContainer<?> postgre = new CustomPostgreSQLContainer<>("postgres:11.2-alpine")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
                     .withExposedPorts(5432)
+                    .withConfigOption("max_prepared_transactions", "2")
                     .withLogConsumer(PostgreSQLTest::log);
 
     @BeforeClass
@@ -57,12 +57,14 @@ public class PostgreSQLTest extends FATServletClient {
 
         String host = postgre.getContainerIpAddress();
         String port = String.valueOf(postgre.getMappedPort(5432));
-        Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port);
+        String jdbcURL = postgre.getJdbcUrl() + "?user=" + POSTGRES_USER + "&password=" + POSTGRES_PASS;
+        Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port + ",  URL=" + jdbcURL);
         server.addEnvVar("POSTGRES_HOST", host);
         server.addEnvVar("POSTGRES_PORT", port);
         server.addEnvVar("POSTGRES_DB", POSTGRES_DB);
         server.addEnvVar("POSTGRES_USER", POSTGRES_USER);
         server.addEnvVar("POSTGRES_PASS", POSTGRES_PASS);
+        server.addEnvVar("POSTGRES_URL", jdbcURL);
 
         // Create tables for the DB
         try (Connection conn = postgre.createConnection("")) {

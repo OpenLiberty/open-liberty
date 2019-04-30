@@ -13,6 +13,7 @@ package org.test.config.adapter;
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.BootstrapContext;
+import javax.resource.spi.ConfigProperty;
 import javax.resource.spi.Connector;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
@@ -24,6 +25,12 @@ import javax.transaction.xa.XAResource;
  */
 @Connector
 public class ResourceAdapterImpl implements ResourceAdapter {
+    @ConfigProperty
+    private Boolean debugMode;
+
+    @ConfigProperty(defaultValue = "host1.openliberty.io")
+    private String hostName;
+
     @Override
     public void endpointActivation(MessageEndpointFactory endpointFactory, ActivationSpec activationSpec) throws ResourceException {
     }
@@ -32,9 +39,25 @@ public class ResourceAdapterImpl implements ResourceAdapter {
     public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec activationSpec) {
     }
 
+    public Boolean getDebugMode() {
+        return debugMode;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
     @Override
     public XAResource[] getXAResources(ActivationSpec[] activationSpecs) throws ResourceException {
         return null;
+    }
+
+    public void setDebugMode(Boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
     @Override

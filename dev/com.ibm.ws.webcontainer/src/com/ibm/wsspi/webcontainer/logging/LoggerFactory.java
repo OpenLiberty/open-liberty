@@ -59,7 +59,25 @@ public class LoggerFactory{
          return AccessController.doPrivileged(
                 new PrivilegedAction<Logger>() {
                     public Logger run() {
-                                return Logger.getLogger(name, bundle);
+                        if (MESSAGES != bundle) {
+                            return Logger.getLogger(name, bundle);
+                        }
+
+                        Thread currentThread = Thread.currentThread();
+                        ClassLoader origClassLoader = currentThread.getContextClassLoader();
+                        ClassLoader thisClassLoader = getClassLoader();
+                        if (origClassLoader == thisClassLoader || origClassLoader == null) {
+                            return Logger.getLogger(name, bundle);
+                        }
+
+                        // Don't use the application ClassLoader for getting a Logger because
+                        // the resource bundle will not be in the application ClassLoader.
+                        currentThread.setContextClassLoader(thisClassLoader);
+                        try {
+                            return Logger.getLogger(name, bundle);
+                        } finally {
+                            currentThread.setContextClassLoader(origClassLoader);
+                        }
                     }
             });
     }

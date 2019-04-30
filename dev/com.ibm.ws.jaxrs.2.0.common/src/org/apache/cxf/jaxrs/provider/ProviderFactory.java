@@ -192,10 +192,13 @@ public abstract class ProviderFactory {
                              createJsonBindingProvider(null),
                              new IBMMultipartProvider(), // Liberty Change for CXF End
                              new MultipartProvider());
-        Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
+        // Liberty change begin
+        // Liberty sets JSON providers above and does not ship the CXF JSONProvider
+        /*Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
         if (!PropertyUtils.isTrue(prop)) {
             factory.setProviders(false, false, createProvider(JSON_PROVIDER_NAME, factory.getBus()));
-        }
+        }*/
+        // Liberty change end
     }
 
     // Liberty Change for CXF Begin

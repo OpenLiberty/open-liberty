@@ -20,6 +20,7 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(Suite.class)
 @SuiteClasses({
                 ConfigRESTHandlerJCATest.class,
+                ConfigRESTHandlerJMSTest.class,
                 ConfigRESTHandlerTest.class
 })
 

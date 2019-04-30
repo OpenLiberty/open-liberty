@@ -15,5 +15,8 @@ Bundle-Name: Test Nested Flat Config
 Bundle-SymbolicName: test.config.nested.flat; singleton:=true
 Bundle-Description: Test bundle for nested flat config, version=${bVersion}
 
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 Include-Resource:\
- OSGI-INF/metatype/metatype.xml=test-bundles/test.config.nested.flat/resources/metatype.xml
+ OSGI-INF/metatype/metatype.xml=test-bundles/test.config.nested.flat/resources/metatype/metatype.xml, \
+ OSGI-INF/wlp/defaultInstances.xml=test-bundles/test.config.nested.flat/resources/wlp/defaultInstances.xml

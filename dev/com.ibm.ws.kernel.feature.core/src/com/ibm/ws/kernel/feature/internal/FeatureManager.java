@@ -847,7 +847,11 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         writeServiceMessages();
 
         Set<String> postInstalledFeatures = new HashSet<>(featureRepository.getInstalledFeatures());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "all installed features " + postInstalledFeatures);
+        }
 
+        //remove the pre-installed features from all installed features to show just the added features
         postInstalledFeatures.removeAll(preInstalledFeatures);
         Set<String> installedPublicFeatures = Collections.emptySet();
 

@@ -207,11 +207,11 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testFeatureNotEnabled() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/CloudantDBNotEnabled").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/mongoDB/MongoDBNotEnabled").run(JsonObject.class);
         String err = "unexpected response: " + json;
-        assertEquals(err, "CloudantDBNotEnabled", json.getString("uid"));
-        assertEquals(err, "CloudantDBNotEnabled", json.getString("id"));
-        assertEquals(err, "cloudant/db", json.getString("jndiName"));
+        assertEquals(err, "MongoDBNotEnabled", json.getString("uid"));
+        assertEquals(err, "MongoDBNotEnabled", json.getString("id"));
+        assertEquals(err, "mongo/db", json.getString("jndiName"));
         assertFalse(err, json.getBoolean("successful"));
         assertNull(err, json.get("info"));
         assertNotNull(err, json = json.getJsonObject("failure"));
@@ -324,7 +324,7 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testMultipleWithNoResults() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/validation/mongoDB").run(JsonArray.class);
+        JsonArray json = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase").run(JsonArray.class);
 
         assertEquals("unexpected response: " + json, 0, json.size());
     }

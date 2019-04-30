@@ -287,10 +287,6 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Zdroj dat {0} byl nakonfig
 DSRA4015.no.ucp.connection.pool.datasource.explanation=Zdroj dat byl nakonfigurov\u00e1n s typem ConnectionPoolDataSource, kter\u00fd nen\u00ed implementov\u00e1n ovlada\u010dem Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Aktualizujte zdroj dat tak, aby pou\u017e\u00edval bu\u010f typ XADataSource, nebo typ DataSource.
 
-DSRA4016.no.ucp.driver.datasource=DSRA4016E: Zdroj dat {0} byl nakonfigurov\u00e1n s typem ovlada\u010de, kter\u00fd nen\u00ed podporov\u00e1n serverem Oracle UCP. M\u00edsto toho pou\u017eijte typ XADataSource nebo typ DataSource.
-DSRA4016.no.ucp.driver.datasource.explanation=Zdroj dat byl nakonfigurov\u00e1n s typem ovlada\u010de, kter\u00fd nen\u00ed implementov\u00e1n ovlada\u010dem Oracle UCP.
-DSRA4016.no.ucp.driver.datasource.useraction=Aktualizujte zdroj dat tak, aby pou\u017e\u00edval bu\u010f typ XADataSource, nebo typ DataSource.
-
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

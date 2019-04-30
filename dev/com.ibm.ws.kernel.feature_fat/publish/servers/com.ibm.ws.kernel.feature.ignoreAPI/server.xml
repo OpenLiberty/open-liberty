@@ -1,0 +1,7 @@
+<server>
+  <include location="../fatTestPorts.xml"/>
+  <featureManager>
+    <feature>restConnector-2.0</feature> <!-- exposes APIs from jaxrs-1.1 -->
+    <feature>ejbLite-3.2</feature> <!-- used for startup singleton to try to access API classes -->
+  </featureManager>
+</server>
