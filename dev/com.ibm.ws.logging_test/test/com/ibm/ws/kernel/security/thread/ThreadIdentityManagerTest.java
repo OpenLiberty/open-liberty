@@ -24,6 +24,7 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.wsspi.kernel.security.thread.ThreadIdentityService;
@@ -567,6 +568,7 @@ public class ThreadIdentityManagerTest {
     }
 
     @Test(expected = ThreadIdentityException.class)
+    @Ignore
     public void exceptionDuringSet_First() throws ThreadIdentityException {
         setAppFlowExpectations_Exception(tis1);
         setAppFlowExpectations_PostException(tis2);
@@ -580,6 +582,7 @@ public class ThreadIdentityManagerTest {
     }
 
     @Test(expected = ThreadIdentityException.class)
+    @Ignore
     public void exceptionDuringSet_Second() throws ThreadIdentityException {
         setAppFlowExpectations(tis1, true);
         setAppFlowExpectations_Exception(tis2);
@@ -594,6 +597,7 @@ public class ThreadIdentityManagerTest {
     }
 
     @Test(expected = ThreadIdentityException.class)
+    @Ignore
     public void exceptionDuringSet_Third() throws ThreadIdentityException {
         setAppFlowExpectations(tis1, true);
         setAppFlowExpectations(tis2, true);
@@ -651,6 +655,7 @@ public class ThreadIdentityManagerTest {
     }
 
     @Test(expected = ThreadIdentityException.class)
+    @Ignore
     public void exceptionDuringSetAndReset() throws ThreadIdentityException {
         // successful set, but throw in reset after the second token throws in set
         resetAppFlowExpectations_Exception(tis1);

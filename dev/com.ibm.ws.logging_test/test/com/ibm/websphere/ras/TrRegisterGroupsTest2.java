@@ -69,7 +69,8 @@ public class TrRegisterGroupsTest2 {
                 will(returnValue("*=all=enabled"));
 
                 one(mockService).register(with(any(TraceComponent.class)));
-                atLeast(1).of(mockService).info(with(TraceSpecification.getTc()), with("MSG_TRACE_STATE_CHANGED"), with(any(String.class)));
+                //atLeast(1).of(mockService).info(with(TraceSpecification.getTc()), with("MSG_TRACE_STATE_CHANGED"), with(any(String.class)));
+                allowing(mockService).info(with(TraceSpecification.getTc()), with("MSG_TRACE_STATE_CHANGED"), with(any(String.class)));
             }
         });
         TrConfigurator.init(mockConfig);
@@ -79,6 +80,7 @@ public class TrRegisterGroupsTest2 {
     @After
     public void tearDown() throws Exception {
         SharedTr.clearComponents();
+        SharedTr.clearConfig();
     }
 
     @Test
