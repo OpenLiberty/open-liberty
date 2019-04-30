@@ -13,6 +13,7 @@ package com.ibm.ws.rest.handler.config.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,103 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    // Test the output of the /ibm/api/config/jmsActivationSpec/{uid} REST endpoint.
+    @Test
+    public void testJMSActivationSpec() throws Exception {
+        JsonObject aspec = new HttpsRequest(server, "/ibm/api/config/jmsActivationSpec/App1%2FEJB1%2FMessageDrivenBean1").run(JsonObject.class);
+        String err = "unexpected response: " + aspec;
+        assertEquals(err, "jmsActivationSpec", aspec.getString("configElementName"));
+        assertEquals(err, "App1/EJB1/MessageDrivenBean1", aspec.getString("uid"));
+        assertEquals(err, "App1/EJB1/MessageDrivenBean1", aspec.getString("id"));
+        assertNull(err, aspec.get("jndiName"));
+        assertTrue(err, aspec.getBoolean("autoStart"));
+
+        JsonArray array;
+        JsonObject authData;
+        assertNotNull(err, array = aspec.getJsonArray("authDataRef"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, authData = array.getJsonObject(0));
+        assertEquals(err, "authData", authData.getString("configElementName"));
+        assertEquals(err, "jmsUser1", authData.getString("uid"));
+        assertEquals(err, "jmsUser1", authData.getString("id"));
+        assertEquals(err, "jmsU1", authData.getString("user"));
+        assertEquals(err, "******", authData.getString("password"));
+
+        // properties.jmsra (under jmsActivationSpec)
+        JsonObject props;
+        assertNotNull(err, array = aspec.getJsonArray("properties.jmsra"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "javax.jms.Topic", props.getString("destinationType"));
+
+        // jmsDestination
+        JsonObject dest;
+        assertNotNull(err, dest = props.getJsonObject("destinationRef"));
+        assertEquals(err, 5, dest.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "jmsDestination", dest.getString("configElementName"));
+        assertEquals(err, "dest1", dest.getString("uid"));
+        assertEquals(err, "dest1", dest.getString("id"));
+        assertEquals(err, "jms/dest1", dest.getString("jndiName"));
+        assertNotNull(err, array = dest.getJsonArray("properties.jmsra.JMSDestinationImpl"));
+
+        // properties.jmsra.JMSDestinationImpl (under jmsDestination)
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values
+        assertEquals(err, "3605 Hwy 52N, Rochester, MN 55901", props.getString("destinationName"));
+    }
+
+    // Test the output of the /ibm/api/config/jmsActivationSpec REST endpoint.
+    @Test
+    public void testJMSActivationSpecs() throws Exception {
+        JsonArray activationSpecs = new HttpsRequest(server, "/ibm/api/config/jmsActivationSpec").run(JsonArray.class);
+        String err = "unexpected response: " + activationSpecs;
+        assertEquals(err, 2, activationSpecs.size());
+
+        JsonObject aspec;
+        assertNotNull(err, aspec = activationSpecs.getJsonObject(0));
+        assertEquals(err, "jmsActivationSpec", aspec.getString("configElementName"));
+        assertEquals(err, "App1/EJB1/MessageDrivenBean1", aspec.getString("uid"));
+        assertEquals(err, "App1/EJB1/MessageDrivenBean1", aspec.getString("id"));
+        assertNull(err, aspec.get("jndiName"));
+        assertTrue(err, aspec.getBoolean("autoStart"));
+        // App1/EJB1/MessageDrivenBean1 is already covered by testJMSActivationSpec
+
+        assertNotNull(err, aspec = activationSpecs.getJsonObject(1));
+        assertEquals(err, "jmsActivationSpec", aspec.getString("configElementName"));
+        assertEquals(err, "App1/EJB1/MessageDrivenBean2", aspec.getString("uid"));
+        assertEquals(err, "App1/EJB1/MessageDrivenBean2", aspec.getString("id"));
+        assertNull(err, aspec.get("jndiName"));
+        assertTrue(err, aspec.getBoolean("autoStart"));
+        assertNull(err, aspec.get("authDataRef"));
+
+        // properties.jmsra (under jmsActivationSpec)
+        JsonArray array;
+        JsonObject props;
+        assertNotNull(err, array = aspec.getJsonArray("properties.jmsra"));
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "javax.jms.Topic", props.getString("destinationType"));
+
+        // jmsTopic
+        JsonObject dest;
+        assertNotNull(err, dest = props.getJsonObject("destinationRef"));
+        assertEquals(err, 5, dest.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "jmsTopic", dest.getString("configElementName"));
+        assertEquals(err, "topic1", dest.getString("uid"));
+        assertEquals(err, "topic1", dest.getString("id"));
+        assertEquals(err, "jms/topic1", dest.getString("jndiName"));
+        assertNotNull(err, array = dest.getJsonArray("properties.jmsra"));
+
+        // properties.jmsra (under jmsTopic)
+        assertEquals(err, 1, array.size());
+        assertNotNull(err, props = array.getJsonObject(0));
+        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values
+        assertEquals(err, "What's for dinner?", props.getString("topicName"));
     }
 
     // Test the output of the /ibm/api/config/jmsConnectionFactory/{uid} REST endpoint.

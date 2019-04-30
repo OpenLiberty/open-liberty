@@ -98,9 +98,10 @@ public class ConfigRESTHandler implements RESTHandler {
 
         //Get pid to use with config service
         String servicePid = isFactoryPid ? (String) config.get("service.factoryPid") : (String) config.get("service.pid");
+        String extendsSourcePid = isFactoryPid ? (String) config.get("ibm.extends.source.factoryPid") : (String) config.get("ibm.extends.source.pid");
 
-        String metaTypeElementName = configHelper.getMetaTypeElementName(servicePid);
-        // if the element's name is internal no config should be added for that element
+        String metaTypeElementName = configHelper.getMetaTypeElementName(extendsSourcePid == null ? servicePid : extendsSourcePid);
+        // if the element's name is internal, no config should be added for that element
         if (metaTypeElementName != null && metaTypeElementName.equalsIgnoreCase("internal"))
             return null;
 
@@ -131,7 +132,7 @@ public class ConfigRESTHandler implements RESTHandler {
                 continue;
             }
 
-            String metaTypeName = configHelper.getMetaTypeAttributeName(servicePid, key);
+            String metaTypeName = configHelper.getMetaTypeAttributeName(extendsSourcePid == null ? servicePid : extendsSourcePid, key);
             if ("id".equals(key) && "library".equals(configElementName)) {
                 // Work around the <library> element marking its id attribute as internal when its
                 // id is actually a configurable external.
