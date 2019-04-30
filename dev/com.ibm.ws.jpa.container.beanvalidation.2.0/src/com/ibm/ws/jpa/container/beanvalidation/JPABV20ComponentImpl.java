@@ -55,7 +55,7 @@ public class JPABV20ComponentImpl implements ValidatorFactoryLocator, JPAEMFProp
 
 
     @Override
-    public void updateProperties(Map<String, Object> props) {
+    public void updateProperties(Map<String, Object> props, ClassLoader applicationClassLoader) {
         props.put("javax.persistence.validation.factory", new JPAValidatorFactory(this));
     }
 }
