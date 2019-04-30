@@ -19,7 +19,7 @@
 
  <OCD id="com.ibm.ws.config.nested" ibm:alias="parent" ibm:supportExtensions="true" name="parent" description="parent">
   <AD id="name" type="String" required="false" name="name" description="name"/>
-  <AD id="child" type="String" required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.config.nested.child" name="child ref" description="child ref"/>
+  <AD id="child" type="String" required="false" cardinality="5" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.config.nested.child" name="child ref" description="child ref"/>
  </OCD>
 
  
@@ -29,7 +29,7 @@
 
  <OCD id="com.ibm.ws.config.nested.child" ibm:alias="child" name="child" description="child"> 
   <AD id="value" type="String" required="false" name="value" description="value"/>  
-  <AD id="grandchild" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.config.nested.grandchild" ibm:flat="true" name="grandchild" description="grandchild"/>  
+  <AD id="grandchild" required="false" type="String" cardinality="-5" ibm:type="pid" ibm:reference="com.ibm.ws.config.nested.grandchild" ibm:flat="true" name="grandchild" description="grandchild"/>
  </OCD>
 
  <Designate factoryPid="com.ibm.ws.config.nested.grandchild"> 

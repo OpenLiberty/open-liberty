@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Dictionary;
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.websphere.config.WSConfigurationHelper;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.EvaluationResult;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 
@@ -81,6 +82,12 @@ public class WSConfigurationHelperImpl implements WSConfigurationHelper {
     @Override
     public boolean removeDefaultConfiguration(String pid, String id) throws ConfigUpdateException {
         return bundleProcessor.removeDefaultConfiguration(pid, id);
+    }
+
+    @Override
+    @Trivial
+    public Integer getMetaTypeAttributeCardinality(String pid, String attributeID) {
+        return metatypeRegistry.getAttributeCardinality(pid, attributeID);
     }
 
     /*
