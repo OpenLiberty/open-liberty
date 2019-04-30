@@ -39,7 +39,7 @@ public class VariableEvaluator {
         this.configEvaluator = configEvaluator;
     }
 
-    String lookupVariableFromRegistry(String variableName) {
+    private String lookupVariableFromRegistry(String variableName) {
         return variableRegistry == null ? null : variableRegistry.lookupVariable(variableName);
     }
 
@@ -234,6 +234,7 @@ public class VariableEvaluator {
     /**
      * Replaces list variable expressions in raw string values
      */
+    @SuppressWarnings("unchecked")
     Object processVariableLists(Object rawValue, ExtendedAttributeDefinition attributeDef,
                                 EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
         if (attributeDef != null && !attributeDef.resolveVariables())
@@ -299,7 +300,7 @@ public class VariableEvaluator {
         return null;
     }
 
-    Object lookupEnvironmentVariable(String variableName) {
+    private Object lookupEnvironmentVariable(String variableName) {
         if (variableRegistry == null)
             return null;
         Object value = null;
@@ -324,7 +325,7 @@ public class VariableEvaluator {
 
     }
 
-    Object lookupDefaultVariable(String variableName) {
+    private Object lookupDefaultVariable(String variableName) {
         if (variableRegistry == null)
             return null;
 
