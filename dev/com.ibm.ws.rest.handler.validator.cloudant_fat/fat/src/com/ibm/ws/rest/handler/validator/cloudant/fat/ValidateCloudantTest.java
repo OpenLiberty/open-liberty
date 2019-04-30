@@ -311,7 +311,7 @@ public class ValidateCloudantTest extends FATServletClient {
         assertTrue(err, stack.getString(0).startsWith("com.cloudant.client"));
     }
 
-    /**
+    /*
      * Test that in an older version of the cloudant client before the metaInformation method was added,
      * the server version is obtained instead using the serverVersion method
      */
@@ -359,7 +359,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
     public void testMultiple() throws Exception {
         HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase?auth=container&authAlias=cloudantAuthData");
-        JsonArray json = request.method("POST").run(JsonArray.class);
+        JsonArray json = request.run(JsonArray.class);
         String err = "unexpected response: " + json;
 
         assertEquals(err, 6, json.size()); // Increase this if you add more cloudant databases to server.xml
@@ -425,7 +425,7 @@ public class ValidateCloudantTest extends FATServletClient {
         assertEquals(err, databaseURI, j.getString("uri"));
     }
 
-    /**
+    /*
      * Test that a non-admin user is able to successfully validate to a database for which they
      * are a member and cannot successfully validate to a database for which they are not a member.
      */
@@ -441,7 +441,7 @@ public class ValidateCloudantTest extends FATServletClient {
         http.setDoOutput(true);
 
         try (OutputStreamWriter os = new OutputStreamWriter(http.getOutputStream())) {
-            os.write("{\"name\":\"kevin\",\"password\":\"password\",\"roles\":[],\"type\":\"user\"}");
+            os.write("{\"name\":\"travis\",\"password\":\"password\",\"roles\":[],\"type\":\"user\"}");
         }
 
         assertEquals("Unexpected response recieved from cloudant: " + getResponse(http), 201, http.getResponseCode());
