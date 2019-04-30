@@ -16,8 +16,8 @@ import componenttest.rules.repeater.RepeatTestAction;
 /**
  *
  */
-public class RepeatWithJPA21Hibernate implements RepeatTestAction {
-    public static final String ID = "JPA21_HIBERNATE";
+public class RepeatWithJPA22Hibernate implements RepeatTestAction {
+    public static final String ID = "JPA22_HIBERNATE";
 
     @Override
     public boolean isEnabled() {
@@ -26,7 +26,7 @@ public class RepeatWithJPA21Hibernate implements RepeatTestAction {
 
     @Override
     public String toString() {
-        return "Switch to JPA Container 2.1 feature and use Hibernate for JPA persistence provider";
+        return "Switch to JPA Container 2.2 feature and use Hibernate for JPA persistence provider";
     }
 
     @Override

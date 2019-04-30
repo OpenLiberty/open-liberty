@@ -10,25 +10,26 @@
  *******************************************************************************/
 
 configurations {
-  hibernateJPA21
+  hibernateJPA22
 }
 
 dependencies {
-  hibernateJPA21 'org.hibernate:hibernate-core:5.2.17.Final'
-  hibernateJPA21 'org.jboss.logging:jboss-logging:3.3.1.Final'
+  hibernateJPA22 'org.hibernate:hibernate-core:5.4.2.Final'
+  hibernateJPA22 'org.jboss.logging:jboss-logging:3.3.2.Final'
   
-  hibernateJPA21 'org.javassist:javassist:3.22.0-GA'
-  hibernateJPA21 'antlr:antlr:2.7.7'
-  hibernateJPA21 'org.jboss:jandex:2.0.3.Final'
-  hibernateJPA21 'com.fasterxml:classmate:1.3.1'
+  hibernateJPA22 'org.javassist:javassist:3.24.0-GA'
+  hibernateJPA22 'net.bytebuddy:byte-buddy:1.9.10'
+  hibernateJPA22 'antlr:antlr:2.7.7'
+  hibernateJPA22 'org.jboss:jandex:2.0.5.Final'
+  hibernateJPA22 'com.fasterxml:classmate:1.3.4'
   
-  hibernateJPA21 'dom4j:dom4j:1.6.1'
-  hibernateJPA21 'org.hibernate.common:hibernate-commons-annotations:5.0.1.Final'
+  hibernateJPA22 'org.dom4j:dom4j:2.1.1'
+  hibernateJPA22 'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final'
 }
 
-task addHibernateJPA21(type: Copy) {
+task addhibernateJPA22(type: Copy) {
   shouldRunAfter jar
-  from configurations.hibernateJPA21
+  from configurations.hibernateJPA22
   into new File(autoFvtDir, 'publish/shared/resources/jpa21_hibernate')
   rename 'antlr-.*.jar', 'antlr.jar'
   rename 'classmate-.*.jar', 'classmate.jar' 
@@ -42,5 +43,5 @@ task addHibernateJPA21(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addDerby
-  dependsOn addHibernateJPA21
+  dependsOn addhibernateJPA22
 }
