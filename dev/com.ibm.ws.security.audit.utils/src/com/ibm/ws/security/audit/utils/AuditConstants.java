@@ -70,6 +70,7 @@ public class AuditConstants {
     static public final String JMX_MBEAN_ATTRIBUTES = "JMX_MBEAN_ATTRIBUTES";
     static public final String JMX_MBEAN_REGISTER = "JMX_MBEAN_REGISTER";
     static public final String JMS = "JMS";
+    static public final String APPLICATION_TOKEN_MANAGEMENT = "APPLICATION_TOKEN_MANAGEMENT";
     static public final String CUSTOM = "CUSTOM";
     
     static public final List<String> validEventNamesList = Arrays.asList("CONFIG_SNAPSHOT", "SECURITY_AUDIT_MGMT", "SECURITY_MEMBER_MGMT", "SECURITY_SERVICE_MGMT",
@@ -81,7 +82,8 @@ public class AuditConstants {
             "SECURITY_SIGNING", "SECURITY_ENCRYPTION", "SECURITY_RESOURCE_ACCESS", "SECURITY_MGMT_KEY",
             "SECURITY_RUNTIME_KEY", "SECURITY_JMS_AUTHN", "SECURITY_JMS_AUTHZ", "SECURITY_JMS_AUTHN_TERMINATE",
             "SECUIRTY_JMS_CLOSED_CONNECTION",
-            "JMX_MBEAN", "JMX_NOTIFICATION", "JMX_MBEAN_ATTRIBUTES", "JMX_MBEAN_REGISTER", "JMS", "CUSTOM");
+            "JMX_MBEAN", "JMX_NOTIFICATION", "JMX_MBEAN_ATTRIBUTES", "JMX_MBEAN_REGISTER", "JMS", 
+            "APPLICATION_TOKEN_MANAGEMENT", "CUSTOM");
 
     static public final String SUCCESS = "success";
     static public final String FAILURE = "failure";
