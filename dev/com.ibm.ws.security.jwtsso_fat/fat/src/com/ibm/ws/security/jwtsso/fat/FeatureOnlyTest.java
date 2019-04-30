@@ -23,6 +23,7 @@ import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
@@ -55,7 +56,7 @@ public class FeatureOnlyTest extends CommonSecurityFat {
     public static void setUp() throws Exception {
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
 
     }
 
@@ -129,9 +130,13 @@ public class FeatureOnlyTest extends CommonSecurityFat {
         expectations.addExpectations(CommonExpectations.ltpaCookieExists(currentAction, webClient));
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
         expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.JWT_COOKIE_NAME));
-        expectations.addExpectation(Expectation.createResponseExpectation(currentAction, JwtFatConstants.JWT_COOKIE_NAME_MSG + "null", "Response from test step " + currentAction + " did not match expected value."));
+        expectations.addExpectation(Expectation.createResponseExpectation(currentAction, JwtFatConstants.JWT_COOKIE_NAME_MSG + "null",
+                                                                          "Response from test step " + currentAction + " did not match expected value."));
         // syntax of the class name can vary ("." vs "/"), so make check a bit more generic
-        expectations.addExpectation(new ResponseFullExpectation(currentAction, Constants.STRING_MATCHES, JwtFatConstants.JWT_PRINCIPAL_MSG + ".*org.*eclipse.*microprofile.*jwt.*JsonWebToken", "Response from test step " + currentAction + " did not match expected value."));
+        expectations.addExpectation(new ResponseFullExpectation(currentAction, Constants.STRING_MATCHES, JwtFatConstants.JWT_PRINCIPAL_MSG
+                                                                                                         + ".*org.*eclipse.*microprofile.*jwt.*JsonWebToken", "Response from test step "
+                                                                                                                                                              + currentAction
+                                                                                                                                                              + " did not match expected value."));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, currentAction, expectations);
