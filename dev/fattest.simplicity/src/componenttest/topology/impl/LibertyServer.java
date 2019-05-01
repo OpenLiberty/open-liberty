@@ -1128,9 +1128,9 @@ public class LibertyServer implements LogMonitorClient {
         final Properties envVars = new Properties();
 
         envVars.putAll(this.envVars);
-        Log.info(c, "@AGG", "vars1: " + envVars);
+        if (!envVars.isEmpty())
+            Log.info(c, method, "Adding env vars: " + envVars);
         this.envVars.clear();
-        Log.info(c, "@AGG", "vars2: " + envVars);
 
         if (this.additionalSystemProperties != null && this.additionalSystemProperties.size() > 0) {
             envVars.putAll(this.additionalSystemProperties);
@@ -5500,7 +5500,7 @@ public class LibertyServer implements LogMonitorClient {
 
         setMarkToEndOfLog(); // Only want messages which follow the app removal.
 
-        // Logging in 'renameLibertyFileWithRetry'.
+        // Logging in 'renameLibertyFile'.
         if (!LibertyFileManager.renameLibertyFile(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
@@ -5516,7 +5516,7 @@ public class LibertyServer implements LogMonitorClient {
         // Detection of the stop message means the mark was updated.  There is no need
         // to set the mark explicitly.
 
-        // Logging in 'renameLibertyFileWithRetry'.
+        // Logging in 'renameLibertyFile'.
         if (!LibertyFileManager.renameLibertyFile(machine, appExcisedPath, appInDropinsPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " back into dropins, failing.");
             return false;

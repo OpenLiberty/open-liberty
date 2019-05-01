@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -29,7 +28,11 @@ public class FATSuite {
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";",
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatWithJPA21())
+                    .andWith(new RepeatWithJPA22())
                     .andWith(new RepeatWithJPA20())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+                    .andWith(new RepeatWithJPA22Hibernate());
+
+    public static String repeatPhase = "";
 }

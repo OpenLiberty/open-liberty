@@ -89,6 +89,15 @@ public class AuditEvent {
     public final static String TARGET_JMX_MBEAN_QUERYEXP = "target.jmx.mbean.queryExp";
 
     public final static String TARGET_APPNAME = "target.appname";
+    public final static String TARGET_APPLICATION_ID = "target.applicationId";
+    public final static String TARGET_TOKEN_ID = "target.tokenId";
+    public final static String TARGET_CLIENT_ID = "target.clientId";
+    public final static String TARGET_ENDPOINT = "target.endpoint";
+    public final static String TARGET_PROVIDER = "target.provider";
+    public final static String TARGET_INITIATOR_ROLE = "target.initiatorRole";
+    public final static String TARGET_NUMBER_REVOKED = "target.numberRevoked";
+    public final static String TARGET_USERID = "target.userId";
+
     public final static String TARGET_PARAMS = "target.params";
     public final static String TARGET_TYPEURI = "target.typeURI";
     public final static String TARGET_HOST_ADDRESS = "target.host.address";

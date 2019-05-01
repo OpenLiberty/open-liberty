@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corporation and others.
+* Copyright (c) 2017, 2019 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -443,7 +443,9 @@ public class MetricRegistryImpl extends MetricRegistry {
                 }
             }
         }
-        throw new IllegalArgumentException(metadata.getName() + " is already used for a different type of metric");
+        throw new IllegalArgumentException(metadata.getName() + " is already used for a different type of metric. "
+                                           + "A metric name can only be used with one type of metric. Ensure that " + metadata.getName()
+                                           + " is used with only one type of metric.");
     }
 
     @SuppressWarnings("unchecked")

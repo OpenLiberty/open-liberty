@@ -87,9 +87,9 @@ public class PollingDynamicConfig implements Closeable {
             try {
                 this.future.get(0, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                throw new ConfigException("Failed to start PollingDynamicConfig refresher: " + e.getMessage(), e);
+                throw new ConfigException(Tr.formatMessage(tc, "failed.to.start.refresher.exception.CWMCG0020E", e.getMessage()), e);
             }
-            throw new ConfigException("Failed to start PollingDynamicConfig but no error reported!");
+            throw new ConfigException(Tr.formatMessage(tc, "failed.to.start.refresher.CWMCG0019E"));
         }
     }
 

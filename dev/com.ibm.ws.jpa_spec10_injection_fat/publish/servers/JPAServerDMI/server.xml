@@ -9,20 +9,8 @@
         IBM Corporation - initial API and implementation
  -->
 <server description="JPA DMI Injection Tests Server">
-
-	<featureManager>
-	    <feature>ejblite-3.2</feature>
-	    <!-- 
-	    <feature>servlet-3.1</feature>
-		<feature>jpa-2.1</feature>
-	     -->
-		<feature>servlet-4.0</feature>
-		<feature>jpa-2.2</feature>
-		
-	    <feature>componenttest-1.0</feature>
-    </featureManager>
-    
     <include location="../fatTestPorts.xml"/>
+    <include location="${shared.config.dir}/${env.repeat_phase}"/>
     
     <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true">
     	    <jdbcDriver libraryRef="DerbyLib"/>

@@ -24,7 +24,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Trivial
 @SuppressWarnings("deprecation")
 public class WLMContextProvider extends ContainerContextProvider {
-    public static final String WORKLOAD = "Workload";
+    public static final String CLASSIFICATION = "Classification";
 
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> wlmContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("WLMContextProvider");
 
@@ -62,6 +62,6 @@ public class WLMContextProvider extends ContainerContextProvider {
 
     @Override
     public final String getThreadContextType() {
-        return WORKLOAD;
+        return CLASSIFICATION;
     }
 }

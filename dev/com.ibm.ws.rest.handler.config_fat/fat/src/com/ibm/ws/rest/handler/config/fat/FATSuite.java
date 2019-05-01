@@ -19,7 +19,9 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ConfigRESTHandlerTest.class,
+                ConfigRESTHandlerJCATest.class,
+                ConfigRESTHandlerJMSTest.class,
+                ConfigRESTHandlerTest.class
 })
 
 public class FATSuite {

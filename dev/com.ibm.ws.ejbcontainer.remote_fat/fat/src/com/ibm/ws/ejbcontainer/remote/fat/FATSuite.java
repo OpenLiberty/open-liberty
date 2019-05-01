@@ -15,9 +15,12 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.ejbcontainer.remote.fat.tests.RemoteTests;
+import com.ibm.ws.ejbcontainer.remote.fat.tests.Server2ServerTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                RemoteTests.class
+                RemoteTests.class,
+                Server2ServerTests.class
 })
-public class FATSuite {}
+public class FATSuite {
+}

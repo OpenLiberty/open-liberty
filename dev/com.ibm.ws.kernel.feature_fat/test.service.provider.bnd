@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# Define the bundle for this FAT
+
+Bundle-Name: test.service.provider
+Bundle-SymbolicName: test.service.provider			
+
+Export-Package: \
+ com.ibm.ws.kernel.feature.test.api;version=1.0
+
+# hide the implementation packages
+Private-Package: \
+ test.service.provider
+
+-dsannotations: \
+ test.service.provider.ApiServiceImpl, \
+ test.service.provider.NotApiServiceImpl

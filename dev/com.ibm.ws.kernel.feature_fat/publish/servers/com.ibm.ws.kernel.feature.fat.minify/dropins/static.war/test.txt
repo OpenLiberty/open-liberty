@@ -1,0 +1,2 @@
+This is Mini-WOPR. Welcome Dr Falken.
+PASS static content worked ok =)

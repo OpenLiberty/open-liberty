@@ -287,10 +287,6 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Sursa de date {0} a fost c
 DSRA4015.no.ucp.connection.pool.datasource.explanation=Sursa de date a fost configurat\u0103 cu tipul ConnectionPoolDataSource, care nu este implementat de driver-ul Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualiza\u0163i sursa de date pentru a utiliza tipul XADataSource sau DataSource.
 
-DSRA4016.no.ucp.driver.datasource=DSRA4016E: Sursa de date {0} a fost configurat\u0103 cu tipul Driver, care nu este suportat de Oracle UCP. Folosi\u0163i \u00een locul lui tipul XADataSource sau DataSource.
-DSRA4016.no.ucp.driver.datasource.explanation=Sursa de date a fost configurat\u0103 cu tipul Driver, care nu este implementat de driver-ul Oracle UCP.
-DSRA4016.no.ucp.driver.datasource.useraction=Actualiza\u0163i sursa de date pentru a utiliza tipul XADataSource sau DataSource.
-
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

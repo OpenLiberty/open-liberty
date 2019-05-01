@@ -440,6 +440,8 @@ public class LibertyFileManager {
         RemoteFile target = createRemoteFile(machine, newFilePath);
         if ( source.exists() ) {
             return source.rename(target);
+        } else {
+            Log.info(CLASS, "renameLibertyFile", "Copying: " + source.getAbsolutePath() + " to " + target.getAbsolutePath() + " failed because " + source.getAbsolutePath() + "does not exist");
         }
         return false;
     }
@@ -449,6 +451,8 @@ public class LibertyFileManager {
         RemoteFile target = createRemoteFile(machine, newFilePath);
         if ( source.exists() ) {
             return source.renameNoRetry(target);
+        } else {
+            Log.info(CLASS, "renameLibertyFileNoRetry", "Copying: " + source.getAbsolutePath() + " to " + target.getAbsolutePath() + " failed because " + source.getAbsolutePath() + "does not exist");
         }
         return false;
     }

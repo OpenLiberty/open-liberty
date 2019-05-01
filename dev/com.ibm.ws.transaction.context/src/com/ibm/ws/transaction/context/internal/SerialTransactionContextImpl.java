@@ -83,8 +83,14 @@ public class SerialTransactionContextImpl implements ThreadContext {
         // TODO This current code is unlikely to be a fully reliable way of determining that a transaction
         // will be active on 2 threads at once. It should be replaced once the transaction manager is updated
         // to properly enforce the requirement.
-        if (tx != null && suspendCounts.get(tx).get() < 1)
+        if (tx != null && suspendCounts.get(tx).get() < 1) {
+            try {
+                tx.setRollbackOnly();
+            } catch (IllegalStateException x) {
+            } catch (SystemException x) {
+            }
             throw new IllegalStateException("Transaction cannot be propagated to thread because it is not permitted to be active on two threads at the same time.");
+        }
 
         // Suspend whatever is currently on the thread.
         try {

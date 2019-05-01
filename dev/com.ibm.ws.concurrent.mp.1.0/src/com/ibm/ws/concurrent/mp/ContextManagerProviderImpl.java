@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
 import com.ibm.ws.concurrent.mp.context.CDIContextProviderHolder;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
+import com.ibm.ws.concurrent.mp.context.ThreadIdentityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -55,6 +56,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
     final SecurityContextProvider securityContextProvider = new SecurityContextProvider();
     final TransactionContextProvider transactionContextProvider = new TransactionContextProvider();
     final WLMContextProvider wlmContextProvider = new WLMContextProvider();
+    final ThreadIdentityContextProvider threadIdendityContextProvider = new ThreadIdentityContextProvider();
 
     /**
      * Key for providersPerClassLoader indicating that there is no context class loader on the thread.
@@ -83,7 +85,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
         applicationContextProvider.jeeMetadataContextProviderRef.activate(osgiComponentContext);
         cdiContextProvider.cdiContextProviderRef.activate(osgiComponentContext);
         securityContextProvider.securityContextProviderRef.activate(osgiComponentContext);
-        securityContextProvider.threadIdentityContextProviderRef.activate(osgiComponentContext);
+        threadIdendityContextProvider.threadIdentityContextProviderRef.activate(osgiComponentContext);
         transactionContextProvider.transactionContextProviderRef.activate(osgiComponentContext);
         wlmContextProvider.wlmContextProviderRef.activate(osgiComponentContext);
         registration = ContextManagerProvider.register(this);
@@ -122,7 +124,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
         registration.unregister();
         wlmContextProvider.wlmContextProviderRef.deactivate(osgiComponentContext);
         transactionContextProvider.transactionContextProviderRef.deactivate(osgiComponentContext);
-        securityContextProvider.threadIdentityContextProviderRef.deactivate(osgiComponentContext);
+        threadIdendityContextProvider.threadIdentityContextProviderRef.deactivate(osgiComponentContext);
         securityContextProvider.securityContextProviderRef.deactivate(osgiComponentContext);
         cdiContextProvider.cdiContextProviderRef.deactivate(osgiComponentContext);
         applicationContextProvider.jeeMetadataContextProviderRef.deactivate(osgiComponentContext);
@@ -178,7 +180,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setThreadIdentityContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
-        securityContextProvider.threadIdentityContextProviderRef.setReference(ref);
+        threadIdendityContextProvider.threadIdentityContextProviderRef.setReference(ref);
     }
 
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
@@ -216,7 +218,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
     }
 
     protected void unsetThreadIdentityContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
-        securityContextProvider.threadIdentityContextProviderRef.unsetReference(ref);
+        threadIdendityContextProvider.threadIdentityContextProviderRef.unsetReference(ref);
     }
 
     protected void unsetTransactionContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {

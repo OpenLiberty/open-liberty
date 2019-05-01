@@ -232,10 +232,9 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String minJava11 = "Java SE 11";
-        String minJava8 = "Java SE 8, Java SE 11";
-        String minJava7 = "Java SE 7, Java SE 8, Java SE 11";
-        String minJava6 = "Java SE 6, Java SE 7, Java SE 8, Java SE 11";
+        String minJava11 = "Java SE 11, Java SE 12";
+        String minJava8 = "Java SE 8, Java SE 11, Java SE 12";
+        String minJava7 = "Java SE 7, Java SE 8, Java SE 11, Java SE 12";
 
         // TODO: Temporary special case for jdbc-4.3 (the first feature to require Java >8)
         // Once all builds are upgrade to Java 11+, we can remove this workaround
@@ -246,11 +245,7 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe
-        if (minVersion.equals("1.6.0")) {
-            reqs.setVersionDisplayString(minJava6);
-            return;
-        }
-        if (minVersion.equals("1.7.0")) {
+        if (minVersion.equals("1.6.0") || minVersion.equals("1.7.0")) {
             reqs.setVersionDisplayString(minJava7);
             return;
         }

@@ -44,12 +44,12 @@ public class JavaInfo {
         MAJOR = Integer.valueOf(versionElements[i++]);
 
         if (i < versionElements.length)
-            MINOR = Integer.valueOf(versionElements[i++]);
+            MINOR = parseIntSafe(versionElements[i++]);
         else
             MINOR = 0;
 
         if (i < versionElements.length)
-            MICRO = Integer.valueOf(versionElements[i]);
+            MICRO = parseIntSafe(versionElements[i]);
         else
             MICRO = 0;
 
@@ -84,7 +84,7 @@ public class JavaInfo {
                 while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
                     len++;
                 }
-                sr = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
+                sr = parseIntSafe(runtimeVersion.substring(srloc, srloc + len));
             }
         }
         SERVICE_RELEASE = sr;
@@ -99,7 +99,7 @@ public class JavaInfo {
                 while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
                     len++;
                 }
-                fp = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
+                fp = parseIntSafe(runtimeVersion.substring(fploc, fploc + len));
             }
         }
         FIXPACK = fp;
@@ -151,5 +151,16 @@ public class JavaInfo {
 
     public static int fixPack() {
         return instance().FIXPACK;
+    }
+
+    /**
+     * @return the integer value of the string, or 0 if the string cannot be coerced to a string
+     */
+    private static int parseIntSafe(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

@@ -287,10 +287,6 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: \u0179r\u00f3d\u0142o dany
 DSRA4015.no.ucp.connection.pool.datasource.explanation=\u0179r\u00f3d\u0142o danych zosta\u0142o skonfigurowane z typem ConnectionPoolDataSource, kt\u00f3ry nie zosta\u0142 zaimplementowany przez sterownik puli Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Zaktualizuj \u017ar\u00f3d\u0142o danych, aby u\u017cywa\u0142o typu XADataSource lub DataSource.
 
-DSRA4016.no.ucp.driver.datasource=DSRA4016E: \u0179r\u00f3d\u0142o danych {0} zosta\u0142o skonfigurowane z typem Driver, kt\u00f3ry nie jest obs\u0142ugiwany przez pul\u0119 Oracle UCP. Zamiast niego u\u017cyj typu XADataSource lub DataSource.
-DSRA4016.no.ucp.driver.datasource.explanation=\u0179r\u00f3d\u0142o danych zosta\u0142o skonfigurowane z typem Driver, kt\u00f3ry nie zosta\u0142 zaimplementowany przez sterownik puli Oracle UCP.
-DSRA4016.no.ucp.driver.datasource.useraction=Zaktualizuj \u017ar\u00f3d\u0142o danych, aby u\u017cywa\u0142o typu XADataSource lub DataSource.
-
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

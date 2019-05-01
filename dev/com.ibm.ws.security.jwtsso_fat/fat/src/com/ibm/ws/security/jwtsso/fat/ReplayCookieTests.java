@@ -43,6 +43,7 @@ import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
@@ -93,7 +94,8 @@ public class ReplayCookieTests extends CommonSecurityFat {
         CommonFatApplications.buildAndDeployApp(server, APP_NAME_JWT_BUILDER, "com.ibm.ws.security.fat.common.apps.jwtbuilder.*");
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG);
+
+        server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG, CommonWaitForAppChecks.getSSLChannelReadyMsgs());
 
     }
 

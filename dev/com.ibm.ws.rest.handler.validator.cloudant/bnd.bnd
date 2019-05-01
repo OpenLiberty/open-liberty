@@ -35,6 +35,8 @@ Private-Package:\
   com.ibm.websphere.org.osgi.service.cm,\
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.cloudant,\
+  com.ibm.ws.app.manager.lifecycle,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.resource;version=latest,\
   com.ibm.ws.rest.handler.validator;version=latest

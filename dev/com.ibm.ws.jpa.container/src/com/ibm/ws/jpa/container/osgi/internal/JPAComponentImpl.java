@@ -620,14 +620,15 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      *
      * @param xmlSchemaVersion      the schema version of the persistence.xml
      * @param integrationProperties the current set of integration-level properties
+     * @param applicationClassLoader the application's classloader. Used to create dynamic proxies for hibernate integration.
      */
     // F743-12524
     @Override
     public void addIntegrationProperties(String xmlSchemaVersion,
-                                         Map<String, Object> integrationProperties) {
+                                         Map<String, Object> integrationProperties, ClassLoader applicationClassLoader) {
 
         for (JPAEMFPropertyProvider propProvider : propProviderSRs.services()) {
-            propProvider.updateProperties(integrationProperties);
+            propProvider.updateProperties(integrationProperties, applicationClassLoader);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "addIntegrationProperties " + propProvider + " props: {0}", integrationProperties);
             }

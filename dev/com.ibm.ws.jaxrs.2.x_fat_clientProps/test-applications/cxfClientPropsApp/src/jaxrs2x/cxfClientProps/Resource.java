@@ -57,4 +57,10 @@ public class Resource extends Application {
         _log.info("chunking contentLength(from header)=" + contentLength + " actualLength=" + actualLength);
         return contentLength == null ? "CHUNKING" : contentLength + ":" + actualLength;
     }
+    
+    @GET
+    @Path("echo/{param}")
+    public String echo(@PathParam("param") String param) {        
+        return  param;
+    }
 }

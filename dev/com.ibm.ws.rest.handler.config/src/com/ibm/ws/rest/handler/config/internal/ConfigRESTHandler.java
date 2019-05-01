@@ -15,6 +15,7 @@ import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Map;
@@ -92,14 +93,15 @@ public class ConfigRESTHandler implements RESTHandler {
         } else
             configElementName = configDisplayId; // singleton pid
 
-        if (configElementName.indexOf('.') >= 0)
+        if (configElementName.indexOf('.') >= 0 && !configElementName.startsWith("properties."))
             return null;
 
         //Get pid to use with config service
         String servicePid = isFactoryPid ? (String) config.get("service.factoryPid") : (String) config.get("service.pid");
+        String extendsSourcePid = isFactoryPid ? (String) config.get("ibm.extends.source.factoryPid") : (String) config.get("ibm.extends.source.pid");
 
-        String metaTypeElementName = configHelper.getMetaTypeElementName(servicePid);
-        // if the element's name is internal no config should be added for that element
+        String metaTypeElementName = configHelper.getMetaTypeElementName(extendsSourcePid == null ? servicePid : extendsSourcePid);
+        // if the element's name is internal, no config should be added for that element
         if (metaTypeElementName != null && metaTypeElementName.equalsIgnoreCase("internal"))
             return null;
 
@@ -130,8 +132,10 @@ public class ConfigRESTHandler implements RESTHandler {
                 continue;
             }
 
-            String metaTypeName = configHelper.getMetaTypeAttributeName(servicePid, key);
-            if (key.equals("id")) { //always add id
+            String metaTypeName = configHelper.getMetaTypeAttributeName(extendsSourcePid == null ? servicePid : extendsSourcePid, key);
+            if ("id".equals(key) && "library".equals(configElementName)) {
+                // Work around the <library> element marking its id attribute as internal when its
+                // id is actually a configurable external.
                 keys.add(key);
             } else if ((metaTypeName != null && !metaTypeName.equalsIgnoreCase("internal")) || !registryEntryExists) {
                 // add attributes with a name that is not internal or any attributes if there is an error in the config
@@ -173,6 +177,30 @@ public class ConfigRESTHandler implements RESTHandler {
             }
         }
 
+        // Look for child-first nested config elements.
+        // This style of config has been discontinued but is still in use by some existing config elements,
+        // which need to be handled specially here.
+        if ("resourceAdapter".equals(configElementName)) {
+            String childFirstFilter = "(config.parentPID=" + config.get("service.pid") + ')';
+            Configuration[] childFirstConfigs;
+            try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "child first pid filter", childFirstFilter);
+                childFirstConfigs = configAdmin.listConfigurations(childFirstFilter);
+            } catch (InvalidSyntaxException x) {
+                throw new RuntimeException(x);
+            }
+            if (childFirstConfigs != null)
+                for (Configuration c : childFirstConfigs) {
+                    Dictionary<String, Object> props = c.getProperties();
+                    String childConfigDisplayId = (String) props.get("config.displayId");
+                    int start = configDisplayId.length() + 1;
+                    String childElementName = childConfigDisplayId.substring(start, childConfigDisplayId.indexOf('[', start));
+                    keys.add(childElementName);
+                    config.put(childElementName, Collections.singleton(props.get("service.pid")));
+                }
+        }
+
         // These properties intentionally placed first
         if (keys.remove("id")) {
             String id = (String) config.get("id");
@@ -186,19 +214,30 @@ public class ConfigRESTHandler implements RESTHandler {
             json.put("error", "Check that the spelling is correct and that the right features are enabled for this configuration.");
         }
 
-        for (String key : keys)
-            json.put(key, getJSONValue(config.get(key), processed));
+        for (String key : keys) {
+            Integer cardinality = configHelper.getMetaTypeAttributeCardinality(extendsSourcePid == null ? servicePid : extendsSourcePid, key);
+            json.put(key, getJSONValue(config.get(key), cardinality, processed));
+        }
 
         for (Map.Entry<String, SortedSet<String>> entry : flattenedPids.entrySet()) {
             String pid = entry.getKey();
+            boolean registryEntryExistsForFlattenedConfig = configHelper.registryEntryExists(pid);
             JSONArray list = new JSONArray();
             String prefix = null;
             for (String flatConfigPrefix : entry.getValue()) {
                 JSONObject j = new OrderedJSONObject();
                 SortedMap<String, Object> flattenedConfigProps = flattened.get(prefix = flatConfigPrefix);
                 if (flattenedConfigProps != null)
-                    for (Map.Entry<String, Object> prop : flattenedConfigProps.entrySet())
-                        j.put(prop.getKey(), getJSONValue(prop.getValue(), processed));
+                    for (Map.Entry<String, Object> prop : flattenedConfigProps.entrySet()) {
+                        String key = prop.getKey();
+                        String metaTypeName = configHelper.getMetaTypeAttributeName(pid, key);
+                        Integer cardinality = configHelper.getMetaTypeAttributeCardinality(pid, key);
+                        if (metaTypeName == null // add unknown attributes added by the user
+                            || !metaTypeName.equalsIgnoreCase("internal") // add externalized attributes
+                            || !registryEntryExistsForFlattenedConfig) { // or all attributes if there is an error in the config
+                            j.put(key, getJSONValue(prop.getValue(), cardinality, processed));
+                        }
+                    }
                 list.add(j);
             }
             // TODO would be better to get the flattened config element name from config internals rather than hardcoding/approximating it
@@ -207,7 +246,15 @@ public class ConfigRESTHandler implements RESTHandler {
                 String baseAlias = prefix.replaceAll("\\.\\d+\\.", "");
                 name = configHelper.aliasFor(pid, baseAlias);
             }
-            json.put(name, list);
+            if (list.size() == 1) {
+                String flatAttrName = prefix.substring(0, prefix.indexOf('.'));
+                Integer cardinality = configHelper.getMetaTypeAttributeCardinality(extendsSourcePid == null ? servicePid : extendsSourcePid, flatAttrName);
+                if (cardinality != null && (cardinality == 1 || cardinality == 0 || cardinality == -1))
+                    json.put(name, list.get(0));
+                else
+                    json.put(name, list);
+            } else
+                json.put(name, list);
         }
 
         // API for this configuration element instance
@@ -266,13 +313,14 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Converts the specified value to one that can be included in JSON
      *
-     * @param value     the value to convert
-     * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
+     * @param value       the value to convert
+     * @param cardinality cardinality of the metatype AD attribute (if any) that defines this value.
+     * @param processed   configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return a String, primitive wrapper, JSONArray, or JSONObject.
      * @throws IOException
      */
     @Trivial // generates too much trace
-    private Object getJSONValue(Object value, Set<String> processed) throws IOException {
+    private Object getJSONValue(Object value, Integer cardinality, Set<String> processed) throws IOException {
         if (value instanceof String) {
             String s = (String) value;
             if (s.matches(".*_\\d+")) {
@@ -294,21 +342,31 @@ public class ConfigRESTHandler implements RESTHandler {
                         value = configInfo;
                 }
             }
-        } else if (value instanceof Number || value instanceof Boolean || value instanceof Character)
+        } else if (value instanceof Number || value instanceof Boolean)
             ; // common paths - no special handling
         else if (value instanceof SerializableProtectedString)
             value = "******"; // hide passwords
         else if (value.getClass().isArray()) { // list supplied as an array for positive cardinality
-            JSONArray a = new JSONArray();
             int length = Array.getLength(value);
-            for (int i = 0; i < length; i++)
-                a.add(getJSONValue(Array.get(value, i), processed));
-            value = a;
+            if (length == 1 && cardinality != null && (cardinality == 1 || cardinality == 0 || cardinality == -1))
+                value = getJSONValue(Array.get(value, 0), null, processed);
+            else {
+                JSONArray a = new JSONArray();
+                for (int i = 0; i < length; i++)
+                    a.add(getJSONValue(Array.get(value, i), null, processed));
+                value = a;
+            }
         } else if (value instanceof Collection) { // list supplied as a Vector for negative cardinality
-            JSONArray a = new JSONArray();
-            for (Object o : (Collection<?>) value)
-                a.add(getJSONValue(o, processed));
-            value = a;
+            Collection<?> list = (Collection<?>) value;
+            int length = list.size();
+            if (length == 1 && (cardinality == null || cardinality >= -1 && cardinality <= 1))
+                value = getJSONValue(list.iterator().next(), null, processed);// TODO if 1 element, check cardinality ...
+            else {
+                JSONArray a = new JSONArray();
+                for (Object o : list)
+                    a.add(getJSONValue(o, null, processed));
+                value = a;
+            }
         } else
             value = value.toString(); // TODO any special handling here? Example: com.ibm.wsspi.kernel.service.utils.OnErrorUtil$OnError
 
@@ -351,7 +409,7 @@ public class ConfigRESTHandler implements RESTHandler {
 
         String elementName = path.length() < 8 ? "" : URLDecoder.decode(path.substring(8, endElementName), "UTF-8");
 
-        StringBuilder filter = new StringBuilder("(&");
+        StringBuilder filter = new StringBuilder("(&(!(ibm.extends.source.pid=*))");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
             filter.append(FilterUtils.createPropertyFilter("config.displayId", uid));
         else if (elementName.length() > 0) {
@@ -395,8 +453,15 @@ public class ConfigRESTHandler implements RESTHandler {
 
         if (configurations != null)
             for (Configuration c : configurations) {
+                // The filter can over achieve on matching configurations. Do some additional filtering.
                 Dictionary<String, Object> props = c.getProperties();
-                configMap.put((String) props.get("config.displayId"), props);
+                String displayId = (String) props.get("config.displayId");
+                int nestedStart = -1;
+                if (elementName.length() == 0 // show all config
+                    || displayId.startsWith(elementName + '[') && !displayId.contains("]/") // matches top level config
+                    || elementName.contentEquals(displayId) // matches singleton config element
+                    || (nestedStart = displayId.lastIndexOf('/' + elementName + '[')) > 0 && displayId.indexOf('/', nestedStart + 2) < 0) // matches nested config
+                    configMap.put(displayId, props);
             }
 
         JSONArtifact json;
@@ -428,6 +493,8 @@ public class ConfigRESTHandler implements RESTHandler {
             else // TODO need correct error message
                 json = toJSONObject("error", "Unique identifier " + uid + " is not valid. Expected: " + uniqueId);
         } else {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "multiple found", configMap);
             json = toJSONObject("error", "multiple found"); // TODO: message
         }
 

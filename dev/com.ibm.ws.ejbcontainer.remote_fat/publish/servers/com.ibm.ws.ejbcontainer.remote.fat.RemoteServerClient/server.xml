@@ -1,0 +1,24 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestCommon.xml"/>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}">
+        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secondary.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <!-- Yoko ORB bug; org.apache.yoko.rmispec.util.UtilLoader.loadServiceClass needs doPriv around getClassLoader + others -->	
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.net.SocketPermission" name="*" actions="listen,connect,resolve"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="*" actions="read,write"/>
+</server>

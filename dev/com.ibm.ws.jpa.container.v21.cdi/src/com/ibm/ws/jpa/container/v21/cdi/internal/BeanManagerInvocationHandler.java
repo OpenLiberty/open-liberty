@@ -26,10 +26,16 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
     private final static TraceComponent tc = Tr.register(BeanManagerInvocationHandler.class);
 
     private final CDIService cdiService;
-    private BeanManager target;
+    private Object target; //BeanManager or IBMHibernateExtendedBeanManager. IBMHibernateExtendedBeanManager cannot implement BeanManager without pulling in a dependency on javax.el
+    private IBMHibernateExtendedBeanManager extendedBeanManager;
 
     BeanManagerInvocationHandler(CDIService cdiService) {
         this.cdiService = cdiService;
+    }
+
+    BeanManagerInvocationHandler(CDIService cdiService, IBMHibernateExtendedBeanManager extendedBeanManager) {
+        this.cdiService = cdiService;
+        this.extendedBeanManager = extendedBeanManager;
     }
 
     @Override
@@ -59,7 +65,24 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
         }
 
         try {
-            ret = method.invoke(getTarget(), args);
+            //This method takes an argument of ExtendedBeanManager.LifecycleListener but this class is not available at compile time. 
+            if (methodName.equals("registerLifecycleListener")) {
+                if (args.length != 1) {
+                    throw new IllegalStateException("registerLifecycleListener should have one argument"); //Basic sanity check without doing a classloader lookup.
+                } 
+                Object listener = args[0]; //only one argument. 
+                Method proxyMethod = extendedBeanManager.getClass().getMethod("registerLifecycleListener", Object.class);
+                ret = proxyMethod.invoke(extendedBeanManager, listener);
+            } else {
+                //This is coming from the proxy object. Which will either recieve registerLifecycleListener or a method from the BeanManager interface
+                //Since we've already handled registerLifecycleListener we need to direct the method to a BeanManager and not an IBMHibernateExtendedBeanManager
+                if (getTarget() instanceof IBMHibernateExtendedBeanManager) {
+                    IBMHibernateExtendedBeanManager extendedBeanManager = (IBMHibernateExtendedBeanManager) getTarget();
+                    ret = method.invoke(extendedBeanManager.getBaseBeanManager(), args);
+                } else {
+                    ret = method.invoke(getTarget(), args);
+                }
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Invoked BeanManager method", cdiService, method, args, ret);
             }
@@ -71,11 +94,18 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
         return ret;
     }
 
-    private BeanManager getTarget() {
+    //To avoid depending on the application classloader having access to javax.el we need to avoid direct implimentations of the BeanManager interface
+    private synchronized Object getTarget() {
         if (target == null) {
-            target = cdiService.getCurrentBeanManager();
-            if (target == null) {
+            BeanManager bm = cdiService.getCurrentBeanManager();
+            if (bm == null) {
                 throw new UnsupportedOperationException("No current bean manager found in CDI service");
+            }
+            if (extendedBeanManager == null) {
+                target = bm;
+            } else {
+                extendedBeanManager.setBaseBeanManager(bm);
+                target = extendedBeanManager;
             }
         }
         return target;

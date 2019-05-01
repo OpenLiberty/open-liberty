@@ -38,6 +38,9 @@ import componenttest.app.FATServlet;
 public class CxfClientPropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
     private static final long defaultMargin = 6000;
+    private final static String proxyPort = "8888";
+    private final static String proxyHost = "127.0.0.1";
+    private final static String myHost = "1.1.1.1";    
     
     private static final boolean isZOS() {
         String osName = System.getProperty("os.name");
@@ -273,5 +276,80 @@ public class CxfClientPropsTestServlet extends FATServlet {
                        .post(Entity.text(sb.toString()))
                        .readEntity(String.class);
         assertEquals("30000:30000", result);
+    }    
+    
+    @Test
+    public void testProxyServer(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testProxyServer";
+        Client client = ClientBuilder.newBuilder()
+                        .property("client.ProxyServer", proxyHost)
+                        .property("client.ProxyServerPort", proxyPort)
+                        .property("client.ProxyServerType", "HTTP")
+                        .property("client.AllowChunking", "false")
+                        .build();
+       
+        Response r = client.target("http://" + myHost + ":" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                        .path("echo")
+                        .path("Hello")
+                        .request()
+                        .get();
+        
+        String echoValue = r.readEntity(String.class);        
+        assertEquals("hello", echoValue.toLowerCase());        
+        
+        client = ClientBuilder.newBuilder()
+                        .property("client.ProxyServer", proxyHost)
+                        .property("client.ProxyServerPort", proxyPort)
+                        .property("client.ProxyServerType", "HTTP")
+                        .property("client.NonProxyHosts", myHost)
+                        .property("client.AllowChunking", "false")
+                        .build();
+        
+        r = null;
+        try {
+            r = client.target("http://" + myHost + ":" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                            .path("echo")
+                            .path("Hello")
+                            .request()
+                            .get();
+            
+            _log.info(m + " Received " + r.getStatus() + " " + r.readEntity(String.class));
+            fail("Did not fail as expected...");
+        } catch (ProcessingException expected) {
+        }
+        assertNull(r);   
+    }
+    
+    @Test
+    public void testDecoupledEndpoint(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        int decoupledEndpointPort = req.getServerPort() + 1;
+        Client client1 = ClientBuilder.newBuilder()                        
+                        .build();        
+        
+        Response r1 = client1.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                        .path("echo")
+                        .path("Hello")
+                        .request()
+                        .get();
+        
+        String echoValue1 = r1.readEntity(String.class);        
+        assertEquals("hello", echoValue1.toLowerCase());
+        
+        // DecoupledEndpoint should have no effect on the response
+        
+        Client client2 = ClientBuilder.newBuilder()
+                        .property("client.DecoupledEndpoint", "http://localhost:" + decoupledEndpointPort + "/decoupled_endpoint")
+                        .build();        
+        
+        Response r2 = client2.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                        .path("echo")
+                        .path("Hello")
+                        .request()
+                        .get();
+        
+        String echoValue2 = r2.readEntity(String.class);        
+        assertEquals("hello", echoValue2.toLowerCase());
+       
+        assertEquals(r1.getHeaderString("Host"), r2.getHeaderString("Host"));        
     }
 }

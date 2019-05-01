@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,15 @@ public interface WSConfigurationHelper {
      * @throws ConfigUpdateException
      */
     boolean removeDefaultConfiguration(String pid, String id) throws ConfigUpdateException;
+
+    /**
+     * Returns the metatype attribute cardinality for the configuration with the specified pid and attribute id.
+     *
+     * @param pid The pid or factory pid
+     * @param attributeID
+     * @return the cardinality for the specified attribute or null if the attribute or configuration element doesn't exist.
+     */
+    Integer getMetaTypeAttributeCardinality(String pid, String attributeID);
 
     /**
      * Returns the metatype attribute name for the configuration with the specified pid and attribute id.

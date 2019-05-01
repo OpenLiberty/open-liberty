@@ -28,7 +28,6 @@ import javax.servlet.http.HttpSession;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -44,6 +43,7 @@ import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.audit.event.ApiAuthnEvent;
 import com.ibm.ws.security.audit.event.ApiAuthnTerminateEvent;
+import com.ibm.ws.security.audit.event.ApplicationPasswordTokenEvent;
 import com.ibm.ws.security.audit.event.AuditMgmtEvent;
 import com.ibm.ws.security.audit.event.AuthenticationDelegationEvent;
 import com.ibm.ws.security.audit.event.AuthenticationEvent;
@@ -233,9 +233,12 @@ public class AuditPE implements ProbeExtension {
 				case SECURITY_JMS_AUTHN_TERMINATE_01:
 					auditEventJMSAuthnTerm01(methodParams);
 					break;
-                case SECURITY_SAF_AUTHZ_DETAILS:
-                    auditEventSafAuthDetails(methodParams);
-                    break;
+				case SECURITY_SAF_AUTHZ_DETAILS:
+					auditEventSafAuthDetails(methodParams);
+					break;
+				case APPLICATION_PASSWORD_TOKEN_01:
+					auditEventApplicationPasswordToken(methodParams);
+					break;
 				default:
 					// TODO: emit error message
 					break;
@@ -257,7 +260,7 @@ public class AuditPE implements ProbeExtension {
 			AuthenticationEvent av =
 					new AuthenticationEvent(webRequest, authResult, statusCode);
 			auditServiceRef.getService().sendEvent(av);
-        }
+		}
 		
 		try {
 			/*
@@ -659,7 +662,22 @@ public class AuditPE implements ProbeExtension {
 		}
 	}
 
-    /**
+
+	private void auditEventApplicationPasswordToken(Object[] methodParams) {
+		Object[] varargs = (Object[]) methodParams[1];
+		Map<String, Object> m = (Map<String, Object>) varargs[0];
+		// HttpServletRequest webRequest = (HttpServletRequest) varargs[0];
+		// AuthenticationResult authResult = (AuthenticationResult) varargs[1];
+		// Integer statusCode = (Integer) varargs[2];
+		if (auditServiceRef.getService() != null && auditServiceRef.getService()
+				.isAuditRequired(AuditConstants.APPLICATION_TOKEN_MANAGEMENT, (String) m.get("auditOutcome"))) {
+			ApplicationPasswordTokenEvent ae = new ApplicationPasswordTokenEvent(m);
+			auditServiceRef.getService().sendEvent(ae);
+		}
+
+	}
+
+	/**
 	 * Handles audit event for SECURITY_SAF_AUTH_DETAILS
 	 *
 	 * @param methodParams

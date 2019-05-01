@@ -102,17 +102,18 @@ subprojects {
 
 task testReport(type: TestReport) {
 
-    // make sure this task is run after all subproject test tasks
-    mustRunAfter subprojects*.test
-    destinationDir = cnf.file('generated/testReports/allUnitTests')
-    // Include the results from the `test` task in all subprojects
-    reportOn subprojects*.test.binResultsDir
+  // make sure this task is run after all subproject test tasks
+  mustRunAfter subprojects*.test
+  destinationDir = cnf.file('generated/testReports/allUnitTests')
+  // Include the results from the `test` task in all subprojects
+  reportOn subprojects*.test.binResultsDir
+  doLast {
     userProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
     userProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
 
     File propsFile = new File('generated.properties')
     userProps.store(propsFile.newWriter(), null)
-    
+  }
 }
 subprojects {
   test.finalizedBy testReport
