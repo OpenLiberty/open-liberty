@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.opentracing;
 
 import javax.naming.InitialContext;
@@ -6,6 +17,7 @@ import javax.naming.NamingException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.opentracing.Tracer;
 
@@ -49,7 +61,7 @@ public class OpentracingUtils {
      *         the name cannot be retrieved by doing a context lookup.
      */
     @Trivial
-    public static String lookupAppName() {
+    public static String lookupAppNameFallback() {
         String appName;
         try {
             appName = (String) new InitialContext().lookup("java:app/AppName");
@@ -59,4 +71,19 @@ public class OpentracingUtils {
         }
         return appName;
     }
+
+    /**
+     * This is a more efficient way to obtain the current application name.
+     *
+     * @return The current application name.
+     */
+    @Trivial
+    public static String lookupAppName() {
+        String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData().getApplicationMetaData().getName();
+        if (appName == null) {
+            appName = lookupAppNameFallback();
+        }
+        return appName;
+    }
+
 }
