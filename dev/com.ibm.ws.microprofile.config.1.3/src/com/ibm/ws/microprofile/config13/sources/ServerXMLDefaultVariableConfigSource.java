@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,18 +24,18 @@ import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
 import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
 
 /**
- * A ConfigSource which returns values from variable elements in the server.xml file e.g.
+ * A ConfigSource which returns default values from variable elements in the server.xml file e.g.
  *
- * <variable name="my_variable" value="my_value" />
+ * <variable name="my_variable" defaultValue="my_value" />
  *
  */
-public class ServerXMLVariableConfigSource extends InternalConfigSource implements DynamicConfigSource {
+public class ServerXMLDefaultVariableConfigSource extends InternalConfigSource implements DynamicConfigSource {
 
-    private static final TraceComponent tc = Tr.register(ServerXMLVariableConfigSource.class);
+    private static final TraceComponent tc = Tr.register(ServerXMLDefaultVariableConfigSource.class);
     private BundleContext bundleContext;
 
-    public ServerXMLVariableConfigSource() {
-        super(Config13Constants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
+    public ServerXMLDefaultVariableConfigSource() {
+        super(Config13Constants.SERVER_XML_DEFAULT_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variable.config.source"));
     }
 
     /** {@inheritDoc} */
@@ -43,9 +43,9 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     public Map<String, String> getProperties() {
 
         Map<String, String> props = new HashMap<>();
-        Map<String, String> serverXMLVariables = getServerXMLVariables();
-        if (serverXMLVariables != null) {
-            props.putAll(serverXMLVariables);
+        Map<String, String> serverXMLDefaultVariables = getServerXMLVariables();
+        if (serverXMLDefaultVariables != null) {
+            props.putAll(serverXMLDefaultVariables);
         }
 
         return props;
@@ -58,12 +58,12 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
                 bundleContext = OSGiConfigUtils.getBundleContext(getClass());
             }
 
-            Map<String, String> serverXMLVariables = null;
+            Map<String, String> serverXMLDefaultVariables = null;
             if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-                serverXMLVariables = OSGiConfigUtils.getVariableFromServerXML(bundleContext);
+                serverXMLDefaultVariables = OSGiConfigUtils.getDefaultVariablesFromServerXML(bundleContext);
             }
 
-            return serverXMLVariables;
+            return serverXMLDefaultVariables;
         };
 
         Map<String, String> props = AccessController.doPrivileged(configAction);
