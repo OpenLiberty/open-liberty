@@ -25,6 +25,7 @@
 * [Usage](#usage)
   * [Docs](#open-liberty-docs)
 * [Contributing](#contributing)
+  * [Running a Build](#running-a-build)
 * [License](#license)
 * [Contact](#contact)
 
@@ -101,6 +102,8 @@ Visit the [OpenLiberty website](https://openliberty.io/docs/)
 ## Contributing
 Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTRIBUTING.md) document contains details for submitting pull requests.
 
+### Running a Build
+
 1. Clone the repository to your system.
 
         git clone git@github.com:OpenLiberty/open-liberty.git
@@ -113,8 +116,9 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
     
 3. Run the unit or FAT tests.
 
-        `./gradlew test` for unit tests
-        `./gradlew build.example_fat:buildandrun` to run a [FAT project](https://github.com/OpenLiberty/open-liberty/wiki/FAT-tests)
+    `./gradlew test` for unit tests
+    
+    `./gradlew build.example_fat:buildandrun` to run a [FAT project](https://github.com/OpenLiberty/open-liberty/wiki/FAT-tests)
    
    **NOTE:** ```./gradlew build``` runs the `assemble` and `test` tasks
    
@@ -126,6 +130,9 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
     The final openliberty zip can be found in
     
     ```open-liberty\dev\cnf\release\dev\openliberty\<version>\openliberty-xxx.zip```
+
+## License
+Usage is provided under the [EPL 1.0 license](https://opensource.org/licenses/EPL-1.0) See LICENSE for the full details.
 
 
 ## Contact
