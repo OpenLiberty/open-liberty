@@ -9,4 +9,39 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-addRequiredLibraries.dependsOn addDerby
+configurations {
+  hibernateJPA22
+}
+
+dependencies {
+  hibernateJPA22 'org.hibernate:hibernate-core:5.4.2.Final'
+  hibernateJPA22 'org.jboss.logging:jboss-logging:3.3.2.Final'
+  
+  hibernateJPA22 'org.javassist:javassist:3.24.0-GA'
+  hibernateJPA22 'net.bytebuddy:byte-buddy:1.9.10'
+  hibernateJPA22 'antlr:antlr:2.7.7'
+  hibernateJPA22 'org.jboss:jandex:2.0.5.Final'
+  hibernateJPA22 'com.fasterxml:classmate:1.3.4'
+  
+  hibernateJPA22 'org.dom4j:dom4j:2.1.1'
+  hibernateJPA22 'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final'
+}
+
+task addhibernateJPA22(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA22
+  into new File(autoFvtDir, 'publish/shared/resources/jpa21_hibernate')
+  rename 'antlr-.*.jar', 'antlr.jar'
+  rename 'classmate-.*.jar', 'classmate.jar' 
+  rename 'dom4j-.*.jar', 'dom4j.jar'
+  rename 'hibernate-commons-annotations-.*.jar', 'hibernate-commons-annotations.jar'
+  rename 'hibernate-core-.*.jar', 'hibernate-core.jar'
+  rename 'jandex-.*.jar', 'jandex.jar' 
+  rename 'javassist-.*.jar', 'javassist.jar'
+  rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addhibernateJPA22
+}
