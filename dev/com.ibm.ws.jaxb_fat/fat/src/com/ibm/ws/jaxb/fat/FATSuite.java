@@ -23,8 +23,7 @@ import componenttest.rules.repeater.RepeatTests;
                 LibertyJAXBTest.class,
                 ThirdPartyJAXBTest.class,
                 JAXBToolsTest.class,
-                LibertyJAXBInternalOptionalFeatureTolerationTest.class,
-                LibertyJAXBOptionalFeatureTolerationTest.class
+                LibertyJAXBTolerationTest.class
 })
 
 public class FATSuite {

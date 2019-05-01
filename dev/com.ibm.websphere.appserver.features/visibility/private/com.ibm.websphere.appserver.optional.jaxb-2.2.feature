@@ -14,6 +14,6 @@ IBM-API-Package: \
   javax.xml.bind.helpers; type="spec"; require-java:="9", \
   javax.xml.bind.util; type="spec"; require-java:="9"
 -features=\
-  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3
+  com.ibm.websphere.appserver.internal.optional.jaxb-2.2
 kind=ga
 edition=core

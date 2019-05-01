@@ -10,8 +10,6 @@
  -->
 <server>
     <featureManager>
-        <feature>servlet-3.1</feature>
-        <feature>componenttest-1.0</feature>
         <feature>jpaContainer-2.1</feature>	 <!-- jpaContainer-2.1 PUBLIC feature contains jaxb-2.2 feature that we target to test it's jaxb-2.3 toleration -->
         <feature>jaxb-2.3</feature>
     </featureManager>
