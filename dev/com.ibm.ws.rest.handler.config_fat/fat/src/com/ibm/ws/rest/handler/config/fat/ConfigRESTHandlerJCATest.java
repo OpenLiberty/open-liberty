@@ -84,11 +84,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "cf1", cf.getString("id"));
         assertEquals(err, "eis/cf1", cf.getString("jndiName"));
 
-        JsonArray array;
         JsonObject cm;
-        assertNotNull(err, array = cf.getJsonArray("connectionManagerRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, cm = array.getJsonObject(0));
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
         assertEquals(err, "connectionManager", cm.getString("configElementName"));
         assertEquals(err, "cm1", cm.getString("uid"));
         assertEquals(err, "cm1", cm.getString("id"));
@@ -96,18 +93,14 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
 
         JsonObject authData;
-        assertNotNull(err, array = cf.getJsonArray("containerAuthDataRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, authData = array.getJsonObject(0));
+        assertNotNull(err, authData = cf.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "containerAuthData", authData.getString("configElementName"));
         assertEquals(err, "connectionFactory[cf1]/containerAuthData[default-0]", authData.getString("uid"));
         assertNull(err, authData.getJsonObject("id"));
         assertEquals(err, "containerUser1", authData.getString("user"));
         assertEquals(err, "******", authData.getString("password"));
 
-        assertNotNull(err, array = cf.getJsonArray("recoveryAuthDataRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, authData = array.getJsonObject(0));
+        assertNotNull(err, authData = cf.getJsonObject("recoveryAuthDataRef"));
         assertEquals(err, "recoveryAuthData", authData.getString("configElementName"));
         assertEquals(err, "connectionFactory[cf1]/recoveryAuthData[default-0]", authData.getString("uid"));
         assertNull(err, authData.getJsonObject("id"));
@@ -115,9 +108,7 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "******", authData.getString("password"));
 
         JsonObject props;
-        assertNotNull(err, array = cf.getJsonArray("properties.tca.ConnectionFactory"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = cf.getJsonObject("properties.tca.ConnectionFactory"));
         assertEquals(err, 3, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, true, props.getBoolean("enableBetaContent"));
         assertEquals(err, "localhost", props.getString("hostName"));
@@ -146,11 +137,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertNull(err, aspec.get("jndiName"));
         assertNull(err, aspec.get("containerAuthDataRef"));
         assertNull(err, aspec.get("recoveryAuthDataRef"));
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = aspec.getJsonArray("properties.tca"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = aspec.getJsonObject("properties.tca"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, 8, props.getInt("minSize"));
         assertEquals(err, 1.618, props.getJsonNumber("multiplicationFactor").doubleValue(), 0.0001);
@@ -169,11 +157,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "conspec1", conspec.getString("uid"));
         assertEquals(err, "conspec1", conspec.getString("id"));
         assertEquals(err, "eis/conspec1", conspec.getString("jndiName"));
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = conspec.getJsonObject("properties.tca.ConnectionSpec"));
         assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, 10000, props.getInt("connectionTimeout"));
         assertEquals(err, false, props.getBoolean("readOnly"));
@@ -185,15 +170,14 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "conspec2", conspec.getString("uid"));
         assertEquals(err, "conspec2", conspec.getString("id"));
         assertEquals(err, "eis/conspec2", conspec.getString("jndiName"));
-        assertNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
+        assertNull(err, conspec.get("properties.tca.ConnectionSpec"));
 
         assertNotNull(err, conspec = adminObjects.getJsonObject(2));
         assertEquals(err, "adminObject", conspec.getString("configElementName"));
         assertEquals(err, "adminObject[default-0]", conspec.getString("uid"));
         assertNull(err, conspec.get("id"));
         assertEquals(err, "eis/conspec3", conspec.getString("jndiName"));
-        assertNotNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = conspec.getJsonObject("properties.tca.ConnectionSpec"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, false, props.getBoolean("readOnly"));
     }
@@ -218,11 +202,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "cf3", cf.getString("uid"));
         assertEquals(err, "cf3", cf.getString("id"));
         assertEquals(err, "eis/cf3", cf.getString("jndiName"));
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = cf.getJsonArray("properties.AnotherTestAdapter.ConnectionFactory"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = cf.getJsonObject("properties.AnotherTestAdapter.ConnectionFactory"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, false, props.getBoolean("enableBetaContent"));
         assertEquals(err, "localhost", props.getString("hostName"));
@@ -237,9 +218,7 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertNull(err, cf.get("containerAuthDataRef"));
         assertNull(err, cf.get("recoveryAuthDataRef"));
 
-        assertNotNull(err, array = cf.getJsonArray("properties.tca.DataSource"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = cf.getJsonObject("properties.tca.DataSource"));
         assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "$", props.getString("escapeChar"));
         assertEquals(err, "localhost", props.getString("hostName"));
@@ -258,11 +237,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "tca", adapter.getString("id"));
         assertTrue(err, adapter.getString("location").endsWith("TestConfigAdapter.rar"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = adapter.getJsonArray("properties.tca"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = adapter.getJsonObject("properties.tca"));
         assertEquals(err, true, props.getBoolean("debugMode"));
         assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
     }
@@ -314,11 +290,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertNull(err, adapter.get("id"));
         assertTrue(err, adapter.getString("location").endsWith("AnotherTestAdapter.rar"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = adapter.getJsonArray("properties.AnotherTestAdapter"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = adapter.getJsonObject("properties.AnotherTestAdapter"));
         assertNull(err, props.get("debugMode"));
         assertEquals(err, "host1.openliberty.io", props.getString("hostName"));
     }
@@ -334,11 +307,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "App1/EJB1/MyMDB", aspec.getString("id"));
         assertNull(err, aspec.get("jndiName"));
 
-        JsonArray array;
         JsonObject authData;
-        assertNotNull(err, array = aspec.getJsonArray("authDataRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, authData = array.getJsonObject(0));
+        assertNotNull(err, authData = aspec.getJsonObject("authDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
         assertEquals(err, "activationSpec[App1/EJB1/MyMDB]/authData[default-0]", authData.getString("uid"));
         assertNull(err, authData.getJsonObject("id"));
@@ -346,9 +316,7 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertEquals(err, "******", authData.getString("password"));
 
         JsonObject props;
-        assertNotNull(err, array = aspec.getJsonArray("properties.tca"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = aspec.getJsonObject("properties.tca"));
         assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, 8192, props.getInt("maxSize"));
         assertEquals(err, "*", props.getString("messageSelector"));
@@ -367,10 +335,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         assertNull(err, conspec.get("id"));
         assertEquals(err, "eis/conspec3", conspec.getString("jndiName"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = conspec.getJsonArray("properties.tca.ConnectionSpec"));
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = conspec.getJsonObject("properties.tca.ConnectionSpec"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, false, props.getBoolean("readOnly"));
     }

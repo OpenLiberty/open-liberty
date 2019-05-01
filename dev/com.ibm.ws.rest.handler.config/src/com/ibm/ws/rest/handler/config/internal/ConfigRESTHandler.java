@@ -214,8 +214,10 @@ public class ConfigRESTHandler implements RESTHandler {
             json.put("error", "Check that the spelling is correct and that the right features are enabled for this configuration.");
         }
 
-        for (String key : keys)
-            json.put(key, getJSONValue(config.get(key), processed));
+        for (String key : keys) {
+            Integer cardinality = configHelper.getMetaTypeAttributeCardinality(extendsSourcePid == null ? servicePid : extendsSourcePid, key);
+            json.put(key, getJSONValue(config.get(key), cardinality, processed));
+        }
 
         for (Map.Entry<String, SortedSet<String>> entry : flattenedPids.entrySet()) {
             String pid = entry.getKey();
@@ -229,10 +231,11 @@ public class ConfigRESTHandler implements RESTHandler {
                     for (Map.Entry<String, Object> prop : flattenedConfigProps.entrySet()) {
                         String key = prop.getKey();
                         String metaTypeName = configHelper.getMetaTypeAttributeName(pid, key);
+                        Integer cardinality = configHelper.getMetaTypeAttributeCardinality(pid, key);
                         if (metaTypeName == null // add unknown attributes added by the user
                             || !metaTypeName.equalsIgnoreCase("internal") // add externalized attributes
                             || !registryEntryExistsForFlattenedConfig) { // or all attributes if there is an error in the config
-                            j.put(key, getJSONValue(prop.getValue(), processed));
+                            j.put(key, getJSONValue(prop.getValue(), cardinality, processed));
                         }
                     }
                 list.add(j);
@@ -243,7 +246,15 @@ public class ConfigRESTHandler implements RESTHandler {
                 String baseAlias = prefix.replaceAll("\\.\\d+\\.", "");
                 name = configHelper.aliasFor(pid, baseAlias);
             }
-            json.put(name, list);
+            if (list.size() == 1) {
+                String flatAttrName = prefix.substring(0, prefix.indexOf('.'));
+                Integer cardinality = configHelper.getMetaTypeAttributeCardinality(extendsSourcePid == null ? servicePid : extendsSourcePid, flatAttrName);
+                if (cardinality != null && (cardinality == 1 || cardinality == 0 || cardinality == -1))
+                    json.put(name, list.get(0));
+                else
+                    json.put(name, list);
+            } else
+                json.put(name, list);
         }
 
         // API for this configuration element instance
@@ -302,13 +313,14 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Converts the specified value to one that can be included in JSON
      *
-     * @param value     the value to convert
-     * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
+     * @param value       the value to convert
+     * @param cardinality cardinality of the metatype AD attribute (if any) that defines this value.
+     * @param processed   configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return a String, primitive wrapper, JSONArray, or JSONObject.
      * @throws IOException
      */
     @Trivial // generates too much trace
-    private Object getJSONValue(Object value, Set<String> processed) throws IOException {
+    private Object getJSONValue(Object value, Integer cardinality, Set<String> processed) throws IOException {
         if (value instanceof String) {
             String s = (String) value;
             if (s.matches(".*_\\d+")) {
@@ -335,16 +347,26 @@ public class ConfigRESTHandler implements RESTHandler {
         else if (value instanceof SerializableProtectedString)
             value = "******"; // hide passwords
         else if (value.getClass().isArray()) { // list supplied as an array for positive cardinality
-            JSONArray a = new JSONArray();
             int length = Array.getLength(value);
-            for (int i = 0; i < length; i++)
-                a.add(getJSONValue(Array.get(value, i), processed));
-            value = a;
+            if (length == 1 && cardinality != null && (cardinality == 1 || cardinality == 0 || cardinality == -1))
+                value = getJSONValue(Array.get(value, 0), null, processed);
+            else {
+                JSONArray a = new JSONArray();
+                for (int i = 0; i < length; i++)
+                    a.add(getJSONValue(Array.get(value, i), null, processed));
+                value = a;
+            }
         } else if (value instanceof Collection) { // list supplied as a Vector for negative cardinality
-            JSONArray a = new JSONArray();
-            for (Object o : (Collection<?>) value)
-                a.add(getJSONValue(o, processed));
-            value = a;
+            Collection<?> list = (Collection<?>) value;
+            int length = list.size();
+            if (length == 1 && (cardinality == null || cardinality >= -1 && cardinality <= 1))
+                value = getJSONValue(list.iterator().next(), null, processed);// TODO if 1 element, check cardinality ...
+            else {
+                JSONArray a = new JSONArray();
+                for (Object o : list)
+                    a.add(getJSONValue(o, null, processed));
+                value = a;
+            }
         } else
             value = value.toString(); // TODO any special handling here? Example: com.ibm.wsspi.kernel.service.utils.OnErrorUtil$OnError
 

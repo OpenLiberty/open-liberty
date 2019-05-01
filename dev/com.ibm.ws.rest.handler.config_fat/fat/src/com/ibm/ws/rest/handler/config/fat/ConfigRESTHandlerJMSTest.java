@@ -80,11 +80,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertNull(err, aspec.get("jndiName"));
         assertTrue(err, aspec.getBoolean("autoStart"));
 
-        JsonArray array;
         JsonObject authData;
-        assertNotNull(err, array = aspec.getJsonArray("authDataRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, authData = array.getJsonObject(0));
+        assertNotNull(err, authData = aspec.getJsonObject("authDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
         assertEquals(err, "jmsUser1", authData.getString("uid"));
         assertEquals(err, "jmsUser1", authData.getString("id"));
@@ -93,9 +90,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
 
         // properties.jmsra (under jmsActivationSpec)
         JsonObject props;
-        assertNotNull(err, array = aspec.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = aspec.getJsonObject("properties.jmsra"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "javax.jms.Topic", props.getString("destinationType"));
 
@@ -107,11 +102,9 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "dest1", dest.getString("uid"));
         assertEquals(err, "dest1", dest.getString("id"));
         assertEquals(err, "jms/dest1", dest.getString("jndiName"));
-        assertNotNull(err, array = dest.getJsonArray("properties.jmsra.JMSDestinationImpl"));
 
         // properties.jmsra.JMSDestinationImpl (under jmsDestination)
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = dest.getJsonObject("properties.jmsra.JMSDestinationImpl"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values
         assertEquals(err, "3605 Hwy 52N, Rochester, MN 55901", props.getString("destinationName"));
     }
@@ -141,11 +134,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertNull(err, aspec.get("authDataRef"));
 
         // properties.jmsra (under jmsActivationSpec)
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = aspec.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = aspec.getJsonObject("properties.jmsra"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "javax.jms.Topic", props.getString("destinationType"));
 
@@ -157,11 +147,9 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "topic1", dest.getString("uid"));
         assertEquals(err, "topic1", dest.getString("id"));
         assertEquals(err, "jms/topic1", dest.getString("jndiName"));
-        assertNotNull(err, array = dest.getJsonArray("properties.jmsra"));
 
         // properties.jmsra (under jmsTopic)
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = dest.getJsonObject("properties.jmsra"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values
         assertEquals(err, "What's for dinner?", props.getString("topicName"));
     }
@@ -176,11 +164,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "cf1", cf.getString("id"));
         assertEquals(err, "jms/cf1", cf.getString("jndiName"));
 
-        JsonArray array;
         JsonObject cm;
-        assertNotNull(err, array = cf.getJsonArray("connectionManagerRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, cm = array.getJsonObject(0));
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
         assertEquals(err, "connectionManager", cm.getString("configElementName"));
         assertEquals(err, "jmsConnectionFactory[cf1]/connectionManager[cm]", cm.getString("uid"));
         assertEquals(err, "cm", cm.getString("id"));
@@ -189,18 +174,14 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, 4, cm.getInt("minPoolSize"));
 
         JsonObject authData;
-        assertNotNull(err, array = cf.getJsonArray("containerAuthDataRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, authData = array.getJsonObject(0));
+        assertNotNull(err, authData = cf.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
         assertEquals(err, "jmsUser1", authData.getString("uid"));
         assertEquals(err, "jmsUser1", authData.getString("id"));
         assertEquals(err, "jmsU1", authData.getString("user"));
         assertEquals(err, "******", authData.getString("password"));
 
-        assertNotNull(err, array = cf.getJsonArray("recoveryAuthDataRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, authData = array.getJsonObject(0));
+        assertNotNull(err, authData = cf.getJsonObject("recoveryAuthDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
         assertEquals(err, "jmsUser1", authData.getString("uid"));
         assertEquals(err, "jmsUser1", authData.getString("id"));
@@ -208,9 +189,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "******", authData.getString("password"));
 
         JsonObject props;
-        assertNotNull(err, array = cf.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = cf.getJsonObject("properties.jmsra"));
         assertEquals(err, 3, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "^", props.getString("escapeChar"));
         assertEquals(err, "localhost", props.getString("hostName"));
@@ -249,11 +228,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "dest1", dest.getString("id"));
         assertEquals(err, "jms/dest1", dest.getString("jndiName"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = dest.getJsonArray("properties.jmsra.JMSDestinationImpl"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = dest.getJsonObject("properties.jmsra.JMSDestinationImpl"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "3605 Hwy 52N, Rochester, MN 55901", props.getString("destinationName"));
     }
@@ -279,11 +255,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "dest2", dest.getString("uid"));
         assertEquals(err, "dest2", dest.getString("id"));
         assertEquals(err, "jms/dest2", dest.getString("jndiName"));
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = dest.getJsonArray("properties.jmsra.JMSQueueImpl"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = dest.getJsonObject("properties.jmsra.JMSQueueImpl"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "201 4th St SE, Rochester, MN 55904", props.getString("destinationName"));
         assertEquals(err, "D2", props.getString("queueName"));
@@ -299,11 +272,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "q1", q.getString("id"));
         assertEquals(err, "jms/q1", q.getString("jndiName"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = q.getJsonArray("properties.jmsra.JMSQueueImpl"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = q.getJsonObject("properties.jmsra.JMSQueueImpl"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "Q1", props.getString("queueName"));
     }
@@ -329,11 +299,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "q2", q.getString("uid"));
         assertEquals(err, "q2", q.getString("id"));
         assertEquals(err, "jms/q2", q.getString("jndiName"));
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = q.getJsonArray("properties.jmsra.JMSOtherQueueImpl"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = q.getJsonObject("properties.jmsra.JMSOtherQueueImpl"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "qm", props.getString("queueManager"));
         assertEquals(err, "Q2", props.getString("queueName"));
@@ -352,11 +319,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertNull(err, cf.get("containerAuthDataRef"));
         assertNull(err, cf.get("recoveryAuthDataRef"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = cf.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = cf.getJsonObject("properties.jmsra"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "localhost", props.getString("hostName"));
     }
@@ -387,11 +351,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "topic1", topic.getString("id"));
         assertEquals(err, "jms/topic1", topic.getString("jndiName"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = topic.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = topic.getJsonObject("properties.jmsra"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "What's for dinner?", props.getString("topicName"));
     }
@@ -417,11 +378,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "topic2", q.getString("uid"));
         assertEquals(err, "topic2", q.getString("id"));
         assertEquals(err, "jms/topic2", q.getString("jndiName"));
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = q.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = q.getJsonObject("properties.jmsra"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "Who pays for free shipping?", props.getString("topicName"));
     }
@@ -439,11 +397,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertNull(err, cf.get("containerAuthDataRef"));
         assertNull(err, cf.get("recoveryAuthDataRef"));
 
-        JsonArray array;
         JsonObject props;
-        assertNotNull(err, array = cf.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = cf.getJsonObject("properties.jmsra"));
         assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "%", props.getString("escapeChar"));
         assertEquals(err, "localhost", props.getString("hostName"));
@@ -473,10 +428,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertEquals(err, "jms/tcf4", cf.getString("jndiName"));
 
         JsonObject authData;
-        JsonArray array;
-        assertNotNull(err, array = cf.getJsonArray("containerAuthDataRef"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, authData = array.getJsonObject(0));
+        assertNotNull(err, authData = cf.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
         assertEquals(err, "jmsUser1", authData.getString("uid"));
         assertEquals(err, "jmsUser1", authData.getString("id"));
@@ -486,9 +438,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         assertNull(err, cf.get("recoveryAuthDataRef"));
 
         JsonObject props;
-        assertNotNull(err, array = cf.getJsonArray("properties.jmsra"));
-        assertEquals(err, 1, array.size());
-        assertNotNull(err, props = array.getJsonObject(0));
+        assertNotNull(err, props = cf.getJsonObject("properties.jmsra"));
         assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
         assertEquals(err, "host4.rchland.ibm.com", props.getString("hostName"));
     }

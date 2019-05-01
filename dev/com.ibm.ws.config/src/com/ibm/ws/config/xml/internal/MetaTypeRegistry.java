@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1673,6 +1673,17 @@ final class MetaTypeRegistry {
         RegistryEntry entry = getRegistryEntry(factoryPid);
         if (entry != null) {
             return entry.getAttributeMap();
+        }
+        return null;
+    }
+
+    Integer getAttributeCardinality(String pid, String attributeID) {
+        RegistryEntry ent = getRegistryEntryByPidOrAlias(pid);
+        if (ent != null) {
+            Map<String, ExtendedAttributeDefinition> attributeMap;
+            attributeMap = ent.getAttributeMap();
+            if (attributeMap != null && attributeMap.containsKey(attributeID))
+                return attributeMap.get(attributeID).getCardinality();
         }
         return null;
     }

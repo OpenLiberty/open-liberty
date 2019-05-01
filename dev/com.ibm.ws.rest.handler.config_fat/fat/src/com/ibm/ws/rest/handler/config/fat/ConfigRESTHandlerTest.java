@@ -202,9 +202,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
         assertNull(err, j.get("connectionManagerRef"));
         assertEquals(err, "MatchCurrentState", j.getString("connectionSharing"));
-        assertNotNull(err, ja = j.getJsonArray("containerAuthDataRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "containerAuthData", jj.getString("configElementName"));
         assertEquals(err, "dataSource[DataSourceWithoutJDBCDriver]/containerAuthData[dbuser-auth]", jj.getString("uid"));
         assertEquals(err, "dbuser-auth", jj.getString("id"));
@@ -224,9 +222,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                 else
                     found = true;
         assertTrue(err, found);
-        assertNotNull(err, ja = j.getJsonArray("properties.derby.embedded"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, j = ja.getJsonObject(0));
+        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "memory:withoutJDBCDriver", j.getString("databaseName"));
 
         j = json.getJsonObject(1);
@@ -241,15 +237,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNull(err, j.get("containerAuthDataRef"));
         assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
         assertEquals(err, "TRANSACTION_READ_COMMITTED", j.getString("isolationLevel"));
-        assertNotNull(err, ja = j.getJsonArray("jdbcDriverRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
         assertEquals(err, "jdbcDriver", jj.getString("configElementName"));
         assertEquals(err, "dataSource[DefaultDataSource]/jdbcDriver[default-0]", jj.getString("uid"));
         assertNull(err, jj.get("id"));
-        assertNotNull(err, ja = jj.getJsonArray("libraryRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
         assertEquals(err, "library", jj.getString("configElementName"));
         assertEquals(err, "Derby", jj.getString("uid"));
         assertEquals(err, "Derby", jj.getString("id"));
@@ -273,9 +265,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                 else
                     found = true;
         assertTrue(err, found);
-        assertNotNull(err, ja = j.getJsonArray("properties.derby.embedded"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, j = ja.getJsonObject(0));
+        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "create", j.getString("createDatabase"));
         assertEquals(err, "memory:defaultdb", j.getString("databaseName"));
         assertEquals(err, "dbuser", j.getString("user"));
@@ -289,9 +279,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
         assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
         assertEquals(err, "rollback", j.getString("commitOrRollbackOnCleanup"));
-        assertNotNull(err, ja = j.getJsonArray("connectionManagerRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("connectionManagerRef"));
         assertEquals(err, "connectionManager", jj.getString("configElementName"));
         assertEquals(err, "pool1", jj.getString("uid"));
         assertEquals(err, "pool1", jj.getString("id"));
@@ -303,9 +291,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "ValidateAllConnections", jj.getString("purgePolicy"));
         assertEquals(err, 180, jj.getJsonNumber("reapTime").longValue());
         assertEquals(err, "MatchOriginalRequest", j.getString("connectionSharing"));
-        assertNotNull(err, ja = j.getJsonArray("containerAuthDataRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth2", jj.getString("uid"));
         assertEquals(err, "auth2", jj.getString("id"));
@@ -313,15 +299,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "dbuser", jj.getString("user"));
         assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
         assertEquals(err, "The property's value.", j.getString("invalidProperty"));
-        assertNotNull(err, ja = j.getJsonArray("jdbcDriverRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
         assertEquals(err, "jdbcDriver", jj.getString("configElementName"));
         assertEquals(err, "DerbyDriver", jj.getString("uid"));
         assertEquals(err, "DerbyDriver", jj.getString("id"));
-        assertNotNull(err, ja = jj.getJsonArray("libraryRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
         assertEquals(err, "library", jj.getString("configElementName"));
         assertEquals(err, "Derby", jj.getString("uid"));
         assertEquals(err, "Derby", jj.getString("id"));
@@ -333,9 +315,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "library[Derby]/file[default-0]", jj.getString("uid"));
         assertTrue(err, jj.getString("name").endsWith("derby.jar"));
         assertEquals(err, 130, j.getInt("queryTimeout"));
-        assertNotNull(err, ja = j.getJsonArray("recoveryAuthDataRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("recoveryAuthDataRef"));
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth2", jj.getString("uid"));
         assertEquals(err, "auth2", jj.getString("id"));
@@ -354,9 +334,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                 else
                     found = true;
         assertTrue(err, found);
-        assertNotNull(err, ja = j.getJsonArray("properties"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, j = ja.getJsonObject(0));
+        assertNotNull(err, j = j.getJsonObject("properties"));
         assertEquals(err, "create", j.getString("createDatabase"));
         assertEquals(err, "memory:defaultdb", j.getString("databaseName"));
 
@@ -367,9 +345,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "jdbc/defaultauth", j.getString("jndiName"));
         assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
         assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
-        assertNotNull(err, ja = j.getJsonArray("connectionManagerRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("connectionManagerRef"));
         assertEquals(err, "connectionManager", jj.getString("configElementName"));
         assertEquals(err, "dataSource[default-0]/connectionManager[default-0]", jj.getString("uid"));
         assertNull(err, jj.get("id"));
@@ -381,9 +357,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "EntirePool", jj.getString("purgePolicy"));
         assertEquals(err, 180, jj.getJsonNumber("reapTime").longValue());
         assertEquals(err, "MatchOriginalRequest", j.getString("connectionSharing"));
-        assertNotNull(err, ja = j.getJsonArray("containerAuthDataRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth1", jj.getString("uid"));
         assertEquals(err, "auth1", jj.getString("id"));
@@ -399,18 +373,14 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                 else
                     found = true;
         assertTrue(err, found);
-        assertNotNull(err, ja = j.getJsonArray("jdbcDriverRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
         assertEquals(err, "jdbcDriver", jj.getString("configElementName"));
         assertEquals(err, "dataSource[default-0]/jdbcDriver[NestedDerbyDriver]", jj.getString("uid"));
         assertEquals(err, "NestedDerbyDriver", jj.getString("id"));
         assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", jj.getString("javax.sql.DataSource"));
         assertEquals(err, "org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource", jj.getString("javax.sql.ConnectionPoolDataSource"));
         assertEquals(err, "org.apache.derby.jdbc.EmbeddedXADataSource", jj.getString("javax.sql.XADataSource"));
-        assertNotNull(err, ja = jj.getJsonArray("libraryRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
         assertEquals(err, "library", jj.getString("configElementName"));
         assertEquals(err, "Derby", jj.getString("uid"));
         assertEquals(err, "Derby", jj.getString("id"));
@@ -428,9 +398,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, 10, j.getInt("statementCacheSize"));
         assertEquals(err, false, j.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
         assertEquals(err, true, j.getBoolean("transactional"));
-        assertNotNull(err, ja = j.getJsonArray("properties.derby.embedded"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, j = ja.getJsonObject(0));
+        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "create", j.getString("createDatabase"));
         assertEquals(err, "memory:defaultdb", j.getString("databaseName"));
 
@@ -441,9 +409,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "jdbc/nonexistentdb", j.getString("jndiName"));
         assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
         assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
-        assertNotNull(err, ja = j.getJsonArray("connectionManagerRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("connectionManagerRef"));
         assertEquals(err, "connectionManager", jj.getString("configElementName"));
         assertEquals(err, "dataSource[jdbc/nonexistentdb]/connectionManager[NestedConPool]", jj.getString("uid"));
         assertEquals(err, "NestedConPool", jj.getString("id"));
@@ -466,15 +432,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                 else
                     found = true;
         assertTrue(err, found);
-        assertNotNull(err, ja = j.getJsonArray("jdbcDriverRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
         assertEquals(err, "jdbcDriver", jj.getString("configElementName"));
         assertEquals(err, "dataSource[jdbc/nonexistentdb]/jdbcDriver[default-0]", jj.getString("uid"));
         assertNull(err, jj.get("id"));
-        assertNotNull(err, ja = jj.getJsonArray("libraryRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
         assertEquals(err, "library", jj.getString("configElementName"));
         assertEquals(err, "Derby", jj.getString("uid"));
         assertEquals(err, "Derby", jj.getString("id"));
@@ -488,9 +450,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, 10, j.getInt("statementCacheSize"));
         assertEquals(err, false, j.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
         assertEquals(err, true, j.getBoolean("transactional"));
-        assertNotNull(err, ja = j.getJsonArray("properties.derby.embedded"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, j = ja.getJsonObject(0));
+        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "memory:doesNotExist", j.getString("databaseName"));
 
         j = json.getJsonObject(5);
@@ -500,9 +460,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNull(err, j.get("jndiName"));
         assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
         assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
-        assertNotNull(err, ja = j.getJsonArray("connectionManagerRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("connectionManagerRef"));
         assertEquals(err, "connectionManager", jj.getString("configElementName"));
         assertEquals(err, "transaction/dataSource[default-0]/connectionManager[default-0]", jj.getString("uid"));
         assertNull(err, jj.get("id"));
@@ -514,9 +472,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "EntirePool", jj.getString("purgePolicy"));
         assertEquals(err, 180, jj.getJsonNumber("reapTime").longValue());
         assertEquals(err, "MatchOriginalRequest", j.getString("connectionSharing"));
-        assertNotNull(err, ja = j.getJsonArray("containerAuthDataRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth1", jj.getString("uid"));
         assertEquals(err, "auth1", jj.getString("id"));
@@ -532,15 +488,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                 else
                     found = true;
         assertTrue(err, found);
-        assertNotNull(err, ja = j.getJsonArray("jdbcDriverRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
         assertEquals(err, "jdbcDriver", jj.getString("configElementName"));
         assertEquals(err, "transaction/dataSource[default-0]/jdbcDriver[default-0]", jj.getString("uid"));
         assertNull(err, jj.get("id"));
-        assertNotNull(err, ja = jj.getJsonArray("libraryRef"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
         assertEquals(err, "library", jj.getString("configElementName"));
         assertEquals(err, "Derby", jj.getString("uid"));
         assertEquals(err, "Derby", jj.getString("id"));
@@ -554,9 +506,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, 10, j.getInt("statementCacheSize"));
         assertEquals(err, false, j.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
         assertEquals(err, false, j.getBoolean("transactional"));
-        assertNotNull(err, ja = j.getJsonArray("properties.derby.embedded"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, j = ja.getJsonObject(0));
+        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "memory:recoverydb", j.getString("databaseName"));
     }
 
@@ -583,9 +533,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                 else
                     found = true;
         assertTrue(err, found);
-        assertNotNull(err, ja = j.getJsonArray("properties.derby.embedded"));
-        assertEquals(err, 1, ja.size());
-        assertNotNull(err, j = ja.getJsonObject(0));
+        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "memory:withoutJDBCDriver", j.getString("databaseName"));
     }
 
