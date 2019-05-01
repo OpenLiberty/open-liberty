@@ -9,7 +9,7 @@ IBM-Process-Types: client, \
 Subsystem-Name: Java XML Bindings 2.2 for Java 9 and above
 -features=\
   com.ibm.websphere.appserver.classloading-1.0
--bundles=\  
+-bundles=\
   com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false, \
   com.ibm.websphere.javaee.jaxb.2.2; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false, \
   com.ibm.ws.org.apache.geronimo.osgi.registry.1.1; require-java:="9", \
