@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,11 @@ package com.ibm.ws.http.channel.internal;
 
 import java.security.AccessController;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -152,6 +155,15 @@ public class HttpChannelConfig {
      * values affect the NCSA Access Log remote directives
      */
     private boolean useForwardingHeadersInAccessLog = false;
+    /** Identifies if the channel has been configured to use Auto Compression */
+    private boolean useCompression = false;
+    /** Identifies the preferred compression algorithm */
+    private String preferredCompressionAlgorithm = "none";
+
+    private Set<String> includedCompressionContentTypes = null;
+    private Set<String> excludedCompressionContentTypes = null;
+    private final String compressionQValueRegex = HttpConfigConstants.DEFAULT_QVALUE_REGEX;
+    private Pattern compressionQValuePattern = null;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -399,6 +411,18 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG, value);
             }
 
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION)) {
+                props.put(HttpConfigConstants.PROPNAME_COMPRESSION, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES)) {
+                props.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM)) {
+                props.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, value);
+            }
+
             props.put(key, value);
         }
 
@@ -446,6 +470,9 @@ public class HttpChannelConfig {
         parseRemoteIp(props);
         parseRemoteIpProxies(props);
         parseRemoteIpAccessLog(props);
+        parseCompression(props);
+        parseCompressionTypes(props);
+        parseCompressionPreferredAlgorithm(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -926,6 +953,206 @@ public class HttpChannelConfig {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Config: using logging service", accessLogger);
+            }
+        }
+    }
+
+    /**
+     * Check the configuration to see if the autoCompression element has been configured
+     * to consider Accept-Encoding header values to determine whether to compress the
+     * response body.
+     *
+     * @param props
+     */
+    private void parseCompression(Map<Object, Object> props) {
+
+        Object value = props.get(HttpConfigConstants.PROPNAME_COMPRESSION);
+        if (null != value) {
+            this.useCompression = convertBoolean(value);
+
+            if (this.useCompression) {
+                this.includedCompressionContentTypes = new HashSet<String>();
+                this.includedCompressionContentTypes.add("text/*");
+                this.includedCompressionContentTypes.add("application/javascript");
+                this.excludedCompressionContentTypes = new HashSet<String>();
+            }
+            if (this.useCompression && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Http Channel Config: compression has been enabled");
+            }
+        }
+    }
+
+    /**
+     * Check the configuration to see if the compression element has been configured
+     * to modify the list of content types to be considered for compression.
+     *
+     * @param props
+     */
+    private void parseCompressionTypes(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES);
+        if (value != null && this.useCompression) {
+
+            HashSet<String> configuredCompressionTypes = new HashSet<String>();
+            HashSet<String> addCompressionConfig = new HashSet<String>();
+            HashSet<String> removeCompressionConfig = new HashSet<String>();
+            StringBuilder sb = new StringBuilder();
+            boolean hasConfigError = false;
+
+            //Build the string representation of the default configuration values for autocompression filter types
+            for (String s : this.includedCompressionContentTypes) {
+                if (sb.length() != 0) {
+                    sb.append(", ");
+                }
+                sb.append(s);
+            }
+            String defaultConfiguration = sb.toString();
+
+            if (value instanceof String[]) {
+                String[] filterTypes = (String[]) value;
+                for (String s : filterTypes) {
+                    s = s.trim().toLowerCase(Locale.ENGLISH);
+
+                    //All filters added through the add option (+) will start with the add (+) character.
+                    //Put all of these into the addCompressionConfig set.
+                    if (s.indexOf("+") == 0) {
+                        s = s.replaceFirst("\\+", "");
+                        //If this filter already exists in the addCompressionConfig set, mark it as a
+                        //duplicate and enable the error flag.
+                        if (!addCompressionConfig.add(s)) {
+
+                            Tr.warning(tc, "compression.duplicateEncoding", s, defaultConfiguration);
+
+                            hasConfigError = true;
+                            break;
+                        }
+
+                    }
+                    //All filters added through the remove option (-) will start with the remove (-) character.
+                    //Put all of these into the removeCompressionConfig set.
+                    else if (s.indexOf("-") == 0) {
+                        s = s.replaceFirst("-", "");
+                        //If this filter already exists in the removeCompressionConfig set, mark it as a
+                        //duplicate and enable the error flag.
+                        if (!removeCompressionConfig.add(s)) {
+
+                            Tr.warning(tc, "compression.duplicateEncodingRemoval", s, defaultConfiguration);
+
+                            hasConfigError = true;
+                            break;
+                        }
+                    } else {
+                        //All filters added without the add or remove characters (+/-) will end up overwriting the
+                        //default values. Ensure no duplicates are added to this list.
+                        if (!configuredCompressionTypes.add(s)) {
+                            Tr.warning(tc, "compression.duplicateEncoding", s, defaultConfiguration);
+                            hasConfigError = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!addCompressionConfig.isEmpty() && !hasConfigError) {
+
+                //If the add function is being used, the default configuration should not be configured to be
+                //overwritten. If configuredCompressionTypes is not empty, it is a bad configuration
+                if (!configuredCompressionTypes.isEmpty()) {
+                    Tr.warning(tc, "compression.duplicateOverwriteAndAdd", defaultConfiguration);
+                    hasConfigError = true;
+                }
+
+                //If no error up to this point, ensure that the values being added are not part of
+                //the default includeCompressionFilterTypes set or not being excluded by the
+                //removeCompressionConfig set
+                if (!hasConfigError) {
+
+                    for (String s : addCompressionConfig) {
+                        //there isn't a configured compression types set at this point, check that the
+                        //user doesn't try to add a value already in the default filter
+                        if (this.includedCompressionContentTypes.contains(s)) {
+                            Tr.warning(tc, "compression.duplicateEncoding", s, defaultConfiguration);
+                            hasConfigError = true;
+                            break;
+                        }
+
+                        //check for any duplicate between add '+' and remove '-' sets, not allowed
+                        if (removeCompressionConfig.contains(s)) {
+                            Tr.warning(tc, "compression.duplicateEncodingAddRemove", s, defaultConfiguration);
+                            hasConfigError = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!hasConfigError) {
+                //process sets
+                if (!configuredCompressionTypes.isEmpty()) {
+                    this.includedCompressionContentTypes = configuredCompressionTypes;
+                }
+                if (!addCompressionConfig.isEmpty()) {
+                    for (String s : addCompressionConfig) {
+                        this.includedCompressionContentTypes.add(s);
+                    }
+                }
+                if (!removeCompressionConfig.isEmpty()) {
+                    this.excludedCompressionContentTypes = removeCompressionConfig;
+                }
+
+            }
+
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Compression Config", "compressionContentTypes updated: " +
+                                                   !hasConfigError);
+                if (!hasConfigError) {
+                    for (String s : this.includedCompressionContentTypes) {
+                        Tr.event(tc, "Include list of content-types: " + s);
+                    }
+                    for (String s : this.excludedCompressionContentTypes) {
+                        Tr.event(tc, "Exclude list of content-types: " + s);
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    /**
+     * Check the configuration to see if the compression element has been configured
+     * to modify the server's preferred compression algorithm.
+     *
+     * @param props
+     */
+    private void parseCompressionPreferredAlgorithm(Map<Object, Object> props) {
+        String value = (String) props.get(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM);
+        if (null != value && this.useCompression) {
+            this.preferredCompressionAlgorithm = value;
+
+            //Validate parameter, if not supported default to none.
+            switch (value.toLowerCase(Locale.ENGLISH)) {
+                case ("gzip"):
+                    break;
+                case ("deflate"):
+                    break;
+                case ("x-gzip"):
+                    break;
+                case ("identity"):
+                    break;
+                case ("zlib"):
+                    break;
+                case ("none"):
+                    break;
+                default:
+                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                        Tr.event(tc, "Compression Config", "Unsupported preferred compression algorithm: " + value + ". Setting preferred compression algorithm to 'none'");
+                    }
+                    this.preferredCompressionAlgorithm = "none";
+
+            }
+
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Compression Config", "preferred compression algorithm set to: " + this.preferredCompressionAlgorithm);
             }
         }
     }
@@ -1964,4 +2191,30 @@ public class HttpChannelConfig {
     public boolean useForwardingHeadersInAccessLog() {
         return (this.useForwardingHeadersInAccessLog && this.useForwardingHeaders);
     }
+
+    public boolean useAutoCompression() {
+        return this.useCompression;
+    }
+
+    public Pattern getCompressionQValueRegex() {
+        if (this.compressionQValuePattern == null) {
+            this.compressionQValuePattern = Pattern.compile(compressionQValueRegex);
+
+        }
+
+        return this.compressionQValuePattern;
+    }
+
+    public Set<String> getCompressionContentTypes() {
+        return this.includedCompressionContentTypes;
+    }
+
+    public Set<String> getExcludedCompressionContentTypes() {
+        return this.excludedCompressionContentTypes;
+    }
+
+    public String getPreferredCompressionAlgorithm() {
+        return this.preferredCompressionAlgorithm;
+    }
+
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,3 +141,19 @@ duplicateAlias.useraction=Ensure that all host aliases defined as virtual host e
 context.root.changed=CWWKT0028I: Web application moved ({0}): {1}
 context.root.changed.explanation=This message is for informational purposes only.
 context.root.changed.useraction=No action is required.
+
+compression.duplicateEncoding=CWWKT0029W: Attempted a duplicate add of the following encoding: {0}. Default configuration will be used: {1}.
+compression.duplicateEncoding.explanation=The specified value had already been registered in the acceptable content-types for compression.
+compression.duplicateEncoding.useraction=Ensure that when defining the values of acceptable encodings, the value is unique. 
+
+compression.duplicateEncodingRemoval=CWWKT0030W: Attempted a duplicate removal of the following encoding: {0}. Default configuration will be used: {1}.
+compression.duplicateEncodingRemoval.explanation=The specified value had already been registered as an excluded content-type for compression.
+compression.duplicateEncodingRemoval.useraction=Ensure that when using the remove '-' option, the value is unique.
+
+compression.duplicateEncodingAddRemove=CWWKT0031W: Attempted to both add and remove the following content-type: {0}. Default configuration will be used: {1}.
+compression.duplicateEncodingAddRemove.explanation=The specified value is being both added and removed by the configuration '+/-' options.
+compression.duplicateEncodingAddRemove.useraction=Ensure not to add '+' and remove '-' the same content-type.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Attempted to overwrite the compression default configuration but also used the add (+) option on other content-type(s). Default configuration will be used: {0}.
+compression.duplicateOverwriteAndAdd.explanation=The configuration is attempting to overwrite the default value and also using the add (+) option. The add option is not meant to be used if overwriting the default values.
+compression.duplicateOverwriteAndAdd.useraction=Evaluate if the default configuration should be overwritten. If so, do not use the add (+) option. If the default does not need to be overwritten, include all other desired content-types through the add (+) option.
