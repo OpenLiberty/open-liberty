@@ -10,13 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.subsystem;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,7 +77,8 @@ public class FeatureDefinitionUtils {
 
     static final List<String> LOCALIZABLE_HEADERS = Collections.unmodifiableList(Arrays.asList(new String[] { "Subsystem-Name", "Subsystem-Description" }));
 
-    public final static Collection<String> ALLOWED_ON_CLIENT_ONLY_FEATURES = Arrays.asList("com.ibm.websphere.appserver.javaeeClient-7.0", "com.ibm.websphere.appserver.javaeeClient-8.0",
+    public final static Collection<String> ALLOWED_ON_CLIENT_ONLY_FEATURES = Arrays.asList("com.ibm.websphere.appserver.javaeeClient-7.0",
+                                                                                           "com.ibm.websphere.appserver.javaeeClient-8.0",
                                                                                            "com.ibm.websphere.appserver.appSecurityClient-1.0");
 
     public static final String NL = "\r\n";
@@ -95,7 +94,7 @@ public class FeatureDefinitionUtils {
      * such, is package protected. We won't be creating a host
      * of getters for these variables, which is fine, provided this
      * class remains package-private!
-     * 
+     *
      */
     static class ImmutableAttributes {
         final String bundleRepositoryType;
@@ -160,7 +159,7 @@ public class FeatureDefinitionUtils {
 
         /**
          * Build the feature name, which is used for provisioning operations and lookups.
-         * 
+         *
          * @param repoType
          * @param symbolicName2
          * @param shortName2
@@ -253,9 +252,9 @@ public class FeatureDefinitionUtils {
     /**
      * Create the ImmutableAttributes based on the contents read from a subsystem
      * manifest.
-     * 
+     *
      * @param details ManifestDetails containing manifest parser and accessor methods
-     *            for retrieving information from the manifest.
+     *                    for retrieving information from the manifest.
      * @return new ImmutableAttributes
      */
     static ImmutableAttributes loadAttributes(String repoType, File featureFile, ProvisioningDetails details) throws IOException {
@@ -274,7 +273,7 @@ public class FeatureDefinitionUtils {
         // ignore short name for features that are not public
         String shortName = (visibility != Visibility.PUBLIC ? null : details.getMainAttributeValue(SHORT_NAME));
 
-        // retrieve the feature/subsystem version 
+        // retrieve the feature/subsystem version
         Version version = VersionUtility.stringToVersion(details.getMainAttributeValue(VERSION));
 
         // retrieve the app restart header
@@ -310,180 +309,11 @@ public class FeatureDefinitionUtils {
                                                             hasApiPackages, hasSpiPackages, isSingleton,
                                                             processTypes);
 
-        // Link the details object and immutable attributes (used for diagnostic purposes: 
+        // Link the details object and immutable attributes (used for diagnostic purposes:
         // the immutable attribute values are necessary for meaningful error messages)
         details.setImmutableAttributes(iAttr);
 
         return iAttr;
-    }
-
-    /**
-     * Create the ImmutableAttributes based on an line in a cache file.
-     * There is no validation or warnings in this load path, as it is assumed the
-     * definition would not have been added to the cache if it were invalid.
-     * 
-     * @param line Line containing feature information from the cache file
-     * @param cachedEntry the previous attributes from the cache. This will be null for initial provisioning.
-     * 
-     * @return If the backing file has not changed, either the existing ImmutableAttributes or a
-     *         new ImmutableAttributes object will be returned. If the backing file has changed,
-     *         null will be returned.
-     */
-    static ImmutableAttributes loadAttributes(String line,
-                                              ImmutableAttributes cachedAttributes) {
-        // Builder pattern for Immutable attributes
-        // This parses a cache line that looks like this: 
-        // repoType|symbolicName=Lots;of;attribtues
-
-        int index = line.indexOf('=');
-        String key = line.substring(0, index);
-
-        String repoType = FeatureDefinitionUtils.EMPTY;
-        String symbolicName = key;
-
-        // Do we have a prefix repoType? If so, split the key.
-        int pfxIndex = key.indexOf(':');
-        if (pfxIndex > -1) {
-            repoType = key.substring(0, pfxIndex);
-            symbolicName = key.substring(pfxIndex + 1);
-        }
-
-        // Now let's work on the value half... 
-        String[] parts = splitPattern.split(line.substring(index + 1));
-
-        // Old or mismatched cache
-        if (parts.length < 9)
-            return null;
-
-        String path = parts[0];
-
-        // Make sure file information from cache line is still accurate
-        // i.e. the file exists, and the modification time and size have not changed.
-        File featureFile = new File(path);
-        if (featureFile.exists()) {
-            // Did we have a previous entry in the cache already?
-            // This will happen on a subsequent feature update operation (post-initial provisioning)
-            if (cachedAttributes != null) {
-                return cachedAttributes;
-            }
-
-            // Assuming we're still good, but didn't have a cache entry, we should read the rest
-            // of the attributes.. 
-            long lastModified = getLongValue(parts[1], -1);
-            long fileSize = getLongValue(parts[2], -1);
-            String shortName = parts[3];
-            int featureVersion = getIntegerValue(parts[4], 2);
-            Visibility visibility = Visibility.fromString(parts[5]);
-            AppForceRestart appRestart = AppForceRestart.fromString(parts[6]);
-            Version version = VersionUtility.stringToVersion(parts[7]);
-
-            String flags = parts[8];
-            boolean isAutoFeature = toBoolean(flags.charAt(0));
-            boolean hasApiServices = toBoolean(flags.charAt(1));
-            boolean hasApiPackages = toBoolean(flags.charAt(2));
-            boolean hasSpiPackages = toBoolean(flags.charAt(3));
-            boolean isSingleton = flags.length() > 4 ? toBoolean(flags.charAt(4)) : false;
-
-            EnumSet<ProcessType> processTypes = ProcessType.fromString(parts.length > 9 ? parts[9] : null);
-
-            // Everything is ok with the cache contents, 
-            // make a new subsystem definition from the cached information
-            return new ImmutableAttributes(emptyIfNull(repoType),
-                                           symbolicName,
-                                           nullIfEmpty(shortName),
-                                           featureVersion,
-                                           visibility,
-                                           appRestart,
-                                           version,
-                                           featureFile,
-                                           lastModified,
-                                           fileSize,
-                                           isAutoFeature, hasApiServices,
-                                           hasApiPackages, hasSpiPackages, isSingleton,
-                                           processTypes);
-        }
-
-        // The definition in the filesystem has been deleted: return null to remove it from the cache
-        return null;
-    }
-
-    static void writeAttributes(ImmutableAttributes iAttr, ProvisioningDetails details, PrintWriter writer) throws IOException {
-        if (iAttr == null || details == null) // programmer error
-            throw new NullPointerException("Both attributes and details are required for caching: attr=" + iAttr + ", details=" + details);
-
-        // If we have a bundle repository specified for this resource, put it in there first.. 
-        if (iAttr.bundleRepositoryType != null && !iAttr.bundleRepositoryType.isEmpty()) {
-            writer.write(iAttr.bundleRepositoryType);
-            writer.write(':');
-        }
-
-        writer.write(iAttr.symbolicName);
-        writer.write('=');
-        writer.write(iAttr.featureFile == null ? EMPTY : iAttr.featureFile.getAbsolutePath()); // 0
-        writer.write(SPLIT_CHAR);
-        writer.write(String.valueOf(iAttr.lastModified)); // 1
-        writer.write(SPLIT_CHAR);
-        writer.write(String.valueOf(iAttr.length)); // 2
-        writer.write(SPLIT_CHAR);
-        writer.write(iAttr.shortName == null ? EMPTY : iAttr.shortName); // 3
-        writer.write(SPLIT_CHAR);
-        writer.write(String.valueOf(iAttr.featureVersion)); // 4
-        writer.write(SPLIT_CHAR);
-        writer.write(iAttr.visibility.toString()); // 5
-        writer.write(SPLIT_CHAR);
-        writer.write(iAttr.appRestart.toString()); // 6 
-        writer.write(SPLIT_CHAR);
-        writer.write(iAttr.version.toString()); // 7
-        writer.write(SPLIT_CHAR);
-        writeFlags(writer, iAttr.isAutoFeature, iAttr.hasApiServices, iAttr.hasApiPackages, iAttr.hasSpiPackages, iAttr.isSingleton); // 8
-        writer.write(SPLIT_CHAR);
-        writer.write(ProcessType.toString(iAttr.processTypes)); // 9
-        writer.write(NL);
-
-        // @see ProvisioningDetails ctor
-        if (iAttr.isAutoFeature) {
-            writer.write("-C:");
-            writer.write(details.getCachedRawHeader(IBM_PROVISION_CAPABILITY));
-            writer.write(NL);
-        }
-        if (iAttr.hasApiServices) {
-            writer.write("-V:");
-            writer.write(details.getCachedRawHeader(IBM_API_SERVICE));
-            writer.write(NL);
-        }
-        if (iAttr.hasApiPackages) {
-            writer.write("-A:");
-            writer.write(details.getCachedRawHeader(IBM_API_PACKAGE));
-            writer.write(NL);
-        }
-        if (iAttr.hasSpiPackages) {
-            writer.write("-S:");
-            writer.write(details.getCachedRawHeader(IBM_SPI_PACKAGE));
-            writer.write(NL);
-        }
-    }
-
-    private static void writeFlags(PrintWriter writer, boolean... flags) {
-        for (boolean flag : flags) {
-            writer.write(flag ? '1' : '0');
-        }
-    }
-
-    private static boolean toBoolean(char flag) {
-        if (flag == '1')
-            return true;
-        return false;
-    }
-
-    @FFDCIgnore(NumberFormatException.class)
-    static long getLongValue(String value, long defaultValue) {
-        if (value != null) {
-            try {
-                return Long.parseLong(value);
-            } catch (NumberFormatException nex) {
-            }
-        }
-        return defaultValue;
     }
 
     @FFDCIgnore(NumberFormatException.class)
@@ -504,13 +334,13 @@ public class FeatureDefinitionUtils {
      * after provisioning operations complete.
      * <p>
      * Mutable attributes are private, to allow coordinated set/retrieval.
-     * 
+     *
      */
     final static class ProvisioningDetails {
         private Manifest manifest = null;
         private ImmutableAttributes iAttr = null;
 
-        // Pick something random that reading the header is sure to replace. 
+        // Pick something random that reading the header is sure to replace.
         // MIN_VALUE is very unlikely to be in someone's manifest.
         private static final int featureVersion = Integer.MIN_VALUE;
 
@@ -532,7 +362,7 @@ public class FeatureDefinitionUtils {
         /**
          * The Manifest is required so we can build ImmutableAttributes from
          * the file contents.
-         * 
+         *
          * @param inStream The InputStream that should be read to create the manifest
          * @param object
          */
@@ -541,32 +371,18 @@ public class FeatureDefinitionUtils {
         }
 
         /**
-         * The ImmutableAttributes were built first from the cache. We'll
-         * get the manifest later.
-         * 
          * @param iAttr
+         * @param autoFeatureCapability
+         * @param apiServices
+         * @param apiPackages
+         * @param spiPackages
          */
-        ProvisioningDetails(BufferedReader reader, ImmutableAttributes iAttr) throws IOException {
-            if (iAttr == null || reader == null) // Programmer error 
-                throw new NullPointerException("Reader and Attributes must not be null: reader=" + reader + ", attr=" + iAttr);
-
+        ProvisioningDetails(ImmutableAttributes iAttr, String autoFeatureCapability, String apiServices, String apiPackages, String spiPackages) {
             this.iAttr = iAttr;
-
-            // These are primitive and cryptic: the internal details of a cache file.
-            // It doesn't matter what this character is, it just helps make sure the cache
-            // file was written the way we intend to read it.
-            if (iAttr.isAutoFeature) {
-                autoFeatureCapability = getExtraLine(iAttr.featureName, IBM_PROVISION_CAPABILITY, 'C', reader);
-            }
-            if (iAttr.hasApiServices) {
-                apiServices = getExtraLine(iAttr.featureName, IBM_API_SERVICE, 'V', reader);
-            }
-            if (iAttr.hasApiPackages) {
-                apiPackages = getExtraLine(iAttr.featureName, IBM_API_PACKAGE, 'A', reader);
-            }
-            if (iAttr.hasSpiPackages) {
-                spiPackages = getExtraLine(iAttr.featureName, IBM_SPI_PACKAGE, 'S', reader);
-            }
+            this.autoFeatureCapability = autoFeatureCapability;
+            this.apiServices = apiServices;
+            this.apiPackages = apiPackages;
+            this.spiPackages = spiPackages;
         }
 
         /**
@@ -575,7 +391,7 @@ public class FeatureDefinitionUtils {
          * Assumption: this is called during a provisioning operation, which is
          * active on a single thread (guards in the FeatureManager ensure only
          * one feature provisioning operation on one thread is active at a time).
-         * 
+         *
          * @return
          */
         private Manifest getManifest() throws IOException {
@@ -602,10 +418,10 @@ public class FeatureDefinitionUtils {
          * very early in construction of immutable attributes).
          * <p>
          * The symbolic name header contains both the symbolic name and the
-         * 
+         *
          * @return
          * @throws FeatureManifestException if the attribute is missing from the manifest
-         * 
+         *
          */
         String getNameAttribute(String key) throws IOException {
             Map<String, String> attr = symNameAttributes;
@@ -646,7 +462,7 @@ public class FeatureDefinitionUtils {
 
         /**
          * Verify required attributes for valid feature definitions are present.
-         * 
+         *
          * @throws FeatureManifestException for invalid manifest information
          */
         void ensureValid() throws IOException {
@@ -659,7 +475,7 @@ public class FeatureDefinitionUtils {
             // Make sure the feature version is valid
             int fVersion = getIBMFeatureVersion();
 
-            // If the version is 0 (unspecified) or > 2, it's invalid and we yell. 
+            // If the version is 0 (unspecified) or > 2, it's invalid and we yell.
             // If it's < 2 (i.e. version 1) we just ignore it.
             if (fVersion > 2) {
                 Tr.error(tc, "UNSUPPORTED_FEATURE_VERSION", symbolicName, fVersion);
@@ -669,7 +485,7 @@ public class FeatureDefinitionUtils {
                                                    message);
             }
 
-            // If the Subsystem-Type header is null, or doesn't match the feature type... 
+            // If the Subsystem-Type header is null, or doesn't match the feature type...
             String type = getMainAttributeValue(TYPE);
             if (type == null || !SubsystemContentType.FEATURE_TYPE.getValue().equals(type)) {
                 // TODO: Replace with proper NLS message!
@@ -686,7 +502,7 @@ public class FeatureDefinitionUtils {
                                                    message);
             }
 
-            // If the Subsystem-Type header is null, or doesn't match the feature type... 
+            // If the Subsystem-Type header is null, or doesn't match the feature type...
             String version = getMainAttributeValue(VERSION);
             if (version == null) {
                 // TODO: Replace with proper NLS message!
@@ -706,7 +522,7 @@ public class FeatureDefinitionUtils {
 
         /**
          * Return the feature version
-         * 
+         *
          * @return feature version
          */
         int getIBMFeatureVersion() throws IOException {
@@ -745,7 +561,7 @@ public class FeatureDefinitionUtils {
                     result = getMainAttributeValue(header);
                 }
             } catch (IOException e) {
-                // Manifest file should have been verified for existence at this point.. 
+                // Manifest file should have been verified for existence at this point..
             }
             return result;
         }
@@ -773,8 +589,8 @@ public class FeatureDefinitionUtils {
                                 filters.add(filter);
                             } catch (InvalidSyntaxException ise) {
                                 Tr.warning(tc, "INVALID_PROVISION_CAPABILITY_FILTER", new Object[] { filterString,
-                                                                                                    iAttr.symbolicName,
-                                                                                                    ise.getMessage() });
+                                                                                                     iAttr.symbolicName,
+                                                                                                     ise.getMessage() });
                             }
                         }
                     }
@@ -789,7 +605,7 @@ public class FeatureDefinitionUtils {
         }
 
         Collection<FeatureResource> getConstituents(SubsystemContentType type) {
-            // Check to see if we've already figured out our content... 
+            // Check to see if we've already figured out our content...
             Collection<FeatureResource> result = subsystemContent;
 
             if (result == null) {
@@ -797,7 +613,7 @@ public class FeatureDefinitionUtils {
                 try {
                     contents = getMainAttributeValue(CONTENT);
                 } catch (IOException e) {
-                    // We should be beyond any issue reading the manifest at this point.. 
+                    // We should be beyond any issue reading the manifest at this point..
                     return Collections.emptyList();
                 }
 
@@ -864,7 +680,7 @@ public class FeatureDefinitionUtils {
                     supersededBy = value;
                 }
             } catch (IOException e) {
-                // We should be beyond any issue reading the manifest at this point.. 
+                // We should be beyond any issue reading the manifest at this point..
             }
         }
 
@@ -921,7 +737,7 @@ public class FeatureDefinitionUtils {
             } catch (IOException e) {
                 throw e;
             } catch (Exception e) {
-                // the manifest parser can throw any number of runtime exceptions if the 
+                // the manifest parser can throw any number of runtime exceptions if the
                 // format of the file is incorrect.
                 // instead of handling invalid input in the parser we just wrap the exception and move on
                 throw new IOException(e.getMessage(), e);
@@ -931,19 +747,10 @@ public class FeatureDefinitionUtils {
         }
     }
 
-    private static String getExtraLine(String name, String descr, char verify, BufferedReader reader) throws IOException {
-        String line = reader.readLine();
-
-        if (line == null || line.charAt(0) != '-' || line.charAt(1) != verify || line.charAt(2) != ':')
-            throw new IOException("Missing or invalid cache entry for " + descr + " for " + name + ", line=" + line);
-
-        return line.substring(3);
-    }
-
     /**
      * Close the closeable object: handle null, swallow exceptions.
      * This is called by finally blocks.
-     * 
+     *
      * @param closeable Stream to close
      */
     @Trivial
