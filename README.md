@@ -9,14 +9,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a>
+  <a href="https://openliberty.io/">
     <img src="https://openliberty.io/img/spaceship.svg" alt="Logo">
   </a>
   <h1 align="center">Open Liberty</h1>
 </p>
 <!-- TABLE OF CONTENTS -->
-## Table of Contents
 
+## Table of Contents
 * [Summary](#summary)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
