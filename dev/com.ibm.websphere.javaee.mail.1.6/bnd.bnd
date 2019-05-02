@@ -13,7 +13,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.mail.1.6
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
   javax.mail, \
@@ -29,4 +28,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	javax.mail:javax.mail-api;version=1.6.0
+     javax.mail:javax.mail-api;version=1.6.2
