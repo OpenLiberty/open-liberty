@@ -78,155 +78,155 @@ public class BaseTraceFormatterTest {
     static final BaseTraceFormatter enhancedFormatter = new BaseTraceFormatter(TraceFormat.ENHANCED);
 
     enum StringResults {
-        testNullAll("] " + DataFormatHelper.getThreadId()
-                    + "               2   null", "] " + DataFormatHelper.getThreadId()
-                                                 + " id=00000000                                                              2 null", "] " + DataFormatHelper.getThreadId()
+        testNullAll("] " + threadId
+                    + "               2   null", "] " + threadId
+                                                 + " id=00000000                                                              2 null", "] " + threadId
                                                                                                                                        + "  2 UOW= source= thread=["
                                                                                                                                        + Thread.currentThread().getName() + "]"
                                                                                                                                        + LoggingConstants.nl
                                                                                                                                        + "          null"),
 
-        testSource("] " + DataFormatHelper.getThreadId()
-                   + " source        2   null", "] " + DataFormatHelper.getThreadId()
-                                                + " id=00000000 source                                                       2 null", "] " + DataFormatHelper.getThreadId()
+        testSource("] " + threadId
+                   + " source        2   null", "] " + threadId
+                                                + " id=00000000 source                                                       2 null", "] " + threadId
                                                                                                                                       + "  2 UOW= source=source thread=["
                                                                                                                                       + Thread.currentThread().getName() + "]"
                                                                                                                                       + LoggingConstants.nl
                                                                                                                                       + "          null"),
 
-        testClass("] " + DataFormatHelper.getThreadId()
-                  + " class         2 class  null", "] " + DataFormatHelper.getThreadId()
-                                                    + " id=00000000 class                                                        2 null", "] " + DataFormatHelper.getThreadId()
+        testClass("] " + threadId
+                  + " class         2 class  null", "] " + threadId
+                                                    + " id=00000000 class                                                        2 null", "] " + threadId
                                                                                                                                           + "  2 UOW= source= class=class thread=["
                                                                                                                                           + Thread.currentThread().getName() + "]"
                                                                                                                                           + LoggingConstants.nl
                                                                                                                                           + "          null"),
 
-        testSourceAndClass("] " + DataFormatHelper.getThreadId()
-                           + " source        2 class  null", "] " + DataFormatHelper.getThreadId()
+        testSourceAndClass("] " + threadId
+                           + " source        2 class  null", "] " + threadId
                                                              + " id=00000000 class                                                        2 null", "] "
-                                                                                                                                                   + DataFormatHelper.getThreadId()
+                                                                                                                                                   + threadId
                                                                                                                                                    + "  2 UOW= source=source class=class thread=["
                                                                                                                                                    + Thread.currentThread().getName()
                                                                                                                                                    + "]"
                                                                                                                                                    + LoggingConstants.nl
                                                                                                                                                    + "          null"),
 
-        testMethod("] " + DataFormatHelper.getThreadId()
-                   + " source        2  method null", "] " + DataFormatHelper.getThreadId()
+        testMethod("] " + threadId
+                   + " source        2  method null", "] " + threadId
                                                       + " id=00000000 source                                                       2 method null", "] "
-                                                                                                                                                   + DataFormatHelper.getThreadId()
+                                                                                                                                                   + threadId
                                                                                                                                                    + "  2 UOW= source=source method=method thread=["
                                                                                                                                                    + Thread.currentThread().getName()
                                                                                                                                                    + "]"
                                                                                                                                                    + LoggingConstants.nl
                                                                                                                                                    + "          null"),
-        testMessage("] " + DataFormatHelper.getThreadId()
-                    + " source        2  method ta-da!", "] " + DataFormatHelper.getThreadId()
+        testMessage("] " + threadId
+                    + " source        2  method ta-da!", "] " + threadId
                                                          + " id=00000000 source                                                       2 method ta-da!", "] "
-                                                                                                                                                        + DataFormatHelper.getThreadId()
+                                                                                                                                                        + threadId
                                                                                                                                                         + "  2 UOW= source=source method=method thread=["
                                                                                                                                                         + Thread.currentThread().getName()
                                                                                                                                                         + "]"
                                                                                                                                                         + LoggingConstants.nl
                                                                                                                                                         + "          ta-da!"),
-        testLongName("] " + DataFormatHelper.getThreadId()
-                     + " abcdefghijklm 2  method ta-da!", "] " + DataFormatHelper.getThreadId()
+        testLongName("] " + threadId
+                     + " abcdefghijklm 2  method ta-da!", "] " + threadId
                                                           + " id=00000000 cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 2 method ta-da!", "] "
-                                                                                                                                                         + DataFormatHelper.getThreadId()
+                                                                                                                                                         + threadId
                                                                                                                                                          + "  2 UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method thread=["
                                                                                                                                                          + Thread.currentThread().getName()
                                                                                                                                                          + "]"
                                                                                                                                                          + LoggingConstants.nl
                                                                                                                                                          + "          ta-da!"),
-        testId("] " + DataFormatHelper.getThreadId() + " abcdefghijklm 2  method ta-da!", "] " + DataFormatHelper.getThreadId() + " id=" + idHash
-                                                                                          + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 2 method ta-da!", "] "
-                                                                                                                                                                             + DataFormatHelper.getThreadId()
-                                                                                                                                                                             + "  2 UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id="
-                                                                                                                                                                             + idHash
-                                                                                                                                                                             + " thread=["
-                                                                                                                                                                             + Thread.currentThread().getName()
-                                                                                                                                                                             + "]"
-                                                                                                                                                                             + LoggingConstants.nl
-                                                                                                                                                                             + "          ta-da!"),
-        testMessageLevel("] " + DataFormatHelper.getThreadId() + " abcdefghijklm I  method ta-da!", "] " + DataFormatHelper.getThreadId() + " id=" + idHash
-                                                                                                    + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 I method ta-da!", "] "
-                                                                                                                                                                                       + DataFormatHelper.getThreadId()
-                                                                                                                                                                                       + "  I UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id="
-                                                                                                                                                                                       + idHash
-                                                                                                                                                                                       + " thread=["
-                                                                                                                                                                                       + Thread.currentThread().getName()
-                                                                                                                                                                                       + "]"
-                                                                                                                                                                                       + LoggingConstants.nl
-                                                                                                                                                                                       + "          ta-da!"),
-        testTrEntry("] " + DataFormatHelper.getThreadId() + " source        >  method "
-                    + BaseTraceFormatter.ENTRY, "] " + DataFormatHelper.getThreadId() + " id=00000000 source                                                       > method "
-                                                + BaseTraceFormatter.ENTRY, "] " + DataFormatHelper.getThreadId() + "  > UOW= source=source method=method thread=["
+        testId("] " + threadId + " abcdefghijklm 2  method ta-da!", "] " + threadId + " id=" + idHash
+                                                                    + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 2 method ta-da!", "] "
+                                                                                                                                                       + threadId
+                                                                                                                                                       + "  2 UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id="
+                                                                                                                                                       + idHash
+                                                                                                                                                       + " thread=["
+                                                                                                                                                       + Thread.currentThread().getName()
+                                                                                                                                                       + "]"
+                                                                                                                                                       + LoggingConstants.nl
+                                                                                                                                                       + "          ta-da!"),
+        testMessageLevel("] " + threadId + " abcdefghijklm I  method ta-da!", "] " + threadId + " id=" + idHash
+                                                                              + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 I method ta-da!", "] "
+                                                                                                                                                                 + threadId
+                                                                                                                                                                 + "  I UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id="
+                                                                                                                                                                 + idHash
+                                                                                                                                                                 + " thread=["
+                                                                                                                                                                 + Thread.currentThread().getName()
+                                                                                                                                                                 + "]"
+                                                                                                                                                                 + LoggingConstants.nl
+                                                                                                                                                                 + "          ta-da!"),
+        testTrEntry("] " + threadId + " source        >  method "
+                    + BaseTraceFormatter.ENTRY, "] " + threadId + " id=00000000 source                                                       > method "
+                                                + BaseTraceFormatter.ENTRY, "] " + threadId + "  > UOW= source=source method=method thread=["
                                                                             + Thread.currentThread().getName() + "]"
                                                                             + LoggingConstants.nl + "          " + BaseTraceFormatter.ENTRY),
-        testTrEntryWithExitParam("] " + DataFormatHelper.getThreadId() + " source        >  method " + BaseTraceFormatter.ENTRY + " " +
+        testTrEntryWithExitParam("] " + threadId + " source        >  method " + BaseTraceFormatter.ENTRY + " " +
                                  BaseTraceFormatter.nlBasicPadding
-                                 + "ExitCode", "] " + DataFormatHelper.getThreadId() + " id=00000000 source                                                       > method "
+                                 + "ExitCode", "] " + threadId + " id=00000000 source                                                       > method "
                                                + BaseTraceFormatter.ENTRY + " " +
                                                BaseTraceFormatter.nlEnhancedPadding
-                                               + "ExitCode", "] " + DataFormatHelper.getThreadId() + "  > UOW= source=source method=method thread=["
+                                               + "ExitCode", "] " + threadId + "  > UOW= source=source method=method thread=["
                                                              + Thread.currentThread().getName() + "]"
                                                              + LoggingConstants.nl + "          " + BaseTraceFormatter.ENTRY + " "
                                                              + BaseTraceFormatter.nlAdvancedPadding + "ExitCode"),
-        testLoggerEntering("] " + DataFormatHelper.getThreadId()
-                           + " source        >  method ENTRY", "] " + DataFormatHelper.getThreadId()
+        testLoggerEntering("] " + threadId
+                           + " source        >  method ENTRY", "] " + threadId
                                                                + " id=00000000 source                                                       > method ENTRY", "] "
-                                                                                                                                                             + DataFormatHelper.getThreadId()
+                                                                                                                                                             + threadId
                                                                                                                                                              + "  > UOW= source=source method=method thread=["
                                                                                                                                                              + Thread.currentThread().getName()
                                                                                                                                                              + "]"
                                                                                                                                                              + LoggingConstants.nl
                                                                                                                                                              + "          ENTRY"),
-        testLoggerEnteringParam("] " + DataFormatHelper.getThreadId()
-                                + " source        >  method ENTRY aaa", "] " + DataFormatHelper.getThreadId()
+        testLoggerEnteringParam("] " + threadId
+                                + " source        >  method ENTRY aaa", "] " + threadId
                                                                         + " id=00000000 source                                                       > method ENTRY aaa", "] "
-                                                                                                                                                                          + DataFormatHelper.getThreadId()
+                                                                                                                                                                          + threadId
                                                                                                                                                                           + "  > UOW= source=source method=method thread=["
                                                                                                                                                                           + Thread.currentThread().getName()
                                                                                                                                                                           + "]"
                                                                                                                                                                           + LoggingConstants.nl
                                                                                                                                                                           + "          ENTRY aaa"),
-        testLoggerEnteringParams("] " + DataFormatHelper.getThreadId()
-                                 + " source        >  method ENTRY aaa bbb ccc", "] " + DataFormatHelper.getThreadId()
+        testLoggerEnteringParams("] " + threadId
+                                 + " source        >  method ENTRY aaa bbb ccc", "] " + threadId
                                                                                  + " id=00000000 source                                                       > method ENTRY aaa bbb ccc", "] "
-                                                                                                                                                                                           + DataFormatHelper.getThreadId()
+                                                                                                                                                                                           + threadId
                                                                                                                                                                                            + "  > UOW= source=source method=method thread=["
                                                                                                                                                                                            + Thread.currentThread().getName()
                                                                                                                                                                                            + "]"
                                                                                                                                                                                            + LoggingConstants.nl
                                                                                                                                                                                            + "          ENTRY aaa bbb ccc"),
-        testTrExit("] " + DataFormatHelper.getThreadId() + " source        <  method "
-                   + BaseTraceFormatter.EXIT, "] " + DataFormatHelper.getThreadId() + " id=00000000 source                                                       < method "
-                                              + BaseTraceFormatter.EXIT, "] " + DataFormatHelper.getThreadId() + "  < UOW= source=source method=method thread=["
+        testTrExit("] " + threadId + " source        <  method "
+                   + BaseTraceFormatter.EXIT, "] " + threadId + " id=00000000 source                                                       < method "
+                                              + BaseTraceFormatter.EXIT, "] " + threadId + "  < UOW= source=source method=method thread=["
                                                                          + Thread.currentThread().getName() + "]"
                                                                          + LoggingConstants.nl + "          " + BaseTraceFormatter.EXIT),
-        testTrExitWithEntryParam("] " + DataFormatHelper.getThreadId() + " source        <  method " + BaseTraceFormatter.EXIT + " " +
+        testTrExitWithEntryParam("] " + threadId + " source        <  method " + BaseTraceFormatter.EXIT + " " +
                                  BaseTraceFormatter.nlBasicPadding
-                                 + "MapEntry", "] " + DataFormatHelper.getThreadId() + " id=00000000 source                                                       < method "
+                                 + "MapEntry", "] " + threadId + " id=00000000 source                                                       < method "
                                                + BaseTraceFormatter.EXIT + " " +
-                                               BaseTraceFormatter.nlEnhancedPadding + "MapEntry", "] " + DataFormatHelper.getThreadId()
+                                               BaseTraceFormatter.nlEnhancedPadding + "MapEntry", "] " + threadId
                                                                                                   + "  < UOW= source=source method=method thread=["
                                                                                                   + Thread.currentThread().getName() + "]"
                                                                                                   + LoggingConstants.nl + "          " + BaseTraceFormatter.EXIT + " "
                                                                                                   + BaseTraceFormatter.nlAdvancedPadding + "MapEntry"),
-        testLoggerExiting("] " + DataFormatHelper.getThreadId()
-                          + " source        <  method RETURN", "] " + DataFormatHelper.getThreadId()
+        testLoggerExiting("] " + threadId
+                          + " source        <  method RETURN", "] " + threadId
                                                                + " id=00000000 source                                                       < method RETURN", "] "
-                                                                                                                                                              + DataFormatHelper.getThreadId()
+                                                                                                                                                              + threadId
                                                                                                                                                               + "  < UOW= source=source method=method thread=["
                                                                                                                                                               + Thread.currentThread().getName()
                                                                                                                                                               + "]"
                                                                                                                                                               + LoggingConstants.nl
                                                                                                                                                               + "          RETURN"),
-        testLoggerExitingParam("] " + DataFormatHelper.getThreadId()
-                               + " source        <  method RETURN aaa", "] " + DataFormatHelper.getThreadId()
+        testLoggerExitingParam("] " + threadId
+                               + " source        <  method RETURN aaa", "] " + threadId
                                                                         + " id=00000000 source                                                       < method RETURN aaa", "] "
-                                                                                                                                                                           + DataFormatHelper.getThreadId()
+                                                                                                                                                                           + threadId
                                                                                                                                                                            + "  < UOW= source=source method=method thread=["
                                                                                                                                                                            + Thread.currentThread().getName()
                                                                                                                                                                            + "]"
