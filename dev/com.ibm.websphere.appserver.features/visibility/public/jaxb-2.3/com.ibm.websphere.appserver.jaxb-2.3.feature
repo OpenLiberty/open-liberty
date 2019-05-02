@@ -26,5 +26,5 @@ Subsystem-Name: Java XML Bindings 2.3
   bin/jaxb/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
   bin/jaxb/tools/ws-xjc.jar, \
   bin/jaxb/schemagen.bat
-kind=noship
+kind=ga
 edition=full
