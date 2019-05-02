@@ -17,6 +17,7 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -315,11 +316,13 @@ public abstract class JPAApplInfo {
         }
     }
 
-    protected void doIntrospect(PrintWriter out) {
+    protected void doIntrospect(PrintWriter out, Set<String> archivesSet) {
         final Map<String, JPAScopeInfo> puScopesClone = new HashMap<String, JPAScopeInfo>();
         synchronized (puScopes) {
             puScopesClone.putAll(puScopes);
         }
+
+        JPAIntrospection.registerArchiveSet(archivesSet);
 
         for (Map.Entry<String, JPAScopeInfo> entry : puScopesClone.entrySet()) {
             final JPAScopeInfo scopeInfo = entry.getValue();
