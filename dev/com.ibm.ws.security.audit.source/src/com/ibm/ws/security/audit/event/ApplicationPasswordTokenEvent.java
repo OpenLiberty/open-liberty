@@ -106,10 +106,30 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
                 set(AuditEvent.TARGET_PROVIDER, m.get(AuditConstants.PROVIDER));
             }
 
+            String user_id = "";
             if ((String) m.get(AuditConstants.USER) != null) {
                 set(AuditEvent.TARGET_USERID, m.get(AuditConstants.USER));
+            } else if (req.getQueryString() != null) {
+                String queryString = req.getQueryString();
+                int index1 = queryString.indexOf("user_id=");
+                if (index1 != 0) {
+                    String queryString2 = queryString.substring(index1, queryString.length());
+                    int index2 = queryString2.indexOf("&");
+                    if (index2 != 0) {
+                        user_id = queryString2.substring(index1 + 8, index2 - 1);
+                    } else {
+                        user_id = queryString2.substring(index1 + 9);
+                    }
+                    set(AuditEvent.TARGET_USERID, user_id);
+                }
             } else if (req.getUserPrincipal() != null && req.getUserPrincipal().getName() != null)
                 set(AuditEvent.TARGET_USERID, req.getUserPrincipal().getName());
+
+            if (req.getQueryString() != null) {
+                String str = URLDecoder.decode(req.getQueryString(), "UTF-8");
+                str = AuditUtils.hidePassword(str);
+                set(AuditEvent.TARGET_PARAMS, str);
+            }
 
             set(AuditEvent.TARGET_METHOD, AuditUtils.getRequestMethod(req));
 
