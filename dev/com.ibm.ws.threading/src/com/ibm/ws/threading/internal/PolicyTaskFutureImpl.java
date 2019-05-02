@@ -643,7 +643,11 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     public final long getElapsedRunTime(TimeUnit unit) {
         long begin = nsQueueEnd;
         long elapsed = nsRunEnd - begin;
-        return unit.convert(elapsed >= 0 ? elapsed : begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0, TimeUnit.NANOSECONDS);
+        if (elapsed < 0)
+            elapsed = begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0;
+        else if (elapsed > 0 && state.get() == ABORTED)
+            elapsed = 0; // nsQueueEnd,nsRunEnd can get out of sync when abort is attempted by multiple threads at once
+        return unit.convert(elapsed, TimeUnit.NANOSECONDS);
     }
 
     @Trivial
