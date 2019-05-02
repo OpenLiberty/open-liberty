@@ -26,10 +26,12 @@ public class VariableServerXMLServlet extends FATServlet {
     @Inject
     VariableServerXMLBean bean;
 
+    @Test
     public void varPropertiesBaseTest() throws Exception {
         bean.varPropertiesBaseTest();
     }
 
+    @Test
     public void varPropertiesOrderTest() throws Exception {
         bean.varPropertiesOrderTest();
     }

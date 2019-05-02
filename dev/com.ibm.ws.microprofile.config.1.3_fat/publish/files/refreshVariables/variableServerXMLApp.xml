@@ -5,7 +5,10 @@
     <variable name="multi_string_variable" value="first,second,third"/>
     <variable name="changeable_variable" value="updated_value" />
     <variable name="serverXMLKey1" value="valueinServerXMLVariable1" />
-    <variable name="serverXMLKey2" value="valueinServerXMLVariable2" />    
+    <variable name="serverXMLKey2" value="valueinServerXMLVariable2" />
+    
+    <variable name="serverXMLDefaultKey1" defaultValue="defaultValueFromVariable1" /> <!-- will be overriden in bootstrap.properties -->
+    <variable name="serverXMLDefaultKey2" defaultValue="defaultValueFromVariable2" />   
    	
    	<application location="variableServerXMLApp.war">
    		<appProperties>
