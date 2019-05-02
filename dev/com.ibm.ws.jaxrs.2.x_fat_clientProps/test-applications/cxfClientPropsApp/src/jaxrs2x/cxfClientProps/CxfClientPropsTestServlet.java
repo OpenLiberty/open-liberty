@@ -13,11 +13,16 @@ package jaxrs2x.cxfClientProps;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotSame;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -351,5 +356,97 @@ public class CxfClientPropsTestServlet extends FATServlet {
         assertEquals("hello", echoValue2.toLowerCase());
        
         assertEquals(r1.getHeaderString("Host"), r2.getHeaderString("Host"));        
+    }
+    
+    @Test
+    public void testAutoRedirect(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testAutoRedirect";
+        List<String> statuses = new ArrayList<String>(Arrays.asList("301", "303", "307"));
+        String status = null;
+        
+        Iterator<String> iterator = statuses.iterator();
+        while(iterator.hasNext()) {
+            status = iterator.next();
+            _log.info(m + " Test status code= " + status);
+           
+            Client client1 = ClientBuilder.newBuilder()
+                            .property("client.Connection", "KEEP_ALIVE")
+                            .property("client.AutoRedirect", "true")                        
+                            .property("client.AllowChunking", "false") 
+                            .build();
+            
+            Response r1 = client1.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                            .path("redirect")
+                            .path("Hello")
+                            .path(status)
+                            .request()
+                            .get();
+            
+            _log.info("    " + m + " Received r1.getStatus() " + r1.getStatus());        
+            String echoValue1 = r1.readEntity(String.class);        
+            assertEquals("hello", echoValue1.toLowerCase());        
+            
+            Client client2 = ClientBuilder.newBuilder()                        
+                            .property("client.AutoRedirect", "false")                        
+                            .property("client.AllowChunking", "true") 
+                            .build();        
+            
+            Response r2 = client2.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                                .path("redirect")
+                                .path("Hello")
+                                .path(status)                            
+                                .request()
+                                .get();
+                
+            _log.info("    " + m + " Received r2.getStatus() " + r2.getStatus());
+            String echoValue2 = r2.readEntity(String.class);        
+            assertNotSame("hello", echoValue2.toLowerCase());
+        }        
+    }
+    
+    @Test
+    public void testAutoRedirectMultipleHops(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testAutoRedirectMultipleHops";
+        List<String> statuses = new ArrayList<String>(Arrays.asList("301", "303", "307"));
+        String status = null;
+        
+        Iterator<String> iterator = statuses.iterator();
+        while(iterator.hasNext()) {
+            status = iterator.next();
+            _log.info(m + " Test status code= " + status);
+           
+            Client client1 = ClientBuilder.newBuilder()
+                            .property("client.Connection", "KEEP_ALIVE")
+                            .property("client.AutoRedirect", "true")                        
+                            .property("client.AllowChunking", "false") 
+                            .build();
+            
+            Response r1 = client1.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                            .path("redirecthop1")
+                            .path("Hello")
+                            .path(status)
+                            .request()
+                            .get();
+            
+            _log.info("    " + m + " Received r1.getStatus() " + r1.getStatus());        
+            String echoValue1 = r1.readEntity(String.class);        
+            assertEquals("hello", echoValue1.toLowerCase());        
+            
+            Client client2 = ClientBuilder.newBuilder()                        
+                            .property("client.AutoRedirect", "false")                        
+                            .property("client.AllowChunking", "true") 
+                            .build();        
+            
+            Response r2 = client2.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                                .path("redirecthop1")
+                                .path("Hello")
+                                .path(status)                            
+                                .request()
+                                .get();
+                
+            _log.info("    " + m + " Received r2.getStatus() " + r2.getStatus());
+            String echoValue2 = r2.readEntity(String.class);        
+            assertNotSame("hello", echoValue2.toLowerCase());
+        }        
     }
 }

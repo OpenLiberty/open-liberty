@@ -15,4 +15,11 @@
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission actions="connect,resolve" className="java.net.SocketPermission" name="*"/>
     <javaPermission actions="getCookieHandler" className="java.net.NetPermission" name="*"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirect/Hello/301" actions="GET:Accept,User-Agent"/>    
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirect/Hello/303" actions="GET:Accept,User-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirect/Hello/307" actions="GET:Accept,User-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirecthop1/Hello/301" actions="GET:Accept,User-Agent"/>    
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirecthop1/Hello/303" actions="GET:Accept,User-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirecthop1/Hello/307" actions="GET:Accept,User-Agent"/>    
+    
 </server>
