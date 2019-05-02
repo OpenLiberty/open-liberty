@@ -35,7 +35,9 @@ import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
  *
  */
 class StartAction implements Action {
-    private static final TraceComponent _tc = Tr.register(StartAction.class);
+    private static final TraceComponent _tc = Tr.register("StartAction", StartAction.class,
+                                                          new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
+                                                          com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
     private final ApplicationConfig _config;
     private final ApplicationInstallInfo _aii;
     private final AtomicReference<StateChangeCallback> _callback = new AtomicReference<StateChangeCallback>();
@@ -148,7 +150,7 @@ class StartAction implements Action {
     }
 
     /**
-     * 
+     *
      */
     private void stopSlowStartMessage() {
         Future<?> slow = _slowMessageAction.getAndSet(null);

@@ -50,7 +50,9 @@ import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
 public class ApplicationMonitor {
-    private final static TraceComponent tc = Tr.register(ApplicationMonitor.class);
+    private final static TraceComponent tc = Tr.register("ApplicationMonitor", ApplicationMonitor.class,
+                                                         new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
+                                                         com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
 
     public interface UpdateHandler {
         public void handleMonitorUpdate(boolean shouldRemove);
@@ -334,9 +336,9 @@ public class ApplicationMonitor {
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
          *
-         * @param applicationProperties The properties for the application being monitored
+         * @param applicationProperties          The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
-         *            be listening to
+         *                                           be listening to
          * @throws UnableToAdaptException If we cannot adapt the root container to a {@link Notifier}
          */
         public BaseApplicationListener(Notification monitoringInformation,
@@ -372,6 +374,7 @@ public class ApplicationMonitor {
          *
          * @return This listener's ID.
          */
+        @Override
         public String getId() {
             return id;
         }
@@ -389,9 +392,9 @@ public class ApplicationMonitor {
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
          *
-         * @param applicationProperties The properties for the application being monitored
+         * @param applicationProperties          The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
-         *            be listening to
+         *                                           be listening to
          * @throws UnableToAdaptException If we cannot adapt the root container to a {@link Notifier}
          */
         public RootApplicationListener(Container container,
@@ -444,9 +447,9 @@ public class ApplicationMonitor {
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
          *
-         * @param applicationProperties The properties for the application being monitored
+         * @param applicationProperties          The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
-         *            be listening to
+         *                                           be listening to
          * @throws UnableToAdaptException If we cannot adapt the root container to a {@link Notifier} of if we cannot adapt the app's container to a ClassLoadingButler
          */
         public ApplicationListener(Notification monitoringInformation,
@@ -520,9 +523,9 @@ public class ApplicationMonitor {
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
          *
-         * @param applicationProperties The properties for the application being monitored
+         * @param applicationProperties          The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
-         *            be listening to
+         *                                           be listening to
          * @throws UnableToAdaptException If we cannot adapt the root container to a {@link Notifier}
          */
         public CompleteApplicationListener(Container container,

@@ -25,7 +25,9 @@ import com.ibm.ws.app.manager.ApplicationManager;
 @Trivial
 public final class ApplicationConfig {
 
-    private static final TraceComponent tc = Tr.register(ApplicationConfig.class);
+    private static final TraceComponent tc = Tr.register("ApplicationConfig", ApplicationConfig.class,
+                                                         new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
+                                                         com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
 
     private final String _configPid;
     private final Dictionary<String, ?> _config;

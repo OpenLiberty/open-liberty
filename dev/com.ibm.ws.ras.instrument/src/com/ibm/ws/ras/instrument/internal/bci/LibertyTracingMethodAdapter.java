@@ -13,10 +13,18 @@ package com.ibm.ws.ras.instrument.internal.bci;
 import static com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter.TRACE_COMPONENT_TYPE;
 import static com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter.TR_TYPE;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+
+import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 
 public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<AbstractTracingRasClassAdapter> {
 
@@ -227,23 +235,52 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
 
     @Override
     public void initializeTraceObjectField() {
-        if (!getClassAdapter().isTraceObjectFieldInitializationRequired() || isAlreadyTraced()) {
+    	if (!getClassAdapter().isTraceObjectFieldInitializationRequired() || isAlreadyTraced()) {
             return;
         }
+    	getClassAdapter().visitAnnotation(AbstractRasClassAdapter.TRACE_OPTIONS_TYPE.getDescriptor(), true);
+    	TraceOptionsData traceOptionsData = getClassAdapter().getTraceOptionsData();
+    	
+	    	//If multiple groups defined - can't override existing call
+	    	if (traceOptionsData.getTraceGroups().size() > 1) {
+	    		return;
+	    	}
+	    		
+    		 
+		        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
+		
+		        List<String> traceGroups = traceOptionsData.getTraceGroups();
+		        String traceGroupName = traceGroups.isEmpty() ? null : traceGroups.get(0);
+		        if (traceGroupName != null) {
+		            visitLdcInsn(traceGroupName);
+		        } else {
+		            visitInsn(ACONST_NULL);
+		        }
+		
+		        String messageBundle = traceOptionsData.getMessageBundle();
+		        if (messageBundle != null) {
+		            visitLdcInsn(messageBundle);
+		        } else {
+		            visitInsn(ACONST_NULL);
+		        }
+		        visitMethodInsn(
+		                        INVOKESTATIC,
+		                        TR_TYPE.getInternalName(),
+		                        "register",
+		                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+		                                                                                   Type.getType(Class.class),
+		                                                                                   Type.getType(String.class),
+		                                                                                   Type.getType(String.class) }), false);
+        
 
-        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
-        visitMethodInsn(
-                        INVOKESTATIC,
-                        TR_TYPE.getInternalName(),
-                        "register",
-                        Type.getMethodDescriptor(
-                                                 TRACE_COMPONENT_TYPE,
-                                                 new Type[] { Type.getType(Class.class) }), false);
         visitSetTraceObjectField();
+        
+        
         setModifiedMethod(true);
     }
 
-    private void visitInvokeTraceGuardMethod(String guardMethodName, Label skipTraceLabel) {
+
+	private void visitInvokeTraceGuardMethod(String guardMethodName, Label skipTraceLabel) {
         visitMethodInsn(
                         INVOKESTATIC,
                         TRACE_COMPONENT_TYPE.getInternalName(),
@@ -274,4 +311,45 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
             super.boxSensitive(type);
         }
     }
+
+	@Override
+	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+		
+		//replace existing method with fully qualified version
+		if ((name.equals("register")) && (desc.equals("(Ljava/lang/Class;)Lcom/ibm/websphere/ras/TraceComponent;"))) {
+			
+			getClassAdapter().visitAnnotation(AbstractRasClassAdapter.TRACE_OPTIONS_TYPE.getDescriptor(), true);
+	    	TraceOptionsData traceOptionsData = getClassAdapter().getTraceOptionsData();
+	    	//If multiple groups defined - can't override existing call
+	    	if (traceOptionsData.getTraceGroups().size() > 1) {
+	    		return;
+	    	}
+
+	        List<String> traceGroups = traceOptionsData.getTraceGroups();
+	        
+	        String traceGroupName = traceGroups.isEmpty() ? null : traceGroups.get(0);
+	        if (traceGroupName != null) {
+	            visitLdcInsn(traceGroupName);
+	        } else {
+	            visitInsn(ACONST_NULL);
+	        }
+
+	        String messageBundle = traceOptionsData.getMessageBundle();
+	        if (messageBundle != null) {
+	            visitLdcInsn(messageBundle);
+	        } else {
+	            visitInsn(ACONST_NULL);
+	        }
+	        visitMethodInsn(
+	                        INVOKESTATIC,
+	                        TR_TYPE.getInternalName(),
+	                        "register",
+	                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+	                                                                                   Type.getType(Class.class),
+	                                                                                   Type.getType(String.class),
+	                                                                                   Type.getType(String.class) }), false);
+	        
+	        setModifiedMethod(true);
+		} else super.visitMethodInsn(opcode, owner, name, desc, itf);
+	}
 }

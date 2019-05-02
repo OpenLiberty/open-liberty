@@ -38,7 +38,9 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  *
  */
 class ResolveFileAction implements Action, FileMonitor {
-    private static final TraceComponent _tc = Tr.register(ResolveFileAction.class);
+    private static final TraceComponent _tc = Tr.register("ResolveFileAction", ResolveFileAction.class,
+                                                          new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
+                                                          com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
     private final WsLocationAdmin _locAdmin;
     private final String _configPid;
     private final String _location;

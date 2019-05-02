@@ -58,7 +58,9 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 class ApplicationStateMachineImpl extends ApplicationStateMachine implements ApplicationMonitor.UpdateHandler, Runnable {
-    private static final TraceComponent _tc = Tr.register(ApplicationStateMachineImpl.class);
+    private static final TraceComponent _tc = Tr.register("ApplicationStateMachineImpl", ApplicationStateMachineImpl.class,
+                                                          new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
+                                                          com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
 
     // this is the set of internal states
     private enum InternalState {
