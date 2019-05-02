@@ -104,8 +104,6 @@ public class VariableServerXMLTest extends FATServletClient {
     @Test
     public void testChangeVariablesConfig() throws Exception {
 
-        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
-
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBeforeTest");
 
@@ -118,8 +116,6 @@ public class VariableServerXMLTest extends FATServletClient {
 
     @Test
     public void testChangeAppPropertiesConfig() throws Exception {
-
-        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
 
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesBeforeTest");
