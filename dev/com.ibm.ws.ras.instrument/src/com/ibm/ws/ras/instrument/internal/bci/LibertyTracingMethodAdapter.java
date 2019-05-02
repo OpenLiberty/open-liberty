@@ -240,30 +240,38 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
         }
     	getClassAdapter().visitAnnotation(AbstractRasClassAdapter.TRACE_OPTIONS_TYPE.getDescriptor(), true);
     	TraceOptionsData traceOptionsData = getClassAdapter().getTraceOptionsData();
-        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
-
-        List<String> traceGroups = traceOptionsData.getTraceGroups();
-        String traceGroupName = traceGroups.isEmpty() ? null : traceGroups.get(0);
-        if (traceGroupName != null) {
-            visitLdcInsn(traceGroupName);
-        } else {
-            visitInsn(ACONST_NULL);
-        }
-
-        String messageBundle = traceOptionsData.getMessageBundle();
-        if (messageBundle != null) {
-            visitLdcInsn(messageBundle);
-        } else {
-            visitInsn(ACONST_NULL);
-        }
-        visitMethodInsn(
-                        INVOKESTATIC,
-                        TR_TYPE.getInternalName(),
-                        "register",
-                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
-                                                                                   Type.getType(Class.class),
-                                                                                   Type.getType(String.class),
-                                                                                   Type.getType(String.class) }), false);
+    	
+	    	//If multiple groups defined - can't override existing call
+	    	if (traceOptionsData.getTraceGroups().size() > 1) {
+	    		return;
+	    	}
+	    		
+    		 
+		        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
+		
+		        List<String> traceGroups = traceOptionsData.getTraceGroups();
+		        String traceGroupName = traceGroups.isEmpty() ? null : traceGroups.get(0);
+		        if (traceGroupName != null) {
+		            visitLdcInsn(traceGroupName);
+		        } else {
+		            visitInsn(ACONST_NULL);
+		        }
+		
+		        String messageBundle = traceOptionsData.getMessageBundle();
+		        if (messageBundle != null) {
+		            visitLdcInsn(messageBundle);
+		        } else {
+		            visitInsn(ACONST_NULL);
+		        }
+		        visitMethodInsn(
+		                        INVOKESTATIC,
+		                        TR_TYPE.getInternalName(),
+		                        "register",
+		                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+		                                                                                   Type.getType(Class.class),
+		                                                                                   Type.getType(String.class),
+		                                                                                   Type.getType(String.class) }), false);
+        
 
         visitSetTraceObjectField();
         
@@ -312,9 +320,13 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
 			
 			getClassAdapter().visitAnnotation(AbstractRasClassAdapter.TRACE_OPTIONS_TYPE.getDescriptor(), true);
 	    	TraceOptionsData traceOptionsData = getClassAdapter().getTraceOptionsData();
-	        //visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
+	    	//If multiple groups defined - can't override existing call
+	    	if (traceOptionsData.getTraceGroups().size() > 1) {
+	    		return;
+	    	}
 
 	        List<String> traceGroups = traceOptionsData.getTraceGroups();
+	        
 	        String traceGroupName = traceGroups.isEmpty() ? null : traceGroups.get(0);
 	        if (traceGroupName != null) {
 	            visitLdcInsn(traceGroupName);
