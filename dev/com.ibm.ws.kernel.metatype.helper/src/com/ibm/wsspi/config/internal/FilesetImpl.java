@@ -18,15 +18,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -51,15 +51,14 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
 /* disable-formatter */
-@Component(service = FileMonitor.class,
+@Component(service = {},
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            configurationPid = "com.ibm.ws.kernel.metatype.helper.fileset",
            property = {
-                       "service.vendor=IBM",
-                       "monitor.filter=files",
-                       "monitor.recurse:Boolean=false" })
-@DSExt.ConfigurableServiceProperties
+                        "service.vendor=IBM",
+                        "monitor.filter=files",
+                        "monitor.recurse:Boolean=false" })
 public class FilesetImpl implements Fileset, FileMonitor {
     private static final TraceComponent tc = Tr.register(FilesetImpl.class);
     private static final boolean DEFAULT_CASE_SENSITIVITY = true; // default to true
@@ -98,7 +97,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
      * MONITOR_INTERVAL
      * fileset = the name of the fileset
      */
-    private final Map<String, Object> fileMonitorProps = new HashMap<String, Object>(5);
+    private final Map<String, Object> fileMonitorProps = new Hashtable<String, Object>(5);
 
     /** The set of files matching the filters */
     private Collection<File> fileset = Collections.emptySet();
@@ -116,8 +115,10 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
     private boolean listenersNotified;
 
+    private ServiceRegistration<FileMonitor> fileMonitorRegistration;
+
     @Activate
-    protected Map<String, Object> activate(ComponentContext context, Map<String, Object> props) {
+    protected void activate(ComponentContext context, Map<String, Object> props) {
         this.context = context;
 
         //set the Fileset id
@@ -125,8 +126,6 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
         //set the configured properties as required
         modified(props);
-
-        return fileMonitorProps;
     }
 
     @Deactivate
@@ -135,6 +134,12 @@ public class FilesetImpl implements Fileset, FileMonitor {
             filesetRegistration.unregister();
             filesetRegistration = null;
         }
+        fileMonitorRegistration.unregister();
+    }
+
+    @SuppressWarnings("unchecked")
+    Dictionary<String, Object> getServiceRegistrationProps() {
+        return (Dictionary<String, Object>) fileMonitorProps;
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
@@ -162,7 +167,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
     /**
      * Returns the directory for the fileset.
-     * 
+     *
      * @return the directory for the fileset.
      */
     @Override
@@ -173,7 +178,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
     /**
      * @param dir
-     *            the base dir to set
+     *                the base dir to set
      */
     private void setDir(String basedir) {
         // clean up the basedir to use only / for ease of regex
@@ -189,7 +194,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
     /**
      * @param caseSensitive
-     *            boolean to set whether filters are case sensitive
+     *                          boolean to set whether filters are case sensitive
      */
     private void setCaseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
@@ -197,7 +202,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
     /**
      * @param includesAttribute
-     *            the includesAttribute to set
+     *                              the includesAttribute to set
      */
     private void setIncludesAttribute(String includesAttribute) {
         this.includesAttribute = includesAttribute;
@@ -205,7 +210,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
     /**
      * @param excludesAttribute
-     *            the excludesAttribute to set
+     *                              the excludesAttribute to set
      */
     private void setExcludesAttribute(String excludesAttribute) {
         this.excludesAttribute = excludesAttribute;
@@ -214,7 +219,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
     /**
      * Set the monitor interval attribute and return a boolean indicating
      * if the {@link FileMonitor} should be re-registered.
-     * 
+     *
      * @param monitorAttributeObject the monitor interval attribute to set.
      */
     private void setMonitorAttribute(Long monitorInterval) {
@@ -226,7 +231,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
     }
 
     @Modified
-    protected synchronized Map<String, Object> modified(Map<String, Object> props) {
+    protected synchronized void modified(Map<String, Object> props) {
         // if the attributes are being set or reset then the cached files are
         // no longer current
         fileMonitorProps.putAll(props);
@@ -258,7 +263,11 @@ public class FilesetImpl implements Fileset, FileMonitor {
                     break;
             }
         }
-        return fileMonitorProps;
+        if (fileMonitorRegistration != null) {
+            fileMonitorRegistration.setProperties(getServiceRegistrationProps());
+        } else {
+            fileMonitorRegistration = context.getBundleContext().registerService(FileMonitor.class, this, getServiceRegistrationProps());
+        }
     }
 
     /**
@@ -486,7 +495,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
         returnCached = false;
 
         if (filesetRegistration == null) {
-            filesetRegistration = context.getBundleContext().registerService(Fileset.class, this, context.getProperties());
+            filesetRegistration = context.getBundleContext().registerService(Fileset.class, this, getServiceRegistrationProps());
         }
         notifyListeners();
     }

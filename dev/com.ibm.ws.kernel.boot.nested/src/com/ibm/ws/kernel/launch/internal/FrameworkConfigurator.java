@@ -40,8 +40,8 @@ public class FrameworkConfigurator {
      * allow sub-classes to further massage framework initialization properties.
      *
      * @param config
-     *            BootstrapConfig object containing the active set of properties
-     *            that will be used to initialize the framework.
+     *                   BootstrapConfig object containing the active set of properties
+     *                   that will be used to initialize the framework.
      */
     public static void configure(BootstrapConfig config) {
         extraBootDelegationPackages(config);
@@ -95,7 +95,7 @@ public class FrameworkConfigurator {
         // the jar files we're installing (for file:// URLs) have changed if
         // osgi is not starting clean. If the bundle jar has changed, associated
         // cached data is tossed.
-        config.put("osgi.checkConfiguration", "true");
+        config.putIfAbsent("osgi.checkConfiguration", "true");
 
         // We do not want Bundle-ActivationPolicy: lazy to cause bundle
         // resolution to automatically start bundles.
@@ -108,8 +108,13 @@ public class FrameworkConfigurator {
         // It would be good if we could not set this, but it really craters the build image if we don't
         // this is because build image installs loads of bundles together that introduce enormous uses constraint issues.
         config.put("equinox.resolver.revision.batch.size", "1");
+
         // It is not clear that multi-threading really helps with performance of the resolver.
-        config.put("equinox.resolver.thead.count", "1");
+        config.putIfAbsent("equinox.resolver.thread.count", "1");
+
+        // By default use single thread for activating bundles from start-level
+        // Set to -1 in bootstrap.properties results in using the number of threads == to num processors
+        config.putIfAbsent("equinox.start.level.thread.count", "1");
 
         // The IBM shared class adapter issues a message if it's loaded on a
         // non-IBM JVM.  Since it does no harm, we'll suppress the message.
@@ -172,8 +177,8 @@ public class FrameworkConfigurator {
         // adding org.apache.xml for defect 53421; hope to remove when strategic fix is available
         // adding org.apache.xerces for defect 94476
         final String defaultDelegation = "com.ibm.ws.kernel.boot.jmx.internal," +
-                                         "sun.*,com.sun.*,com.ibm.lang.management,com.ibm.ws.boot.delegated.*," + 
-                                         "org.apache.xml.*,org.apache.xerces.*,com.ibm.xylem.*,com.ibm.xml.*," + 
+                                         "sun.*,com.sun.*,com.ibm.lang.management,com.ibm.ws.boot.delegated.*," +
+                                         "org.apache.xml.*,org.apache.xerces.*,com.ibm.xylem.*,com.ibm.xml.*," +
                                          "com.ibm.xtq.*,com.ibm.net.ssl.*,com.ibm.crypto.*,com.ibm.security.*,jdk.*";
 
         String osgiDelegationPackages = config.get(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION);
@@ -186,10 +191,7 @@ public class FrameworkConfigurator {
         config.put(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION, osgiDelegationPackages);
 
         // If the config does not contain osgi.resolver.preferSystemPackages, set to "false" by default
-        String preferSystem = config.get(BootstrapConstants.CONFIG_OSGI_PREFER_SYSTEM_PACKAGES);
-        if (preferSystem == null) {
-            config.put(BootstrapConstants.CONFIG_OSGI_PREFER_SYSTEM_PACKAGES, "false");
-        }
+        config.putIfAbsent(BootstrapConstants.CONFIG_OSGI_PREFER_SYSTEM_PACKAGES, "false");
     }
 
     /**
@@ -202,7 +204,7 @@ public class FrameworkConfigurator {
      *
      * @return non-null instance of the framework factory.
      * @throws LaunchException
-     *             if Factory can not be found or instantiated.
+     *                             if Factory can not be found or instantiated.
      * @see {@link KernelUtils#getServiceClass(BufferedReader)}
      */
     public static FrameworkFactory getFrameworkFactory(ClassLoader loader) {

@@ -35,7 +35,6 @@ test.classpath.wlp.include: api/spec/*.jar,api/ibm/*.jar
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.kernel.service.location;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
 	com.ibm.ws.runtime.update;version=latest, \

@@ -24,7 +24,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 BadConfigTests.class,
                 MergedConfigTests.class,
                 VariableMergeTests.class,
-                MetatypeProviderTest.class,
                 WSConfigurationHelperTest.class,
                 //SchemaGeneratorMBeanTest.class,
                 FeaturelistGeneratorMBeanTest.class,

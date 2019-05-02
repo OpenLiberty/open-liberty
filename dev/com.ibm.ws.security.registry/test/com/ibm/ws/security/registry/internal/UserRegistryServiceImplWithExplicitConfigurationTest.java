@@ -28,6 +28,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -73,7 +74,7 @@ public class UserRegistryServiceImplWithExplicitConfigurationTest {
 
         basicConfigMap.put(UserRegistryService.REGISTRY_TYPE, "Basic");
 
-
+        final BundleContext mockBundleContext = mock.mock(BundleContext.class);
         mock.checking(new Expectations() {
             {
 
@@ -98,6 +99,10 @@ public class UserRegistryServiceImplWithExplicitConfigurationTest {
                 will(returnValue(ur1));
                 allowing(componentContext).locateService(UserRegistryServiceImpl.KEY_USER_REGISTRY, ur2Ref);
                 will(returnValue(ur2));
+
+                allowing(componentContext).getBundleContext();
+                will(returnValue(mockBundleContext));
+                ignoring(mockBundleContext);
 
             }
         });
@@ -504,6 +509,5 @@ public class UserRegistryServiceImplWithExplicitConfigurationTest {
 
         getUserRegistry_checkExpectedInvalidReferenceExceptionAndMessageLogged("basic1");
     }
-
 
 }

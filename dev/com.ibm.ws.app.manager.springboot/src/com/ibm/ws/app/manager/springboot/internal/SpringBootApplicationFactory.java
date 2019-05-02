@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,16 +49,24 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 public class SpringBootApplicationFactory implements DeployedAppInfoFactory {
 
     private final AtomicInteger nextAppID = new AtomicInteger(0);
-    private BundleContext bundleContext;
-    @Reference
-    protected DeployedAppServices deployedAppServices;
-    @Reference
-    private LibIndexCache libIndexCache;
-    @Reference(target = "(type=" + SPRING_APP_TYPE + ")")
-    private ModuleHandler springModuleHandler;
+    private final BundleContext bundleContext;
+    protected final DeployedAppServices deployedAppServices;
+    private final LibIndexCache libIndexCache;
+    private final ModuleHandler springModuleHandler;
     private final List<Container> springBootSupportContainers = new CopyOnWriteArrayList<Container>();
     private final Map<ServiceReference<SpringBootSupport>, List<Container>> springBootSupports = new ConcurrentHashMap<>();
     private final Map<Class<?>, ContainerInstanceFactory<?>> containerInstanceFactories = new ConcurrentHashMap<>();
+
+    @Activate
+    public SpringBootApplicationFactory(BundleContext bundleContext,
+                                        @Reference DeployedAppServices deployedAppServices,
+                                        @Reference LibIndexCache libIndexCache,
+                                        @Reference(target = "(type=" + SPRING_APP_TYPE + ")") ModuleHandler springModuleHandler) {
+        this.bundleContext = bundleContext;
+        this.deployedAppServices = deployedAppServices;
+        this.libIndexCache = libIndexCache;
+        this.springModuleHandler = springModuleHandler;
+    }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "removeSpringBootSupport")
     protected void addSpringBootSupport(SpringBootSupport support, ServiceReference<SpringBootSupport> ref) {
@@ -82,11 +89,6 @@ public class SpringBootApplicationFactory implements DeployedAppInfoFactory {
 
     protected void removeContainerInstanceFactory(@SuppressWarnings("rawtypes") ContainerInstanceFactory factory) {
         containerInstanceFactories.remove(factory.getType());
-    }
-
-    @Activate
-    protected void activate(ComponentContext ctx) {
-        bundleContext = ctx.getBundleContext();
     }
 
     public BundleContext getBundleContext() {
