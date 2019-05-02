@@ -449,4 +449,48 @@ public class CxfClientPropsTestServlet extends FATServlet {
             assertNotSame("hello", echoValue2.toLowerCase());
         }        
     }
+    
+    @Test
+    public void testMaxRetransmits(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testMaxRetransmits";
+        String status = "301";        
+
+        _log.info(m + " Test status code= " + status);
+        
+        Client client1 = ClientBuilder.newBuilder()
+                        .property("client.Connection", "KEEP_ALIVE")
+                        .property("client.AutoRedirect", "true")                        
+                        .property("client.AllowChunking", "false")
+                        .property("client.MaxRetransmits", -1)
+                        .build();
+        
+        Response r1 = client1.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                        .path("redirecthop1")
+                        .path("Hello")
+                        .path(status)
+                        .request()
+                        .get();
+        
+        _log.info("    " + m + " Received r1.getStatus() " + r1.getStatus());        
+        String echoValue1 = r1.readEntity(String.class);        
+        assertEquals("hello", echoValue1.toLowerCase());        
+        
+        Client client2 = ClientBuilder.newBuilder()                        
+                        .property("client.Connection", "KEEP_ALIVE")
+                        .property("client.AutoRedirect", "true")                        
+                        .property("client.AllowChunking", "false")
+                        .property("client.MaxRetransmits", 1)
+                        .build();        
+        
+        Response r2 = client2.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/")
+                            .path("redirecthop1")
+                            .path("Hello")
+                            .path(status)                            
+                            .request()
+                            .get();
+            
+        _log.info("    " + m + " Received r2.getStatus() " + r2.getStatus());
+        String echoValue2 = r2.readEntity(String.class);        
+        assertNotSame("hello", echoValue2.toLowerCase());              
+    }
 }
