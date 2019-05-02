@@ -4735,6 +4735,95 @@ public class H2FATDriverServlet extends FATServlet {
         handleErrors(h2Client, testName);
     }
 
+    /**
+     * Send an upgrade header to a server that has servlet 4.0, but has HTTP/2 turned off.
+     * This should result in a timeout waiting for the 101 response.
+     *
+     * @param the Http2Client that will expect a header response
+     * @return the expected FrameHeaders
+     */
+    public void servlet40H2Off(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "servlet40H2Off";
+
+        // Send the upgrade request
+        // This is a normal http GET request with an H2 upgrade header
+        // Since the server is running servlet 4.0 but with http/2 turned off, it should
+        // just return a normal http 200 response
+        // There should be no 101 response received since the connection is not upgraded
+        // The test should timeout waiting for a 101 response
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI, HTTPUtils.HTTPMethod.POST);
+
+        StringBuilder message = new StringBuilder("The following exceptions were found: ");
+        boolean testFailed = true;
+        try {
+            h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+        } catch (Exception cptoe) {
+            // This should be a clientPrefaceTimeoutException which is expected
+            testFailed = false;
+            message.append(cptoe.getClass() + ": " + cptoe.getMessage());
+        }
+
+        Assert.assertFalse(message.toString() + " in test: " + testName, testFailed);
+    }
+
+    /**
+     * Send an upgrade header to a server that has servlet 3.1, but has HTTP/2 turned off.
+     * This should result in a timeout waiting for the 101 response.
+     *
+     * @param the Http2Client that will expect a header response
+     * @return the expected FrameHeaders
+     */
+    public void servlet31H2Off(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "servlet31H2Off";
+
+        // Send the upgrade request
+        // This is a normal http request, but with an H2 upgrade header
+        // Since the server is running servlet 3.1 but with http/2 off, it should
+        // just return a normal http 200 response
+        // There should be no 101 response received since the connection is not upgraded
+        // The test should timeout waiting for a 101 response
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI, HTTPUtils.HTTPMethod.POST);
+
+        boolean testFailed = true;
+        try {
+            h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+        } catch (Exception cptoe) {
+            // This should be a clientPrefaceTimeoutException,
+            testFailed = false;
+        }
+
+        Assert.assertFalse("In test: " + testName, testFailed);
+    }
+
+    /**
+     * Send an upgrade header to a server that has servlet 3.1, but has HTTP/2 turned on.
+     * This should result in a normal HTTP/2 response
+     *
+     * @param the Http2Client that will expect a header response
+     * @return the expected FrameHeaders
+     */
+    public void servlet31H2On(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "servlet31H2On";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+        addFirstExpectedHeaders(h2Client);
+
+        String dataString = "ABC123";
+        h2Client.addExpectedFrame(new FrameData(1, dataString.getBytes(), 0, false, false, false));
+
+        h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI, HTTPUtils.HTTPMethod.POST);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        handleErrors(h2Client, testName);
+    }
+
     void handleErrors(Http2Client client, String testName) {
         boolean testFailed = false;
         List<Exception> errors = client.getReportedExceptions();
@@ -4839,4 +4928,5 @@ public class H2FATDriverServlet extends FATServlet {
         client.addExpectedFrame(secondFrameHeaders);
         return secondFrameHeaders;
     }
+
 }
