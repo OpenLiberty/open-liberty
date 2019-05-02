@@ -15,5 +15,5 @@ IBM-API-Package: \
   javax.xml.bind.util; type="spec"
 -features=\
   com.ibm.websphere.appserver.internal.optional.jaxb-2.3
-kind=ga
+kind=noship
 edition=core

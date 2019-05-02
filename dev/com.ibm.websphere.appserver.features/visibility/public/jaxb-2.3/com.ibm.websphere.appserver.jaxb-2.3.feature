@@ -19,6 +19,9 @@ Subsystem-Name: Java XML Bindings 2.3
 -features=\
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.internal.optional.jaxb-2.3
+-bundles=\
+  com.ibm.websphere.javaee.activation.1.1; location:="dev/api/spec/,lib/", \
+  com.ibm.websphere.javaee.jaxb.2.3; location:="dev/api/spec/,lib/"
 -files=\
   bin/jaxb/xjc.bat, \
   bin/jaxb/tools/ws-schemagen.jar, \
@@ -26,5 +29,5 @@ Subsystem-Name: Java XML Bindings 2.3
   bin/jaxb/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
   bin/jaxb/tools/ws-xjc.jar, \
   bin/jaxb/schemagen.bat
-kind=ga
+kind=noship
 edition=full
