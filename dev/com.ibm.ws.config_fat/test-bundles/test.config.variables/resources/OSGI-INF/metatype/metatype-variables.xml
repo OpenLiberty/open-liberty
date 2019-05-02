@@ -29,6 +29,7 @@
 	<AD id="mangledCapsEnvVar" type="String" required="false" default="${from-environment-caps}"/>
 	<AD id="defaultVar" type="String" required="false" default="${variableDefaultTest}"/>
 	<AD id="metaRefVar" type="String" required="false" default="${defaultVar}"/>
+	<AD id="shouldBeMetatype" type="String" required="false" default="fromConfig"/>
 </OCD>
 
  
