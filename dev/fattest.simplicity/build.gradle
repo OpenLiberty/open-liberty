@@ -46,7 +46,7 @@ configurations {
 }
 
 dependencies {
-    arquillianFeature 'io.openliberty.arquillian:arquillian-liberty-support:1.0.4:feature@zip'
+    arquillianFeature 'io.openliberty.arquillian:arquillian-liberty-support:1.0.5:feature@zip'
 }
 
 task extractArquillianSupportFeature(type:Sync) {
