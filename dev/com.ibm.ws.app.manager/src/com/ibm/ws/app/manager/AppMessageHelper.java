@@ -24,16 +24,14 @@ import com.ibm.wsspi.application.handler.ApplicationHandler;
  */
 @Trivial
 public class AppMessageHelper {
-    private static final TraceComponent tc = Tr.register("AppMessageHelper", AppMessageHelper.class,
-                                                         new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
-                                                         com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
+    private static final TraceComponent tc = Tr.register(AppMessageHelper.class);
 
     private static final AppMessageHelper defaultInstance = new AppMessageHelper();
 
     /**
      * Log an audit message.
-     *
-     * @param key    message key for the application manager messages file.
+     * 
+     * @param key message key for the application manager messages file.
      * @param params message parameters.
      */
     public void audit(String key, Object... params) {
@@ -42,8 +40,8 @@ public class AppMessageHelper {
 
     /**
      * Format a message.
-     *
-     * @param key    message key for the application manager messages file.
+     * 
+     * @param key message key for the application manager messages file.
      * @param params message parameters.
      * @return the translated message.
      */
@@ -53,8 +51,8 @@ public class AppMessageHelper {
 
     /**
      * Log an error message.
-     *
-     * @param key    message key for the application manager messages file.
+     * 
+     * @param key message key for the application manager messages file.
      * @param params message parameters.
      */
     public void error(String key, Object... params) {
@@ -64,7 +62,7 @@ public class AppMessageHelper {
     /**
      * Retrieves the message helper for the specified application handler.
      * If there isn't any, then returns the default message helper for app manager.
-     *
+     * 
      * @param handler application handler for which to obtain the corresponding message helper.
      * @return message helper.
      */
@@ -74,8 +72,8 @@ public class AppMessageHelper {
 
     /**
      * Log an informational message.
-     *
-     * @param key    message key for the application manager messages file.
+     * 
+     * @param key message key for the application manager messages file.
      * @param params message parameters.
      */
     public void info(String key, Object... params) {
@@ -84,8 +82,8 @@ public class AppMessageHelper {
 
     /**
      * Log a warning message.
-     *
-     * @param key    message key for the application manager messages file.
+     * 
+     * @param key message key for the application manager messages file.
      * @param params message parameters.
      */
     public void warning(String key, Object... params) {

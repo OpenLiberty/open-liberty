@@ -28,9 +28,7 @@ import com.ibm.wsspi.application.handler.ApplicationHandler;
  *
  */
 class StopAction implements Action {
-    private static final TraceComponent _tc = Tr.register("StopAction", StopAction.class,
-                                                          new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
-                                                          com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
+    private static final TraceComponent _tc = Tr.register(StopAction.class);
     private final ApplicationInstallInfo _aii;
     private final FutureMonitor _monitor;
     private final AtomicReference<StateChangeCallback> _callback = new AtomicReference<StateChangeCallback>();
