@@ -12,6 +12,7 @@ package com.ibm.ws.logging.internal.impl;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -328,10 +329,7 @@ public final class IntrospectionLevelMember {
                             String packageName = currentPackage.getName();
                             boolean isOpenCheck = (boolean) isOpen.invoke(module, packageName);
                             if (isOpenCheck) {
-                                Method setAccessible = Field.class.getMethod("setAccessible");
-                                for (int i = 0; i < tempObjectFields.length; i++) {
-                                    setAccessible.invoke(tempObjectFields[i]);
-                                }
+                                AccessibleObject.setAccessible(tempObjectFields, true);
                             }
                         }
                     }
