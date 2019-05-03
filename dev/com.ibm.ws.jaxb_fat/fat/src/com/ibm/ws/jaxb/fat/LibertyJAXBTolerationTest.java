@@ -14,8 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,7 +26,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("JAXB-2.3")
+@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
 public class LibertyJAXBTolerationTest extends FATServletClient {
 
     @Server("jaxb_optional_feature_toleration_fat")
@@ -36,15 +34,6 @@ public class LibertyJAXBTolerationTest extends FATServletClient {
 
     @Server("jaxb_internal_optional_feature_toleration_fat")
     public static LibertyServer internalOptionalServer;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-    }
 
     /**
      * Separate server startup needed because the goal is to test override of optional.jaxb-2.2 by jaxb-2.3

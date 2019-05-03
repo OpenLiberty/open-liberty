@@ -16,4 +16,4 @@ IBM-API-Package: \
 -features=\
   com.ibm.websphere.appserver.internal.optional.jaxb-2.3
 kind=noship
-edition=core
+edition=full

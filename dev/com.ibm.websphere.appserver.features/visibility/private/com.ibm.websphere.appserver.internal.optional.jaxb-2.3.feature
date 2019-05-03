@@ -15,4 +15,4 @@ Subsystem-Name: Java XML Bindings 2.3 for all Java versions
   com.ibm.ws.org.apache.geronimo.osgi.registry.1.1, \
   com.ibm.ws.jaxb.tools.2.3
 kind=noship
-edition=core
+edition=full
