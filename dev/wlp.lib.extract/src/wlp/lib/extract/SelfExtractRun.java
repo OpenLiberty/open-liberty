@@ -486,7 +486,6 @@ public class SelfExtractRun extends SelfExtract {
 
     private static void setContextClassLoader(final ClassLoader newLoader) {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
-
             @Override
             public Void run() {
                 Thread.currentThread().setContextClassLoader(newLoader);
