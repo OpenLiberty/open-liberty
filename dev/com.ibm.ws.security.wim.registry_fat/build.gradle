@@ -30,7 +30,8 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealm',
-    'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealmMultipleRepos'
+    'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealmMultipleRepos',
+    'com.ibm.ws.security.wim.registry.fat.SingleLDAP'
   ]
   servers.each { server ->
     copy { 

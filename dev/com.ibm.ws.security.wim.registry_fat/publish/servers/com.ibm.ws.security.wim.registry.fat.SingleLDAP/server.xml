@@ -1,0 +1,32 @@
+<server>
+	<include location="../fatTestPorts.xml" />
+	<featureManager>
+		<feature>appSecurity-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+		<feature>timedexit-1.0 </feature>
+	</featureManager>
+
+	<ldapRegistry id="LDAP" realm="defaultWIMFileBasedRealm"
+		host="vmm-mad1.rtp.raleigh.ibm.com" port="389" ignoreCase="true"
+		baseDN="CN=Users,DC=vmm,DC=com"
+		bindDN="cn=administrator,cn=users,dc=vmm,dc=com"
+		bindPassword="password" ldapType="Microsoft Active Directory"
+		sslEnabled="false">
+
+		<activedFilters
+			userFilter="(&amp;(sAMAccountName=%v)(objectcategory=user))"
+			groupFilter="(&amp;(cn=%v)(objectcategory=group))"
+			userIdMap="user:sAMAccountName" groupIdMap="*:cn"
+			groupMemberIdMap="memberOf:member">
+		</activedFilters>
+
+	</ldapRegistry>
+	<federatedRepository>
+		<primaryRealm name="defaultWIMFileBasedRealm"
+			delimiter="#" allowOpIfRepoDown="true">
+			<participatingBaseEntry
+				name="CN=Users,DC=vmm,DC=com" />
+
+		</primaryRealm>
+	</federatedRepository>
+</server>
