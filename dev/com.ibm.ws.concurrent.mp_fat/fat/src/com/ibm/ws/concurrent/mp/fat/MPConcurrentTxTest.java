@@ -59,9 +59,10 @@ public class MPConcurrentTxTest extends FATServletClient {
 
         runTest(server, APP_NAME + "/MPConcurrentTestServlet", testName.getMethodName());
 
-        // This test involves an asynchronous transaction timeout, which can continue logging FFDC on another
-        // thread after the test's servlet method completes. Wait for the FFDC message to appear in the logs
+        // This test involves an asynchronous transaction timeout, which can continue logging FFDC and error messages on another
+        // thread after the test's servlet method completes. Wait for the FFDC and error messages to appear in the logs
         // in order to prevent it from overlapping subsequent tests where it would be considered a test failure.
         server.waitForStringInLogUsingMark("FFDC1015I.*IllegalStateException");
+        server.waitForStringInLogUsingMark("DSRA0302E.*XA_RBROLLBACK");
     }
 }
