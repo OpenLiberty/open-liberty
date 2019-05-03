@@ -13,6 +13,8 @@ package com.ibm.ws.microprofile.config13.variableServerXML.web;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
+import org.junit.Test;
+
 import componenttest.app.FATServlet;
 
 /**
@@ -24,10 +26,12 @@ public class VariableServerXMLServlet extends FATServlet {
     @Inject
     VariableServerXMLBean bean;
 
+    @Test
     public void varPropertiesBaseTest() throws Exception {
         bean.varPropertiesBaseTest();
     }
 
+    @Test
     public void varPropertiesOrderTest() throws Exception {
         bean.varPropertiesOrderTest();
     }
@@ -46,5 +50,20 @@ public class VariableServerXMLServlet extends FATServlet {
 
     public void appPropertiesAfterTest() throws Exception {
         bean.appPropertiesAfterTest();
+    }
+
+    @Test
+    public void testDefaultVariableValueNotUsed() {
+        bean.testDefaultVariableValueNotUsed();
+    }
+
+    @Test
+    public void testDefaultVariableValueUsed() {
+        bean.testDefaultVariableValueUsed();
+    }
+
+    @Test
+    public void testDefaultValueNotUsed() {
+        bean.testDefaultValueNotUsed();
     }
 }

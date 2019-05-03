@@ -137,7 +137,7 @@ public class OSGiConfigUtils {
      * Find a service of the given type
      *
      * @param bundleContext The context to use to find the service
-     * @param serviceClass The class of the required service
+     * @param serviceClass  The class of the required service
      * @return the service instance or null
      */
     public static <T> T getService(BundleContext bundleContext, Class<T> serviceClass) {
@@ -155,7 +155,7 @@ public class OSGiConfigUtils {
     /**
      * Get the Application ServiceReferences which has the given name, or null if not found
      *
-     * @param bundleContext The context to use to find the application service references
+     * @param bundleContext   The context to use to find the application service references
      * @param applicationName The application name to look for
      * @return A ServiceReference for the given application
      */
@@ -185,7 +185,7 @@ public class OSGiConfigUtils {
     /**
      * Get the internal OSGi identifier for the Application with the given name
      *
-     * @param bundleContext The context to use to find the Application reference
+     * @param bundleContext   The context to use to find the Application reference
      * @param applicationName The application name to look for
      * @return The application pid
      */
@@ -268,7 +268,7 @@ public class OSGiConfigUtils {
     /**
      * Get the Configuration object which represents a <appProperties> element in the server.xml for a given application
      *
-     * @param bundleContext The context to use in looking up OSGi service references
+     * @param bundleContext   The context to use in looking up OSGi service references
      * @param applicationName The application name to look for
      * @return The Configuration instance
      */
@@ -314,7 +314,7 @@ public class OSGiConfigUtils {
     }
 
     /**
-     * Get a Map that represents the name/value pairs of <variable> elements in the server.xml
+     * Get a Map that represents the name/value pairs of <variable name="x" value="y"> elements in the server.xml
      *
      * @param bundleContext the context to use in looking up OSGi service references
      * @return
@@ -326,6 +326,23 @@ public class OSGiConfigUtils {
 
             // Retrieve the Map of variables that have been defined in the server.xml
             theMap.putAll(configVars.getUserDefinedVariables());
+        }
+        return theMap;
+    }
+
+    /**
+     * Get a Map that represents the name/value pairs of <variable name="x" defaultValue="y"> elements in the server.xml
+     *
+     * @param bundleContext the context to use in looking up OSGi service references
+     * @return
+     */
+    public static Map<String, String> getDefaultVariablesFromServerXML(BundleContext bundleContext) {
+        Map<String, String> theMap = new HashMap<>();
+        if (FrameworkState.isValid()) {
+            ConfigVariables configVars = getConfigVariables(bundleContext);
+
+            // Retrieve the Map of variables that have been defined in the server.xml
+            theMap.putAll(configVars.getUserDefinedVariableDefaults());
         }
         return theMap;
     }

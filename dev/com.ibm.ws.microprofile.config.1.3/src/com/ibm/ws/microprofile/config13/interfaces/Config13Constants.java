@@ -26,5 +26,6 @@ public class Config13Constants {
     public static final String[] SYSTEM_PREFIXES = new String[] { CFG_CONFIG_PREFIX, CFG_SERVICE_PREFIX };
     public static final int APP_PROPERTY_ORDINAL = 600;
     public static final int SERVER_XML_VARIABLE_ORDINAL = 500;
+    public static final int SERVER_XML_DEFAULT_VARIABLE_ORDINAL = 1;
 
 }

@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.Collections;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -71,6 +72,7 @@ public class VariableServerXMLTest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config13.variableServerXML.*");
+        server.copyFileToLibertyServerRoot("original/variableServerXMLApp.xml");
         server.startServer();
     }
 
@@ -79,23 +81,13 @@ public class VariableServerXMLTest extends FATServletClient {
         server.stopServer();
     }
 
-    @Test
-    public void testBasicConfig() throws Exception {
-        test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBaseTest");
-    }
-
-    @Test
-    public void testConfigOrder() throws Exception {
-        test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesOrderTest");
-    }
-
     /**
      * Copy a server config file to the server root and wait for notification that the server config has been updated
      *
      * @param filename
      * @throws Exception
      */
-    private void copyConfigFileToLibertyServerRoot(String filename) throws Exception {
+    private static void copyConfigFileToLibertyServerRoot(String filename) throws Exception {
         server.setMarkToEndOfLog();
         server.copyFileToLibertyServerRoot(filename);
 
@@ -104,10 +96,13 @@ public class VariableServerXMLTest extends FATServletClient {
         Thread.sleep(ConfigConstants.DEFAULT_DYNAMIC_REFRESH_INTERVAL * 2); // We need this pause so that the MP config change is picked up through the polling mechanism
     }
 
+    @Before
+    public void resetConfigFile() throws Exception {
+        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
+    }
+
     @Test
     public void testChangeVariablesConfig() throws Exception {
-
-        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
 
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBeforeTest");
@@ -121,8 +116,6 @@ public class VariableServerXMLTest extends FATServletClient {
 
     @Test
     public void testChangeAppPropertiesConfig() throws Exception {
-
-        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
 
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesBeforeTest");
