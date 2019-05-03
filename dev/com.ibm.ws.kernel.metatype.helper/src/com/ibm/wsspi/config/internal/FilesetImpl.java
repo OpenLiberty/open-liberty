@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -42,6 +41,8 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.config.FilesetChangeListener;
 import com.ibm.wsspi.config.internal.ConfigTypeConstants.FilesetAttribute;
@@ -59,7 +60,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
                         "service.vendor=IBM",
                         "monitor.filter=files",
                         "monitor.recurse:Boolean=false" })
-public class FilesetImpl implements Fileset, FileMonitor {
+public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplier {
     private static final TraceComponent tc = Tr.register(FilesetImpl.class);
     private static final boolean DEFAULT_CASE_SENSITIVITY = true; // default to true
     private static final String DEFAULT_INCLUDES = "*"; // default to * (i.e. all files in
@@ -115,7 +116,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
 
     private boolean listenersNotified;
 
-    private ServiceRegistration<FileMonitor> fileMonitorRegistration;
+    private final ServiceRegistrationModifier<FileMonitor> fileMonitorRegistration = new ServiceRegistrationModifier<>(FileMonitor.class, this, this);
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
@@ -137,9 +138,10 @@ public class FilesetImpl implements Fileset, FileMonitor {
         fileMonitorRegistration.unregister();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    Dictionary<String, Object> getServiceRegistrationProps() {
-        return (Dictionary<String, Object>) fileMonitorProps;
+    public Hashtable<String, Object> getServiceProperties() {
+        return (Hashtable<String, Object>) fileMonitorProps;
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
@@ -263,11 +265,7 @@ public class FilesetImpl implements Fileset, FileMonitor {
                     break;
             }
         }
-        if (fileMonitorRegistration != null) {
-            fileMonitorRegistration.setProperties(getServiceRegistrationProps());
-        } else {
-            fileMonitorRegistration = context.getBundleContext().registerService(FileMonitor.class, this, getServiceRegistrationProps());
-        }
+        fileMonitorRegistration.registerOrUpdate(context.getBundleContext());
     }
 
     /**
@@ -494,9 +492,8 @@ public class FilesetImpl implements Fileset, FileMonitor {
             Tr.debug(tc, "FileMonitor init completed for fileset: baseline " + baseline, pid);
         returnCached = false;
 
-        if (filesetRegistration == null) {
-            filesetRegistration = context.getBundleContext().registerService(Fileset.class, this, getServiceRegistrationProps());
-        }
+        filesetRegistration = context.getBundleContext().registerService(Fileset.class, this, getServiceProperties());
+
         notifyListeners();
     }
 

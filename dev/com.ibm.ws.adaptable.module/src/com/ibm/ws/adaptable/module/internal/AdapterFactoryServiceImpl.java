@@ -12,7 +12,6 @@ package com.ibm.ws.adaptable.module.internal;
 
 import java.security.AccessController;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -32,6 +30,8 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.kernel.service.util.SecureAction;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -48,7 +48,7 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM" },
            service = {})
-public class AdapterFactoryServiceImpl implements AdapterFactoryService {
+public class AdapterFactoryServiceImpl implements AdapterFactoryService, ServicePropertySupplier {
 
     private final static String toType = "toType";
     private final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
@@ -58,47 +58,22 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
     private final Set<String> containerToTypes = Collections.synchronizedSet(new HashSet<String>());
     private final Set<String> entryToTypes = Collections.synchronizedSet(new HashSet<String>());
     private Map<String, Object> baseProperties;
-    private ServiceRegistration<AdapterFactoryService> registration;
+    private final ServiceRegistrationModifier<AdapterFactoryService> registration = new ServiceRegistrationModifier<>(AdapterFactoryService.class, this, this);
 
     @Activate
     protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
         entryHelperMap.activate(cCtx);
         containerHelperMap.activate(cCtx);
         baseProperties = properties;
-        updateRegistration(cCtx);
+        registration.registerOrUpdate(cCtx.getBundleContext());
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cCtx) {
-        unregister();
+        registration.unregister();
         entryHelperMap.deactivate(cCtx);
         containerHelperMap.deactivate(cCtx);
         baseProperties = null;
-    }
-
-    private synchronized void updateRegistration(final ComponentContext cCtx) {
-        Dictionary<String, Object> props = getProperties();
-        if (props == null) {
-            return;
-        }
-        if (cCtx != null) {
-            if (registration == null) {
-                registration = cCtx.getBundleContext().registerService(AdapterFactoryService.class, this, props);
-                return;
-            }
-        }
-        if (registration != null) {
-            registration.setProperties(props);
-        } else {
-            // TODO FFDC?
-        }
-    }
-
-    private synchronized void unregister() {
-        if (registration != null) {
-            registration.unregister();
-            registration = null;
-        }
     }
 
     @Reference(name = "containerHelper", service = ContainerAdapter.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
@@ -119,7 +94,7 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 containerHelperMap.putReference(key, helper);
             }
         }
-        updateRegistration(null);
+        registration.update();
     }
 
     @Reference(name = "entryHelper", service = EntryAdapter.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
@@ -140,7 +115,7 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 entryHelperMap.putReference(key, helper);
             }
         }
-        updateRegistration(null);
+        registration.update();
     }
 
     protected void unsetContainerHelper(ServiceReference<ContainerAdapter<?>> helper) {
@@ -165,7 +140,7 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 }
             }
         }
-        updateRegistration(null);
+        registration.update();
     }
 
     protected void unsetEntryHelper(ServiceReference<EntryAdapter<?>> helper) {
@@ -190,14 +165,15 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 }
             }
         }
-        updateRegistration(null);
+        registration.update();
     }
 
-    private Dictionary<String, Object> getProperties() {
+    @Override
+    public Hashtable<String, Object> getServiceProperties() {
         if (baseProperties == null) {
             return null;
         }
-        Dictionary<String, Object> props = new Hashtable<String, Object>(baseProperties);
+        Hashtable<String, Object> props = new Hashtable<String, Object>(baseProperties);
         props.put("containerToType", containerToTypes.toArray(new String[containerToTypes.size()]));
         props.put("entryToType", entryToTypes.toArray(new String[entryToTypes.size()]));
         return props;
