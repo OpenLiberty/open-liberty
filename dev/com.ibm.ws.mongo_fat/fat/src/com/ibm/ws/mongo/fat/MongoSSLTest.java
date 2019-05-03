@@ -68,6 +68,7 @@ public class MongoSSLTest extends FATServletClient {
 
     @Test
     public void testInsertFindInvalidTruststore() throws Exception {
+        // This SSL config is so bad that it will not be initialized
         testInvalidConfig("mongo/testdb-invalid-truststore", "javax.naming.NameNotFoundException");
     }
 
