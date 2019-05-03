@@ -42,9 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
  *
  */
 class DownloadFileAction implements Runnable, Action {
-    private static final TraceComponent _tc = Tr.register("DownloadFileAction", DownloadFileAction.class,
-                                                          new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
-                                                          com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
+    private static final TraceComponent _tc = Tr.register(DownloadFileAction.class);
     private final WsLocationAdmin _locAdmin;
     private final String _servicePid;
     private final String _location;

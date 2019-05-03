@@ -95,9 +95,7 @@ import com.ibm.wsspi.logging.Introspector;
                         Constants.SERVICE_PID + "=" + AppManagerConstants.APPLICATIONS_PID
            })
 public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator {
-    private static final TraceComponent _tc = Tr.register("ApplicationConfigurator", ApplicationConfigurator.class,
-                                                          new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
-                                                          com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES);
+    private static final TraceComponent _tc = Tr.register(ApplicationConfigurator.class);
 
     /**
      * An instance of this class exists for each running application
