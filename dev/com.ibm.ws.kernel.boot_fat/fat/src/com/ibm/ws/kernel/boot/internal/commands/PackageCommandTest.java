@@ -40,6 +40,7 @@ public class PackageCommandTest {
     private static String serverName = "com.ibm.ws.kernel.boot.root.fat";
     private static String archivePackage = "MyPackage.zip";
     private static String archivePackageNoExtension = "MyPackage";
+    private static String archivePackageTarGzExtension = "MyPackage.tar.gz";
 
     @Before
     public void before() throws Exception {
@@ -575,6 +576,40 @@ public class PackageCommandTest {
 
             assertTrue("Did not find expected 'package complete' success message.  STDOUT = " + stdout, stdout.contains("package complete"));
             assertTrue("Did not find expected .zip archive.  STDOUT = " + stdout, stdout.contains(archivePackageNoExtension + ".zip"));
+
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    /**
+     * This tests that a .tar.gz file type is created when specified by --archive.
+     */
+    @Test
+    public void testTarGz() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
+            File prodExtensionDir = null;
+            try {
+                server.getFileFromLibertyInstallRoot("etc/extension/");
+            } catch (FileNotFoundException ex) {
+                // The /etc/extension directory does not exist - so create it for this test.
+                String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
+                prodExtensionDir = new File(pathToProdExt);
+                prodExtensionDir.mkdirs();
+            }
+
+            String[] cmd = new String[] { "--archive=" + archivePackageTarGzExtension,
+                                          "--include=usr" };
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+
+            assertTrue("Did not find expected 'package complete' success message.  STDOUT = " + stdout, stdout.contains("package complete"));
+            assertTrue("Did not find expected .tar.gz archive.  STDOUT = " + stdout, stdout.contains(archivePackageTarGzExtension));
 
         } catch (FileNotFoundException ex) {
             assumeTrue(false); // the directory does not exist, so we skip this test.
