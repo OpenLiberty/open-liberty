@@ -39,6 +39,10 @@
     <properties.wasJms clientID="TestClient1" userName="USER1" password="PWD1"/>
   </jmsConnectionFactory>
 
+  <jmsConnectionFactory id="jmscf2" jndiName="jms/cf2">
+    <properties.wasJms clientID="TestClient2" remoteServerAddress="host2.rchland.ibm.com:2121:DoesNotExist"/>
+  </jmsConnectionFactory>
+
   <jmsQueueConnectionFactory id="qcf1" jndiName="jms/qcf1">
     <containerAuthData user="QCFUSER1" password="QCFPWD1"/>
     <properties.wasJms temporaryQueueNamePrefix="TEMPQ"/>
@@ -46,5 +50,13 @@
 
   <jmsTopicConnectionFactory jndiName="jms/tcf1">
     <properties.wasJms temporaryTopicNamePrefix="TMP1"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsTopicConnectionFactory id="tcf2" jndiName="jms/tcf2">
+    <properties.wasJms clientID="tcf2id"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsTopicConnectionFactory id="tcf3">
+    <properties.wasJms clientID="tcf3id"/>
   </jmsTopicConnectionFactory>
 </server>
