@@ -85,6 +85,8 @@ public class SubResourceTestServlet extends FATServlet {
         assertTrue(result.contains("/subGet/context"));
     }
 
+// This scenario is not expected to succeed.  The ResourceContext.getResource(...) method only takes a Class<?> object as a parameter
+// which won't work with a CDI bean lookup.  It will work for JAX-RS @Context-injected resources, however. 
 //    @Test
 //    public void testSubResourceCdiInjectionWithGetResource(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 //        Response response = target(req, "subGet/cdi").request().get();
