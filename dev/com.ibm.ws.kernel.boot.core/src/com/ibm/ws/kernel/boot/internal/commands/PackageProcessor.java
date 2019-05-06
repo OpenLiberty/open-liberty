@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,6 +176,26 @@ public class PackageProcessor implements ArchiveProcessor {
         return newMani;
     }
 
+    private Archive createArchive(final File file) throws IOException {
+
+        if (System.getSecurityManager() == null) {
+            return ArchiveFactory.create(file);
+        } else {
+            try {
+                return AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Archive>() {
+
+                    @Override
+                    public Archive run() throws IOException {
+                        return ArchiveFactory.create(file);
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                e.printStackTrace();
+                throw (IOException) e.getException();
+            }
+        }
+    }
+
     public ReturnCode execute(boolean runtimeOnly) {
         Archive archive = null;
         ReturnCode rc = backupWebSphereApplicationServerProperty(installRoot);
@@ -182,7 +204,8 @@ public class PackageProcessor implements ArchiveProcessor {
         }
         try {
             // Create the default archive
-            archive = ArchiveFactory.create(packageFile);
+            archive = ArchiveFactory.create(packageFile, java2SecurityEnabled());
+
             // for a Jar archive, the manifest must be first.
             if (packageFile.getName().endsWith(".jar")) {
                 File manifest = new File(bootProps.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
@@ -745,5 +768,14 @@ public class PackageProcessor implements ArchiveProcessor {
     public void setArchivePrefix(String prefix) {
         packageArchiveEntryPrefix = prefix + "/";
         isServerRootOptionSet = true;
+    }
+
+    // Check if Java 2 Security is enabled
+    private boolean java2SecurityEnabled() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null)
+            return true;
+        else
+            return false;
     }
 }
