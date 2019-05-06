@@ -115,18 +115,18 @@ public class FileLogHolder implements TraceWriter {
      * This method will check to see if the supplied parameters match the settings on the <code>oldLog</code>,
      * if they do then the <code>oldLog</code> is returned, otherwise a new FileLogHolder will be created.
      *
-     * @param oldLog The previous FileLogHolder that may or may not be replaced by a new one, may
-     *            be <code>null</code> (will cause a new instance to be created)
+     * @param oldLog       The previous FileLogHolder that may or may not be replaced by a new one, may
+     *                         be <code>null</code> (will cause a new instance to be created)
      * @param logHeader
-     *            Header to print at the top of new log files
+     *                         Header to print at the top of new log files
      * @param logDirectory
-     *            Directory in which to store created log files
+     *                         Directory in which to store created log files
      * @param newFileName
-     *            File name for new log: this will be split into a name and extension
+     *                         File name for new log: this will be split into a name and extension
      * @param maxFiles
-     *            New maximum number of log files. If 0, log files won't be pruned.
+     *                         New maximum number of log files. If 0, log files won't be pruned.
      * @param maxSizeBytes
-     *            New maximum log file size in bytes. If 0, log files won't be rolled.
+     *                         New maximum log file size in bytes. If 0, log files won't be rolled.
      * @return a log holder. If all values are the same, the old one is returned, otherwise a new log holder is created.
      */
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
@@ -139,20 +139,20 @@ public class FileLogHolder implements TraceWriter {
      * This method will check to see if the supplied parameters match the settings on the <code>oldLog</code>,
      * if they do then the <code>oldLog</code> is returned, otherwise a new FileLogHolder will be created.
      *
-     * @param oldLog The previous FileLogHolder that may or may not be replaced by a new one, may
-     *            be <code>null</code> (will cause a new instance to be created)
+     * @param oldLog         The previous FileLogHolder that may or may not be replaced by a new one, may
+     *                           be <code>null</code> (will cause a new instance to be created)
      * @param logHeader
-     *            Header to print at the top of new log files
+     *                           Header to print at the top of new log files
      * @param logDirectory
-     *            Directory in which to store created log files
+     *                           Directory in which to store created log files
      * @param newFileName
-     *            File name for new log: this will be split into a name and extension
+     *                           File name for new log: this will be split into a name and extension
      * @param maxFiles
-     *            New maximum number of log files. If 0, log files won't be pruned.
+     *                           New maximum number of log files. If 0, log files won't be pruned.
      * @param maxSizeBytes
-     *            New maximum log file size in bytes. If 0, log files won't be rolled.
+     *                           New maximum log file size in bytes. If 0, log files won't be rolled.
      * @param newLogsOnStart
-     *            Whether to fill an existing primary file if there's space (if it exists).
+     *                           Whether to fill an existing primary file if there's space (if it exists).
      * @return a log holder. If all values are the same, the old one is returned, otherwise a new log holder is created.
      */
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
@@ -212,14 +212,14 @@ public class FileLogHolder implements TraceWriter {
     /**
      * Private constructor for this class as a lot of conversion needs to take place on the parameters prior to the object being constructed.
      *
-     * @param logHeader The header to write at the beginning of all new log files
-     * @param dirName The fully qualified name of the directory to put the logs into
-     * @param fileName The name of the file without an extension to put the logs into
-     * @param fileExtension The extension to put on the file that the logs are going into
-     * @param maxNumFiles The maximum number of files to create if this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code> and
-     *            <code>maxSizeBytes</code> is greater than 0)
+     * @param logHeader        The header to write at the beginning of all new log files
+     * @param dirName          The fully qualified name of the directory to put the logs into
+     * @param fileName         The name of the file without an extension to put the logs into
+     * @param fileExtension    The extension to put on the file that the logs are going into
+     * @param maxNumFiles      The maximum number of files to create if this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code> and
+     *                             <code>maxSizeBytes</code> is greater than 0)
      * @param maxFileSizeBytes The maximum file size a single file should create when this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code>)
-     * @param newLogsOnStart Whether to fill an existing primary file if there's space (if it exists).
+     * @param newLogsOnStart   Whether to fill an existing primary file if there's space (if it exists).
      */
     private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart) {
         this.logHeader = logHeader;
@@ -389,8 +389,8 @@ public class FileLogHolder implements TraceWriter {
      *
      * @param targetLogFile The file to create the stream from.
      * @param closeExisting Whether to close the existing streams.
-     * @param startOffset The start of the file.
-     * @param showError Show errors.
+     * @param startOffset   The start of the file.
+     * @param showError     Show errors.
      */
     private void setStreamFromFile(File targetLogFile, boolean closeExisting, long startOffset, boolean showError) {
         long realMaxFileSizeBytes = maxFileSizeBytes;

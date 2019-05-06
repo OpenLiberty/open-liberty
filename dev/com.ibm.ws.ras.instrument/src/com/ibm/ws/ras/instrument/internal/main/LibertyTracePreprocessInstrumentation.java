@@ -699,7 +699,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         info.packageInfo = getPackageInfo(directory.name.replaceAll("/[^/]+$", ""));
 
         // #1: Check for a trivial annotation on the class.
-        if (isClassTrivial(info) || !checkInstrumentableAdapter.isInstrumentableClass()) {
+        if (!checkInstrumentableAdapter.isInstrumentableClass()) {
             return null;
         }
 
