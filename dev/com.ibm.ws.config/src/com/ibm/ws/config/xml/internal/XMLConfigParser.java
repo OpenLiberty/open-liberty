@@ -202,6 +202,7 @@ public class XMLConfigParser {
                     list.add(docLocation);
                     Tr.warning(tc, "warn.parse.circular.include", list);
                 }
+                docLocationStack.removeLast();
                 return true;
             }
             docLocationStack.add(docLocation);
