@@ -21,6 +21,7 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 ValidateDataSourceTest.class,
                 ValidateJCATest.class,
+                ValidateJMSTest.class,
                 ValidateDSCustomLoginModuleTest.class
 })
 
