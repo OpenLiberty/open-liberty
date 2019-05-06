@@ -277,6 +277,35 @@ public class Tr {
 
         return tc;
     }
+    
+    /**
+     * Register the provided class with the trace service and assign it to the
+     * provided group name. Translated messages will attempt to use the input
+     * message bundle source.
+     * 
+     * @param aClass
+     *            a valid <code>Class</code> to register a component for with
+     *            the trace manager. The className is obtained from the Class
+     *            and is used as the name in the registration process.
+     * @param groups
+     *            the name of the groups that the named component is a member of.
+     *            Null is allowed. If null is passed, the name is not added to a
+     *            group. Once added to a group, there is no corresponding
+     *            mechanism to remove a component from a group.
+     * @param bundle
+     *            the name of the message properties file to use when providing
+     *            national language support for messages logged by this
+     *            component. All messages for this component must be found in
+     *            this file.
+     * @return TraceComponent the <code>TraceComponent</code> corresponding to
+     *         the name of the specified class.
+     */
+    public static TraceComponent register(Class<?> aClass, String[] groups, String bundle, String name) {
+    	TraceComponent tc = new TraceComponent(name, aClass, groups, bundle);
+        registerTraceComponent(tc);
+
+        return tc;
+    }
 
     /**
      * Register the provided name with the trace service and assign it to the
