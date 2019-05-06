@@ -495,13 +495,27 @@ public class ConfigRESTHandler implements RESTHandler {
                     || (nestedStart = displayId.lastIndexOf('/' + elementName + '[')) > 0
                        && displayId.indexOf("]/", nestedStart) < 0
                        && displayId.charAt(displayId.length() - 1) == ']' // matches nested config
-                    || displayId.endsWith('/' + elementName)) // matches implicitly created sub-config elements of app-defined resources
-                    configMap.put(displayId, props);
+                    || displayId.endsWith('/' + elementName)) { // matches implicitly created sub-config elements of app-defined resources
 
-                // Examples
-                // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver  <-- not a data source
-                // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]             <-- data source
-                // persistentExecutor[px1]/databaseTaskStore[s1]/dataSource[ds1]/jdbcDriver[myDriver]             <-- not a data source
+                    // Examples
+                    // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver  <-- not a data source
+                    // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]             <-- data source
+                    // persistentExecutor[px1]/databaseTaskStore[s1]/dataSource[ds1]/jdbcDriver[myDriver]             <-- not a data source
+
+                    if (!configMap.containsKey(displayId)) {
+                        configMap.put(displayId, props);
+                    } else {
+                        //This is the second config with the same config.displayId. This is due to a difference
+                        //in case for nested config. Choose the item with a service.pid that does not match the
+                        //element name, as that is the one which represents the actual element. Ex:
+                        // config.displayId=dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool], service.pid=com.ibm.ws.jca.connectionManager_129 <- The config corresponding to the actual element configured
+                        // config.displayId=dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool], service.pid=CONNECTIONMANAGER_46 <- The config corresponding to what is exactly in server config
+                        String servicePid = (String) props.get("service.pid");
+                        if (servicePid != null && !servicePid.contains(elementName)) {
+                            configMap.put(displayId, props);
+                        }
+                    }
+                }
             }
 
         JSONArtifact json;
