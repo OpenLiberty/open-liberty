@@ -26,7 +26,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+@SkipForRepeat("JAXRS")
 public class LibertyJAXBTolerationTest extends FATServletClient {
 
     @Server("jaxb_optional_feature_toleration_fat")
@@ -40,8 +40,9 @@ public class LibertyJAXBTolerationTest extends FATServletClient {
      * Since both features are marked as singleton, fail of this test shows toleration failure
      * server.xml has jaxb-2.3 and jpaContainer-2.1 features. jpaContainer-2.1 contains optional.jaxb-2.2 that we are testing it's override
      */
-    @Mode(TestMode.FULL)
     @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testJaxbOptionalFeatureToleration() throws Exception {
 
         optionalServer.startServer();
@@ -49,9 +50,11 @@ public class LibertyJAXBTolerationTest extends FATServletClient {
         // Searching for exception raised by loading 2 singleton classes at the same time. Here we are looking jaxb-2.3 and indirectly loaded jaxb-2.2
         List<String> errMsgs = optionalServer.findStringsInLogsAndTrace(".* CWWKF0033E: .* jaxb-2.3");
 
-        assertTrue("jaxb-2.3 optional feature toleration failed. Check following info for more details" + errMsgs, errMsgs.isEmpty());
-
-        optionalServer.stopServer();
+        try {
+            assertTrue("jaxb-2.3 optional feature toleration failed. Check following info for more details" + errMsgs, errMsgs.isEmpty());
+        } finally {
+            optionalServer.stopServer();
+        }
     }
 
     /**
@@ -59,8 +62,9 @@ public class LibertyJAXBTolerationTest extends FATServletClient {
      * Since both features are marked as singleton, fail of this test shows toleration failure
      * server.xml has jaxb-2.3 and jaspic-1.1 features. jaspic-1.1 contains internal.optional.jaxb-2.2 that we are testing it's override
      */
-    @Mode(TestMode.FULL)
     @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testJaxbInternalOptionalFeatureToleration() throws Exception {
 
         internalOptionalServer.startServer();
@@ -68,8 +72,10 @@ public class LibertyJAXBTolerationTest extends FATServletClient {
         // Searching for exception raised by loading 2 singleton classes at the same time. Here we are looking jaxb-2.3 and indirectly loaded jaxb-2.2
         List<String> errMsgs = internalOptionalServer.findStringsInLogsAndTrace(".* CWWKF0033E: .* jaxb-2.3");
 
-        assertTrue("jaxb-2.3 internal optional feature toleration failed. Check following info for more details" + errMsgs, errMsgs.isEmpty());
-
-        internalOptionalServer.stopServer();
+        try {
+            assertTrue("jaxb-2.3 internal optional feature toleration failed. Check following info for more details" + errMsgs, errMsgs.isEmpty());
+        } finally {
+            internalOptionalServer.stopServer();
+        }
     }
 }
