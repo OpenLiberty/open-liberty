@@ -361,7 +361,9 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
   File gitReposDir = new File(project.buildDir, 'gitRepos')
 
   // If running locally use git directly
-  if( System.properties['fat.test.localrun'] ){
+  boolean shouldCloneLocalBuild = System.properties['buildResultUUID'] == null && System.properties['fat.test.localrun']
+  boolean shouldCloneRemoteBuild = System.properties['buildResultUUID'] != null && System.properties['spawn.experimentalfat.buckets'] != null && System.properties['spawn.experimentalfat.buckets'].contains(proj)
+  if( shouldCloneLocalBuild || shouldCloneRemoteBuild){
 
     File repoDir = new File(gitReposDir, folder)
     String into = repoDir.getAbsolutePath()
@@ -377,24 +379,8 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
     proc.err.eachLine { line -> println cmd + ':\n' + line }
     proc.waitFor()
     
-  } else {
-    // Make use of the EBC clone mechanism
-    project.logger.lifecycle('ebc clone')
-    ebcClone(url) 
-    
-    //EBC clones in dev/../../../<repo>
-    File ebcCloneDir = new File( project, "./../../../" )
-    copy {
-      from ebcCloneDir
-      include proj
-      into gitReposDir
-    }
   }
   
-}
-
-def ebcClone(String url, String branch, String repoPath){
-  // Non-local cloning is not implemented for now  
 }
 
 build {
