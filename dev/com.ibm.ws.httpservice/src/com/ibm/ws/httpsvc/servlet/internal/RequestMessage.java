@@ -62,7 +62,7 @@ import com.ibm.wsspi.http.SSLContext;
  */
 public class RequestMessage implements HttpServletRequest {
     /** Debug variable */
-    private static final TraceComponent tc = Tr.register(RequestMessage.class);
+    private static final TraceComponent tc = Tr.register(RequestMessage.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP, null);
 
     // servlet spec has special case attribute names used in getAttribute
 
@@ -106,7 +106,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Constructor.
-     * 
+     *
      * @param conn
      */
     public RequestMessage(HttpInboundConnection conn, SessionManager sessMgr) {
@@ -115,7 +115,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Initialize this request with the input link.
-     * 
+     *
      * @param conn
      */
     public void init(HttpInboundConnection conn, SessionManager sessMgr) {
@@ -326,7 +326,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Acces the raw request URI information.
-     * 
+     *
      * @return String
      */
     public String getRawRequestURI() {
@@ -371,7 +371,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Set the servlet path of this request to the input value.
-     * 
+     *
      * @param path
      */
     public void setServletPath(String path) {
@@ -389,7 +389,7 @@ public class RequestMessage implements HttpServletRequest {
     /**
      * Access the possible session information wrapper. This will be null
      * if no session has been queried or created for this request.
-     * 
+     *
      * @return SessionInfo, may be null
      */
     SessionInfo getSessionInfo() {
@@ -645,7 +645,7 @@ public class RequestMessage implements HttpServletRequest {
     /**
      * Handle parsing the request query parameters. These may exist in the
      * URL based querystring and/or in certain types of POST body streams.
-     * 
+     *
      * This will always result in a query parameter map being created, even
      * if it's empty with no query data found in the request.
      */
@@ -687,7 +687,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Read and parse the POST body data that represents query data.
-     * 
+     *
      * @throws IOException
      */
     private void parseQueryFormData() throws IOException {
@@ -715,9 +715,9 @@ public class RequestMessage implements HttpServletRequest {
      * Parse a query parameter's name out of the input character array. This
      * will undo any URLEncoding in the data (%20 is a space for example) and
      * return the resulting string.
-     * 
+     *
      * Input must be in ASCII encoding.
-     * 
+     *
      * @param ch
      * @param start
      * @param end
@@ -765,11 +765,11 @@ public class RequestMessage implements HttpServletRequest {
     /**
      * Parse a string of query parameters into a Map representing the values
      * stored using the name as the key.
-     * 
+     *
      * @param data
      * @return Map
      * @throws IllegalArgumentException
-     *             if the string is formatted incorrectly
+     *                                      if the string is formatted incorrectly
      */
     private Map<String, String[]> parseQueryString(String data) {
         Map<String, String[]> map = new Hashtable<String, String[]>();
@@ -813,7 +813,7 @@ public class RequestMessage implements HttpServletRequest {
     /**
      * In certain cases, the URL will contain query string information and the
      * POST body will as well. This method merges the two maps together.
-     * 
+     *
      * @param urlParams
      */
     private void mergeQueryParams(Map<String, String[]> urlParams) {
@@ -905,8 +905,7 @@ public class RequestMessage implements HttpServletRequest {
         if (null == this.inStream) {
             this.inStream = new RequestBody(this.request.getBody());
         }
-        this.inReader = new BufferedReader(
-                        new InputStreamReader(this.inStream, enc));
+        this.inReader = new BufferedReader(new InputStreamReader(this.inStream, enc));
         return this.inReader;
     }
 
@@ -959,7 +958,7 @@ public class RequestMessage implements HttpServletRequest {
     /**
      * Set the reference to the filter pipeline that is handling this
      * particular request.
-     * 
+     *
      * @param pipeline
      */
     public void setFilterPipeline(FilterPipeline pipeline) {
@@ -1079,7 +1078,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Access the SSL cipher suite used in this connection.
-     * 
+     *
      * @return String - null if this is not a secure connection
      */
     private String getCipherSuite() {
@@ -1096,7 +1095,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Access any client SSL certificates for this connection.
-     * 
+     *
      * @return X509Certificate[] - null if non-ssl or none exist
      */
     private X509Certificate[] getPeerCertificates() {
@@ -1137,7 +1136,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /**
      * Set the current servlet context on the message.
-     * 
+     *
      * @param context
      */
     public void setServletContext(ServletContext context) {
@@ -1145,8 +1144,7 @@ public class RequestMessage implements HttpServletRequest {
     }
 
     @Override
-    public boolean authenticate(HttpServletResponse arg0) throws IOException,
-                    ServletException {
+    public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
         // TODO Auto-generated method stub
         return false;
     }
@@ -1211,7 +1209,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getContentLengthLong()
      */
     @Override
@@ -1222,7 +1220,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#changeSessionId()
      */
     @Override
@@ -1233,7 +1231,7 @@ public class RequestMessage implements HttpServletRequest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#upgrade(java.lang.Class)
      */
     @Override
