@@ -18,23 +18,26 @@ public class OrCondition implements ICondition {
     List values = new LinkedList();
     String key;
     String operand;
+    boolean noAttrValue;
 
     /**
      * create an OrCondition from an existing list of values.
      */
-    public OrCondition(String key, List values) {
+    public OrCondition(String key, List values, boolean noAttrValue) {
         this.values = values;
         this.key = key;
+        this.noAttrValue = noAttrValue;
     }
 
     /**
      * Create an OrCondition from a single key. To make this work, you'll need to call addValue() later.
-     * 
+     *
      * @param key
      */
-    public OrCondition(String key, String operand) {
+    public OrCondition(String key, String operand, boolean noAttrValue) {
         this.key = key;
         this.operand = operand;
+        this.noAttrValue = noAttrValue;
     }
 
     /**
@@ -60,7 +63,7 @@ public class OrCondition implements ICondition {
 
     /**
      * helper method to add values to the existing condition.
-     * 
+     *
      * @param value
      */
     public void addValue(IValue value) {
@@ -83,5 +86,11 @@ public class OrCondition implements ICondition {
         }
         buf.append(operand);
         return buf.toString();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isNoAttrValue() {
+        return noAttrValue;
     }
 }

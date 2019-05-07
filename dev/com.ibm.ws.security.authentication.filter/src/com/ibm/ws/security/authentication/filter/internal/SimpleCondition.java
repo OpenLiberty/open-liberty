@@ -14,11 +14,13 @@ public abstract class SimpleCondition implements ICondition {
     private final String key;
     private final IValue value;
     protected final String operand;
+    final boolean noAttrValue;
 
-    protected SimpleCondition(String key, IValue value, String operand) {
+    protected SimpleCondition(String key, IValue value, String operand, boolean noAttrValue) {
         this.key = key;
         this.value = value;
         this.operand = operand;
+        this.noAttrValue = noAttrValue;
     }
 
     @Override
@@ -28,6 +30,11 @@ public abstract class SimpleCondition implements ICondition {
 
     public IValue getValue() {
         return value;
+    }
+
+    @Override
+    public boolean isNoAttrValue() {
+        return noAttrValue;
     }
 
     @Override

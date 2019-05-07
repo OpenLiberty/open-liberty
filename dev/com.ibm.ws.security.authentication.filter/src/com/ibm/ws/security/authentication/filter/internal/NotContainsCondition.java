@@ -13,10 +13,10 @@ package com.ibm.ws.security.authentication.filter.internal;
 public class NotContainsCondition extends OrCondition {
 
     /**
-     * 
+     *
      */
-    public NotContainsCondition(String key, String operand) {
-        super(key, operand);
+    public NotContainsCondition(String key, String operand, boolean noAttrValue) {
+        super(key, operand, noAttrValue);
     }
 
     @Override
