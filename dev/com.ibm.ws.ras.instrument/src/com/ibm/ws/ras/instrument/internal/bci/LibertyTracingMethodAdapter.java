@@ -251,7 +251,7 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
     	        String[] traceGroups = traceOptionsData.getTraceGroups().toArray(new String[traceOptionsData.getTraceGroups().size()]);
     	       
     	        
-    	        visitInsn(ICONST_2);
+    	        visitInsn(ICONST_0 + traceGroups.length);
     	        visitTypeInsn(ANEWARRAY, "java/lang/String");
 
     	                for (int i = 0; i < traceGroups.length; ++i)
@@ -367,7 +367,7 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
     		
     	        String[] traceGroups = traceOptionsData.getTraceGroups().toArray(new String[traceOptionsData.getTraceGroups().size()]);
     	       
-    	        visitInsn(ICONST_2);
+    	        visitInsn(ICONST_0 + traceGroups.length);
     	        visitTypeInsn(ANEWARRAY, "java/lang/String");
 
     	                for (int i = 0; i < traceGroups.length; ++i)
