@@ -30,7 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * updates to the different parts of HPEL configuration based on the PID.
  */
 abstract class AbstractHPELConfigService implements ManagedService {
-    private static final TraceComponent tc = Tr.register(AbstractHPELConfigService.class);
+    private static final TraceComponent tc = Tr.register(AbstractHPELConfigService.class,null);
 
     /** reference to registered HPEL config service */
     private final ServiceRegistration<ManagedService> configRef;
