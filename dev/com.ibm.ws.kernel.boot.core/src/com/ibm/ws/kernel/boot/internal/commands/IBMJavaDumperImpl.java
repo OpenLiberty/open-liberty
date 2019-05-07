@@ -13,6 +13,8 @@ package com.ibm.ws.kernel.boot.internal.commands;
 import java.io.File;
 import java.lang.reflect.Method;
 
+import com.ibm.ws.kernel.boot.Debug;
+
 class IBMJavaDumperImpl extends JavaDumper {
     private final Method javaDumpToFileMethod;
     private final Method heapDumpToFileMethod;
@@ -25,20 +27,25 @@ class IBMJavaDumperImpl extends JavaDumper {
     }
 
     @Override
-    public File dump(JavaDumpAction action, File outputDir) {
+    public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
+        Debug.traceEntry(IBMJavaDumperImpl.class, "dump", action, outputDir, nameToken, maximum);
+
         Method method;
 
         switch (action) {
             case HEAP:
                 method = heapDumpToFileMethod;
+                pruneFiles(maximum, outputDir, "heapdump", "phd", nameToken);
                 break;
 
             case SYSTEM:
                 method = systemDumpToFileMethod;
+                pruneFiles(maximum, outputDir, "core", "dmp", nameToken);
                 break;
 
             case THREAD:
                 method = javaDumpToFileMethod;
+                pruneFiles(maximum, outputDir, "javacore", "txt", nameToken);
                 break;
 
             default:
@@ -61,9 +68,12 @@ class IBMJavaDumperImpl extends JavaDumper {
         // returned to the user.
         if (ServerDumpUtil.isZos() && (JavaDumpAction.SYSTEM == action)) {
             // We dont get a core*.dmp file as it goes to a dataset
+            Debug.traceExit(IBMJavaDumperImpl.class, "dump", "z/OS core dump");
             return null;
         } else {
-            return new File(resultPath);
+            File result = moveDump(addNameToken(new File(resultPath), nameToken), outputDir);
+            Debug.traceExit(IBMJavaDumperImpl.class, "dump", result);
+            return result;
         }
     }
 }

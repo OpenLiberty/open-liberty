@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import com.ibm.ws.kernel.boot.Debug;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 class HotSpotJavaDumperImpl extends JavaDumper {
@@ -80,7 +81,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     /**
      * Lazily-initialized VirtualMachine for generating Java dumps.
-     * 
+     *
      * @see #getVirtualMachine
      */
     private VirtualMachine vm;
@@ -92,22 +93,34 @@ class HotSpotJavaDumperImpl extends JavaDumper {
     }
 
     @Override
-    public File dump(JavaDumpAction action, File outputDir) {
+    public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
+        Debug.traceEntry(HotSpotJavaDumperImpl.class, "dump", action, outputDir, nameToken, maximum);
+
+        File result = null;
+
         switch (action) {
             case HEAP:
-                return createHeapDump(outputDir);
+                pruneFiles(maximum, outputDir, "java", "hprof", nameToken);
+                result = addNameToken(createHeapDump(outputDir), nameToken);
+                break;
 
             case THREAD:
-                return createThreadDump(outputDir);
+                pruneFiles(maximum, outputDir, "javadump", "txt", nameToken);
+                result = addNameToken(createThreadDump(outputDir), nameToken);
+                break;
 
             default:
-                return null;
+                break;
         }
+
+        Debug.traceExit(HotSpotJavaDumperImpl.class, "dump", result);
+
+        return result;
     }
 
     /**
      * Create a dump file with a unique name.
-     * 
+     *
      * @param outputDir the directory to contain the file
      * @param prefix the prefix for the filename
      * @param extension the file extension, not including a leading "."
@@ -127,7 +140,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     /**
      * Create a heap dump. This is the same as jmap -dump:file=...
-     * 
+     *
      * @param outputDir the server output directory
      * @return the resulting file
      */
@@ -155,7 +168,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
     /**
      * Create a thread dump. This is the same output normally printed to the
      * console when a kill -QUIT or Ctrl-Break is sent to the process.
-     * 
+     *
      * @param outputDir the server output directory
      * @return the resulting file, or null if the dump could not be created
      */

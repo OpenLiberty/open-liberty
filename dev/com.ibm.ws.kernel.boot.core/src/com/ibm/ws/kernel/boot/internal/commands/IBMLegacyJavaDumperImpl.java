@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import com.ibm.ws.kernel.boot.Debug;
+
 class IBMLegacyJavaDumperImpl extends JavaDumper {
     private static final Pattern HEAPDUMP_PATTERN = createPattern("heapdump", "phd");
     private static final Pattern JAVACORE_PATTERN = createPattern("javacore", "txt");
@@ -33,7 +35,9 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
     }
 
     @Override
-    public File dump(JavaDumpAction action, File outputDir) {
+    public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
+        Debug.traceEntry(IBMLegacyJavaDumperImpl.class, "dump", action, outputDir, nameToken, maximum);
+
         Pattern pattern;
         String dumpDirVar;
         String methodName;
@@ -44,6 +48,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
                 dumpDirVar = "IBM_HEAPDUMPDIR";
                 pattern = HEAPDUMP_PATTERN;
                 methodName = "HeapDump";
+                pruneFiles(maximum, outputDir, "heapdump", "phd", nameToken);
                 break;
 
             case SYSTEM:
@@ -51,6 +56,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
                 dumpDirVar = "IBM_COREDIR";
                 pattern = CORE_DUMP_PATTERN;
                 methodName = "SystemDump";
+                pruneFiles(maximum, outputDir, "core", "dmp", nameToken);
                 break;
 
             case THREAD:
@@ -58,6 +64,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
                 dumpDirVar = "IBM_JAVACOREDIR";
                 pattern = JAVACORE_PATTERN;
                 methodName = "JavaDump";
+                pruneFiles(maximum, outputDir, "javacore", "txt", nameToken);
                 break;
 
             default:
@@ -67,7 +74,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
         // There is no API for generating a dump to a specific file, so
         // determine the directory where the JVM will put the dump, find
         // existing files in the directory matching the dump name, generate
-        // the dump, and then find the newly created file. 
+        // the dump, and then find the newly created file.
 
         File dumpDir;
 
@@ -102,13 +109,16 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
 
             for (String fileName : fileNames) {
                 if (!existingDumps.contains(fileName) && pattern.matcher(fileName).matches()) {
-                    return new File(dumpDir, fileName);
+                    File result = moveDump(addNameToken(new File(dumpDir, fileName), nameToken), outputDir);
+                    Debug.traceExit(IBMLegacyJavaDumperImpl.class, "dump", result);
+                    return result;
                 }
             }
         }
 
         if (ServerDumpUtil.isZos() && (JavaDumpAction.SYSTEM == action)) {
             // We dont get a core*.dmp file as it goes to a dataset
+            Debug.traceExit(IBMLegacyJavaDumperImpl.class, "dump", "z/OS core dump");
             return null;
         } else {
             throw new IllegalStateException("failed to find generated dump file");
