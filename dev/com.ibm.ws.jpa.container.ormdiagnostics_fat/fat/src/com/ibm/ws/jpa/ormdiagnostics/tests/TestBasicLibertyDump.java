@@ -11,6 +11,7 @@
 
 package com.ibm.ws.jpa.ormdiagnostics.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -89,6 +90,10 @@ public class TestBasicLibertyDump extends FATServletClient {
         ORMIntrospectorHelper.verifyApplications("jpasimple", 0, 2,
                                                  new String[] { "jpasimple.war!/WEB-INF/classes/" },
                                                  introspectorData);
+
+        List<String> expectedArchives = new ArrayList<String>();
+        expectedArchives.add("jpasimple (WAR)");
+        ORMIntrospectorHelper.verifyApplicationArchives(expectedArchives, introspectorData);
 
         ORMIntrospectorHelper.verifyPersistenceUnit("JPAPU", introspectorData);
 

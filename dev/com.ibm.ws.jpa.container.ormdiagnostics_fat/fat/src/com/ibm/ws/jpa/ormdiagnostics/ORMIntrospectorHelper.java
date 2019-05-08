@@ -47,6 +47,17 @@ public class ORMIntrospectorHelper {
         Assert.assertTrue(input.contains(targetString));
     }
 
+    public static void verifyApplicationArchives(final List<String> expectedArchives, final String input) {
+        boolean foundAll = true;
+        String content = "   Application Modules and Archives:" + newLine;
+
+        for (String ea : expectedArchives) {
+            content += "     " + ea + newLine;
+        }
+
+        Assert.assertTrue(foundAll);
+    }
+
     public static void verifyPersistentClasses(final List<JPAClass> classes, final String input) {
         boolean roots = true;
         for (JPAClass clazz : classes) {

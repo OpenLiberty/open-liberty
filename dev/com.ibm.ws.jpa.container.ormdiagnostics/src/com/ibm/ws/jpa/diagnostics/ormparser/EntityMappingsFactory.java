@@ -45,7 +45,7 @@ public class EntityMappingsFactory {
             final String pkg = determineJAXBPackage(bais).getJaxbPackage();
             bais.reset();
 
-            final JAXBContext jaxbCtx = JAXBContext.newInstance(pkg);
+            final JAXBContext jaxbCtx = JAXBContext.newInstance(pkg, EntityMappingsFactory.class.getClassLoader());
             final Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
 
             MessageDigest md = MessageDigest.getInstance(digestType);
