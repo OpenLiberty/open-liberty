@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -330,6 +332,11 @@ public class SelfExtractRun extends SelfExtract {
         jar.close();
         URLClassLoader cl = new URLClassLoader(new URL[] { new URL("file:" + serverLaunchJar.getAbsolutePath()) });
 
+        // Must use the constructed URLClassLoader as the context classloader to ensure
+        // that we load Liberty's WsLogManager and other classes, when running the server in-line. This approach
+        // would be the equivalent to what happens when the server is run using "java -jar ws-server.jar"
+        setContextClassLoader(cl);
+
         Properties props = System.getProperties();
 
         props.setProperty("user.dir", new File(extractDirectory, "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName).getAbsolutePath());
@@ -475,5 +482,15 @@ public class SelfExtractRun extends SelfExtract {
                 return false;
             }
         }
+    }
+
+    private static void setContextClassLoader(final ClassLoader newLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(newLoader);
+                return null;
+            }
+        });
     }
 }
