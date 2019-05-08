@@ -3,6 +3,7 @@ symbolicName=com.ibm.websphere.appserver.optional.corba-1.5
 visibility=private
 IBM-App-ForceRestart: uninstall, install
 IBM-Process-Types: client, server
+TEST
 Subsystem-Name: OMG CORBA APIs and RMI-IIOP API
 IBM-API-Package: \
   javax.rmi; type="spec"; require-java:="9",\
