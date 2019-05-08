@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.testcontainers.dockerclient.DockerClientProviderStrategy;
-import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
 import org.testcontainers.dockerclient.InvalidConfigurationException;
 
 import com.github.dockerjava.core.DefaultDockerClientConfig;
@@ -44,8 +43,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         if (useRemoteDocker())
             System.setProperty("testcontainers.environmentprovider.timeout", "60");
     }
-
-    private EnvironmentAndSystemPropertyClientProviderStrategy strat = null;
 
     /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
@@ -88,18 +85,48 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             System.setProperty("DOCKER_TLS_VERIFY", "1");
             System.setProperty("DOCKER_CERT_PATH", certDir.getAbsolutePath());
 
-            config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
-            strat = new EnvironmentAndSystemPropertyClientProviderStrategy();
             try {
-                strat.test(); // this blows up if service is not reachable
+                test();
             } catch (InvalidConfigurationException e) {
                 Log.error(c, m, e, "ExternalService " + dockerService.getAddress() + ':' + dockerService.getPort() + " with props=" +
-                                   dockerService.getProperties() + " failed with " + strat.getDescription());
+                                   dockerService.getProperties() + " failed with " + getDescription());
                 throw e;
             }
-            client = strat.getClient();
             Log.info(c, m, "Docker host " + dockerHostURL + " is healthy.");
             return true;
+        }
+
+        public void test() throws InvalidConfigurationException {
+            final String m = "test";
+            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 3; // attempt up to 3 times for remote builds
+            config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
+            client = getClientForConfig(config);
+            int timeout = useRemoteDocker() ? 60 : 10;
+            Throwable firstIssue = null;
+            for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+                try {
+                    Log.info(c, m, "Attempting to ping docker daemon. Attempt [" + attempt + "]");
+                    ping(client, timeout);
+                    Log.info(c, m, "Ping successful");
+                    Log.info(c, m, "Found docker client settings from environment");
+                    return;
+                } catch (Throwable t) {
+                    Log.error(c, m, t, "ping failed");
+                    if (firstIssue == null)
+                        firstIssue = t;
+                    if (attempt < maxAttempts) {
+                        Log.info(c, m, "Waiting 15 seconds before attempting again");
+                        try {
+                            Thread.sleep(15 * 1000);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }
+            if (firstIssue instanceof InvalidConfigurationException)
+                throw (InvalidConfigurationException) firstIssue;
+            else
+                throw new InvalidConfigurationException("Ping failed", firstIssue);
         }
     }
 
@@ -116,8 +143,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     @Override
     public String getDescription() {
-        return "Uses a local Docker install or a remote docker-host service via ExternalTestService. Current config:\n" +
-               strat == null ? null : strat.getDescription();
+        return "Uses a local Docker install or a remote docker-host service via ExternalTestService.";
     }
 
     @Override
