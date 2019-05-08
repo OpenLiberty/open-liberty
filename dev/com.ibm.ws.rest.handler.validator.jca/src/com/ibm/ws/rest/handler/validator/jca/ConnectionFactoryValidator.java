@@ -10,18 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.jca;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
@@ -82,6 +86,25 @@ public class ConnectionFactoryValidator implements Validator {
         }
     }
 
+    /**
+     * Returns an implementation that can access the javax.jms package. Null if the javax.jms package is unavailable.
+     *
+     * @return an implementation that can access the javax.jms package. Null if the javax.jms package is unavailable.
+     */
+    private JMSValidator getJMSValidator() {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<JMSValidator>() {
+                @Override
+                public JMSValidator run() throws Exception {
+                    Class<?> JMSConnectionFactoryValidator = getClass().getClassLoader().loadClass("com.ibm.ws.rest.handler.validator.jms.JMSConnectionFactoryValidator");
+                    return (JMSValidator) JMSConnectionFactoryValidator.newInstance();
+                }
+            });
+        } catch (PrivilegedActionException x) {
+            return null;
+        }
+    }
+
     @Override
     public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
         final String methodName = "validate";
@@ -95,6 +118,7 @@ public class ConnectionFactoryValidator implements Validator {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, methodName, user, password == null ? null : "******", auth, authAlias, loginConfig);
 
+        JMSValidator jmsValidator = null;
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         try {
             ResourceConfig config = null;
@@ -137,8 +161,27 @@ public class ConnectionFactoryValidator implements Validator {
                 validateCCIConnectionFactory((ConnectionFactory) cf, (ConnectionFactoryService) instance, user, password, result);
             else if (cf instanceof DataSource)
                 validateDataSource((DataSource) cf, user, password, result);
-            else // TODO other types of connection factory, such as custom or JMS (which should have used jmsConnectionFactory)
-                result.put("failure", "Validation is not implemented for " + cf.getClass().getName() + " which implements " + Arrays.asList(cf.getClass().getInterfaces()) + ".");
+            else {
+                // other types of connection factory, such as JMS
+                TreeSet<String> interfaces = new TreeSet<String>();
+                LinkedList<Class<?>> stack = new LinkedList<Class<?>>();
+                for (Class<?> c = cf.getClass(); c != null; c = c.getSuperclass())
+                    for (Class<?> i : c.getInterfaces())
+                        stack.add(i);
+                for (Class<?> i = stack.poll(); i != null; i = stack.poll()) {
+                    interfaces.add(i.getName());
+                    for (Class<?> j : i.getInterfaces())
+                        stack.add(j);
+                }
+                if (interfaces.contains("javax.jms.ConnectionFactory")) { // also covers QueueConnectionFactory and TopicConnectionFactory
+                    jmsValidator = getJMSValidator();
+                    if (jmsValidator == null)
+                        result.put("failure", "JMS feature is not enabled.");
+                    else
+                        jmsValidator.validate(cf, user, password, result);
+                } else
+                    result.put("failure", "Validation is not implemented for " + cf.getClass().getName() + " which implements " + interfaces + ".");
+            }
         } catch (Throwable x) {
             ArrayList<String> sqlStates = new ArrayList<String>();
             ArrayList<Object> errorCodes = new ArrayList<Object>();
@@ -148,6 +191,8 @@ public class ConnectionFactoryValidator implements Validator {
                 sqlStates.add(sqlState);
 
                 Object errorCode = null;
+                if (jmsValidator != null && jmsValidator.isJMSException(cause))
+                    errorCode = jmsValidator.getErrorCode(cause);
                 if (cause instanceof ResourceException)
                     errorCode = ((ResourceException) cause).getErrorCode();
                 else if (cause instanceof SQLException) {
