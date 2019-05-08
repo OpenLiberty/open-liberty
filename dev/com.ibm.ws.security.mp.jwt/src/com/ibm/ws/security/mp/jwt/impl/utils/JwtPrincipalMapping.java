@@ -27,7 +27,7 @@ public class JwtPrincipalMapping {
     private static TraceComponent tc = Tr.register(JwtPrincipalMapping.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     protected static final String REALM_CLAIM = "realm";
 
-    private Map claims;
+    private Map claims = null;
 
     String realm = null;
     //String uniqueSecurityName = null;
@@ -159,7 +159,6 @@ public class JwtPrincipalMapping {
         } catch (Exception e) {
             Tr.error(tc, "CANNOT_GET_CLAIM_FROM_JSON", new Object[] { claimAttr, e.getLocalizedMessage() });
         }
-
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, claim);
         }
