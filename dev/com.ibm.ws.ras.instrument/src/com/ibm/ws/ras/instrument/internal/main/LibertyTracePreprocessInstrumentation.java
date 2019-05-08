@@ -698,26 +698,29 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         info.classNode = directory;
         info.packageInfo = getPackageInfo(directory.name.replaceAll("/[^/]+$", ""));
 
-        // #1: Check for a trivial annotation on the class.
-        if (!checkInstrumentableAdapter.isInstrumentableClass()) {
-            return null;
-        }
 
-        // #2: Check for a trace options annotation
+        // #1: Check for a trace options annotation
         processClassTraceOptionsAnnotation(info);
 
-        // #3: Look for declared TraceComponents
+        // #2: Look for declared TraceComponents
         processLibertyTraceComponentDiscovery(info);
         processWebsphereTraceComponentDiscovery(info);
+       
 
-        // #4: Look for declared Logger fields
+        // #3: Look for declared Logger fields
         processJavaLoggerDiscovery(info);
 
-        // #5: See if TraceComponent and a Logger were defined
+        // #4: See if TraceComponent and a Logger were defined
         int declaredTraceStateFieldCount = 0;
         if (info.libertyTraceComponentFieldNode != null) {
             declaredTraceStateFieldCount++;
         }
+        
+        // #5: Check for a trivial annotation on the class - and if a static field exists - continue - otherwise return
+        if (!checkInstrumentableAdapter.isInstrumentableClass() && declaredTraceStateFieldCount == 0) {
+            return null;
+        }
+        
         if (info.websphereTraceComponentFieldNode != null) {
             declaredTraceStateFieldCount++;
         }
