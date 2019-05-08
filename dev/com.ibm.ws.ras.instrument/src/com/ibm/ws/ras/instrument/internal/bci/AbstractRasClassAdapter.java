@@ -298,9 +298,9 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
     @Override
     public boolean isInstrumentableClass() {
         // Don't instrument trivial classes
-//        if (isTrivial()) {
-//            return false;
-//        }
+        if (isTrivial()) {
+            return false;
+        }
         return super.isInstrumentableClass();
     }
 

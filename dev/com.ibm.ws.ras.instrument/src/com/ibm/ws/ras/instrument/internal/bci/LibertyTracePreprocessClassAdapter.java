@@ -71,4 +71,11 @@ public class LibertyTracePreprocessClassAdapter extends AbstractTracingRasClassA
     public boolean isTraceObjectFieldInitializationRequired() {
         return initializeTraceObjectField;
     }
+
+	@Override
+	public boolean isTrivial() {
+		
+		return false;
+	}
+
 }

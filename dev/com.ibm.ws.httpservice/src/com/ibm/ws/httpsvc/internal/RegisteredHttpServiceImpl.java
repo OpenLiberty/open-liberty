@@ -23,7 +23,6 @@ import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
-import javax.xml.ws.spi.http.HttpContext;
 
 import org.apache.felix.http.api.ExtHttpService;
 import org.apache.felix.http.base.internal.context.ExtServletContext;
@@ -34,6 +33,8 @@ import org.apache.felix.http.base.internal.service.DefaultHttpContext;
 import org.apache.felix.http.base.internal.service.ResourceServlet;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.NamespaceException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
