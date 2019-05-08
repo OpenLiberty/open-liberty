@@ -250,10 +250,8 @@ public class VMMService implements Service, RealmConfigChangeListener {
         return result;
     }
 
-    public String getRealmName() throws WIMException {
-        String result = null;
-        result = profileManager.getRealmName();
-        return result;
+    public String getRealmName() {
+        return profileManager.getDefaultRealmName();
     }
 
     /*
@@ -279,17 +277,19 @@ public class VMMService implements Service, RealmConfigChangeListener {
 
         // Iterate over all configured realms and for each realm verify the participating base entry
         // against repository base entries.
-        Set<String> realmNames = configMgr.getRealmNames();
+        Set<String> realmNames = configMgr.getRealmNames(null);
 
         if (realmNames != null) {
             for (String realmName : realmNames) {
                 RealmConfig config = configMgr.getRealmConfig(realmName);
-                String[] participatingEntries = config.getParticipatingBaseEntries();
+                if (config != null) {
+                    String[] participatingEntries = config.getParticipatingBaseEntries();
 
-                if (participatingEntries != null) {
-                    for (String baseEntry : participatingEntries) {
-                        if (!baseEntries.contains(baseEntry))
-                            Tr.error(tc, WIMMessageKey.INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION, baseEntry);
+                    if (participatingEntries != null) {
+                        for (String baseEntry : participatingEntries) {
+                            if (!baseEntries.contains(baseEntry))
+                                Tr.error(tc, WIMMessageKey.INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION, baseEntry);
+                        }
                     }
                 }
             }

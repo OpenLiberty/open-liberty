@@ -6,7 +6,7 @@
         <feature>securitylibertyinternals-1.0</feature>
 	</featureManager>
 
-<!-- 	<ldapRegistry id="SUN_LDAP" realm="SampleLdapSUNRealm" host="${ldap.server.13.name}" port="${ldap.server.13.port}"
+	<ldapRegistry id="SUN_LDAP" realm="SampleLdapSUNRealm" host="${ldap.server.13.name}" port="${ldap.server.13.port}"
 		baseDN="dc=rtp,dc=raleigh,dc=ibm,dc=com"
 		ldapType="Sun Java System Directory Server">
 		<failoverServers name="failoverLdapServers">
@@ -22,23 +22,8 @@
 		<failoverServers name="failoverLdapServers">
 		   <server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
         </failoverServers>
-	</ldapRegistry> -->
-
-	<ldapRegistry id="LDAP" realm="defaultWIMFileBasedRealm"
-		host="vmm-mad1.rtp.raleigh.ibm.com" port="389" ignoreCase="true"
-		baseDN="CN=Users,DC=vmm,DC=com"
-		bindDN="cn=administrator,cn=users,dc=vmm,dc=com"
-		bindPassword="password" ldapType="Microsoft Active Directory"
-		sslEnabled="false">
-
-		<activedFilters
-			userFilter="(&amp;(sAMAccountName=%v)(objectcategory=user))"
-			groupFilter="(&amp;(cn=%v)(objectcategory=group))"
-			userIdMap="user:sAMAccountName" groupIdMap="*:cn"
-			groupMemberIdMap="memberOf:member">
-		</activedFilters>
-
 	</ldapRegistry>
+
     <federatedRepository>
         <primaryRealm name="newRealm">
             <participatingBaseEntry name="dc=rtp,dc=raleigh,dc=ibm,dc=com"/>

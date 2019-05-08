@@ -231,7 +231,7 @@ public class UniqueIdBridge {
                     }
                     // PM50390
                     if (mappingUtils.returnRealmInfoInUniqueUserId && idAndRealm.isRealmDefined()
-                        || (idAndRealm.isRealmDefined() && (!this.mappingUtils.getDefaultRealmName().equals(idAndRealm.getRealm())))) {
+                        || (idAndRealm.isRealmDefined() && (!this.mappingUtils.getWimService().getRealmName().equals(idAndRealm.getRealm())))) {
                         returnValue += idAndRealm.getDelimiter() + idAndRealm.getRealm();
                     }
                 } else if (entity != null) {
@@ -241,7 +241,7 @@ public class UniqueIdBridge {
                         returnValue = (String) entity.getIdentifier().get(outputAttrName);
                     }
                     if (mappingUtils.returnRealmInfoInUniqueUserId && idAndRealm.isRealmDefined()
-                        || (idAndRealm.isRealmDefined() && (!this.mappingUtils.getDefaultRealmName().equals(idAndRealm.getRealm())))) {
+                        || (idAndRealm.isRealmDefined() && (!this.mappingUtils.getWimService().getRealmName().equals(idAndRealm.getRealm())))) {
                         returnValue += idAndRealm.getDelimiter() + idAndRealm.getRealm();
                     }
                 }

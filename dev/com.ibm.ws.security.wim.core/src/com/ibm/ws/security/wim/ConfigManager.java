@@ -13,6 +13,7 @@ package com.ibm.ws.security.wim;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,8 @@ public class ConfigManager {
     public static final String DEFAULT_ATTRIBUTE = "defaultAttribute";
 
     public static final Integer DEFAULT_MAX_SEARCH_RESULTS = new Integer(4500);
+
+    public static final String DEFAULT_REALM_NAME = "WIMRegistry";
 
     public static final Integer DEFAULT_SEARCH_TIMEOUT = new Integer(600000);
 
@@ -277,7 +280,7 @@ public class ConfigManager {
         return isAllowOpIfRepoDown;
     }
 
-    public String getDefaultRealmName() {
+    public String getConfiguredPrimaryRealmName() {
         String defaultRealmName = null;
         if (realmNameToRealmConfigMap != null) {
             for (RealmConfig realmCfg : realmNameToRealmConfigMap.values()) {
@@ -294,7 +297,7 @@ public class ConfigManager {
 
     @Trivial
     public RealmConfig getDefaultRealmConfig() {
-        return getRealmConfig(getDefaultRealmName());
+        return getRealmConfig(getConfiguredPrimaryRealmName());
     }
 
     public boolean isUniqueNameInRealm(String uniqueName, String realmName) throws InvalidArgumentException {
@@ -305,7 +308,7 @@ public class ConfigManager {
         if (realmName == null || realmNameToRealmConfigMap.size() == 0) {
             inRealm = true;
         } else if (realmConfig != null && realmConfig.getParticipatingBaseEntries() != null) {
-            validateRealmName(realmName);
+            validateRealmName(realmName, null);
 
             if (uniqueName != null) {
                 uniqueName = UniqueNameHelper.getValidUniqueName(uniqueName);
@@ -323,8 +326,8 @@ public class ConfigManager {
         return inRealm;
     }
 
-    private void validateRealmName(String realmName) throws InvalidArgumentException {
-        Set realms = getRealmNames();
+    private void validateRealmName(String realmName, List<String> repoIds) throws InvalidArgumentException {
+        Set<String> realms = getRealmNames(repoIds);
         if (realmName != null && realms != null && !realms.contains(realmName)) {
             throw new InvalidArgumentException(WIMMessageKey.INVALID_REALM_NAME, Tr.formatMessage(
                                                                                                   tc,
@@ -348,8 +351,18 @@ public class ConfigManager {
 
     }
 
-    public Set<String> getRealmNames() {
-        return realmNameToRealmConfigMap.keySet();
+    //changing
+    public Set<String> getRealmNames(List<String> repoIds) {
+        if (realmNameToRealmConfigMap.keySet() != null && realmNameToRealmConfigMap.keySet().size() != 0) {
+            return realmNameToRealmConfigMap.keySet();
+        }
+        if (repoIds != null && repoIds.size() != 0) {
+            return new HashSet<String>(repoIds);
+        }
+        Set<String> realmName = new HashSet<String>();
+        realmName.add(DEFAULT_REALM_NAME);
+
+        return realmName;
     }
 
     public void registerRealmConfigChangeListener(RealmConfigChangeListener listener) {
@@ -364,21 +377,23 @@ public class ConfigManager {
      * @param realmName The name of the realm
      * @return The default parent node.
      */
-    public String getDefaultParentForEntityInRealm(String entType, String realmName) throws WIMException {
+    public String getDefaultParentForEntityInRealm(String entType, String realmName, List<String> repoIds) throws WIMException {
         String defaultParent = getDefaultParent(entType);
         if (realmName != null) {
-            validateRealmName(realmName);
+            validateRealmName(realmName, repoIds);
             String parent = null;
             RealmConfig realmConfig = getRealmConfig(realmName);
-            Map defaultParentsMap = realmConfig.getDefaultParentMapping();
-            if (defaultParentsMap != null) {
-                parent = (String) defaultParentsMap.get(entType);
-                if (parent != null) {
-                    defaultParent = parent;
+            if (realmConfig != null) {
+                Map defaultParentsMap = realmConfig.getDefaultParentMapping();
+                if (defaultParentsMap != null) {
+                    parent = (String) defaultParentsMap.get(entType);
+                    if (parent != null) {
+                        defaultParent = parent;
+                    }
                 }
-            }
-            if (parent == null && !isUniqueNameInRealm(defaultParent, realmName)) {
-                defaultParent = null;
+                if (parent == null && !isUniqueNameInRealm(defaultParent, realmName)) {
+                    defaultParent = null;
+                }
             }
         }
         return defaultParent;

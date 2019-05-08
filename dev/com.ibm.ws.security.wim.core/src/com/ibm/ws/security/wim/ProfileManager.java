@@ -167,6 +167,8 @@ public class ProfileManager implements ProfileServiceLite {
     //TODO For now it doesn't make any diff. Could be be implemented as service only LA comes in picture
     PropertyManager propMgr = new PropertyManager();
 
+    public static final String DEFAULT_REALM_NAME = "WIMRegistry";
+
     /**
      * @param repositoryManager
      */
@@ -2432,8 +2434,7 @@ public class ProfileManager implements ProfileServiceLite {
         String value = null;
         List<Context> contexts = root.getContexts();
         if (contexts == null || contexts.size() == 0) {
-            if (getConfigManager() != null)
-                value = getConfigManager().getDefaultRealmName();
+            value = getDefaultRealmName();
         } else {
 
             int i = 0;
@@ -2446,7 +2447,7 @@ public class ProfileManager implements ProfileServiceLite {
                 i++;
             }
             if (value == null) {
-                value = getConfigManager().getDefaultRealmName();
+                value = getDefaultRealmName();
             }
         }
         return value;
@@ -2466,7 +2467,7 @@ public class ProfileManager implements ProfileServiceLite {
         value = getRealmName(root);
         if (value == null) {
             try {
-                value = getRealmName();
+                value = getDefaultRealmName();
             } catch (Exception e) {
                 // leave realm at null
             }
@@ -2591,14 +2592,41 @@ public class ProfileManager implements ProfileServiceLite {
         return false;
     }
 
-    public String getRealmName() throws WIMException {
-        String realmName = null;
+    /**
+     * Retrieve the default/primary realm name in the following order:
+     * <ol>
+     * <li> Check the configuration to see if there is a designated default realm already </>
+     * <li> Retrieve the first realm of the first stored repository as set it as the default realm </li>
+     * <li> Set Default Value to "WIMRegistry"
+     * </ol>
+     *
+     * @return the default/primary realm name
+     */
+    public String getDefaultRealmName() {
+        /*
+         * First we are going to check for the configured primary realm if it exists
+         */
+        String realmName = getConfigManager().getConfiguredPrimaryRealmName();
 
-        @SuppressWarnings("unchecked")
-        List<String> repoIds = getRepositoryManager().getRepoIds();
-        if (repoIds != null && repoIds.size() > 0) {
-            Repository repository = getRepositoryManager().getRepository(repoIds.get(0));
-            realmName = repository.getRealm();
+        /*
+         * If there is no configured primary realm we will take the realm name of the first federated registry as the default realm
+         */
+        try {
+            if (realmName == null) {
+                List<String> repoIds = getRepositoryManager().getRepoIds();
+                if (repoIds != null && repoIds.size() > 0) {
+                    Repository repository = getRepositoryManager().getRepository(repoIds.get(0));
+                    realmName = repository.getRealm();
+                }
+            }
+        } catch (WIMException e) {
+        }
+
+        /*
+         * Finally if we still have no realm name we will set it to the default
+         */
+        if (realmName == null) {
+            realmName = DEFAULT_REALM_NAME;
         }
 
         return realmName;
@@ -2927,7 +2955,7 @@ public class ProfileManager implements ProfileServiceLite {
             }
         }
         if (parentDN == null) {
-            parentDN = configMgr.getDefaultParentForEntityInRealm(qualifiedEntityType, realmName);
+            parentDN = configMgr.getDefaultParentForEntityInRealm(qualifiedEntityType, realmName, repositoryManager.getRepoIds());
         }
 
         /*

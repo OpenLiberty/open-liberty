@@ -158,7 +158,7 @@ public class RepositoryManager {
 
         AuditManager auditManager = new AuditManager();
         Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), auditManager.getRequestType(), auditManager.getRepositoryId(), uniqueName,
-                    vmmService.getConfigManager().getDefaultRealmName(), null, Integer.valueOf("204"));
+                    vmmService.getRealmName(), null, Integer.valueOf("204"));
 
         throw new InvalidUniqueNameException(WIMMessageKey.ENTITY_NOT_IN_REALM_SCOPE, Tr.formatMessage(
                                                                                                        tc,

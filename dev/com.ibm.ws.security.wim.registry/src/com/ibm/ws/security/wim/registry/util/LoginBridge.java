@@ -140,7 +140,7 @@ public class LoginBridge {
             // if realm is defined
             // d109969
             if ((idAndRealm.isRealmDefined())
-                && (!this.mappingUtils.getDefaultRealmName().equals(idAndRealm.getRealm()))) {
+                && (!this.mappingUtils.getWimService().getRealmName().equals(idAndRealm.getRealm()))) {
                 returnValue.append(idAndRealm.getDelimiter() + idAndRealm.getRealm());
             }
         } catch (WIMException toCatch) {
@@ -234,7 +234,7 @@ public class LoginBridge {
             // if realm is defined
             // d109969
             if ((idAndRealm.isRealmDefined())
-                && (!this.mappingUtils.getDefaultRealmName().equals(idAndRealm.getRealm()))) {
+                && (!this.mappingUtils.getWimService().getRealmName().equals(idAndRealm.getRealm()))) {
                 //user = user + realmDelimiter + realm
                 returnValue.append(idAndRealm.getDelimiter() + idAndRealm.getRealm());
             }

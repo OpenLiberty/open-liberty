@@ -38,6 +38,7 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.wim.ConfigManager;
+import com.ibm.ws.security.wim.ProfileManager;
 import com.ibm.ws.security.wim.VMMService;
 import com.ibm.ws.security.wim.registry.util.BridgeUtils;
 import com.ibm.ws.security.wim.registry.util.DisplayNameBridge;
@@ -65,8 +66,8 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
     private static final TraceComponent tc = Tr.register(WIMUserRegistry.class);
 
     public static final String CFG_KEY_REALM = "realm";
-    protected static final String DEFAULT_REALM_NAME = "WIMRegistry";
-    private String realm = DEFAULT_REALM_NAME;
+
+    private String realm = ProfileManager.DEFAULT_REALM_NAME;
 
     @Reference
     ConfigManager configManager;
@@ -214,7 +215,7 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
     @Override
     @FFDCIgnore(Exception.class)
     public String getRealm() {
-        String returnValue = getCoreConfiguration().getDefaultRealmName();
+        String returnValue = vmmService.getRealmName();
 
         // New:: Get the primary realm or realm defined directly in the repository.
         if (returnValue == null && loginBridge != null)
@@ -226,10 +227,6 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
             returnValue = realm;
 
         return returnValue;
-    }
-
-    private ConfigManager getCoreConfiguration() {
-        return configManager;
     }
 
     /** {@inheritDoc} */

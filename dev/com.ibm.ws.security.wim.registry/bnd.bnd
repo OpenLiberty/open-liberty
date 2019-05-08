@@ -42,8 +42,9 @@ instrument.classesExcludes: com/ibm/ws/security/wim/registry/util/resources/*.cl
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	org.osgi.service.metatype.annotations
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

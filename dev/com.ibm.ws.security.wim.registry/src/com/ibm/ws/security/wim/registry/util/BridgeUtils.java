@@ -200,12 +200,12 @@ public class BridgeUtils implements WIMUserRegistryDefines {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " " + "inputString = \"" + inputString + "\"");
         }
-        String defaultRealm = getDefaultRealmName();
+        String defaultRealm = getWimService().getRealmName();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " " + "Default realm name = \"" + defaultRealm + "\"");
         }
         String defaultRealmDelimiter = getCoreConfiguration().getDefaultDelimiter();
-        Set<String> virtualRealms = getCoreConfiguration().getRealmNames(); //will not be null since set will always be returned
+        Set<String> virtualRealms = getCoreConfiguration().getRealmNames(null); //will not be null since set will always be returned
         Map<String, String> virtualRealmsDelimiter = new HashMap<String, String>();
         for (Iterator<String> itr = virtualRealms.iterator(); itr.hasNext();) {
             String virtualRealm = itr.next();
@@ -524,20 +524,6 @@ public class BridgeUtils implements WIMUserRegistryDefines {
             }
         }
         return inputAttrName;
-    }
-
-    /**
-     * Method to return the default realm
-     *
-     * @return default realm Name
-     */
-    public String getDefaultRealmName() {
-        String returnRealm = getCoreConfiguration().getDefaultRealmName();
-        if (returnRealm == null) {
-            returnRealm = urRealmName;
-        }
-        return returnRealm;
-
     }
 
     /**
