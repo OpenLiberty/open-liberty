@@ -700,6 +700,10 @@ error.package.extension=CWWKE0950E: The archive filename must end with .jar when
 error.package.extension.explanation=The --archive option must include a file extension that ends with .jar when specifying --include=runnable.
 error.package.extension.useraction=Supply a file name to --archive with a file extension of .jar when specifying --include=runnable.
 
+error.package.usr.jar=CWWKE0951E: The archive file name must not end with a .jar file extension when the usr option is used.
+error.package.usr.jar.explanation=The --archive option must not end with a .jar file extension when --include=usr is specified.
+error.package.usr.jar.useraction=Supply a file name to --archive with a file extension other than a .jar file extension when --include=usr is specified.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
