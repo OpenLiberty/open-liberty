@@ -115,10 +115,12 @@ public class ZipArchive extends AbstractArchive {
 
         if (helper != null) {
             int mode = helper.getUnixMode(sourceFile);
-            if (entry instanceof ZipArchiveEntry) {
-                ((ZipArchiveEntry) entry).setUnixMode(mode);
-            } else if (entry instanceof TarArchiveEntry) {
-                ((TarArchiveEntry) entry).setMode(mode);
+            if (mode != -1) {
+                if (entry instanceof ZipArchiveEntry) {
+                    ((ZipArchiveEntry) entry).setUnixMode(mode);
+                } else if (entry instanceof TarArchiveEntry) {
+                    ((TarArchiveEntry) entry).setMode(mode);
+                }
             }
         }
         archiveOutputStream.putArchiveEntry(entry);
