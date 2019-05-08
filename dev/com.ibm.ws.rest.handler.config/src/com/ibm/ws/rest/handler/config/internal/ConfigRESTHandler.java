@@ -359,8 +359,11 @@ public class ConfigRESTHandler implements RESTHandler {
         } else if (value instanceof Collection) { // list supplied as a Vector for negative cardinality
             Collection<?> list = (Collection<?>) value;
             int length = list.size();
+            // TODO the following needs to be fixed similar to the array path.
+            // However, we might be relying on the cardinality==null check to cover up a bug in obtaining cardinality for nested
+            // resource adapter properties.  Need to fix that first.
             if (length == 1 && (cardinality == null || cardinality >= -1 && cardinality <= 1))
-                value = getJSONValue(list.iterator().next(), null, processed);// TODO if 1 element, check cardinality ...
+                value = getJSONValue(list.iterator().next(), null, processed);
             else {
                 JSONArray a = new JSONArray();
                 for (Object o : list)
@@ -460,8 +463,16 @@ public class ConfigRESTHandler implements RESTHandler {
                 if (elementName.length() == 0 // show all config
                     || displayId.startsWith(elementName + '[') && !displayId.contains("]/") // matches top level config
                     || elementName.contentEquals(displayId) // matches singleton config element
-                    || (nestedStart = displayId.lastIndexOf('/' + elementName + '[')) > 0 && displayId.indexOf('/', nestedStart + 2) < 0) // matches nested config
+                    || (nestedStart = displayId.lastIndexOf('/' + elementName + '[')) > 0
+                       && displayId.indexOf("]/", nestedStart) < 0
+                       && displayId.charAt(displayId.length() - 1) == ']' // matches nested config
+                    || displayId.endsWith('/' + elementName)) // matches implicitly created sub-config elements of app-defined resources
                     configMap.put(displayId, props);
+
+                // Examples
+                // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver  <-- not a data source
+                // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]             <-- data source
+                // persistentExecutor[px1]/databaseTaskStore[s1]/dataSource[ds1]/jdbcDriver[myDriver]             <-- not a data source
             }
 
         JSONArtifact json;

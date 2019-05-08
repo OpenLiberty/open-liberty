@@ -11,11 +11,15 @@
 package com.ibm.ws.rest.handler.config.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -62,10 +66,77 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         server.stopServer();
     }
 
+    /**
+     * Use the /ibm/api/config rest endpoint to obtain configuration for an app-defined data source.
+     */
     @Test
-    public void testConfigDataSourcesIncludingAppDefined() throws Exception {
+    public void testAppDefinedDataSource() throws Exception {
+        JsonObject ds = new HttpsRequest(server, "/ibm/api/config/dataSource/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava:module%2Fenv%2Fjdbc%2Fds2%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + ds;
+
+        assertEquals(err, "dataSource", ds.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", ds.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", ds.getString("id"));
+        assertEquals(err, "java:module/env/jdbc/ds2", ds.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", ds.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", ds.getString("module"));
+        assertNull(err, ds.get("component"));
+
+        //TODO JsonObject cm;
+        //assertNotNull(err, cm = ds.getJsonObject("connectionManagerRef"));
+        //assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("uid"));
+        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("id"));
+        //assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        //...
+
+        //TODO JsonObject authData;
+        //assertNotNull(err, authData = ds.getJsonObject("containerAuthDataRef"));
+        //assertEquals(err, "authData", authData.getString("configElementName"));
+        //assertEquals(err, "derbyAuth1", authData.getString("uid"));
+        //assertEquals(err, "derbyAuth1", authData.getJsonObject("id"));
+        //assertEquals(err, "dbuser1", authData.getString("user"));
+        //assertEquals(err, "******", authData.getString("password"));
+
+        assertEquals(err, Connection.TRANSACTION_READ_COMMITTED, ds.getInt("isolationLevel"));
+
+        //TODO JsonObject driver;
+        //assertNotNull(err, driver = ds.getJsonObject("jdbcDriverRef"));
+        //assertEquals(err, "jdbcDriver", cm.getString("configElementName"));
+        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", cm.getString("uid"));
+        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", cm.getString("id"));
+        //assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        //...
+
+        JsonArray onConnect;
+        assertNotNull(err, onConnect = ds.getJsonArray("onConnect"));
+        assertEquals(err, 1, onConnect.size());
+        assertEquals(err, "DECLARE GLOBAL TEMPORARY TABLE TEMP2 (COL1 VARCHAR(80)) ON COMMIT PRESERVE ROWS NOT LOGGED", onConnect.getString(0));
+
+        //TODO JsonObject props;
+        //assertNotNull(err, props = ds.getJsonObject("properties"));
+        //assertEquals(err, 3, props.size());
+        //assertEquals(err, "create", props.getString("createDatabase"));
+        //assertEquals(err, "...", props.getString("databaseName"));
+        //assertEquals(err, 220, props.getInt("loginTimeout"));
+
+        assertEquals(err, "1m22s", ds.getString("queryTimeout"));
+        assertNull(err, ds.get("recoveryAuthDataRef"));
+        assertEquals(err, "javax.sql.XADataSource", ds.getString("type"));
+
+        // TODO api
+    }
+
+    /**
+     * Verify that application-defined data sources are included in the output of the rest endpoint that
+     * returns the configuration of all data sources.
+     */
+    @Test
+    public void testAppDefinedDataSourcesAreIncluded() throws Exception {
         JsonArray dataSources = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + dataSources;
-        assertEquals(err, 1, dataSources.size()); // TODO app-defined codepath is not implemented
+        assertEquals(err, 2, dataSources.size());
     }
 }
