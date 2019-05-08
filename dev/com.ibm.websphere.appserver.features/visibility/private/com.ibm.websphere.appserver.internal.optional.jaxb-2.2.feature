@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.internal.optional.jaxb-2.2
 visibility=private
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-Process-Types: client, \
