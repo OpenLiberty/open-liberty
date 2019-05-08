@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -46,7 +46,6 @@ info.bootstrapChange.useraction=Es ist keine Aktion erforderlich.
 error.badLocation=CWWKE0004E: Das System konnte Positionen f\u00fcr die Serverinstallation nicht aufl\u00f6sen.
 error.badLocation.explanation=Es wurde keine Serverinstallation an einer angegebenen Position gefunden.
 error.badLocation.useraction=Installieren Sie Liberty Profile erneut oder reparieren Sie es. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
-
 
 error.unableToLaunch=CWWKE0005E: Die Laufzeitumgebung konnte nicht gestartet werden.
 error.unableToLaunch.explanation=Es ist ein Problem aufgetreten, das den Start der Laufzeitumgebung verhindert.
@@ -741,3 +740,5 @@ info.initlogs=Umleitung von stdout und stderr an die Datei {0}
 info.no.servers.defined=Es sind keine Server im Benutzerverzeichnis {0} definiert.
 info.list.of.defined.servers=Die folgenden Server sind relativ zum Benutzerverzeichnis {0} definiert.
 info.communicate.server=Es ist ein Kommunikationsfehler zwischen dem Befehl {0} und dem Server {1} aufgetreten.
+
+info.serialFilterLoaded=Der Agent f\u00fcr seriellen Filter wurde geladen.

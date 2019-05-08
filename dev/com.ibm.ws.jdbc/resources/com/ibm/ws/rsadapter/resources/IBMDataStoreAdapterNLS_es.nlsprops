@@ -271,20 +271,20 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: El controlador JDBC no da s
 DSRA4011.tran.none.iso.switch.unsupported.explanation=La especificaci\u00f3n JDBC no da soporte a la conmutaci\u00f3n a un nivel de aislamiento de TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Evite conmutar a un nivel de aislamiento de TRANSACTION_NONE.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: Cuando se utiliza Oracle UCP se omiten las siguientes propiedades de origen de datos: statementCacheSize y validationTimeout. Utilice la funcionalidad de Oracle UCP equivalente.
-DSRA4012.ignored.datasource.config.used.explanation=Las propiedades de origen de datos statementCacheSize y validationTimeout no son v\u00e1lidas cuando se utiliza Oracle UCP.
-DSRA4012.ignored.datasource.config.used.useraction=Elimine las propiedades de origen de datos y utilice en su lugar la funcionalidad de Oracle UCP equivalente.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Cuando se utiliza Oracle UCP se omiten las siguientes propiedades de origen de datos: {0}.
+DSRA4012.ignored.datasource.config.used.explanation=Las propiedades de origen de datos listadas no son v\u00e1lidas cuando se utiliza Oracle UCP.
+DSRA4012.ignored.datasource.config.used.useraction=Elimine las propiedades de origen de datos que no son v\u00e1lidas y en su lugar utilice la funcionalidad de Oracle UCP equivalente, si est\u00e1 disponible.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Cuando se utiliza Oracle UCP, se omiten las siguientes propiedades del gestor de conexiones: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Utilice la funcionalidad de Oracle UCP equivalente.
-DSRA4013.ignored.connection.manager.config.used.explanation=Las propiedades del gestor de conexiones listadas no son v\u00e1lidas cuando se utiliza Oracle UCP.
-DSRA4013.ignored.connection.manager.config.used.useraction=Elimine las propiedades del gestor de conexiones y utilice en su lugar la funcionalidad de Oracle UCP equivalente.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Las propiedades del gestor de conexi\u00f3n no son v\u00e1lidas. Cuando se utiliza Oracle UCP, son v\u00e1lidas las siguientes propiedades del gestor de conexi\u00f3n: {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=Cuando se utiliza Oracle UCP, solo son v\u00e1lidas las propiedades del gestor de conexi\u00f3n listadas.
+DSRA4013.ignored.connection.manager.config.used.useraction=Elimine las propiedades del gestor de conexi\u00f3n que no son v\u00e1lidas y en su lugar utilice la funcionalidad de Oracle equivalente, si est\u00e1 disponible.
 
 DSRA4014.URL.for.Driver.missing=DSRA4014E: Se ha especificado el tipo java.sql.Driver para el origen de datos {0} pero no se ha especificado ning\u00fan atributo de URL.
 DSRA4014.URL.for.Driver.missing.explanation=Debe especificarse un URL de conexi\u00f3n para el origen de datos que sea un tipo java.sql.Driver.
 DSRA4014.URL.for.Driver.missing.useraction=A\u00f1ada un URL v\u00e1lido al origen de datos.
 
-DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: El origen de datos {0} se ha configurado con el tipo ConnectionPoolDataSource, que Oracle UCP no admite. En su lugar, utilice el tipo XADataSource o DataSource.
-DSRA4015.no.ucp.connection.pool.datasource.explanation=El origen de datos se ha configurado con el tipo ConnectionPoolDataSource, que no est\u00e1 implementado en el controlador de Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: El origen de datos {0} se ha configurado con el tipo {1}, que no est\u00e1 soportado por Oracle UCP. En su lugar, utilice el tipo XADataSource o DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=El origen de datos se ha configurado con el tipo ConnectionPoolDataSource o Driver, que no est\u00e1 implementado en el controlador de Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualice el origen de datos para utilizar el tipo XADataSource o DataSource.
 
 # ----------------------------------------------------------------------------
