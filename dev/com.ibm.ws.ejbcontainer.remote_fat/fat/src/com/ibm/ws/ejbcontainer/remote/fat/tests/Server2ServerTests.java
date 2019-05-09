@@ -49,13 +49,22 @@ public class Server2ServerTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                                      "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                                                                                                                                                     "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
+                                                                                                                    "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
+                                                                                                                                                                                                                                   "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         // Use ShrinkHelper to build the Ears
+
+        //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
+        JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
+
+        EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
+        InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
+
+        ShrinkHelper.exportDropinAppToServer(clientServer, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(remoteServer, InitTxRecoveryLogApp);
 
         //#################### RemoteClientApp
         JavaArchive RemoteServerSharedJar = ShrinkHelper.buildJavaArchive("RemoteServerShared.jar", "com.ibm.ws.ejbcontainer.remote.server.shared.", "test.");

@@ -38,6 +38,11 @@ task addEJBTools {
       into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient/lib/global"
       rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
     }
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteSessionServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
   }
 }
 
