@@ -466,7 +466,7 @@ public class BaseTraceFormatter extends Formatter {
                                                  logRecord.getLoggerName().equals(SYSERR)))
             name = nonNullString(logRecord.getLoggerName(), null);
         else
-            name = nonNullString(logRecord.getLoggerName(), logRecord.getLoggerName());
+            name = nonNullString(logRecord.getLoggerName(), logRecord.getSourceClassName());
 
         sb.append('[').append(DateFormatHelper.formatTime(logRecord.getMillis(), useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId()).append(' ');
