@@ -69,16 +69,7 @@ public class RealFlushTest {
 
     public static void addApp() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(server, "RealFlushTestApp", "com.ibm.ws.logging.flush.fat.printTestApp",
-                                      "com.ibm.ws.logging.flush.fat.printBoolTests",
-                                      "com.ibm.ws.logging.flush.fat.printCharArrayTests",
-                                      "com.ibm.ws.logging.flush.fat.printCharTests",
-                                      "com.ibm.ws.logging.flush.fat.printDoubleTests",
-                                      "com.ibm.ws.logging.flush.fat.printFloatTests",
-                                      "com.ibm.ws.logging.flush.fat.printIntTests",
-                                      "com.ibm.ws.logging.flush.fat.printLongTests",
-                                      "com.ibm.ws.logging.flush.fat.printObjectTests",
-                                      "com.ibm.ws.logging.flush.fat.printStringTests");
+        ShrinkHelper.defaultDropinApp(server, "RealFlushTestApp", "com.ibm.ws.logging.flush.fat.printTests");
         server.startServer();
     }
 
@@ -116,32 +107,32 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print Varying Length Strings ------");
         Log.info(c, testName, "------- PrintlnString8192 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printStringLongTests/printlnString8192");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnString8192");
         Assert.assertNotNull("str8192 NOT FOUND", server.waitForStringInLogUsingMark(str8192));
 
         Log.info(c, testName, "------- PrintlnString8193 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printStringLongTests/printlnString8193");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnString8193");
         Assert.assertNotNull("str8193 NOT FOUND", server.waitForStringInLogUsingMark(str8193));
 
         Log.info(c, testName, "------- PrintlnStringSmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printStringSmallTests/printlnStringSmall");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnStringSmall");
         Assert.assertNotNull("smallStr NOT FOUND", server.waitForStringInLogUsingMark("smallStr"));
 
         Log.info(c, testName, "------- PrintString8192 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printStringLongTests/printString8192");
+        getHttpServlet("/RealFlushTestApp/printTests/printString8192");
         Assert.assertNotNull("str8192 NOT FOUND", server.waitForStringInLogUsingMark(str8192));
 
         Log.info(c, testName, "------- PrintString8193 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printStringLongTests/printString8193");
+        getHttpServlet("/RealFlushTestApp/printTests/printString8193");
         Assert.assertNotNull("str8193 NOT FOUND", server.waitForStringInLogUsingMark(str8193));
 
         Log.info(c, testName, "------- PrintStringSmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printStringSmallTests/printStringSmall");
+        getHttpServlet("/RealFlushTestApp/printTests/printStringSmall");
         Assert.assertNotNull("smallStr NOT FOUND", server.waitForStringInLogUsingMark("smallStr"));
 
     }
@@ -153,32 +144,32 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print Varying Length char[] ------");
         Log.info(c, testName, "------- PrintlnCharArray8192 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharArrayLargeTests/printlnCharArray8192");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnCharArray8192");
         Assert.assertNotNull("str8192 NOT FOUND", server.waitForStringInLogUsingMark(str8192));
 
         Log.info(c, testName, "------- PrintlnCharArray8193 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharArrayLargeTests/printlnCharArray8193");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnCharArray8193");
         Assert.assertNotNull("str8193 NOT FOUND", server.waitForStringInLogUsingMark(str8193));
 
         Log.info(c, testName, "------- PrintlnCharArraySmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharArraySmallTests/printlnCharArraySmall");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnCharArraySmall");
         Assert.assertNotNull("smallStr NOT FOUND", server.waitForStringInLogUsingMark("smallStr"));
 
         Log.info(c, testName, "------- PrintCharArray8192 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharArrayLargeTests/printCharArray8192");
+        getHttpServlet("/RealFlushTestApp/printTests/printCharArray8192");
         Assert.assertNotNull("str8192 NOT FOUND", server.waitForStringInLogUsingMark(str8192));
 
         Log.info(c, testName, "------- PrintCharArray8193 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharArrayLargeTests/printCharArray8193");
+        getHttpServlet("/RealFlushTestApp/printTests/printCharArray8193");
         Assert.assertNotNull("str8193 NOT FOUND", server.waitForStringInLogUsingMark(str8193));
 
         Log.info(c, testName, "------- PrintCharArraySmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharArraySmallTests/printCharArraySmall");
+        getHttpServlet("/RealFlushTestApp/printTests/printCharArraySmall");
         Assert.assertNotNull("smallStr NOT FOUND", server.waitForStringInLogUsingMark("smallStr"));
 
     }
@@ -190,12 +181,12 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print long Types ------");
         Log.info(c, testName, "------- PrintlnLong ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printLongTests/printlnLong");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnLong");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("222222222"));
 
         Log.info(c, testName, "------- PrintLongSmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printLongTests/printLong");
+        getHttpServlet("/RealFlushTestApp/printTests/printLong");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("222222222"));
 
     }
@@ -207,12 +198,12 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print int Types ------");
         Log.info(c, testName, "------- PrintlnInt ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printIntTests/printlnInt");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnInt");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("222222222"));
 
         Log.info(c, testName, "------- PrintIntSmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printIntTests/printInt");
+        getHttpServlet("/RealFlushTestApp/printTests/printInt");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("222222222"));
 
     }
@@ -224,12 +215,12 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print float Types ------");
         Log.info(c, testName, "------- PrintlnFloat ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printFloatTests/printlnFloat");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnFloat");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222224E8"));
 
         Log.info(c, testName, "------- PrintFloat ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printFloatTests/printFloat");
+        getHttpServlet("/RealFlushTestApp/printTests/printFloat");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222224E8"));
 
     }
@@ -241,12 +232,12 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print double Types ------");
         Log.info(c, testName, "------- PrintlnDouble ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printDoubleTests/printlnDouble");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnDouble");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222222E8"));
 
         Log.info(c, testName, "------- PrintDouble ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printDoubleTests/printDouble");
+        getHttpServlet("/RealFlushTestApp/printTests/printDouble");
         Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222222E8"));
 
     }
@@ -258,12 +249,12 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print char Types ------");
         Log.info(c, testName, "------- PrintlnChar ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharTests/printlnChar");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnChar");
         Assert.assertNotNull("z NOT FOUND", server.waitForStringInLogUsingMark("z"));
 
         Log.info(c, testName, "------- PrintChar ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printCharTests/printChar");
+        getHttpServlet("/RealFlushTestApp/printTests/printChar");
         Assert.assertNotNull("z NOT FOUND", server.waitForStringInLogUsingMark("z"));
 
     }
@@ -275,22 +266,22 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print bool Types ------");
         Log.info(c, testName, "------- PrintFalse ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printBoolTests/printFalse");
+        getHttpServlet("/RealFlushTestApp/printTests/printFalse");
         Assert.assertNotNull("false NOT FOUND", server.waitForStringInLogUsingMark("false"));
 
         Log.info(c, testName, "------- PrintlnFalse ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printBoolTests/printlnFalse");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnFalse");
         Assert.assertNotNull("false NOT FOUND", server.waitForStringInLogUsingMark("false"));
 
         Log.info(c, testName, "------- PrintTrue ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printBoolTests/printTrue");
+        getHttpServlet("/RealFlushTestApp/printTests/printTrue");
         Assert.assertNotNull("true NOT FOUND", server.waitForStringInLogUsingMark("true"));
 
         Log.info(c, testName, "------- PrintlnTrue ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printBoolTests/printlnTrue");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnTrue");
         Assert.assertNotNull("true NOT FOUND", server.waitForStringInLogUsingMark("true"));
 
     }
@@ -302,32 +293,32 @@ public class RealFlushTest {
         Log.info(c, testName, "------- This Section Will Print Varying Length Object.toString() Strings ------");
         Log.info(c, testName, "------- PrintlnObject8192 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printObjectLargeTests/printlnObject8192");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnObject8192");
         Assert.assertNotNull("str8192 NOT FOUND", server.waitForStringInLogUsingMark(str8192));
 
         Log.info(c, testName, "------- PrintlnObject8193 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printObjectLargeTests/printlnObject8193");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnObject8193");
         Assert.assertNotNull("str8193 NOT FOUND", server.waitForStringInLogUsingMark(str8193));
 
         Log.info(c, testName, "------- PrintObject8192 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printObjectLargeTests/printObject8192");
+        getHttpServlet("/RealFlushTestApp/printTests/printObject8192");
         Assert.assertNotNull("str8192 NOT FOUND", server.waitForStringInLogUsingMark(str8192));
 
         Log.info(c, testName, "------- PrintObject8193 ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printObjectLargeTests/printObject8193");
+        getHttpServlet("/RealFlushTestApp/printTests/printObject8193");
         Assert.assertNotNull("str8193 NOT FOUND", server.waitForStringInLogUsingMark(str8193));
 
         Log.info(c, testName, "------- PrintObjectSmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printObjectSmallTests/printObjectSmall");
+        getHttpServlet("/RealFlushTestApp/printTests/printObjectSmall");
         Assert.assertNotNull("smallStr NOT FOUND", server.waitForStringInLogUsingMark("smallStr"));
 
         Log.info(c, testName, "------- PrintlnObjectSmall ------");
         server.setMarkToEndOfLog();
-        getHttpServlet("/RealFlushTestApp/printObjectSmallTests/printlnObjectSmall");
+        getHttpServlet("/RealFlushTestApp/printTests/printlnObjectSmall");
         Assert.assertNotNull("smallStr NOT FOUND", server.waitForStringInLogUsingMark("smallStr"));
 
     }

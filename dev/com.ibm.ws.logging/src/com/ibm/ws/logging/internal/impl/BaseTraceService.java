@@ -1209,152 +1209,210 @@ public class BaseTraceService implements TrService {
         @Override
         public synchronized void print(boolean b) {
             TrOutputStream.isPrinting.set(true);
-            super.print(b);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(b);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(char c) {
             TrOutputStream.isPrinting.set(true);
-            super.print(c);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(int i) {
             TrOutputStream.isPrinting.set(true);
-            super.print(i);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(i);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(long l) {
             TrOutputStream.isPrinting.set(true);
-            super.print(l);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(l);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(float f) {
             TrOutputStream.isPrinting.set(true);
-            super.print(f);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(f);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(double d) {
             TrOutputStream.isPrinting.set(true);
-            super.print(d);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(d);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(char c[]) {
             TrOutputStream.isPrinting.set(true);
-            super.print(c);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(String s) {
             TrOutputStream.isPrinting.set(true);
-            super.print(s);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(s);
+            } catch (Exception e) {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void print(Object obj) {
             TrOutputStream.isPrinting.set(true);
-            super.print(obj);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(obj);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println() {
             TrOutputStream.isPrinting.set(true);
-            super.println();
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.println();
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(boolean b) {
             TrOutputStream.isPrinting.set(true);
-            super.print(b);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(b);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(char c) {
             TrOutputStream.isPrinting.set(true);
-            super.print(c);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(int i) {
             TrOutputStream.isPrinting.set(true);
-            super.print(i);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(i);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(long l) {
             TrOutputStream.isPrinting.set(true);
-            super.print(l);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(l);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(float f) {
             TrOutputStream.isPrinting.set(true);
-            super.print(f);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(f);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(double d) {
             TrOutputStream.isPrinting.set(true);
-            super.print(d);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(d);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(char c[]) {
             TrOutputStream.isPrinting.set(true);
-            super.print(c);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(String s) {
             TrOutputStream.isPrinting.set(true);
-            super.print(s);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(s);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+
+            }
             super.flush();
         }
 
         @Override
         public synchronized void println(Object obj) {
             TrOutputStream.isPrinting.set(true);
-            super.print(obj);
-            TrOutputStream.isPrinting.set(false);
+            try {
+                super.print(obj);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+            }
             super.flush();
         }
 
@@ -1384,6 +1442,8 @@ public class BaseTraceService implements TrService {
         @Override
         public synchronized void flush() throws IOException {
 
+            // isPrinting is a ThreadLocal that will disable flushing when
+            // printing a large string so we can exceed the 8k buffer limit
             if (isPrinting.get())
                 return;
 
