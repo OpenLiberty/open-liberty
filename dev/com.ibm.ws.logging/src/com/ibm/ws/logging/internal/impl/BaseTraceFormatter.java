@@ -459,7 +459,7 @@ public class BaseTraceFormatter extends Formatter {
         // This is a very light trace format, based on enhanced:
         StringBuilder sb = new StringBuilder(256);
         String sym = getMarker(logRecord);
-        String name = nonNullString(logRecord.getLoggerName(), logRecord.getSourceClassName());
+        String name = nonNullString(logRecord.getLoggerName(), null);
 
         sb.append('[').append(DateFormatHelper.formatTime(logRecord.getMillis(), useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId()).append(' ');

@@ -130,8 +130,8 @@ public class LogSource implements Source {
         logData.setModule(logRecord.getLoggerName());
         logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
         logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
-        logData.setMethodName(logRecord.getSourceMethodName());
-        logData.setClassName(logRecord.getSourceClassName());
+        logData.setMethodName("");
+        logData.setClassName("");
 
         logData.setLevelValue(logRecord.getLevel().intValue());
         String threadName = Thread.currentThread().getName();
