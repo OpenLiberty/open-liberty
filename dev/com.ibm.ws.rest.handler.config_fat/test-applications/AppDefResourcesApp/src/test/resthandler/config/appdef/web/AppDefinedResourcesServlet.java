@@ -35,9 +35,6 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/AppDefinedResourcesServlet")
 public class AppDefinedResourcesServlet extends FATServlet {
-    //@Resource
-    //private DataSource defaultDataSource;
-
     /**
      * No-op servlet method that the test case uses to ensure the web module is loaded.
      */
