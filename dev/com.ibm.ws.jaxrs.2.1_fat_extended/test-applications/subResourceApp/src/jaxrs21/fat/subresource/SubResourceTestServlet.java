@@ -58,6 +58,44 @@ public class SubResourceTestServlet extends FATServlet {
         assertEquals("{\"subId\":\"1\"}", result);
     }
 
+    @Test
+    public void testSubResourceContextInjection(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Response response = target(req, "sub/context").request().get();
+        String result = response.readEntity(String.class);
+        assertEquals(200, response.getStatus());
+        System.out.println("result=" + result);
+        assertTrue(result.contains("/sub/context"));
+    }
+
+    @Test
+    public void testSubResourceCdiInjection(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Response response = target(req, "subCdi/cdi").request().get();
+        String result = response.readEntity(String.class);
+        assertEquals(200, response.getStatus());
+        System.out.println("result=" + result);
+        assertTrue(result.contains("some string"));
+    }
+
+    @Test
+    public void testSubResourceContextInjectionWithGetResource(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Response response = target(req, "subGet/context").request().get();
+        String result = response.readEntity(String.class);
+        assertEquals(200, response.getStatus());
+        System.out.println("result=" + result);
+        assertTrue(result.contains("/subGet/context"));
+    }
+
+// This scenario is not expected to succeed.  The ResourceContext.getResource(...) method only takes a Class<?> object as a parameter
+// which won't work with a CDI bean lookup.  It will work for JAX-RS @Context-injected resources, however. 
+//    @Test
+//    public void testSubResourceCdiInjectionWithGetResource(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+//        Response response = target(req, "subGet/cdi").request().get();
+//        String result = response.readEntity(String.class);
+//        assertEquals(200, response.getStatus());
+//        System.out.println("result=" + result);
+//        assertTrue(result.contains("some string"));
+//    }
+
     private WebTarget target(HttpServletRequest request, String path) {
         String base = "http://" + request.getServerName() + ':' + request.getServerPort() + "/subResourceApp/root/";
         return client.target(base + path);

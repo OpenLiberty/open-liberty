@@ -24,6 +24,7 @@ src: \
   test-applications/subResourceApp
 
 fat.project: true
+tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0
 
 javac.source: 1.8
 javac.target: 1.8
