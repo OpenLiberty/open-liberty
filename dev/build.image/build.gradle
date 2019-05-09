@@ -557,8 +557,6 @@ task zipTestReport(type: Zip) {
     props.setProperty('gradle.test.report.zip', archivePath.toString()) //set in memory props too
     File propsFile = rootProject.file('generated.properties')
     userProps.store(propsFile.newWriter(), null)
-    println "test report is at:"
-    println archivePath.toString()
 }
 
 
