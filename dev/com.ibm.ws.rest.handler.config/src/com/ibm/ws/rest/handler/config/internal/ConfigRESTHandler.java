@@ -90,8 +90,13 @@ public class ConfigRESTHandler implements RESTHandler {
             int end = configDisplayId.lastIndexOf('[');
             int begin = configDisplayId.lastIndexOf('/', end) + 1;
             configElementName = configDisplayId.substring(begin, end);
-        } else
-            configElementName = configDisplayId; // singleton pid
+        } else {
+            int slash = configDisplayId.lastIndexOf('/');
+            if (isFactoryPid = (slash >= 0))
+                configElementName = configDisplayId.substring(slash + 1); // factory pid for config that is nested under app-defined resource
+            else
+                configElementName = configDisplayId; // singleton pid
+        }
 
         if (configElementName.indexOf('.') >= 0 && !configElementName.startsWith("properties."))
             return null;

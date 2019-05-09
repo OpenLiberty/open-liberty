@@ -13,6 +13,7 @@ package com.ibm.ws.rest.handler.config.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -84,13 +85,15 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "AppDefResourcesApp.war", ds.getString("module"));
         assertNull(err, ds.get("component"));
 
-        //TODO JsonObject cm;
-        //assertNotNull(err, cm = ds.getJsonObject("connectionManagerRef"));
-        //assertEquals(err, "connectionManager", cm.getString("configElementName"));
-        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("uid"));
-        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("id"));
-        //assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
-        //...
+        JsonObject cm;
+        assertNotNull(err, cm = ds.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("id"));
+        assertEquals(err, "0", cm.getString("connectionTimeout"));
+        assertEquals(err, 2, cm.getInt("maxPoolSize"));
+        assertEquals(err, "2200ms", cm.getString("reapTime"));
+        // TODO default values are absent
 
         //TODO JsonObject authData;
         //assertNotNull(err, authData = ds.getJsonObject("containerAuthDataRef"));
@@ -102,13 +105,28 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
         assertEquals(err, Connection.TRANSACTION_READ_COMMITTED, ds.getInt("isolationLevel"));
 
-        //TODO JsonObject driver;
-        //assertNotNull(err, driver = ds.getJsonObject("jdbcDriverRef"));
-        //assertEquals(err, "jdbcDriver", cm.getString("configElementName"));
-        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", cm.getString("uid"));
-        //assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", cm.getString("id"));
-        //assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
-        //...
+        JsonObject driver;
+        assertNotNull(err, driver = ds.getJsonObject("jdbcDriverRef"));
+        assertEquals(err, "jdbcDriver", driver.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", driver.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", driver.getString("id"));
+        assertEquals(err, "org.apache.derby.jdbc.EmbeddedXADataSource", driver.getString("javax.sql.XADataSource"));
+
+        JsonObject library;
+        assertNotNull(err, library = driver.getJsonObject("libraryRef"));
+        assertEquals(err, "library", library.getString("configElementName"));
+        assertEquals(err, "Derby", library.getString("uid"));
+        assertEquals(err, "Derby", library.getString("id"));
+        assertEquals(err, "spec,ibm-api,api,stable", library.getString("apiTypeVisibility"));
+
+        JsonArray files;
+        JsonObject file;
+        assertNotNull(err, files = library.getJsonArray("fileRef"));
+        assertNotNull(err, file = files.getJsonObject(0));
+        assertEquals(err, "file", file.getString("configElementName"));
+        assertEquals(err, "library[Derby]/file[default-0]", file.getString("uid"));
+        assertNull(err, file.get("id"));
+        assertTrue(err, file.getString("name").endsWith("derby.jar"));
 
         JsonArray onConnect;
         assertNotNull(err, onConnect = ds.getJsonArray("onConnect"));
@@ -126,7 +144,12 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNull(err, ds.get("recoveryAuthDataRef"));
         assertEquals(err, "javax.sql.XADataSource", ds.getString("type"));
 
-        // TODO api
+        JsonArray api;
+        assertNotNull(err, api = ds.getJsonArray("api"));
+        assertEquals(err, 1, api.size()); // increase if more REST API is added for data source
+        assertEquals(err,
+                     "/ibm/api/validation/dataSource/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava%3Amodule%2Fenv%2Fjdbc%2Fds2%5D",
+                     api.getString(0));
     }
 
     /**
