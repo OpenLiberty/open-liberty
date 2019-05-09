@@ -23,7 +23,6 @@ import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
-import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.ws.logging.utils.SequenceNumber;
@@ -32,7 +31,7 @@ import com.ibm.wsspi.collector.manager.Source;
 
 public class LogSource implements Source {
 
-    private static final TraceComponent tc = Tr.register(LogSource.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+    private static final TraceComponent tc = Tr.register(LogSource.class);
 
     private final String sourceName = "com.ibm.ws.logging.source.message";
     private final String location = "memory";

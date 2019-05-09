@@ -15,7 +15,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 import com.ibm.ws.ras.instrument.internal.model.FieldInfo;
 
@@ -57,12 +56,7 @@ public class JSR47TracingClassAdapter extends AbstractTracingRasClassAdapter imp
         }
     }
 
-    public JSR47TracingClassAdapter(ClassVisitor visitor, ClassInfo classInfo, ClassTraceInfo info) {
-    	super(visitor, classInfo);
-    	traceInfo = info;
-	}
-
-	@Override
+    @Override
     public RasMethodAdapter createRasMethodAdapter(MethodVisitor delegate, int access, String name, String descriptor, String signature, String[] exceptions) {
         return new JSR47TracingMethodAdapter(this, delegate, access, name, descriptor, signature, exceptions);
     }

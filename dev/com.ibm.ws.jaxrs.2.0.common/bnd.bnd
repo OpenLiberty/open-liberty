@@ -156,8 +156,7 @@ Include-Resource: \
 
 -dependson: com.ibm.ws.org.codehaus.jackson
 
-instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
-	org/apache/cxf/common/util/UrlUtils.class
+instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

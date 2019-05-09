@@ -24,7 +24,6 @@ import org.objectweb.asm.commons.Method;
 
 import com.ibm.ws.ras.instrument.internal.introspect.TraceObjectFieldAnnotationVisitor;
 import com.ibm.ws.ras.instrument.internal.introspect.TraceOptionsAnnotationVisitor;
-import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 
@@ -113,8 +112,6 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
      * Flag that indicates a class static initializer has been created.
      */
     private boolean staticInitializerGenerated = false;
-    
-    protected ClassTraceInfo traceInfo;
 
     /**
      * Constructor.
@@ -158,13 +155,9 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         AnnotationVisitor av = super.visitAnnotation(desc, visible);
         observedAnnotations.add(Type.getType(desc));
-        TraceOptionsData od;
         if (classInfo == null) {
             if (TRACE_OPTIONS_TYPE.getDescriptor().equals(desc)) {
-            	if ((traceInfo != null) && ((od = traceInfo.getTraceOptionsData()) != null))
-            		optionsAnnotationVisitor = new TraceOptionsAnnotationVisitor(av,od);
-            	else
-            		optionsAnnotationVisitor = new TraceOptionsAnnotationVisitor(av);
+                optionsAnnotationVisitor = new TraceOptionsAnnotationVisitor(av);
                 av = optionsAnnotationVisitor;
             }
         }
@@ -445,14 +438,12 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
      * @return the effective trace options for this class
      */
     public TraceOptionsData getTraceOptionsData() {
-        if ((classInfo != null) && (classInfo.getTraceOptionsData() != null)) {
+        if (classInfo != null) {
             return classInfo.getTraceOptionsData();
         }
         if (optionsAnnotationVisitor != null) {
             return optionsAnnotationVisitor.getTraceOptionsData();
         }
-        if (traceInfo != null) 
-        	return traceInfo.getTraceOptionsData();
         return null;
     }
 
