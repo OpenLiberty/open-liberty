@@ -78,18 +78,16 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
 
     private boolean addFfdc = false;
     private boolean injectStatic = false;
-    private String defaultTraceComponentName = "$$$tc$$$";
 
-
-	private TraceType defaultTraceType = TraceType.LIBERTY;
+    private TraceType defaultTraceType = TraceType.LIBERTY;
 
     /**
      * Transient class that collects class information needed during
      * pre-processing.
      */
-    public class ClassTraceInfo {
+    protected class ClassTraceInfo {
         ClassNode classNode;
-        public PackageInfo packageInfo;
+        PackageInfo packageInfo;
 
         // Explicitly declared Liberty TraceComponent
         FieldNode libertyTraceComponentFieldNode;
@@ -109,11 +107,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
 
         List<String> warnings = new ArrayList<String>();
         boolean failInstrumentation;
-		public TraceOptionsData getTraceOptionsData() {
-			if (packageInfo != null)
-				return packageInfo.getTraceOptionsData();
-			return null;
-		}
     }
 
     /**
@@ -296,24 +289,14 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
                 info.warnings.add(sb.toString());
             }
 
-                     
             // Keep track of the first static TraceComponent
             if (traceComponentFields.size() > 0) {
                 info.libertyTraceComponentFieldNode = traceComponentFields.get(0);
             }
         }
     }
-    
-    public String getDefaultTraceComponentName() {
-		return defaultTraceComponentName;
-	}
 
-    private void setDefaultTraceComponentName(String name) {
-    	defaultTraceComponentName = name;
-		
-	}
-
-	/**
+    /**
      * Introspect the class to obtain the list of fields declared as {@code com.ibm.ejs.ras.TraceComponent}s. Only static declarations
      * are considered.
      * 
@@ -401,7 +384,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
     private void setupTraceStateObjectField(ClassTraceInfo info) {
         // Skip adding trace object field if it already exists
         AnnotationNode traceObjectAnnotation = getAnnotation(TRACE_OBJECT_FIELD_TYPE.getDescriptor(), info.classNode.visibleAnnotations);
-        if (traceObjectAnnotation != null) {        	
+        if (traceObjectAnnotation != null) {
             TraceObjectFieldAnnotationVisitor visitor = new TraceObjectFieldAnnotationVisitor();
             traceObjectAnnotation.accept(visitor);
             List<FieldNode> fields = getFieldsByDesc(visitor.getFieldDescriptor(), info.classNode.fields);
@@ -411,9 +394,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
                     break;
                 }
             }
-            if (info.traceStateField != null) // Only return if matching field found
-            	return;
-            
+            return;
         }
 
         // If a logger or trace component has been declared, use it.
@@ -443,7 +424,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         } else if (defaultTraceType == TraceType.LIBERTY) {
             // TODO: Check for an outer class and a declared field
             int access = (Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC);
-            info.traceStateField = (FieldNode) info.classNode.visitField(access, getDefaultTraceComponentName(), LIBERTY_TRACE_COMPONENT_TYPE.getDescriptor(), null, null);
+            info.traceStateField = (FieldNode) info.classNode.visitField(access, "$$$tc$$$", LIBERTY_TRACE_COMPONENT_TYPE.getDescriptor(), null, null);
         }
 
         // Add the class annotation with the field name and descriptor
@@ -507,17 +488,15 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         }
 
         Iterator<? extends AbstractInsnNode> instructionIterator = staticInitializer.instructions.iterator();
-        
         while (instructionIterator.hasNext()) {
             AbstractInsnNode insnNode = instructionIterator.next();
+
             // Determine if a Logger/TraceComponent field is being initialized.
             if (insnNode.getType() == AbstractInsnNode.FIELD_INSN) {
                 FieldInsnNode fieldInsn = (FieldInsnNode) insnNode;
                 if (fieldInsn.getOpcode() == Opcodes.PUTSTATIC) {
                     if (info.libertyTraceComponentFieldNode != null && fieldInsn.name.equals(info.libertyTraceComponentFieldNode.name)) {
-                    	if (fieldInsn.getPrevious().getOpcode() == Opcodes.INVOKESTATIC) {
-                    		info.libertyTraceComponentFieldAlreadyInitialized = true;
-                    	}
+                        info.libertyTraceComponentFieldAlreadyInitialized = true;
                     }
                     if (info.websphereTraceComponentFieldNode != null && fieldInsn.name.equals(info.websphereTraceComponentFieldNode.name)) {
                         info.websphereTraceComponentFieldAlreadyInitialized = true;
@@ -525,7 +504,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
                     if (info.loggerFieldNode != null && fieldInsn.name.equals(info.loggerFieldNode.name)) {
                         info.loggerFieldAlreadyInitialized = true;
                     }
-                    		
                 }
             }
         }
@@ -698,29 +676,26 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         info.classNode = directory;
         info.packageInfo = getPackageInfo(directory.name.replaceAll("/[^/]+$", ""));
 
+        // #1: Check for a trivial annotation on the class.
+        if (isClassTrivial(info) || !checkInstrumentableAdapter.isInstrumentableClass()) {
+            return null;
+        }
 
-        // #1: Check for a trace options annotation
+        // #2: Check for a trace options annotation
         processClassTraceOptionsAnnotation(info);
 
-        // #2: Look for declared TraceComponents
+        // #3: Look for declared TraceComponents
         processLibertyTraceComponentDiscovery(info);
         processWebsphereTraceComponentDiscovery(info);
-       
 
-        // #3: Look for declared Logger fields
+        // #4: Look for declared Logger fields
         processJavaLoggerDiscovery(info);
 
-        // #4: See if TraceComponent and a Logger were defined
+        // #5: See if TraceComponent and a Logger were defined
         int declaredTraceStateFieldCount = 0;
         if (info.libertyTraceComponentFieldNode != null) {
             declaredTraceStateFieldCount++;
         }
-        
-        // #5: Check for a trivial annotation on the class - and if a static field exists - continue - otherwise return
-        if (!checkInstrumentableAdapter.isInstrumentableClass() && declaredTraceStateFieldCount == 0) {
-            return null;
-        }
-        
         if (info.websphereTraceComponentFieldNode != null) {
             declaredTraceStateFieldCount++;
         }
@@ -769,20 +744,20 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         // If requested, inject tracing at invocation by chaining.
         // Static injection for JSR47 or WebSphere is always done our of
         // the pre-process class adpater.
-        if (injectStatic && info.traceStateField != null && LIBERTY_TRACE_COMPONENT_TYPE.getDescriptor().equals(info.traceStateField.desc)) {
-            cv = new LibertyTracingClassAdapter(cv, info, true);
+        if (injectStatic && LIBERTY_TRACE_COMPONENT_TYPE.getDescriptor().equals(info.traceStateField.desc)) {
+            cv = new LibertyTracingClassAdapter(cv, true);
         }
 
         // Pre-process the class and inject FFDC if requested
         if (info.traceStateField != null) {
-            cv = new LibertyTracePreprocessClassAdapter(cv, !info.traceStateFieldAlreadyInitialized,info);
+            cv = new LibertyTracePreprocessClassAdapter(cv, !info.traceStateFieldAlreadyInitialized);
         } else if (defaultTraceType == TraceType.TR) {
-            cv = new WebSphereTrTracingClassAdapter(cv, null,info);
+            cv = new WebSphereTrTracingClassAdapter(cv, null);
         } else if (defaultTraceType == TraceType.JAVA_LOGGING) {
-            cv = new JSR47TracingClassAdapter(cv, null,info);
+            cv = new JSR47TracingClassAdapter(cv, null);
         }
         if (addFfdc) {
-            cv = new FFDCClassAdapter(cv, null,info);
+            cv = new FFDCClassAdapter(cv, null);
         }
         directory.accept(cv);
 
@@ -800,8 +775,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         List<File> classFiles = new ArrayList<File>();
         List<File> jarFiles = new ArrayList<File>();
         String[] fileArgs = null;
-        
-       
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("--debug") || args[i].equals("-d")) {

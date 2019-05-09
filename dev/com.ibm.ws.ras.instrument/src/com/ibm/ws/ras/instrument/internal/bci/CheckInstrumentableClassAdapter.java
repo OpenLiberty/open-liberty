@@ -28,11 +28,6 @@ public class CheckInstrumentableClassAdapter extends ClassVisitor {
      * Indication of whether or not this class represents an interface.
      */
     private boolean isInterface;
-    
-    /**
-     * Indication of whether or not this class represents an enum.
-     */
-    private boolean isEnum;
 
     /**
      * Indication of whether or not this class was generated and not
@@ -58,7 +53,6 @@ public class CheckInstrumentableClassAdapter extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.classInternalName = name;
         this.isInterface = (access & Opcodes.ACC_INTERFACE) != 0;
-        this.isEnum = (access & Opcodes.ACC_ENUM) != 0;
         this.isSynthetic = (access & Opcodes.ACC_SYNTHETIC) != 0;
 
         super.visit(version, access, name, signature, superName, interfaces);
@@ -79,10 +73,6 @@ public class CheckInstrumentableClassAdapter extends ClassVisitor {
     public boolean isInstrumentableClass() {
         // Don't instrument interfaces
         if (isInterface) {
-            return false;
-        }
-        // Don't instrument enums
-        if (isEnum) {
             return false;
         }
         // Don't instrument methods that are not in the source
