@@ -55,9 +55,6 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
             // add target
             set(AuditEvent.TARGET_NAME, URLDecoder.decode(req.getRequestURI(), "UTF-8"));
 
-            // target.appName not needed based on CL and KC
-            //set(AuditEvent.TARGET_APPNAME, AuditUtils.getJ2EEComponentName());
-
             if (req.getQueryString() != null) {
                 String str = URLDecoder.decode(req.getQueryString(), "UTF-8");
                 str = AuditUtils.hidePassword(str);
@@ -107,20 +104,24 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
             }
 
             String user_id = "";
+
             if ((String) m.get(AuditConstants.USER) != null) {
                 set(AuditEvent.TARGET_USERID, m.get(AuditConstants.USER));
             } else if (req.getQueryString() != null) {
                 String queryString = req.getQueryString();
-                int index1 = queryString.indexOf("user_id=");
-                if (index1 != 0) {
-                    String queryString2 = queryString.substring(index1, queryString.length());
-                    int index2 = queryString2.indexOf("&");
-                    if (index2 != 0) {
-                        user_id = queryString2.substring(index1 + 8, index2 - 1);
-                    } else {
-                        user_id = queryString2.substring(index1 + 9);
+
+                if (queryString != null) {
+                    int index1 = queryString.indexOf("user_id=");
+                    if (index1 != -1) {
+                        String queryString2 = queryString.substring(index1, queryString.length());
+                        int index2 = queryString2.indexOf("&");
+                        if (index2 != -1 && index2 != 8) {
+                            user_id = queryString2.substring(8, index2);
+                        } else {
+                            user_id = queryString2.substring(8, queryString2.length());
+                        }
+                        set(AuditEvent.TARGET_USERID, user_id);
                     }
-                    set(AuditEvent.TARGET_USERID, user_id);
                 }
             } else if (req.getUserPrincipal() != null && req.getUserPrincipal().getName() != null)
                 set(AuditEvent.TARGET_USERID, req.getUserPrincipal().getName());
@@ -132,6 +133,22 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
             }
 
             set(AuditEvent.TARGET_METHOD, AuditUtils.getRequestMethod(req));
+
+            if (AuditUtils.getRequestMethod(req) == "POST") {
+                if (endpoint != null) {
+                    String sos = (String) m.get("respBody");
+                    if (sos != null) {
+                        if (sos.indexOf("app_id") != -1) {
+                            int index1 = sos.indexOf("app_id");
+                            int index2 = sos.indexOf("created_at");
+                            if (index2 != -1) {
+                                String s1 = sos.substring(index1 + 9, index2 - 3);
+                                set(AuditEvent.TARGET_APPLICATION_ID, s1);
+                            }
+                        }
+                    }
+                }
+            }
 
             if (AuditUtils.getRequestMethod(req).equals("DELETE")) {
                 set(AuditEvent.TARGET_NUMBER_REVOKED, m.get(AuditConstants.NUMBER_REVOKED));
