@@ -8,6 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+
 # This file is to be included in the bnd file of any component that needs to 
 # publish its resources to applications.  Including components need to provide 
 # a pipe-separated list of resources to be published as the value of the

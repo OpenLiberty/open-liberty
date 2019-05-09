@@ -550,7 +550,6 @@ if (isRelease) {
 }
 
 task zipTestReport(type: Zip) {
-  
     baseName 'openliberty_test_report'
     from cnf.file('generated/testReports/allUnitTests')
     destinationDir cnf.file('generated/testReports')

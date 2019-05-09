@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+/**
+ * Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.
+ */
 defaultTasks 'clean', 'build'
 
-plugins.apply 'jacoco'
-
-/* Project version is the Bundle-Version attribute if a bundle gets released, otherwise
- * the version is the buildID. */
+// Project version is the Bundle-Version attribute if a bundle gets released, otherwise the version is the buildID.
 def projectVersion = bnd.buildID
 if (releaseVersionOverride != null) {
   projectVersion = releaseVersionOverride
@@ -21,205 +22,6 @@ if (releaseVersionOverride != null) {
 project.version = bnd('Bundle-Version', projectVersion)
 jar {
   version=null
-}
-
-task publishWLPJars(type: Copy) {
-  dependsOn jar
-  def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
-  enabled bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
-  from project.buildDir
-  into buildImage.file('wlp/' + bnd('publish.wlp.jar.suffix', 'lib'))
-  include bnd('publish.wlp.jar.include', '*.jar')
-  if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
-    // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
-    // next to the base version of the jar, *except* for jars that are directly
-    // referenced in a tool script's classpath...
-    if (((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty))
-        || (project.name.equals("com.ibm.ws.kernel.boot"))
-        || (project.name.equals("com.ibm.ws.appclient.boot"))
-        || (project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
-      rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
-    }
-    else {
-      rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
-    }
-  }
-  if (!bnd('-sub', '').empty) {
-    def hasIFIXHeaders = [:]
-    fileTree(dir: projectDir, include: bnd('-sub', '')).each { subBndFile ->
-      Properties subBndProperties = new Properties()
-      subBndFile.withInputStream { subBndProperties.load(it) }
-      if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
-          || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
-        hasIFIXHeaders.put(subBndProperties.getProperty("Bundle-SymbolicName"), true)
-      }
-    }
-
-    eachFile {
-      // If the sub.bnd that built this jar contains iFix headers, rename it with a qualifer.
-      def symbolicName = it.getSourceName().substring(0, it.getSourceName().lastIndexOf("."))
-      if (!hasIFIXHeaders.get(symbolicName)) {
-        it.setName(symbolicName + "_${bnd.bFullVersion}.jar")
-      } else {
-        it.setName(symbolicName + "_${bnd.bFullVersion}.${qualifier}.jar")
-      }
-    }
-  }
-}
-
-task apiSpiJavadoc(type: Javadoc) {
-  dependsOn jar
-  def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
-  enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm')
-
-  onlyIf {
-    !new File(buildDir, "javadoc").exists()
-  }
-
-  def sp = files()
-  def cp = files()
-  bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath().each {
-    def proj = it.getProject()
-    sp += files(proj.getSourcePath())
-    cp += files(it.getFile())
-    cp += files(proj.getBuildpath()*.getFile())
-  }
-
-  destinationDir = file("$buildDir/javadoc")
-  classpath += cp
-  source = sp
-
-  include bnd('Export-Package', '').split(',').collect {
-    def pkg = it
-    int index = pkg.indexOf(";")
-    if (index != -1) {
-      pkg = pkg.substring(0, index)
-    }
-    // Replace . with / (path separator) and * (package name wildcard) with **
-    pkg = pkg.trim().replaceAll("\\.", "/").replaceAll("\\*", "/**") + "/*.java"
-    return pkg
-  }
-  exclude "**/internal/**"
-  title = bnd('Bundle-Name')
-  options.source bnd('javac.source')
-  options.memberLevel = 'PUBLIC'
-  options.noIndex true
-  options.use true
-  if (JavaVersion.current().isJava8Compatible()) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-  }
-}
-
-task zipJavadoc(type: Zip) {
-  dependsOn apiSpiJavadoc
-  archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
-  from new File(project.buildDir, "javadoc")
-}
-
-task publishJavadoc(type: Copy) {
-  dependsOn zipJavadoc
-  from zipJavadoc
-  into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
-  rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
-}
-
-task publishToolScripts(type: Copy) {
-  dependsOn jar
-  enabled !bnd('publish.tool.script', '').empty
-  from cnf.file('resources/bin')
-  into buildImage.file('wlp/bin/' + bnd('publish.tool.script.subdir', ''))
-  fileMode 0755
-  rename 'tool(.*)', bnd('publish.tool.script') + '$1'
-  filter(org.apache.tools.ant.filters.ReplaceTokens,
-         tokens: [TOOL_JAR: bnd('publish.tool.script.subdir', '') + 'tools/' + bnd('publish.tool.jar', ''),
-                  TOOL_SCRIPT: bnd('publish.tool.script.subdir', '') + bnd('publish.tool.script', ''),
-                  TOOL_SCRIPT_DIR_LENGTH: bnd('publish.tool.script.dir.length', '5'),
-                  TOOL_SCRIPT_RELATIVE: bnd('publish.tool.script.relative', '')])
-}
-
-task publishToolJars(type: Copy) {
-  dependsOn jar
-  dependsOn publishToolScripts
-  enabled !bnd('publish.tool.jar', '').empty
-  from project.buildDir
-  into buildImage.file('wlp/bin/' + bnd('publish.tool.script.subdir', '') + 'tools')
-  include bnd('publish.tool.jar', '')
-}
-
-task publishSchemaResources(type: Copy) {
-  dependsOn jar
-  from project.file('resources/schemas')
-  into buildImage.file('wlp/dev/api/ibm/schema')
-}
-
-task publishPlatformManifests(type: Copy) {
-  dependsOn jar
-  from project.file('publish/platform')
-  into buildImage.file('wlp/lib/platform')
-  include '*.mf'
-  filter(org.apache.tools.ant.filters.ConcatFilter,
-    append: file(cnf.file('resources/IBM-ProductID.txt')))
-}
-
-task publishPlatformFiles(type: Copy) {
-  dependsOn jar
-  dependsOn publishPlatformManifests
-  from project.file('publish/platform')
-  into buildImage.file('wlp/lib/platform')
-  exclude '*.mf'
-}
-
-task publishTemplates(type: Copy) {
-  dependsOn jar
-  from project.file('publish/templates')
-  into buildImage.file('wlp/templates')
-}
-
-task publishBinScripts(type: Copy) {
-  dependsOn jar
-  from project.file('publish/bin')
-  into buildImage.file('wlp/bin')
-  fileMode 0755
-}
-
-task publishClientScripts(type: Copy) {
-  dependsOn jar
-  enabled parseBoolean(bnd('publish.wlp.clients', 'true'))
-  from project.file('publish/clients')
-  into buildImage.file('wlp/clients')
-}
-
-task publishLibNative(type: Copy) {
-  dependsOn jar
-  from project.file('lib/native')
-  into buildImage.file('wlp/lib/native')
-}
-
-assemble {
-  dependsOn publishWLPJars
-  dependsOn publishJavadoc
-  dependsOn publishToolJars
-  dependsOn publishSchemaResources
-  dependsOn publishPlatformFiles
-  dependsOn publishTemplates
-  dependsOn publishBinScripts
-  dependsOn publishClientScripts
-  dependsOn publishLibNative
-}
-
-compileJava {
-  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
-    inputs.files { rasInstrumentationInputFiles() }
-    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
-    doLast {
-      if (instrument.isEmpty())
-        return
-      rasInstrumentationTaskdef(ant)
-      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
-          fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
-      }
-    }
-  }
 }
 
 task globalize {
@@ -332,11 +134,6 @@ task copyPiiFiles(type: Copy) {
   include 'l10n/*.properties'
 }
 
-task buildfat {
-    // A no-op task for regular projects which FATs will override
-    group = "build"
-}
-
 sourceSets {
   main {
     if (parseBoolean(bnd('globalize', 'true'))) {
@@ -346,25 +143,31 @@ sourceSets {
 }
 
 compileJava {
+  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
+    inputs.files { rasInstrumentationInputFiles() }
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
+    doLast {
+      if (instrument.isEmpty())
+        return
+      rasInstrumentationTaskdef(ant)
+      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
+        fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
+      }
+    }
+  }
+
   if (parseBoolean(bnd('globalize', 'true'))) {
     dependsOn globalize
   }
+
   options.warnings = false
   options.fork = true
 }
 
 test {
-  ignoreFailures = Boolean.valueOf(rootProject.ext.userProps.getProperty("gradle.test.ignoreFailures", "false"))
-  environment("WLP_INSTALL_DIR", buildImage.file('wlp'))
-  jvmArgs "-Dtest.buildDir=${buildDir}"
-  jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"
-  jvmArgs "-Dmain.classesDir=" + compileJava.destinationDir
-  jvmArgs "-Dtest.classesDir=" + compileTestJava.destinationDir
-}
-
-test {
   dependsOn ':cnf:copyMavenLibs'
   def testports = fileTree(dir: compileTestJava.destinationDir, include: 'unittestports.properties')
+
   doFirst {
     if (testports.isEmpty())
       return
@@ -373,6 +176,7 @@ test {
     ant.portSelector(engineName: "${bnd.buildEngineName}", location: propertiesFile, jvmarg: 'jvmargPorts')
     jvmArgs ant.jvmargPorts.tokenize()
   }
+
   afterSuite { desc, result ->
     if (!desc.parent) { // will match the outermost suite
       rootProject.ext.testCountTotal = rootProject.ext.testCountTotal + result.testCount
@@ -390,64 +194,70 @@ test {
       println " total skipped"
     }
   }
+
+  ignoreFailures = Boolean.valueOf(rootProject.ext.userProps.getProperty("gradle.test.ignoreFailures", "false"))
+  environment("WLP_INSTALL_DIR", buildImage.file('wlp'))
+  jvmArgs "-Dtest.buildDir=${buildDir}"
+  jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"
+  jvmArgs "-Dmain.classesDir=" + compileJava.destinationDir
+  jvmArgs "-Dtest.classesDir=" + compileTestJava.destinationDir
 }
 
-/*
- * Define dependencies for the Jacoco Ant plugin that is used to
- * generate coverage reports since Artifactory doesn't have the
- * POM and therefore can't resolve secondary dependencies.
- */
-dependencies {
-   jacocoAnt "org.jacoco:org.jacoco.agent:0.7.9",
-             "org.jacoco:org.jacoco.ant:0.7.9",
-             "org.jacoco:org.jacoco.core:0.7.9",
-             "org.jacoco:org.jacoco.report:0.7.9",
-             "org.ow2.asm:asm-all:5.2"
+task buildfat {
+  // A no-op task for regular projects which FATs will override
+  group = "build"
 }
 
-jacoco {
-  toolVersion = "0.7.9"
-}
+task apiSpiJavadoc(type: Javadoc) {
+  dependsOn jar
+  def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
+  enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm')
 
-test {
-  /*
-   * By default, don't generate code coverage unless we are
-   * running the 'jacocoTestReport' task.
-   */
-  def enableJacoco = false
-  gradle.startParameter.taskNames.each {
-    if(it.contains("jacocoTestReport")) {
-      enableJacoco = true;
+  onlyIf {
+    !new File(buildDir, "javadoc").exists()
+  }
+
+  def sp = files()
+  def cp = files()
+  bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath().each {
+    def proj = it.getProject()
+    sp += files(proj.getSourcePath())
+    cp += files(it.getFile())
+    cp += files(proj.getBuildpath()*.getFile())
+  }
+
+  destinationDir = file("$buildDir/javadoc")
+  classpath += cp
+  source = sp
+
+  include bnd('Export-Package', '').split(',').collect {
+    def pkg = it
+    int index = pkg.indexOf(";")
+    if (index != -1) {
+      pkg = pkg.substring(0, index)
     }
+    // Replace . with / (path separator) and * (package name wildcard) with **
+    pkg = pkg.trim().replaceAll("\\.", "/").replaceAll("\\*", "/**") + "/*.java"
+    return pkg
   }
-
-  jacoco {
-    append = false
-    enabled = enableJacoco
-  }
-}
-
-jacocoTestReport {
-  description = 'Run the test task and generate the code coverage report.'
-
-  dependsOn test
-
-  reports {
-    html.enabled = true
+  exclude "**/internal/**"
+  title = bnd('Bundle-Name')
+  options.source bnd('javac.source')
+  options.memberLevel = 'PUBLIC'
+  options.noIndex true
+  options.use true
+  if (JavaVersion.current().isJava8Compatible()) {
+    options.addStringOption('Xdoclint:none', '-quiet')
   }
 }
 
-jacocoTestCoverageVerification {
-  violationRules {
-    rule {
-      limit {
-        minimum = 0.8
-      }
-    }
-  }
+task zipJavadoc(type: Zip) {
+  dependsOn apiSpiJavadoc
+  archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+  from new File(project.buildDir, "javadoc")
 }
 
-/*
+/**
  * This task is meant to perform a simple verification of all of the bundle jars that have been
  * created for the liberty image. It runs as part of the Package Verification build. The check
  * it performs is to simply inspect each bundle jar, and verify that if there is at least one
