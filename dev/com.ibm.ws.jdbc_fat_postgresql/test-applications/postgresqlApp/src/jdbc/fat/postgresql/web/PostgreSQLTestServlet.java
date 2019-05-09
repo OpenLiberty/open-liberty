@@ -22,6 +22,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +39,7 @@ import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
+import org.postgresql.PGConnection;
 
 import componenttest.app.FATServlet;
 
@@ -91,7 +94,7 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // Verify that basic unwrap patterns work for the 3 DataSource types: reg, CP, and XA
     @Test
-    public void testUnwrap() throws Exception {
+    public void testUnwrapDS() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/anonymous/XADataSource");
         assertTrue("Class " + ds.getClass() + " was not marked as a wrapper for XADataSource",
                    ds.isWrapperFor(XADataSource.class));
@@ -115,6 +118,22 @@ public class PostgreSQLTestServlet extends FATServlet {
         DataSource unwrapedDS = ds.unwrap(DataSource.class);
         assertTrue("Expected unwraped DataSource to be an instance of DataSource, but was: " + unwrapedDS,
                    unwrapedDS instanceof DataSource);
+    }
+
+    @Test
+    public void testUnwrapConnection() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
+        try (Connection con = ds.getConnection()) {
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            int backendPID = pgCon.getBackendPID();
+            assertTrue("Expected backend PID to be a positive integer, but was: " + backendPID, backendPID > 0);
+
+            // Spec-standard method, should work OK
+            con.createArrayOf("int", new Integer[] { 1, 2 }).free();
+
+            // PostgreSQL specific method should also work OK
+            pgCon.createArrayOf("int", new int[] { 1, 2 }).free();
+        }
     }
 
     // Test that a basic PostgreSQL-only bean property (defaultFetchSize) gets set on a DataSource when configured in server.xml
@@ -385,6 +404,20 @@ public class PostgreSQLTestServlet extends FATServlet {
         }
     }
 
+    // Normally we reset ApplicationName on ClientInfo, but since it's configured in server.xml it should not be reset
+    @Test
+    public void testApplicationNameNotReset() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        try (Connection con = ds.getConnection()) {
+            assertEquals("fatTestApp", con.getClientInfo("ApplicationName"));
+        }
+        try (Connection con = ds.getConnection()) {
+            assertEquals("fatTestApp", con.getClientInfo("ApplicationName"));
+        }
+    }
+
     // When a connection is involved in a transaction which times out, the transaction will call abort()
     // on any XAResource(s). Verify that upon transaction timeout, the connection is aborted.
     @Test
@@ -435,7 +468,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     public void testPStmtCaching() throws Exception {
         DataSource ds1 = InitialContext.doLookup("jdbc/postgres/xa");
         try (Connection conn = ds1.getConnection()) {
-            HashSet<PreparedStatement> postgreStmts = new HashSet<>();
+            Set<PreparedStatement> postgreStmts = new HashSet<>();
             try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=18")) {
                 postgreStmts.add(getUnderlyingPStmt(stmt));
             }
@@ -450,7 +483,7 @@ public class PostgreSQLTestServlet extends FATServlet {
         }
 
         try (Connection conn = ds1.getConnection()) {
-            HashSet<PreparedStatement> postgreStmts = new HashSet<>();
+            Set<PreparedStatement> postgreStmts = new HashSet<>();
             try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM people WHERE id=(?)")) {
                 stmt.setInt(1, 18);
                 postgreStmts.add(getUnderlyingPStmt(stmt));
@@ -463,7 +496,7 @@ public class PostgreSQLTestServlet extends FATServlet {
                 stmt.setInt(1, 20);
                 postgreStmts.add(getUnderlyingPStmt(stmt));
             }
-            assertEquals("Multiple prepared statements with the same query should share a single undleriny PostgreSQL statement" + postgreStmts,
+            assertEquals("Multiple prepared statements with the same query should share a single underlying PostgreSQL statement" + postgreStmts,
                          1, postgreStmts.size());
         }
     }
@@ -487,20 +520,19 @@ public class PostgreSQLTestServlet extends FATServlet {
             PreparedStatement pstmt1 = conn.prepareStatement(sql);
             Object key1 = getUnderlyingPStmt(pstmt1);
             pstmt1.getUpdateCount(); // Need to process all results in order for statement to be cached.
-            pstmt1.close();
             System.out.println("key1=" + key1);
+            pstmt1.close();
 
             // Get another PreparedStatement with the same sql.
             // Expect statement to be cached since the schema is still the same.
             PreparedStatement pstmt2 = conn.prepareStatement(sql);
             Object key2 = getUnderlyingPStmt(pstmt2);
             pstmt2.getUpdateCount(); // Need to process all results in order for statement to be cached.
-            pstmt2.close();
             System.out.println("key2=" + key2);
+            pstmt2.close();
 
             // Verify that cache keys are the same
-            if (key1 == null || key2 == null || !key1.equals(key2))
-                throw new Exception("Statement keys did not match.  pstmt1: " + key1 + "   pstmt2: " + key2);
+            assertEquals("Statement keys did not match.", key1, key2);
 
             // Do a schema change, and retrieve another PreparedStatement and check the cache key
             conn.setSchema(originalSchema);
@@ -511,7 +543,7 @@ public class PostgreSQLTestServlet extends FATServlet {
             System.out.println("key3=" + key3);
 
             // Verify that pstmt3 cache key is different than the first 2
-            if (key3 == null || key3.equals(key1))
+            if (Objects.equals(key1, key3))
                 throw new Exception("Statement was cached but it should not have been cached.  Key3=" + key3 + " Key1=" + key1);
         }
     }
@@ -525,7 +557,7 @@ public class PostgreSQLTestServlet extends FATServlet {
             } catch (Exception ignore) {
             }
         }
-        throw new RuntimeException("Did not find field 'cstmtImpl' on " + stmt.getClass());
+        throw new RuntimeException("Did not find field 'pstmtImpl' on " + stmt.getClass());
     }
 
     // Verifies spec-standard JDBC properties are at their default values originally
