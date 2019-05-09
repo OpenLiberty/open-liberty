@@ -6,11 +6,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl.utils;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -25,6 +26,9 @@ public class JwtPrincipalMapping {
 
     private static TraceComponent tc = Tr.register(JwtPrincipalMapping.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     protected static final String REALM_CLAIM = "realm";
+
+    private Map claims = null;
+
     String realm = null;
     //String uniqueSecurityName = null;
     String userName = null;
@@ -139,8 +143,19 @@ public class JwtPrincipalMapping {
             Tr.entry(tc, methodName, jsonstr, claimAttr);
         }
         Object claim = null;
+
         try {
-            claim = JsonUtils.claimFromJsonObject(jsonstr, claimAttr);
+
+            if (claims != null) {
+                claim = claims.get(claimAttr);
+            } else {
+                claims = JsonUtils.claimsFromJsonObject(jsonstr);
+
+                if (claims != null) {
+                    claim = claims.get(claimAttr);
+                }
+            }
+
         } catch (Exception e) {
             Tr.error(tc, "CANNOT_GET_CLAIM_FROM_JSON", new Object[] { claimAttr, e.getLocalizedMessage() });
         }
