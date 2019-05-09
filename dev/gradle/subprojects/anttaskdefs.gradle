@@ -12,6 +12,16 @@
 /**
  * Define Ant tasks to use for subprojects.
  * These taskdefs rely on classpath properties in the bndWorkspace created by `cnf/resources/bnd/anttaskdefs.bnd`.
+ *
+ * Ant tasks created:
+ *   instrumentForTrace,
+ *   instrumentWithFFDC,
+ *   com/ibm/mantis/nls/antlib.xml,
+ *   portSelector,
+ *   com/ibm/ws/wlp/feature/tasks/default.properties,
+ *   com/ibm/ws/wlp/repository/default.properties,
+ *   com/ibm/ws/repository/generator/default.properties,
+ *   com/ibm/ws/wlp/mavenFeatures/default.properties
  */
 rootProject.ext.rasInstrumentationInputFiles = { tasks.getByPath(':wlp-rasInstrumentation:jar') }
 rootProject.ext.rasInstrumentationTaskdef = { ant ->

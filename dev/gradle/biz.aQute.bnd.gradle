@@ -20,58 +20,34 @@ subprojects {
   if (bndProject != null) {
     apply plugin: 'biz.aQute.bnd'
 
-    /**
-     * Configure repositories.
-     * See: https://docs.gradle.org/current/userguide/declaring_repositories.html
-     */
+    // Configure repositories.	
     apply from: rootProject.file('gradle/subprojects/repos.gradle')
-
-    /**
-     * Apply Maven Publish plugin and configure publications.
-     * See: https://docs.gradle.org/current/userguide/publishing_maven.html
-     */
+    
+    // Apply Maven Publish plugin and configure publications.	
     apply from: rootProject.file('gradle/subprojects/publish.gradle')
 
-    /**
-     * Define Ant tasks to use for subprojects.
-     * Ant tasks created:
-     *   instrumentForTrace, instrumentWithFFDC, com/ibm/mantis/nls/antlib.xml, portSelector,
-     *   com/ibm/ws/wlp/feature/tasks/default.properties, com/ibm/ws/wlp/repository/default.properties,
-     *   com/ibm/ws/repository/generator/default.properties, com/ibm/ws/wlp/mavenFeatures/default.properties.
-     */
+    // Define Ant tasks to use for subprojects.	
     apply from: rootProject.file('gradle/subprojects/anttaskdefs.gradle')
 
-    /**
-     * Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.
-     */
+    // Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.	
     apply from: rootProject.file('gradle/subprojects/tasks.gradle')
 
-    /**
-     * Apply Jacoco plugin and configure 'jacoco', 'test', 'jacocoTestReport', and 'jacocoTestCoverageVerification' tasks.
-     * See: https://docs.gradle.org/current/userguide/jacoco_plugin.html
-     */
+    // Apply Jacoco plugin and configure 'jacoco', 'test', 'jacocoTestReport', and 'jacocoTestCoverageVerification' tasks.	
     apply from: rootProject.file('gradle/subprojects/jacoco.gradle')
 
-    /**
-     * Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',
-     * 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',
-     * and 'publishLibNative' tasks.
-     *
-     * Configure 'assemble' to depend on above tasks.
-     */
+    // Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',	
+    // 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',	
+    // and 'publishLibNative' tasks.	
+    // Configure 'assemble' to depend on above tasks.	
     apply from: rootProject.file('gradle/subprojects/assemble.gradle')
 
-    /**
-     * Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.
-     */
+    // Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.	
     if (bndis('fat.project')) {
       apply from: rootProject.file('gradle/subprojects/fat.gradle')
 
+    // Apply OSS Audit plugin to all non-test projects that output bundles.
+    // See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
     } else if (!bndis('test.project') && !bndProject.isNoBundles()) {
-      /**
-       * Apply OSS Audit plugin to all non-test projects.
-       * See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
-       */
       apply plugin: 'net.ossindex.audit'
 
       audit {

@@ -15,11 +15,7 @@
 defaultTasks 'clean', 'build'
 
 // Project version is the Bundle-Version attribute if a bundle gets released, otherwise the version is the buildID.
-def projectVersion = bnd.buildID
-if (releaseVersionOverride != null) {
-  projectVersion = releaseVersionOverride
-}
-project.version = bnd('Bundle-Version', projectVersion)
+project.version = bnd('Bundle-Version', bnd.buildID)
 jar {
   version=null
 }

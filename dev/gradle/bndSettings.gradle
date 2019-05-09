@@ -13,16 +13,19 @@
  * Settings for biz.aQute.bnd plugin.
  */
 buildscript {
+    /**
+     * Set all properties on BndWorkspace from gradle.userProps, which was configured by `gradle/propertiesSettings.gradle`.
+     */
     gradle.ext.bndWorkspaceConfigure = { workspace ->
         gradle.userProps.each { prop ->
             workspace.setProperty(prop.key, prop.value.toString())
         }
     }
 
-    // Store props to file for bnd to use. Imported by cnf/build.bnd and props files in cnf/resources/bnd
-    File propsFile = new File('generated.properties')
-    gradle.userProps.store(propsFile.newWriter(), null)
-
+    /**
+     * Prefer a configured Artifactory over plugins.gradle.org and the configured Bnd plugin repository.
+     * Do not fall back to plugins.gradle.org and the configured Bnd plugin repository when there are Artifactory outages.
+     */
     repositories {
         if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
             maven {
