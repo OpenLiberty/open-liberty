@@ -1213,8 +1213,8 @@ public class BaseTraceService implements TrService {
                 super.print(b);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1224,8 +1224,8 @@ public class BaseTraceService implements TrService {
                 super.print(c);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1235,8 +1235,8 @@ public class BaseTraceService implements TrService {
                 super.print(i);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1246,8 +1246,8 @@ public class BaseTraceService implements TrService {
                 super.print(l);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1257,8 +1257,8 @@ public class BaseTraceService implements TrService {
                 super.print(f);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1268,8 +1268,8 @@ public class BaseTraceService implements TrService {
                 super.print(d);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1279,8 +1279,8 @@ public class BaseTraceService implements TrService {
                 super.print(c);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1288,10 +1288,10 @@ public class BaseTraceService implements TrService {
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(s);
-            } catch (Exception e) {
+            } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1301,8 +1301,8 @@ public class BaseTraceService implements TrService {
                 super.print(obj);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1312,8 +1312,8 @@ public class BaseTraceService implements TrService {
                 super.println();
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1323,8 +1323,8 @@ public class BaseTraceService implements TrService {
                 super.print(b);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1334,8 +1334,8 @@ public class BaseTraceService implements TrService {
                 super.print(c);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1345,8 +1345,8 @@ public class BaseTraceService implements TrService {
                 super.print(i);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1356,8 +1356,8 @@ public class BaseTraceService implements TrService {
                 super.print(l);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1367,8 +1367,8 @@ public class BaseTraceService implements TrService {
                 super.print(f);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1378,8 +1378,8 @@ public class BaseTraceService implements TrService {
                 super.print(d);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1389,8 +1389,8 @@ public class BaseTraceService implements TrService {
                 super.print(c);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1400,9 +1400,8 @@ public class BaseTraceService implements TrService {
                 super.print(s);
             } finally {
                 TrOutputStream.isPrinting.set(false);
-
+                super.flush();
             }
-            super.flush();
         }
 
         @Override
@@ -1412,8 +1411,8 @@ public class BaseTraceService implements TrService {
                 super.print(obj);
             } finally {
                 TrOutputStream.isPrinting.set(false);
+                super.flush();
             }
-            super.flush();
         }
 
     }
@@ -1442,8 +1441,11 @@ public class BaseTraceService implements TrService {
         @Override
         public synchronized void flush() throws IOException {
 
-            // isPrinting is a ThreadLocal that will disable flushing when
-            // printing a large string so we can exceed the 8k buffer limit
+            /*
+             * sPrinting is a ThreadLocal that is set to disable flushing while printing.
+             * This helps us ignore flush requests that the JDK automatically creates in the middle of printing large (>8k) strings.
+             * We want the whole String to be flushed in one shot for benefit of downstream event consumers.
+             */
             if (isPrinting.get())
                 return;
 
