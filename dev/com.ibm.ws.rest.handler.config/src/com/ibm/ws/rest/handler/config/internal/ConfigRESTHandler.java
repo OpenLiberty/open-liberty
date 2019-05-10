@@ -128,7 +128,6 @@ public class ConfigRESTHandler implements RESTHandler {
         // Mapping of pid to list of flat config prefixes which are of that pid type
         SortedMap<String, SortedSet<String>> flattenedPids = new TreeMap<String, SortedSet<String>>();
 
-        // TODO app defined resources
         SortedSet<String> keys = new TreeSet<String>();
         for (java.util.Enumeration<String> en = config.keys(); en.hasMoreElements();) {
             String key = en.nextElement();
