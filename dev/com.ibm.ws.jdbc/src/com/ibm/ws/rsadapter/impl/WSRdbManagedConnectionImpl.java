@@ -132,6 +132,12 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         VENDOR_PROPERTY_SETTERS.add("setRemarksReporting");
         VENDOR_PROPERTY_SETTERS.add("setRestrictGetTables");
         VENDOR_PROPERTY_SETTERS.add("setSessionTimeZone");
+        
+        /*
+         * PostgreSQL property setters
+         */
+        VENDOR_PROPERTY_SETTERS.add("setDefaultFetchSize");
+        VENDOR_PROPERTY_SETTERS.add("setPrepareThreshold");
     }
 
     /**
