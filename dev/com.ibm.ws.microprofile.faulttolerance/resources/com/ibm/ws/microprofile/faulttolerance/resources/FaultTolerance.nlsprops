@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,9 +34,9 @@ bulkhead.no.threads.CWMFT0001E=CWMFT0001E: No free capacity is available in the 
 bulkhead.no.threads.CWMFT0001E.explanation=A call to the method did not succeed because the bulkhead for the method is full.
 bulkhead.no.threads.CWMFT0001E.useraction=Increase availability in the bulkhead by increasing the capacity of the bulkhead or reducing the concurrent workload of this service.
 
-application.shutdown.CWMFT0002W=CWMFT0002W: Cannot complete the asynchronous execution of method {0} because the application or component which called it has stopped
-application.shutdown.CWMFT0002W.explanation=Asynchronous methods run in the context of the component that started them. The application or component that called the asynchronous method is no longer running and this has prevented the asynchronous method from running completely.
-application.shutdown.CWMFT0002W.useraction=This warning usually occurs when the application or server is shutting down. If it's important that all started Asynchronous methods are completed, then the running application should wait for the result.
+application.shutdown.CWMFT0002W=CWMFT0002W: The {0} asynchronous method cannot complete because the application or component that called it stopped.
+application.shutdown.CWMFT0002W.explanation=Asynchronous methods run in the context of the component that started them. The application or component that called the asynchronous method stopped, which prevented the asynchronous method from completing.
+application.shutdown.CWMFT0002W.useraction= This warning usually occurs when an application, component, or server is shutting down. If all running asynchronous methods must complete, then the application or component must wait for the results before stopping.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: An internal error occurred. The exception is {0}.
