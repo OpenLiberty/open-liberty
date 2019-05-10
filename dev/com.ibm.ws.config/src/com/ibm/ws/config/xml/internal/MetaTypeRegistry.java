@@ -1237,8 +1237,28 @@ final class MetaTypeRegistry {
         if (ent != null) {
             Map<String, ExtendedAttributeDefinition> attributeMap;
             attributeMap = ent.getAttributeMap();
-            if (attributeMap != null && attributeMap.containsKey(attributeID))
-                return attributeMap.get(attributeID).getCardinality();
+            if (attributeMap != null) {
+                if (attributeMap.containsKey(attributeID))
+                    return attributeMap.get(attributeID).getCardinality();
+                else {
+                    // If it's a child-first nested element with ibm:final id, then it effectively behaves as cardinality 1
+                    Map<String, RegistryEntry> map = childAliasMap.get(attributeID);
+                    if (map != null) {
+                        ent = map.get(pid);
+                        if (ent != null) {
+                            ExtendedObjectClassDefinition ocd = ent.getObjectClassDefinition();
+                            if (ocd != null) {
+                                attributeMap = ocd.getAttributeMap();
+                                if (attributeMap != null) {
+                                    ExtendedAttributeDefinition id = attributeMap.get("id");
+                                    if (id.isFinal())
+                                        return -1; // cardinality is negative for Vector, positive for array
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         return null;
     }
