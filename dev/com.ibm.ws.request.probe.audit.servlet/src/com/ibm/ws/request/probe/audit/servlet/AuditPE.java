@@ -240,8 +240,8 @@ public class AuditPE implements ProbeExtension {
 				case APPLICATION_PASSWORD_TOKEN_01:
 					auditEventApplicationPasswordToken(methodParams);
 					break;
-				case SECURITY_SAF_AUTHZ_DETAILS:
-					auditEventSafAuthDetails(methodParams);
+				case SECURITY_SAF_AUTHZ:
+					auditEventSafAuth(methodParams);
 					break;
 				default:
 					// TODO: emit error message
