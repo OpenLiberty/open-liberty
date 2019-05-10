@@ -41,6 +41,7 @@ public class PackageCommandTest {
     private static String archivePackage = "MyPackage.zip";
     private static String archivePackageNoExtension = "MyPackage";
     private static String archivePackageTarGzExtension = "MyPackage.tar.gz";
+    private static String archivePackageJarExtension = "MyPackage.jar";
 
     @Before
     public void before() throws Exception {
@@ -610,6 +611,41 @@ public class PackageCommandTest {
 
             assertTrue("Did not find expected 'package complete' success message.  STDOUT = " + stdout, stdout.contains("package complete"));
             assertTrue("Did not find expected .tar.gz archive.  STDOUT = " + stdout, stdout.contains(archivePackageTarGzExtension));
+
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    /**
+     * This tests that when --include=usr is supplied, and --archive is supplied with
+     * a file extension ending with .jar that an error is returned.
+     *
+     */
+    @Test
+    public void testCorrectErrorMessageWhenUsrandJARArchiveSpecified() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
+            File prodExtensionDir = null;
+            try {
+                server.getFileFromLibertyInstallRoot("etc/extension/");
+            } catch (FileNotFoundException ex) {
+                // The /etc/extension directory does not exist - so create it for this test.
+                String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
+                prodExtensionDir = new File(pathToProdExt);
+                prodExtensionDir.mkdirs();
+            }
+
+            String[] cmd = new String[] { "--archive=" + archivePackageJarExtension,
+                                          "--include=usr" };
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+
+            assertTrue("Did not find expected failure message, CWWKE0951E.  STDOUT = " + stdout, stdout.contains("CWWKE0951E"));
 
         } catch (FileNotFoundException ex) {
             assumeTrue(false); // the directory does not exist, so we skip this test.
