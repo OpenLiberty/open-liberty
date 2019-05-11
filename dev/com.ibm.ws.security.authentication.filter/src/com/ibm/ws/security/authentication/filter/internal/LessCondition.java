@@ -12,10 +12,10 @@ package com.ibm.ws.security.authentication.filter.internal;
 
 public class LessCondition extends SimpleCondition {
     /**
-     * 
+     *
      */
-    public LessCondition(String key, IValue value, String operand) {
-        super(key, value, operand);
+    public LessCondition(String key, IValue value, String operand, boolean noAttrValue) {
+        super(key, value, operand, noAttrValue);
     }
 
     @Override
