@@ -639,7 +639,52 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "commit");
     }
+    
+    /**
+     * PostgreSQL only method: 
+     * java.sql.Array org.postgresql.PGConnection.createArrayOf(String typeName, Object elements) throws SQLException;
+     */
+    private Array createArrayOf(Object implObject, Method createArrayOf, Object[] args) throws SQLException {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(this, tc, "createArrayOf", args[0]); 
+        Array ra;
+
+        try {
+            activate(); 
+            ra = (Array) createArrayOf.invoke(implObject, args);
+            if (freeResourcesOnClose)
+                arrays.add(ra); 
+        } catch (SQLException sqlX) {
+            FFDCFilter.processException(
+                                        sqlX, getClass().getName() + ".createArrayOf", "661", this);
+            throw proccessSQLException(sqlX);
+        } catch (NullPointerException nullX) {
+            // No FFDC code needed; we might be closed.
+            throw runtimeXIfNotClosed(nullX);
+        } catch (AbstractMethodError | IllegalAccessException | InvocationTargetException methError) {
+            // No FFDC code needed; wrong JDBC level or wrong driver
+            throw AdapterUtil.notSupportedX("Connection.createArrayOf", methError);
+        } catch (RuntimeException runX) {
+            FFDCFilter.processException(
+                                        runX, getClass().getName() + ".createArrayOf", "671", this);
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(this, tc, "createArrayOf", runX); 
+            throw runX;
+        } catch (Error err) {
+            FFDCFilter.processException(
+                                        err, getClass().getName() + ".createArrayOf", "677", this);
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(this, tc, "createArrayOf", err); 
+            throw err;
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(this, tc, "createArrayOf", AdapterUtil.toString(ra)); 
+        return ra;
+    }
+    
     /**
      * See JDBC 4.0 JavaDoc API for details.
      * 
@@ -1709,11 +1754,13 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
     Object invokeOperation(Object implObject, Method method, Object[] args)
                     throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
                     SQLException {
-        int numArgs = args == null ? 0 : args.length;
-        if (numArgs == 0 && method.getName().equals("getConnectionContext")) {
+        final int numArgs = args == null ? 0 : args.length;
+        final String methodName = method.getName();
+        if (numArgs == 0 && methodName.equals("getConnectionContext")) {
             return managedConn.getSQLJConnectionContext(method.getReturnType(),cm);
+        } else if (numArgs == 2 && args[0] instanceof String && methodName.equals("createArrayOf")) {
+            return createArrayOf(implObject, method, args);
         } else if (numArgs > 10) {
-            String methodName = method.getName();
             if (methodName.equals("prepareSQLJStatement"))
                 return prepareSQLJStatement(implObject, method, args);
             else if (methodName.equals("prepareSQLJCall"))

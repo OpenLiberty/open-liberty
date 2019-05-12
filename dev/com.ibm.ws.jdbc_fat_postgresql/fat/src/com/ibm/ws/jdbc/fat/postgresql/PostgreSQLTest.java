@@ -70,6 +70,7 @@ public class PostgreSQLTest extends FATServletClient {
         try (Connection conn = postgre.createConnection("")) {
             Statement stmt = conn.createStatement();
             stmt.execute("CREATE TABLE people( id integer UNIQUE NOT NULL, name VARCHAR (50) );");
+            stmt.execute("CREATE SCHEMA premadeschema");
             stmt.close();
         }
 
