@@ -70,6 +70,8 @@ public abstract class CommonSSLTest {
     protected static final String SSL_CONFIG_OUTBOUND_SSL_NO_TRANSPORT = "SSLConfigOutboundSSLNoTransport.xml";
     protected static final String SSL_CONFIG_OUTBOUND_SSL_DEFAULT_NO_TRUST = "SSLConfigOutboundSSLDefaultNoTrust.xml";
     protected static final String SSL_CONFIG_DYNAMIC_SSL_OUTBOUND = "SSLConfigDynamicOutbound.xml";
+    protected static final String KEYSTORE_DEFAULT_NON_DEFAULT_LOC_PKCS12 = "defaultKeyStoreWithExistingPKCS12NonDefaultLocation.xml";
+    protected static final String KEYSTORE_DEFAULT_NON_DEFAULT_LOC_JKS = "defaultKeyStoreWithExistingJKSNonDefaultLocation.xml";
 
     // These values are the keystore and truststore values of the server.xml files in publish/files
     protected static final String DEFAULT_GENERATED_KEY_PATH = "resources/security/key.p12";
