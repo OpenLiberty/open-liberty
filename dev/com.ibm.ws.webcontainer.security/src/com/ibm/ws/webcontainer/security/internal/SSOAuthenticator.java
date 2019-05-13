@@ -179,12 +179,14 @@ public class SSOAuthenticator implements WebAuthenticator {
         if (encodedjwtssotoken == null) {
             return null;
         } else {
-            if (LoggedOutJwtSsoCookieCache.contains(encodedjwtssotoken)) {
+            boolean checkLoggedOutToken = webAppSecurityConfig != null && webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled();
+            if (checkLoggedOutToken && LoggedOutJwtSsoCookieCache.contains(encodedjwtssotoken)) {
                 String LoggedOutMsg = "JWT_ALREADY_LOGGED_OUT";
                 if (req.getAttribute(LoggedOutMsg) == null) {
                     Tr.audit(tc, LoggedOutMsg, new Object[] {});
                     req.setAttribute(LoggedOutMsg, "true");
                 }
+
                 ssoCookieHelper.removeSSOCookieFromResponse(res);
                 return new AuthenticationResult(AuthResult.FAILURE, Tr.formatMessage(tc, LoggedOutMsg));
             }
