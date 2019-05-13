@@ -395,10 +395,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                 Set<RegistryEntry> newEntries = new HashSet<RegistryEntry>();
                 for (Bundle b : bundles) {
                     if (b.getState() >= Bundle.RESOLVED) {
-                        Set<RegistryEntry> entries = metatypeRegistry.addMetaType(b);
-                        if (reprocessConfig || getExtendedBundle(b).needsReprocessing()) {
-                            newEntries.addAll(entries);
-                        }
+                        newEntries.addAll(metatypeRegistry.addMetaType(b));
                     }
                 }
 
