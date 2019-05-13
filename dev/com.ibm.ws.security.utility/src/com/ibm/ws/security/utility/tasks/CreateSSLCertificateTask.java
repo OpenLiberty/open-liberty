@@ -44,6 +44,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
     static final String ARG_CREATE_CONFIG_FILE = "--createConfigFile";
     static final String ARG_KEYSIZE = "--keySize";
     static final String ARG_SIGALG = "--sigAlg";
+    static final String ARG_CREATE_JKS_FILE = "--createJKSFile";
 
     private final DefaultSSLCertificateCreator creator;
     private final IFileUtility fileUtility;
@@ -138,7 +139,13 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         }
 
         // Create the directories we need before we prompt for a password
-        String location = dir + "resources" + SLASH + "security" + SLASH + "key.p12";
+        String location = null;
+
+        if (getArgumentValue(ARG_CREATE_JKS_FILE, args, null) != null)
+            location = dir + "resources" + SLASH + "security" + SLASH + "key.jks";
+        else
+            location = dir + "resources" + SLASH + "security" + SLASH + "key.p12";
+
         File fLocation = new File(location);
         location = fileUtility.resolvePath(fLocation);
         if (!fileUtility.createParentDirectory(stdout, fLocation)) {
@@ -203,7 +210,8 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
                arg.equals(ARG_VALIDITY) || arg.equals(ARG_SUBJECT) ||
                arg.equals(ARG_ENCODING) || arg.equals(ARG_KEY) ||
                arg.equals(ARG_CREATE_CONFIG_FILE) || arg.equals(ARG_KEYSIZE) ||
-               arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG);
+               arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG) ||
+               arg.equals(ARG_CREATE_JKS_FILE);
     }
 
     /** {@inheritDoc} */

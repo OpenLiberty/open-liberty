@@ -172,6 +172,11 @@ sslCert.option-desc.sigAlg=\
 \tSignature algorithm of the certificate.\n\
 \tThe default signature algorithm is {8}.
 
+sslCert.option-key.createJKSFile=\
+\ \ \ \ --createJKSFile
+sslCert.option-desc.createJKSFile=\
+\tOptional.  Unless specified and set to true, a PKCS12 file will be generated.\n\
+\tOtherwise, a JKS file will be generated.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
