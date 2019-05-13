@@ -11,6 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+# Compile at Java 6 in order for this to run in WebSphere Migration Tools and Transformation Advisor.
+javac.source: 1.6
+javac.target: 1.6
+
 Bundle-Name: Liberty Feature Resolver
 Bundle-SymbolicName: com.ibm.ws.kernel.feature.resolver
 Bundle-Description: Liberty Feature Resolver implementation; version=${bVersion}
@@ -19,10 +23,13 @@ Bundle-Activator: com.ibm.ws.kernel.feature.internal.Activator
 Import-Package: \
   !com.ibm.websphere.ras.annotation, \
   !com.ibm.websphere.ras, \
-  *
+  com.ibm.ws.kernel.feature, \
+  com.ibm.ws.kernel.feature.provisioning, \
+  com.ibm.ws.kernel.feature.resolver, \
+  org.osgi.framework;version="[1.8,2)"
 
 Private-Package: \
- com.ibm.ws.kernel.feature.*
+  com.ibm.ws.kernel.feature.internal
 
 Export-Package: \
  com.ibm.ws.kernel.feature;                 provide:=true, \
@@ -32,16 +39,16 @@ Export-Package: \
 Bundle-ActivationPolicy: lazy
 
 instrument.disabled: true
+instrument.ffdc: false
 
 publish.wlp.jar.disabled: true
 
-src: src
+src: build/src, src
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.kernel.feature.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
