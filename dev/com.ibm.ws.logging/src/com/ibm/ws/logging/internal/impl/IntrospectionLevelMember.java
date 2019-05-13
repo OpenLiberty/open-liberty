@@ -314,10 +314,7 @@ public final class IntrospectionLevelMember {
                 try {
                     Field[] tempObjectFields = currentClass.getDeclaredFields();
                     if (tempObjectFields.length != 0) {
-                        String version = System.getProperty("java.version");
-                        if (version.startsWith("1.")) { //java version is <= 8
-                            AccessibleObject.setAccessible(tempObjectFields, true);
-                        } else { //java version >= 9
+                        try {
                             Method getModule = Class.class.getMethod("getModule");
                             Object module = getModule.invoke(currentClass);
                             Class moduleClass = Class.forName("java.lang.Module");
@@ -330,6 +327,8 @@ public final class IntrospectionLevelMember {
                             if (isOpenCheck) {
                                 AccessibleObject.setAccessible(tempObjectFields, true);
                             }
+                        } catch (Exception e) {
+                            AccessibleObject.setAccessible(tempObjectFields, true);
                         }
                     }
                     return tempObjectFields;
