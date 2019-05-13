@@ -90,14 +90,13 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "connectionManager", cm.getString("configElementName"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("id"));
-        // TODO default values are absent
-        //assertEquals(err, "-1", cm.getString("agedTimeout"));
-        assertEquals(err, "0", cm.getString("connectionTimeout"));
-        //assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
-        //assertEquals(err, "30m", cm.getString("maxIdleTime"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, "0", cm.getString("connectionTimeout")); // TODO app-defined config not converted from String to number
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
         assertEquals(err, 2, cm.getInt("maxPoolSize"));
-        //assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
-        assertEquals(err, "2200ms", cm.getString("reapTime"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, "2200ms", cm.getString("reapTime")); // TODO app-defined config not converted from String to number
 
         JsonObject authData;
         assertNotNull(err, authData = ds.getJsonObject("containerAuthDataRef"));

@@ -17,7 +17,9 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -39,6 +41,7 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONArtifact;
 import com.ibm.json.java.JSONObject;
 import com.ibm.json.java.OrderedJSONObject;
+import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.websphere.config.WSConfigurationHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -84,15 +87,17 @@ public class ConfigRESTHandler implements RESTHandler {
     private JSONObject getConfigInfo(String uid, Dictionary<String, Object> config, Set<String> processed) throws IOException {
         String configDisplayId = (String) config.get("config.displayId");
 
+        boolean isAppDefined;
         boolean isFactoryPid;
         String configElementName;
         if (isFactoryPid = configDisplayId.endsWith("]")) { // factory pid
+            isAppDefined = configDisplayId.contains("[java:");
             int end = configDisplayId.lastIndexOf('[');
             int begin = configDisplayId.lastIndexOf('/', end) + 1;
             configElementName = configDisplayId.substring(begin, end);
         } else {
             int slash = configDisplayId.lastIndexOf('/');
-            if (isFactoryPid = (slash >= 0))
+            if (isFactoryPid = isAppDefined = (slash >= 0))
                 configElementName = configDisplayId.substring(slash + 1); // factory pid for config that is nested under app-defined resource
             else
                 configElementName = configDisplayId; // singleton pid
@@ -121,6 +126,25 @@ public class ConfigRESTHandler implements RESTHandler {
         }
 
         boolean registryEntryExists = configHelper.registryEntryExists(servicePid);
+
+        if (isAppDefined)
+            try {
+                Dictionary<String, Object> defaults = configHelper.getMetaTypeDefaultProperties(extendsSourcePid == null ? servicePid : extendsSourcePid);
+                if (defaults != null) {
+                    Hashtable<String, Object> merged = new Hashtable<String, Object>();
+                    for (Enumeration<String> keys = defaults.keys(); keys.hasMoreElements();) {
+                        String key = keys.nextElement();
+                        merged.put(key, defaults.get(key));
+                    }
+                    for (Enumeration<String> keys = config.keys(); keys.hasMoreElements();) {
+                        String key = keys.nextElement();
+                        merged.put(key, config.get(key));
+                    }
+                    config = merged;
+                }
+            } catch (ConfigEvaluatorException x) {
+                throw new RuntimeException(x);
+            }
 
         // Mapping of flat config prefix (like properties.0) to map of flattened config prop names/values
         SortedMap<String, SortedMap<String, Object>> flattened = new TreeMap<String, SortedMap<String, Object>>();
