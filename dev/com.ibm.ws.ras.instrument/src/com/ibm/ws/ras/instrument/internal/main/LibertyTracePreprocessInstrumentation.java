@@ -695,7 +695,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         }
         
         // #5: Check for a trivial annotation on the class - and if a static field exists - continue - otherwise return
-        if (!checkInstrumentableAdapter.isInstrumentableClass() && declaredTraceStateFieldCount == 0) {
+        if (!checkInstrumentableAdapter.isInstrumentableClass() || ( isClassTrivial(info) && declaredTraceStateFieldCount == 0)) {
             return null;
         }
         
@@ -759,7 +759,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         } else if (defaultTraceType == TraceType.JAVA_LOGGING) {
             cv = new JSR47TracingClassAdapter(cv, null);
         }
-        if (addFfdc) {
+        if (addFfdc && !isClassTrivial(info)) {
             cv = new FFDCClassAdapter(cv, null);
         }
         directory.accept(cv);
