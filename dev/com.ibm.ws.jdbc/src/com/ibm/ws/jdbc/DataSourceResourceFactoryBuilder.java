@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,12 @@ import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +79,6 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
      * Name of property used by config service to identify where the configuration of a component instance originates.
      */
     private static final String CONFIG_SOURCE = "config.source";
-
-    /**
-     * Interface names, including package, for supported data source types. 
-     */
-    private static final Collection<String> DS_INTERFACE_NAMES = Arrays.asList(XADataSource.class.getName(),
-                                                                               ConnectionPoolDataSource.class.getName(),
-                                                                               DataSource.class.getName());
 
     /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
@@ -181,9 +172,15 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         dsSvcProps.put(DataSourceService.TARGET_JDBC_DRIVER, jdbcDriverFilter);
         dsSvcProps.put("connectionManager.cardinality.minimum", 1); // require exactly 1 connection manager (the one specified by the target)
 
+        BundleContext bundleContext = DataSourceService.priv.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
+
         String containerAuthDataRef = (String) vendorProps.remove(DSConfig.CONTAINER_AUTH_DATA_REF);
         if (containerAuthDataRef != null) {
             String authDataFilter = FilterUtils.createPropertyFilter(ID, containerAuthDataRef);
+            ServiceReference<?>[] refs = DataSourceService.priv.getServiceReferences(bundleContext, "com.ibm.websphere.security.auth.data.AuthData", authDataFilter);
+            if (refs == null || refs.length == 0)
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "PROP_SET_ERROR", DSConfig.CONTAINER_AUTH_DATA_REF, "", containerAuthDataRef));
+            dsSvcProps.put(DSConfig.CONTAINER_AUTH_DATA_REF, new String[] { (String) refs[0].getProperty("service.pid") });
             dsSvcProps.put(DataSourceService.TARGET_CONTAINER_AUTH_DATA, authDataFilter);
             dsSvcProps.put("containerAuthData.cardinality.minimum", 1);
         }
@@ -191,6 +188,10 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         String recoveryAuthDataRef = (String) vendorProps.remove(DSConfig.RECOVERY_AUTH_DATA_REF);
         if (recoveryAuthDataRef != null) {
             String authDataFilter = FilterUtils.createPropertyFilter(ID, recoveryAuthDataRef);
+            ServiceReference<?>[] refs = DataSourceService.priv.getServiceReferences(bundleContext, "com.ibm.websphere.security.auth.data.AuthData", authDataFilter);
+            if (refs == null || refs.length == 0)
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "PROP_SET_ERROR", DSConfig.RECOVERY_AUTH_DATA_REF, "", recoveryAuthDataRef));
+            dsSvcProps.put(DSConfig.RECOVERY_AUTH_DATA_REF, new String[] { (String) refs[0].getProperty("service.pid") });
             dsSvcProps.put(DataSourceService.TARGET_RECOVERY_AUTH_DATA, authDataFilter);
             dsSvcProps.put("recoveryAuthData.cardinality.minimum", 1);
         }
@@ -214,8 +215,6 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         for (String name : DSConfig.DATA_SOURCE_PROPS)
             if ((value = vendorProps.remove(name)) != null)
                 dsSvcProps.put(name, value);
-
-        BundleContext bundleContext = DataSourceService.priv.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
 
         // className
         String className = (String) vendorProps.remove(DataSourceDef.className.name());
@@ -269,6 +268,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         PropertyService.parsePasswordProperties(vendorProps);
 
         // Add vendor properties to the data source properties as flattened config
+        dsSvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", PropertyService.FACTORY_PID);
         for (Map.Entry<String, Object> entry : vendorProps.entrySet())
             dsSvcProps.put(BASE_PROPERTIES_KEY + entry.getKey(), entry.getValue());
 

@@ -90,18 +90,22 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "connectionManager", cm.getString("configElementName"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("id"));
-        assertEquals(err, "0", cm.getString("connectionTimeout"));
-        assertEquals(err, 2, cm.getInt("maxPoolSize"));
-        assertEquals(err, "2200ms", cm.getString("reapTime"));
         // TODO default values are absent
+        //assertEquals(err, "-1", cm.getString("agedTimeout"));
+        assertEquals(err, "0", cm.getString("connectionTimeout"));
+        //assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        //assertEquals(err, "30m", cm.getString("maxIdleTime"));
+        assertEquals(err, 2, cm.getInt("maxPoolSize"));
+        //assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, "2200ms", cm.getString("reapTime"));
 
-        //TODO JsonObject authData;
-        //assertNotNull(err, authData = ds.getJsonObject("containerAuthDataRef"));
-        //assertEquals(err, "authData", authData.getString("configElementName"));
-        //assertEquals(err, "derbyAuth1", authData.getString("uid"));
-        //assertEquals(err, "derbyAuth1", authData.getJsonObject("id"));
-        //assertEquals(err, "dbuser1", authData.getString("user"));
-        //assertEquals(err, "******", authData.getString("password"));
+        JsonObject authData;
+        assertNotNull(err, authData = ds.getJsonObject("containerAuthDataRef"));
+        assertEquals(err, "authData", authData.getString("configElementName"));
+        assertEquals(err, "derbyAuth1", authData.getString("uid"));
+        assertEquals(err, "derbyAuth1", authData.getString("id"));
+        assertEquals(err, "dbuser1", authData.getString("user"));
+        assertEquals(err, "******", authData.getString("password"));
 
         assertEquals(err, Connection.TRANSACTION_READ_COMMITTED, ds.getInt("isolationLevel"));
 
@@ -133,15 +137,25 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, 1, onConnect.size());
         assertEquals(err, "DECLARE GLOBAL TEMPORARY TABLE TEMP2 (COL1 VARCHAR(80)) ON COMMIT PRESERVE ROWS NOT LOGGED", onConnect.getString(0));
 
-        //TODO JsonObject props;
-        //assertNotNull(err, props = ds.getJsonObject("properties"));
-        //assertEquals(err, 3, props.size());
-        //assertEquals(err, "create", props.getString("createDatabase"));
-        //assertEquals(err, "...", props.getString("databaseName"));
-        //assertEquals(err, 220, props.getInt("loginTimeout"));
+        JsonObject props;
+        assertNotNull(err, props = ds.getJsonObject("properties"));
+        assertEquals(err, 3, props.size());
+        assertEquals(err, "create", props.getString("createDatabase"));
+        String databaseName;
+        assertNotNull(err, databaseName = props.getString("databaseName"));
+        assertTrue(err, databaseName.endsWith("configRHTestDB"));
+        assertTrue(err, databaseName.contains("resources")); // must expand ${shared.resource.dir}
+        assertEquals(err, 220, props.getInt("loginTimeout"));
 
         assertEquals(err, "1m22s", ds.getString("queryTimeout"));
-        assertNull(err, ds.get("recoveryAuthDataRef"));
+
+        assertNotNull(err, authData = ds.getJsonObject("recoveryAuthDataRef"));
+        assertEquals(err, "authData", authData.getString("configElementName"));
+        assertEquals(err, "derbyAuth2", authData.getString("uid"));
+        assertEquals(err, "derbyAuth2", authData.getString("id"));
+        assertEquals(err, "dbuser2", authData.getString("user"));
+        assertEquals(err, "******", authData.getString("password"));
+
         assertEquals(err, "javax.sql.XADataSource", ds.getString("type"));
 
         JsonArray api;

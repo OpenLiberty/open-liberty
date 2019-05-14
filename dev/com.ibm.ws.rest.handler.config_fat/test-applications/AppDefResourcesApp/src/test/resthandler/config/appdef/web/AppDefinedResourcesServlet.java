@@ -29,7 +29,8 @@ import componenttest.app.FATServlet;
                                      "createDatabase=create",
                                      "onConnect=DECLARE GLOBAL TEMPORARY TABLE TEMP2 (COL1 VARCHAR(80)) ON COMMIT PRESERVE ROWS NOT LOGGED",
                                      "queryTimeout=1m22s",
-                                     "reapTime=2200ms"
+                                     "reapTime=2200ms",
+                                     "recoveryAuthDataRef=derbyAuth2"
                       })
 
 @SuppressWarnings("serial")
