@@ -353,6 +353,7 @@ public class TestEnableDisableFeaturesTest {
     	Log.info(c, testName, "------- Remove JAX-WS application ------");
     	boolean rc1 = serverEDF10.removeAndStopDropinsApplications("testJaxWsApp.war");
     	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
+    	Assert.assertNotNull("CWWKT0017I NOT FOUND",serverEDF10.waitForStringInLogUsingMark(".*CWWKT0017I.*testJaxWsApp.*"));
     	serverEDF10.setMarkToEndOfLog();
     	serverEDF10.setServerConfigurationFile("server_noJaxWs.xml");
     	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF10.waitForStringInLogUsingMark("CWWKF0008I"));
