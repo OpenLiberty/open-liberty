@@ -90,8 +90,13 @@ public class ConfigRESTHandler implements RESTHandler {
             int end = configDisplayId.lastIndexOf('[');
             int begin = configDisplayId.lastIndexOf('/', end) + 1;
             configElementName = configDisplayId.substring(begin, end);
-        } else
-            configElementName = configDisplayId; // singleton pid
+        } else {
+            int slash = configDisplayId.lastIndexOf('/');
+            if (isFactoryPid = (slash >= 0))
+                configElementName = configDisplayId.substring(slash + 1); // factory pid for config that is nested under app-defined resource
+            else
+                configElementName = configDisplayId; // singleton pid
+        }
 
         if (configElementName.indexOf('.') >= 0 && !configElementName.startsWith("properties."))
             return null;
@@ -249,7 +254,7 @@ public class ConfigRESTHandler implements RESTHandler {
             if (list.size() == 1) {
                 String flatAttrName = prefix.substring(0, prefix.indexOf('.'));
                 Integer cardinality = configHelper.getMetaTypeAttributeCardinality(extendsSourcePid == null ? servicePid : extendsSourcePid, flatAttrName);
-                if (cardinality != null && (cardinality == 1 || cardinality == 0 || cardinality == -1))
+                if (cardinality != null && cardinality >= -1 && cardinality <= 1)
                     json.put(name, list.get(0));
                 else
                     json.put(name, list);
@@ -348,7 +353,7 @@ public class ConfigRESTHandler implements RESTHandler {
             value = "******"; // hide passwords
         else if (value.getClass().isArray()) { // list supplied as an array for positive cardinality
             int length = Array.getLength(value);
-            if (length == 1 && cardinality != null && (cardinality == 1 || cardinality == 0 || cardinality == -1))
+            if (length == 1 && Integer.valueOf(1).equals(cardinality))
                 value = getJSONValue(Array.get(value, 0), null, processed);
             else {
                 JSONArray a = new JSONArray();
@@ -359,8 +364,8 @@ public class ConfigRESTHandler implements RESTHandler {
         } else if (value instanceof Collection) { // list supplied as a Vector for negative cardinality
             Collection<?> list = (Collection<?>) value;
             int length = list.size();
-            if (length == 1 && (cardinality == null || cardinality >= -1 && cardinality <= 1))
-                value = getJSONValue(list.iterator().next(), null, processed);// TODO if 1 element, check cardinality ...
+            if (length == 1 && Integer.valueOf(-1).equals(cardinality))
+                value = getJSONValue(list.iterator().next(), null, processed);
             else {
                 JSONArray a = new JSONArray();
                 for (Object o : list)
@@ -460,8 +465,16 @@ public class ConfigRESTHandler implements RESTHandler {
                 if (elementName.length() == 0 // show all config
                     || displayId.startsWith(elementName + '[') && !displayId.contains("]/") // matches top level config
                     || elementName.contentEquals(displayId) // matches singleton config element
-                    || (nestedStart = displayId.lastIndexOf('/' + elementName + '[')) > 0 && displayId.indexOf('/', nestedStart + 2) < 0) // matches nested config
+                    || (nestedStart = displayId.lastIndexOf('/' + elementName + '[')) > 0
+                       && displayId.indexOf("]/", nestedStart) < 0
+                       && displayId.charAt(displayId.length() - 1) == ']' // matches nested config
+                    || displayId.endsWith('/' + elementName)) // matches implicitly created sub-config elements of app-defined resources
                     configMap.put(displayId, props);
+
+                // Examples
+                // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver  <-- not a data source
+                // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]             <-- data source
+                // persistentExecutor[px1]/databaseTaskStore[s1]/dataSource[ds1]/jdbcDriver[myDriver]             <-- not a data source
             }
 
         JSONArtifact json;

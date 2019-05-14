@@ -195,6 +195,11 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
             dsSvcProps.put("recoveryAuthData.cardinality.minimum", 1);
         }
 
+        // Must use array to remain consistent with multiple cardinality of onConnect attribute in metatype
+        String onConnect = (String) vendorProps.remove(DSConfig.ON_CONNECT);
+        if (onConnect != null)
+            dsSvcProps.put(DSConfig.ON_CONNECT, new String[] { onConnect });
+
         if (application != null) {
             dsSvcProps.put(AppDefinedResource.APPLICATION, application);
             if (module != null) {

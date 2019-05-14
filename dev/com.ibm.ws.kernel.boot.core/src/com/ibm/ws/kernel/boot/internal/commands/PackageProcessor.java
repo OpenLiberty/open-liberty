@@ -203,11 +203,18 @@ public class PackageProcessor implements ArchiveProcessor {
             return rc;
         }
         try {
+
+            // Dont allow --include=usr and --archive=*.jar combination
+            if (isIncludeOptionEqualToUsr() && isArchiveJar()) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.package.usr.jar"), processName));
+                return ReturnCode.ERROR_SERVER_PACKAGE;
+            }
+
             // Create the default archive
             archive = ArchiveFactory.create(packageFile, java2SecurityEnabled());
 
             // for a Jar archive, the manifest must be first.
-            if (packageFile.getName().endsWith(".jar")) {
+            if (isArchiveJar()) {
                 File manifest = new File(bootProps.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
                 if (!manifest.exists()) {
                     //maybe user didnt extract file with jar -jar, but unzipped..
@@ -777,5 +784,9 @@ public class PackageProcessor implements ArchiveProcessor {
             return true;
         else
             return false;
+    }
+
+    private boolean isArchiveJar() {
+        return packageFile.getName().endsWith(".jar");
     }
 }

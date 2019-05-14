@@ -7,7 +7,9 @@
         <feature>jndi-1.0</feature>
     </featureManager>
 
-    <application location="postgresqlApp.war"/>
+    <application location="postgresqlApp.war">
+        <classloader commonLibraryRef="PostgresLib"/>
+    </application>
     
     <dataSource jndiName="jdbc/postgres/genericprops">
       <jdbcDriver libraryRef="PostgresLib" />
@@ -45,7 +47,8 @@
     <dataSource jndiName="jdbc/postgres/maxPoolSize1" type="javax.sql.XADataSource">
       <jdbcDriver libraryRef="PostgresLib" />
       <connectionManager maxPoolSize="1" enableSharingForDirectLookups="false"/>
-      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             applicationName="fatTestApp"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/ConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">

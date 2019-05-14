@@ -19,6 +19,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ConfigRESTHandlerAppDefinedResourcesTest.class,
                 ConfigRESTHandlerJCATest.class,
                 ConfigRESTHandlerJMSTest.class,
                 ConfigRESTHandlerTest.class
