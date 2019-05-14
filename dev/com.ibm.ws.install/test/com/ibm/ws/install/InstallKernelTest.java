@@ -334,7 +334,7 @@ public class InstallKernelTest {
             fail("InstallKernel.installLocalFeature() did not throw exception");
         } catch (InstallException e) {
             // For some platforms which may fail at create temp file before download, check CWWKF1008E too
-            if (!e.getMessage().contains("CWWKF1008E") && !e.getMessage().contains("CWWKF1007E")) {
+            if (!e.getMessage().contains("CWWKF1008E") && !e.getMessage().contains("CWWKF1007E") && !e.getMessage().contains("CWWKF1014E")) {
                 outputMgr.failWithThrowable("testInstallLocalFeatureESAURLNotExist", e);
             }
         }
