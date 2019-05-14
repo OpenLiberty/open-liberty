@@ -201,6 +201,7 @@ test {
   jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"
   jvmArgs "-Dmain.classesDir=" + compileJava.destinationDir
   jvmArgs "-Dtest.classesDir=" + compileTestJava.destinationDir
+  jvmArgs "-Dcom.ibm.ws.is.unit.test=true"
 }
 
 task buildfat {
