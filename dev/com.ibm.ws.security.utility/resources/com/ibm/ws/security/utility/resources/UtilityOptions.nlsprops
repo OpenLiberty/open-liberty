@@ -172,6 +172,17 @@ sslCert.option-desc.sigAlg=\
 \tSignature algorithm of the certificate.\n\
 \tThe default signature algorithm is {8}.
 
+sslCert.option-key.keyType=\
+\ \ \ \ --keyType
+sslCert.option-desc.keyType=\
+\tOptional. By default, a PKCS12 keystore will be generated. To\n\
+\tgenerate a JKS keystore, specify the --keyType option with the value\n\
+\tJKS. There is no need to specify this option if a PKCS12 keystore\n\
+\tis expected.\n\
+\tPKCS12 has a number of advantages: it is more extensible; it supports\n\
+\tstronger cryptographic algorithms; and it is widely adopted. PKCS12 is\n\
+\tfrequently the format provided by certificate authorities when\n\
+\tissuing certificates.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

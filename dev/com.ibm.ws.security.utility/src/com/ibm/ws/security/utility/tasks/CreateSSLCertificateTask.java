@@ -44,6 +44,13 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
     static final String ARG_CREATE_CONFIG_FILE = "--createConfigFile";
     static final String ARG_KEYSIZE = "--keySize";
     static final String ARG_SIGALG = "--sigAlg";
+    static final String ARG_KEY_TYPE = "--keyType";
+
+    static final String JKS_KEYFILE = "key.jks";
+    static final String PKCS12_KEYFILE = "key.p12";
+
+    static final String JKS = "jks";
+    static final String PKCS12 = "pkcs12";
 
     private final DefaultSSLCertificateCreator creator;
     private final IFileUtility fileUtility;
@@ -138,7 +145,18 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         }
 
         // Create the directories we need before we prompt for a password
-        String location = dir + "resources" + SLASH + "security" + SLASH + "key.p12";
+        String location = null;
+
+        String keyType = getArgumentValue(ARG_KEY_TYPE, args, null);
+        if (keyType != null) {
+            if (keyType.equalsIgnoreCase(JKS))
+                location = dir + "resources" + SLASH + "security" + SLASH + JKS_KEYFILE;
+            else if (keyType.equalsIgnoreCase(PKCS12))
+                location = dir + "resources" + SLASH + "security" + SLASH + PKCS12_KEYFILE;
+        } else {
+            location = dir + "resources" + SLASH + "security" + SLASH + PKCS12_KEYFILE;
+        }
+
         File fLocation = new File(location);
         location = fileUtility.resolvePath(fLocation);
         if (!fileUtility.createParentDirectory(stdout, fLocation)) {
@@ -203,7 +221,8 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
                arg.equals(ARG_VALIDITY) || arg.equals(ARG_SUBJECT) ||
                arg.equals(ARG_ENCODING) || arg.equals(ARG_KEY) ||
                arg.equals(ARG_CREATE_CONFIG_FILE) || arg.equals(ARG_KEYSIZE) ||
-               arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG);
+               arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG) ||
+               arg.equals(ARG_KEY_TYPE);
     }
 
     /** {@inheritDoc} */
