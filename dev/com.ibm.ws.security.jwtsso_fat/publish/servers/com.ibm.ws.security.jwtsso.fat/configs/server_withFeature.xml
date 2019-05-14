@@ -19,5 +19,6 @@
     <jwtSso setCookieSecureFlag="false" />
 
     <authentication cacheEnabled="false"/>
+    <webAppSecurity trackLoggedOutSSOCookies="true"/>
 
 </server>
