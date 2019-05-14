@@ -1117,10 +1117,10 @@ public class DatabaseHelper {
      * default values before pooling a connection. 
      * 
      * @return Map of properties or Null if not implemented
-     * @param java.sql.Connection
+     * @param connImpl The JDBC vendor's Connection impl object
      * @throws SQLException
      */
-    public Map<String, Object> cacheVendorConnectionProps(Connection sqlConn) throws SQLException {
+    public Map<String, Object> cacheVendorConnectionProps(Connection connImpl) throws SQLException {
         return null;
     }
 

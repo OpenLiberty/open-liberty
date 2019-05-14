@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Objects;
@@ -404,6 +405,69 @@ public class PostgreSQLTestServlet extends FATServlet {
         }
     }
 
+    // Verify PostgreSQL vendor-specific Connection property defaultFetchSize can be set and is reset properly
+    @Test
+    public void testPropertyCleanup_postgre_defaultFetchSize() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        int defaultFetchSize = -1;
+        try (Connection con = ds.getConnection()) {
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            defaultFetchSize = pgCon.getDefaultFetchSize();
+
+            assertTrue("Was expecting default value to be anything other than 5", defaultFetchSize != 5);
+            pgCon.setDefaultFetchSize(5);
+            assertEquals(5, pgCon.getDefaultFetchSize());
+        }
+        try (Connection con = ds.getConnection()) {
+            // Now check defaultFetchSize to make sure it was reset properly to the original value
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            assertEquals(defaultFetchSize, pgCon.getDefaultFetchSize());
+        }
+    }
+
+    // Verify PostgreSQL vendor-specific Connection property prepareThreshold can be set and is reset properly
+    @Test
+    public void testPropertyCleanup_postgre_prepareThreshold() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        int defaultPrepareThreshold = -1;
+        try (Connection con = ds.getConnection()) {
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            defaultPrepareThreshold = pgCon.getPrepareThreshold();
+
+            assertTrue("Was expecting default value to be anything other than 9", defaultPrepareThreshold != 9);
+            pgCon.setPrepareThreshold(9);
+            assertEquals(9, pgCon.getPrepareThreshold());
+        }
+        try (Connection con = ds.getConnection()) {
+            // Now check prepareThreshold to make sure it was reset properly to the original value
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            assertEquals(defaultPrepareThreshold, pgCon.getPrepareThreshold());
+        }
+    }
+
+    @Test
+    public void testPostgresApiUsability() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
+        try (Connection con = ds.getConnection()) {
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+
+            // CopyAPI is allowed
+            pgCon.getCopyAPI();
+
+            // LargeObject API is not allowed because it has operations that can commit transactions on the underlying PG connection
+            try {
+                pgCon.getLargeObjectAPI();
+                fail("Expected to get a SQLFeatureNotSupportedException on calling PGConnection.getLargeObjectAPI() but did not.");
+            } catch (SQLFeatureNotSupportedException expected) {
+                System.out.println("Caught expected exception: " + expected);
+            }
+        }
+    }
+
     // Normally we reset ApplicationName on ClientInfo, but since it's configured in server.xml it should not be reset
     @Test
     public void testApplicationNameNotReset() throws Exception {
@@ -563,11 +627,6 @@ public class PostgreSQLTestServlet extends FATServlet {
     // Verifies spec-standard JDBC properties are at their default values originally
     // and that our WSJdbcConnection properties are in sync with the underlying PostgreSQL connection's properties
     private void verifyClean(Connection con) throws Exception {
-        // Always "do some work" with the connection before we verify it's underlying state.
-        // The JDBC code intentionally lazily resets connection values, so our wrapper may be out of sync with the underlying
-        // connection between getting the initial connection and actually driving some work on it
-        con.createStatement().close();
-
         // Verify WSJdbcConnection values are all at the proper initial state
         assertTrue("Default auto-commit value on a connection should be 'true'", con.getAutoCommit());
         assertFalse("Default readOnly value on a connection should be 'false'", con.isReadOnly());
@@ -575,6 +634,11 @@ public class PostgreSQLTestServlet extends FATServlet {
         assertEquals("Default ResultSet holdability on a connection should be CLOSE_CURSORS_AT_COMMIT (2)", ResultSet.CLOSE_CURSORS_AT_COMMIT, con.getHoldability());
         assertEquals("Default network timeout on a connection should be 0", 0, con.getNetworkTimeout());
         assertEquals("Default schema on a connection should be 'public", "public", con.getSchema());
+
+        // Always "do some work" with the connection before we verify it's underlying state.
+        // The JDBC code intentionally lazily resets connection values, so our wrapper may be out of sync with the underlying
+        // connection between getting the initial connection and actually driving some work on it
+        con.createStatement().close();
 
         // Verify the underlying PostgreSQL connection is in a consistent state with our tracking
         assertEquals("Liberty JDBC connection wrapper auto-commit value did not match the underlying PostgreSQL connection value",
