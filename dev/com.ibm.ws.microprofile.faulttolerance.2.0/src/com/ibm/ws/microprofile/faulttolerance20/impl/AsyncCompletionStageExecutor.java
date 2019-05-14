@@ -20,6 +20,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceExceptio
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
@@ -66,17 +67,24 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
         }
     }
 
+    @FFDCIgnore(IllegalStateException.class)
     private void doSetResult(AsyncExecutionContextImpl<CompletionStage<R>> executionContext, MethodResult<CompletionStage<R>> result) {
         CompletableFuture<R> resultWrapper = (CompletableFuture<R>) executionContext.getResultWrapper();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} final fault tolerance result: {1}", executionContext.getMethod(), result);
-        }
 
         // Completing the return wrapper may cause user code to run, so set the thread context first as we may be on an async thread
         ThreadContextDescriptor threadContext = executionContext.getThreadContextDescriptor();
         try {
-            ArrayList<ThreadContext> contexts = threadContext.taskStarting();
+            ArrayList<ThreadContext> contexts = null;
+            try {
+                contexts = threadContext.taskStarting();
+            } catch (IllegalStateException e) {
+                // Component for captured context is no longer running
+                result = MethodResult.internalFailure(createAppStoppedException(e, executionContext));
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Execution {0} final fault tolerance result: {1}", executionContext.getId(), result);
+            }
 
             try {
                 if (result.isFailure()) {
@@ -89,7 +97,9 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
                     });
                 }
             } finally {
-                threadContext.taskStopping(contexts);
+                if (contexts != null) {
+                    threadContext.taskStopping(contexts);
+                }
             }
         } catch (Throwable t) {
             Tr.error(tc, "internal.error.CWMFT4998E", t);

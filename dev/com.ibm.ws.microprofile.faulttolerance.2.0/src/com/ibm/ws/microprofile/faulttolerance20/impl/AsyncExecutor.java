@@ -38,6 +38,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.BulkheadReservation;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.ExceptionHandler;
@@ -226,7 +227,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      * <p>
      * This stage includes running the user's code
      */
-    @FFDCIgnore(Throwable.class)
+    @FFDCIgnore({ Throwable.class, IllegalStateException.class })
     private void runExecutionAttempt(AsyncAttemptContextImpl<W> attemptContext, BulkheadReservation reservation) {
         AsyncExecutionContextImpl<W> executionContext = attemptContext.getExecutionContext();
         try {
@@ -234,17 +235,26 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Execution {0} running execution attempt", executionContext.getId());
             }
 
+            MethodResult<W> methodResult = null;
             ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
-            ArrayList<ThreadContext> context = contextDescriptor.taskStarting();
-
-            MethodResult<W> methodResult;
+            ArrayList<ThreadContext> context = null;
             try {
-                W result = executionContext.getCallable().call();
-                methodResult = MethodResult.success(result);
-            } catch (Throwable e) {
-                methodResult = MethodResult.failure(e);
-            } finally {
-                contextDescriptor.taskStopping(context);
+                context = contextDescriptor.taskStarting();
+            } catch (IllegalStateException e) {
+                // The application or module has gone away, we can no longer run things for this app
+                // Mark this as an internal failure as we don't want any retries or further processing to occur
+                methodResult = MethodResult.internalFailure(createAppStoppedException(e, attemptContext.getExecutionContext()));
+            }
+
+            if (methodResult == null) {
+                try {
+                    W result = executionContext.getCallable().call();
+                    methodResult = MethodResult.success(result);
+                } catch (Throwable e) {
+                    methodResult = MethodResult.failure(e);
+                } finally {
+                    contextDescriptor.taskStopping(context);
+                }
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -400,7 +410,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         executorService.submit(() -> runFallback(result, executionContext));
     }
 
-    @FFDCIgnore(Throwable.class)
+    @FFDCIgnore({ Throwable.class, IllegalStateException.class })
     @SuppressWarnings("unchecked")
     private void runFallback(MethodResult<W> failedResult, AsyncExecutionContextImpl<W> executionContext) {
         try {
@@ -409,20 +419,26 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Execution {0} calling fallback", executionContext.getId());
             }
 
-            metricRecorder.incrementFallbackCalls();
-
             executionContext.setFailure(failedResult.getFailure());
 
+            MethodResult<W> fallbackResult = null;
             ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
-            ArrayList<ThreadContext> context = contextDescriptor.taskStarting();
-
-            MethodResult<W> fallbackResult;
+            ArrayList<ThreadContext> context = null;
             try {
-                fallbackResult = MethodResult.success((W) fallbackPolicy.getFallbackFunction().execute(executionContext));
-            } catch (Throwable ex) {
-                fallbackResult = MethodResult.failure(ex);
-            } finally {
-                contextDescriptor.taskStopping(context);
+                context = contextDescriptor.taskStarting();
+            } catch (IllegalStateException e) {
+                fallbackResult = MethodResult.internalFailure(createAppStoppedException(e, executionContext));
+            }
+
+            if (fallbackResult == null) {
+                metricRecorder.incrementFallbackCalls();
+                try {
+                    fallbackResult = MethodResult.success((W) fallbackPolicy.getFallbackFunction().execute(executionContext));
+                } catch (Throwable ex) {
+                    fallbackResult = MethodResult.failure(ex);
+                } finally {
+                    contextDescriptor.taskStopping(context);
+                }
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -492,6 +508,12 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         } else {
             setResult(executionContext, result);
         }
+    }
+
+    protected FaultToleranceException createAppStoppedException(IllegalStateException e, AsyncExecutionContextImpl<W> context) {
+        String methodString = FTDebug.formatMethod(context.getMethod());
+        Tr.warning(tc, "application.shutdown.CWMFT0002W", methodString);
+        return new FaultToleranceException(Tr.formatMessage(tc, "application.shutdown.CWMFT0002W", methodString), e);
     }
 
 }
