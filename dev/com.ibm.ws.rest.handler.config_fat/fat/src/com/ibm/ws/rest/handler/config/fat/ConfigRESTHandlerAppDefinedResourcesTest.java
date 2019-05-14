@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -66,6 +67,30 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    /**
+     * Use the /ibm/api/config rest endpoint to obtain configuration for the connection manager of an app-defined data source.
+     */
+    @AllowedFFDC("java.lang.IllegalArgumentException") // java:app/env/ds1's connectionManager has duration value that is not valid
+    @Test
+    public void testAppDefinedConnectionManager() throws Exception {
+        JsonObject cm = new HttpsRequest(server, "/ibm/api/config/connectionManager/application%5BAppDefResourcesApp%5D%2FdataSource%5Bjava:app%2Fenv%2Fjdbc%2Fds1%5D%2FconnectionManager")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + cm;
+
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]/connectionManager", cm.getString("id"));
+        assertNull(err, cm.get("jndiName"));
+
+        assertEquals(err, "1:05:30", cm.getString("agedTimeout")); // configured duration value is invalid and cannot be parsed to a number
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 50, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
     }
 
     /**
@@ -178,10 +203,45 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      * Verify that application-defined data sources are included in the output of the rest endpoint that
      * returns the configuration of all data sources.
      */
+    @AllowedFFDC("java.lang.IllegalArgumentException") // java:app/env/ds1's connectionManager has duration value that is not valid
     @Test
     public void testAppDefinedDataSourcesAreIncluded() throws Exception {
         JsonArray dataSources = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + dataSources;
-        assertEquals(err, 2, dataSources.size());
+        assertEquals(err, 4, dataSources.size());
+    }
+
+    /**
+     * Use the /ibm/api/config rest endpoint to obtain configuration for the jdbcDriver of an app-defined data source.
+     */
+    @Test
+    public void testAppDefinedJDBCDriver() throws Exception {
+        JsonObject driver = new HttpsRequest(server, "/ibm/api/config/jdbcDriver/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava:comp%2Fenv%2Fjdbc%2Fds3%5D%2FjdbcDriver")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + driver;
+
+        assertEquals(err, "jdbcDriver", driver.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]/jdbcDriver",
+                     driver.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]/jdbcDriver",
+                     driver.getString("id"));
+        assertNull(err, driver.get("jndiName"));
+        assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", driver.getString("javax.sql.DataSource"));
+
+        JsonObject library;
+        assertNotNull(err, library = driver.getJsonObject("libraryRef"));
+        assertEquals(err, "library", library.getString("configElementName"));
+        assertEquals(err, "Derby", library.getString("uid"));
+        assertEquals(err, "Derby", library.getString("id"));
+        assertEquals(err, "spec,ibm-api,api,stable", library.getString("apiTypeVisibility"));
+
+        JsonArray files;
+        JsonObject file;
+        assertNotNull(err, files = library.getJsonArray("fileRef"));
+        assertNotNull(err, file = files.getJsonObject(0));
+        assertEquals(err, "file", file.getString("configElementName"));
+        assertEquals(err, "library[Derby]/file[default-0]", file.getString("uid"));
+        assertNull(err, file.get("id"));
+        assertTrue(err, file.getString("name").endsWith("derby.jar"));
     }
 }
