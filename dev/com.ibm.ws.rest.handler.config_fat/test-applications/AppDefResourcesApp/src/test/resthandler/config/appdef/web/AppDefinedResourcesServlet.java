@@ -23,14 +23,16 @@ import componenttest.app.FATServlet;
                       isolationLevel = Connection.TRANSACTION_READ_COMMITTED,
                       loginTimeout = 220,
                       maxPoolSize = 2,
+                      maxStatements = 45,
                       properties = {
                                      "connectionTimeout=0",
                                      "containerAuthDataRef=derbyAuth1",
                                      "createDatabase=create",
                                      "onConnect=DECLARE GLOBAL TEMPORARY TABLE TEMP2 (COL1 VARCHAR(80)) ON COMMIT PRESERVE ROWS NOT LOGGED",
                                      "queryTimeout=1m22s",
-                                     "reapTime=2200ms",
-                                     "recoveryAuthDataRef=derbyAuth2"
+                                     "reapTime=2200s",
+                                     "recoveryAuthDataRef=derbyAuth2",
+                                     "syncQueryTimeoutWithTransactionTimeout=true"
                       })
 
 @SuppressWarnings("serial")
