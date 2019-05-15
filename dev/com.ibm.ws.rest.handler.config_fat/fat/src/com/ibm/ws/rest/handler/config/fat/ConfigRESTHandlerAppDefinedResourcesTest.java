@@ -200,6 +200,106 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     }
 
     /**
+     * Use the /ibm/api/config rest endpoint to obtain configuration for an app-defined data source that
+     * is defined in the java:global namespace. Use the API for validation that is provided in the config REST endpoint
+     * output to test a connection.
+     */
+    @Test
+    public void testAppDefinedDataSourceInJavaGlobalAndTestConnection() throws Exception {
+        JsonObject ds = new HttpsRequest(server, "/ibm/api/config/dataSource/dataSource%5Bjava:global%2Fenv%2Fjdbc%2Fds4%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + ds;
+
+        assertEquals(err, "dataSource", ds.getString("configElementName"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", ds.getString("uid"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", ds.getString("id"));
+        assertEquals(err, "java:global/env/jdbc/ds4", ds.getString("jndiName"));
+
+        assertNull(err, ds.get("application"));
+        assertNull(err, ds.get("module"));
+        assertNull(err, ds.get("component"));
+
+        assertTrue(err, ds.getBoolean("beginTranForResultSetScrollingAPIs"));
+        assertTrue(err, ds.getBoolean("beginTranForVendorAPIs"));
+        assertEquals(err, "MatchOriginalRequest", ds.getString("connectionSharing"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = ds.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 50, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        assertFalse(err, ds.getBoolean("enableConnectionCasting"));
+
+        JsonObject driver;
+        assertNotNull(err, driver = ds.getJsonObject("jdbcDriverRef"));
+        assertEquals(err, "jdbcDriver", driver.getString("configElementName"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]/jdbcDriver", driver.getString("uid"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]/jdbcDriver", driver.getString("id"));
+        assertTrue(err, driver.getString("javax.sql.XADataSource").startsWith("org.apache.derby.jdbc."));
+
+        JsonObject library;
+        assertNotNull(err, library = driver.getJsonObject("libraryRef"));
+        assertEquals(err, "library", library.getString("configElementName"));
+        assertEquals(err, "Derby", library.getString("uid"));
+        assertEquals(err, "Derby", library.getString("id"));
+        assertEquals(err, "spec,ibm-api,api,stable", library.getString("apiTypeVisibility"));
+
+        JsonArray files;
+        JsonObject file;
+        assertNotNull(err, files = library.getJsonArray("fileRef"));
+        assertNotNull(err, file = files.getJsonObject(0));
+        assertEquals(err, "file", file.getString("configElementName"));
+        assertEquals(err, "library[Derby]/file[default-0]", file.getString("uid"));
+        assertNull(err, file.get("id"));
+        assertTrue(err, file.getString("name").endsWith("derby.jar"));
+
+        JsonObject props;
+        assertNotNull(err, props = ds.getJsonObject("properties"));
+        assertEquals(err, 4, props.size());
+        assertEquals(err, "create", props.getString("createDatabase"));
+        assertEquals(err, "memory:fourthdb", props.getString("databaseName"));
+        assertEquals(err, "dbuser4", props.getString("user"));
+        assertEquals(err, "******", props.getString("password"));
+
+        assertEquals(err, 10, ds.getInt("statementCacheSize"));
+        assertFalse(err, ds.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
+        assertTrue(err, ds.getBoolean("transactional"));
+        assertEquals(err, "javax.sql.XADataSource", ds.getString("type"));
+
+        JsonArray api;
+        assertNotNull(err, api = ds.getJsonArray("api"));
+        assertEquals(err, 1, api.size()); // increase if more REST API is added for data source
+        assertEquals(err,
+                     "/ibm/api/validation/dataSource/dataSource%5Bjava%3Aglobal%2Fenv%2Fjdbc%2Fds4%5D",
+                     api.getString(0));
+
+        // Use validation API
+        JsonObject json = new HttpsRequest(server, api.getString(0)).run(JsonObject.class);
+        err = "unexpected response: " + json;
+
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", json.getString("uid"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", json.getString("id"));
+        assertEquals(err, "java:global/env/jdbc/ds4", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
+        assertNotNull(err, json.getString("databaseProductVersion"));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
+        assertNotNull(err, json.getString("jdbcDriverVersion"));
+        assertEquals(err, "DBUSER4", json.getString("schema"));
+        assertEquals(err, "dbuser4", json.getString("user"));
+    }
+
+    /**
      * Verify that application-defined data sources are included in the output of the rest endpoint that
      * returns the configuration of all data sources.
      */
@@ -208,7 +308,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     public void testAppDefinedDataSourcesAreIncluded() throws Exception {
         JsonArray dataSources = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + dataSources;
-        assertEquals(err, 4, dataSources.size());
+        assertEquals(err, 5, dataSources.size());
     }
 
     /**

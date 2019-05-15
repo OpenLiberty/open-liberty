@@ -46,7 +46,13 @@ import componenttest.app.FATServlet;
                                                }),
                          @DataSourceDefinition(name = "java:comp/env/jdbc/ds3",
                                                className = "org.apache.derby.jdbc.EmbeddedDataSource",
-                                               databaseName = "memory:thirddb;create=true")
+                                               databaseName = "memory:thirddb;create=true"),
+                         @DataSourceDefinition(name = "java:global/env/jdbc/ds4",
+                                               className = "", // infer class name
+                                               databaseName = "memory:fourthdb",
+                                               properties = "createDatabase=create",
+                                               user = "dbuser4",
+                                               password = "dbpwd4")
 })
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/AppDefinedResourcesServlet")
