@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -44,14 +45,12 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
-import junit.runner.Version;
-
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=ear" })
 public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactory implements DeployedAppInfoFactory {
     private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class, new String[] { "webcontainer", "applications", "app.manager" },
                                                           "com.ibm.ws.app.manager.war.internal.resources.Messages",
-                                                          "com/ibm/ws/app/manager/ear/internal/EARDeployedAppInfoFactoryImpl");
+                                                          "com.ibm.ws.app.manager.ear.internal.EARDeployedAppInfoFactoryImpl");
 
     @Reference
     protected DeployedAppServices deployedAppServices;

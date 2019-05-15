@@ -31,6 +31,7 @@ import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.util.CheckClassAdapter;
@@ -208,6 +209,24 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Determine if the class is an Inner class
+     * 
+     * @param info the collected class information
+     */
+    @SuppressWarnings("unchecked")
+    private boolean isInnerClass(ClassTraceInfo info) {
+    	
+	if(info.classNode.innerClasses.isEmpty())
+		return false;
+	else {
+		int innerIdentifierIndex = info.classNode.name.lastIndexOf("$");
+		if (innerIdentifierIndex == -1)
+			return false;
+		return true;
+		}
     }
 
     /**
@@ -700,7 +719,8 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
 
 
         // #1: Check for a trace options annotation
-        processClassTraceOptionsAnnotation(info);
+        if (!isInnerClass(info))
+        	processClassTraceOptionsAnnotation(info);
 
         // #2: Look for declared TraceComponents
         processLibertyTraceComponentDiscovery(info);
@@ -717,71 +737,81 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         }
         
         // #5: Check for a trivial annotation on the class - and if a static field exists - continue - otherwise return
-        if (!checkInstrumentableAdapter.isInstrumentableClass() && declaredTraceStateFieldCount == 0) {
+        if (!checkInstrumentableAdapter.isInstrumentableClass() || ( isClassTrivial(info) && declaredTraceStateFieldCount == 0)) {
             return null;
         }
-        
-        if (info.websphereTraceComponentFieldNode != null) {
-            declaredTraceStateFieldCount++;
-        }
-        if (info.loggerFieldNode != null) {
-            declaredTraceStateFieldCount++;
-        }
-        if (declaredTraceStateFieldCount > 1) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("WARNING: More than one type of tracing has been detected on class ");
-            sb.append(info.classNode.name.replaceAll("/", "\\."));
-            info.warnings.add(sb.toString());
-        }
+		
 
-        // #6: Determine if Logger/TraceComponent is initialized
-        processExistingStaticInitializer(info);
+		if (info.websphereTraceComponentFieldNode != null) {
+			declaredTraceStateFieldCount++;
+		}
+		if (info.loggerFieldNode != null) {
+			declaredTraceStateFieldCount++;
+		}
+		if (declaredTraceStateFieldCount > 1) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("WARNING: More than one type of tracing has been detected on class ");
+			sb.append(info.classNode.name.replaceAll("/", "\\."));
+			info.warnings.add(sb.toString());
+		}
+		
+		// #6 Check if Inner class, skip any static field initialization if doesn't
+		// already exist
+		if (!isInnerClass(info) || ((isInnerClass(info)) && declaredTraceStateFieldCount == 0)) {
 
-        // #6: Define the TraceComponent if needed
-        setupTraceStateObjectField(info);
+			// #7: Determine if Logger/TraceComponent is initialized
+			processExistingStaticInitializer(info);
 
-        // #7: Look at the toString method for calls to locally declared methods
-        processToString(info);
+			// #8: Define the TraceComponent if needed
+			setupTraceStateObjectField(info);
+			
+		}
 
-        // #8: Look for methods that have hard-coded entry/exit trace points
-        processManuallyTracedMethods(info);
+		// #9: Look at the toString method for calls to locally declared methods
+		processToString(info);
 
-        // #9: Dump the list of warnings
-        for (String warning : info.warnings) {
-            System.out.println(warning);
-        }
+		// #10: Look for methods that have hard-coded entry/exit trace points
+		processManuallyTracedMethods(info);
 
-        if (info.failInstrumentation) {
-            System.out.println("ERROR: Instrumentation failed for " + info.classNode.name + ".  Please see previous messages");
-            return null;
-        }
+		// #11: Dump the list of warnings
+		for (String warning : info.warnings) {
+			System.out.println(warning);
+		}
 
-        // Create the ClassWriter
-        ClassWriter classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
-        ClassVisitor cv = classWriter;
+		if (info.failInstrumentation) {
+			System.out.println(
+					"ERROR: Instrumentation failed for " + info.classNode.name + ".  Please see previous messages");
+			return null;
+		}
 
-        // Trace the class as it's visited if debug is enabled
-        if (isDebug()) {
-            cv = new CheckClassAdapter(cv);
-            cv = new TraceClassVisitor(cv, new PrintWriter(System.out));
-        }
+		// Create the ClassWriter
+		ClassWriter classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
+		ClassVisitor cv = classWriter;
 
-        // If requested, inject tracing at invocation by chaining.
-        // Static injection for JSR47 or WebSphere is always done our of
-        // the pre-process class adpater.
-        if (injectStatic && info.traceStateField != null && LIBERTY_TRACE_COMPONENT_TYPE.getDescriptor().equals(info.traceStateField.desc)) {
-            cv = new LibertyTracingClassAdapter(cv, info, true);
-        }
+		// Trace the class as it's visited if debug is enabled
+		if (isDebug()) {
+			cv = new CheckClassAdapter(cv);
+			cv = new TraceClassVisitor(cv, new PrintWriter(System.out));
+		}
 
-        // Pre-process the class and inject FFDC if requested
-        if (info.traceStateField != null) {
-            cv = new LibertyTracePreprocessClassAdapter(cv, !info.traceStateFieldAlreadyInitialized,info);
-        } else if (defaultTraceType == TraceType.TR) {
-            cv = new WebSphereTrTracingClassAdapter(cv, null,info);
-        } else if (defaultTraceType == TraceType.JAVA_LOGGING) {
-            cv = new JSR47TracingClassAdapter(cv, null,info);
-        }
-        if (addFfdc) {
+		// If requested, inject tracing at invocation by chaining.
+		// Static injection for JSR47 or WebSphere is always done our of
+		// the pre-process class adpater.
+		if (injectStatic && info.traceStateField != null
+				&& LIBERTY_TRACE_COMPONENT_TYPE.getDescriptor().equals(info.traceStateField.desc)) {
+			cv = new LibertyTracingClassAdapter(cv, info, true);
+		}
+
+		// Pre-process the class and inject FFDC if requested
+		if (info.traceStateField != null) {
+			cv = new LibertyTracePreprocessClassAdapter(cv, !info.traceStateFieldAlreadyInitialized, info);
+		} else if (defaultTraceType == TraceType.TR) {
+			cv = new WebSphereTrTracingClassAdapter(cv, null, info);
+		} else if (defaultTraceType == TraceType.JAVA_LOGGING) {
+			cv = new JSR47TracingClassAdapter(cv, null, info);
+		}
+		
+        if (addFfdc && !isClassTrivial(info)) {
             cv = new FFDCClassAdapter(cv, null,info);
         }
         directory.accept(cv);

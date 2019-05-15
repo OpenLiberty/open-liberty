@@ -269,7 +269,7 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
     	            visitInsn(ACONST_NULL);
     	        }
     	        
-    	        String traceOptionName = getClassAdapter().getClassInternalName();
+    	        String traceOptionName = getClassAdapter().getClassName();
     	        if (traceOptionName != null) {
     	            visitLdcInsn(traceOptionName);
     	        } else {
@@ -386,7 +386,7 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
     	            visitInsn(ACONST_NULL);
     	        }
     	        
-    	        String traceOptionName = getClassAdapter().getClassInternalName();
+    	        String traceOptionName = getClassAdapter().getClassName();
     	        if (traceOptionName != null) {
     	            visitLdcInsn(traceOptionName);
     	        } else {
