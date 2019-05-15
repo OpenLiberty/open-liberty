@@ -69,7 +69,8 @@ BUNDLE_MATCH_WARNING=CWWKF0010W: \u00c8 presente pi\u00f9 di un bundle corrispon
 BUNDLE_MATCH_WARNING.explanation=Un elemento di definizione della funzione corrisponde a pi\u00f9 bundle. Ci\u00f2 potrebbe verificarsi perch\u00e9 il filtro \u00e8 troppo generico o perch\u00e9 nell'immagine sono presenti bundle obsoleti che corrispondono al filtro.
 BUNDLE_MATCH_WARNING.useraction=Verificare che il filtro sia sufficientemente specifico e che venga utilizzata un'immagine di installazione pulita.
 
-SERVER_STARTED=CWWKF0011I: Il server {0} \u00e8 pronto per "un pianeta pi\u00f9 intelligente".
+SERVER_STARTED=CWWKF0011I: Il server {0} \u00e8 pronto per "un pianeta pi\u00f9 intelligente". \
+Server {0} avviato in {1} secondi.
 SERVER_STARTED.explanation=Il server \u00e8 stato avviato correttamente.
 SERVER_STARTED.useraction=Non \u00e8 richiesta alcuna azione.
 

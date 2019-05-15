@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -742,3 +742,5 @@ info.initlogs=stdout \ubc0f stderr\uc744 {0} \ud30c\uc77c\ub85c \uacbd\ub85c \uc
 info.no.servers.defined=\uc0ac\uc6a9\uc790 \ub514\ub809\ud1a0\ub9ac {0}\uc5d0 \uc815\uc758\ub41c \uc11c\ubc84\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
 info.list.of.defined.servers=\ub2e4\uc74c \uc11c\ubc84\ub294 \uc0ac\uc6a9\uc790 \ub514\ub809\ud1a0\ub9ac {0}\uc5d0 \ub300\ud574 \uc0c1\ub300\uc801\uc73c\ub85c \uc815\uc758\ub429\ub2c8\ub2e4.
 info.communicate.server={0} \uba85\ub839\uacfc {1} \uc11c\ubc84 \uc0ac\uc774\uc5d0\uc11c \ud1b5\uc2e0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+info.serialFilterLoaded=\uc9c1\ub82c \ud544\ud130 \uc5d0\uc774\uc804\ud2b8\uac00 \ub85c\ub4dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.

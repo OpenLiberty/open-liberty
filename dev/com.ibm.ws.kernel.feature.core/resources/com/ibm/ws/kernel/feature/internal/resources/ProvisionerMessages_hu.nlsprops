@@ -69,7 +69,7 @@ BUNDLE_MATCH_WARNING=CWWKF0010W: T\u00f6bb k\u00f6teg felelt a megadott sz\u0171
 BUNDLE_MATCH_WARNING.explanation=A szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1s elem t\u00f6bb k\u00f6tegnek is megfeleltethet\u0151. Ennek az lehet az oka, hogy a sz\u0171r\u0151 t\u00fal \u00e1ltal\u00e1nos, vagy vannak r\u00e9gi k\u00f6tegek a telep\u00edt\u0151k\u00e9szletben, amelyek megfelelnek a sz\u0171r\u0151nek.
 BUNDLE_MATCH_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u0171r\u0151 kell\u0151k\u00e9ppen specifikus, \u00e9s hogy egy tiszta telep\u00edt\u0151k\u00e9szletet haszn\u00e1l.
 
-SERVER_STARTED=CWWKF0011I: A(z) {0} kiszolg\u00e1l\u00f3 k\u00e9szen \u00e1ll egy intelligensebb planet futtat\u00e1s\u00e1ra.
+SERVER_STARTED=CWWKF0011I: A(z) {0} kiszolg\u00e1l\u00f3 k\u00e9szen \u00e1ll egy intelligensebb planet futtat\u00e1s\u00e1ra. A(z) {0} kiszolg\u00e1l\u00f3 {1} m\u00e1sodperc alatt elindult.
 SERVER_STARTED.explanation=A kiszolg\u00e1l\u00f3 sikeresen elindult.
 SERVER_STARTED.useraction=Nincs teend\u0151.
 

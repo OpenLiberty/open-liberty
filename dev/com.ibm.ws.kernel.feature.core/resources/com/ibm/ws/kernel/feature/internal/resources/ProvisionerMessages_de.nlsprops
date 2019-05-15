@@ -69,7 +69,7 @@ BUNDLE_MATCH_WARNING=CWWKF0010W: Es sind mehrere Bundles vorhanden, die dem ange
 BUNDLE_MATCH_WARNING.explanation=Ein Featuredefinitionsobjekt stimmt mit mehreren Bundles \u00fcberein. Dies kann darauf zur\u00fcckzuf\u00fchren sein, dass der Filter zu allgemein ist oder dass alte Bundles im Image enthalten sind, die dem Filter entsprechen.
 BUNDLE_MATCH_WARNING.useraction=Stellen Sie sicher, dass der Filter spezifisch genug ist, und dass ein bereinigtes Installationsimage verwendet wird.
 
-SERVER_STARTED=CWWKF0011I: Der Server {0} ist bereit.
+SERVER_STARTED=CWWKF0011I: Der Server {0} ist f\u00fcr die Ausf\u00fchrung von Smarter Planet bereit. Der Server {0} ist nach {1} Sekunden gestartet.
 SERVER_STARTED.explanation=Der Server wurde erfolgreich gestartet.
 SERVER_STARTED.useraction=Es ist keine Aktion erforderlich.
 

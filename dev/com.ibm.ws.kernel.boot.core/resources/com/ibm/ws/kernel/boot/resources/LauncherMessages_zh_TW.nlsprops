@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -747,3 +747,5 @@ info.initlogs=\u6b63\u5728\u5c07\u6a19\u6e96\u8f38\u51fa\u548c\u6a19\u6e96\u932f
 info.no.servers.defined=\u4f7f\u7528\u8005\u76ee\u9304 {0} \u4e2d\u672a\u5b9a\u7fa9\u4efb\u4f55\u4f3a\u670d\u5668\u3002
 info.list.of.defined.servers=\u4e0b\u5217\u4f3a\u670d\u5668\u662f\u76f8\u5c0d\u65bc\u4f7f\u7528\u8005\u76ee\u9304 {0} \u800c\u5b9a\u7fa9\u3002
 info.communicate.server=\u6307\u4ee4 {0} \u548c\u4f3a\u670d\u5668 {1} \u4e4b\u9593\u767c\u751f\u901a\u8a0a\u932f\u8aa4\u3002
+
+info.serialFilterLoaded=\u5df2\u8f09\u5165\u5e8f\u5217\u904e\u6ffe\u5668\u4ee3\u7406\u7a0b\u5f0f\u3002

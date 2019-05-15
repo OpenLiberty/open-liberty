@@ -86,8 +86,8 @@ na imagem que correspondem ao filtro.
 BUNDLE_MATCH_WARNING.useraction=Certifique-se de que o filtro seja suficientemente espec\u00edfico e que uma imagem de \
 instala\u00e7\u00e3o clara esteja sendo usada.
 
-SERVER_STARTED=CWWKF0011I: O servidor {0} est\u00e1 \
-pronto para executar um planeta mais inteligente.
+SERVER_STARTED=CWWKF0011I: O servidor {0} est\u00e1 pronto para gerenciar um planeta \
+mais inteligente. O servidor {0} foi iniciado em {1} segundos.
 SERVER_STARTED.explanation=O servidor foi iniciado com sucesso.
 SERVER_STARTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
