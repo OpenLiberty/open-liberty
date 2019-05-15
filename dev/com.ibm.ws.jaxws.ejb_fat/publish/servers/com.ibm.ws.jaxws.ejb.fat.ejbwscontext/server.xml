@@ -38,6 +38,6 @@
   	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
   	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator"/>
   	<javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
- 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSContext/EchoInfoService" actions="POST:AcceptAuthorizationSOAPActionUser-Agent"/>
+ 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSContext/EchoInfoService" actions="POST:Accept,Authorization,SOAPAction,User-Agent"/>
     
 </server>

@@ -20,7 +20,7 @@
   	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator"/>
   	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.org.apache.xerces.internal.dom"/>
   	<javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
- 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSBasic/UserQueryService" actions="POST:AcceptSOAPActionUser-Agent"/>
- 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSBasic/SayHelloService" actions="POST:AcceptSOAPActionUser-Agent"/>
+ 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSBasic/UserQueryService" actions="POST:Accept,SOAPAction,User-Agent"/>
+ 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSBasic/SayHelloService" actions="POST:Accept,SOAPAction,User-Agent"/>
 
 </server>

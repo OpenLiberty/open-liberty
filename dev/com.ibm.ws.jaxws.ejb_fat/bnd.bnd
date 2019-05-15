@@ -38,7 +38,6 @@ tested.features: \
   jaxws-2.2,\
   ejb-3.2
 
-
 -buildpath: \
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
@@ -53,8 +52,5 @@ tested.features: \
 #	com.ibm.websphere.org.osgi.core,\
 #	com.ibm.websphere.org.osgi.service.component,\
 #	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-#	com.ibm.ws.org.osgi.annotation.versioning;version=latest	
-	
+#	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 #	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-
-

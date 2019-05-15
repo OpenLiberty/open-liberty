@@ -18,6 +18,6 @@
   	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
     <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
- 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSInterceptor/SayHelloService" actions="POST:AcceptSOAPActionUser-Agent"/>
+ 	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/EJBWSInterceptor/SayHelloService" actions="POST:Accept,SOAPAction,User-Agent"/>
 
 </server>
