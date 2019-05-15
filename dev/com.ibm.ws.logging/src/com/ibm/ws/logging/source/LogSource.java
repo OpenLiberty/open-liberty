@@ -37,6 +37,7 @@ public class LogSource implements Source {
     private final String location = "memory";
     private final String SYSOUT = "SystemOut";
     private final String SYSERR = "SystemErr";
+
     private BufferManager bufferMgr = null;
     private final SequenceNumber sequenceNumber = new SequenceNumber();
 
