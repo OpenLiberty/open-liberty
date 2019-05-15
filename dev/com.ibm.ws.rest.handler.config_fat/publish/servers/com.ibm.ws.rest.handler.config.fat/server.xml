@@ -46,11 +46,11 @@
   </dataSource>
 
   <transaction>
-    <DATASOURCE transactional="false" containerAuthDataRef="auth1">
+    <dataSource transactional="false" containerAuthDataRef="auth1">
       <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
       <jdbcDriver libraryRef="Derby"/>
    	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create"/>
-    </DATASOURCE>
+    </dataSource>
   </transaction>
 
   <!-- ejbLite and batch features are intentionally disabled -->

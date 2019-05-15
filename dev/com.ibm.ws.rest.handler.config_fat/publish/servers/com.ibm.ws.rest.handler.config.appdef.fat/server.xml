@@ -26,6 +26,14 @@
     <classloader commonLibraryRef="Derby"/>
   </application>
 
+  <transaction>
+    <DATASOURCE transactional="false">
+      <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
+      <jdbcDriver libraryRef="Derby"/>
+   	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create"/>
+    </DATASOURCE>
+  </transaction>
+
   <authData id="derbyAuth1" user="dbuser1" password="dbpwd1"/>
   <authData id="derbyAuth2" user="dbuser2" password="dbpwd2"/>
 

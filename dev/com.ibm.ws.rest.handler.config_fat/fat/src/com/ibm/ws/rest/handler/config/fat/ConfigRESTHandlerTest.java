@@ -185,7 +185,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     public void testConfigDataSource() throws Exception {
         JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + json;
-        assertEquals(err, 6, json.size());
+        assertEquals(err, 7, json.size());
 
         JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/dataSource/").run(JsonArray.class);
         assertEquals(json, json2);
@@ -478,6 +478,62 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, true, j.getBoolean("transactional"));
         assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "memory:doesNotExist", j.getString("databaseName"));
+
+        j = json.getJsonObject(6);
+        assertEquals(err, "dataSource", j.getString("configElementName"));
+        assertEquals(err, "transaction/dataSource[default-0]", j.getString("uid"));
+        assertNull(err, j.get("id"));
+        assertNull(err, j.get("jndiName"));
+        assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
+        assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
+        assertNotNull(err, jj = j.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", jj.getString("configElementName"));
+        assertEquals(err, "transaction/dataSource[default-0]/connectionManager[default-0]", jj.getString("uid"));
+        assertNull(err, jj.get("id"));
+        assertEquals(err, -1, jj.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 0, jj.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, jj.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, jj.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 5, jj.getJsonNumber("maxPoolSize").longValue());
+        assertEquals(err, "EntirePool", jj.getString("purgePolicy"));
+        assertEquals(err, 180, jj.getJsonNumber("reapTime").longValue());
+        assertEquals(err, "MatchOriginalRequest", j.getString("connectionSharing"));
+        assertNotNull(err, jj = j.getJsonObject("containerAuthDataRef"));
+        assertEquals(err, "authData", jj.getString("configElementName"));
+        assertEquals(err, "auth1", jj.getString("uid"));
+        assertEquals(err, "auth1", jj.getString("id"));
+        assertEquals(err, "******", jj.getString("password"));
+        assertEquals(err, "dbuser", jj.getString("user"));
+        assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
+        assertNotNull(ja = j.getJsonArray("api"));
+        found = false;
+        for (JsonValue jv : ja)
+            if ("/ibm/api/validation/dataSource/transaction%2FdataSource%5Bdefault-0%5D".equals(((JsonString) jv).getString()))
+                if (found)
+                    fail("Duplicate value in api list");
+                else
+                    found = true;
+        assertTrue(err, found);
+        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
+        assertEquals(err, "jdbcDriver", jj.getString("configElementName"));
+        assertEquals(err, "transaction/dataSource[default-0]/jdbcDriver[default-0]", jj.getString("uid"));
+        assertNull(err, jj.get("id"));
+        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
+        assertEquals(err, "library", jj.getString("configElementName"));
+        assertEquals(err, "Derby", jj.getString("uid"));
+        assertEquals(err, "Derby", jj.getString("id"));
+        assertEquals(err, "spec,ibm-api,api,stable", jj.getString("apiTypeVisibility"));
+        assertNotNull(err, ja = jj.getJsonArray("fileRef"));
+        assertEquals(err, 1, ja.size());
+        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertEquals(err, "file", jj.getString("configElementName"));
+        assertEquals(err, "library[Derby]/file[default-0]", jj.getString("uid"));
+        assertTrue(err, jj.getString("name").endsWith("derby.jar"));
+        assertEquals(err, 10, j.getInt("statementCacheSize"));
+        assertEquals(err, false, j.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
+        assertEquals(err, false, j.getBoolean("transactional"));
+        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
+        assertEquals(err, "memory:recoverydb", j.getString("databaseName"));
     }
 
     // Invoke /ibm/api/config/dataSource with jndiName to filter for a specific dataSource instance.
@@ -906,74 +962,5 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, 50, j.getJsonNumber("maxPoolSize").longValue());
         assertEquals(err, "EntirePool", j.getString("purgePolicy"));
         assertEquals(err, 150, j.getJsonNumber("reapTime").longValue());
-    }
-
-    /*
-     * Test that a data source nested under a transaction with an atypical case can be accessed
-     * by calling the config endpoint matching with the case matching server config.
-     */
-    @Test
-    public void testNestedDataSourceCase() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/DATASOURCE").run(JsonArray.class);
-        String err = "unexpected response: " + json;
-
-        assertEquals(err, 1, json.size());
-        JsonObject j = json.getJsonObject(0);
-        JsonObject jj;
-
-        assertEquals(err, "DATASOURCE", j.getString("configElementName"));
-        assertEquals(err, "transaction/DATASOURCE[default-0]", j.getString("uid"));
-        assertNull(err, j.get("id"));
-        assertNull(err, j.get("jndiName"));
-        assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
-        assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
-        assertNotNull(err, jj = j.getJsonObject("connectionManagerRef"));
-        assertEquals(err, "connectionManager", jj.getString("configElementName"));
-        assertEquals(err, "transaction/DATASOURCE[default-0]/connectionManager[default-0]", jj.getString("uid"));
-        assertNull(err, jj.get("id"));
-        assertEquals(err, -1, jj.getJsonNumber("agedTimeout").longValue());
-        assertEquals(err, 0, jj.getJsonNumber("connectionTimeout").longValue());
-        assertTrue(err, jj.getBoolean("enableSharingForDirectLookups"));
-        assertEquals(err, 1800, jj.getJsonNumber("maxIdleTime").longValue());
-        assertEquals(err, 5, jj.getJsonNumber("maxPoolSize").longValue());
-        assertEquals(err, "EntirePool", jj.getString("purgePolicy"));
-        assertEquals(err, 180, jj.getJsonNumber("reapTime").longValue());
-        assertEquals(err, "MatchOriginalRequest", j.getString("connectionSharing"));
-        assertNotNull(err, jj = j.getJsonObject("containerAuthDataRef"));
-        assertEquals(err, "authData", jj.getString("configElementName"));
-        assertEquals(err, "auth1", jj.getString("uid"));
-        assertEquals(err, "auth1", jj.getString("id"));
-        assertEquals(err, "******", jj.getString("password"));
-        assertEquals(err, "dbuser", jj.getString("user"));
-        assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
-        assertNotNull(json = j.getJsonArray("api"));
-        boolean found = false;
-        for (JsonValue jv : json)
-            if ("/ibm/api/validation/DATASOURCE/transaction%2FDATASOURCE%5Bdefault-0%5D".equals(((JsonString) jv).getString()))
-                if (found)
-                    fail("Duplicate value in api list");
-                else
-                    found = true;
-        assertTrue(err, found);
-        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
-        assertEquals(err, "jdbcDriver", jj.getString("configElementName"));
-        assertEquals(err, "transaction/DATASOURCE[default-0]/jdbcDriver[default-0]", jj.getString("uid"));
-        assertNull(err, jj.get("id"));
-        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
-        assertEquals(err, "library", jj.getString("configElementName"));
-        assertEquals(err, "Derby", jj.getString("uid"));
-        assertEquals(err, "Derby", jj.getString("id"));
-        assertEquals(err, "spec,ibm-api,api,stable", jj.getString("apiTypeVisibility"));
-        assertNotNull(err, json = jj.getJsonArray("fileRef"));
-        assertEquals(err, 1, json.size());
-        assertNotNull(err, jj = json.getJsonObject(0));
-        assertEquals(err, "file", jj.getString("configElementName"));
-        assertEquals(err, "library[Derby]/file[default-0]", jj.getString("uid"));
-        assertTrue(err, jj.getString("name").endsWith("derby.jar"));
-        assertEquals(err, 10, j.getInt("statementCacheSize"));
-        assertEquals(err, false, j.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
-        assertEquals(err, false, j.getBoolean("transactional"));
-        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
-        assertEquals(err, "memory:recoverydb", j.getString("databaseName"));
     }
 }
