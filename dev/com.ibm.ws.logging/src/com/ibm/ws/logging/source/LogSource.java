@@ -131,8 +131,8 @@ public class LogSource implements Source {
         logData.setModule(logRecord.getLoggerName());
         logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
         logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
-        String loggerName = logRecord.getLoggerName();
-        if (loggerName != null & loggerName.equals(SYSOUT)) {
+
+        if (logRecord.getLoggerName() != null & logRecord.getLoggerName().equals(SYSOUT)) {
             logData.setMethodName("");
             logData.setClassName("");
         } else {
