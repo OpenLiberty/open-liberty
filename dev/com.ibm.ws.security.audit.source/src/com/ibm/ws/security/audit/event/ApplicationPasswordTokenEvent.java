@@ -68,10 +68,6 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
             if (req.getUserPrincipal() != null && req.getUserPrincipal().getName() != null)
                 set(AuditEvent.TARGET_CREDENTIAL_TOKEN, req.getUserPrincipal().getName());
 
-            if ((String) m.get(AuditConstants.CREDENTIAL_TYPE) != null) {
-                set(AuditEvent.TARGET_CREDENTIAL_TYPE, m.get(AuditConstants.CREDENTIAL_TYPE));
-            }
-
             if ((String) m.get(AuditConstants.INITIATOR_ROLE) != null) {
                 set(AuditEvent.TARGET_INITIATOR_ROLE, m.get(AuditConstants.INITIATOR_ROLE));
             }
@@ -84,14 +80,8 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
             String endpoint = (String) m.get(AuditConstants.ENDPOINT);
             if (endpoint != null) {
                 set(AuditEvent.TARGET_ENDPOINT, endpoint);
-                if (endpoint.equals("app-passwords")) {
-                    if ((String) m.get(AuditConstants.APP_OR_TOKEN_ID) != null) {
-                        set(AuditEvent.TARGET_APPLICATION_ID, m.get(AuditConstants.APP_OR_TOKEN_ID));
-                    }
-                } else if (endpoint.equals("app-tokens")) {
-                    if ((String) m.get(AuditConstants.APP_OR_TOKEN_ID) != null) {
-                        set(AuditEvent.TARGET_TOKEN_ID, m.get(AuditConstants.APP_OR_TOKEN_ID));
-                    }
+                if ((String) m.get(AuditConstants.APP_OR_TOKEN_ID) != null) {
+                    set(AuditEvent.TARGET_APPLICATION_ID, m.get(AuditConstants.APP_OR_TOKEN_ID));
                 }
             }
 
