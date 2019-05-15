@@ -384,8 +384,7 @@ public class JavaJarTest {
             }
         }
 
-        System.out.println("Deleting " + file.getAbsolutePath());
-        Assert.assertTrue("delete " + file, file.delete());
+        Assert.assertTrue("Failed to delete file " + file.getAbsolutePath(), file.delete());
     }
 
     private static String getLicenseLineFragment(String prefix, Locale locale) throws IOException {
@@ -1276,7 +1275,7 @@ public class JavaJarTest {
     /**
      * This method creates a mocked up extended jar which just contains a manifest with the Core Feature header.
      *
-     * @param file - The file object for the manifest.
+     * @param file         - The file object for the manifest.
      * @param coreFeatures - The String value for the Require-Feature header.
      * @throws IOException
      */
@@ -1329,10 +1328,10 @@ public class JavaJarTest {
     /**
      * This method writes out a feature manifest.
      *
-     * @param feature - A file object representing the feature manifest to write to.
+     * @param feature             - A file object representing the feature manifest to write to.
      * @param featureSymbolicName - The feature symbolic name
-     * @param featureShortName - The feature short name.
-     * @param directive - Whether we should have a directive on the symbolic Name.
+     * @param featureShortName    - The feature short name.
+     * @param directive           - Whether we should have a directive on the symbolic Name.
      */
     private void createFeature(File feature, String featureSymbolicName, String featureShortName, boolean directive) {
         StringBuffer subsystemManifest = new StringBuffer();
