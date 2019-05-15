@@ -138,7 +138,11 @@ public class ConfigRESTHandler implements RESTHandler {
                     }
                     for (Enumeration<String> keys = config.keys(); keys.hasMoreElements();) {
                         String key = keys.nextElement();
-                        merged.put(key, config.get(key));
+                        Object value = config.get(key);
+                        // app-defined resources store custom property values as String, which might need conversion
+                        if (value instanceof String)
+                            value = configHelper.convert(extendsSourcePid == null ? servicePid : extendsSourcePid, key, (String) value);
+                        merged.put(key, value);
                     }
                     config = merged;
                 }

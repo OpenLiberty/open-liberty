@@ -11,6 +11,7 @@
 package com.ibm.ws.rest.handler.config.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -85,18 +86,22 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "AppDefResourcesApp.war", ds.getString("module"));
         assertNull(err, ds.get("component"));
 
+        assertTrue(err, ds.getBoolean("beginTranForResultSetScrollingAPIs"));
+        assertTrue(err, ds.getBoolean("beginTranForVendorAPIs"));
+        assertEquals(err, "MatchOriginalRequest", ds.getString("connectionSharing"));
+
         JsonObject cm;
         assertNotNull(err, cm = ds.getJsonObject("connectionManagerRef"));
         assertEquals(err, "connectionManager", cm.getString("configElementName"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/connectionManager", cm.getString("id"));
         assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
-        assertEquals(err, "0", cm.getString("connectionTimeout")); // TODO app-defined config not converted from String to number
+        assertEquals(err, 0, cm.getJsonNumber("connectionTimeout").longValue());
         assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
         assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
         assertEquals(err, 2, cm.getInt("maxPoolSize"));
         assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
-        assertEquals(err, "2200ms", cm.getString("reapTime")); // TODO app-defined config not converted from String to number
+        assertEquals(err, 2200, cm.getJsonNumber("reapTime").longValue());
 
         JsonObject authData;
         assertNotNull(err, authData = ds.getJsonObject("containerAuthDataRef"));
@@ -106,6 +111,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "dbuser1", authData.getString("user"));
         assertEquals(err, "******", authData.getString("password"));
 
+        assertFalse(err, ds.getBoolean("enableConnectionCasting"));
         assertEquals(err, Connection.TRANSACTION_READ_COMMITTED, ds.getInt("isolationLevel"));
 
         JsonObject driver;
@@ -146,7 +152,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, databaseName.contains("resources")); // must expand ${shared.resource.dir}
         assertEquals(err, 220, props.getInt("loginTimeout"));
 
-        assertEquals(err, "1m22s", ds.getString("queryTimeout"));
+        assertEquals(err, 82, ds.getInt("queryTimeout"));
 
         assertNotNull(err, authData = ds.getJsonObject("recoveryAuthDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
@@ -155,6 +161,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "dbuser2", authData.getString("user"));
         assertEquals(err, "******", authData.getString("password"));
 
+        assertEquals(err, 22, ds.getInt("statementCacheSize")); // = maxStatements / maxPoolSize
+        assertTrue(err, ds.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
+        assertTrue(err, ds.getBoolean("transactional"));
         assertEquals(err, "javax.sql.XADataSource", ds.getString("type"));
 
         JsonArray api;
