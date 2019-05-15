@@ -16,6 +16,11 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.ConnectionMetaData;
 import javax.jms.JMSException;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.Session;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -36,29 +41,98 @@ public class JMSConnectionFactoryValidator implements JMSValidator {
 
     @Override
     public void validate(Object cf, String user, @Sensitive String password, LinkedHashMap<String, Object> result) throws JMSException {
-        ConnectionFactory jmscf = (ConnectionFactory) cf;
+        if (cf instanceof QueueConnectionFactory) {
+            QueueConnectionFactory qcf = (QueueConnectionFactory) cf;
+            QueueConnection con = user == null ? qcf.createQueueConnection() : qcf.createQueueConnection(user, password);
+            try {
+                try {
+                    ConnectionMetaData conData = con.getMetaData();
 
+                    String provName = conData.getJMSProviderName();
+                    if (provName != null && provName.length() > 0)
+                        result.put("jmsProviderName", provName);
+
+                    String provVersion = conData.getProviderVersion();
+                    if (provVersion != null && provVersion.length() > 0)
+                        result.put("jmsProviderVersion", provVersion);
+                } catch (UnsupportedOperationException ignore) {
+                }
+
+                try {
+                    String clientID = con.getClientID();
+                    if (clientID != null && clientID.length() > 0)
+                        result.put("clientID", clientID);
+                } catch (UnsupportedOperationException ignore) {
+                }
+
+                try {
+                    con.createQueueSession(false, Session.AUTO_ACKNOWLEDGE).close();
+                } catch (UnsupportedOperationException ignore) {
+                }
+            } finally {
+                con.close();
+            }
+        }
+
+        if (cf instanceof TopicConnectionFactory) {
+            TopicConnectionFactory tcf = (TopicConnectionFactory) cf;
+            TopicConnection con = user == null ? tcf.createTopicConnection() : tcf.createTopicConnection(user, password);
+            try {
+                if (result.get("jmsProviderName") == null)
+                    try {
+                        ConnectionMetaData conData = con.getMetaData();
+
+                        String provName = conData.getJMSProviderName();
+                        if (provName != null && provName.length() > 0)
+                            result.put("jmsProviderName", provName);
+
+                        String provVersion = conData.getProviderVersion();
+                        if (provVersion != null && provVersion.length() > 0)
+                            result.put("jmsProviderVersion", provVersion);
+                    } catch (UnsupportedOperationException ignore) {
+                    }
+
+                if (result.get("clientID") == null)
+                    try {
+                        String clientID = con.getClientID();
+                        if (clientID != null && clientID.length() > 0)
+                            result.put("clientID", clientID);
+                    } catch (UnsupportedOperationException ignore) {
+                    }
+
+                try {
+                    con.createTopicSession(false, Session.AUTO_ACKNOWLEDGE).close();
+                } catch (UnsupportedOperationException ignore) {
+                }
+            } finally {
+                con.close();
+            }
+        }
+
+        ConnectionFactory jmscf = (ConnectionFactory) cf;
         Connection con = user == null ? jmscf.createConnection() : jmscf.createConnection(user, password);
         try {
-            try {
-                ConnectionMetaData conData = con.getMetaData();
+            if (result.get("jmsProviderName") == null)
+                try {
+                    ConnectionMetaData conData = con.getMetaData();
 
-                String provName = conData.getJMSProviderName();
-                if (provName != null && provName.length() > 0)
-                    result.put("jmsProviderName", provName);
+                    String provName = conData.getJMSProviderName();
+                    if (provName != null && provName.length() > 0)
+                        result.put("jmsProviderName", provName);
 
-                String provVersion = conData.getProviderVersion();
-                if (provVersion != null && provVersion.length() > 0)
-                    result.put("jmsProviderVersion", provVersion);
-            } catch (UnsupportedOperationException ignore) {
-            }
+                    String provVersion = conData.getProviderVersion();
+                    if (provVersion != null && provVersion.length() > 0)
+                        result.put("jmsProviderVersion", provVersion);
+                } catch (UnsupportedOperationException ignore) {
+                }
 
-            try {
-                String clientID = con.getClientID();
-                if (clientID != null && clientID.length() > 0)
-                    result.put("clientID", clientID);
-            } catch (UnsupportedOperationException ignore) {
-            }
+            if (result.get("clientID") == null)
+                try {
+                    String clientID = con.getClientID();
+                    if (clientID != null && clientID.length() > 0)
+                        result.put("clientID", clientID);
+                } catch (UnsupportedOperationException ignore) {
+                }
 
             try {
                 con.createSession().close();
