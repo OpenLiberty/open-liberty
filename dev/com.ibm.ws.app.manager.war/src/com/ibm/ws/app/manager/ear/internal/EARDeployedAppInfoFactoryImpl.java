@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -45,10 +44,14 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
+import junit.runner.Version;
+
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=ear" })
 public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactory implements DeployedAppInfoFactory {
-    private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class);
+    private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class, new String[] { "webcontainer", "applications", "app.manager" },
+                                                          "com.ibm.ws.app.manager.war.internal.resources.Messages",
+                                                          "com/ibm/ws/app/manager/ear/internal/EARDeployedAppInfoFactoryImpl");
 
     @Reference
     protected DeployedAppServices deployedAppServices;
@@ -176,7 +179,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
      * time stamp.
      *
      * @param absPath The absolute path of the file which is to be tested.
-     * @param file The file which is to be tested.
+     * @param file    The file which is to be tested.
      *
      * @return The new time stamp of the file, if the file is to be expanded.
      *         Null if the file is not to be expanded.
@@ -272,11 +275,11 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
      * expand the application to the expanded applications location.
      *
      * @param appInfo Information for the application for which to create
-     *            deployment information.
+     *                    deployment information.
      * @return Deployment information for the application.
      *
      * @throws UnableToAdaptException Thrown if the deployment information
-     *             count not be created.
+     *                                    count not be created.
      */
     @Override
     public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {

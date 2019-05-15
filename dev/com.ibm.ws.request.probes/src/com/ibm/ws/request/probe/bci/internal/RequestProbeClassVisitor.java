@@ -28,7 +28,7 @@ public class RequestProbeClassVisitor extends ClassVisitor {
 
 	//private final RequestProbeTransformDescriptor metaobj;
 	private String classname = null;
-	private static final TraceComponent tc = Tr.register(RequestProbeClassVisitor.class);
+	private static final TraceComponent tc = Tr.register(RequestProbeClassVisitor.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 	String[] listOfMonitoredMethods = null;
 
 	/**
