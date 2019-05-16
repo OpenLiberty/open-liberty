@@ -134,8 +134,8 @@ public class LogSource implements Source {
         logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
         logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
 
-        if (logRecord.getLoggerName() != null & (logRecord.getLoggerName().equals(SYSOUT) ||
-                                                 logRecord.getLoggerName().equals(SYSERR))) {
+        if (logRecord.getLoggerName() != null && (logRecord.getLoggerName().equals(SYSOUT) ||
+                                                  logRecord.getLoggerName().equals(SYSERR))) {
             logData.setMethodName("");
             logData.setClassName("");
         } else {
