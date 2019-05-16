@@ -22,8 +22,8 @@
                        <property name="allowConnectingToRunningServer">true</property>
                        <property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
                        <property name="appDeployTimeout">${tck_appDeployTimeout}</property>
-                       <property name="appUndeployTimeout">4</property>
-                       <property name="standardFileDeleteRetryInterval">133</property>
+                       <property name="appUndeployTimeout">90</property>
+                       <property name="standardFileDeleteRetryInterval">2500</property>
                </configuration>
        </container>
 </arquillian>
