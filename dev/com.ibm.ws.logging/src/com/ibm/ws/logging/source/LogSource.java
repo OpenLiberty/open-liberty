@@ -36,6 +36,7 @@ public class LogSource implements Source {
     private final String sourceName = "com.ibm.ws.logging.source.message";
     private final String location = "memory";
     private final String SYSOUT = "SystemOut";
+    private final String SYSERR = "SystemErr";
     private BufferManager bufferMgr = null;
     private final SequenceNumber sequenceNumber = new SequenceNumber();
 
@@ -132,7 +133,8 @@ public class LogSource implements Source {
         logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
         logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
 
-        if (logRecord.getLoggerName() != null & logRecord.getLoggerName().equals(SYSOUT)) {
+        if (logRecord.getLoggerName() != null & (logRecord.getLoggerName().equals(SYSOUT) ||
+                                                 logRecord.getLoggerName().equals(SYSERR))) {
             logData.setMethodName("");
             logData.setClassName("");
         } else {
