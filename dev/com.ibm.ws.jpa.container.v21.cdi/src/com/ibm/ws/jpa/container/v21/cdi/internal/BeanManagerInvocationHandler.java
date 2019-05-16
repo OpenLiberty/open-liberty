@@ -97,7 +97,12 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
     //To avoid depending on the application classloader having access to javax.el we need to avoid direct implimentations of the BeanManager interface
     private synchronized Object getTarget() {
         if (target == null) {
-            BeanManager bm = cdiService.getCurrentBeanManager();
+            //We call getCurrentModuleBeanManager instead of the more common getCurrentBeanManager because this class will be in a BDA. We want to find the correct application archive bean manager, not the bean manager for this internal liberty jar.
+            BeanManager bm = cdiService.getCurrentModuleBeanManager();
+            //As a fallback we can use a stack walk. 
+            if (bm == null) {
+                bm = cdiService.getCurrentBeanManager();
+            }
             if (bm == null) {
                 throw new UnsupportedOperationException("No current bean manager found in CDI service");
             }
