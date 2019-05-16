@@ -11,9 +11,11 @@
 package test.resthandler.config.appdef.web;
 
 import java.sql.Connection;
+import java.util.concurrent.Executor;
 
 import javax.annotation.sql.DataSourceDefinition;
 import javax.annotation.sql.DataSourceDefinitions;
+import javax.ejb.EJB;
 import javax.servlet.annotation.WebServlet;
 
 import componenttest.app.FATServlet;
@@ -57,10 +59,14 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/AppDefinedResourcesServlet")
 public class AppDefinedResourcesServlet extends FATServlet {
+    @EJB
+    Executor bean;
+
     /**
      * No-op servlet method that the test case uses to ensure the web module is loaded.
      */
     public void doSomething() {
         System.out.println("Servlet is running.");
+        bean.execute(() -> System.out.println("EJB is running."));
     }
 }
