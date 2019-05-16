@@ -24,6 +24,8 @@ configurations {
 
 dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
+  // Dependencies needed for when running on Java 9 (EE-type APIs were removed from JDK)
+  requiredLibs 'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.+'
 }
 
 task addEJBTools {
