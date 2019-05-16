@@ -61,7 +61,7 @@ import com.ibm.wsspi.validator.Validator;
 @Component(name = "com.ibm.ws.rest.handler.validator",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
-           property = { "com.ibm.wsspi.rest.handler.context.root=/ibm/api", "com.ibm.wsspi.rest.handler.root=/validation" })
+           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation", RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
 public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
 
@@ -356,5 +356,10 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             Tr.debug(tc, "Was a variable value found for " + value + "?  " + !value.equals(resolvedVariable));
         }
         return resolvedVariable;
+    }
+
+    @Override
+    public boolean requireAdministratorRole() {
+        return true;
     }
 }

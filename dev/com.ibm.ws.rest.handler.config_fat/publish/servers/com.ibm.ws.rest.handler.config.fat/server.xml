@@ -21,7 +21,18 @@
   <variable name="onError" value="FAIL"/>
 
   <keyStore id="defaultKeyStore" password="Liberty"/>
-  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+  
+  <basicRegistry>
+    <user name="adminuser" password="adminpwd" />
+    <user name="reader" password="readerpwd" />
+    <user name="user" password="userpwd" />
+  </basicRegistry>
+  <administrator-role>
+    <user>adminuser</user>
+  </administrator-role>
+  <reader-role>
+    <user>reader</user>
+  </reader-role>
   
   <library id="Derby">
     <file name="${shared.resource.dir}/derby/derby.jar"/>

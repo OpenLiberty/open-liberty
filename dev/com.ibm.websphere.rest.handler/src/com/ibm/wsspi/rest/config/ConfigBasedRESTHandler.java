@@ -131,6 +131,11 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "handleRequest", path); // /apiRoot/{elementName}/{uid}
 
+        if (requireAdministratorRole() && !request.isUserInRole("Administrator")) {
+            response.sendError(403, "Forbidden");
+            return;
+        }
+
         // TODO would like to do the following, but cannot figure out how to get path parameters with %2F (/) in values from being considered separate path parameter values
         //String uid = request.getPathVariable("uid");
         //String elementName = request.getPathVariable("elementName");
@@ -295,4 +300,16 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      * @throws IOException
      */
     public abstract void populateResponse(RESTResponse response, Object responseInfo) throws IOException;
+
+    /**
+     * Indicates whether usage of this endpoint should require the user to be authorized with the
+     * "Administrator" authorization role.
+     *
+     * In addition to returning true for this method, the Rest Handler must also set the service property
+     * RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY to true.
+     *
+     * @return true if the endpoint should require the "Administrator" role, false for
+     *         default authorization based on the request type
+     */
+    public abstract boolean requireAdministratorRole();
 }
