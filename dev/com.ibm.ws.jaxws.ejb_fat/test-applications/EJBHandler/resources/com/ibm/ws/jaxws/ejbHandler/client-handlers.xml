@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<handler-chains xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee">
+    <handler-chain>
+        <handler>
+            <handler-name>LogicalHandler</handler-name>
+            <handler-class>com.ibm.ws.jaxws.ejbHandler.TestClientLogicalHandler</handler-class>
+            <init-param>
+                <param-name>arg0</param-name>
+                <param-value>testInitParam</param-value>
+            </init-param>
+        </handler>
+        <handler>
+            <handler-name>SOAPHandler</handler-name>
+            <handler-class>com.ibm.ws.jaxws.ejbHandler.TestClientSOAPHandler</handler-class>
+        </handler>
+    </handler-chain>
+</handler-chains>
