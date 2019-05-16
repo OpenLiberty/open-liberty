@@ -18,6 +18,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -72,6 +73,7 @@ public class AsyncBulkheadServlet extends FATServlet {
                 SyntheticTask<Void> task5 = syntheticTaskManager.newTask();
                 Future<Void> future5 = bean1.runTask(task5);
                 future5.get(TEST_TIMEOUT, MILLISECONDS);
+                fail("BulkheadException not thrown when bulkhead is full");
             } catch (BulkheadException e) {
                 // Expected for 1.0
             } catch (ExecutionException e) {
