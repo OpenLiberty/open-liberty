@@ -26,6 +26,10 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,7 +53,13 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "test.resthandler.config.appdef.web");
+        JavaArchive ejb = ShrinkWrap.create(JavaArchive.class, "AppDefResourcesEJB.jar").addPackage("test.resthandler.config.appdef.ejb");
+        WebArchive web = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage("test.resthandler.config.appdef.web");
+        EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
+                        .addAsModule(ejb)
+                        .addAsModule(web);
+        ShrinkHelper.exportToServer(server, "apps", app);
+        server.addInstalledAppForValidation(APP_NAME);
 
         server.startServer();
 
@@ -311,7 +321,121 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     public void testAppDefinedDataSourcesAreIncluded() throws Exception {
         JsonArray dataSources = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + dataSources;
-        assertEquals(err, 5, dataSources.size());
+        assertEquals(err, 6, dataSources.size());
+    }
+
+    /**
+     * Verify that /ibm/api/config/ REST endpoint copes with two different app-defined data sources that
+     * have the same JNDI name, but are valid because they are in different scopes.
+     */
+    @Test
+    public void testAppDefinedDataSourcesWithSameJndiName() throws Exception {
+        JsonArray dataSources = new HttpsRequest(server, "/ibm/api/config/dataSource?jndiName=java:comp%2Fenv%2Fjdbc%2Fds3").run(JsonArray.class);
+        String err = "unexpected response: " + dataSources;
+        assertEquals(err, 2, dataSources.size());
+
+        // config elements are ordered by config.displayId
+        JsonObject web_ds, ejb_ds;
+        assertNotNull(err, web_ds = dataSources.getJsonObject(0));
+        assertNotNull(err, ejb_ds = dataSources.getJsonObject(1));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", web_ds.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", web_ds.getString("id"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]",
+                     ejb_ds.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]",
+                     ejb_ds.getString("id"));
+
+        assertEquals(err, "dataSource", web_ds.getString("configElementName"));
+        assertEquals(err, "dataSource", ejb_ds.getString("configElementName"));
+
+        assertEquals(err, "java:comp/env/jdbc/ds3", web_ds.getString("jndiName"));
+        assertEquals(err, "java:comp/env/jdbc/ds3", ejb_ds.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", web_ds.getString("application"));
+        assertEquals(err, "AppDefResourcesApp", ejb_ds.getString("application"));
+
+        assertEquals(err, "AppDefResourcesApp.war", web_ds.getString("module"));
+        assertEquals(err, "AppDefResourcesEJB.jar", ejb_ds.getString("module"));
+
+        assertNull(err, web_ds.get("component")); // per spec, app-defined resources in web container are scoped to the module, even if in java:comp
+        assertEquals(err, "AppDefinedResourcesBean", ejb_ds.getString("component"));
+
+        assertTrue(err, web_ds.getBoolean("beginTranForResultSetScrollingAPIs"));
+        assertTrue(err, ejb_ds.getBoolean("beginTranForResultSetScrollingAPIs"));
+
+        assertTrue(err, web_ds.getBoolean("beginTranForVendorAPIs"));
+        assertTrue(err, ejb_ds.getBoolean("beginTranForVendorAPIs"));
+
+        assertEquals(err, "MatchOriginalRequest", web_ds.getString("connectionSharing"));
+        assertEquals(err, "MatchOriginalRequest", ejb_ds.getString("connectionSharing"));
+
+        assertNotNull(err, web_ds.getJsonObject("connectionManagerRef"));
+        assertNotNull(err, ejb_ds.getJsonObject("connectionManagerRef"));
+
+        assertFalse(err, web_ds.getBoolean("enableConnectionCasting"));
+        assertFalse(err, ejb_ds.getBoolean("enableConnectionCasting"));
+
+        JsonObject web_ds_driver, ejb_ds_driver;
+        assertNotNull(err, web_ds_driver = web_ds.getJsonObject("jdbcDriverRef"));
+        assertNotNull(err, ejb_ds_driver = ejb_ds.getJsonObject("jdbcDriverRef"));
+
+        assertEquals(err, "jdbcDriver", web_ds_driver.getString("configElementName"));
+        assertEquals(err, "jdbcDriver", ejb_ds_driver.getString("configElementName"));
+
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]/jdbcDriver", web_ds_driver.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]/jdbcDriver", web_ds_driver.getString("id"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]/jdbcDriver",
+                     ejb_ds_driver.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]/jdbcDriver",
+                     ejb_ds_driver.getString("id"));
+
+        assertNull(err, web_ds_driver.get("javax.sql.ConnectionPoolDataSource"));
+        assertEquals(err, "org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource", ejb_ds_driver.getString("javax.sql.ConnectionPoolDataSource"));
+
+        assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", web_ds_driver.getString("javax.sql.DataSource"));
+        assertNull(err, ejb_ds_driver.get("javax.sql.DataSource"));
+
+        assertNotNull(err, web_ds_driver.getJsonObject("libraryRef"));
+        assertNotNull(err, ejb_ds_driver.getJsonObject("libraryRef"));
+
+        JsonObject web_ds_props, ejb_ds_props;
+        assertNotNull(err, web_ds_props = web_ds.getJsonObject("properties"));
+        assertNotNull(err, ejb_ds_props = ejb_ds.getJsonObject("properties"));
+
+        assertEquals(err, 1, web_ds_props.size());
+        assertEquals(err, 2, ejb_ds_props.size());
+
+        assertNull(err, web_ds_props.get("createDatabase"));
+        assertEquals(err, "create", ejb_ds_props.getString("createDatabase"));
+
+        assertEquals(err, "memory:thirddb;create=true", web_ds_props.getString("databaseName"));
+        assertEquals(err, "memory:ejbdb", ejb_ds_props.getString("databaseName"));
+
+        assertEquals(err, 10, web_ds.getInt("statementCacheSize"));
+        assertEquals(err, 10, ejb_ds.getInt("statementCacheSize"));
+
+        assertFalse(err, web_ds.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
+        assertFalse(err, ejb_ds.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
+
+        assertTrue(err, web_ds.getBoolean("transactional"));
+        assertTrue(err, ejb_ds.getBoolean("transactional"));
+
+        assertEquals(err, "javax.sql.DataSource", web_ds.getString("type"));
+        assertEquals(err, "javax.sql.ConnectionPoolDataSource", ejb_ds.getString("type"));
+
+        JsonArray web_ds_api, ejb_ds_api;
+        assertNotNull(err, web_ds_api = web_ds.getJsonArray("api"));
+        assertNotNull(err, ejb_ds_api = ejb_ds.getJsonArray("api"));
+
+        assertEquals(err, 1, ejb_ds_api.size()); // increase if more REST API is added for data source
+        assertEquals(err, 1, web_ds_api.size()); // increase if more REST API is added for data source
+
+        assertEquals(err,
+                     "/ibm/api/validation/dataSource/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava%3Acomp%2Fenv%2Fjdbc%2Fds3%5D",
+                     web_ds_api.getString(0));
+        assertEquals(err,
+                     "/ibm/api/validation/dataSource/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesEJB.jar%5D%2Fcomponent%5BAppDefinedResourcesBean%5D%2FdataSource%5Bjava%3Acomp%2Fenv%2Fjdbc%2Fds3%5D",
+                     ejb_ds_api.getString(0));
     }
 
     /**

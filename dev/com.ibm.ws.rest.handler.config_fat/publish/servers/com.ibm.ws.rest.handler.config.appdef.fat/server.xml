@@ -14,6 +14,7 @@
   <featureManager>
     <feature>componenttest-1.0</feature>
     <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>ejb-3.2</feature>
     <feature>jdbc-4.2</feature>
   </featureManager>
 
@@ -22,7 +23,7 @@
   <keyStore id="defaultKeyStore" password="Liberty"/>
   <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
 
-  <application location="AppDefResourcesApp.war">
+  <application location="AppDefResourcesApp.ear">
     <classloader commonLibraryRef="Derby"/>
   </application>
 
