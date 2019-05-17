@@ -10,37 +10,40 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 
-import static org.hamcrest.Matchers.instanceOf;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureDoesNotComplete;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureGetsCancelled;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureHasResult;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureThrowsException;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.SyntheticTask.InterruptionAction.IGNORE;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.SyntheticTask.InterruptionAction.RETURN;
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
-import org.junit.After;
+import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean2;
-import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean3;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncCallableBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncConfigBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncThreadContextTestBean;
-import com.ibm.ws.microprofile.faulttolerance_fat.util.Connection;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.SyntheticTask;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.SyntheticTaskManager;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
 
 /**
  * Servlet implementation class Test
@@ -64,239 +67,161 @@ public class AsyncServlet extends FATServlet {
     @Inject
     AsyncThreadContextTestBean threadContextBean;
 
-    @After
-    public void checkNotInterrupted() {
+    public SyntheticTaskManager syntheticTaskManager = new SyntheticTaskManager();
+
+    @Override
+    protected void after() throws Exception {
         assertFalse("Thread left with interrupted flag set", Thread.interrupted());
     }
 
     @Test
-    public void testAsync() throws InterruptedException, ExecutionException, TimeoutException {
-        //should return straight away even though the method has a 5s sleep in it
-        long start = System.currentTimeMillis();
-        System.out.println(start + " - calling AsyncBean.connectA");
-        Future<Connection> future = bean.connectA();
-        long end = System.currentTimeMillis();
-        System.out.println(end + " - got future");
-        long duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (future.isDone()) {
-            if (future.isCancelled()) {
-                try {
-                    Connection conn = future.get();
-                    throw new AssertionError("Future was cancelled. Reason unknown.");
-                } catch (ExecutionException e) {
-                    throw new AssertionError("Future was cancelled. Exception was " + e.getCause());
-                }
-            } else {
-                throw new AssertionError("Future completed too fast");
-            }
-        }
+    public void testAsync() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
 
-        Thread.sleep(TestConstants.EXECUTION_THRESHOLD); //long enough for the call to complete
-        if (!future.isDone()) {
-            throw new AssertionError("Future did not complete fast enough");
-        }
-        start = System.currentTimeMillis();
-        System.out.println(start + " - calling future.get");
-        //we shouldn't need the extra timeout but don't want the test to hang if it is broken
-        Connection conn = future.get(TestConstants.TEST_TIME_UNIT, TimeUnit.MILLISECONDS);
-        end = System.currentTimeMillis();
-        System.out.println(end + " - got connection");
+            // Call the method
+            Future<String> result = bean.runTask(task);
+            task.assertStarts();
 
-        duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (conn == null) {
-            throw new AssertionError("Result not properly returned: " + conn);
-        }
-        String data = conn.getData();
-        if (!AsyncBean.CONNECT_A_DATA.equals(data)) {
-            throw new AssertionError("Bad data: " + data);
-        }
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
+
+            // Check that after it's complete, the result is returned and the future is done
+            task.complete();
+            assertFutureHasResult(result, "OK");
+            assertTrue(result.isDone());
+            assertFalse(result.isCancelled());
+        });
     }
 
     @Test
-    public void testAsyncVoid() throws InterruptedException, ExecutionException, TimeoutException {
-        //should return straight away even though the method has a 5s sleep in it
-        long start = System.currentTimeMillis();
-        System.out.println(start + " - calling AsyncBean.connectC");
-        Future<Void> future = bean.connectC();
-        long end = System.currentTimeMillis();
-        System.out.println(end + " - got future");
-        long duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (future.isDone()) {
-            throw new AssertionError("Future completed too fast");
-        }
+    public void testAsyncVoid() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<Void> task = syntheticTaskManager.newTask();
+            task.withResult(null);
 
-        Thread.sleep(TestConstants.EXECUTION_THRESHOLD); //long enough for the call to complete
-        if (!future.isDone()) {
-            throw new AssertionError("Future did not complete fast enough");
-        }
-        start = System.currentTimeMillis();
-        System.out.println(start + " - calling future.get");
-        //we shouldn't need the extra timeout but don't want the test to hang if it is broken
-        Object obj = future.get(TestConstants.TEST_TIME_UNIT, TimeUnit.MILLISECONDS);
-        end = System.currentTimeMillis();
-        System.out.println(end + " - got connection");
+            // Call the method
+            Future<Void> result = bean.runTaskVoid(task);
+            task.assertStarts();
 
-        duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes 1000ms then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (obj != null) {
-            throw new AssertionError("Result should be null: " + obj);
-        }
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
+
+            // Check that after it's complete, the result is returned and the future is done
+            task.complete();
+            assertFutureHasResult(result, null);
+            assertTrue(result.isDone());
+            assertFalse(result.isCancelled());
+        });
     }
 
     @Test
-    public void testAsyncTimeout() throws InterruptedException, ExecutionException, TimeoutException {
-        //should return straight away even though the method has a 5s sleep in it
-        long start = System.currentTimeMillis();
-        System.out.println(start + " - calling AsyncBean.connectB");
-        Future<Connection> future = bean.connectB();
-        long end = System.currentTimeMillis();
-        System.out.println(end + " - got future");
+    public void testAsyncTimeout() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+            task.onInterruption(RETURN);
 
-        long duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (future.isDone()) {
-            throw new AssertionError("Future completed too fast");
-        }
+            // Call the method
+            Future<String> result = bean.runTaskTimeout(task);
+            task.assertStarts();
 
-        Thread.sleep(TestConstants.TIMEOUT + TestConstants.TEST_TIME_UNIT); //long enough for the call to timeout but not to complete normally
-        if (!future.isDone()) {
-            throw new AssertionError("Future did not timeout fast enough");
-        }
+            // Shouldn't be done immediately
+            assertFalse(result.isDone());
 
-        try {
-            //FaultTolerance should have already timedout the future so we're expecting the FT TimeoutException
-            Connection conn = future.get(TestConstants.TEST_TIME_UNIT, TimeUnit.MILLISECONDS);
-            throw new AssertionError("Future did not timeout properly");
-        } catch (ExecutionException t) {
-            //expected
-            assertThat(t.getCause(), instanceOf(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class));
-        }
+            // Check that, although we don't complete the task, the result does throw a TimeoutException
+            assertFutureThrowsException(result, TimeoutException.class);
+        });
     }
 
     @Test
-    public void testAsyncTimeoutNoInterrupt() throws InterruptedException, TimeoutException {
-        //should return straight away even though the method has a 5s sleep in it
-        long start = System.currentTimeMillis();
-        System.out.println(start + " - calling AsyncBean.connectB");
-        Future<Void> future = bean.waitNoInterrupt();
-        long end = System.currentTimeMillis();
-        System.out.println(end + " - got future");
+    public void testAsyncTimeoutNoInterrupt() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+            task.onInterruption(IGNORE);
 
-        long duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (future.isDone()) {
-            throw new AssertionError("Future completed too fast");
-        }
+            // Call the method
+            Future<String> result = bean.runTaskTimeout(task);
+            task.assertStarts();
 
-        Thread.sleep(TestConstants.TIMEOUT + TestConstants.TEST_TIME_UNIT); //long enough for the call to timeout but not to complete normally
-        if (!future.isDone()) {
-            throw new AssertionError("Future did not timeout fast enough");
-        }
-
-        try {
-            //FaultTolerance should have already timedout the future so we're expecting the FT TimeoutException
-            future.get(TestConstants.TEST_TIME_UNIT, TimeUnit.MILLISECONDS);
-            throw new AssertionError("Future did not timeout properly");
-        } catch (ExecutionException t) {
-            //expected
-            assertThat(t.getCause(), instanceOf(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class));
-        }
-    }
-
-    @Test
-    public void testAsyncMethodTimeout() throws InterruptedException, ExecutionException, TimeoutException {
-        //should return straight away even though the method has a 5s sleep in it
-        long start = System.currentTimeMillis();
-        System.out.println(start + " - calling AsyncBean.connectB");
-        Future<Connection> future = bean.connectB();
-        long end = System.currentTimeMillis();
-        System.out.println(end + " - got future");
-
-        long duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (future.isDone()) {
-            throw new AssertionError("Future completed too fast");
-        }
-
-        try {
-            //FaultTolerance should NOT have timedout yet so the short timeout on the method should result in a concurrent TimeoutException
-            Connection conn = future.get(100, TimeUnit.MILLISECONDS);
-            throw new AssertionError("Future did not timeout properly");
-        } catch (TimeoutException t) {
-            //expected
-        }
+            // Check that, although we don't complete the task, and the task ignores the interruption, the result does throw a TimeoutException
+            assertFutureThrowsException(result, TimeoutException.class);
+        });
     }
 
     //AsyncBean2 calls AsyncBean3 so that's a double thread jump
     @Test
-    public void testAsyncDoubleJump() throws InterruptedException, ExecutionException, TimeoutException {
-        //should return straight away even though the method has a 5s sleep in it
-        long start = System.currentTimeMillis();
-        System.out.println(start + " - calling AsyncBean.connectA");
-        Future<Connection> future = bean2.connectA();
-        long end = System.currentTimeMillis();
-        System.out.println(end + " - got future");
-        long duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes 1000ms then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (future.isDone()) {
-            throw new AssertionError("Future completed too fast");
-        }
+    public void testAsyncDoubleJump() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+            Future<String> result = bean2.runTask(task);
+            task.assertStarts();
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
 
-        Thread.sleep(7000); //long enough for the call to complete
-        if (!future.isDone()) {
-            throw new AssertionError("Future did not complete fast enough");
-        }
-        start = System.currentTimeMillis();
-        System.out.println(start + " - calling future.get");
-        //we shouldn't need the extra timeout but don't want the test to hang if it is broken
-        Connection conn = future.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS);
-        end = System.currentTimeMillis();
-        System.out.println(end + " - got connection");
-
-        duration = end - start;
-        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes 1000ms then there is something wrong
-            throw new AssertionError("Method did not return quickly enough: " + duration);
-        }
-        if (conn == null) {
-            throw new AssertionError("Result not properly returned: " + conn);
-        }
-        String data = conn.getData();
-        if (!AsyncBean3.CONNECT_A_DATA.equals(data)) {
-            throw new AssertionError("Bad data: " + data);
-        }
+            // Check that after it's complete, the result is returned and the future is done
+            task.complete();
+            assertFutureHasResult(result, "OK");
+            assertTrue(result.isDone());
+            assertFalse(result.isCancelled());
+        });
     }
 
     @Test
-    public void testAsyncCallable() throws InterruptedException, ExecutionException, Exception {
-        // Async methods with a generic return type (e.g. Callable.call()) used to cause problems
-        long start = System.currentTimeMillis();
-        Future<String> future = callableBean.call();
-        long end = System.currentTimeMillis();
-        long duration = end - start;
-        assertThat("Call duration", duration, lessThan(TestConstants.FUTURE_THRESHOLD));
+    @Mode(FULL)
+    public void testAsyncCallable() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            // Async methods with a generic return type (e.g. Callable.call()) used to cause problems
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+            callableBean.setTask(task);
+            Future<String> result = callableBean.call();
+            task.assertStarts();
 
-        Thread.sleep(TestConstants.EXECUTION_THRESHOLD);
-        assertThat("Future is done after waiting", future.isDone(), is(true));
-        assertThat("Call result", future.get(), is("Done"));
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
+
+            // Check that after it's complete, the result is returned and the future is done
+            task.complete();
+            FutureAsserts.assertFutureHasResult(result, "OK");
+            assertTrue(result.isDone());
+            assertFalse(result.isCancelled());
+        });
+    }
+
+    @Test
+    public void testAsyncCancel() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+            task.onInterruption(RETURN); // Note this will aasert that an interruption occurs
+
+            // Call the method
+            Future<String> result = bean.runTask(task);
+            task.assertStarts();
+
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
+
+            // Check that after it's cancelled, the result is returned and the future is done
+            result.cancel(true);
+            assertFutureGetsCancelled(result);
+            assertTrue(result.isDone());
+            assertTrue(result.isCancelled());
+        });
     }
 
     @Test
@@ -327,30 +252,6 @@ public class AsyncServlet extends FATServlet {
     public void testAsyncTccl() throws Exception {
         Future<Class<?>> value = threadContextBean.loadClassWithTccl();
         assertThat(value.get(), notNullValue());
-    }
-
-    @Test
-    public void testAsyncCancel() throws Exception {
-        Future<Void> result = bean.waitCheckCancel();
-
-        Thread.sleep(TestConstants.TEST_TIME_UNIT);
-
-        result.cancel(true);
-
-        assertThat("cancel", result.cancel(true), is(true));
-        assertThat("isCancelled", result.isCancelled(), is(true));
-        assertThat("isDone", result.isDone(), is(true));
-
-        try {
-            result.get(0, TimeUnit.SECONDS);
-            fail("get() Did not throw cancellation exception");
-        } catch (CancellationException e) {
-            assertThat("exception from get()", e, instanceOf(CancellationException.class));
-        }
-
-        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
-
-        assertThat(bean.wasInterrupted(), is(true));
     }
 
 }

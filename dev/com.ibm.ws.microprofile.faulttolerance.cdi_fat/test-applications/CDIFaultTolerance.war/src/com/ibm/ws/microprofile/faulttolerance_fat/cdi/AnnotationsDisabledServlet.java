@@ -10,10 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants.TEST_TIMEOUT;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -66,15 +67,9 @@ public class AnnotationsDisabledServlet extends FATServlet {
 
     @Test
     public void testAsyncDisabled() throws Exception {
-        long start = System.currentTimeMillis();
-        Future<Connection> future = asyncBean.connectA();
-        long end = System.currentTimeMillis();
-        long duration = end - start;
-
-        // Ensure that this method was executed synchronously
-        assertThat("Call duration", duration, greaterThan(TestConstants.WORK_TIME - TestConstants.TEST_TWEAK_TIME_UNIT));
-        assertThat("Call result", future.get(), is(notNullValue()));
-        assertThat("Call result", future.get().getData(), equalTo(AsyncBean.CONNECT_A_DATA));
+        Future<Long> methodThreadIdFuture = asyncBean.getThreadId();
+        long methodThreadId = methodThreadIdFuture.get(TEST_TIMEOUT, MILLISECONDS);
+        assertEquals("ThreadId should be the same", Thread.currentThread().getId(), methodThreadId);
     }
 
     @Test

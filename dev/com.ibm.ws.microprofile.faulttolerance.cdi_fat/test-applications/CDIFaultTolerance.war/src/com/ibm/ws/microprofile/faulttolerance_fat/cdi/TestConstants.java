@@ -35,4 +35,15 @@ public class TestConstants {
 
     //a test timeout used to prevent a test hang when things go wrong
     public static final long TEST_TIMEOUT = 10 * TEST_TIME_UNIT;
+
+    // The time we should spend waiting for something we don't expect to happen
+    // E.g. checking that something which should not complete does not
+    // Increasing this may have a large impact on execution time
+    public static final long NEGATIVE_TIMEOUT = TEST_TIME_UNIT;
+
+    /** A timeout value for {@code Timeout} where the test is expecting a timeout */
+    public static final long EXPECTED_TIMEOUT = TEST_TIME_UNIT / 4;
+
+    /** A timeout value for actions which are not interruptable (so we don't want to use TEST_TIMEOUT) */
+    public static final long NON_INTERRUPTABLE_TIMEOUT = 4 * TEST_TIME_UNIT;
 }
