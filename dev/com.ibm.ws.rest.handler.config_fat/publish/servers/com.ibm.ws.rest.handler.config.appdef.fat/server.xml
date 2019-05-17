@@ -30,7 +30,7 @@
     <DATASOURCE transactional="false">
       <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
       <jdbcDriver libraryRef="Derby"/>
-   	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create"/>
+   	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create" user="dbuser1" password="dbpwd1"/>
     </DATASOURCE>
   </transaction>
 
