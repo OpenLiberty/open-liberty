@@ -519,6 +519,11 @@ public class SSLConfigManager {
             sslprops.setProperty(Constants.SSLPROP_ALIAS, prop);
         }
 
+        Boolean hostnameVerification = (Boolean) map.get("verifyHostname");
+        if (null != hostnameVerification) {
+            sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, hostnameVerification.toString());
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Saving SSLConfig: " + sslprops);
 
@@ -1586,49 +1591,35 @@ public class SSLConfigManager {
      * @param socket
      * @return
      */
-    public SSLSocket setCipherListOnSocket(java.util.Properties props, javax.net.ssl.SSLSocket socket) {
+    public String[] getCipherList(java.util.Properties props, SSLSocket socket) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setCipherListOnSocket");
-
-        if (props == null) {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "setCipherListOnSocket props == null");
-            return socket;
-        }
+            Tr.entry(tc, "getCipherList");
 
         String ciphers[] = null;
         String cipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
 
-        if (socket != null) {
+        try {
 
-            try {
+            if (cipherString != null) {
 
-                if (cipherString != null) {
-
-                    ciphers = cipherString.split("\\s");
-                } else {
-                    String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "securityLevel from properties is " + securityLevel);
-                    if (securityLevel == null)
-                        securityLevel = "HIGH";
-
-                    String[] supportedCiphers = socket.getEnabledCipherSuites();
-                    ciphers = com.ibm.ws.ssl.config.SSLConfigManager.getInstance().adjustSupportedCiphersToSecurityLevel(supportedCiphers, securityLevel);
-
-                }
-                if (ciphers != null) {
-                    socket.setEnabledCipherSuites(ciphers);
-                }
-
-            } catch (Exception e) {
+                ciphers = cipherString.split("\\s");
+            } else {
+                String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });
+                    Tr.debug(tc, "securityLevel from properties is " + securityLevel);
+                if (securityLevel == null)
+                    securityLevel = "HIGH";
+
+                ciphers = adjustSupportedCiphersToSecurityLevel(socket.getEnabledCipherSuites(), securityLevel);
+
             }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });
         }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setCipherListOnSocket");
-        return socket;
+            Tr.exit(tc, "getCipherList");
+        return ciphers;
     }
 
     public boolean isTransportSecurityEnabled() {
