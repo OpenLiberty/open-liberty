@@ -343,6 +343,11 @@ public class BasicRemoteTestServlet extends FATServlet {
         // Wait for all the results to be done.
         businessRMIStateless.awaitAsyncFuture();
 
+        // Give the async methods time to complete post invoke processing
+        // and make the async results available; server won't remove one
+        // until both become available.
+        TimeUnit.SECONDS.sleep(3);
+
         // Try to get both results; one should fail.
         int failedIndex = -1;
 
