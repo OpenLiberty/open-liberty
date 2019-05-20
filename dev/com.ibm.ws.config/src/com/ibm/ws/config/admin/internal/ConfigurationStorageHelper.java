@@ -89,6 +89,7 @@ public class ConfigurationStorageHelper {
     private static final int MAP = 11;
     private static final int ARRAY = 12;
     private static final int ONERROR = 13;
+    private static final int NULL = 14;
 
     public static <K, T> Map<K, T> load(File configFile, ConfigStorageConsumer<K, T> consumer) throws IOException {
         Map<K, T> result = new HashMap<>();
@@ -209,7 +210,9 @@ public class ConfigurationStorageHelper {
         byte type = dis.readByte();
         Object value;
 
-        if (type == COLLECTION) {
+        if (type == NULL) {
+            value = null;
+        } else if (type == COLLECTION) {
             value = readCollection(dis);
         } else if (type == ARRAY) {
             value = readArray(dis);
@@ -471,7 +474,9 @@ public class ConfigurationStorageHelper {
         for (Map.Entry<String, Object> entry : map) {
             dos.writeUTF(entry.getKey());
             Object obj = entry.getValue();
-            if (obj instanceof Collection) {
+            if (obj == null) {
+                dos.writeByte(NULL);
+            } else if (obj instanceof Collection) {
                 dos.writeByte(COLLECTION);
                 Collection<?> data = (Collection<?>) obj;
                 dos.writeInt(data.size());
@@ -506,7 +511,7 @@ public class ConfigurationStorageHelper {
     }
 
     @SuppressWarnings("unchecked")
-    private static MapIterable toMapOrDictionary(Object obj) {
+    public static MapIterable toMapOrDictionary(Object obj) {
         if (obj instanceof Dictionary) {
             return new DictionaryMapIterableImpl((Dictionary<String, Object>) obj);
         } else if (obj instanceof Map) {
