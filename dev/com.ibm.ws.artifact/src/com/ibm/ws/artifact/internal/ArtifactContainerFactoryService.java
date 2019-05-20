@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -33,6 +32,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ws.artifact.contributor.ArtifactContainerFactoryHelper;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
@@ -44,7 +45,7 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM" },
            service = {})
-public class ArtifactContainerFactoryService implements ArtifactContainerFactory {
+public class ArtifactContainerFactoryService implements ArtifactContainerFactory, ServicePropertySupplier {
 
     /**  */
     private static final String CATEGORY_PROP_NAME = "category";
@@ -56,7 +57,8 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
     private final Set<String> categories = Collections.synchronizedSet(new HashSet<String>());
 
     private Map<String, Object> baseProperties;
-    private ServiceRegistration<ArtifactContainerFactory> registration;
+
+    private final ServiceRegistrationModifier<ArtifactContainerFactory> registration = new ServiceRegistrationModifier<>(ArtifactContainerFactory.class, this, this);
 
     @Activate
     protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
@@ -65,12 +67,12 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
         helperCategoryMap.activate(cCtx);
         contributorCategoryMap.activate(cCtx);
         this.baseProperties = properties;
-        updateRegistration(cCtx);
+        registration.registerOrUpdate(cCtx.getBundleContext());
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cCtx) {
-        unregister();
+        registration.unregister();
         helperMap.deactivate(cCtx);
         contributorMap.deactivate(cCtx);
         helperCategoryMap.deactivate(cCtx);
@@ -78,36 +80,12 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
         baseProperties = null;
     }
 
-    private synchronized void updateRegistration(final ComponentContext cCtx) {
-        Dictionary<String, Object> props = getProperties();
-        if (props == null) {
-            return;
-        }
-        if (cCtx != null) {
-            if (registration == null) {
-                registration = cCtx.getBundleContext().registerService(ArtifactContainerFactory.class, this, props);
-                return;
-            }
-        }
-        if (registration != null) {
-            registration.setProperties(props);
-        } else {
-            // TODO FFDC?
-        }
-    }
-
-    private synchronized void unregister() {
-        if (registration != null) {
-            registration.unregister();
-            registration = null;
-        }
-    }
-
-    private Dictionary<String, Object> getProperties() {
+    @Override
+    public Hashtable<String, Object> getServiceProperties() {
         if (baseProperties == null) {
             return null;
         }
-        Dictionary<String, Object> props = new Hashtable<String, Object>(baseProperties);
+        Hashtable<String, Object> props = new Hashtable<String, Object>(baseProperties);
         props.put(CATEGORY_PROP_NAME, categories.toArray(new String[categories.size()]));
         return props;
     }
@@ -115,13 +93,13 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
     @Reference(service = ArtifactContainerFactoryHelper.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setHelper(ServiceReference<ArtifactContainerFactoryHelper> helper) {
         internalSetContributor(helper, helperMap, helperCategoryMap);
-        updateRegistration(null);
+        registration.update();
     }
 
     @Reference(service = ArtifactContainerFactoryContributor.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setContributor(ServiceReference<ArtifactContainerFactoryContributor> helper) {
         internalSetContributor(helper, contributorMap, contributorCategoryMap);
-        updateRegistration(null);
+        registration.update();
     }
 
     protected <T extends ArtifactContainerFactoryContributor> Dictionary<String, Object> internalSetContributor(ServiceReference<T> helper,
@@ -151,17 +129,17 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
                 }
             }
         }
-        return getProperties();
+        return getServiceProperties();
     }
 
     protected void unsetHelper(ServiceReference<ArtifactContainerFactoryHelper> helper) {
         internalUnsetContributor(helper, helperMap, helperCategoryMap, contributorCategoryMap);
-        updateRegistration(null);
+        registration.update();
     }
 
     protected void unsetContributor(ServiceReference<ArtifactContainerFactoryContributor> helper) {
         internalUnsetContributor(helper, contributorMap, contributorCategoryMap, helperCategoryMap);
-        updateRegistration(null);
+        registration.update();
     }
 
     protected <T extends ArtifactContainerFactoryContributor, U extends ArtifactContainerFactoryContributor> Dictionary<String, Object> internalUnsetContributor(ServiceReference<T> helper,
@@ -200,7 +178,7 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
                 }
             }
         }
-        return getProperties();
+        return getServiceProperties();
     }
 
     @Override

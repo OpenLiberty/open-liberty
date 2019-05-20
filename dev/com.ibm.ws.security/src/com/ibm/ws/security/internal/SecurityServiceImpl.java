@@ -11,7 +11,6 @@
 package com.ibm.ws.security.internal;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -31,6 +29,8 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authorization.AuthorizationService;
@@ -50,7 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
            property = "service.vendor=IBM",
            immediate = true,
            service = {})
-public class SecurityServiceImpl implements SecurityService {
+public class SecurityServiceImpl implements SecurityService, ServicePropertySupplier {
     private static final TraceComponent tc = Tr.register(SecurityServiceImpl.class);
 
     static final String KEY_CONFIGURATION = "Configuration";
@@ -79,32 +79,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     private Map<String, Object> props;
 
-    private ServiceRegistration<SecurityService> securityServiceRegistration;
-
-    private synchronized void updateRegistration(final ComponentContext cCtx) {
-        Dictionary<String, Object> properties = getServiceProperties();
-        if (properties == null) {
-            return;
-        }
-        if (cCtx != null) {
-            if (securityServiceRegistration == null) {
-                securityServiceRegistration = cCtx.getBundleContext().registerService(SecurityService.class, this, properties);
-                return;
-            }
-        }
-        if (securityServiceRegistration != null) {
-            securityServiceRegistration.setProperties(properties);
-        } else {
-            // TODO FFDC?
-        }
-    }
-
-    private synchronized void unregister() {
-        if (securityServiceRegistration != null) {
-            securityServiceRegistration.unregister();
-            securityServiceRegistration = null;
-        }
-    }
+    private final ServiceRegistrationModifier<SecurityService> securityServiceRegistration = new ServiceRegistrationModifier<>(SecurityService.class, this, this);
 
     /**
      * Method will be called for each SecurityConfiguration that is registered
@@ -124,7 +99,7 @@ public class SecurityServiceImpl implements SecurityService {
         } else {
             Tr.error(tc, "SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID", "securityConfiguration");
         }
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     /**
@@ -136,7 +111,7 @@ public class SecurityServiceImpl implements SecurityService {
      */
     protected void unsetConfiguration(ServiceReference<SecurityConfiguration> ref) {
         configs.removeReference((String) ref.getProperty(KEY_ID), ref);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     /**
@@ -171,7 +146,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new authentication service
         authnService.set(null);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     /**
@@ -187,7 +162,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new authentication service
         authnService.set(null);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     /**
@@ -212,7 +187,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new authorization service
         authzService.set(null);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     /**
@@ -228,7 +203,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new authorization service
         authzService.set(null);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     /**
@@ -244,7 +219,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new user registry service
         userRegistryService.set(null);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     private void adjustUserRegistryServiceRef(ServiceReference<UserRegistryService> ref) {
@@ -265,7 +240,7 @@ public class SecurityServiceImpl implements SecurityService {
         // determine a new user registry service
         adjustUserRegistryServiceRef(ref);
         userRegistryService.set(null);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     /**
@@ -281,7 +256,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         // determine a new user registry service
         userRegistryService.set(null);
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     // TODO only for unit testing
@@ -301,7 +276,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         setAndValidateProperties((String) props.get(CFG_KEY_SYSTEM_DOMAIN),
                                  (String) props.get(CFG_KEY_DEFAULT_APP_DOMAIN));
-        updateRegistration(cc);
+        securityServiceRegistration.registerOrUpdate(cc.getBundleContext());
     }
 
     @Modified
@@ -313,12 +288,12 @@ public class SecurityServiceImpl implements SecurityService {
         userRegistryService.set(null);
         setAndValidateProperties((String) newProperties.get(CFG_KEY_SYSTEM_DOMAIN),
                                  (String) newProperties.get(CFG_KEY_DEFAULT_APP_DOMAIN));
-        updateRegistration(null);
+        securityServiceRegistration.update();
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc, Map<String, Object> props) {
-        unregister();
+        securityServiceRegistration.unregister();
         this.cc = null;
         this.props = props;
         configs.deactivate(cc);
@@ -328,10 +303,8 @@ public class SecurityServiceImpl implements SecurityService {
         cfgSystemDomain = null;
     }
 
-    /**
-     * @return
-     */
-    private Hashtable<String, Object> getServiceProperties() {
+    @Override
+    public Hashtable<String, Object> getServiceProperties() {
         if (props == null)
             return null;
         Hashtable<String, Object> result = new Hashtable<String, Object>(props);
