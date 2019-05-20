@@ -62,6 +62,7 @@ import com.ibm.ws.security.audit.event.JMXMBeanEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanRegisterEvent;
 import com.ibm.ws.security.audit.event.JMXNotificationEvent;
 import com.ibm.ws.security.audit.event.MemberManagementEvent;
+import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 //import com.ibm.ws.security.audit.utils.AuditConstants;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -238,6 +239,9 @@ public class AuditPE implements ProbeExtension {
 					break;
 				case APPLICATION_PASSWORD_TOKEN_01:
 					auditEventApplicationPasswordToken(methodParams);
+					break;
+				case SECURITY_SAF_AUTHZ:
+					auditEventSafAuth(methodParams);
 					break;
 				default:
 					// TODO: emit error message
@@ -708,4 +712,24 @@ public class AuditPE implements ProbeExtension {
 			auditServiceRef.getService().sendEvent(safAuthDetails);
 		}
 	}
+
+    private void auditEventSafAuth(Object[] methodParams) {
+        Object[] varargs = (Object[]) methodParams[1];
+
+        int safReturnCode = (Integer) varargs[0];
+        int racfReturnCode = (Integer) varargs[1];
+        int racfReasonCode = (Integer) varargs[2];
+        String userSecurityName = (String) varargs[3];
+        String safProfile = (String) varargs[4];
+        String safClass = (String) varargs[5];
+        Boolean authDecision = (Boolean) varargs[6];
+        String principleName = (String) varargs[7];
+        String applid = (String) varargs[8];
+        String accessLevel = (String) varargs[9];
+        String errorMessage = (String) varargs[10];
+        if (auditServiceRef.getService() != null && auditServiceRef.getService().isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ, AuditConstants.SUCCESS)) {
+            SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode, userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel, errorMessage);
+            auditServiceRef.getService().sendEvent(safAuth);
+        }
+    }
 }
