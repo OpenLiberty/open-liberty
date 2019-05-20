@@ -235,10 +235,9 @@ public class EJBWSProviderTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private SOAPElement findChildElement(SOAPElement parentElement, String localName) {
-        for (Iterator<SOAPElement> it = parentElement.getChildElements(); it.hasNext();) {
-            SOAPElement soapElement = it.next();
+        for (Iterator<javax.xml.soap.Node> it = parentElement.getChildElements(); it.hasNext();) {
+            SOAPElement soapElement = (SOAPElement) it.next();
             if (localName.equals(soapElement.getLocalName())) {
                 return soapElement;
             }
@@ -246,11 +245,10 @@ public class EJBWSProviderTest {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private List<SOAPElement> findChildElements(SOAPElement parentElement, String localName) {
         List<SOAPElement> childElements = new ArrayList<SOAPElement>(3);
-        for (Iterator<SOAPElement> it = parentElement.getChildElements(); it.hasNext();) {
-            SOAPElement soapElement = it.next();
+        for (Iterator<javax.xml.soap.Node> it = parentElement.getChildElements(); it.hasNext();) {
+            SOAPElement soapElement = (SOAPElement) it.next();
             if (localName.equals(soapElement.getLocalName())) {
                 childElements.add(soapElement);
             }
