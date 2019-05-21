@@ -14,10 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -31,6 +29,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
+import com.ibm.ws.app.manager.module.AbstractDeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppMBeanRuntime;
@@ -48,7 +47,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=ear" })
-public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
+public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactory implements DeployedAppInfoFactory {
     private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class);
 
     @Reference
@@ -167,10 +166,10 @@ public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
     /**
      * Tell if a file should be expanded by answering the updated time stamp
      * of the file.
-     * 
+     *
      * If the file was previously expanded during this JVM run, and the file
      * time stamp is the same as when the file was expanded, answer null.
-     * 
+     *
      * If either the file was not yet expanded during this JVM run, or if the
      * the current file time stamp is different than the time stamp of the file
      * when it was expanded, update the recorded time stamp, and answer the new
@@ -180,71 +179,72 @@ public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
      * @param file The file which is to be tested.
      *
      * @return The new time stamp of the file, if the file is to be expanded.
-     *     Null if the file is not to be expanded.
+     *         Null if the file is not to be expanded.
      */
     private static Long getUpdatedStamp(String absPath, File file) {
         String methodName = "getUpdatedStamp";
         boolean doDebug = _tc.isDebugEnabled();
 
-        Long currentStamp = Long.valueOf( file.lastModified() );
+        Long currentStamp = Long.valueOf(file.lastModified());
 
         Long newStamp;
         String newStampReason = null;
 
-        synchronized ( expansionStamps ) {
+        synchronized (expansionStamps) {
             Long priorStamp = expansionStamps.put(absPath, currentStamp);
 
-            if ( priorStamp == null ) {
+            if (priorStamp == null) {
                 newStamp = currentStamp;
-                if ( doDebug ) {
+                if (doDebug) {
                     newStampReason = "First extraction; stamp [ " + currentStamp + " ]";
                 }
-            } else if ( currentStamp.longValue() != priorStamp.longValue() ) {
+            } else if (currentStamp.longValue() != priorStamp.longValue()) {
                 newStamp = currentStamp;
-                if ( doDebug ) {
+                if (doDebug) {
                     newStampReason = "Additional extraction; old stamp [ " + priorStamp + " ] new stamp [ " + currentStamp + " ]";
                 }
             } else {
                 newStamp = null;
-                if ( doDebug ) {
+                if (doDebug) {
                     newStampReason = "No extraction; stamp [ " + currentStamp + " ]";
                 }
             }
         }
 
-        if ( doDebug ) {
+        if (doDebug) {
             Tr.debug(_tc, methodName + ": " + newStampReason);
         }
         return newStamp;
     }
 
     private static void clearStamp(String absPath, File file) {
-        synchronized ( expansionStamps ) { 
+        synchronized (expansionStamps) {
             expansionStamps.remove(absPath);
         }
     }
 
     protected void expand(
-        String name, File collapsedFile,
-        WsResource expandedResource, File expandedFile) throws IOException {
+                          String name, File collapsedFile,
+                          WsResource expandedResource, File expandedFile) throws IOException {
 
         String collapsedPath = collapsedFile.getAbsolutePath();
 
         Long updatedStamp = getUpdatedStamp(collapsedPath, collapsedFile);
-        if ( updatedStamp == null ) {
+        if (updatedStamp == null) {
             // Nothing to do: Already extracted by this JVM, and has the same
             // time stamp as when previously extracted.
             return;
         }
 
         try {
-            if ( expandedFile.exists() ) {
+            if (expandedFile.exists()) {
                 File failedDelete = ZipUtils.deleteWithRetry(expandedFile);
-                if ( failedDelete != null ) {
-                    if ( failedDelete == expandedFile ) {
+                if (failedDelete != null) {
+                    if (failedDelete == expandedFile) {
                         throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ]");
                     } else {
-                        throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ] because [ " + failedDelete.getAbsolutePath() + " ] could not be deleted.");
+                        throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ] because [ " + failedDelete.getAbsolutePath()
+                                              + " ] could not be deleted.");
                     }
                 }
             }
@@ -253,7 +253,7 @@ public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
 
             ZipUtils.unzip(collapsedFile, expandedFile, ZipUtils.IS_EAR, updatedStamp); // throws IOException
 
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             // Forget about the expansion if it failed.
             clearStamp(collapsedPath, collapsedFile);
 
@@ -261,20 +261,10 @@ public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
         }
     }
 
-    private boolean isArchive(File file, String path) {
-        if ( path.toLowerCase().endsWith(AppManagerConstants.XML_SUFFIX) ) {
-            return false;
-        } else if ( !file.isFile() ) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     /**
      * Create deployment information for a java enterprise application.
      *
-     * A location must be specified for the application.  The location must
+     * A location must be specified for the application. The location must
      * have an java enterprise application archive (an EAR file), an expanded
      * enterprise archive, or an XML loose configuration file.
      *
@@ -282,17 +272,16 @@ public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
      * expand the application to the expanded applications location.
      *
      * @param appInfo Information for the application for which to create
-     *     deployment information.
+     *            deployment information.
      * @return Deployment information for the application.
      *
      * @throws UnableToAdaptException Thrown if the deployment information
-     *     count not be created.
+     *             count not be created.
      */
     @Override
-    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo)
-        throws UnableToAdaptException {
+    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {
 
-        String appPid = appInfo.getPid(); 
+        String appPid = appInfo.getPid();
         String appName = appInfo.getName();
         String appPath = appInfo.getLocation();
         File appFile = new File(appPath);
@@ -305,40 +294,44 @@ public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
         Container appContainer = appInfo.getContainer();
         Container originalAppContainer = null;
 
-        // If enabled by an attribute of the application manager configuration,
-        // expand the application.
-        //
-        // Expansion is possible if the application file is not already a directory, and is
-        // not loosely configuration.
+        BinaryType appType = getApplicationType(appFile, appPath);
+        if (appType == BinaryType.LOOSE) {
+            Tr.info(_tc, "info.loose.app", appName, appPath);
+        } else if (appType == BinaryType.DIRECTORY) {
+            Tr.info(_tc, "info.directory.app", appName, appPath);
+        } else if (applicationManager.getExpandApps()) {
 
-        if ( applicationManager.getExpandApps() && isArchive(appFile, appPath) ) {
             try {
                 prepareExpansion();
 
                 WsResource expandedResource = resolveExpansion(appName);
                 File expandedFile = expandedResource.asFile();
+                Tr.info(_tc, "info.expanding.app", appName, appPath, expandedFile.getAbsolutePath());
+
                 expand(appName, appFile, expandedResource, expandedFile);
 
                 originalAppContainer = appContainer;
                 appContainer = deployedAppServices.setupContainer(appPid, expandedFile);
 
-            } catch ( IOException e ) {
+            } catch (IOException e) {
                 Tr.error(_tc, "warning.could.not.expand.application", appName, e.getMessage());
             }
+        } else {
+            Tr.info(_tc, "info.unexpanded.app", appName, appPath);
         }
 
         Application applicationDD;
         try {
             applicationDD = appContainer.adapt(Application.class); // throws UnableToAdaptException
             // Null when there is no application descriptor.
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             // CWWKZ0113E: Application {0}: Parse error for application descriptor {1}: {2}
             Tr.error(_tc, "error.application.parse.descriptor", appName, "META-INF/application.xml", e);
             throw e;
         }
 
         InterpretedContainer jeeContainer;
-        if ( appContainer instanceof InterpretedContainer ) {
+        if (appContainer instanceof InterpretedContainer) {
             jeeContainer = (InterpretedContainer) appContainer;
         } else {
             jeeContainer = appContainer.adapt(InterpretedContainer.class);
@@ -346,19 +339,18 @@ public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
 
         // Set a structure helper for modules that might be expanded inside
         // (e.g., x.ear/y.war or x.ear/y.jar/).
-        if ( applicationDD == null ) {
-            jeeContainer.setStructureHelper( EARStructureHelper.getUnknownRootInstance() );
+        if (applicationDD == null) {
+            jeeContainer.setStructureHelper(EARStructureHelper.getUnknownRootInstance());
         } else {
             List<String> modulePaths = new ArrayList<String>();
-            for ( Module module : applicationDD.getModules() ) {
-                modulePaths.add( module.getModulePath() );
+            for (Module module : applicationDD.getModules()) {
+                modulePaths.add(module.getModulePath());
             }
-            jeeContainer.setStructureHelper( EARStructureHelper.create(modulePaths) );
+            jeeContainer.setStructureHelper(EARStructureHelper.create(modulePaths));
         }
         appInfo.setContainer(jeeContainer);
 
-        EARDeployedAppInfo deployedApp =
-            new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
+        EARDeployedAppInfo deployedApp = new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
         appInfo.setHandlerInfo(deployedApp);
 
         return deployedApp;

@@ -86,6 +86,8 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
             assertNotNull("The application testWarApplication did not appear to have started.",
                           server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+            assertNotNull("The server did not report that the app was being extracted",
+                          server.waitForStringInLog("CWWKZ0133I.* testWarApplication"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
             Log.info(c, method, "Calling test Application with URL=" + url.toString());
@@ -199,6 +201,8 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
             assertNotNull("The application testWarApplication did not appear to have started.",
                           server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+            assertNotNull("The server did not report that the app was being extracted",
+                          server.waitForStringInLog("CWWKZ0133I.* testWarApplication"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
             Log.info(c, method, "Calling test Application with URL=" + url.toString());
@@ -306,6 +310,8 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
             assertNotNull("The web application app-j2ee did not appear to have started.",
                           server.waitForStringInLog("CWWKZ0001I.* app-j2ee"));
+            assertNotNull("The server did not report that the app was being extracted",
+                          server.waitForStringInLog("CWWKZ0133I.* app-j2ee"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/test-web/DummyServlet");
             URL url1 = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/test-web1/DummyServlet");
@@ -436,6 +442,8 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
             assertNotNull("The web application app-j2ee did not appear to have started.",
                           server.waitForStringInLog("CWWKZ0001I.* app-j2ee"));
+            assertNotNull("The server did not report that the app was being extracted",
+                          server.waitForStringInLog("CWWKZ0133I.* app-j2ee"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/test-web/DummyServlet");
             URL url1 = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/test-web1/DummyServlet");
