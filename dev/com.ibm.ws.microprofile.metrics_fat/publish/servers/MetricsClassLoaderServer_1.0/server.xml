@@ -29,7 +29,4 @@
     	<classloader commonLibraryRef="lib"/>
     </webApplication> 
 
-    <!--Java2 security-->
-    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-
 </server>
