@@ -963,4 +963,44 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "EntirePool", j.getString("purgePolicy"));
         assertEquals(err, 150, j.getJsonNumber("reapTime").longValue());
     }
+
+    /*
+     * Test that the config endpoint is accessible when using the reader role
+     */
+    @Test
+    public void testConfigReaderRole() throws Exception {
+        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("reader", "readerpwd").run(JsonArray.class);
+        String err = "unexpected response: " + json;
+        assertTrue(err, json.size() > 1);
+
+        //No need to check all the details returned as they are tested elsewhere,
+        //just do a basic check the array contains data sources
+
+        JsonObject j = json.getJsonObject(0);
+        assertEquals(err, "dataSource", j.getString("configElementName"));
+
+        j = json.getJsonObject(1);
+        assertEquals(err, "dataSource", j.getString("configElementName"));
+    }
+
+    /*
+     * Test that the config endpoint is not accessible to a user who is not assigned the
+     * reader or administrator role
+     */
+    @Test
+    public void testConfigUserWithoutRoles() throws Exception {
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("user", "userpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/config/doesnotexist").basicAuth("user", "userpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+    }
 }

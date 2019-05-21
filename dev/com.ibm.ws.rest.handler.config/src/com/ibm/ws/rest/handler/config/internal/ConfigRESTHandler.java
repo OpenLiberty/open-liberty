@@ -58,7 +58,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 @Component(name = "com.ibm.ws.rest.handler.config",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
-           property = { "com.ibm.wsspi.rest.handler.context.root=/ibm/api", "com.ibm.wsspi.rest.handler.root=/config" }) // TODO switch to /openapi/platform
+           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/config" })
 public class ConfigRESTHandler implements RESTHandler {
     private static final TraceComponent tc = Tr.register(ConfigRESTHandler.class);
 
