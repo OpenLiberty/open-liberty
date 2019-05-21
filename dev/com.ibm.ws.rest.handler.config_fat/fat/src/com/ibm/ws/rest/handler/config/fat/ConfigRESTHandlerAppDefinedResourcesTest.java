@@ -534,4 +534,116 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "memory:recoverydb", j.getString("databaseName"));
     }
+
+    /**
+     * Use the /ibm/api/validator REST endpoint to validate application-defined data sources
+     */
+    @AllowedFFDC({ "java.lang.IllegalArgumentException", // expected: Could not parse configuration value as a duration: 1:05:30
+                   "java.security.PrivilegedActionException", // expected: Value 1:05:30 is not supported for agedTimeout
+                   "javax.resource.ResourceException" // expected: Value 1:05:30 is not supported for agedTimeout
+    })
+    @Test
+    public void testValidateAppDefinedDataSources() throws Exception {
+        JsonArray array = new HttpsRequest(server, "/ibm/api/validation/dataSource?auth=container&authAlias=derbyAuth3")
+                        .run(JsonArray.class);
+        String err = array.toString();
+        assertEquals(err, 6, array.size());
+
+        JsonObject v, info, failure, cause;
+        String message;
+        JsonArray stack;
+
+        assertNotNull(err, v = array.getJsonObject(0));
+        assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]", v.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]", v.getString("id"));
+        assertEquals(err, "java:app/env/jdbc/ds1", v.getString("jndiName"));
+        assertFalse(err, v.getBoolean("successful"));
+        assertNull(err, v.get("info"));
+        assertNotNull(err, failure = v.getJsonObject("failure"));
+        assertEquals(err, "javax.resource.ResourceException", failure.getString("class"));
+        assertNotNull(err, message = failure.getString("message"));
+        assertTrue(err, message.startsWith("J2CA8011E") && message.contains("1:05:30"));
+        assertNotNull(err, stack = failure.getJsonArray("stack"));
+        assertTrue(err, stack.size() > 3);
+        assertNotNull(stack.get(0));
+        assertNotNull(stack.get(1));
+        assertNotNull(stack.get(2));
+        assertNotNull(err, cause = failure.getJsonObject("cause"));
+        assertEquals(err, "java.lang.IllegalArgumentException", cause.getString("class"));
+        assertNotNull(err, message = cause.getString("message"));
+        assertTrue(err, message.contains("1:05:30"));
+        assertNotNull(err, stack = cause.getJsonArray("stack"));
+        assertTrue(err, stack.size() > 3);
+        assertNotNull(stack.get(0));
+        assertNotNull(stack.get(1));
+        assertNotNull(stack.get(2));
+        assertNull(err, cause.getJsonObject("cause"));
+
+        assertNotNull(err, v = array.getJsonObject(1));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", v.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", v.getString("id"));
+        assertEquals(err, "java:comp/env/jdbc/ds3", v.getString("jndiName"));
+        assertTrue(err, v.getBoolean("successful"));
+        assertNull(err, v.get("failure"));
+        assertNotNull(err, info = v.getJsonObject("info"));
+        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertEquals(err, "DBUSER3", info.getString("schema"));
+        assertEquals(err, "dbuser3", info.getString("user"));
+
+        assertNotNull(err, v = array.getJsonObject(2));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", v.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", v.getString("id"));
+        assertEquals(err, "java:module/env/jdbc/ds2", v.getString("jndiName"));
+        assertTrue(err, v.getBoolean("successful"));
+        assertNull(err, v.get("failure"));
+        assertNotNull(err, info = v.getJsonObject("info"));
+        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertEquals(err, "DBUSER3", info.getString("schema"));
+        assertEquals(err, "dbuser3", info.getString("user"));
+
+        assertNotNull(err, v = array.getJsonObject(3));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]",
+                     v.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]",
+                     v.getString("id"));
+        assertEquals(err, "java:comp/env/jdbc/ds3", v.getString("jndiName"));
+        assertTrue(err, v.getBoolean("successful"));
+        assertNull(err, v.get("failure"));
+        assertNotNull(err, info = v.getJsonObject("info"));
+        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertEquals(err, "DBUSER3", info.getString("schema"));
+        assertEquals(err, "dbuser3", info.getString("user"));
+
+        assertNotNull(err, v = array.getJsonObject(4));
+        assertEquals(err, "DefaultDataSource", v.getString("uid"));
+        assertEquals(err, "DefaultDataSource", v.getString("id"));
+        assertNull(err, v.get("jndiName"));
+        assertFalse(err, v.getBoolean("successful"));
+        assertNull(err, v.get("info"));
+        assertNotNull(err, failure = v.getJsonObject("failure"));
+        assertNotNull(err, failure.getString("message"));
+
+        assertNotNull(err, v = array.getJsonObject(5));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", v.getString("uid"));
+        assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", v.getString("id"));
+        assertEquals(err, "java:global/env/jdbc/ds4", v.getString("jndiName"));
+        assertTrue(err, v.getBoolean("successful"));
+        assertNull(err, v.get("failure"));
+        assertNotNull(err, info = v.getJsonObject("info"));
+        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
+        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertEquals(err, "DBUSER3", info.getString("schema"));
+        assertEquals(err, "dbuser3", info.getString("user"));
+    }
 }
