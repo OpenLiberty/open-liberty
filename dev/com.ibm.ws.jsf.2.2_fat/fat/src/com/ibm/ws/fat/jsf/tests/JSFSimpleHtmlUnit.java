@@ -19,11 +19,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import com.ibm.ws.fat.jsf.JSFUtils;
 import java.net.URL;
 
-
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

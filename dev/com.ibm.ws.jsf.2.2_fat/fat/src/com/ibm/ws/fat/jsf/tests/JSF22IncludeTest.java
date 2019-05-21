@@ -18,8 +18,6 @@ import java.net.URL;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;

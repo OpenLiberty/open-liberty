@@ -12,13 +12,10 @@
 package com.ibm.ws.fat.jsf.tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -105,7 +102,7 @@ public TestName name = new TestName();
             String testAppResourcesDir = "test-applications/" + "TestJSF2.2.ear" + "/resources/";
 
             ShrinkHelper.addDirectory(ear, testAppResourcesDir);
-            ShrinkHelper.exportDropinAppToServer(jsfTestServer1, ear, OVERWRITE);
+            ShrinkHelper.exportDropinAppToServer(jsfTestServer1, ear);
 
             jsfTestServer1.startServer(JSFServerTest.class.getSimpleName() + ".log");
     }
