@@ -8,7 +8,7 @@
     
     <logging traceSpecification="*=info:org.apache.myfaces.*=all:com.ibm.ws.jsf*=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
  
-    <!-- Pathname consisting of a single "-" indicates all the files in the current directory and (recursively) all files and subdirectories contained in the current directory. -->
-    <javaPermission className="java.io.FilePermission" name="-" actions="read"/>
+    <!-- Pathname ending with "/-" indicates all the files in the current directory and (recursively) all files and subdirectories contained in the current directory. -->
+    <javaPermission className="java.io.FilePermission" name="${server.config.dir}/-" actions="read"/>
     
 </server>

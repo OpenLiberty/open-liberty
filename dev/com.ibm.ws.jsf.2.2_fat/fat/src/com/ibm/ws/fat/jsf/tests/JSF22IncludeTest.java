@@ -12,35 +12,66 @@
 package com.ibm.ws.fat.jsf.tests;
 
 import java.util.List;
-import java.util.logging.Logger;
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.fat.jsf.JSFUtils;
+import java.net.URL;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.ClassRule;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+import org.junit.Assert;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.annotation.Server;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  *
  */
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class JSF22IncludeTest {
-    private static final Logger LOG = Logger.getLogger(JSF22IncludeTest.class.getName());
+    @Rule
+    public TestName name = new TestName();
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("jsf22IncludeTestServer");
+    protected static final Class<?> c = JSF22IncludeTest.class;
+
+    @Server("jsf22IncludeTestServer")
+   // @TestServlet(servlet = MyTestServlet.class, contextRoot = "com")
+    public static LibertyServer jsf22IncludeTestServer;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        ShrinkHelper.defaultDropinApp(jsf22IncludeTestServer, "TestJSF2.2.war", 
+                                    "com.ibm.ws.fat.jsf.bean",
+                                    "com.ibm.ws.fat.jsf.cforeach",
+                                    "com.ibm.ws.fat.jsf.externalContext",
+                                    "com.ibm.ws.fat.jsf.html5",
+                                    "com.ibm.ws.fat.jsf.listener");
+        jsf22IncludeTestServer.startServer(JSF22IncludeTest.class.getSimpleName() + ".log");
+    }
 
     @AfterClass
-    public static void testCleanup() throws Exception {
-        // test cleanup
+    public static void tearDown() throws Exception {
+        // Stop the server
+        if (jsf22IncludeTestServer != null && jsf22IncludeTestServer.isStarted()) {
+            jsf22IncludeTestServer.stopServer();
+        }
     }
 
     /**
@@ -52,29 +83,31 @@ public class JSF22IncludeTest {
      */
     @Test
     public void testJSPInclude() throws Exception {
-        String methodName = "testJSPInclude";
+        String contextRoot = "TestJSF2.2";
 
         WebClient webClient = new WebClient();
 
-        HtmlPage page = (HtmlPage) webClient.getPage(SHARED_SERVER.getServerUrl(true, "/TestJSF2.2/IncludeTest.jsf"));
+        URL url = JSFUtils.createHttpUrl(jsf22IncludeTestServer, contextRoot, "IncludeTest.jsf");
 
-        LOG.info("Navigating to: /TestJSF2.2/IncludeTest.jsf");
+        HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+        Log.info(c, name.getMethodName(), "Navigating to: /TestJSF2.2/IncludeTest.jsf");
 
         int statusCode = page.getWebResponse().getStatusCode();
 
-        LOG.info("Checking the satus code, 200 expected : " + statusCode);
+        Log.info(c, name.getMethodName(), "Checking the satus code, 200 expected : " + statusCode);
         // Check the status code
         if (statusCode != 200) {
             Assert.fail("Test failed! Status Code: " + statusCode + " Page contents: " + page.asXml());
         }
 
-        LOG.info("Checking to make sure the include was properly rendered");
+        Log.info(c, name.getMethodName(), "Checking to make sure the include was properly rendered");
         // Make sure the right text is output
         if (!page.asXml().contains("some text")) {
             Assert.fail("The wrong text was printed! Status Code: " + statusCode + " Page contents: " + page.asXml());
         }
 
-        LOG.info("Ensuring ViewState had a proper ID generated");
+        Log.info(c, name.getMethodName(), "Ensuring ViewState had a proper ID generated");
         //Make sure the ViewState elements were generated with the proper IDs
         //This is the specific ID we want to look for because it has changed since our 2.0 code
         //which generates them with different IDs

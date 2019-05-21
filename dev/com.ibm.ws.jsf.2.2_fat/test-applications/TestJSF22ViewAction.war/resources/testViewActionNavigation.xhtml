@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>ViewAction Navigation test</title>
+    </h:head>
+	<f:metadata>
+		<f:viewParam id="viewParam1" name="number" value="#{numberBean.number}"/>		
+	</f:metadata>	
+    
+    <h:body>
+        <h:form id="form1">
+            <p>Enter a number between 1 and 100: 		
+            <h:inputText id="inputNumber" value="#{numberBean.number}"/>
+			<h:commandButton id="button1" value="submit" action="testViewActionNavigationResult?faces-redirect=true&amp;includeViewParams=true"/></p>
+			<h:messages/>
+		</h:form>
+    </h:body>
+</html>

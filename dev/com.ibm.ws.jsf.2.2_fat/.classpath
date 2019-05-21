@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/JSF22InputFile.war"/>
+	<!-- <classpathentry kind="src" path="test-applications/JSF22InputFile.war"/>
 	<classpathentry kind="src" path="test-applications/CDIConfigByACP.jar/src"/>
 	<classpathentry kind="src" path="test-applications/CDIConfigByACP.war/src"/>
-	<classpathentry kind="src" path="test-application-common/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22Miscellaneous.jar/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22Miscellaneous.war/src"/>
-	<classpathentry kind="src" path="test-applications/TestJSFEL.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestJSFEL.war/src"/> -->
 	<classpathentry kind="src" path="test-applications/TestJSF2.2.war/src"/>
-	<classpathentry kind="src" path="test-applications/JSF22StatelessView.war/src"/>
+	<!-- <classpathentry kind="src" path="test-applications/JSF22StatelessView.war/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22ClientWindow.war/src"/>
 	<classpathentry kind="src" path="test-applications/TestResourceContractsFromJar.war/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22ComponentTester.war/src"/>
@@ -17,14 +16,14 @@
 	<classpathentry kind="src" path="test-applications/JSF22TestResources.war/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22AppConfigPop.war/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22AppConfigPop.jar/src"/>
-	<classpathentry kind="src" path="test-applications/PI30335.jar/src"/>
+	<classpathentry kind="src" path="test-applications/PI30335.jar/src"/> -->
 	<classpathentry kind="src" path="test-applications/TestJSF22ViewAction.war/src"/>
-	<classpathentry kind="src" path="test-applications/CDITests.war/src"/>
+	<!-- <classpathentry kind="src" path="test-applications/CDITests.war/src"/>
 	<classpathentry kind="src" path="test-applications/BeanValidationTests.war/src"/>
-	<classpathentry kind="src" path="test-applications/JSF22BackwardCompatibilityTests.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22BackwardCompatibilityTests.war/src"/> -->
 	<classpathentry kind="src" path="test-applications/JSF22FlashEvents.war/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22FaceletsResourceResolverAnnotation.war/src"/>
-	<classpathentry kind="src" path="test-applications/TestJSF22Ajax.war/src"/>
+	<!-- <classpathentry kind="src" path="test-applications/TestJSF22Ajax.war/src"/>
 	<classpathentry kind="src" path="test-applications/JSF22LocalizationTester.war/src"/>
 	<classpathentry kind="src" path="test-applications/PI47600.war/src"/>
 	<classpathentry kind="src" path="test-applications/PI50108.war/src"/>
@@ -41,22 +40,8 @@
 	<classpathentry kind="src" path="test-applications/PI64714.war/src"/>
 	<classpathentry kind="src" path="test-applications/PI67525.war/src"/>
 	<classpathentry kind="src" path="test-applications/PI85492.war/src"/>
-	<classpathentry kind="src" path="test-applications/PI90507.war/src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
-	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
-	<classpathentry kind="lib" path="/build.sharedResources/lib/htmlunit/2.20/htmlunit-2.20-OSGi.jar"/>
-	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="lib" path="/build.sharedResources/lib/httpunit/1.7/jars/jtidy-4aug2000r7-dev.jar"/>
-	<classpathentry kind="lib" path="/build.sharedResources/lib/httpunit/1.7/lib/httpunit.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jsf.2.2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.el.3.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.jsp.2.3"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.interceptor.1.2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.annotation.1.2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.cdi.1.2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jsp.2.3"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.1"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.validation.1.1"/>
+	<classpathentry kind="src" path="test-applications/PI90507.war/src"/> -->
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

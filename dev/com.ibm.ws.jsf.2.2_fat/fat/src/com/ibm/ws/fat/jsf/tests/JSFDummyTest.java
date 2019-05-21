@@ -17,14 +17,12 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
-import com.ibm.ws.fat.LoggingTest;
-
 /**
  * This is a dummy test that will always execute and pass. We need at least one test to always
  * execute in the automation framework.
  * 
  */
-public class JSFDummyTest extends LoggingTest {
+public class JSFDummyTest {
     private static final Logger LOG = Logger.getLogger(JSFDummyTest.class.getName());
 
     @Test

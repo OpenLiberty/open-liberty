@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<title>test non empty metadata</title>
+</h:head>
+<f:metadata>
+	<f:viewParam id="viewParam1" name="number" value="#{numberBean.number}" />
+</f:metadata>
+
+<h:body>
+	<h:form id="form1">
+		<h:messages id="testMetadata" for="testMetadata" />
+		<p>
+			Enter a number between 1 and 100:
+			<h:inputText id="inputNumber" value="#{numberBean.number}" />
+			<h:commandButton id="button1" value="submit"
+				action="testViewActionNavigationResult?faces-redirect=true&amp;includeViewParams=true" />
+		</p>
+	</h:form>
+</h:body>
+</html>

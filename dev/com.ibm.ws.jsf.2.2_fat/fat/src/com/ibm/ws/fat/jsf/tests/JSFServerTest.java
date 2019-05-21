@@ -12,20 +12,43 @@
 package com.ibm.ws.fat.jsf.tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.logging.Logger;
+
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import com.ibm.ws.fat.jsf.JSFUtils;
+import java.net.URL;
 
 import org.junit.AfterClass;
-import org.junit.ClassRule;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebResponse;
+import com.ibm.websphere.simplicity.log.Log;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RunUnlessFeatureBeingTested;
+import componenttest.annotation.Server;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * All JSF 2.2 tests with all applicable server features enabled.
@@ -35,35 +58,65 @@ import componenttest.custom.junit.runner.RunUnlessFeatureBeingTested;
  * If a test needs HtmlUnit it should more than likely be placed in the JSFHtmlUnit test class.
  */
 @MinimumJavaLevel(javaLevel = 7)
-public class JSFServerTest extends LoggingTest {
-    private static final Logger LOG = Logger.getLogger(JSFServerTest.class.getName());
+@RunWith(FATRunner.class)
+public class JSFServerTest {
+@Rule
+public TestName name = new TestName();
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("jsfTestServer1");
+    String contextRoot = "TestJSF2.2";
+
+    protected static final Class<?> c = JSFServerTest.class;
+
+    @Server("jsfTestServer1")
+    public static LibertyServer jsfTestServer1;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+
+            WebArchive testWar = ShrinkHelper.buildDefaultApp("TestJSF2.2.war", "com.ibm.ws.fat.jsf.bean",
+                                                            "com.ibm.ws.fat.jsf.cforeach",
+                                                            "com.ibm.ws.fat.jsf.externalContext",
+                                                            "com.ibm.ws.fat.jsf.html5",
+                                                            "com.ibm.ws.fat.jsf.listener");
+
+            WebArchive TestResourceContractsWar = ShrinkHelper.buildDefaultApp("TestResourceContracts.war");
+
+            WebArchive TestResourceContractsDirectoryWar = ShrinkHelper.buildDefaultApp("TestResourceContractsDirectory.war");
+
+            WebArchive TestResourceContractsFromJarWar = ShrinkHelper.buildDefaultApp("TestResourceContractsFromJar.war", "beans");
+
+            WebArchive flashWar = ShrinkHelper.buildDefaultApp("JSF22FlashEvents.war", "com.ibm.ws.fat.jsf.factory",
+                                                            "com.ibm.ws.fat.jsf.flash",
+                                                            "com.ibm.ws.fat.jsf.listener");
+
+            WebArchive viewActionWar = ShrinkHelper.buildDefaultApp("TestJSF22ViewAction.war", "com.ibm.ws.fat.jsf.viewAction",
+                                                                    "com.ibm.ws.fat.jsf.viewAction.phaseListener");
+                                                                    
+            WebArchive ResourceResolverWar = ShrinkHelper.buildDefaultApp("JSF22FaceletsResourceResolverAnnotation.war", "com.ibm.ws.jsf");
+
+            EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "TestJSF2.2.ear")
+                                    .addAsModule(testWar)
+                                    .addAsModule(viewActionWar)
+                                    .addAsModule(ResourceResolverWar)
+                                    .addAsModule(TestResourceContractsWar)
+                                    .addAsModule(TestResourceContractsDirectoryWar)
+                                    .addAsModule(TestResourceContractsFromJarWar).addAsModule(flashWar);
+
+            String testAppResourcesDir = "test-applications/" + "TestJSF2.2.ear" + "/resources/";
+
+            ShrinkHelper.addDirectory(ear, testAppResourcesDir);
+            ShrinkHelper.exportDropinAppToServer(jsfTestServer1, ear, OVERWRITE);
+
+            jsfTestServer1.startServer(JSFServerTest.class.getSimpleName() + ".log");
+    }
+
 
     @AfterClass
-    public static void testCleanup() throws Exception {
-        // test cleanup
-    }
-
-    protected WebResponse verifyResponse(String resource, String expectedResponse) throws Exception {
-        return SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
-    }
-
-    protected WebResponse verifyResponse(String resource, String expectedResponse, int numberToMatch, String extraMatch) throws Exception {
-        return SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse, numberToMatch, extraMatch);
-    }
-
-    protected WebResponse verifyResponse(WebBrowser wb, String resource, String expectedResponse) throws Exception {
-        return SHARED_SERVER.verifyResponse(wb, resource, expectedResponse);
-    }
-
-    protected WebResponse verifyResponse(WebBrowser wb, String resource, String... expectedResponseStrings) throws Exception {
-        return SHARED_SERVER.verifyResponse(wb, resource, expectedResponseStrings);
-    }
-
-    protected WebResponse verifyResponse(WebBrowser wb, String resource, String[] expectedResponses, String[] unexpectedResponses) throws Exception {
-        return SHARED_SERVER.verifyResponse(wb, resource, expectedResponses, unexpectedResponses);
+    public static void tearDown() throws Exception {
+            // Stop the server
+            if (jsfTestServer1 != null && jsfTestServer1.isStarted()) {
+                    jsfTestServer1.stopServer();
+            }
     }
 
     /**
@@ -74,8 +127,10 @@ public class JSFServerTest extends LoggingTest {
      */
     @Test
     public void testServlet() throws Exception {
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
+        WebClient webClient = new WebClient();
+        URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "");
+        HtmlPage page = (HtmlPage) webClient.getPage(url);
+        assertTrue(page.asText().contains("Hello World"));
     }
 
     /**
@@ -89,11 +144,8 @@ public class JSFServerTest extends LoggingTest {
     public void testLibertyWebConfigProviderFactory() throws Exception {
         String msgToSearchFor = "getWebConfigProvider Entry";
 
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
-
         // Check the trace.log to see if the LibertyWebConfigProviderFactory has any entry trace.
-        String isLibertyWebConfigProviderFactoryBeingUsed = SHARED_SERVER.getLibertyServer().waitForStringInTrace(msgToSearchFor);
+        String isLibertyWebConfigProviderFactoryBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace log: " + msgToSearchFor, isLibertyWebConfigProviderFactoryBeingUsed);
@@ -111,11 +163,8 @@ public class JSFServerTest extends LoggingTest {
     public void testLibertyWebConfigProvider() throws Exception {
         String msgToSearchFor = "isErrorPagePresent ENTRY";
 
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
-
         // Check the trace.log to see if the LibertyWebConfigProvider has any entry trace.
-        String isLibertyWebConfigProviderBeingUsed = SHARED_SERVER.getLibertyServer().waitForStringInTrace(msgToSearchFor);
+        String isLibertyWebConfigProviderBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace log: " + msgToSearchFor, isLibertyWebConfigProviderBeingUsed);
@@ -131,11 +180,8 @@ public class JSFServerTest extends LoggingTest {
     public void testLibertyFaceletConfigResourceProvider() throws Exception {
         String msgToSearchFor = "getFaceletTagLibConfigurationResources ENTRY";
 
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
-
         // Check the trace.log to see if the LibertyFaceletConfigResourceProvider has any entry trace.
-        String isLibertyFaceletConfigResourceProviderBeingUsed = SHARED_SERVER.getLibertyServer().waitForStringInTrace(msgToSearchFor);
+        String isLibertyFaceletConfigResourceProviderBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace logs: " + msgToSearchFor,
@@ -152,11 +198,8 @@ public class JSFServerTest extends LoggingTest {
     public void testWASMyFacesAnnotationProvider() throws Exception {
         String msgToSearchFor = "com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider <init> ENTRY";
 
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
-
         // Check the trace.log to see if the WASMyFacesAnnotationProvider has any entry trace.
-        String isWASMyFacesAnnotationProviderBeingUsed = SHARED_SERVER.getLibertyServer().waitForStringInTrace(msgToSearchFor);
+        String isWASMyFacesAnnotationProviderBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace logs: " + msgToSearchFor,
@@ -173,11 +216,8 @@ public class JSFServerTest extends LoggingTest {
     public void testWebSphereLifecycleProviderFactory() throws Exception {
         String msgToSearchFor = "com.ibm.ws.jsf.config.annotation.WebSphereLifecycleProviderFactory <init> ENTRY";
 
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
-
         // Check the trace.log to see if the WebSphereLifecycleProviderFactory has any entry trace.
-        String isWebSphereLifecycleProviderFactoryBeingUsed = SHARED_SERVER.getLibertyServer().waitForStringInTrace(msgToSearchFor);
+        String isWebSphereLifecycleProviderFactoryBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace logs: " + msgToSearchFor,
@@ -194,11 +234,8 @@ public class JSFServerTest extends LoggingTest {
     public void testWebSphereAnnotationLifecycleProvider() throws Exception {
         String msgToSearchFor = "com.ibm.ws.jsf.config.annotation.WebSphereAnnotationLifecycleProvider <init> ENTRY";
 
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
-
         // Check the trace.log to see if the WebSphereAnnotationLifecycleProvider has any entry trace.
-        String isWebSphereAnnotationLifecycleProviderBeingUsed = SHARED_SERVER.getLibertyServer().waitForStringInTrace(msgToSearchFor);
+        String isWebSphereAnnotationLifecycleProviderBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace logs: " + msgToSearchFor,
@@ -215,15 +252,11 @@ public class JSFServerTest extends LoggingTest {
     public void testBeanValidation11Disabled() throws Exception {
         String msgToSearchFor = "MyFaces Bean Validation support disabled";
 
-        LOG.info("Requesting a basic HTML page");
-        // Use the SharedServer to verify a response.
-        this.verifyResponse("/TestJSF2.2", "Hello World");
-
-        LOG.info("Looking for : " + msgToSearchFor);
+        Log.info(c, name.getMethodName(), "Looking for : " + msgToSearchFor);
         // Check the trace.log to see if the LibertyWebConfigProviderFactory has any entry trace.
-        String isBeanValidationDisabled = SHARED_SERVER.getLibertyServer().waitForStringInLog(msgToSearchFor);
+        String isBeanValidationDisabled = jsfTestServer1.waitForStringInLog(msgToSearchFor);
 
-        LOG.info("Message found after searching logs : " + isBeanValidationDisabled);
+        Log.info(c, name.getMethodName(), "Message found after searching logs : " + isBeanValidationDisabled);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace log: " + msgToSearchFor, isBeanValidationDisabled);
@@ -239,11 +272,14 @@ public class JSFServerTest extends LoggingTest {
         String msgToSearchFor = "FaceletsResourceResolver annotation worked, using custom ResourceResolver";
 
         // Use the SharedServer to verify a response.
-        this.verifyResponse("/JSF22FaceletsResourceResolverAnnotation/", "Hello World");
+        WebClient webClient = new WebClient();
+        URL url = JSFUtils.createHttpUrl(jsfTestServer1, "JSF22FaceletsResourceResolverAnnotation", "index.xhtml");
+        HtmlPage page = (HtmlPage) webClient.getPage(url);
+        assertTrue(page.asText().contains("Hello World"));
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the logs: " + msgToSearchFor,
-                      SHARED_SERVER.getLibertyServer().waitForStringInLog(msgToSearchFor));
+                      jsfTestServer1.waitForStringInLog(msgToSearchFor));
 
     }
 }
