@@ -283,7 +283,7 @@ org.mongodb:mongo-java-driver:2.13.3
 org.objenesis:objenesis:1.0
 org.osgi:osgi.core:7.0.0
 org.osgi:org.osgi.core:6.0.0
-org.osgi:org.osgi.annotation.versioning:1.0.0
+org.osgi:org.osgi.annotation.versioning:1.1.0
 org.osgi:org.osgi.namespace.service:1.0.0
 org.osgi:org.osgi.service.blueprint:1.0.2
 org.osgi:org.osgi.service.cm:1.6.0
