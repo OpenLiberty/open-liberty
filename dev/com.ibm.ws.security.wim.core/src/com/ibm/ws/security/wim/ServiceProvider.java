@@ -222,12 +222,6 @@ public class ServiceProvider implements Service {
         return result;
     }
 
-    public String getRealmName() throws WIMException {
-        String result = null;
-        result = getProfileService().getRealmName();
-        return result;
-    }
-
     /*
      * (non-Javadoc)
      *

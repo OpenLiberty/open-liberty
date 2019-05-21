@@ -338,7 +338,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * Create a DataObject for the realm context.
      *
      * @param inputRootDataObject The root DataObject.
-     * @param inputRealm The realm.
+     * @param inputRealm          The realm.
      *
      * @pre inputRootDataObject != null
      * @pre inputRealm != null
@@ -361,7 +361,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * Create a DataObject for the property request.
      *
      * @param inputRootDataObject The root DataObject.
-     * @param inputProperty The property to request
+     * @param inputProperty       The property to request
      *
      * @pre inputRootDataObject != null
      * @pre inputProperty != null
@@ -385,7 +385,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * Create a DataObject for the login property request.
      *
      * @param inputRootDataObject The root DataObject.
-     * @param inputProperty The property to request
+     * @param inputProperty       The property to request
      *
      * @pre inputRootDataObject != null
      * @pre inputProperty != null
@@ -409,11 +409,11 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     /**
      * Gets an entity using an identifier attribute (ex. uniqueName, externalName).
      *
-     * @param root Root data object
-     * @param inputAttrName Input attribute name
+     * @param root           Root data object
+     * @param inputAttrName  Input attribute name
      * @param inputAttrValue Input attribute value
      * @param outputAttrName Ouptut attribute name
-     * @param mapUtils Bridge utility instance
+     * @param mapUtils       Bridge utility instance
      * @return Entity or null if the input attribute is not an identifier type or if there are no entities
      */
     protected Root getEntityByIdentifier(Root root, String inputAttrName, String inputAttrValue, String outputAttrName, BridgeUtils mapUtils) throws WIMException {
@@ -478,8 +478,8 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     /**
      * get input securityName.
      *
-     * @param input security attribute defined in the realm.
-     * @param input security name value.
+     * @param input        security attribute defined in the realm.
+     * @param input        security name value.
      * @param loginAccount or Group.
      *
      * @return uniqueName if the property is an IdentifierType property, principalName otherwise.
@@ -532,12 +532,11 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * @return default realm Name
      */
     public String getDefaultRealmName() {
-        String returnRealm = getCoreConfiguration().getDefaultRealmName();
+        String returnRealm = getWimService().getRealmName();
         if (returnRealm == null) {
             returnRealm = urRealmName;
         }
         return returnRealm;
-
     }
 
     /**

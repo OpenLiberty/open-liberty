@@ -1336,7 +1336,7 @@ public class ProfileManager implements ProfileServiceLite {
      * control.
      *
      * @param searchDO Input search DataObject
-     * @param reposId Identifier for the repository whose checkpoint needs to be retained
+     * @param reposId  Identifier for the repository whose checkpoint needs to be retained
      * @return Object for search containing checkpoint corresponding to reposId only
      */
     @Trivial
@@ -2047,10 +2047,11 @@ public class ProfileManager implements ProfileServiceLite {
     /**
      * prepare the identifier DataObject for caller.
      *
-     * @param id the identifier DataObject
+     * @param id                  the identifier DataObject
      * @param qualifiedEntityType the qualified entity type of the identifier represented entity
-     * @param uid unique ID of the entity before updating operation (the should be only specified for update operation, for other operations, set the uid to null)
-     * @param uName unique name of the entity before updating operation (the should be only specified for update operation, for other operations, set the uName to null)
+     * @param uid                 unique ID of the entity before updating operation (the should be only specified for update operation, for other operations, set the uid to null)
+     * @param uName               unique name of the entity before updating operation (the should be only specified for update operation, for other operations, set the uName to
+     *                                null)
      * @throws WIMException
      */
     private void prepareForCaller(IdentifierType id, String qualifiedEntityType, String uid, String uName,
@@ -2592,8 +2593,7 @@ public class ProfileManager implements ProfileServiceLite {
     }
 
     public String getRealmName() throws WIMException {
-        String realmName = null;
-
+        String returnRealm = getConfigManager().getDefaultRealmName();
         @SuppressWarnings("unchecked")
         List<String> repoIds = getRepositoryManager().getRepoIds();
         if (repoIds != null && repoIds.size() > 0) {
