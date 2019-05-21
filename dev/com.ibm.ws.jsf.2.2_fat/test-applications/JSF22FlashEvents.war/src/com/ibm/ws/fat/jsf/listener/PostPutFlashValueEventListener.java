@@ -1,0 +1,32 @@
+package com.ibm.ws.fat.jsf.listener;
+
+import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
+
+/*
+ * This is a custom SystemEventListener which is configured in the faces-config to 
+ * be called during a javax.faces.event.PostPutFlashValueEvent event.
+ * It contains a counter which will be checked after each test to ensure it was called the expected amount of times
+ */
+
+public class PostPutFlashValueEventListener implements SystemEventListener {
+
+    private int counter;
+
+    public PostPutFlashValueEventListener() {
+        counter = 0;
+    }
+
+    @Override
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
+        counter++;
+        FacesContext.getCurrentInstance().getExternalContext().log("PostPutFlashValueEvent processEvent - counter: " + counter);
+    }
+
+    @Override
+    public boolean isListenerForSource(Object value) {
+        return true;
+    }
+}

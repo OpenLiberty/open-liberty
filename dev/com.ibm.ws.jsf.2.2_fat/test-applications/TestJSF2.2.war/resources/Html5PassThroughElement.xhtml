@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<head>
+<title>HTML 5 / JSF Test</title>
+
+</head>
+
+<body>
+
+<form jsf:id="html5jsfTest">
+	<h1>HTML 5 / JSF Test for a Pass Through Element</h1>
+	<h:inputText id="testFieldOne">
+		<f:passThroughAttribute name="placeholder" value="TestData" />
+		<f:passThroughAttribute name="type" value="email" />
+		<f:passThroughAttribute name="data-test" value="DataTested" />
+	</h:inputText>
+	<p/>
+
+</form>
+
+</body>
+</html>

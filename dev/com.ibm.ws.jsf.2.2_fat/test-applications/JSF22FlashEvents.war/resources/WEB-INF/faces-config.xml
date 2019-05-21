@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+    version="2.2">
+
+	<application>
+	<system-event-listener>
+		<system-event-listener-class>com.ibm.ws.fat.jsf.listener.PostPutFlashValueEventListener</system-event-listener-class>
+		<system-event-class>javax.faces.event.PostPutFlashValueEvent</system-event-class>    					
+	</system-event-listener> 
+	<system-event-listener>
+		<system-event-listener-class>com.ibm.ws.fat.jsf.listener.PostKeepFlashValueEventListener</system-event-listener-class>
+		<system-event-class>javax.faces.event.PostKeepFlashValueEvent</system-event-class>    					
+	</system-event-listener>
+	<system-event-listener>
+		<system-event-listener-class>com.ibm.ws.fat.jsf.listener.PreClearFlashEventListener</system-event-listener-class>
+		<system-event-class>javax.faces.event.PreClearFlashEvent</system-event-class>    					
+	</system-event-listener>
+	<system-event-listener>
+		<system-event-listener-class>com.ibm.ws.fat.jsf.listener.PreRemoveFlashValueEventListener</system-event-listener-class>
+		<system-event-class>javax.faces.event.PreRemoveFlashValueEvent</system-event-class>    					
+	</system-event-listener>	
+	</application>
+	<factory>
+		<flash-factory>com.ibm.ws.fat.jsf.factory.TestFlashFactory</flash-factory>
+	</factory>
+</faces-config>

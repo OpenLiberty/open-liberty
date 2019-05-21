@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+<head>
+<title>HTML 5 / JSF Test</title>
+
+</head>
+
+<body>
+
+<form jsf:id="html5jsfTest">
+	<h1>HTML 5 / JSF Test for an HTML 5 input tag</h1>
+	<input type="email" jsf:id="testFieldOne"
+		placeholder="TestData"
+		jsf:value="#{html5TestBean.inputTestValue}" 
+		data-test="DataTested" />
+	<p/>
+
+</form>
+
+</body>
+</html>
