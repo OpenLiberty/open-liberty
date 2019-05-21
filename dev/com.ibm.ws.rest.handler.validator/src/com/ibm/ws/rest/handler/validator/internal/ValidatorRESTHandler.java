@@ -123,6 +123,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             try {
                 return AccessController.doPrivileged(new PrivilegedExceptionAction<ServiceReference<?>[]>() {
                     @Override
+                    @Trivial
                     public ServiceReference<?>[] run() throws InvalidSyntaxException {
                         return bCtx.getServiceReferences(clazz, filter);
                     }
@@ -143,6 +144,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         } else
             return AccessController.doPrivileged(new PrivilegedAction<S>() {
                 @Override
+                @Trivial
                 public S run() {
                     BundleContext bCtx = ctx.getBundleContext();
                     return bCtx == null ? null : bCtx.getService(reference);
@@ -176,7 +178,9 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         // Obtain the instance to validate
         ServiceReference<?>[] targetRefs;
         try {
-            String filter = FilterUtils.createPropertyFilter("service.pid", (String) config.get("service.pid"));
+            String filter = "(|" + FilterUtils.createPropertyFilter("service.pid", (String) config.get("service.pid")) // config without super type
+                           + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
+                           + ")";
             targetRefs = getServiceReferences(context.getBundleContext(), (String) null, filter);
         } catch (InvalidSyntaxException x) {
             targetRefs = null; // same error handling as not found

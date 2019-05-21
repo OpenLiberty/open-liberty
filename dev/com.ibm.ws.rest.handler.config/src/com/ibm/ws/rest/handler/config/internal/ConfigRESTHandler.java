@@ -406,6 +406,23 @@ public class ConfigRESTHandler implements RESTHandler {
     }
 
     /**
+     * Returns the properties for the specified service.pid.
+     *
+     * @param servicePid     service.pid value to match.
+     * @param configurations an already-obtained list of configurations.
+     * @return properties of the configuration which matches the service.pid.
+     * @throws IllegalArgumentException if no configuration with the specified service.pid appears in the list.
+     */
+    private Dictionary<String, Object> getProperties(String servicePid, Configuration[] configurations) {
+        for (Configuration c : configurations) {
+            Dictionary<String, Object> props = c.getProperties();
+            if (servicePid.equals(props.get("service.pid")))
+                return props;
+        }
+        throw new IllegalArgumentException(servicePid);
+    }
+
+    /**
      * Compute the unique identifier from the id and config.displayId.
      * If a top level configuration element has an id, the id is the unique identifier.
      * Otherwise, the config.displayId is the unique identifier.
@@ -441,7 +458,7 @@ public class ConfigRESTHandler implements RESTHandler {
 
         String elementName = path.length() < 8 ? "" : URLDecoder.decode(path.substring(8, endElementName), "UTF-8");
 
-        StringBuilder filter = new StringBuilder("(&(!(ibm.extends.source.pid=*))");
+        StringBuilder filter = new StringBuilder("(&");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
             filter.append(FilterUtils.createPropertyFilter("config.displayId", uid));
         else if (elementName.length() > 0) {
@@ -502,16 +519,29 @@ public class ConfigRESTHandler implements RESTHandler {
                     // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]             <-- data source
                     // persistentExecutor[px1]/databaseTaskStore[s1]/dataSource[ds1]/jdbcDriver[myDriver]             <-- not a data source
 
-                    if (!configMap.containsKey(displayId)) {
+                    Dictionary<String, Object> oldProps = configMap.get(displayId);
+                    if (oldProps == null) {
+                        for (String subtypePid; (subtypePid = (String) props.get("ibm.extends.subtype.pid")) != null;)
+                            props = getProperties(subtypePid, configurations);
                         configMap.put(displayId, props);
                     } else {
-                        //This is the second config with the same config.displayId. This is due to a difference
-                        //in case for nested config. Choose the item with a service.pid that does not match the
+                        //This is another config with the same config.displayId. This can be due to extended config and/or
+                        //a difference in case for nested config. Choose the item with a service.pid that does not match the
                         //element name, as that is the one which represents the actual element. Ex:
                         // config.displayId=dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool], service.pid=com.ibm.ws.jca.connectionManager_129 <- The config corresponding to the actual element configured
                         // config.displayId=dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool], service.pid=CONNECTIONMANAGER_46 <- The config corresponding to what is exactly in server config
-                        String servicePid = (String) props.get("service.pid");
-                        if (servicePid != null && !servicePid.contains(elementName)) {
+                        String oldServicePid = (String) oldProps.get("service.pid");
+                        if (oldServicePid == null || oldServicePid.startsWith(elementName + '_'))
+                            configMap.put(displayId, props);
+
+                        // Config involving the use of ibm:extends (such as JCA config) is a special case where the
+                        // config service internally uses two (or more) configurations with the same config.displayId,
+                        // in which case we want to choose the one that corresponds to the OSGi service component.
+                        String subtypePid = (String) props.get("ibm.extends.subtype.pid");
+                        if (subtypePid != null) {
+                            do
+                                props = getProperties(subtypePid, configurations);
+                            while ((subtypePid = (String) props.get("ibm.extends.subtype.pid")) != null);
                             configMap.put(displayId, props);
                         }
                     }
