@@ -148,6 +148,8 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
 
         if (requireAdministratorRole() && !request.isUserInRole("Administrator")) {
             response.sendError(403, "Forbidden");
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "handleRequest", "403 Forbidden");
             return;
         }
 
