@@ -16,12 +16,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -31,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -78,6 +78,8 @@ public class ProductFeatureTest {
 
     private static final String CACHE_DIRECTORY = "workarea/platform/";
     private static final String FEATURE_BUNDLE_CACHE = CACHE_DIRECTORY + "feature.bundles.cache";
+
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
     /**
      * Copy the necessary features and bundles to the liberty server directories
@@ -615,16 +617,24 @@ public class ProductFeatureTest {
 
         Log.entering(c, METHOD_NAME);
 
-        Process proc = Runtime.getRuntime().exec(server.getInstallRoot() + "/bin/server version");
-
-        String productName = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
-            while ((reader.readLine()) != null) {
-                productName = reader.readLine();
-            }
+        String commandName = "server";
+        StringBuffer command = new StringBuffer();
+        if (isWindows) {
+            command.append(server.getInstallRoot() + "/bin/" + commandName + ".bat");
+        } else {
+            command.append(server.getInstallRoot() + "/bin/" + commandName);
         }
+        command.append(" version");
 
-        proc.destroy();
+        ProgramOutput po = server.getMachine().execute(command.toString());
+
+        String stdout = po.getStdout();
+        String stderr = po.getStderr();
+        int rc = po.getReturnCode();
+        String cmd = po.getCommand();
+
+        assertTrue("Error when invoking 'server version' command. stdout = " + stdout + " "
+                   + "stderr = " + stderr + " cmd = " + cmd + " rc = " + rc, stdout != null);
 
         // Start with no features being installed.
         server.setServerConfigurationFile("server_no_features.xml");
@@ -634,7 +644,7 @@ public class ProductFeatureTest {
         TestUtils.makeConfigUpdateSetMark(server, "server_core_features_not_found.xml");
 
         // Get the feature definition could not be found message for Open Liberty or Closed Liberty
-        if (productName != null && productName.startsWith("Open Liberty")) {
+        if (stdout != null && stdout.startsWith("Open Liberty")) {
             String output = server.waitForStringInLogUsingMark(missingFeatureMsgPrefix);
             assertNotNull("We haven't found the " + missingFeatureMsgPrefix + " in the logs.", output);
             assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
@@ -645,6 +655,7 @@ public class ProductFeatureTest {
             assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
             server.stopServer(missingFeatureCoreMsgPrefix);
         }
+
         Log.exiting(c, METHOD_NAME);
     }
 
