@@ -315,7 +315,7 @@ public final class IntrospectionLevelMember {
                     Field[] tempObjectFields = currentClass.getDeclaredFields();
                     if (tempObjectFields.length != 0) {
                         /*
-                         * If we are running on Java 9 or later, call setAccessible only if module currentClass belongs to if isOpen is true.
+                         * If we are running on Java 9 or later, call setAccessible only if module currentClass belongs to is open.
                          * Calling setAccessible when module is not open leads to a warning being displayed in the console by the JDK, which we want to avoid.
                          * If we are running on Java 8 or earlier, we can freely call setAccessible.
                          */
