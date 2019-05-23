@@ -176,11 +176,10 @@ public class TestEnableDisableFeaturesTest {
         String logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2001I");
         Log.info(c, testName, logMsg);
     	Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
-    	serverEDF2.setMarkToEndOfLog(serverEDF2.getMostRecentTraceFile());
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
     	getHttpsServlet("/metrics/vendor", serverEDF2);
     	Log.info(c, testName, "------- servlet metrics should be available ------");
-        Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF2.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=ServletStats"));
+        Assert.assertNotNull("A CWWKF0008I NOT FOUND",serverEDF2.waitForStringInLogUsingMark("A CWWKF0008I"));
        	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF2), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size",
