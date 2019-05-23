@@ -73,9 +73,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      *
      * @return the portion of the API root following /ibm/api
      */
-    public String getAPIRoot() {
-        return "/validator"; // TODO remove this and make abstract once all other code is updated
-    }
+    public abstract String getAPIRoot();
 
     /**
      * Returns the most deeply nested element name.
@@ -167,7 +165,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
             if (uid.length() == 0)
                 uid = null;
         }
-        String elementName = URLDecoder.decode(path.substring(apiRoot.length() + 1, endElementName), "UTF-8");
+        String elementName = path.length() < (apiRoot.length() + 1) ? "" : URLDecoder.decode(path.substring(apiRoot.length() + 1, endElementName), "UTF-8");
 
         StringBuilder filter = new StringBuilder("(&");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))

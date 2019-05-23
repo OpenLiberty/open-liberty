@@ -156,6 +156,17 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
                 }
             });
             connectionFactory = getManagedConnectionFactory(null).createConnectionFactory(conMgr);
+        // TODO fix this error path once updates to ExpectedFFDC in existing test case makes it into master
+        //} catch (PrivilegedActionException x) {
+        //    Throwable cause = x.getCause();
+        //    if (trace && tc.isEntryEnabled())
+        //        Tr.exit(this, tc, "createResource", x);
+        //    if (cause instanceof Exception)
+        //        throw (Exception) cause;
+        //    else if (cause instanceof Error)
+        //        throw (Error) cause;
+        //    else
+        //        throw x;
         } catch (Exception x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "createResource", x);
@@ -294,7 +305,7 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
      * Obtain a subject to use for recovery.
      * Precondition: the invoker must have a read lock on this connection factory service instance.
      *
-     * @param mcf the managed connection factory
+     * @param mcf       the managed connection factory
      * @param xaresinfo serialized ArrayList<Byte> for the CMConfigData
      * @return subject to use for recovery. Null if the default user/password of the connection factory should be used.
      * @throws Exception if an error occurs.
@@ -388,8 +399,8 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
      *
      * @param xaresinfo information about the XA resource.
      * @throws XAResourceNotAvailableException to indicate that the resource manager is not available
-     *             and recovery may not complete. Any other exception raised by getXAResource will be
-     *             caught by the TM and the server terminated as recovery cannot be guaranteed.
+     *                                             and recovery may not complete. Any other exception raised by getXAResource will be
+     *                                             caught by the TM and the server terminated as recovery cannot be guaranteed.
      */
     @Override
     public XAResource getXAResource(Serializable xaresinfo) throws XAResourceNotAvailableException {

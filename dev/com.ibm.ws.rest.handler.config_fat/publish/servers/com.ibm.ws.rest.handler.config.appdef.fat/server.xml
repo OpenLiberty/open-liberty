@@ -37,6 +37,7 @@
 
   <authData id="derbyAuth1" user="dbuser1" password="dbpwd1"/>
   <authData id="derbyAuth2" user="dbuser2" password="dbpwd2"/>
+  <authData id="derbyAuth3" user="dbuser3" password="dbpwd3"/>
 
   <library id="Derby">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
