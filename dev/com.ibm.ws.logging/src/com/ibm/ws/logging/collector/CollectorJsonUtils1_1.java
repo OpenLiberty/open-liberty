@@ -215,16 +215,16 @@ public class CollectorJsonUtils1_1 {
             formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
         }
 
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey1_1(), formattedValue.toString(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey1_1(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey1_1(eventType), formattedValue.toString(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey1_1(eventType), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey1_1(), datetime, false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageIdKey1_1(), logData.getMessageId(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getModuleKey1_1(), logData.getModule(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getLoglevelKey1_1(), logData.getLoglevel(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey1_1(), logData.getMethodName(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey1_1(), logData.getClassName(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey1_1(), logData.getSequence(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey1_1(eventType), datetime, false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getMessageIdKey1_1(eventType), logData.getMessageId(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getModuleKey1_1(eventType), logData.getModule(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getLoglevelKey1_1(eventType), logData.getLoglevel(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey1_1(eventType), logData.getMethodName(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey1_1(eventType), logData.getClassName(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey1_1(eventType), logData.getSequence(), false, true, false, false);
 
         kvpl = logData.getExtensions();
         if (kvpl != null) {

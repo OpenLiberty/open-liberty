@@ -105,8 +105,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Format to use for messages.log */
     protected volatile String messageFormat = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
 
-    /** Mapping to use for messages.fields */
-    protected volatile String messageFields = "";
+    /** Mapping to use for json.fields */
+    protected volatile String jsonFields = "";
 
     /** List of sources to route to console.log / console */
     protected volatile Collection<String> consoleSource = Arrays.asList(LoggingConstants.DEFAULT_CONSOLE_SOURCE);
@@ -153,8 +153,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FORMAT),
                                                           messageFormat);
 
-        messageFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FIELDS),
-                                                          messageFields);
+        jsonFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_FIELDS),
+                                                       jsonFields);
 
         consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
                                                                  LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_SOURCE),
@@ -235,7 +235,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValueAndSaveInit("consoleSource", c, consoleSource, isInit);
         consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValueAndSaveInit(c, consoleFormat, isInit);
 
-        messageFields = InitConfgAttribute.MESSAGE_FIELDS.getStringValueAndSaveInit(c, messageFields, isInit);
+        jsonFields = InitConfgAttribute.JSON_FIELDS.getStringValueAndSaveInit(c, jsonFields, isInit);
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
     }
@@ -397,8 +397,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return messageFormat;
     }
 
-    public String getMessageFields() {
-        return messageFields;
+    public String getjsonFields() {
+        return jsonFields;
     }
 
     public Collection<String> getConsoleSource() {
@@ -456,7 +456,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
         CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
-        MESSAGE_FIELDS("messageFields", "com.ibm.ws.logging.message.fields"),
+        JSON_FIELDS("jsonFields", "com.ibm.ws.logging.json.fields"),
         NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
 
         final String configKey;

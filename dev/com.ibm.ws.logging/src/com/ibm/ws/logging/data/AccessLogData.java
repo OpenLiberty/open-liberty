@@ -50,20 +50,37 @@ public class AccessLogData extends GenericData {
                                             LogFieldConstants.SEQUENCE
     };
 
+    public static String[] ACCESS_LOG_NAMES1_1 = {
+                                                   LogFieldConstants.IBM_REQUESTSTARTTIME,
+                                                   LogFieldConstants.IBM_URIPATH,
+                                                   LogFieldConstants.IBM_REQUESTMETHOD,
+                                                   LogFieldConstants.IBM_QUERYSTRING,
+                                                   LogFieldConstants.IBM_REQUESTHOST,
+                                                   LogFieldConstants.IBM_REQUESTPORT,
+                                                   LogFieldConstants.IBM_REMOTEHOST,
+                                                   LogFieldConstants.IBM_USERAGENT,
+                                                   LogFieldConstants.IBM_REQUESTPROTOCOL,
+                                                   LogFieldConstants.IBM_BYTESRECEIVED,
+                                                   LogFieldConstants.IBM_RESPONSECODE,
+                                                   LogFieldConstants.IBM_ELAPSEDTIME,
+                                                   LogFieldConstants.IBM_DATETIME,
+                                                   LogFieldConstants.IBM_SEQUENCE
+    };
+
     public AccessLogData() {
         super(14);
     }
 
     private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
+        setPair(index, ACCESS_LOG_NAMES1_1[index], s);
     }
 
     private void setPair(int index, int i) {
-        setPair(index, NAMES1_1[index], i);
+        setPair(index, ACCESS_LOG_NAMES1_1[index], i);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
+        setPair(index, ACCESS_LOG_NAMES1_1[index], l);
     }
 
     public void setRequestStartTime(long l) {
@@ -235,58 +252,59 @@ public class AccessLogData extends GenericData {
     }
 
     public String getRequestStartTimeKey1_1() {
-        return NAMES1_1[0];
+//        return NAMES1_1[0];
+        return ACCESS_LOG_NAMES1_1[0];
     }
 
     public String getUriPathKey1_1() {
-        return NAMES1_1[1];
+        return ACCESS_LOG_NAMES1_1[1];
     }
 
     public String getRequestMethodKey1_1() {
-        return NAMES1_1[2];
+        return ACCESS_LOG_NAMES1_1[2];
     }
 
     public String getQueryStringKey1_1() {
-        return NAMES1_1[3];
+        return ACCESS_LOG_NAMES1_1[3];
     }
 
     public String getRequestHostKey1_1() {
-        return NAMES1_1[4];
+        return ACCESS_LOG_NAMES1_1[4];
     }
 
     public String getRequestPortKey1_1() {
-        return NAMES1_1[5];
+        return ACCESS_LOG_NAMES1_1[5];
     }
 
     public String getRemoteHostKey1_1() {
-        return NAMES1_1[6];
+        return ACCESS_LOG_NAMES1_1[6];
     }
 
     public String getUserAgentKey1_1() {
-        return NAMES1_1[7];
+        return ACCESS_LOG_NAMES1_1[7];
     }
 
     public String getRequestProtocolKey1_1() {
-        return NAMES1_1[8];
+        return ACCESS_LOG_NAMES1_1[8];
     }
 
     public String getBytesReceivedKey1_1() {
-        return NAMES1_1[9];
+        return ACCESS_LOG_NAMES1_1[9];
     }
 
     public String getResponseCodeKey1_1() {
-        return NAMES1_1[10];
+        return ACCESS_LOG_NAMES1_1[10];
     }
 
     public String getElapsedTimeKey1_1() {
-        return NAMES1_1[11];
+        return ACCESS_LOG_NAMES1_1[11];
     }
 
     public String getDatetimeKey1_1() {
-        return NAMES1_1[12];
+        return ACCESS_LOG_NAMES1_1[12];
     }
 
     public String getSequenceKey1_1() {
-        return NAMES1_1[13];
+        return ACCESS_LOG_NAMES1_1[13];
     }
 }

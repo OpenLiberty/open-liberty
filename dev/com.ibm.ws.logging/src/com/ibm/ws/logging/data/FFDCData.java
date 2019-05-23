@@ -53,16 +53,32 @@ public class FFDCData extends GenericData {
                                               LogFieldConstants.IBM_SEQUENCE
     };
 
+    public static String[] FFDC_NAMES1_1 = {
+                                             LogFieldConstants.IBM_DATETIME,
+                                             LogFieldConstants.DATEOFFIRSTOCCURENCE,
+                                             LogFieldConstants.COUNT,
+                                             LogFieldConstants.MESSAGE,
+                                             LogFieldConstants.IBM_CLASSNAME,
+                                             LogFieldConstants.LABEL,
+                                             LogFieldConstants.IBM_EXCEPTIONNAME,
+                                             LogFieldConstants.IBM_PROBEID,
+                                             LogFieldConstants.SOURCEID,
+                                             LogFieldConstants.IBM_THREADID, //long
+                                             LogFieldConstants.IBM_STACKTRACE,
+                                             LogFieldConstants.IBM_OBJECTDETAILS,
+                                             LogFieldConstants.IBM_SEQUENCE
+    };
+
     private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
+        setPair(index, FFDC_NAMES1_1[index], s);
     }
 
     private void setPair(int index, int i) {
-        setPair(index, NAMES1_1[index], i);
+        setPair(index, FFDC_NAMES1_1[index], i);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
+        setPair(index, FFDC_NAMES1_1[index], l);
     }
 
     public void setDatetime(long l) {
@@ -222,54 +238,54 @@ public class FFDCData extends GenericData {
     }
 
     public String getDatetimeKey1_1() {
-        return NAMES1_1[0];
+        return FFDC_NAMES1_1[0];
     }
 
     public String getDateOfFirstOccurenceKey1_1() {
-        return NAMES1_1[1];
+        return FFDC_NAMES1_1[1];
     }
 
     public String getCountKey1_1() {
-        return NAMES1_1[2];
+        return FFDC_NAMES1_1[2];
     }
 
     public String getMessageKey1_1() {
-        return NAMES1_1[3];
+        return FFDC_NAMES1_1[3];
     }
 
     public String getClassNameKey1_1() {
-        return NAMES1_1[4];
+        return FFDC_NAMES1_1[4];
     }
 
     public String getLabelKey1_1() {
-        return NAMES1_1[5];
+        return FFDC_NAMES1_1[5];
     }
 
     public String getExceptionNameKey1_1() {
-        return NAMES1_1[6];
+        return FFDC_NAMES1_1[6];
     }
 
     public String getProbeIdKey1_1() {
-        return NAMES1_1[7];
+        return FFDC_NAMES1_1[7];
     }
 
     public String getSourceIdKey1_1() {
-        return NAMES1_1[8];
+        return FFDC_NAMES1_1[8];
     }
 
     public String getThreadIdKey1_1() {
-        return NAMES1_1[9];
+        return FFDC_NAMES1_1[9];
     }
 
     public String getStacktraceKey1_1() {
-        return NAMES1_1[10];
+        return FFDC_NAMES1_1[10];
     }
 
     public String getObjectDetailsKey1_1() {
-        return NAMES1_1[11];
+        return FFDC_NAMES1_1[11];
     }
 
     public String getSequenceKey1_1() {
-        return NAMES1_1[12];
+        return FFDC_NAMES1_1[12];
     }
 }

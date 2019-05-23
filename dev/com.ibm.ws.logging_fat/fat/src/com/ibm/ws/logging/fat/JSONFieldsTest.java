@@ -29,7 +29,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 @RunWith(FATRunner.class)
-public class FieldNameTest {
+public class JSONFieldsTest {
     private static final String MESSAGE_LOG = "logs/messages.log";
     private static final String SERVER_NAME_XML = "com.ibm.ws.logging.fieldnamexml";
     private static final String SERVER_NAME_ENV = "com.ibm.ws.logging.fieldnameenv";
@@ -68,7 +68,7 @@ public class FieldNameTest {
     }
 
     /*
-     * This test sets the "messageFields" attribute in the server.env and verifies the property in the messages.log file.
+     * This test sets the "WLP_LOGGING_JSON_FIELDS" attribute in the server.env and verifies the property in the messages.log file.
      */
     @Test
     public void testMessageFieldNamesEnv() throws Exception {
@@ -78,7 +78,7 @@ public class FieldNameTest {
     }
 
     /*
-     * This test sets the "messageFields" attribute in the bootstrap.properties and verifies the property in the messages.log file.
+     * This test sets the "com.ibm.ws.logging.json.fields" attribute in the bootstrap.properties and verifies the property in the messages.log file.
      */
     @Test
     public void testMessageFieldNamesBootstrap() throws Exception {
@@ -88,7 +88,7 @@ public class FieldNameTest {
     }
 
     /*
-     * This test sets the "messageFields" attribute in the server.xml and verifies the property in the messages.log file.
+     * This test sets the "jsonFields" attribute in the server.xml and verifies the property in the messages.log file.
      */
     @Test
     public void testMessageFieldNamesXML() throws Exception {
@@ -103,8 +103,8 @@ public class FieldNameTest {
     }
 
     @Test
-    public void messageFieldsErrorChecking() throws Exception {
-        // Set messageFields property in server.xml
+    public void jsonFieldsErrorChecking() throws Exception {
+        // Set jsonFields property in server.xml
         setUp(server_xml);
         //map the ibm_datetime field to blank field name
         setServerConfiguration(true, "ibm_datetime:", server_xml);
@@ -114,12 +114,12 @@ public class FieldNameTest {
         assertTrue("The default field name was not returned", lines.size() > 0);
     }
 
-    private static void setServerConfiguration(boolean isMessageFields, String newFieldName, LibertyServer server) throws Exception {
+    private static void setServerConfiguration(boolean isjsonFields, String newFieldName, LibertyServer server) throws Exception {
         Logging loggingObj;
         ServerConfiguration serverConfig = server.getServerConfiguration();
         loggingObj = serverConfig.getLogging();
-        if (isMessageFields) {
-            loggingObj.setMessageFields(newFieldName);
+        if (isjsonFields) {
+            loggingObj.setjsonFields(newFieldName);
         }
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);

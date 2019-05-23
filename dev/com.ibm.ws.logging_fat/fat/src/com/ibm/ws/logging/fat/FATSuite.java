@@ -35,7 +35,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 HeaderFormatTest.class,
                 LogServiceTest.class,
                 RealFlushTest.class,
-                FieldNameTest.class
+                JSONFieldsTest.class
 })
 
 public class FATSuite {

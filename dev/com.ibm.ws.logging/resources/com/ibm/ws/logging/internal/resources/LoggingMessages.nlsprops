@@ -136,6 +136,10 @@ LOG_FILE_RESUMED=TRAS3006I: Logging messages to the {0} file has resumed.
 LOG_FILE_RESUMED.explanation=Messages can be written to the file.
 LOG_FILE_RESUMED.useraction=No action is required.
 
+JSON_FIELDS_FORMAT_WARNING=TRA3007W: The jsonFields property is incorrectly formatted.
+JSON_FIELDS_FORMAT_WARNING.explanation=The jsonFields property is incorrectly formatted.
+JSON_FIELDS_FORMAT_WARNING.useraction=Ensure the format of the jsonFields property is correct.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

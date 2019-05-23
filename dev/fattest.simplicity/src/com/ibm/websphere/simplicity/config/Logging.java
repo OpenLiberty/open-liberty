@@ -30,7 +30,7 @@ public class Logging extends ConfigElement {
     private String traceFormat;
     private String logDirectory;
     private boolean isoDateFormat;
-    private String messageFields;
+    private String jsonFields;
 
     /**
      * @return the configured log directory
@@ -133,18 +133,18 @@ public class Logging extends ConfigElement {
     /**
      * default="";
      *
-     * @param messageFields the messageFields to set
+     * @param jsonFields the jsonFields to set
      */
-    @XmlAttribute(name = "messageFields")
-    public void setMessageFields(String messageFields) {
-        this.messageFields = ConfigElement.getValue(messageFields);
+    @XmlAttribute(name = "jsonFields")
+    public void setjsonFields(String jsonFields) {
+        this.jsonFields = ConfigElement.getValue(jsonFields);
     }
 
     /**
      * @return the message fields
      */
-    public String getMessageFields() {
-        return this.messageFields;
+    public String getjsonFields() {
+        return this.jsonFields;
     }
 
     /**
