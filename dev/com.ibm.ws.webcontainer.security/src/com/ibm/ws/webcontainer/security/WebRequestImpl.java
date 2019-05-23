@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
+import com.ibm.ws.security.krb5.SpnegoUtil;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.CertificateLoginAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
@@ -35,9 +36,6 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
  *
  */
 public class WebRequestImpl implements WebRequest {
-    private static final byte[] SPNEGO_OID = { 0x06, 0x06, 0x2b, 0x06, 0x01, 0x05, 0x05, 0x02 };
-    private static final byte[] KRB5_OID = { 0x06, 0x09, 0x2a, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xf7, 0x12, 0x01, 0x02, 0x02 };
-
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_AUTHORIZATION_METHOD = "Bearer ";
 
@@ -56,6 +54,7 @@ public class WebRequestImpl implements WebRequest {
     private boolean requestAuthenticate = false;
     private boolean disableClientCertFailOver = false;
     private boolean continueAfterUnprotectedURI = true;
+    private final SpnegoUtil spnegoUtil = new SpnegoUtil();
 
     public WebRequestImpl(HttpServletRequest req, HttpServletResponse resp,
                           SecurityMetadata securityMetadata, WebAppSecurityConfig config) {
@@ -155,7 +154,8 @@ public class WebRequestImpl implements WebRequest {
      * @return {@code true} if some authentication data is available, {@code false} otherwise.
      */
     private boolean determineIfRequestHasAuthenticationData() {
-        return isBasicAuthHeaderInRequest(request) || isClientCertHeaderInRequest(request) || isSSOCookieInRequest(request) || isSpnegoOrKrb5Token(request);
+        return isBasicAuthHeaderInRequest(request) || isClientCertHeaderInRequest(request) || isSSOCookieInRequest(request)
+               || spnegoUtil.isSpnegoOrKrb5Token(request.getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME));
     }
 
     private boolean isBasicAuthHeaderInRequest(HttpServletRequest request) {
@@ -350,9 +350,9 @@ public class WebRequestImpl implements WebRequest {
         if (tokenByte == null || tokenByte.length == 0)
             return false;
 
-        if (isSpnegoOrKrb5Oid(tokenByte, SPNEGO_OID)) {
+        if (isSpnegoOrKrb5Oid(tokenByte, SpnegoUtil.SPNEGO_OID)) {
             return true;
-        } else if (isSpnegoOrKrb5Oid(tokenByte, KRB5_OID))
+        } else if (isSpnegoOrKrb5Oid(tokenByte, SpnegoUtil.SPNEGO_OID))
             return true;
 
         return false;
