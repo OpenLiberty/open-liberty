@@ -389,7 +389,8 @@ public class TestEnableDisableFeaturesTest {
     	serverEDF12.startServer();
     	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	serverEDF12.setServerConfigurationFile("server_noJDBCMonitor.xml");
-    	Assert.assertNotNull("CWPMI2002I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWPMI2002I"));
+    	Assert.assertNotNull("CWWKF0013I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWWKF0013I"));
+    	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("A CWWKF0008I"));
     	Log.info(c, testName, "------- no vendor metrics should be available ------");
     	checkStrings(getHttpsServlet("/metrics",serverEDF12), 
     		new String[] {}, 
