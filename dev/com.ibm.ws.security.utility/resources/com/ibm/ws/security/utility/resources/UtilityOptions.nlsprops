@@ -184,6 +184,13 @@ sslCert.option-desc.keyType=\
 \tfrequently the format provided by certificate authorities when\n\
 \tissuing certificates.
 
+sslCert.option-key.ext=\
+\ \ \ \ --extInfo=certificate extension information
+sslCert.option-desc.ext=\
+\tCertificate extension information to add to the certificate.\n\
+\tThe default extension is a Subject Alternative Name entry using\n\
+\tthe host name.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
