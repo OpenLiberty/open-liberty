@@ -38,9 +38,9 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
-import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 
 /**
  *
@@ -50,8 +50,8 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     private static final TraceComponent tc = Tr.register(RemoteTransactionControllerService.class);
 
-    private final ThreadLocal<LocalTransactionCoordinator> _suspendedLTC = new ThreadLocal<LocalTransactionCoordinator>();
-    private final ThreadLocal<DistributableTransaction> _threadImportedTran = new ThreadLocal<DistributableTransaction>();
+    private static final ThreadLocal<UOWCoordinator> _threadUOWCoord = new ThreadLocal<UOWCoordinator>();
+    private static final ThreadLocal<DistributableTransaction> _threadImportedTran = new ThreadLocal<DistributableTransaction>();
 
     private UOWCurrent _uowc;
 
@@ -69,24 +69,18 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#importTransaction(java.lang.String)
      */
     @Override
     public boolean importTransaction(String globalId, int expires) throws SystemException {
 
-        // Make sure TM is open for business
-        try {
-            TMHelper.checkTMState();
-        } catch (NotSupportedException e) {
-            final SystemException se = new SystemException();
-            se.initCause(e);
-            throw se;
-        }
-
-        //The next thing we need to do is distinguish between local and remote invocations. If the UOW currently associated
-        //with the thread is a global txn then we know the invocation must be local.
+        //The first thing we need to do is distinguish between local and remote invocations. If the UOW currently associated
+        //with the thread is a global txn then we know the invocation must be local. The other case is where the remote servers
+        //web container has begun a local txn in the absence of the global context. We do know that there was a global txn on 
+        //invocation else there wouldn't even be a cc available.
         final UOWCoordinator uowCoord = _uowc.getUOWCoord();
+        _threadUOWCoord.set(uowCoord);
 
         if (uowCoord != null && uowCoord.isGlobal()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -96,34 +90,38 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             return false;
         }
 
-        LocalTransactionCoordinator ltc;
-        _suspendedLTC.set(ltc = LocalTranCurrentSet.instance().suspend());
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Suspended LTC", ltc);
-
-        // Still could be local
-        DistributableTransaction tx = getTransactionForID(globalId);
-        if (tx != null) {
-            // We know about this transaction already so at least we know we don't need to register
-
-            try {
-                _tm.resume((Transaction) tx);
-            } catch (Exception e) {
-                SystemException se = new SystemException();
-                se.initCause(e);
-                throw se;
-            }
-
-            return false;
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "The Web Service request is a remote invocation");
 
-        _threadImportedTran.set(tx = new EmbeddableTransactionImpl(expires, globalId));
+        try {
+            TMHelper.checkTMState();
+        } catch (NotSupportedException e) {
+            final SystemException se = new SystemException();
+            se.initCause(e);
+            throw se;
+        }
+
+        //The web container will start a local tran as there will not be a global context
+        //on thread. We need to suspend this before attaching the global tran
+        final LocalTransactionCoordinator ltc = LocalTranCurrentSet.instance().suspend();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Suspended LTC", ltc);
+
+        boolean createdNewTransaction = false;
+
+        DistributableTransaction tx = getTransactionForID(globalId);
+
+        if (tx == null) {
+            tx = new EmbeddableTransactionImpl(expires, globalId);
+            createdNewTransaction = true;
+
+            new TransactionWrapper((EmbeddableTransactionImpl) tx);
+        }
+
+        _threadImportedTran.set(tx);
+
         // Add association to police single thread per tran
         tx.addAssociation();
-        new TransactionWrapper((EmbeddableTransactionImpl) tx);
 
         // Resume transaction on this thread
         try {
@@ -134,18 +132,18 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             throw se;
         }
 
-        return true;
+        return createdNewTransaction;
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#unimportTransaction(java.lang.String)
      */
     @Override
     public void unimportTransaction(String globalId) throws SystemException {
 
-        DistributableTransaction tx = getTransactionForID(globalId);
+        DistributableTransaction tx = _threadImportedTran.get();
 
         // In the case of the in-process http channel, where no WS-AT
         // context is being propagated, we get the situation where there is a global tran
@@ -173,17 +171,18 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             tx.removeAssociation();
         }
 
-        final LocalTransactionCoordinator ltc = _suspendedLTC.get();
-        if (ltc != null) {
-            LocalTranCurrentSet.instance().resume(ltc);
+        final UOWCoordinator suspendedUOW = _threadUOWCoord.get();
+        // ? Should null be forced back ? - shouldn't happen anyway, LTC must have been on the thread
+        if (suspendedUOW != null && !suspendedUOW.isGlobal()) {
+            LocalTranCurrentSet.instance().resume((LocalTransactionCoordinator) suspendedUOW);
         }
 
-        _suspendedLTC.set(null);
+        _threadUOWCoord.set(null);
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#exportTransaction()
      */
     @Override
@@ -195,33 +194,37 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             throw new SystemException("No global transaction");
         }
 
-        _tm.suspend();
+        // TODO TransactionWrapper stuff
+
+        // Suspend transaction association as we are going off server
+        ((DistributableTransaction) uowCoord).suspendAssociation();
 
         return ((DistributableTransaction) uowCoord).getGlobalId();
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#unexportTransaction(java.lang.String)
      */
     @Override
     public void unexportTransaction(String globalId) throws SystemException {
 
-        final DistributableTransaction tx = getTransactionForID(globalId);
+        // look up the tran or just get the one off the thread
 
-        try {
-            _tm.resume((Transaction) tx);
-        } catch (Exception e) {
-            SystemException se = new SystemException();
-            se.initCause(e);
-            throw se;
+        // blow up if there's no tran
+        final UOWCoordinator uowCoord = _uowc.getUOWCoord();
+        if (uowCoord == null || !uowCoord.isGlobal()) {
+            throw new SystemException("No global transaction");
         }
+
+        // Resume transaction association as we are coming back on server
+        ((DistributableTransaction) uowCoord).resumeAssociation();
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#registerRemoteParticipant(java.lang.String, java.io.Serializable, java.lang.String)
      */
     @Override
@@ -232,6 +235,10 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         final DistributableTransaction tx = getTransactionForID(globalId);
 
         if (tx != null) {
+            // Stop anyone else shifting the ground beneath us
+            tx.addAssociation();
+
+            try {
                 // Check the transaction state and action as appropriate
                 switch (tx.getStatus()) {
                     case Status.STATUS_ACTIVE:
@@ -248,6 +255,9 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
                         break;
 
                 } // end switch
+            } finally {
+                tx.removeAssociation();
+            }
         } else {
             retval = false;
         }
@@ -274,7 +284,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#registerRecoveryCoordinator(java.lang.String, java.io.Serializable, java.lang.String)
      */
     @Override
@@ -291,7 +301,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#prepare(java.lang.String)
      */
     @Override
@@ -310,7 +320,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#commit(java.lang.String)
      */
     @Override
@@ -328,7 +338,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#rollback(java.lang.String)
      */
     @Override
@@ -347,7 +357,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#setRollbackOnly(java.lang.String)
      */
     @Override
@@ -362,7 +372,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.tx.remote.RemoteTransactionController#replayCompletion(java.lang.String)
      */
     @Override
