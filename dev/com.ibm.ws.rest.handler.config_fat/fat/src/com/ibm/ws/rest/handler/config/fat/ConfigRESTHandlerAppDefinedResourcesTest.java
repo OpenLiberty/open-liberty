@@ -125,11 +125,24 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
         assertEquals(err, 61, cm.getJsonNumber("reapTime").longValue());
 
-        // TODO containerAuthDataRef?
+        // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
 
-        // TODO properties
+        // TODO properties should be an object, not an array of objects
+        JsonArray array;
+        assertNotNull(err, array = cf.getJsonArray("properties.ConfigTestAdapter.ConnectionFactory"));
+        assertEquals(err, 1, array.size());
+        JsonObject props;
+        assertNotNull(err, props = array.getJsonObject(0));
+        //assertTrue(err, props.getBoolean("enableBetaContent")); // TODO boolean data type
+        assertEquals(err, "`", props.getString("escapeChar"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+        //assertEquals(err, 1515, props.getInt("portNubmer")); // TODO numeric data type
+        assertEquals(err, "cfuser1", props.getString("userName"));
+        //assertEquals(err, "******", props.getString("password")); // TODO password-named/confidential properties
 
-        // TODO omit internal attributes: creates.objectClass, jndiName.unique, transactionSupport?
+        // TODO api
+
+        // TODO should transactionSupport really show as an attribute of connectionFactory?
     }
 
     /**

@@ -28,10 +28,12 @@ import componenttest.app.FATServlet;
                              resourceAdapter = "ConfigTestAdapter",
                              transactionSupport = TransactionSupportLevel.NoTransaction,
                              maxPoolSize = 101,
-                             properties = { "containerAuthDataRef=cfauth1",
-                                            "escapeCharacter=`",
+                             properties = { "enableBetaContent=true",
+                                            "escapeChar=`",
                                             "portNumber=1515",
-                                            "reapTime=1m1s"
+                                            "reapTime=1m1s",
+                                            "userName=cfuser1",
+                                            "password=cfpwd1"
                              })
 
 @DataSourceDefinitions({
