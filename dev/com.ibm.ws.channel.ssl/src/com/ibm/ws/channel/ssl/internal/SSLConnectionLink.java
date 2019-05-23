@@ -136,10 +136,12 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
                 if (getChannel().getUseH2ProtocolAttribute() != null && getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
+                    this.sslChannel.checkandInitALPN();
                 }
             } else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
                 if (getChannel().getUseH2ProtocolAttribute() == null || getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
+                    this.sslChannel.checkandInitALPN();
                 }
             }
         }
@@ -434,6 +436,15 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception during unwrap, " + ioe);
             }
+
+            // cleanup possible ALPN resources
+            if (flowType == FlowType.INBOUND) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Cleanup possible ALPN resources");
+                }
+                AlpnSupportUtils.getAlpnResult(getSSLEngine(), this.connLink);
+            }
+
             if (decryptedNetBuffer != null) {
                 decryptedNetBuffer.release();
                 decryptedNetBuffer = null;
