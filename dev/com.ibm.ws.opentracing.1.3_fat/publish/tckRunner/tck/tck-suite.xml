@@ -12,7 +12,7 @@
     configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.opentracing.tck">
         <packages>
-         	<package name="org.eclipse.microprofile.opentracing.tck" />
+            <package name="org.eclipse.microprofile.opentracing.tck" />
         </packages>
     </test>
 </suite>
