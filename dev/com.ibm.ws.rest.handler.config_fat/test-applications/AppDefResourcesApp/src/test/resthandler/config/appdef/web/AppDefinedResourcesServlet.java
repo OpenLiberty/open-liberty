@@ -16,9 +16,23 @@ import java.util.concurrent.Executor;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.annotation.sql.DataSourceDefinitions;
 import javax.ejb.EJB;
+import javax.resource.ConnectionFactoryDefinition;
+import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
 import javax.servlet.annotation.WebServlet;
 
 import componenttest.app.FATServlet;
+
+@ConnectionFactoryDefinition(name = "java:module/env/eis/cf1",
+                             description = "It is Test ConnectionFactory",
+                             interfaceName = "javax.resource.cci.ConnectionFactory",
+                             resourceAdapter = "ConfigTestAdapter",
+                             transactionSupport = TransactionSupportLevel.NoTransaction,
+                             maxPoolSize = 101,
+                             properties = { "containerAuthDataRef=cfauth1",
+                                            "escapeCharacter=`",
+                                            "portNumber=1515",
+                                            "reapTime=1m1s"
+                             })
 
 @DataSourceDefinitions({
                          @DataSourceDefinition(name = "java:app/env/jdbc/ds1",

@@ -29,6 +29,7 @@ import javax.json.JsonValue;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -61,6 +62,11 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         ShrinkHelper.exportToServer(server, "apps", app);
         server.addInstalledAppForValidation(APP_NAME);
 
+        ResourceAdapterArchive tca_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "ConfigTestAdapter.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("org.test.config.adapter"));
+        ShrinkHelper.exportToServer(server, "connectors", tca_rar);
+
         server.startServer();
 
         // Wait for the API to become available
@@ -70,6 +76,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         messages.add("CWPKI0803A"); // CWPKI0803A: SSL certificate created in # seconds. SSL key file: ...
         messages.add("CWWKO0219I: .* defaultHttpEndpoint-ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
         messages.add("CWWKT0016I"); // CWWKT0016I: Web application available (default_host): http://9.10.111.222:8010/ibm/api/
+        messages.add("J2CA7001I: .* ConfigTestAdapter"); // J2CA7001I: Resource adapter ConfigTestAdapter installed in # seconds.
 
         server.waitForStringsInLogUsingMark(messages);
 
@@ -80,6 +87,49 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for app-defined connection factories with the
+     * jndiName that is supplied as a query parameter.
+     */
+    @Test
+    public void testAppDefinedConnectionFactoriesByJndiName() throws Exception {
+        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory?jndiName=java:module%2Fenv%2Feis%2Fcf1")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + cfs;
+        assertEquals(1, cfs.size());
+
+        JsonObject cf;
+        assertNotNull(err, cf = cfs.getJsonObject(0));
+
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]", cf.getString("id"));
+        assertEquals(err, "java:module/env/eis/cf1", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", cf.getString("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 101, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 61, cm.getJsonNumber("reapTime").longValue());
+
+        // TODO containerAuthDataRef?
+
+        // TODO properties
+
+        // TODO omit internal attributes: creates.objectClass, jndiName.unique, transactionSupport?
     }
 
     /**

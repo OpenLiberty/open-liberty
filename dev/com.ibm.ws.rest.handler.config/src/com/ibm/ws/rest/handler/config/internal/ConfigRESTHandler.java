@@ -121,10 +121,12 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
         String servicePid = isFactoryPid ? (String) config.get("service.factoryPid") : (String) config.get("service.pid");
         String extendsSourcePid = isFactoryPid ? (String) config.get("ibm.extends.source.factoryPid") : (String) config.get("ibm.extends.source.pid");
 
-        String metaTypeElementName = configHelper.getMetaTypeElementName(extendsSourcePid == null ? servicePid : extendsSourcePid);
-        // if the element's name is internal, no config should be added for that element
-        if (metaTypeElementName != null && metaTypeElementName.equalsIgnoreCase("internal"))
-            return null;
+        if (!isAppDefined) { // App-defined connectionFactory creates a single entry and uses the internal supertype pid
+            String metaTypeElementName = configHelper.getMetaTypeElementName(extendsSourcePid == null ? servicePid : extendsSourcePid);
+            // if the element's name is internal, no config should be added for that element
+            if (metaTypeElementName != null && metaTypeElementName.equalsIgnoreCase("internal"))
+                return null;
+        }
 
         JSONObject json = new OrderedJSONObject();
         json.put("configElementName", configElementName);
