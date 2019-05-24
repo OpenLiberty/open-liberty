@@ -460,6 +460,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
     }
 
     @Override
+    @Trivial
     public void populateResponse(RESTResponse response, Object responseInfo) throws IOException {
         JSONArtifact json;
         if (responseInfo instanceof JSONArtifact)
@@ -476,6 +477,10 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
             throw new IllegalArgumentException(responseInfo.toString()); // should be unreachable
 
         String jsonString = json.serialize(true);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "populateResponse", jsonString);
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getOutputStream().write(jsonString.getBytes("UTF-8"));
