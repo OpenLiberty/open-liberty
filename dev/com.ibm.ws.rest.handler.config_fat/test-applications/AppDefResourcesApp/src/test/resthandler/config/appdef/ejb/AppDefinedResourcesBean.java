@@ -15,6 +15,15 @@ import java.util.concurrent.Executor;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.resource.ConnectionFactoryDefinition;
+import javax.resource.ConnectionFactoryDefinitions;
+
+@ConnectionFactoryDefinitions({
+                                @ConnectionFactoryDefinition(name = "java:module/env/eis/cf1", // same JNDI name is used in WAR module, but okay because different scope
+                                                             interfaceName = "javax.sql.DataSource",
+                                                             resourceAdapter = "ConfigTestAdapter",
+                                                             properties = "purgePolicy=FailingConnectionOnly")
+})
 
 @DataSourceDefinition(name = "java:comp/env/jdbc/ds3", // same JNDI name is used in WAR module, but okay because different scope
                       className = "org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource",
