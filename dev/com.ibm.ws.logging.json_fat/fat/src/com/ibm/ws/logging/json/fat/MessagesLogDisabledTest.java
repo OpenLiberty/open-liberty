@@ -11,6 +11,7 @@
 package com.ibm.ws.logging.json.fat;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,12 +37,11 @@ public class MessagesLogDisabledTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         server.startServer();
-        //Assert.assertNotNull("server has not started.", server.waitForStringInLog("smarter"));
+        assertTrue(server.isStarted());
     }
 
     @Test
     public void testDisabledMessagesLog() throws Exception {
-        Thread.sleep(5000);
         assertFalse(server.defaultLogFileExists());
     }
 
