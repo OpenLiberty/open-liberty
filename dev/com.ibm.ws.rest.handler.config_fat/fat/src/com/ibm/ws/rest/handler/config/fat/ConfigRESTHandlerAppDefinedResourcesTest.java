@@ -127,18 +127,14 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
         // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
 
-        // TODO properties should be an object, not an array of objects
-        JsonArray array;
-        assertNotNull(err, array = cf.getJsonArray("properties.ConfigTestAdapter.ConnectionFactory"));
-        assertEquals(err, 1, array.size());
         JsonObject props;
-        assertNotNull(err, props = array.getJsonObject(0));
-        //assertTrue(err, props.getBoolean("enableBetaContent")); // TODO boolean data type
+        assertNotNull(err, props = cf.getJsonObject("properties.ConfigTestAdapter.ConnectionFactory"));
+        assertTrue(err, props.getBoolean("enableBetaContent"));
         assertEquals(err, "`", props.getString("escapeChar"));
         assertEquals(err, "localhost", props.getString("hostName"));
-        //assertEquals(err, 1515, props.getInt("portNubmer")); // TODO numeric data type
+        assertEquals(err, 1515, props.getInt("portNumber"));
         assertEquals(err, "cfuser1", props.getString("userName"));
-        //assertEquals(err, "******", props.getString("password")); // TODO password-named/confidential properties
+        assertEquals(err, "******", props.getString("password"));
 
         // TODO api
 
