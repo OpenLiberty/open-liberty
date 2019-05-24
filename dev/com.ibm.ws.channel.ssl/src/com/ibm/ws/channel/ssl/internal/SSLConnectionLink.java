@@ -736,12 +736,16 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         } else {
             // Unknown result from handshake. All other results should have thrown exceptions.
             // Clean up buffers used during read.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unhandled result from SSL engine: " + hsStatus);
+                Tr.debug(tc, "Cleanup possible ALPN resources on unhandled results");
+            }
+            AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
+
             netBuffer.release();
             getDeviceReadInterface().setBuffers(null);
             decryptedNetBuffer.release();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unhandled result from SSL engine: " + hsStatus);
-            }
+
             SSLException ssle = new SSLException("Unhandled result from SSL engine: " + hsStatus);
             FFDCFilter.processException(ssle, getClass().getName(), "401", this);
             close(getVirtualConnection(), ssle);
