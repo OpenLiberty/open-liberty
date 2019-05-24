@@ -14,7 +14,8 @@
   <featureManager>
     <feature>componenttest-1.0</feature>
     <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
-    <feature>ejb-3.2</feature>
+    <feature>ejbLite-3.2</feature>
+    <feature>jca-1.7</feature>
     <feature>jdbc-4.2</feature>
   </featureManager>
 
@@ -27,6 +28,8 @@
     <classloader commonLibraryRef="Derby"/>
   </application>
 
+  <resourceAdapter id="ConfigTestAdapter" location="${server.config.dir}/connectors/ConfigTestAdapter.rar"/>
+
   <transaction>
     <DATASOURCE transactional="false">
       <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
@@ -34,6 +37,8 @@
    	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create" user="dbuser1" password="dbpwd1"/>
     </DATASOURCE>
   </transaction>
+
+  <authData id="cfauth1" user="cfuser1" password="1cfuser"/>
 
   <authData id="derbyAuth1" user="dbuser1" password="dbpwd1"/>
   <authData id="derbyAuth2" user="dbuser2" password="dbpwd2"/>
