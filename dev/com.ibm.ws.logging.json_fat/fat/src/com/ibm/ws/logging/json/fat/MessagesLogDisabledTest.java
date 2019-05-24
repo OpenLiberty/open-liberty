@@ -11,19 +11,21 @@
 package com.ibm.ws.logging.json.fat;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- *
+ * Disable messages.log from being generated via bootstrap.properties
  */
 
 @RunWith(FATRunner.class)
@@ -37,7 +39,8 @@ public class MessagesLogDisabledTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         server.startServer();
-        assertTrue(server.isStarted());
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        assertNotNull("Server has not started.", server.waitForStringInLog(".server started in.*seconds.", consoleLogFile));
     }
 
     @Test
