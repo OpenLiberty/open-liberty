@@ -521,17 +521,19 @@ ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] The processing of Jan
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=The processing of Jandex information of a class caused an exception.
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Open of Jandex index resource [{1}] failed.  Error message: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Open of Jandex index resource [{1}] from [{2}] failed.  Error message: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=The attempt to open the Jandex index resource caused an exception.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Read of Jandex index resource [{1}] failed.  Error message: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Read of Jandex index resource [{1}] from [{2}] failed.  Error message: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=The attempt to read the Jandex index failed with an exception.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
@@ -560,7 +562,35 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {3} A number
 # # {4} The name of a file or the name of a directory
 # # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: Read Jandex indexes for {0} out of {1} archives ({2} out of {3} classes) in {4}. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Jandex coverage of module {4}: Read Jandex indexes for {0} out of {1} module locations; Jandex indexes provided {2} out of {3} module classes.
 ANNO_JANDEX_USAGE.explanation=This shows the number of archives in the module that were processed by reading Jandex indexes rather than by scanning the actual class files.  It also shows the total number of classes in the application that were processed by reading Jandex indexes.
 ANNO_JANDEX_USAGE.useraction=If Jandex indexes are intended to be read for the application then there is no action.  If Jandex indexes are not to be read for the application, then set the useJandex="false" attribute in the application element in server.xml. Alternatively, set useJandex="false" in the applicationManger element in server.xml to ignore Jandex indexes in all applications.
 
+# # {0} A string: An application name.
+# # {1} A string: A module name.
+# # {2} A number: The total count of module locations.
+# # {3} A number: The count of module locations which had Jandex indexes.
+# # {4} A number: The total count of module classes.
+# # {5} A number: The count of module classes which were read from a Jandex index.
+ANNOCACHE_JANDEX_USAGE=CWWKC0093I: Jandex coverage of module {1} in application {0}: Read Jandex indexes for {3} out of {2} module locations; Jandex indexes provided {5} out of {4} module classes.
+ANNOCACHE_JANDEX_USAGE.explanation=This shows the proportion of a module which was scanned for annotations using Jandex indexes.  Module locations are either the module itself (for example, for an EJB Jar file), or are the WEB-INF/classes folder and WEB-INF/lib Jar files (for a WAR file).
+ANNOCACHE_JANDEX_USAGE.useraction=If Jandex indexes are intended to be read for the application then there is no action.  If Jandex indexes are not to be read for the application, then set the useJandex="false" attribute in the application element in server.xml. Alternatively, set useJandex="false" in the applicationManger element in server.xml to ignore Jandex indexes in all applications.
+
+# # {0} A string: Message text from an exception.
+ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: Annotation processing cache error: {0}
+ANNO_TARGETS_CACHE_EXCEPTION.explanation=An exception occured while accessing annotations cache data.
+ANNO_TARGETS_CACHE_EXCEPTION.useraction=See the exception and the associated FFDC message for moreinformation.
+
+# # {0} A string: A class name.
+# # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
+# # {2} A string: Message text from an exception.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION: CWWKC0103W: An exception occurred while scanning class {0} of {1}.  The exception was {2}.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation: An error occurred while scanning class and annotations data.  The associated module may function incorrectly.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A String: An internal print string of the data structure which was used to locate the class.
+# # {1} A String: A class name.
+# # {2} A String: A class name.
+ANNO_TARGETS_CLASS_NAME_MISMATCH=CWWKC0105W: Class scanning internal error: The visitor [ {0} ] read class [ {1] ] from a resource which matches class [ {2} ].
+ANNO_TARGETS_CLASS_NAME_MISMATCH.explanation=The name recorded within the '.class' resource does not match the class name obtained from the class resource. The class was moved outside of the directory which matches the class's qualified name.  The class will be ignored.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.useraction=The class resource should be moved to the directory which matches the class's qualified name.

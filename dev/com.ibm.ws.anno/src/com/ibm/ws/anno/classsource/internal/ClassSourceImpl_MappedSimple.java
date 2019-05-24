@@ -43,7 +43,8 @@ public class ClassSourceImpl_MappedSimple
     implements ClassSource_MappedSimple {
 
     /** <p>Cache of the class name for logging.</p> */
-    public static final String CLASS_NAME = ClassSourceImpl_MappedSimple.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = ClassSourceImpl_MappedSimple.class.getName();
 
     /** <p>Trace component for simple class sources.</p> */
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedSimple.class);
@@ -297,14 +298,13 @@ public class ClassSourceImpl_MappedSimple
                         } catch (ClassSource_Exception e) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
+                            // ANNO_TARGETS_CLASS_SCAN_EXCEPTION: 
+                            // CWWKC0103W: An exception occurred while scanning class {0} of {1}.
+                            // The exception was {3}.
 
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process entry [ " + nextResourceName + " ]" +
-                            //               " under root [ " + getJarPath() + " ]" +
-                            //               " for class [ " + nextClassName + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            Tr.warning(tc, "ANNO_TARGETS_CLASS_SCAN_EXCEPTION",
+                                nextClassName, provider.getName(),
+                                e);
                         }
 
                         if ( didProcess ) {
@@ -443,8 +443,9 @@ public class ClassSourceImpl_MappedSimple
      * <p>Answer true or false, telling if the class was processed. True is returned
      * and no processing is performed if the streamer is null.</p>
      * 
-     * <p>Filtering and processing are provided by the stream. See {@link ClassSource_Streamer#doProcess(String, boolean, boolean, boolean)} and
-     * {@link ClassSource_Streamer#process(String, String, InputStream, boolean, boolean, boolean)}.</p>
+     * <p>Filtering and processing are provided by the stream. See
+     * {@link ClassSource_Streamer#doProcess} and
+     * {@link ClassSource_Streamer#process}.</p>
      * 
      * <p>Resource management is handled by the bound class provider.
      * See {@link ClassSource_MappedSimple.SimpleClassProvider#openResource(String)}.
