@@ -36,8 +36,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 })
 public class FATSuite implements FATOpentracingConstants {
     private static final Class<? extends FATSuite> CLASS = FATSuite.class;
-    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-0.31.mf";
-    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-0.31.jar";
+    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.1.mf";
+    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.1.jar";
 
     private static void info(String methodName, String text) {
         FATLogging.info(CLASS, methodName, text);
