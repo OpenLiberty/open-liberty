@@ -91,7 +91,8 @@ public class LogServiceTest {
 
     @Before
     public void resetLogMark() throws Exception {
-        server.setMarkToEndOfLog();
+        server.setMarkToEndOfLog(); // This sets the mark at the end for default log
+        server.setMarkToEndOfLog(server.getConsoleLogFile()); // Ensure mark for console log is at the end
         server.setTraceMarkToEndOfDefaultTrace();
     }
 
@@ -120,6 +121,7 @@ public class LogServiceTest {
         urlBuilder.append("/logServiceTester/log?" + KEY_EVENT + "=" + type);
         URL url = new URL(urlBuilder.toString());
         String resp = HttpUtils.getHttpResponseAsString(url);
+        // Wait a few seconds as the logging must be fully completed before continuing
         assertTrue("Unexpected resp: " + resp, resp.contains("DONE"));
     }
 
@@ -148,6 +150,7 @@ public class LogServiceTest {
         }
         URL url = new URL(urlBuilder.toString());
         String resp = HttpUtils.getHttpResponseAsString(url);
+        // Wait a few seconds as the logging must be fully completed before continuing
         assertTrue("Unexpected resp: " + resp, resp.contains("DONE"));
     }
 
