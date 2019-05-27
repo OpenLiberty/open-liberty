@@ -40,7 +40,7 @@ public class MessagesLogDisabledTest {
     public static void setUpClass() throws Exception {
         server.startServer();
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        assertNotNull("Server has not started.", server.waitForStringInLog(".server started in.*seconds.", consoleLogFile));
+        assertNotNull("Server has not started.", server.waitForStringInLog("CWWKF0011I", consoleLogFile));
     }
 
     @Test
