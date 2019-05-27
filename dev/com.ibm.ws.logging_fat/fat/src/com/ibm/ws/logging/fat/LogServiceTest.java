@@ -92,6 +92,7 @@ public class LogServiceTest {
     @Before
     public void resetLogMark() throws Exception {
         server.setMarkToEndOfLog();
+        server.setMarkToEndOfLog(server.getConsoleLogFile());
         server.setTraceMarkToEndOfDefaultTrace();
     }
 
