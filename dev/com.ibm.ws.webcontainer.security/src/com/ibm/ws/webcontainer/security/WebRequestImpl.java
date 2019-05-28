@@ -11,17 +11,13 @@
 package com.ibm.ws.webcontainer.security;
 
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.krb5.SpnegoUtil;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
@@ -315,71 +311,5 @@ public class WebRequestImpl implements WebRequest {
     @Override
     public void setDisableClientCertFailOver(boolean isDisable) {
         disableClientCertFailOver = isDisable;
-    }
-
-    /**
-     * @param authzHeader
-     * @return
-     */
-    protected String extractAuthzTokenString(String authzHeader) {
-        String token = null;
-        if (authzHeader != null) {
-            StringTokenizer st = new StringTokenizer(authzHeader);
-            if (st != null) {
-                st.nextToken(); // skip the "Negotiate"
-                if (st.hasMoreTokens()) {
-                    token = st.nextToken();
-                }
-            }
-        }
-        return token;
-    }
-
-    /**
-     * This method Checks to ensure that Authorization string
-     * is an SPNEGO or Kerberos authentication token
-     */
-    protected boolean isSpnegoOrKrb5Token(HttpServletRequest req) {
-
-        String authzHeader = req.getHeader("Authorization");
-        if (authzHeader == null)
-            return false;
-
-        byte[] tokenByte = Base64Coder.base64Decode(Base64Coder.getBytes(extractAuthzTokenString(authzHeader)));
-
-        if (tokenByte == null || tokenByte.length == 0)
-            return false;
-
-        if (isSpnegoOrKrb5Oid(tokenByte, SpnegoUtil.SPNEGO_OID)) {
-            return true;
-        } else if (isSpnegoOrKrb5Oid(tokenByte, SpnegoUtil.SPNEGO_OID))
-            return true;
-
-        return false;
-    }
-
-    private boolean isSpnegoOrKrb5Oid(byte[] tokenByte, byte[] tokenType) {
-        byte[] OIDfromToken = getMechOidFromToken(tokenByte, tokenType.length);
-        if (OIDfromToken == null || OIDfromToken.length == 0)
-            return false;
-
-        if (Arrays.equals(OIDfromToken, tokenType)) {
-            return true;
-        }
-        return false;
-    }
-
-    private byte[] getMechOidFromToken(@Sensitive byte[] tokenByte, int length) {
-        int mechOidStart = 4;
-
-        if (tokenByte == null || tokenByte.length < length + mechOidStart) {
-            return null;
-        }
-
-        byte[] OIDfromToken = new byte[length];
-        for (int i = 0; i < length; i++) {
-            OIDfromToken[i] = tokenByte[i + mechOidStart];
-        }
-        return OIDfromToken;
     }
 }
