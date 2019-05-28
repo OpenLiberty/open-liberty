@@ -110,9 +110,9 @@
 </Designate>
 
 <OCD id="com.ibm.ws.security.wim.uniqueUserIdMapping" name="%uniqueUserIdMappingConfiguration" description="%uniqueUserIdMappingConfiguration.desc">
-	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+	<AD id="inputProperty" name="%propertyForInputUser" description="%propertyForInputUser.desc" 
 		required="true" type="String" default="uniqueName"/>
-	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+	<AD id="outputProperty" name="%propertyForOutputUser" description="%propertyForOutputUser.desc" 
 		required="true" type="String" default="uniqueName"/>
 </OCD>
 
@@ -124,9 +124,9 @@
 
 
 <OCD id="com.ibm.ws.security.wim.userSecurityNameMapping" name="%userSecurityNameMappingConfiguration" description="%userSecurityNameMappingConfiguration.desc">
-	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+	<AD id="inputProperty" name="%propertyForInputUser" description="%propertyForInputUser.desc" 
 		required="true" type="String" default="principalName"/>
-	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+	<AD id="outputProperty" name="%propertyForOutputUser" description="%propertyForOutputUser.desc" 
 		required="true" type="String" default="uniqueName"/>
 </OCD>
 
@@ -135,9 +135,9 @@
 </Designate>
 
 <OCD id="com.ibm.ws.security.wim.userDisplayNameMapping" name="%userDisplayNameMappingConfiguration" description="%userDisplayNameMappingConfiguration.desc">
-	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+	<AD id="inputProperty" name="%propertyForInputUser" description="%propertyForInputUser.desc" 
 		required="true" type="String" default="principalName"/>
-	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+	<AD id="outputProperty" name="%propertyForOutputUser" description="%propertyForOutputUser.desc" 
 		required="true" type="String" default="principalName"/>
 </OCD>
 
@@ -146,9 +146,9 @@
 </Designate>
 
 <OCD id="com.ibm.ws.security.wim.uniqueGroupIdMapping" name="%uniqueGroupIdMappingConfiguration" description="%uniqueGroupIdMappingConfiguration.desc">
-	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+	<AD id="inputProperty" name="%propertyForInputGroup" description="%propertyForInputGroup.desc" 
 		required="true" type="String" default="cn"/>
-	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+	<AD id="outputProperty" name="%propertyForOutputGroup" description="%propertyForOutputGroup.desc" 
 		required="true" type="String" default="uniqueName"/>
 </OCD>
 
@@ -158,9 +158,9 @@
 
 
 <OCD id="com.ibm.ws.security.wim.groupSecurityNameMapping" name="%groupSecurityNameMappingConfiguration" description="%groupSecurityNameMappingConfiguration.desc">
-	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+	<AD id="inputProperty" name="%propertyForInputGroup" description="%propertyForInputGroup.desc" 
 		required="true" type="String" default="cn"/>
-	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+	<AD id="outputProperty" name="%propertyForOutputGroup" description="%propertyForOutputGroup.desc" 
 		required="true" type="String" default="cn"/>
 </OCD>
 
@@ -169,9 +169,9 @@
 </Designate>
 
 <OCD id="com.ibm.ws.security.wim.groupDisplayNameMapping" name="%groupDisplayNameMappingConfiguration" description="%groupDisplayNameMappingConfiguration.desc">
-	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+	<AD id="inputProperty" name="%propertyForInputGroup" description="%propertyForInputGroup.desc" 
 		required="true" type="String" default="cn"/>
-	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+	<AD id="outputProperty" name="%propertyForOutputGroup" description="%propertyForOutputGroup.desc" 
 		required="true" type="String" default="cn"/>
 </OCD>
 
