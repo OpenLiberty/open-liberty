@@ -137,7 +137,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private static final String STARSTAR_ROLE = "_starstar_";
 
     private static WebAppSecurityConfig globalConfig = null;
-    private static WebAuthenticatorFactory globalWebAuthenticatorFactory = null;
     protected final Map<String, Object> currentProps = new HashMap<String, Object>();
     protected volatile WebAuthenticatorFactory authenticatorFactory = null;
     protected volatile WebAppSecurityConfig webAppSecConfig = null;
@@ -276,7 +275,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     public void setAuthenticatorFactory(WebAuthenticatorFactory authenticatorFactory) {
         this.authenticatorFactory = authenticatorFactory;
-        globalWebAuthenticatorFactory = authenticatorFactory;
         if (!FrameworkState.isStopping() && isActive && webAppSecConfig != null) {
             activateComponents();
         }
@@ -1488,10 +1486,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     public static WebAppSecurityConfig getGlobalWebAppSecurityConfig() {
         return globalConfig;
-    }
-
-    public static WebAuthenticatorFactory getWebAuthenticatorFactory() {
-        return globalWebAuthenticatorFactory;
     }
 
     protected AuthenticateApi getAuthenticateApi() {
