@@ -1,10 +1,4 @@
 ### Exports
-# JMX Agent in LocalConnectorActivator
---add-exports
-jdk.management.agent/jdk.internal.agent=ALL-UNNAMED
-# for JMX VMSupport in LocalConnectorActivator
---add-exports
-java.base/jdk.internal.vm=ALL-UNNAMED
 # for com.ibm.crypto.ibmkeycert.jar
 --add-exports
 java.base/sun.security.action=ALL-UNNAMED
