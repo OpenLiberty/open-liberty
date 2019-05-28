@@ -280,7 +280,13 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
                         if (metaTypeName == null // add unknown attributes added by the user
                             || !metaTypeName.equalsIgnoreCase("internal") // add externalized attributes
                             || !registryEntryExistsForFlattenedConfig) { // or all attributes if there is an error in the config
-                            j.put(key, getJSONValue(prop.getValue(), cardinality, processed));
+                            Object value = prop.getValue();
+
+                            // App-defined JCA resources store custom property values as String, which might need conversion
+                            if (isAppDefined && value instanceof String)
+                                value = configHelper.convert(pid, key, (String) value);
+
+                            j.put(key, getJSONValue(value, cardinality, processed));
                         }
                     }
                 list.add(j);
@@ -294,6 +300,12 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
             if (list.size() == 1) {
                 String flatAttrName = prefix.substring(0, prefix.indexOf('.'));
                 Integer cardinality = configHelper.getMetaTypeAttributeCardinality(extendsSourcePid == null ? servicePid : extendsSourcePid, flatAttrName);
+
+                // App-defined JCA resources use a supertype pid that lacks cardinality information for flattened properties
+                if (isAppDefined && cardinality == null && "properties".equals(flatAttrName)
+                    && servicePid != null && servicePid.startsWith("com.ibm.ws.jca.") && servicePid.endsWith(".supertype"))
+                    cardinality = 1;
+
                 if (cardinality != null && cardinality >= -1 && cardinality <= 1)
                     json.put(name, list.get(0));
                 else
