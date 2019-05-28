@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +41,7 @@ import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
 import com.ibm.ws.config.admin.internal.ConfigurationStorageHelper.ConfigStorageConsumer;
+import com.ibm.ws.config.admin.internal.ConfigurationStorageHelper.MapIterable;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 import junit.framework.AssertionFailedError;
@@ -292,6 +292,31 @@ public class ConfigurationStorageHelperTest {
         }
     }
 
+    @Test
+    public void testMapStore() throws IOException {
+        File configFile = new File("build", "testData");
+        Map<String, Object> expectedMap = new HashMap<>();
+        expectedMap.put("null", null);
+        expectedMap.put("byte", (byte) 5);
+        expectedMap.put("short", (short) 55);
+        expectedMap.put("char", 'c');
+        expectedMap.put("int", 555);
+        expectedMap.put("long", (long) 5555);
+        expectedMap.put("float", (float) 5.5);
+        expectedMap.put("double", 55.55);
+        expectedMap.put("boolean", true);
+        expectedMap.put("string", "value");
+        expectedMap.put("password", new SerializableProtectedString("secret".toCharArray()));
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
+            ConfigurationStorageHelper.writeMap(dos, ConfigurationStorageHelper.toMapOrDictionary(expectedMap));
+        }
+        Map<String, Object> loadedMap = new HashMap<>();
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(configFile))) {
+            ConfigurationStorageHelper.readMap(dis, ConfigurationStorageHelper.toMapOrDictionary(loadedMap));
+        }
+        assertMapEquals(expectedMap, loadedMap);
+    }
+
     /**
      * @return
      */
@@ -315,48 +340,61 @@ public class ConfigurationStorageHelperTest {
     }
 
     public static void assertConfigDictEquals(ConfigurationDictionary expected, ConfigurationDictionary actual) {
+        assertMapsEqualsInternal(ConfigurationStorageHelper.toMapOrDictionary(expected), ConfigurationStorageHelper.toMapOrDictionary(actual));
+    }
+
+    public static void assertMapEquals(Map<String, Object> expected, Map<String, Object> actual) {
+        assertMapsEqualsInternal(ConfigurationStorageHelper.toMapOrDictionary(expected), ConfigurationStorageHelper.toMapOrDictionary(actual));
+    }
+
+    private static void assertMapsEqualsInternal(MapIterable expected, MapIterable actual) {
         Set<String> expectedKeys = new HashSet<>();
-        Enumeration<String> keys = expected.keys();
-        while (keys.hasMoreElements()) {
-            expectedKeys.add(keys.nextElement());
+        Map<String, Object> expectedValues = new HashMap<>();
+        for (Entry<String, Object> entry : expected) {
+            expectedKeys.add(entry.getKey());
+            expectedValues.put(entry.getKey(), entry.getValue());
         }
         Set<String> actualKeys = new HashSet<>();
-        keys = actual.keys();
-        while (keys.hasMoreElements()) {
-            actualKeys.add(keys.nextElement());
+        Map<String, Object> actualValues = new HashMap<>();
+        for (Entry<String, Object> entry : expected) {
+            actualKeys.add(entry.getKey());
+            actualValues.put(entry.getKey(), entry.getValue());
         }
         assertEquals("Config dictory is different size", expected.size(), actual.size());
         assertEquals("Config dictionary has different keys", expectedKeys, actualKeys);
         for (String key : actualKeys) {
-            Object expectedValue = expected.get(key);
-            Object actualValue = actual.get(key);
-
-            assertEquals("value bound to " + key + " are different types", expectedValue.getClass(), actualValue.getClass());
-
-            if (expectedValue.getClass().isArray()) {
-                if (expectedValue instanceof byte[]) {
-                    assertArrayEquals("byte array for key " + key + " are different", (byte[]) expectedValue, (byte[]) actualValue);
-                } else if (expectedValue instanceof short[]) {
-                    assertArrayEquals("short array for key " + key + " are different", (short[]) expectedValue, (short[]) actualValue);
-                } else if (expectedValue instanceof int[]) {
-                    assertArrayEquals("int array for key " + key + " are different", (int[]) expectedValue, (int[]) actualValue);
-                } else if (expectedValue instanceof long[]) {
-                    assertArrayEquals("long array for key " + key + " are different", (long[]) expectedValue, (long[]) actualValue);
-                } else if (expectedValue instanceof float[]) {
-                    assertArrayEquals("float array for key " + key + " are different", (float[]) expectedValue, (float[]) actualValue, 0.2f);
-                } else if (expectedValue instanceof double[]) {
-                    assertArrayEquals("double array for key " + key + " are different", (double[]) expectedValue, (double[]) actualValue, 0.2);
-                } else if (expectedValue instanceof boolean[]) {
-                    assertBooleanArrayEquals("boolean array for key " + key + " are different", (boolean[]) expectedValue, (boolean[]) actualValue);
-                } else if (expectedValue instanceof char[]) {
-                    assertArrayEquals("char array for key " + key + " are different", (char[]) expectedValue, (char[]) actualValue);
-                } else if (expectedValue instanceof String[]) {
-                    assertArrayEquals("String array for key " + key + " are different", (String[]) expectedValue, (String[]) actualValue);
-                } else if (expectedValue instanceof Object[]) {
-                    assertArrayEquals("Object array for key " + key + " are different", (Object[]) expectedValue, (Object[]) actualValue);
-                }
+            Object expectedValue = expectedValues.get(key);
+            Object actualValue = actualValues.get(key);
+            if (expectedValue == null) {
+                assertNull("Expected null value.", actualValue);
             } else {
-                assertEquals("value bound to " + key + " are different", expected.get(key), actual.get(key));
+                assertEquals("value bound to " + key + " are different types", expectedValue.getClass(), actualValue.getClass());
+
+                if (expectedValue.getClass().isArray()) {
+                    if (expectedValue instanceof byte[]) {
+                        assertArrayEquals("byte array for key " + key + " are different", (byte[]) expectedValue, (byte[]) actualValue);
+                    } else if (expectedValue instanceof short[]) {
+                        assertArrayEquals("short array for key " + key + " are different", (short[]) expectedValue, (short[]) actualValue);
+                    } else if (expectedValue instanceof int[]) {
+                        assertArrayEquals("int array for key " + key + " are different", (int[]) expectedValue, (int[]) actualValue);
+                    } else if (expectedValue instanceof long[]) {
+                        assertArrayEquals("long array for key " + key + " are different", (long[]) expectedValue, (long[]) actualValue);
+                    } else if (expectedValue instanceof float[]) {
+                        assertArrayEquals("float array for key " + key + " are different", (float[]) expectedValue, (float[]) actualValue, 0.2f);
+                    } else if (expectedValue instanceof double[]) {
+                        assertArrayEquals("double array for key " + key + " are different", (double[]) expectedValue, (double[]) actualValue, 0.2);
+                    } else if (expectedValue instanceof boolean[]) {
+                        assertBooleanArrayEquals("boolean array for key " + key + " are different", (boolean[]) expectedValue, (boolean[]) actualValue);
+                    } else if (expectedValue instanceof char[]) {
+                        assertArrayEquals("char array for key " + key + " are different", (char[]) expectedValue, (char[]) actualValue);
+                    } else if (expectedValue instanceof String[]) {
+                        assertArrayEquals("String array for key " + key + " are different", (String[]) expectedValue, (String[]) actualValue);
+                    } else if (expectedValue instanceof Object[]) {
+                        assertArrayEquals("Object array for key " + key + " are different", (Object[]) expectedValue, (Object[]) actualValue);
+                    }
+                } else {
+                    assertEquals("value bound to " + key + " are different", expectedValues.get(key), actualValues.get(key));
+                }
             }
         }
     }
@@ -427,13 +465,21 @@ public class ConfigurationStorageHelperTest {
         dict.put("string array", new String[] { "abc", "def", "ghi", "jkl", "mno" });
 
         dict.put("Byte array", new Byte[] { 1, 2, 3, 4, 5 });
+        dict.put("Byte null array", new Byte[] { 1, 2, null, 4, 5 });
         dict.put("Short array", new Short[] { 11, 22, 33, 44, 55 });
+        dict.put("Short null array", new Short[] { 11, 22, null, 44, 55 });
         dict.put("Integer array", new Integer[] { 111, 222, 333, 444, 555 });
+        dict.put("Integer null array", new Integer[] { 111, 222, null, 444, 555 });
         dict.put("Long array", new Long[] { 1111l, 2222l, 3333l, 4444l, 5555l });
+        dict.put("Long null array", new Long[] { 1111l, 2222l, null, 4444l, 5555l });
         dict.put("Character array", new Character[] { 'a', 'b', 'c', 'd', 'e' });
+        dict.put("Character null array", new Character[] { 'a', 'b', null, 'd', 'e' });
         dict.put("Float array", new Float[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f });
+        dict.put("Float null array", new Float[] { 1.1f, 2.2f, null, 4.4f, 5.5f });
         dict.put("Double array", new Double[] { 11.11, 22.22, 33.33, 44.44, 55.55 });
+        dict.put("Double null array", new Double[] { 11.11, 22.22, null, 44.44, 55.55 });
         dict.put("Boolean array", new Boolean[] { true, false, false, true, true });
+        dict.put("Boolean null array", new Boolean[] { true, false, null, true, true });
 
         dict.put("Byte collection", asList(new Byte[] { 1, 2, 3, 4, 5 }));
         dict.put("Short collection", asList(new Short[] { 11, 22, 33, 44, 55 }));
@@ -444,6 +490,15 @@ public class ConfigurationStorageHelperTest {
         dict.put("Double collection", asList(new Double[] { 11.11, 22.22, 33.33, 44.44, 55.55 }));
         dict.put("Boolean collection", asList(new Boolean[] { true, false, false, true, true }));
         dict.put("string collection", asList(new String[] { "abc", "def", "ghi", "jkl", "mno" }));
+        dict.put("Mixed collection", asList(new Object[] {
+                                                           Byte.valueOf((byte) 1),
+                                                           Short.valueOf((short) 1),
+                                                           Integer.valueOf(1),
+                                                           Long.valueOf(1),
+                                                           Character.valueOf('a'),
+                                                           Float.valueOf(1.1f),
+                                                           Double.valueOf(1.1),
+                                                           "string" }));
 
         return dict;
     }
