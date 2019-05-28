@@ -63,7 +63,10 @@ public final class LocalConnectorActivator {
 
                         String localConnectorAddress = null;
                         // Start the JMX agent and retrieve the local connector address.
-                        if (JavaInfo.majorVersion() < 9) {
+                        // Use JDK internal APIs for Java 8 and older OR if the server was launched in a way that bypassed
+                        // the wlp/bin/server script and therefore did not get the -Djdk.attach.allowAttachSelf=true prop set
+                        if (JavaInfo.majorVersion() < 9 ||
+                            (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf"))) {
                             // Use reflection to invoke...
                             // Agent.agentmain(null);
                             // Properties props = VMSupport.getAgentProperties()
