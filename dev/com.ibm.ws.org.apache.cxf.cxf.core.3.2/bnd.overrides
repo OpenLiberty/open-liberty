@@ -104,15 +104,18 @@ Export-Package: \
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer},\
   org.apache.cxf.wsdl.http;version=${exportVer}
 
+Private-Package: \
+ com.ibm.ws.cxf.core
+
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !com.ctc.wstx.*,\
+  !com.sun.xml.fastinfoset.*;resolution:=optional, \
   !org.codehaus.stax2.*,\
   !com.sun.msv.*,\
   !com.sun.xml.bind.marshaller,\
-  !com.sun.xml.fastinfoset.stax.*,\
   !org.apache.log4j.*,\
   !net.sf.cglib.proxy.*,\
   !org.springframework.*,\
@@ -125,3 +128,6 @@ Import-Package: \
   javax.xml.bind.annotation.adapters;version=!,\
   javax.xml.bind.attachment;version=!,\
   *
+  
+#-dsannotations:\
+#  com.ibm.ws.cxf.core.StaxActivator

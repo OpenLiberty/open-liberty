@@ -26,4 +26,6 @@ instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class
   com.ibm.ws.logging.core,\
   org.apache.cxf:cxf-rt-transports-http;version=3.3.0,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.wsspi.org.osgi.core

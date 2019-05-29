@@ -13,11 +13,11 @@ Subsystem-Name: Internal Java Web Services 2.3
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.httpcommons-1.0, \
  com.ibm.websphere.appserver.internal.cxf.common-3.2, \
- com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
- com.ibm.websphere.appserver.internal.optional.jaxb-2.2
+ com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=\
- com.ibm.ws.com.sun.xml.messaging.saaj, \
+ com.ibm.ws.com.sun.xml.messaging.saaj; require-java:="9", \
  com.ibm.ws.javaee.ddmodel.wsbnd, \
+ com.ibm.ws.cxf.client, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2, \
@@ -30,9 +30,9 @@ Subsystem-Name: Internal Java Web Services 2.3
  com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2, \
  com.ibm.ws.org.jvnet.mimepull, \
  com.ibm.ws.jaxws.2.3.common, \
- com.ibm.websphere.javaee.jws.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\
+ com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\
+ com.ibm.websphere.javaee.jaxws.2.3; location:="dev/api/spec/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.3.0", \
  com.ibm.ws.jaxws.tools.2.2.10, \
- com.ibm.ws.jaxb.tools.2.3,\
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
  com.ibm.ws.prereq.wsdl4j.1.6.2
