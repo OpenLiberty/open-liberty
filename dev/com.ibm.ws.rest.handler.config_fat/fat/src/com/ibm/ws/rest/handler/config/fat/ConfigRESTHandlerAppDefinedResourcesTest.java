@@ -98,7 +98,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory?jndiName=java:module%2Fenv%2Feis%2Fcf1")
                         .run(JsonArray.class);
         String err = "unexpected response: " + cfs;
-        assertEquals(1, cfs.size());
+        assertEquals(2, cfs.size());
 
         JsonObject cf;
         assertNotNull(err, cf = cfs.getJsonObject(0));
@@ -135,6 +135,35 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, 1515, props.getInt("portNumber"));
         assertEquals(err, "cfuser1", props.getString("userName"));
         assertEquals(err, "******", props.getString("password"));
+
+        // TODO api
+
+        assertNotNull(err, cf = cfs.getJsonObject(1));
+
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", cf.getString("id"));
+        assertEquals(err, "java:module/env/eis/cf1", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", cf.getString("module"));
+        assertNull(err, cf.get("component"));
+
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 50, cm.getInt("maxPoolSize"));
+        assertEquals(err, "FailingConnectionOnly", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        assertNotNull(err, props = cf.getJsonObject("properties.ConfigTestAdapter.DataSource"));
+        assertEquals(err, 1, props.size());
+        assertEquals(err, "localhost", props.getString("hostName"));
 
         // TODO api
 
