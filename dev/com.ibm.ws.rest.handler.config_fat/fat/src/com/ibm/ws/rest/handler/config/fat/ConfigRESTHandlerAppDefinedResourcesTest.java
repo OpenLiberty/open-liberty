@@ -560,6 +560,64 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, file.getString("name").endsWith("derby.jar"));
     }
 
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an app-defined JMS connection factory.
+     */
+    @Test
+    public void testAppDefinedJMSConnectionFactory() throws Exception {
+        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/jmsConnectionFactory?application=AppDefResourcesApp&module=AppDefResourcesApp.war")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + cfs;
+        assertEquals(1, cfs.size());
+
+        JsonObject cf;
+        assertNotNull(err, cf = cfs.getJsonObject(0));
+
+        assertEquals(err, "jmsConnectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", cf.getString("id"));
+        assertEquals(err, "java:comp/env/jms/cf", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", cf.getString("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 6, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
+
+        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
+        // assertNull(err, cf.get("creates.objectClass"));
+        // assertNull(err, cf.get("jndiName.unique"));
+
+        JsonObject props;
+        assertNotNull(err, props = cf.getJsonObject("properties.wasJms"));
+        assertEquals(err, "cfBus", props.getString("busName"));
+        // assertEquals(err, "JMSClientID6", props.getString("clientID")); // TODO why isn't the configured value honored?
+        assertEquals(err, "defaultME", props.getString("durableSubscriptionHome"));
+        assertEquals(err, "ExpressNonPersistent", props.getString("nonPersistentMapping"));
+        assertEquals(err, "ReliablePersistent", props.getString("persistentMapping"));
+        assertEquals(err, "AlwaysOff", props.getString("readAhead"));
+        assertEquals(err, "NeverShared", props.getString("shareDurableSubscription"));
+        assertEquals(err, "cfq", props.getString("temporaryQueueNamePrefix"));
+        assertEquals(err, "temp", props.getString("temporaryTopicNamePrefix"));
+        assertEquals(err, "jmsuser", props.getString("userName"));
+        assertEquals(err, "******", props.getString("password"));
+
+        // TODO api
+    }
+
     /*
      * Test that a data source nested under a transaction with an atypical case can be accessed
      * by calling the config endpoint matching with the case matching server config.
