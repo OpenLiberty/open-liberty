@@ -71,7 +71,7 @@ public interface ClassInfo extends Info {
      * @return True if the class object is implemented as a delayed class. False if the
      *         class object is implemented as a non-delayed class.
      * 
-     * @see #isNonDelayedClass
+     * {@link #isNonDelayedClass}
      */
     public boolean isDelayedClass();
 
@@ -82,7 +82,7 @@ public interface ClassInfo extends Info {
      * @return True if the class object is implemented as a non-delayed class. False if the
      *         class object is implemented as a delayed class.
      * 
-     * @see #isDelayedClass
+     * {@link #isDelayedClass}
      */
     public boolean isNonDelayedClass();
 
@@ -96,7 +96,7 @@ public interface ClassInfo extends Info {
      * 
      * @return The name of the package of this class object.
      * 
-     * @see #getPackage()
+     * {@link #getPackage()}
      */
     public String getPackageName();
 
@@ -108,7 +108,7 @@ public interface ClassInfo extends Info {
      * 
      * @return The package object of this class object.
      * 
-     * @see #getPackageName()
+     * {@link #getPackageName()}
      */
     public PackageInfo getPackage();
 
@@ -143,11 +143,7 @@ public interface ClassInfo extends Info {
      * @return The names of the immediately declared interfaces of this
      *         class object as a set.
      * 
-     * @see #getInterfaceNamesArray()
-     * @see #getInterfaces()
-     * 
-     * @see #getAllInterfaceNames()
-     * @see #getAllInterfaces()
+     * {@link #getInterfaces()}
      */
     public List<String> getInterfaceNames();
 
@@ -160,11 +156,7 @@ public interface ClassInfo extends Info {
      * @return The names of the immediately declared interfaces of this
      *         class object as a set.
      * 
-     * @see #getInterfaceNamesArray()
-     * @see #getInterfaceNames()
-     * 
-     * @see #getAllInterfaceNames()
-     * @see #getAllInterfaces()
+     * {@link #getInterfaceNames()}
      */
     public List<? extends ClassInfo> getInterfaces();
 
@@ -192,8 +184,8 @@ public interface ClassInfo extends Info {
      * @return The superclass name of this class. Null for interfaces and for
      *         <code>java.lang.Object</code>
      * 
-     * @see #isInterface()
-     * @see #getSuperclass()
+     * {@link #isInterface()}
+     * {@link #getSuperclass()}
      */
     public String getSuperclassName();
 
@@ -209,8 +201,8 @@ public interface ClassInfo extends Info {
      * @return The superclass of this class. Null for interfaces and for
      *         <code>java.lang.Object</code>
      * 
-     * @see #isInterface()
-     * @see #getSuperclassName()
+     * {@link #isInterface()}
+     * {@link #getSuperclassName()}
      */
     public ClassInfo getSuperclass();
 
@@ -227,17 +219,13 @@ public interface ClassInfo extends Info {
      * if type X is assignable from type Y, then Y is an instance of X.
      * Conversely, if Y is an instance of X, then X is assignable from Y.</p>
      * 
-     * @param The name of the type which is to be tested.
+     * @param className The name of the type which is to be tested.
      * 
      * @return True if a variable of this type can be assigned a value of
      *         the specified type. Otherwise, false.
      * 
-     * @see #isAssignableFrom(ClassInfo)
-     * @see #isAssignableFrom(Class)
-     * 
-     * @see #isInstanceOf(String)
-     * @see #isInstanceOf(ClassInfo)
-     * @see #isInstanceOf(Class)
+     * {@link #isInstanceOf(String)}
+     * {@link #isInstanceOf(Class)}
      */
     public boolean isAssignableFrom(String className);
 
@@ -252,15 +240,12 @@ public interface ClassInfo extends Info {
      * if type X is an instance of type Y, then Y is assignable from of X.
      * Conversely, if Y is assignable from X, then X is an instance of Y.</p>
      * 
-     * @param The name of the type which is to be tested.
+     * @param className The name of the type which is to be tested.
      * 
      * @return True if this type is an instance (sub-type) of
      *         the specified type. Otherwise, false.
      * 
-     * @see #isAssignableFrom(String)
-     * @see #isAssignableFrom(ClassInfo)
-     * @see #isAssignableFrom(Class)
-     * 
+     * {@link #isAssignableFrom(String)}
      */
     public boolean isInstanceOf(String className);
 
@@ -272,9 +257,7 @@ public interface ClassInfo extends Info {
      * <p>The result collection does not support additions.</p>
      * 
      * @return The declared fields of the receiver.
-     * 
-     * @see #getFields()
-     */
+o     */
     public List<? extends FieldInfo> getDeclaredFields();
 
     /**
@@ -282,12 +265,7 @@ public interface ClassInfo extends Info {
      * 
      * <p>The result collection does not support additions.</p>
      * 
-     * <p>Note: The difference between {@link #getDeclaredConstructor()} and {@link #getConstructors()} is not clear, as constructors are not
-     * inherited.</p>
-     * 
      * @return The declared constructors of the receiver.
-     * 
-     * @see #getConstructors()
      */
     public List<? extends MethodInfo> getDeclaredConstructors();
 
@@ -298,7 +276,7 @@ public interface ClassInfo extends Info {
      * 
      * @return The declared methods of the receiver.
      * 
-     * @see #getMethods()
+     * {@link #getMethods()}
      */
     public List<? extends MethodInfo> getDeclaredMethods();
 
@@ -310,7 +288,7 @@ public interface ClassInfo extends Info {
      * 
      * @return The methods of the receiver.
      * 
-     * @see #getDeclaredFields()
+     * {@link #getDeclaredFields()}
      */
     public List<? extends MethodInfo> getMethods();
 
@@ -322,7 +300,7 @@ public interface ClassInfo extends Info {
      * @return True if any field of this class has an annotation.
      *         Otherwise, false.
      * 
-     * @see #isMethodAnnotationPresent()
+     * {@link #isMethodAnnotationPresent()}
      */
     public boolean isFieldAnnotationPresent();
 
@@ -334,7 +312,7 @@ public interface ClassInfo extends Info {
      * @return True if any method of this class has an annotation.
      *         Otherwise, false.
      * 
-     * @see #isFieldAnnotationPresent()
+     * {@link #isFieldAnnotationPresent()}
      */
     public boolean isMethodAnnotationPresent();
 }

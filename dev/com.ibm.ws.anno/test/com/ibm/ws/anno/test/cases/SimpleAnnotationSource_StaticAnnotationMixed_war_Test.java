@@ -55,6 +55,9 @@ public class SimpleAnnotationSource_StaticAnnotationMixed_war_Test extends Annot
     private List<String> collectFileNames(File baseDir, File dir) throws IOException {
         ArrayList<String> names = new ArrayList<String>();
         File[] files = dir.listFiles();
+        if ( files == null ) {
+        	throw new IllegalArgumentException("Directory [ " + dir.getAbsolutePath() + " ] does not exist");
+        }
         int chopLength = baseDir.getCanonicalPath().length();
         for (File f : files) {
             if (f.isDirectory()) {

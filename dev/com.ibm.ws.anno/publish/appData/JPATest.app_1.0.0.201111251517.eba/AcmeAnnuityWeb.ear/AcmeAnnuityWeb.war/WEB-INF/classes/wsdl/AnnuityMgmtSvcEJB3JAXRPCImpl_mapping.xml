@@ -1,0 +1,1230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<java-wsdl-mapping xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://www.ibm.com/webservices/xsd/j2ee_jaxrpc_mapping_1_1.xsd">
+    <package-mapping>
+        <package-type>com.ibm.wssvt.acme.annuity.business.impl.ejbws.ejb3jaxrpc</package-type>
+        <namespaceURI>http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com</namespaceURI>
+    </package-mapping>
+    <package-mapping>
+        <package-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception</package-type>
+        <namespaceURI>http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com</namespaceURI>
+    </package-mapping>
+    <package-mapping>
+        <package-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean</package-type>
+        <namespaceURI>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com</namespaceURI>
+    </package-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.FixedAnnuity</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:FixedAnnuity</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>rate</java-variable-name>
+            <xml-element-name>rate</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Rider[]</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ArrayOfRider</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>rider</java-variable-name>
+            <xml-element-name>Rider</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payout[]</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ArrayOfPayout</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>payout</java-variable-name>
+            <xml-element-name>Payout</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.EquityAnnuity</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:EquityAnnuity</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>fundNames</java-variable-name>
+            <xml-element-name>fundNames</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>indexRate</java-variable-name>
+            <xml-element-name>indexRate</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.EntityAlreadyExistsException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:EntityAlreadyExistsException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.EntityAlreadyExistsException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:EntityAlreadyExistsException</root-type-qname>
+        <qname-scope>element</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityType</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AnnuityType</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>FIXED</java-variable-name>
+            <xml-element-name>FIXED</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>EQUITY</java-variable-name>
+            <xml-element-name>EQUITY</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>BASIC</java-variable-name>
+            <xml-element-name>BASIC</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AnnuityHolder</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>category</java-variable-name>
+            <xml-element-name>category</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AcmeException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AcmeException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>message</java-variable-name>
+            <xml-element-name>message</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Contact</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>address</java-variable-name>
+            <xml-element-name>address</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>email</java-variable-name>
+            <xml-element-name>email</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>phone</java-variable-name>
+            <xml-element-name>phone</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>contactType</java-variable-name>
+            <xml-element-name>contactType</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.StringParameterizable</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:StringParameterizable</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>params</java-variable-name>
+            <xml-element-name>params</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerBusinessLogicException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ServerBusinessLogicException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.RiderType</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:RiderType</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>OVERRIDE</java-variable-name>
+            <xml-element-name>OVERRIDE</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>REPLACE</java-variable-name>
+            <xml-element-name>REPLACE</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Annuity</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Annuity</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>lastPaidAmt</java-variable-name>
+            <xml-element-name>lastPaidAmt</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>accountNumber</java-variable-name>
+            <xml-element-name>accountNumber</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>amount</java-variable-name>
+            <xml-element-name>amount</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>annuityHolderId</java-variable-name>
+            <xml-element-name>annuityHolderId</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>payouts</java-variable-name>
+            <xml-element-name>payouts</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>riders</java-variable-name>
+            <xml-element-name>riders</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>payors</java-variable-name>
+            <xml-element-name>payors</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>java.lang.String</java-type>
+        <root-type-qname xmlns:rtq="http://www.w3.org/2001/XMLSchema">rtq:string</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Rider</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Rider</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>rule</java-variable-name>
+            <xml-element-name>rule</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>effectiveDate</java-variable-name>
+            <xml-element-name>effectiveDate</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>type</java-variable-name>
+            <xml-element-name>type</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:PayoutValueObject</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>payout</java-variable-name>
+            <xml-element-name>payout</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>annuityVO</java-variable-name>
+            <xml-element-name>annuityVO</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor[]</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ArrayOfPayor</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>payor</java-variable-name>
+            <xml-element-name>Payor</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerInternalErrorException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ServerInternalErrorException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Rider[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:Rider[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>byte[]</java-type>
+        <root-type-qname xmlns:rtq="http://www.w3.org/2001/XMLSchema">rtq:base64Binary</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.EntityNotFoundException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:EntityNotFoundException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.EntityNotFoundException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:EntityNotFoundException</root-type-qname>
+        <qname-scope>element</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityPersistebleObject</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AnnuityPersistebleObject</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>id</java-variable-name>
+            <xml-element-name>id</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>lastUpdateDate</java-variable-name>
+            <xml-element-name>lastUpdateDate</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>config</java-variable-name>
+            <xml-element-name>config</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>version</java-variable-name>
+            <xml-element-name>version</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Payor</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>name</java-variable-name>
+            <xml-element-name>name</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AnnuityException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payout[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:Payout[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payout</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Payout</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>taxableAmount</java-variable-name>
+            <xml-element-name>taxableAmount</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>startDate</java-variable-name>
+            <xml-element-name>startDate</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>endDate</java-variable-name>
+            <xml-element-name>endDate</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>annuity</java-variable-name>
+            <xml-element-name>annuity</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolderCategory</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AnnuityHolderCategory</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>GOLD</java-variable-name>
+            <xml-element-name>GOLD</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>SILVER</java-variable-name>
+            <xml-element-name>SILVER</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>BRONZE</java-variable-name>
+            <xml-element-name>BRONZE</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>METAL</java-variable-name>
+            <xml-element-name>METAL</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>java.util.Calendar</java-type>
+        <root-type-qname xmlns:rtq="http://www.w3.org/2001/XMLSchema">rtq:dateTime</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AnnuityValueObject</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>annuity</java-variable-name>
+            <xml-element-name>annuity</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>annuityType</java-variable-name>
+            <xml-element-name>annuityType</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>basic</java-variable-name>
+            <xml-element-name>basic</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>equity</java-variable-name>
+            <xml-element-name>equity</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>fixed</java-variable-name>
+            <xml-element-name>fixed</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerBusinessModuleException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ServerBusinessModuleException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerBusinessModuleException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ServerBusinessModuleException</root-type-qname>
+        <qname-scope>element</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerPersistenceModuleException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ServerPersistenceModuleException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerPersistenceModuleException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ServerPersistenceModuleException</root-type-qname>
+        <qname-scope>element</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Address</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Address</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>line1</java-variable-name>
+            <xml-element-name>line1</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>line2</java-variable-name>
+            <xml-element-name>line2</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>city</java-variable-name>
+            <xml-element-name>city</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>state</java-variable-name>
+            <xml-element-name>state</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>zipCode</java-variable-name>
+            <xml-element-name>zipCode</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>country</java-variable-name>
+            <xml-element-name>country</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Entry[]</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ArrayOfEntry</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>entry</java-variable-name>
+            <xml-element-name>Entry</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>java.math.BigDecimal</java-type>
+        <root-type-qname xmlns:rtq="http://www.w3.org/2001/XMLSchema">rtq:decimal</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Person</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Person</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>firstName</java-variable-name>
+            <xml-element-name>firstName</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>lastName</java-variable-name>
+            <xml-element-name>lastName</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>governmentId</java-variable-name>
+            <xml-element-name>governmentId</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>dateOfBirth</java-variable-name>
+            <xml-element-name>dateOfBirth</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>timeOfBirth</java-variable-name>
+            <xml-element-name>timeOfBirth</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>picture</java-variable-name>
+            <xml-element-name>picture</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>contact</java-variable-name>
+            <xml-element-name>contact</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject[]</java-type>
+        <root-type-qname xmlns:rtq="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">rtq:ArrayOf_tns2_nillable_AnnuityValueObject</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>annuityValueObject</java-variable-name>
+            <xml-element-name>AnnuityValueObject</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Entry[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:Entry[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.ContactType</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:ContactType</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>OTHER</java-variable-name>
+            <xml-element-name>OTHER</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>BUSINESS</java-variable-name>
+            <xml-element-name>BUSINESS</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>HOME</java-variable-name>
+            <xml-element-name>HOME</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityServerException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:AnnuityServerException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:AnnuityValueObject[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:Payor[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>double</java-type>
+        <root-type-qname xmlns:rtq="http://www.w3.org/2001/XMLSchema">rtq:double</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>int</java-type>
+        <root-type-qname xmlns:rtq="http://www.w3.org/2001/XMLSchema">rtq:int</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Entry</java-type>
+        <root-type-qname xmlns:rtq="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:Entry</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+        <variable-mapping>
+            <java-variable-name>key</java-variable-name>
+            <xml-element-name>key</xml-element-name>
+        </variable-mapping>
+        <variable-mapping>
+            <java-variable-name>value</java-variable-name>
+            <xml-element-name>value</xml-element-name>
+        </variable-mapping>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.InvalidArgumentException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:InvalidArgumentException</root-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.InvalidArgumentException</java-type>
+        <root-type-qname xmlns:rtq="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com">rtq:InvalidArgumentException</root-type-qname>
+        <qname-scope>element</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:ArrayOfPayor&gt;Payor[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Rider[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:ArrayOfRider&gt;Rider[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Entry[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:ArrayOfEntry&gt;Entry[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject[]</java-type>
+        <anonymous-type-qname>http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com:ArrayOf_tns2_nillable_AnnuityValueObject&gt;AnnuityValueObject[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <java-xml-type-mapping>
+        <java-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payout[]</java-type>
+        <anonymous-type-qname>http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com:ArrayOfPayout&gt;Payout[0,unbounded]</anonymous-type-qname>
+        <qname-scope>complexType</qname-scope>
+    </java-xml-type-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityServerException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerBusinessModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerBusinessModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AcmeException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerBusinessModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerInternalErrorException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerBusinessModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerBusinessModuleException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerBusinessModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityServerException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerPersistenceModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerPersistenceModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AcmeException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerPersistenceModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerInternalErrorException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerPersistenceModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerPersistenceModuleException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:ServerPersistenceModuleException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerBusinessLogicException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:InvalidArgumentException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityServerException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:InvalidArgumentException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:InvalidArgumentException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AcmeException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:InvalidArgumentException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.InvalidArgumentException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:InvalidArgumentException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerBusinessLogicException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityAlreadyExistsException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.EntityAlreadyExistsException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityAlreadyExistsException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityServerException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityAlreadyExistsException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityAlreadyExistsException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AcmeException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityAlreadyExistsException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.ServerBusinessLogicException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityNotFoundException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityServerException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityNotFoundException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AnnuityException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityNotFoundException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.AcmeException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityNotFoundException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <exception-mapping>
+        <exception-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.exception.EntityNotFoundException</exception-type>
+        <wsdl-message xmlns:em="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">em:EntityNotFoundException</wsdl-message>
+        <constructor-parameter-order>
+            <element-name>message</element-name>
+        </constructor-parameter-order>
+    </exception-mapping>
+    <service-interface-mapping>
+        <service-interface>com.ibm.wssvt.acme.annuity.business.impl.ejbws.ejb3jaxrpc.AnnuityMgmtSvcEJB3JAXRPCImpl</service-interface>
+        <wsdl-service-name xmlns:sim="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">sim:AnnuityMgmtSvcEJB3JAXRPCImpl</wsdl-service-name>
+        <port-mapping>
+            <port-name>AnnuityMgmtSvcEJB3JAXRPCImplPort</port-name>
+            <java-port-name>AnnuityMgmtSvcEJB3JAXRPCImplPort</java-port-name>
+        </port-mapping>
+    </service-interface-mapping>
+    <service-endpoint-interface-mapping>
+        <service-endpoint-interface>com.ibm.wssvt.acme.annuity.business.impl.ejbws.ejb3jaxrpc.AnnuityMgmtSvcEJB3JAXRPCSEI</service-endpoint-interface>
+        <wsdl-port-type xmlns:seimwpt="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">seimwpt:AnnuityMgmtSvcEJB3JAXRPCSEI</wsdl-port-type>
+        <wsdl-binding xmlns:seimwb="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">seimwb:AnnuityMgmtSvcEJB3JAXRPCImplPortSoapBinding</wsdl-binding>
+        <service-endpoint-method-mapping>
+            <java-method-name>findRiderById</java-method-name>
+            <wsdl-operation>findRiderById</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Rider</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findRiderByIdRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_19</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Rider</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findRiderByIdResponse</wsdl-message>
+                <wsdl-message-part-name>findRiderByIdReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>createPayout</java-method-name>
+            <wsdl-operation>createPayout</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:createPayoutRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_4</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:createPayoutResponse</wsdl-message>
+                <wsdl-message-part-name>createPayoutReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findHolderById</java-method-name>
+            <wsdl-operation>findHolderById</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findHolderByIdRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_15</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findHolderByIdResponse</wsdl-message>
+                <wsdl-message-part-name>findHolderByIdReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findPayoutById</java-method-name>
+            <wsdl-operation>findPayoutById</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findPayoutByIdRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_18</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findPayoutByIdResponse</wsdl-message>
+                <wsdl-message-part-name>findPayoutByIdReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findPayorById</java-method-name>
+            <wsdl-operation>findPayorById</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findPayorByIdRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_17</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findPayorByIdResponse</wsdl-message>
+                <wsdl-message-part-name>findPayorByIdReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>updateAnnuity</java-method-name>
+            <wsdl-operation>updateAnnuity</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:updateAnnuityRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_20</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:updateAnnuityResponse</wsdl-message>
+                <wsdl-message-part-name>updateAnnuityReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>deleteContact</java-method-name>
+            <wsdl-operation>deleteContact</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:deleteContactRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_7</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>void</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:deleteContactResponse</wsdl-message>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>createPayor</java-method-name>
+            <wsdl-operation>createPayor</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:createPayorRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_3</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:createPayorResponse</wsdl-message>
+                <wsdl-message-part-name>createPayorReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findHolderAnnuities</java-method-name>
+            <wsdl-operation>findHolderAnnuities</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findHolderAnnuitiesRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_14</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject[]</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findHolderAnnuitiesResponse</wsdl-message>
+                <wsdl-message-part-name>findHolderAnnuitiesReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findContactById</java-method-name>
+            <wsdl-operation>findContactById</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findContactByIdRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_13</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findContactByIdResponse</wsdl-message>
+                <wsdl-message-part-name>findContactByIdReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>deleteRider</java-method-name>
+            <wsdl-operation>deleteRider</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Rider</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:deleteRiderRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_10</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>void</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:deleteRiderResponse</wsdl-message>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>deletePayout</java-method-name>
+            <wsdl-operation>deletePayout</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:deletePayoutRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_9</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>void</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:deletePayoutResponse</wsdl-message>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>updatePayor</java-method-name>
+            <wsdl-operation>updatePayor</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:updatePayorRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_23</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:updatePayorResponse</wsdl-message>
+                <wsdl-message-part-name>updatePayorReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findAnnuityById</java-method-name>
+            <wsdl-operation>findAnnuityById</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findAnnuityByIdRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_11</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findAnnuityByIdResponse</wsdl-message>
+                <wsdl-message-part-name>findAnnuityByIdReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findPayorAnnuities</java-method-name>
+            <wsdl-operation>findPayorAnnuities</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findPayorAnnuitiesRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_16</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject[]</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findPayorAnnuitiesResponse</wsdl-message>
+                <wsdl-message-part-name>findPayorAnnuitiesReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>createContact</java-method-name>
+            <wsdl-operation>createContact</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:createContactRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_2</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:createContactResponse</wsdl-message>
+                <wsdl-message-part-name>createContactReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>findAnnuityHolder</java-method-name>
+            <wsdl-operation>findAnnuityHolder</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:findAnnuityHolderRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_12</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:findAnnuityHolderResponse</wsdl-message>
+                <wsdl-message-part-name>findAnnuityHolderReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>createAnnuityHolder</java-method-name>
+            <wsdl-operation>createAnnuityHolder</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:createAnnuityHolderRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_1</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:createAnnuityHolderResponse</wsdl-message>
+                <wsdl-message-part-name>createAnnuityHolderReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>deletePayor</java-method-name>
+            <wsdl-operation>deletePayor</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Payor</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:deletePayorRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_8</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>void</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:deletePayorResponse</wsdl-message>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>updateAnnuityHolder</java-method-name>
+            <wsdl-operation>updateAnnuityHolder</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:updateAnnuityHolderRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_21</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:updateAnnuityHolderResponse</wsdl-message>
+                <wsdl-message-part-name>updateAnnuityHolderReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>deleteAnnuity</java-method-name>
+            <wsdl-operation>deleteAnnuity</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:deleteAnnuityRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_5</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>void</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:deleteAnnuityResponse</wsdl-message>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>createAnnuity</java-method-name>
+            <wsdl-operation>createAnnuity</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:createAnnuityRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_0</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityValueObject</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:createAnnuityResponse</wsdl-message>
+                <wsdl-message-part-name>createAnnuityReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>updateContact</java-method-name>
+            <wsdl-operation>updateContact</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:updateContactRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_22</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.Contact</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:updateContactResponse</wsdl-message>
+                <wsdl-message-part-name>updateContactReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>updatePayout</java-method-name>
+            <wsdl-operation>updatePayout</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:updatePayoutRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_24</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.PayoutValueObject</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:updatePayoutResponse</wsdl-message>
+                <wsdl-message-part-name>updatePayoutReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+        <service-endpoint-method-mapping>
+            <java-method-name>deleteAnnuityHolder</java-method-name>
+            <wsdl-operation>deleteAnnuityHolder</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>com.ibm.wssvt.acme.annuity.common.business.jaxrpc.bean.AnnuityHolder</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">mppm:deleteAnnuityHolderRequest</wsdl-message>
+                    <wsdl-message-part-name>arg_0_6</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>void</method-return-value>
+                <wsdl-message xmlns:wrvm="http://ejb3jaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com">wrvm:deleteAnnuityHolderResponse</wsdl-message>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+    </service-endpoint-interface-mapping>
+</java-wsdl-mapping>

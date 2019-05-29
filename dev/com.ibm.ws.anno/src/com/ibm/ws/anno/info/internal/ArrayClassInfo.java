@@ -22,7 +22,8 @@ import com.ibm.wsspi.anno.info.ClassInfo;
 public class ArrayClassInfo extends ClassInfoImpl {
 
     private static final TraceComponent tc = Tr.register(ArrayClassInfo.class);
-    public static final String CLASS_NAME = ArrayClassInfo.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = ArrayClassInfo.class.getName();
 
     //
 

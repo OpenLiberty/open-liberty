@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -181,7 +181,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
      * @param file    The file which is to be tested.
      *
      * @return The new time stamp of the file, if the file is to be expanded.
-     *         Null if the file is not to be expanded.
+     *     Null if the file is not to be expanded.
      */
     private static Long getUpdatedStamp(String absPath, File file) {
         String methodName = "getUpdatedStamp";
@@ -226,8 +226,8 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     }
 
     protected void expand(
-                          String name, File collapsedFile,
-                          WsResource expandedResource, File expandedFile) throws IOException {
+        String name, File collapsedFile,
+        WsResource expandedResource, File expandedFile) throws IOException {
 
         String collapsedPath = collapsedFile.getAbsolutePath();
 
@@ -245,8 +245,9 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
                     if (failedDelete == expandedFile) {
                         throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ]");
                     } else {
-                        throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ] because [ " + failedDelete.getAbsolutePath()
-                                              + " ] could not be deleted.");
+                        throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ]" +
+                                              " because [ " + failedDelete.getAbsolutePath() + " ]" +
+                                              " could not be deleted.");
                     }
                 }
             }
@@ -274,14 +275,15 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
      * expand the application to the expanded applications location.
      *
      * @param appInfo Information for the application for which to create
-     *                    deployment information.
+     *     deployment information.
      * @return Deployment information for the application.
      *
      * @throws UnableToAdaptException Thrown if the deployment information
-     *                                    count not be created.
+     *     count not be created.
      */
     @Override
-    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {
+    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo)
+        throws UnableToAdaptException {
 
         String appPid = appInfo.getPid();
         String appName = appInfo.getName();
@@ -299,8 +301,10 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         BinaryType appType = getApplicationType(appFile, appPath);
         if (appType == BinaryType.LOOSE) {
             Tr.info(_tc, "info.loose.app", appName, appPath);
+
         } else if (appType == BinaryType.DIRECTORY) {
             Tr.info(_tc, "info.directory.app", appName, appPath);
+
         } else if (applicationManager.getExpandApps()) {
 
             try {
@@ -308,6 +312,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
 
                 WsResource expandedResource = resolveExpansion(appName);
                 File expandedFile = expandedResource.asFile();
+
                 Tr.info(_tc, "info.expanding.app", appName, appPath, expandedFile.getAbsolutePath());
 
                 expand(appName, appFile, expandedResource, expandedFile);
@@ -318,6 +323,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
             } catch (IOException e) {
                 Tr.error(_tc, "warning.could.not.expand.application", appName, e.getMessage());
             }
+
         } else {
             Tr.info(_tc, "info.unexpanded.app", appName, appPath);
         }
@@ -352,7 +358,8 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         }
         appInfo.setContainer(jeeContainer);
 
-        EARDeployedAppInfo deployedApp = new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
+        EARDeployedAppInfo deployedApp =
+            new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
         appInfo.setHandlerInfo(deployedApp);
 
         return deployedApp;

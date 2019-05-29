@@ -71,6 +71,10 @@ public class ModuleAnnotationsAdapter implements ContainerAdapter<ModuleAnnotati
             String msg = Tr.formatMessage(tc, "container.is.not.a.module.CWWKM0453E", "Container is not a module", containerToAdapt);
             throw new UnableToAdaptException(msg);
         }
+        if ( com.ibm.ws.container.service.annocache.AnnotationsBetaHelper.getLibertyBeta() ) {
+            Tr.warning(tc, "Unconverted adapt to module annotations");
+            (new Throwable("Unconverted adapt to module annotations")).printStackTrace(System.out);
+        }
         return new ModuleAnnotationsImpl(root,
                         rootOverlay,
                         artifactContainer,

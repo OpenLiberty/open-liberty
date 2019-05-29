@@ -11,6 +11,7 @@
 package com.ibm.ws.anno.test.cases;
 
 import java.util.Set;
+import java.util.HashSet;
 
 import javax.annotation.Resource;
 import javax.persistence.Id;
@@ -42,6 +43,7 @@ import test.common.SharedOutputManager;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public class AnnotationTargetsTest {
     static AnnotationTargetsImpl_Targets targets;
 
@@ -58,7 +60,7 @@ public class AnnotationTargetsTest {
 
         ClassSource_Aggregate classSource = factory.createAggregateClassSource("AnnoInfoTest");
 
-        String testClassesDir = System.getProperty("test.classesDir", "bin_test");
+        String testClassesDir = System.getProperty("test.classesDir", "bin");
         factory.addDirectoryClassSource(classSource, testClassesDir, testClassesDir, ScanPolicy.SEED);
 
         //ClassSource test = factory.createDirectoryClassSource(classSource, "test", "test2");
@@ -79,15 +81,23 @@ public class AnnotationTargetsTest {
         String bClassName = getClassName(BClass.class);
         String annoName = Resource.class.getName();
 
-        Set<String> classes = targets.getClassesWithMethodAnnotation(annoName);
+        Set<String> classes = filter( targets.getClassesWithMethodAnnotation(annoName) );
         Assert.assertEquals(1, classes.size());
         Assert.assertTrue(toString(classes), classes.contains(bClassName));
     }
 
-    /**
-     * @param classes
-     * @return
-     */
+    private static final String ANNO_PREFIX = "com.ibm.ws.anno.";
+
+    private Set<String> filter(Set<String> classNames) {
+        Set<String> filteredClassNames = new HashSet<String>(classNames.size());
+        for ( String className : classNames ) {
+            if ( className.startsWith(ANNO_PREFIX) ) {
+                filteredClassNames.add(className);
+            }
+        }
+        return filteredClassNames;
+    }
+
     private String toString(Set<String> classes) {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
@@ -126,11 +136,11 @@ public class AnnotationTargetsTest {
         String testAnno = Test.class.getName();
         String resourceAnno = Resource.class.getName();
 
-        Set<String> classes = targets.getClassesWithMethodAnnotation(testAnno);
+        Set<String> classes = filter( targets.getClassesWithMethodAnnotation(testAnno) );
         Assert.assertEquals(toString(classes), 31, classes.size());
         Assert.assertTrue(classes.contains(subClassName));
 
-        classes = targets.getClassesWithMethodAnnotation(resourceAnno);
+        classes = filter( targets.getClassesWithMethodAnnotation(resourceAnno) );
         Assert.assertEquals(1, classes.size());
         Assert.assertTrue(classes.contains(bClassName));
     }
@@ -141,7 +151,7 @@ public class AnnotationTargetsTest {
 
         String idAnno = Id.class.getName();
 
-        Set<String> classes = targets.getClassesWithFieldAnnotation(idAnno);
+        Set<String> classes = filter( targets.getClassesWithFieldAnnotation(idAnno) );
         Assert.assertEquals(1, classes.size());
         Assert.assertTrue(toString(classes), classes.contains(subClassName));
     }
@@ -150,7 +160,7 @@ public class AnnotationTargetsTest {
     public void testNoInheritAnnos() {
         String derivedNoInherit = getClassName(DerivedNoInherit.class);
         String resourceAnno = Resource.class.getName();
-        Set<String> classes = targets.getAllInheritedAnnotatedClasses(resourceAnno);
+        Set<String> classes = filter( targets.getAllInheritedAnnotatedClasses(resourceAnno) );
         Assert.assertEquals(toString(classes), 3, classes.size());
         Assert.assertTrue(toString(classes), classes.contains(derivedNoInherit));
     }

@@ -1,0 +1,184 @@
+@CHARSET "ISO-8859-1";
+
+body {
+        padding: 0em;
+        font-family: Trebuchet MS, times, "times new roman", serif;
+        font-size: 14px;
+        color: #000;
+}
+
+a{
+	color: #000000;
+	text-decoration: none;
+}
+
+a:link{
+	color: #2864B4;
+	text-decoration: none;
+}
+
+a:visited{
+	color: #2864B4;
+	text-decoration: none;
+
+}
+
+a:hover{
+	color: #e84040;
+	text-decoration: none;
+}
+
+#container{
+	margin: 0 auto;
+	width: 820px;
+	border: 0px solid #333;
+	
+}
+
+#header_section{	
+	
+	margin-top: 0;
+	margin-left: 0	
+}
+
+#header_section table1{
+	cellSpacing: 0;
+	cellPadding: 0;
+	border: 0;
+	width: 800px;
+}
+
+#header_section t1tr2td{
+	align: left;
+	valign: bottom;
+	height: 97;
+	padding: 5 0 0 15;
+	width: 379px;
+}
+
+
+#header_section table2{
+	cellSpacing: 0;
+	cellPadding: 0;
+	border: 0;
+	width: 768px;
+}
+
+#header_section t2tr2td1{
+	width: 9;
+	bgcolor: #EDF6FC;
+}
+
+#header_section t2tr2td2{
+	valign: top;
+	width: 752px;
+}
+
+#header_section t2tr2td3{
+ 	width: 9;
+ 	bgcolor: #EDF6FC;
+}
+
+#header_section table3{
+	bgcolor: #EDF6FC;
+	cellSpacing: 0;
+	cellPadding: 0;
+	border: 0;
+	width: 800px;
+	
+}
+
+#header_section t3tr2td1{
+	width: 123px;
+}
+
+#header_section t3tr2td2{
+	font-family:'Trebuchet MS';
+	font-size:10px;
+	width: 624px;
+	bgcolor: #EDF6FC;
+}
+
+
+#leftcenter_section{
+	width: 700px;
+	align: left;
+
+}
+
+#right_section{
+ 	width: 100px;
+ 	align: right;
+
+}
+
+#right_section table1{
+ width: 100px;
+ align: right;
+ border: 1;
+ 
+}
+
+#footer_section{
+	align: bottom;
+}
+
+#footer_section table1{
+	cellSpacing: 0;
+	cellPadding: 0;
+	border: 0;
+	width: 800px;
+}
+
+#footer_section table2{
+	cellSpacing: 0;
+	cellPadding: 0;
+	border: 0;
+	width: 800px;
+}
+
+#footer_section table3{
+	cellSpacing: 0;
+	cellPadding: 0;
+	border: 0;
+	width: 800px;
+	bgcolor: #EDF6FC;
+}
+
+.TOP {
+	position: relative;
+	border: solid 0 red;
+	padding-left: 10px;
+	height: 90px;
+	z-index: 1;
+}
+TD.HALFWIDTH {
+	width: 50%;
+	position: relative;
+	z-index:5;
+}TD.TOP {
+	position: relative;
+	border-top: solid 1 gray;
+}
+TD.RIGHT {
+	position: relative;
+	border-right: solid 1 gray;
+}
+TD.LEFT {
+	position: relative;
+	border-left: solid 1 gray;
+}
+TD.BOTTOM {
+	position: relative;
+	border-bottom: solid 1 gray;
+}
+.LEFT {
+	position: absolute;
+	left: 0px;
+	border: solid 0 blue;
+	border-right: solid 0 black;
+	padding-left: 10px;
+	width: 250px;
+	height: auto;
+	z-index: 2;
+}

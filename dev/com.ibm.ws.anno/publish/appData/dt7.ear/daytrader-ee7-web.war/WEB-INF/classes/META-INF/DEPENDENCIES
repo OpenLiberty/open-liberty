@@ -1,0 +1,15 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+DayTrader :: Web Application
+
+
+From: 'an unknown organization'
+  - Unnamed - taglibs:standard:jar:1.1.1  taglibs:standard:jar:1.1.1
+
+
+
+
+

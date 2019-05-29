@@ -19,9 +19,9 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class AcmeAnnuityWeb_AcmeAnnuityWeb_war_Data {
-    public static final String EAR_NAME = "AcmeAnnuityWeb.ear.unpacked";
+    public static final String EAR_NAME = "AcmeAnnuityWeb.ear";
     public static final String EAR_LIB_PATH = File.separator + "lib";
-    public static final String WAR_NAME = "AcmeAnnuityWeb.war.unpacked";
+    public static final String WAR_NAME = "AcmeAnnuityWeb.war";
 
     public static final String WAR_MANIFEST_ROOT_PATH = "AcmeAnnuityWeb.war.manifest.jars";
     public static final List<String> WAR_MANIFEST_CHILD_PATHS;

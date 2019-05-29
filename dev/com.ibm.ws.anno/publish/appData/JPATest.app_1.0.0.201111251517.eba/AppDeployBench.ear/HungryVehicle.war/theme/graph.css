@@ -1,0 +1,130 @@
+.graphDraw_tooltip {
+    background-color: #fcffd5;
+	border-color: #000000;
+	color: #000000;
+    font-size: 11px;
+	font-weight: bold;
+	font-style: normal;
+	text-indent: 2px;
+	margin-left:4px;
+	margin-right:3px;
+	text-align:left;
+	font-family: Verdana;
+}
+
+.graphDraw_title {
+ 	color: #000000;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    font-size: 18px;
+	font-weight: bold;
+	font-style: normal;
+	text-indent: 2px;
+	margin-left:2px;
+	margin-right:3px;
+	text-align:center;
+}
+
+.graphDraw_xAxisTitle {
+    color: #000000;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    font-size: 14px;
+	font-weight: bold;
+	font-style: normal;
+	text-indent: 2px;
+	margin-left:2px;
+	margin-right:3px;
+	text-decoration:none;
+	text-align:center;
+}
+.graphDraw_xAxisLabels {
+    color: #000000;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    font-size: 12px;
+	font-weight: normal;
+	font-style: normal;
+	text-indent: 2px;
+	margin-left:2px;
+	margin-right:3px;
+	text-align:center;
+}
+
+.graphDraw_yAxisTitle {
+    color: #000000;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    font-size: 14px;
+	font-weight: bold;
+	font-style: normal;
+	text-indent: 2px;
+	margin-left:2px;
+	margin-right:3px;
+	text-decoration:none;
+	text-align:center;
+}
+.graphDraw_y1AxisLabels {
+    font-family:Arial, Verdana,  Helvetica, sans-serif;
+    color: #000000;
+    font-size: 12px;
+	font-weight: normal;
+	font-style: normal;
+	text-indent: 0px;
+	margin-left:0px;
+	margin-right:0px;
+	text-decoration:none;
+	text-align:right;
+}
+.graphDraw_y2AxisLabels {
+    font-family: Arial, Verdana,  Helvetica, sans-serif;
+    color: #000000;
+    font-size: 11px;
+	font-weight: normal;
+	font-style: normal;
+	text-indent: 0px;
+	margin-left:0px;
+	margin-right:0px;
+	text-decoration:none;
+	text-align:left;
+}
+.graphDraw_legend {
+	color: #000000;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    font-size: 12px;
+	font-weight: normal;
+	font-style: normal;
+	text-indent: 2px;
+	margin-left:2px;
+	margin-right:3px;
+	text-decoration:none;
+	text-align:left;
+
+	background-color: #F0F0F0;
+    border-color: #F0F0F0;
+	border-width: 0px;
+	transparent-ratio: 100;
+}
+
+.graphDraw {
+	background-color: #F0F0F0;
+    transparent-ratio: 100;
+}
+
+.graphDraw_border {
+    border-width: 1px;
+    border-color: #000000;
+	transparent-ratio: 100;
+}
+
+/* The following rules can be used to specify the colors to be used for bars/pie segments/line markers
+   The colors are applied in sequence (0 through n).  Colors must be RGB values (not strings such as 'white'.
+   Up to 128 colors can be specified
+.graphDraw_elementColor0 { color: #9276FA; }
+.graphDraw_elementColor1 { color: #8163F0; }
+.graphDraw_elementColor2 { color: #456ED5; }
+*/
+
+/* The following rules can be used to specify the colors to be used for bars/pie segments/line markers
+   The colors are applied in sequence (1 through n).  Colors must be RGB values (not strings such as 'white'.
+   Up to 128 colors can be specified
+.graphDraw_seriesColor0 { color: #000000; }
+.graphDraw_seriesColor1 { color: #FF0000; }
+.graphDraw_seriesColor2 { color: #00FF00; }
+*/

@@ -60,17 +60,14 @@ public interface ClassSource_Streamer {
      * <p>Process the data for the specified class.</p>
      *
      * @param classSourceName The name of the class source which contains the class.
-     * @param className The name of the class to process.
-     * @param jandexClassInfo JANDEX class information for the class.  Note:  Type is Object
-     * because we can't expose org.jboss.jandex.ClassInfo in SPI.
+     * @param jandexClassInfo JANDEX class information for the class.  Type is Object
+     *     because we can't expose org.jboss.jandex.ClassInfo in SPI.
      * @param scanPolicy The policy active on the class.
-     * 
+     *
      * @return True if the class was processed. Otherwise, false.
-     * 
+     *
      * @throws ClassSource_Exception Thrown if an error occurred while
-     *             testing the specified class.
-     *             
-     *             
+     *     testing the specified class.
      */
     boolean process(
         String classSourceName,

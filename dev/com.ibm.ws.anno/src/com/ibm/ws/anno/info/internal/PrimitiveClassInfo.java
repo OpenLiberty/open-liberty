@@ -20,7 +20,8 @@ import com.ibm.websphere.ras.TraceComponent;
 public class PrimitiveClassInfo extends ClassInfoImpl {
 
     public static final TraceComponent tc = Tr.register(PrimitiveClassInfo.class);
-    public static final String CLASS_NAME = PrimitiveClassInfo.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = PrimitiveClassInfo.class.getName();
 
     //
 

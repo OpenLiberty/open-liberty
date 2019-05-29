@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+      <display-name>Servlet 30 Annotation Test Application where web.xml sometimes works and annotation works</display-name>
+      <servlet id="Servlet_3">
+      	<description>info in web.xml and web-fragment.xml identical </description>
+		    <display-name>Servlet30Ann3</display-name>
+		    <servlet-name>Servlet30Ann3</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30Ann3</servlet-class>
+      </servlet>
+    <servlet id="Servlet_3_fragment">
+      	<description> web-fragment.xml has additional info </description>
+		    <display-name>Servlet30Ann3Fragment</display-name>
+		    <servlet-name>Servlet30Ann3Fragment</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30Ann3Fragment</servlet-class>
+      </servlet>
+      <servlet id="Servlet_3_fragment_confl">
+      	<description> web.xml has this servlet in SecurityConstraint_01 but web-fragment.xml has SecurityConstraint_01 but that const doesn't list this servlet</description>
+		    <display-name>Servlet30Ann3FragmentCnfl</display-name>
+		    <servlet-name>Servlet30Ann3FragmentCnfl</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30Ann3FragmentCnfl</servlet-class>
+     </servlet>
+      <servlet id="Servlet_10a">
+      	<description></description>
+		    <display-name>Servlet30Ann10a</display-name>
+		    <servlet-name>Servlet30Ann10a</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30Ann10</servlet-class>
+      </servlet>
+      <servlet id="Servlet_10b">
+      	<description></description>
+		    <display-name>Servlet30Ann10b</display-name>
+		    <servlet-name>Servlet30Ann10b</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30Ann10</servlet-class>
+      </servlet>
+      <servlet-mapping id="ServletMapping_3">
+         <servlet-name>Servlet30Ann3</servlet-name>
+         <url-pattern>/Servlet30Ann3</url-pattern>
+      </servlet-mapping>
+    <servlet-mapping id="ServletMapping_3_Fragment">
+         <servlet-name>Servlet30Ann3Fragment</servlet-name>
+         <url-pattern>/Servlet30Ann3Fragment</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_3_Fragment_cnfl">
+         <servlet-name>Servlet30Ann3FragmentCnfl</servlet-name>
+         <url-pattern>/Servlet30Ann3FragmentCnfl</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_10a">
+         <servlet-name>Servlet30Ann10a</servlet-name>
+         <url-pattern>/Servlet30Ann10/a</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_10b">
+         <servlet-name>Servlet30Ann10b</servlet-name>
+         <url-pattern>/Servlet30Ann10/b</url-pattern>
+      </servlet-mapping>
+      <security-constraint>
+         <display-name>SecurityConstraint_01</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/Servlet30Ann3</url-pattern>
+           <url-pattern>/Servlet30Ann3FragmentCnfl</url-pattern>
+	   <http-method-omission>POST</http-method-omission> 
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>AllAuthenticated</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_10a</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_10a</web-resource-name>
+           <url-pattern>/Servlet30Ann10/a</url-pattern>
+         </web-resource-collection>
+      </security-constraint>
+
+        <security-role id="SecurityRole_1">
+           <description>All authenticated users in an enterprise</description>
+           <role-name>AllAuthenticated</role-name>
+        </security-role>
+   </web-app>

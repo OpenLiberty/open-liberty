@@ -12,8 +12,6 @@ package com.ibm.ws.anno.test.data;
 
 import com.ibm.ws.anno.test.data.sub.BaseNoInheritAnno;
 
-/**
- *
- */
-
-public class DerivedNoInherit extends BaseNoInheritAnno {}
+public class DerivedNoInherit extends BaseNoInheritAnno {
+    // EMPTY
+}

@@ -1,0 +1,910 @@
+/* This is the default style in case user didn't specify the style class name. This style is same as lotus style. */
+
+.dataGrid{
+
+}
+
+/* Top-level table tag of table - New in v5 */
+.dataGrid_wpsDataAlink{
+  text-decoration: none;
+  color:#000000;
+
+}
+.dataGrid_wpsTable {
+  empty-cells: show;
+  border-collapse:collapse;	
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a0a0a0;
+  padding: 1px 0;
+}
+
+.dataGrid_wpsTable td {
+  vertical-align: top;
+}
+
+.dataGrid_wpsTable a {
+  color:#000000;
+}
+
+.dataGrid_wpsTableIndent { /*style to indent data without an icon so that it lines up with data that has an icon that is in the same column*/
+  text-indent: 16px;
+}
+
+/* Text in row of table header */
+.dataGrid_wpsTableHead {
+  font-size: 90%;
+  color: #000000;
+  text-align: left;
+}
+
+.dataGrid_wpsTableHead th {
+  padding: 3px 3px 3px 3px;
+  font-weight: normal;
+  white-space: nowrap;
+  
+}
+
+
+/* Standard table row */
+.dataGrid_wpsTableRow, .dataGrid_wpsTableNrmRow {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+/* Text in a selected cell range - New in v5 */
+.dataGrid_wpsTableSelectedRow, .portlet-section-selected {
+  color: #333333;
+  background-color: #f0f0f0 ! important; /* needs to be set to important to override the normal color of the row */
+}
+
+/* Shaded table row - used to alternate row colors with standard row - New in v5 */
+/* For the v5 look, we have intentionally disabled alternating shaded table rows because
+   we have lines between the rows.  However, Netscape 4.x cannot display borders
+   properly so we still use the alternating shaded rows on legacy browsers. */
+.dataGrid_wpsTableShdRow, .portlet-section-alternate {
+  color: #333333;
+  background-color: #FFFFFF;
+}
+
+
+/* Text in a selected cell range - New in v5 */
+.dataGrid_wpsTableHighlightedRow, .portlet-section-highlighted {
+  color: #333333;
+  background-color: #DEDCCA! important; /* needs to be set to important to override the normal color of the row */
+}
+
+
+
+/* Backward compatibility style to get lines between rows for WPS 4.x portlet tables - New in v5 */
+/* Do not specify anything in these styles that you don't have to specify.  Because of CSS priorities,
+   these styles will override any CSS on the actual <td> tag that isn't marked ! important. */
+.dataGrid_wpsTableRow td, .dataGrid_wpsTableNrmRow td, .dataGrid_wpsTableShdRow td {
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: #e0e0e0;
+  padding: 2px;
+}
+
+/* Text links in table header row */
+.dataGrid_wpsTableHeadLink, .dataGrid_wpsTableHeadLink:visited, .dataGrid_wpsTableHeadLink:hover {
+  font-weight: normal;
+  color: #000000;
+}
+
+/*new styles for a section header row*/
+.dataGrid_wpsTableSectionHead {
+  font-weight: bold;
+  color: #000000;
+  text-align: left;
+}
+
+
+.dataGrid_wpsTableSectionHead th {
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: #aaaaaa;
+  padding: 3px 0 3px 5px;
+}
+
+.dataGrid_wpsCheckBoxRow th, .dataGrid_wpsCheckBoxRow td { /*this style is applied to a checkbox row to decrease the padding*/
+}
+
+.dataGrid_wpsInnerTableCell {
+  border-width: 1px ! important;
+  border-style: solid ! important;
+  border-color: #a0a0a0 ! important;
+  vertical-align: top;
+}
+
+.dataGrid_wpsInnerTable {
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #e0e0e0;
+}
+
+/* Styles for left, middle and right cells of the header row - New in v5 */
+.dataGrid_wpsTableHeadStart {
+  background-color: #ffffff;
+  border-width: 0px 0px 0px 0px;
+  border-style: solid;
+  border-color: #aaaaaa;
+  white-space: nowrap;
+
+}
+
+.dataGrid_wpsTableHeadMiddle {
+  background-color: #ffffff;
+  border-width: 0px 0px 0px 1px;
+  border-style: solid;
+  border-color: #aaaaaa;
+}
+
+.dataGrid_wpsTableHeadEnd {
+  background-color: #ffffff;
+  border-width: 0px 0px 0px 1px;
+  border-style: solid;
+  border-color: #aaaaaa;
+}
+
+/* Styles for left, middle and right cells of the header row where the text is center aligned. - New in v5 */
+.dataGrid_wpsDataAlignCenter {
+  text-align: center ! important;
+}
+
+/* Styles for the left, middle and right cells of the header row where the column contains numeric data. - New in v5 */
+.dataGrid_wpsDataAlignRight {
+  text-align: right ! important;
+}
+
+/* Styles for the left, middle, and right cells of a data row. - New in v5 */
+/* ! important is on some of these attributes to override the backward compatibility styles
+   .wpsTableRow td, .wpsTableNrmRow td, .wpsTableShdRow td */
+.dataGrid_wpsTableDataStart, .dataGrid_wpsTableDataMiddle, .dataGrid_wpsTableDataEnd {
+  text-align: left;
+  border-width: 1px 0px 0px 0px ! important;
+  border-style: solid ! important;
+  border-color: #e0e0e0 ! important;
+  padding: 3px 5px 3px 5px ! important;
+}
+
+/* new styles to allow for a second detail line in a row */
+.dataGrid_wpsTableRowDetail td {
+  border-width: 0px;
+  text-align: left;
+  border-width: 0px ! important;
+  padding: 2px 3px 5px 3px;
+}
+
+.dataGrid_wpsTableTopRow td {
+  border-color: #9CAECE ! important;
+}
+
+.dataGrid_wpsTableOneLeftCol {
+  vertical-align: top;
+  border-width: 1px 0 1px 1px;
+  border-color: #a0a0a0;
+  border-style: solid;
+  padding: 3px;
+}
+
+/* PORTLET PAGING TABLES */
+
+/* Styles for the top-level table tag and the cells containing the header, footer, and table body. - New in v5 */
+.dataGrid_wpsPagingTable, .dataGrid_wpsPagingTableBody, .dataGrid_wpsPagingTableHeader, .dataGrid_wpsPagingTableFooter {
+  border-width: 0;
+}
+
+.dataGrid_wpsHeaderTable { /*this is for added flexibility of creating 3-dimensional borders*/
+  font-size: 90%;
+}
+
+.dataGrid_wpsPagingTableHeaderEmpty {
+  height: 7px;
+  width: 7px;
+  line-height: 1px;
+}
+
+
+/* The size of icons in the paging header or footer - New in v5 */
+.dataGrid_wpsPagingTableHeaderIcon, .dataGrid_wpsPagingTableFooterIcon {
+  width: 16px;
+  height: 16px;
+}
+
+/* The leftmost cell of the paging table header - New in v5 */
+.dataGrid_wpsPagingTableHeaderStart {
+  background-color: #f0f0f0;
+
+  border-top: 1px solid #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 0px none #a0a0a0;
+  border-left: 1px solid #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+/* All cells in the middle of the paging table header - New in v5 */
+.dataGrid_wpsPagingTableHeaderMiddle {
+  background-color: #f0f0f0;
+  border-top: 1px solid #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 0px none #a0a0a0;
+  border-left: 0px none #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+/* The rightmost cell of the paging table header - New in v5 */
+.dataGrid_wpsPagingTableHeaderEnd {
+  /*background-image: url("PagingTableTopRight.gif");*/
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-color: transparent;
+  padding: 0 3px;
+}
+
+.dataGrid_wpsFooterTable {
+  font-size: 90%;
+}
+
+
+/* The leftmost cell of the paging footer - New in v5 */
+.dataGrid_wpsPagingTableFooterStart {
+  background-color: #f0f0f0;
+  border-top: 0px none #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+  border-left: 1px solid #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+/* All cells in the middle of the paging table footer - New in v5 */
+.dataGrid_wpsPagingTableFooterMiddle {
+  background-color: #f0f0f0;
+  border-top: 0px none #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+  border-left: 0px none #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+
+}
+
+/* The rightmost cell of the paging table footer - New in v5 */
+.dataGrid_wpsPagingTableFooterEnd {
+  /*background-image: url("PagingTableBottomRight.gif");*/
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-color: transparent;
+  padding: 0 3px;
+}
+
+.dataGrid_wpsPagingTableToolIcon
+{
+  width: 24px;
+  height: 24px;
+  border:0px;
+  vertical-align: middle;
+}
+
+/* This class is used to get the system icons from style sheet.Note,every icons has to be concatenated without any space, otherwise NS will has problem to get the value. */
+.dataGrid_classForDatagridSysIcons
+{
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|go=jsl/datagrid/icons/Buttons_Go.gif|previous=jsl/datagrid/icons/Buttons_Left.gif|next=jsl/datagrid/icons/Buttons_Right.gif|start=jsl/datagrid/icons/Buttons_First.gif|end=jsl/datagrid/icons/Buttons_Last.gif|sortup=jsl/datagrid/icons/n-sort-a-z.gif|sortdown=jsl/datagrid/icons/n-sort-z-a.gif|clear=jsl/datagrid/icons/clear.gif|selectall=jsl/datagrid/icons/selectall.gif|unselectall=jsl/datagrid/icons/select_none.gif|addrow=jsl/datagrid/icons/add_row.gif|delrow=jsl/datagrid/icons/remove_row.gif|acceptrow=jsl/datagrid/icons/ok.gif|cancelrow=jsl/datagrid/icons/cancel.gif|wpsPagingTableHeaderEnd=jsl/datagrid/icons/PagingTableTopRight.gif|wpsPagingTableFooterEnd=jsl/datagrid/icons/PagingTableBottomRight.gif|showallcols=jsl/datagrid/icons/Show_Cols.gif|hidecol=jsl/datagrid/icons/Hide_Column.gif|");*/
+}
+
+
+
+
+
+
+
+/******* STYLES FOR lotus dataGrid *******/
+
+.lotus{
+}
+
+
+/* Top-level table tag of table - New in v5 */
+.lotus_wpsDataAlink{
+  text-decoration: none;
+  color:#000000;
+
+}
+.lotus_wpsTable {
+  empty-cells: show;	
+  border-collapse:collapse;	
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a0a0a0;
+  padding: 1px 0;
+}
+
+.lotus_wpsTable td {
+  vertical-align: top;
+}
+
+.lotus_wpsTable a {
+  color:#000000;
+}
+
+.lotus_wpsTableIndent { /*style to indent data without an icon so that it lines up with data that has an icon that is in the same column*/
+  text-indent: 16px;
+}
+
+/* Text in row of table header */
+.lotus_wpsTableHead {
+  font-size: 90%;
+  color: #000000;
+  text-align: left;
+
+}
+
+.lotus_wpsTableHead th {
+  padding: 3px 3px 3px 3px;
+  font-weight: normal;
+  white-space: nowrap;
+  
+}
+
+
+/* Standard table row */
+.lotus_wpsTableRow, .lotus_wpsTableNrmRow {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+/* Text in a selected cell range - New in v5 */
+.lotus_wpsTableSelectedRow, .portlet-section-selected {
+  color: #333333;
+  background-color: #f0f0f0 ! important; /* needs to be set to important to override the normal color of the row */
+}
+
+/* Shaded table row - used to alternate row colors with standard row - New in v5 */
+/* For the v5 look, we have intentionally disabled alternating shaded table rows because
+   we have lines between the rows.  However, Netscape 4.x cannot display borders
+   properly so we still use the alternating shaded rows on legacy browsers. */
+.lotus_wpsTableShdRow, .portlet-section-alternate {
+  color: #333333;
+  background-color: #FFFFFF;
+}
+
+
+/* Text in a selected cell range - New in v5 */
+.lotus_wpsTableHighlightedRow, .portlet-section-highlighted {
+  color: #333333;
+  background-color: #DEDCCA! important; /* needs to be set to important to override the normal color of the row */
+}
+
+
+
+/* Backward compatibility style to get lines between rows for WPS 4.x portlet tables - New in v5 */
+/* Do not specify anything in these styles that you don't have to specify.  Because of CSS priorities,
+   these styles will override any CSS on the actual <td> tag that isn't marked ! important. */
+.lotus_wpsTableRow td, .lotus_wpsTableNrmRow td, .lotus_wpsTableShdRow td {
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: #e0e0e0;
+  padding: 2px;
+}
+
+/* Text links in table header row */
+.lotus_wpsTableHeadLink, .lotus_wpsTableHeadLink:visited, .lotus_wpsTableHeadLink:hover {
+  font-weight: normal;
+  color: #000000;
+}
+
+/*new styles for a section header row*/
+.lotus_wpsTableSectionHead {
+  font-weight: bold;
+  color: #000000;
+  text-align: left;
+}
+
+
+.lotus_wpsTableSectionHead th {
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: #aaaaaa;
+  padding: 3px 0 3px 5px;
+}
+
+.lotus_wpsCheckBoxRow th, .lotus_wpsCheckBoxRow td { /*this style is applied to a checkbox row to decrease the padding*/
+}
+
+.lotus_wpsInnerTableCell {
+  border-width: 1px ! important;
+  border-style: solid ! important;
+  border-color: #a0a0a0 ! important;
+  vertical-align: top;
+}
+
+.lotus_wpsInnerTable {
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #e0e0e0;
+}
+
+/* Styles for left, middle and right cells of the header row - New in v5 */
+.lotus_wpsTableHeadStart {
+  background-color: #ffffff;
+  border-width: 0px 0px 0px 0px;
+  border-style: solid;
+  border-color: #aaaaaa;
+  white-space: nowrap;
+}
+
+.lotus_wpsTableHeadMiddle {
+  background-color: #ffffff;
+  border-width: 0px 0px 0px 1px;
+  border-style: solid;
+  border-color: #aaaaaa;
+}
+
+.lotus_wpsTableHeadEnd {
+  background-color: #ffffff;
+  border-width: 0px 0px 0px 1px;
+  border-style: solid;
+  border-color: #aaaaaa;
+}
+
+/* Styles for left, middle and right cells of the header row where the text is center aligned. - New in v5 */
+.lotus_wpsDataAlignCenter {
+  text-align: center ! important;
+}
+
+/* Styles for the left, middle and right cells of the header row where the column contains numeric data. - New in v5 */
+.lotus_wpsDataAlignRight {
+  text-align: right ! important;
+}
+
+/* Styles for the left, middle, and right cells of a data row. - New in v5 */
+/* ! important is on some of these attributes to override the backward compatibility styles
+   .wpsTableRow td, .wpsTableNrmRow td, .wpsTableShdRow td */
+.lotus_wpsTableDataStart, .lotus_wpsTableDataMiddle, .lotus_wpsTableDataEnd {
+  text-align: left;
+  border-width: 1px 0px 0px 0px ! important;
+  border-style: solid ! important;
+  border-color: #e0e0e0 ! important;
+  padding: 3px 5px 3px 5px ! important;
+}
+
+/* new styles to allow for a second detail line in a row */
+.lotus_wpsTableRowDetail td {
+  border-width: 0px;
+  text-align: left;
+  border-width: 0px ! important;
+  padding: 2px 3px 5px 3px;
+}
+
+.lotus_wpsTableTopRow td {
+  border-color: #9CAECE ! important;
+}
+
+.lotus_wpsTableOneLeftCol {
+  vertical-align: top;
+  border-width: 1px 0 1px 1px;
+  border-color: #a0a0a0;
+  border-style: solid;
+  padding: 3px;
+}
+
+/* PORTLET PAGING TABLES */
+
+/* Styles for the top-level table tag and the cells containing the header, footer, and table body. - New in v5 */
+.lotus_wpsPagingTable, .lotus_wpsPagingTableBody, .lotus_wpsPagingTableHeader, .lotus_wpsPagingTableFooter {
+  border-width: 0;
+}
+
+.lotus_wpsHeaderTable { /*this is for added flexibility of creating 3-dimensional borders*/
+  font-size: 90%;
+}
+
+.lotus_wpsPagingTableHeaderEmpty {
+  height: 7px;
+  width: 7px;
+  line-height: 1px;
+}
+
+
+/* The size of icons in the paging header or footer - New in v5 */
+.lotus_wpsPagingTableHeaderIcon, .lotus_wpsPagingTableFooterIcon {
+  width: 16px;
+  height: 16px;
+}
+
+/* The leftmost cell of the paging table header - New in v5 */
+.lotus_wpsPagingTableHeaderStart {
+  background-color: #f0f0f0;
+
+  border-top: 1px solid #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 0px none #a0a0a0;
+  border-left: 1px solid #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+/* All cells in the middle of the paging table header - New in v5 */
+.lotus_wpsPagingTableHeaderMiddle {
+  background-color: #f0f0f0;
+  border-top: 1px solid #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 0px none #a0a0a0;
+  border-left: 0px none #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+/* The rightmost cell of the paging table header - New in v5 */
+.lotus_wpsPagingTableHeaderEnd {
+  /*background-image: url("PagingTableTopRight.gif");*/
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-color: transparent;
+  padding: 0 3px;
+}
+
+.lotus_wpsFooterTable {
+  font-size: 90%;
+}
+
+
+/* The leftmost cell of the paging footer - New in v5 */
+.lotus_wpsPagingTableFooterStart {
+  background-color: #f0f0f0;
+  border-top: 0px none #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+  border-left: 1px solid #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+/* All cells in the middle of the paging table footer - New in v5 */
+.lotus_wpsPagingTableFooterMiddle {
+  background-color: #f0f0f0;
+  border-top: 0px none #a0a0a0;
+  border-right: 0px none #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+  border-left: 0px none #a0a0a0;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+
+}
+
+/* The rightmost cell of the paging table footer - New in v5 */
+.lotus_wpsPagingTableFooterEnd {
+  /*background-image: url("PagingTableBottomRight.gif");*/
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-color: transparent;
+  padding: 0 3px;
+}
+
+.lotus_wpsPagingTableToolIcon
+{
+  width: 24px;
+  height: 24px;
+  border:0px;
+  vertical-align: middle;
+}
+/* This class is used to get the system icons from style sheet.Note,every icons has to be concatenated without any space, otherwise NS will has problem to get the value. */
+.lotus_classForDatagridSysIcons
+{
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|go=jsl/datagrid/icons/Buttons_Go.gif|previous=jsl/datagrid/icons/Buttons_Left.gif|next=jsl/datagrid/icons/Buttons_Right.gif|start=jsl/datagrid/icons/Buttons_First.gif|end=jsl/datagrid/icons/Buttons_Last.gif|sortup=jsl/datagrid/icons/n-sort-a-z.gif|sortdown=jsl/datagrid/icons/n-sort-z-a.gif|clear=jsl/datagrid/icons/clear.gif|selectall=jsl/datagrid/icons/selectall.gif|unselectall=jsl/datagrid/icons/select_none.gif|addrow=jsl/datagrid/icons/add_row.gif|delrow=jsl/datagrid/icons/remove_row.gif|acceptrow=jsl/datagrid/icons/ok.gif|cancelrow=jsl/datagrid/icons/cancel.gif|wpsPagingTableHeaderEnd=jsl/datagrid/icons/PagingTableTopRight.gif|wpsPagingTableFooterEnd=jsl/datagrid/icons/PagingTableBottomRight.gif|showallcols=jsl/datagrid/icons/Show_Cols.gif|hidecol=jsl/datagrid/icons/Hide_Column.gif|");*/
+}
+
+
+
+/******* STYLES FOR tivoli dataGrid *******/
+.tivoli{
+}
+
+/* Top-level table tag of table - New in v5 */
+.tivoli_wpsDataAlink{
+  text-decoration: none;
+  color:#000000;
+
+}
+
+.tivoli_wpsTable {
+  empty-cells: show;	
+  border-collapse:collapse;	
+  border-width: 1px;
+  border-style: solid;
+  border-color: #9CAECE;
+  padding: 1px 0;
+}
+
+.tivoli_wpsTable a {
+  color:#000000;
+}
+
+
+
+.tivoli_wpsTable td {
+  vertical-align: top;
+}
+
+.tivoli_wpsTableIndent { /*style to indent data without an icon so that it lines up with data that has an icon that is in the same column*/
+  text-indent: 16px;
+}
+
+/* Text in row of table header */
+.tivoli_wpsTableHead {
+  font-size: 90%;
+  color: #000000;
+  text-align: left;
+}
+
+.tivoli_wpsTableHead th {
+  background-color: #D6DBEF;
+  padding: 3px 3px 3px 3px;
+  font-weight: normal;
+  white-space: nowrap;
+
+}
+
+/* Standard table row */
+.tivoli_wpsTableRow, .tivoli_wpsTableNrmRow {
+  color: #000000;
+  background-color: #f0f0f0;
+}
+
+/* Text in a selected cell range - New in v5 */
+.tivoli_wpsTableSelectedRow, .portlet-section-selected {
+  color: #333333;
+  background-color: #c4d1ff ! important; /* needs to be set to important to override the normal color of the row */
+}
+
+/* Text in a selected cell range - New in v5 */
+.tivoli_wpsTableHighlightedRow, .portlet-section-highlighted {
+  color: #333333;
+  background-color: #DEDCCA! important; /* needs to be set to important to override the normal color of the row */
+}
+
+/* Shaded table row - used to alternate row colors with standard row - New in v5 */
+/* For the v5 look, we have intentionally disabled alternating shaded table rows because
+   we have lines between the rows.  However, Netscape 4.x cannot display borders
+   properly so we still use the alternating shaded rows on legacy browsers. */
+.tivoli_wpsTableShdRow, .portlet-section-alternate {
+  color: #333333;
+  background-color: #f0f0f0;
+}
+
+/* Backward compatibility style to get lines between rows for WPS 4.x portlet tables - New in v5 */
+/* Do not specify anything in these styles that you don't have to specify.  Because of CSS priorities,
+   these styles will override any CSS on the actual <td> tag that isn't marked ! important. */
+.tivoli_wpsTableRow td, .tivoli_wpsTableNrmRow td, .tivoli_wpsTableShdRow td {
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: #e0e0e0;
+  padding: 2px;
+}
+
+/* Text links in table header row */
+.tivoli_wpsTableHeadLink, .tivoli_wpsTableHeadLink:visited, .tivoli_wpsTableHeadLink:hover {
+  font-weight: normal;
+  color: #000000;
+}
+
+/*new styles for a section header row*/
+.tivoli_wpsTableSectionHead {
+  font-weight: bold;
+  color: #000000;
+  text-align: left;
+  background-color: #f0f0f0;
+}
+
+.tivoli_wpsTableSectionHead th {
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: #9CAECE;
+  padding: 3px 0 3px 5px;
+}
+
+.tivoli_wpsCheckBoxRow th, .tivoli_wpsCheckBoxRow td { /*this style is applied to a checkbox row to decrease the padding*/
+}
+
+.tivoli_wpsInnerTableCell {
+  border-width: 1px ! important;
+  border-style: solid ! important;
+  border-color: #9CAECE ! important;
+  vertical-align: top;
+}
+
+.tivoli_wpsInnerTable {
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #9CAECE;
+}
+
+/* Styles for left, middle and right cells of the header row - New in v5 */
+.tivoli_wpsTableHeadStart {
+  border-color: #ffffff #8ca6d6 #8ca6d6 #ffffff;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  white-space: nowrap;
+
+}
+
+
+.tivoli_wpsTableHeadMiddle {
+  border-color: #ffffff #8ca6d6 #8ca6d6 #ffffff;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+}
+
+
+.tivoli_wpsTableHeadEnd {
+  border-color: #ffffff #8ca6d6 #8ca6d6 #ffffff;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+}
+
+
+/* Styles for left, middle and right cells of the header row where the text is center aligned. - New in v5 */
+.tivoli_wpsDataAlignCenter {
+  text-align: center ! important;
+}
+
+/* Styles for the left, middle and right cells of the header row where the column contains numeric data. - New in v5 */
+.tivoli_wpsDataAlignRight {
+  text-align: right ! important;
+}
+
+/* Styles for the left, middle, and right cells of a data row. - New in v5 */
+/* ! important is on some of these attributes to override the backward compatibility styles
+   .wpsTableRow td, .wpsTableNrmRow td, .wpsTableShdRow td */
+.tivoli_wpsTableDataStart, .tivoli_wpsTableDataMiddle, .tivoli_wpsTableDataEnd {
+  text-align: left;
+  border-width: 1px 0px 0px 0px ! important;
+  border-style: solid ! important;
+  border-color: #D6DBEF ! important;
+  padding: 3px 5px 3px 5px ! important;
+}
+
+/* new styles to allow for a second detail line in a row */
+.tivoli_wpsTableRowDetail td {
+  border-width: 0px;
+  text-align: left;
+  border-width: 0px ! important;
+  padding: 2px 3px 5px 3px;
+}
+
+.tivoli_wpsTableTopRow td {
+  border-color: #9CAECE ! important;
+}
+
+.tivoli_wpsTableOneLeftCol {
+  vertical-align: top;
+  border-width: 1px 0 1px 1px;
+  border-color: #9CAECE;
+  border-style: solid;
+  padding: 3px;
+}
+
+/* PORTLET PAGING TABLES */
+
+/* Styles for the top-level table tag and the cells containing the header, footer, and table body. - New in v5 */
+.tivoli_wpsPagingTable, .tivoli_wpsPagingTableBody, .tivoli_wpsPagingTableHeader, .tivoli_wpsPagingTableFooter {
+  border-width: 0;
+}
+
+.tivoli_wpsHeaderTable { /*this is for added flexibility of creating 3-dimensional borders*/
+  font-size: 90%;
+}
+
+.tivoli_wpsPagingTableHeaderEmpty {
+  height: 7px;
+  width: 7px;
+  line-height: 1px;
+}
+
+
+/* The size of icons in the paging header or footer - New in v5 */
+.tivoli_wpsPagingTableHeaderIcon, .tivoli_wpsPagingTableFooterIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.tivoli_wpsPagingTableToolIcon
+{
+  width: 24px;
+  height: 24px;
+  border:0px;
+  vertical-align: middle;
+}
+
+/* The leftmost cell of the paging table header - New in v5 */
+.tivoli_wpsPagingTableHeaderStart {
+  padding: 0 3px;
+  /*background-image: url("tableleft.gif");*/
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+
+
+
+/* All cells in the middle of the paging table header - New in v5 */
+.tivoli_wpsPagingTableHeaderMiddle {
+  background-color: #D6DBEF;
+  border-top: 1px solid #9CAECE;
+  border-right: 0px none #9CAECE;
+  border-bottom: 0px none #9CAECE;
+  border-left: 0px none #9CAECE;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+/* The rightmost cell of the paging table header - New in v5 */
+.tivoli_wpsPagingTableHeaderEnd {
+  background-color: #D6DBEF;
+  border-top: 1px solid #9CAECE;
+  border-right: 1px solid #9CAECE;
+  padding: 0 3px;
+}
+
+
+.tivoli_wpsFooterTable {
+  font-size: 90%;
+  border-left: 1px solid #9CAECE;
+}
+
+/* The leftmost cell of the paging footer - New in v5 */
+.tivoli_wpsPagingTableFooterStart {
+  background-color: #D6DBEF;
+  border-left: 1px solid #ffffff;
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #9CAECE;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+
+/* All cells in the middle of the paging table footer - New in v5 */
+.tivoli_wpsPagingTableFooterMiddle {
+  background-color: #D6DBEF;
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #9CAECE;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 3px;
+}
+
+
+
+
+/* The rightmost cell of the paging table footer - New in v5 */
+.tivoli_wpsPagingTableFooterEnd {
+  background-color: #D6DBEF;
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #9CAECE;
+  border-right: 1px solid #9CAECE;
+  padding: 0 3px;
+}
+
+/* This class is used to get the system icons from style sheet.Note,every icons has to be concatenated without any space, otherwise NS will has problem to get the value. */
+.tivoli_classForDatagridSysIcons
+{
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|go=jsl/datagrid/icons/Buttons_Go.gif|previous=jsl/datagrid/icons/Buttons_Left.gif|next=jsl/datagrid/icons/Buttons_Right.gif|start=jsl/datagrid/icons/Buttons_First.gif|end=jsl/datagrid/icons/Buttons_Last.gif|sortup=jsl/datagrid/icons/n-sort-a-z.gif|sortdown=jsl/datagrid/icons/n-sort-z-a.gif|clear=jsl/datagrid/icons/clear.gif|selectall=jsl/datagrid/icons/selectall.gif|unselectall=jsl/datagrid/icons/select_none.gif|addrow=jsl/datagrid/icons/add_row.gif|delrow=jsl/datagrid/icons/remove_row.gif|acceptrow=jsl/datagrid/icons/ok.gif|cancelrow=jsl/datagrid/icons/cancel.gif|wpsPagingTableHeaderEnd=jsl/datagrid/icons/PagingTableTopRight.gif|wpsPagingTableFooterEnd=jsl/datagrid/icons/PagingTableBottomRight.gif|showallcols=jsl/datagrid/icons/Show_Cols.gif|hidecol=jsl/datagrid/icons/Hide_Column.gif|");*/
+}
+

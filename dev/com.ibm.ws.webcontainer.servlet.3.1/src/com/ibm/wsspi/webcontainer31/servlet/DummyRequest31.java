@@ -18,6 +18,7 @@ import javax.servlet.http.HttpUpgradeHandler;
 
 import com.ibm.wsspi.webcontainer.servlet.DummyRequest;
 
+@SuppressWarnings("deprecation")
 public class DummyRequest31 extends DummyRequest implements HttpServletRequest {
 
 

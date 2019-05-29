@@ -11,8 +11,8 @@
 
 package com.ibm.ws.anno.classsource.internal;
 
-import java.io.InputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Set;
 
@@ -148,12 +148,12 @@ public abstract class ClassSourceImpl implements ClassSource {
     @Override
     @Trivial
     public ClassSource_Options getOptions() {
-    	return options;
+        return options;
     }
 
     @Trivial
     public boolean getUseJandex() {
-    	return getOptions().getUseJandex();
+        return getOptions().getUseJandex();
     }
 
     //
@@ -284,9 +284,9 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     /**
      * <p>Attempt to process a specified class. Answer whether processing was handed
-     * successfully by the streamer via {@link ClassSource_Streamer#process(String, InputStream, boolean, boolean, boolean)}.</p>
+     * successfully by the streamer via {@link ClassSource_Streamer#process}.</p>
      *
-     * <p>A failure (false) result occurs the class is blocked by {@link ClassSource_Streamer#doProcess(String, boolean, boolean, boolean)},
+     * <p>A failure (false) result occurs the class is blocked by {@link ClassSource_Streamer#doProcess},
      * or if no resource is available for the class. A failure to open the resource results
      * in an exception. Certain processing failures also result in an exception.</p>
      *
@@ -463,7 +463,7 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     @Override
     public void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNames, ScanPolicy scanPolicy) {
-    	String methodName = "scanClasses";
+        String methodName = "scanClasses";
 
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER", getHashText()));
@@ -479,7 +479,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         boolean fromJandex;
 
         if ( processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
-        	fromJandex = true;
+            fromJandex = true;
         } else {
             processFromScratch(streamer, i_seedClassNames, scanPolicy);
             fromJandex = false;
@@ -490,9 +490,9 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
                     new Object[] { getHashText(),
-                    		       getCanonicalName(),
-                    		       (fromJandex ? "New Scan" : "Jandex"),
-                    		       Integer.valueOf(finalClasses) } ));
+                                   getCanonicalName(),
+                                   (fromJandex ? "New Scan" : "Jandex"),
+                                   Integer.valueOf(finalClasses) } ));
 
             Object[] logParms = new Object[] { getHashText(), null, null };
 
@@ -511,26 +511,26 @@ public abstract class ClassSourceImpl implements ClassSource {
         }
 
         if ( fromJandex && JandexLogger.doLog() ) {
-        	String useHashText = getHashText();
+            String useHashText = getHashText();
 
-        	String msg = MessageFormat.format(
-        		"[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
-        		useHashText, getCanonicalName(),
-        		(fromJandex ? "New Scan" : "Jandex"),
-        		Integer.valueOf(finalClasses) );
-        	JandexLogger.log(CLASS_NAME, methodName, msg);
+            String msg = MessageFormat.format(
+                "[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
+                useHashText, getCanonicalName(),
+                (fromJandex ? "New Scan" : "Jandex"),
+                Integer.valueOf(finalClasses) );
+            JandexLogger.log(CLASS_NAME, methodName, msg);
 
-        	JandexLogger.log(CLASS_NAME, methodName,
-        		MessageFormat.format("[ {0} ] Added classes [ {1} ]",
-        			useHashText, Integer.valueOf(finalClasses - initialClasses)));
+            JandexLogger.log(CLASS_NAME, methodName,
+                MessageFormat.format("[ {0} ] Added classes [ {1} ]",
+                    useHashText, Integer.valueOf(finalClasses - initialClasses)));
 
-        	for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
-        		int nextResult = getResult(resultField);
-        		String nextResultTag = resultField.getTag();
+            for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
+                int nextResult = getResult(resultField);
+                String nextResultTag = resultField.getTag();
 
-            	JandexLogger.log(CLASS_NAME, methodName,
+                JandexLogger.log(CLASS_NAME, methodName,
                     MessageFormat.format("[ {0} ]  [ {1} ] {2}",
-                    	useHashText, Integer.valueOf(nextResult), nextResultTag));
+                        useHashText, Integer.valueOf(nextResult), nextResultTag));
             }
         }
     }
@@ -572,7 +572,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The read Jandex index.
      */
     protected Index getJandexIndex() {
-    	String methodName = "getJandexIndex";
+        String methodName = "getJandexIndex";
 
         boolean doLog = tc.isDebugEnabled();
         boolean doJandexLog = JandexLogger.doLog();
@@ -580,56 +580,56 @@ public abstract class ClassSourceImpl implements ClassSource {
         boolean useJandex = getUseJandex();
 
         if ( !useJandex ) {
-        	// Figuring out if there is a Jandex index is mildly expensive,
-        	// and is to be avoided when logging is disabled.
+            // Figuring out if there is a Jandex index is mildly expensive,
+            // and is to be avoided when logging is disabled.
 
-        	if ( doLog || doJandexLog ) {
-        		boolean haveJandex = basicHasJandexIndex();
+            if ( doLog || doJandexLog ) {
+                boolean haveJandex = basicHasJandexIndex();
 
-        		String msg;
-        		if ( haveJandex ) {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
-        				getHashText(), getJandexIndexPath());
-        		} else {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] not found",
-        				getHashText(), getJandexIndexPath());
+                String msg;
+                if ( haveJandex ) {
+                    msg = MessageFormat.format(
+                        "[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
+                        getHashText(), getJandexIndexPath());
+                } else {
+                    msg = MessageFormat.format(
+                        "[ {0} ] Jandex disabled; Jandex index [ {1} ] not found",
+                        getHashText(), getJandexIndexPath());
 
-        		}
-        		if ( doLog ) {
-        		    Tr.debug(tc, msg);
-        		}
-        		if ( doJandexLog ) {
-        		    JandexLogger.log(CLASS_NAME,  methodName, msg);
-        		}
-        	}
+                }
+                if ( doLog ) {
+                    Tr.debug(tc, msg);
+                }
+                if ( doJandexLog ) {
+                    JandexLogger.log(CLASS_NAME,  methodName, msg);
+                }
+            }
 
-        	return null;
+            return null;
 
         } else {
-        	Index jandexIndex = basicGetJandexIndex();
+            Index jandexIndex = basicGetJandexIndex();
 
-        	if ( doLog || doJandexLog ) {
-        		String msg;
-        		if ( jandexIndex != null ) {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] found",
-        				getHashText(), getJandexIndexPath());
-        		} else {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] not found",
-        				getHashText(), getJandexIndexPath());
-        		}
-        		if ( doLog ) {
-        	        Tr.debug(tc, msg);
-        		}
-        		if ( doJandexLog ) {
-        			JandexLogger.log(CLASS_NAME,  methodName, msg);
-        		}
-        	}
+            if ( doLog || doJandexLog ) {
+                String msg;
+                if ( jandexIndex != null ) {
+                    msg = MessageFormat.format(
+                        "[ {0} ] Jandex enabled; Jandex index [ {1} ] found",
+                        getHashText(), getJandexIndexPath());
+                } else {
+                    msg = MessageFormat.format(
+                        "[ {0} ] Jandex enabled; Jandex index [ {1} ] not found",
+                        getHashText(), getJandexIndexPath());
+                }
+                if ( doLog ) {
+                    Tr.debug(tc, msg);
+                }
+                if ( doJandexLog ) {
+                    JandexLogger.log(CLASS_NAME,  methodName, msg);
+                }
+            }
 
-        	return jandexIndex;
+            return jandexIndex;
         }
     }
 
@@ -681,7 +681,7 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         Index jandexIndex = getJandexIndex();
         if ( jandexIndex == null ) {
-        	return false;
+            return false;
         }
         
         processedUsingJandex = true;
@@ -755,29 +755,27 @@ public abstract class ClassSourceImpl implements ClassSource {
      * we don't want to scan these until support for Java 9 is added.  For now we want
      * to just ignore all of these classes.
      *
-     * @param name - simple class name,  (without .class suffix)
-     *               fully qualified class name, (example com.ibm.someClass OR com/ibm/someClass)
-     *               or simple directory name
+     * @param className Simple class name (without .class suffix), fully qualified class name (for
+     *     example com.ibm.someClass OR com/ibm/someClass), or simple directory name.
      *
-     * @return     - true if the name startsWith "META-INF" or ends with "module-info"
-     *             The startsWith & endsWith tests do not definitively confirm Java-9 specificity,
-     *             but for all intents and purposes, it does what we want.  For example if we get a 
-     *             class name or directory name that starts with META-INF or ends with module-info, 
-     *             but it's not really a Java 9 case, well it's still not a valid class name or it's not
-     *             a valid directory name that could be part of a java package name.  Returning
-     *             true has the end result of the class being ignored.
+     * @return True if the name startsWith "META-INF" or ends with "module-info".
+     *     The startsWith and endsWith tests do not definitively confirm Java-9 specificity,
+     *     but for all intents and purposes, it does what we want.  For example if we get a 
+     *     class name or directory name that starts with META-INF or ends with module-info, 
+     *     but it's not really a Java 9 case, well it's still not a valid class name or it's not
+     *     a valid directory name that could be part of a java package name.  Returning
+     *     true has the end result of the class being ignored.
      */
-    protected boolean isJava9SpecificClass(String name) {
-
-        if ( ( name.length() >= META_INF_LENGTH ) && name.regionMatches(true, 0, "META-INF", 0, META_INF_LENGTH) ) {
+    protected boolean isJava9SpecificClass(String className) {
+        if ( (className.length() >= META_INF_LENGTH) &&
+             className.regionMatches(true, 0, "META-INF", 0, META_INF_LENGTH) ) {
             return true; // Starts with "META-INF" ignoring case
-        }        
+        }
 
-        if ( name.endsWith("module-info") ) {
+        if ( className.endsWith("module-info") ) {
             return true;
-        }        
+        }
 
         return false;
     }
-    
 }

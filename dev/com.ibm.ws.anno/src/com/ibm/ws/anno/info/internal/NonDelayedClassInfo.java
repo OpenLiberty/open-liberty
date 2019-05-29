@@ -31,7 +31,8 @@ import com.ibm.wsspi.anno.info.ClassInfo;
 public class NonDelayedClassInfo extends ClassInfoImpl {
 
     private static final TraceComponent tc = Tr.register(NonDelayedClassInfo.class);
-    public static final String CLASS_NAME = NonDelayedClassInfo.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = NonDelayedClassInfo.class.getName();
 
     //
 
@@ -289,8 +290,8 @@ public class NonDelayedClassInfo extends ClassInfoImpl {
 
         methods.addAll(declaredMethods);
 
-        ClassInfoImpl superClass = getSuperclass();
-        if (superClass != null) {
+        ClassInfoImpl useSuperClass = getSuperclass();
+        if (useSuperClass != null) {
             Map<MethodInfoImpl, MethodInfoImpl> overriden = Collections.emptyMap();
             if (declaredMethods.size() > 0) {
                 overriden = new TreeMap<MethodInfoImpl, MethodInfoImpl>(METHOD_COMPARATOR);
@@ -302,7 +303,7 @@ public class NonDelayedClassInfo extends ClassInfoImpl {
             }
 
             // get the super methods rather than walk to deal with package private evaluation
-            List<MethodInfoImpl> superMethods = superClass.getMethods();
+            List<MethodInfoImpl> superMethods = useSuperClass.getMethods();
 
             // add all methods that do not exist unless private or package protected
             for (MethodInfoImpl method : superMethods) {

@@ -83,7 +83,7 @@ public class AnnotationInfoImpl implements AnnotationInfo {
      * are stored as default value on the methods of the class.</p>
      * 
      * <p>Note that the info store provides the correct context information for resolving
-     * the annotation class. While many classloading contexts provide access to <code>java<code>
+     * the annotation class. While many classloading contexts provide access to <code>java</code>
      * and <code>javax</code> annotations, user scenarios may create new annotation types,
      * and these must be resolved using the same class lookup information as was used
      * to locate target class or package of the annotation occurrence.</p>
@@ -329,7 +329,6 @@ public class AnnotationInfoImpl implements AnnotationInfo {
 
     //
 
-    //  because of the global state access.
     @Trivial
     public void log(TraceComponent logger) {
 

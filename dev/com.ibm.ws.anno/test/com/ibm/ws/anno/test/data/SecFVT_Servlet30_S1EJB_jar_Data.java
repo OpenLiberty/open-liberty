@@ -18,7 +18,7 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class SecFVT_Servlet30_S1EJB_jar_Data {
-    public static final String EAR_NAME = "secfvt_servlet30.ear.unpacked";
+    public static final String EAR_NAME = "secfvt_servlet30.ear";
 
     // public static final String EAR_LIB_PATH = File.separator + "lib";
     // An EAR library directory is not available.

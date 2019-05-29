@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,20 +9,32 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+
+bVersion=1.1
+
+javac.source: 1.8
+javac.target: 1.8
             
 Bundle-SymbolicName: com.ibm.ws.anno; singleton:=true
 
 Private-Package: \
-    com.ibm.ws.anno.*
+	com.ibm.ws.anno.*, \
+	com.ibm.ws.annocache.*
 
 Export-Package: \
-    com.ibm.wsspi.anno.service;provide:=true, \
-    com.ibm.wsspi.anno.info;provide:=true, \
-    com.ibm.wsspi.anno.targets;provide:=true, \
-    com.ibm.wsspi.anno.classsource;provide:=true, \
-    com.ibm.ws.anno.classsource.specification;provide:=true, \
-    com.ibm.wsspi.anno.util;provide:=true
+	com.ibm.wsspi.anno.service;provide:=true, \
+	com.ibm.wsspi.anno.info;provide:=true, \
+	com.ibm.wsspi.anno.targets;provide:=true, \
+	com.ibm.wsspi.anno.classsource;provide:=true, \
+	com.ibm.wsspi.anno.util;provide:=true, \
+	com.ibm.ws.anno.classsource.specification;provide:=true, \
+	com.ibm.wsspi.annocache.service;provide:=true, \
+	com.ibm.wsspi.annocache.info;provide:=true, \
+	com.ibm.wsspi.annocache.targets;provide:=true, \
+	com.ibm.wsspi.annocache.targets.cache;provide:=true, \
+	com.ibm.wsspi.annocache.classsource;provide:=true, \
+	com.ibm.wsspi.annocache.util;provide:=true, \
+	com.ibm.ws.annocache.classsource.specification;provide:=true
 
 Service-Component:\
   com.ibm.wsspi.anno.service; \
@@ -54,14 +66,53 @@ Service-Component:\
     provide:=com.ibm.wsspi.anno.util.Util_Factory; \
     implementation:=com.ibm.ws.anno.util.internal.UtilImpl_Factory; \
     configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.wsspi.annocache.service; \
+    provide:=com.ibm.wsspi.annocache.service.AnnotationCacheService_Service; \
+    implementation:=com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.wsspi.annocache.info; \
+    provide:=com.ibm.wsspi.annocache.info.InfoStoreFactory; \
+    implementation:=com.ibm.ws.annocache.info.internal.InfoStoreFactoryImpl; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.wsspi.annocache.targets; \
+    provide:=com.ibm.wsspi.annocache.targets.AnnotationTargets_Factory; \
+    implementation:=com.ibm.ws.annocache.targets.internal.AnnotationTargetsImpl_Factory; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.wsspi.annocache.targets.cache; \
+    provide:=com.ibm.wsspi.annocache.targets.cache.TargetCache_Factory; \
+    implementation:=com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Factory; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.wsspi.annocache.classsource; \
+    provide:=com.ibm.wsspi.annocache.classsource.ClassSource_Factory; \
+    implementation:=com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.wsspi.annocache.classsource.specification; \
+    provide:=com.ibm.wsspi.annocache.classsource.ClassSource_Specification; \
+    implementation:=com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Specification; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.wsspi.annocache.util; \
+    provide:=com.ibm.wsspi.annocache.util.Util_Factory; \
+    implementation:=com.ibm.ws.annocache.util.internal.UtilImpl_Factory; \
+    configuration-policy:=ignore; \
     properties:="service.vendor=IBM"
 
 WS-TraceGroup: com.ibm.ws.anno
 
-instrument.classesExcludes: com/ibm/ws/anno/resources/internal/*.class
+instrument.classesExcludes: \
+	com/ibm/ws/anno/resources/internal/*.class, \
+	com/ibm/ws/annocache/resources/internal/*.class
 
 -buildpath: \
+        com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
+        com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.ws.org.jboss.jandex;version=latest,\

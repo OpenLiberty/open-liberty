@@ -77,13 +77,13 @@ public interface ClassSource {
      * 
      * @param parent The parent of this class source.
      */
-    void setParentSource(ClassSource classSource);
+    void setParentSource(ClassSource parent);
 
     /**
      * <p>A name for this class source.</p>
      * 
      * <p>The class source name is used as a unique ID when storing values to
-     * annotation targets. See {@link com.ibm.wsspi.anno.targets.AnnotationTargets_Targets#getClassSourceNames()}.</p>
+     * annotation targets.</p>
      * 
      * <p>When adding class sources to an aggregate, the names of the child class
      * sources must be unique.</p>
@@ -98,7 +98,7 @@ public interface ClassSource {
      * 
      * @return The canonical name of the class source.
      * 
-     * @see ClassSource_Factory#getCanonicalName(String)
+     * {@link ClassSource_Factory#getCanonicalName(String)}
      */
     String getCanonicalName();
 
@@ -174,7 +174,7 @@ public interface ClassSource {
     /**
      * <p>Alternate scan processing step: Perform scanning only on specific class.</p>
      * 
-     * @param specificClassNamesThe name of the class which is to be scanned.
+     * @param specificClassName The name of the class which is to be scanned.
      * @param streamer A selection and processing helper for the scan operation.
      * 
      * @return True if the streamer processed the class. Otherwise, false.
@@ -338,7 +338,8 @@ public interface ClassSource {
      * exception.</p>
      * 
      * @param className The name of the class for which to open an input stream.
-     * 
+     * @param resourceName The name of the resource of the class.
+     *
      * @return The input stream for the named class. Null if no resource is
      *         available for the class.
      * 
@@ -366,6 +367,7 @@ public interface ClassSource {
      * should not be forced to discard the resource name.</p>
      * 
      * @param className The class for which the input stream was opened.
+     * @param resourceName The name of the resource of the class.
      * @param inputStream The input stream which is to be closed.
      * 
      * @throws ClassSource_Exception Thrown in case the input stream could not be closed.
@@ -381,7 +383,7 @@ public interface ClassSource {
      * 
      * @return The count of resources excluded from processing as non-class resources.
      * 
-     * @see ClassSource#isClassResource(String)
+     * {@link ClassSource#isClassResource(String)}
      */
     int getResourceExclusionCount();
 
@@ -401,9 +403,9 @@ public interface ClassSource {
      * 
      * @return The count of class resources for duplicate classes.
      * 
-     * @see #getClassInclusionCount()
-     * @see ClassSource#isClassResource(String)
-     * @see ClassSource_Streamer#doProcess(String)
+     * {@link #getClassInclusionCount()}
+     * {@link ClassSource#isClassResource(String)}
+     * {@link ClassSource_Streamer#doProcess}
      */
     int getClassExclusionCount();
 
@@ -418,9 +420,9 @@ public interface ClassSource {
      * 
      * @return The count of class resources for distinct classes.
      * 
-     * @see #getClassExclusionCount()
-     * @see ClassSource#isClassResource(String)
-     * @see ClassSource_Streamer#doProcess(String)
+     * {@link #getClassExclusionCount()}
+     * {@link ClassSource#isClassResource(String)}
+     * {@link ClassSource_Streamer#doProcess}
      */
     int getClassInclusionCount();
     

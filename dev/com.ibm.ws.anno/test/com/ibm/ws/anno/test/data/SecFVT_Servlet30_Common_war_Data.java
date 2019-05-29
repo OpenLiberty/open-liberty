@@ -18,21 +18,21 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class SecFVT_Servlet30_Common_war_Data {
-    public static final String EAR_NAME = "secfvt_servlet30.ear.unpacked";
+    public static final String EAR_NAME = "secfvt_servlet30.ear";
 
     public static final String EJBJAR_NAME = "SecFVTS1EJB.jar";
 
     // Changed to a parameter:
     // public static final String WAR_NAME = ""; 
 
-    public static final String WAR_ANNMIXED_NAME = "Servlet30AnnMixed.war.unpacked";
-    public static final String WAR_ANNPURE_NAME = "Servlet30AnnPure.war.unpacked";
-    public static final String WAR_ANNWEBXML_NAME = "Servlet30AnnWebXML.war.unpacked";
-    public static final String WAR_DYNCONFLICT_NAME = "Servlet30DynConflict.war.unpacked";
-    public static final String WAR_DYNPURE_NAME = "Servlet30DynPure.war.unpacked";
-    public static final String WAR_INHERIT_NAME = "Servlet30Inherit.war.unpacked";
-    public static final String WAR_API_NAME = "Servlet30api.war.unpacked";
-    public static final String WAR_APIFL_NAME = "Servlet30apiFL.war.unpacked";
+    public static final String WAR_ANNMIXED_NAME = "Servlet30AnnMixed.war";
+    public static final String WAR_ANNPURE_NAME = "Servlet30AnnPure.war";
+    public static final String WAR_ANNWEBXML_NAME = "Servlet30AnnWebXML.war";
+    public static final String WAR_DYNCONFLICT_NAME = "Servlet30DynConflict.war";
+    public static final String WAR_DYNPURE_NAME = "Servlet30DynPure.war";
+    public static final String WAR_INHERIT_NAME = "Servlet30Inherit.war";
+    public static final String WAR_API_NAME = "Servlet30api.war";
+    public static final String WAR_APIFL_NAME = "Servlet30apiFL.war";
 
     // An EAR library directory is not available.
     // public static final String EAR_LIB_PATH = File.separator + "lib";

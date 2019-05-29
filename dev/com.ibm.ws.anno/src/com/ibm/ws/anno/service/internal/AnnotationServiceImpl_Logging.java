@@ -41,7 +41,7 @@ public class AnnotationServiceImpl_Logging implements AnnotationService_Logging 
      * - change Logger(FINER) entries to use Tr(debug)
      * - change Logger(FINEST) entries to use Tr(dump)
      *
-     * - The AnnotationService_Logging.ANNO_LOGGER_STATE logging was implemented by registering a TraceComponent
+     * - The AnnotationCacheService_Logging.ANNO_LOGGER_STATE logging was implemented by registering a TraceComponent
      * under this class. Therefore, to restrict tracing to see only 'State' traces, the Liberty trace specification
      * should be set to enable only 'com.ibm.wsspi.anno.service.internal.AnnotationServiceImpl_Logging' traces.
      *

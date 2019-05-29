@@ -33,9 +33,6 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
  * 
  * The intent is to process the contents of a JANDEX index instead of
  * scanning the target class source.
- * 
- * See {@link #AnnotationTargetsImpl_JandexConverter(AnnotationTargetsImpl_Targets)}
- * and {@link #convertIndex(String, Index, ScanPolicy)}.
  */
 public class AnnotationTargetsImpl_JandexConverter {
     public static final TraceComponent tc = Tr.register(AnnotationTargetsImpl_JandexConverter.class);
@@ -47,6 +44,8 @@ public class AnnotationTargetsImpl_JandexConverter {
      * <p>Tell if a name is a package name.</p>
      * 
      * @param name The name which is to be tested. 
+     *
+     * @return True or false telling if the name is a package name.
      */
     public static boolean isPackageName(String name) {
         return ( name.endsWith(PACKAGE_INFO_CLASS_NAME) );

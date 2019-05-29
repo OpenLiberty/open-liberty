@@ -12,8 +12,7 @@ package com.ibm.ws.anno.test.data.sub;
 
 import javax.annotation.Resource;
 
-/**
- *
- */
 @Resource
-public class BaseNoInheritAnno {}
+public class BaseNoInheritAnno {
+    // EMPTY
+}

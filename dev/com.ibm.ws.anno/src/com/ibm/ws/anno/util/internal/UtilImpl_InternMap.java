@@ -31,8 +31,8 @@ public class UtilImpl_InternMap implements Util_InternMap {
 
     protected final String hashText;
 
-    @Trivial
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -41,7 +41,6 @@ public class UtilImpl_InternMap implements Util_InternMap {
 
     protected final int logThreshHold;
 
-    @Trivial
     @Override
     public int getLogThreshHold() {
         return logThreshHold;
@@ -121,8 +120,8 @@ public class UtilImpl_InternMap implements Util_InternMap {
 
     @Override
     @Trivial
-    public String validate(String value, ValueType valueType) {
-        return UtilImpl_InternMap.doValidate(value, valueType);
+    public String validate(String value, ValueType useValueType) {
+        return UtilImpl_InternMap.doValidate(value, useValueType);
     }
 
     //
@@ -205,7 +204,6 @@ public class UtilImpl_InternMap implements Util_InternMap {
         return internMap;
     }
 
-    @Trivial
     protected int getLastReportedLength() {
         return lastReportedLength;
     }
@@ -217,13 +215,11 @@ public class UtilImpl_InternMap implements Util_InternMap {
     }
 
     @Override
-    @Trivial
     public int getSize() {
         return getInternMap().size();
     }
 
     @Override
-    @Trivial
     public int getTotalLength() {
         return totalLength;
     }
@@ -231,7 +227,7 @@ public class UtilImpl_InternMap implements Util_InternMap {
     /**
      * Intern a string value. Do force the value to be interned.
      * 
-     * See {@link #intern(String, boolean) and {@link Util_InternMap#DO_FORCE}.
+     * See {@link #intern(String, boolean)} and {@link Util_InternMap#DO_FORCE}.
      * 
      * @param value The string value which is to be interned.
      * 
@@ -316,7 +312,6 @@ public class UtilImpl_InternMap implements Util_InternMap {
     // See: UtilImpl_BidirectionalMap.containsHeld(String)
     // And: UtilImpl_BidirectionalMap.containsHolder(String)
     @Override
-    @Trivial
     public boolean contains(String value) {
         return internMap.containsKey(value);
     }

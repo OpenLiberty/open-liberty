@@ -1,0 +1,135 @@
+
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+﻿<?xml version="1.0" encoding="UTF-8"?>
+   <web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+      <display-name>Servlet 30 Dynamic Annotation Test Application, where constraints from web.xml and static annotations are used </display-name>                                          
+      
+      <listener>
+         <listener-class>com.ibm.ws.secfvt.servlet.listener.ServletRegistrationContextListener1</listener-class>
+      </listener>
+      
+      <servlet id="Servlet_1">
+      	<description></description>
+		    <display-name>Servlet30DynConflict1</display-name>
+		    <servlet-name>Servlet30DynConflict1</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynConflict1</servlet-class>
+      </servlet>
+      <servlet id="Servlet_3">
+      	<description></description>
+		    <display-name>Servlet30DynConflict3</display-name>
+		    <servlet-name>Servlet30DynConflict3</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynConflict3</servlet-class>
+        <run-as>
+            <role-name>Manager</role-name>
+        </run-as>         
+      </servlet>      
+      <servlet id="Servlet_5">
+      	<description></description>
+		    <display-name>Servlet30DynConflict5</display-name>
+		    <servlet-name>Servlet30DynConflict5</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynConflict5</servlet-class>
+        <run-as>
+            <role-name>Manager</role-name>
+        </run-as>         
+      </servlet>            
+      <servlet id="Servlet_6a">
+      	<description></description>
+		    <display-name>Servlet30DynConflict6a</display-name>
+		    <servlet-name>Servlet30DynConflict6a</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynConflict6</servlet-class>
+      </servlet>
+      <servlet id="Servlet_7">
+      	<description></description>
+		    <display-name>Servlet30DynConflict7</display-name>
+		    <servlet-name>Servlet30DynConflict7</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynConflict7</servlet-class>
+      </servlet>
+      <servlet id="Servlet_8">
+      	<description></description>
+		    <display-name>Servlet30DynConflict8</display-name>
+		    <servlet-name>Servlet30DynConflict8</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynConflict8</servlet-class>
+      </servlet>
+      <servlet id="Servlet_9">
+      	<description></description>
+		    <display-name>Servlet30DynConflict9</display-name>
+		    <servlet-name>Servlet30DynConflict9</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynConflict9</servlet-class>
+      </servlet>                  
+      
+      <servlet-mapping id="ServletMapping_1">
+         <servlet-name>Servlet30DynConflict1</servlet-name>
+         <url-pattern>/Servlet30DynConflict1</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_3">
+         <servlet-name>Servlet30DynConflict3</servlet-name>
+         <url-pattern>/Servlet30DynConflict3</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_5">
+         <servlet-name>Servlet30DynConflict5</servlet-name>
+         <url-pattern>/Servlet30DynConflict5</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_6a">
+         <servlet-name>Servlet30DynConflict6a</servlet-name>
+         <url-pattern>/Servlet30DynConflict6/a</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_8">
+         <servlet-name>Servlet30DynConflict8</servlet-name>
+         <url-pattern>/Servlet30DynConflict8/a</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_9">
+         <servlet-name>Servlet30DynConflict9</servlet-name>
+         <url-pattern>/Servlet30DynConflict9/a</url-pattern>
+      </servlet-mapping>            
+
+      <security-constraint>
+         <display-name>SecurityConstraint_01</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/Servlet30DynConflict1</url-pattern>
+         </web-resource-collection>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_03</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_03</web-resource-name>
+           <url-pattern>/Servlet30DynConflict3</url-pattern>
+         </web-resource-collection>
+      </security-constraint>      
+      <security-constraint>
+         <display-name>SecurityConstraint_05</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_05</web-resource-name>
+           <url-pattern>/Servlet30DynConflict5</url-pattern>
+         </web-resource-collection>
+      </security-constraint>      
+      <security-constraint>
+         <display-name>SecurityConstraint_06</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_06</web-resource-name>
+           <url-pattern>/Servlet30DynConflict6/a</url-pattern>
+         </web-resource-collection>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_09</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_09</web-resource-name>
+           <url-pattern>/Servlet30DynConflict9/a</url-pattern>
+         </web-resource-collection>
+      </security-constraint>      
+      
+      <security-role id="SecurityRole_1">
+         <description>All authenticated users in an enterprise</description>
+         <role-name>AllAuthenticated</role-name>
+      </security-role>                  
+
+   </web-app>

@@ -19,7 +19,7 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class AnnotationTest_SubclassMap_jar_Data {
-    public static final String EAR_NAME = "SubclassMapTest.ear.unpacked";
+    public static final String EAR_NAME = "SubclassMapTest.ear";
     public static final String EAR_LIB_PATH = File.separator + "lib";
     public static final String EJBJAR_NAME = "SubclassMapTest.jar";
 

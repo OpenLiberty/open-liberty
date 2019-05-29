@@ -22,7 +22,8 @@ import com.ibm.wsspi.anno.info.ClassInfo;
 public class DelayedClassInfo extends ClassInfoImpl {
 
     private static final TraceComponent tc = Tr.register(DelayedClassInfo.class);
-    public static final String CLASS_NAME = DelayedClassInfo.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = DelayedClassInfo.class.getName();
 
     // Top O' the World ...
 

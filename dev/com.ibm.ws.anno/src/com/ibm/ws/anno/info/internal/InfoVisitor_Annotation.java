@@ -284,7 +284,7 @@ public abstract class InfoVisitor_Annotation extends AnnotationVisitor {
 
         return new InfoVisitor_Annotation(infoStore) {
             @Override
-            protected void storeAnnotationValue(String name, AnnotationValueImpl newAnnotationValue) {
+            protected void storeAnnotationValue(String attributeName, AnnotationValueImpl newAnnotationValue) {
                 arrayValue.addArrayValue(newAnnotationValue);
             }
 

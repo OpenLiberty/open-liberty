@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -25,63 +26,56 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator;
 
 public class WebSocketInjectionClassListCollaborator  implements WebAppInjectionClassListCollaborator {
+    private static final TraceComponent tc = Tr.register(WebSocketInjectionClassListCollaborator.class);
 
-	private static final TraceComponent tc = Tr.register(WebSocketInjectionClassListCollaborator.class);
+    //
 
-	// List of abstract classes in WebSockets for which extenders require support for CDI 1.2    
-    private final String[] injectionSubClasses = new String[]{"javax.websocket.Endpoint"}; 
+    // Abstract WebSocket classes.  Extenders of these require support for CDI 1.2.
+    private static final String[] INJECTION_SUPER_CLASSES =
+        new String[] { "javax.websocket.Endpoint" };
 
-	@Override
-	@FFDCIgnore(UnableToAdaptException.class)
-	public List<String> getInjectionClasses(Container moduleContainer) {
+    @Override
+    @FFDCIgnore(UnableToAdaptException.class)
+    public List<String> getInjectionClasses(Container moduleContainer) {
+        String methodName = "getInjectionClasses";
 
-		ArrayList<String> classList = new ArrayList<String>();
-		Set<String> injectionClassNames;
+        List<String> injectionClassNames = new ArrayList<String>();
 
-		try {
-			WebAnnotations webAnnotations = moduleContainer.adapt(WebAnnotations.class);
-			AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
+        try {
+            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
 
-			// Find POJOs that have been annotated to be Endpoints.  Annotated Endpoints can not be inherited, so don't look for inherited classes  
-			Set<String> annotatedPojoClassNames = annotationTargets.getAnnotatedClasses("javax.websocket.server.ServerEndpoint");
+            // Find POJOs that have been annotated to be end points.
+            // The annotation is not inherited: Look for immediate targets, not for inherited targets.
+            Set<String> endpointClassNames =
+                annoTargets.getAnnotatedClasses("javax.websocket.server.ServerEndpoint");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName, "ServerEndpoint annotated classes: " + endpointClassNames);
+            }
+            injectionClassNames.addAll(endpointClassNames);
 
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "getInjectionClasses",	"Found and added annotated server endpoint classes of: " + annotatedPojoClassNames);
-			}
-			
-			classList.addAll(annotatedPojoClassNames);
+            for ( String injectionSuperClass : INJECTION_SUPER_CLASSES ) {
+                Set<String> implementorClassNames = annoTargets.getSubclassNames(injectionSuperClass);
+                for ( String implementorClassName : implementorClassNames ) {
+                    if ( injectionClassNames.contains(implementorClassName) ) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, methodName,    "Already added: Extender of: " + injectionSuperClass + ": " + implementorClassName);
+                        }
+                    } else {
+                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                            Tr.debug(tc, methodName, "Add: Extender of: " + injectionSuperClass + ": " + implementorClassName);
+                        }
+                        injectionClassNames.add(implementorClassName);
+                    }
+                }
+            }
 
-			// Look for objects which extend classes which must support CDI 1.2
-			for (String injectionSubClass : injectionSubClasses) {
+        } catch (UnableToAdaptException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to adapt class annotations", e);
+            }
+        }
 
-				injectionClassNames = annotationTargets.getSubclassNames(injectionSubClass);
-
-				Iterator<String> iterator = injectionClassNames.iterator();
-
-				while (iterator.hasNext()) {
-					String element = iterator.next();
-					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-						Tr.debug(tc, "getInjectionClasses",	"Found extender of " + injectionSubClass + " : " + element);
-					}
-					
-					// add if not previously found
-					if (!classList.contains(element)) {
-						classList.add(element);
-						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-							Tr.debug(tc, "getInjectionClasses",	"Add sub class :" + element);
-						}
-					}
-				}
-			}
-
-		} catch (UnableToAdaptException e) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "failed to adapt to for class annotations", e);
-			}
-		}
-
-		return classList;
-
-	}
-
+        return injectionClassNames;
+    }
 }

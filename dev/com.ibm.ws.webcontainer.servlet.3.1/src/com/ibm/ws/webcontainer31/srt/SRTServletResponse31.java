@@ -36,6 +36,7 @@ import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
  * @author The Unknown Programmer
  * 
  */
+@SuppressWarnings("deprecation")
 public class SRTServletResponse31 extends com.ibm.ws.webcontainer.srt.SRTServletResponse implements HttpServletResponse{ 
 
     private static final TraceComponent tc = Tr.register(SRTServletResponse31.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);

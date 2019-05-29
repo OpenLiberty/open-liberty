@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
+import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.ejbcontainer.osgi.MDBRuntime;
 import com.ibm.ws.ejbcontainer.osgi.ManagedBeanRuntime;
 import com.ibm.ws.ejbcontainer.osgi.SessionBeanRuntime;
@@ -120,9 +122,9 @@ class ModuleMergeData {
     }
 
     private ModuleAnnotations getModuleAnnotations() {
-        if (moduleAnno == null) {
+        if ( moduleAnno == null ) {
             try {
-                moduleAnno = container.adapt(ModuleAnnotations.class);
+            	moduleAnno = AnnotationsBetaHelper.getModuleAnnotations(container);
             } catch (UnableToAdaptException e) {
                 throw new IllegalStateException(e);
             }

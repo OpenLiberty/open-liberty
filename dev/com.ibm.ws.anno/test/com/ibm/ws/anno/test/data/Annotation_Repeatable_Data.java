@@ -23,7 +23,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
  * 
  * */
 public class Annotation_Repeatable_Data {
-    public static final String EAR_NAME = "RepeatableAnnotation_Test.ear.unpacked";
+    public static final String EAR_NAME = "RepeatableAnnotationTest.ear";
     public static final String EAR_LIB_PATH = File.separator + "lib";
     public static final String EJBJAR_NAME = "RepeatableAnnotation_Test.jar";
 

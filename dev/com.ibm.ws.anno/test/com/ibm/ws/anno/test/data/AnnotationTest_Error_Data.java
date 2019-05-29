@@ -15,7 +15,7 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class AnnotationTest_Error_Data {
-    public static final String EAR_NAME = "ErrorTest.ear.unpacked";
+    public static final String EAR_NAME = "ErrorTest.ear";
 
     // Test plan (part 1):
 
@@ -49,14 +49,14 @@ public class AnnotationTest_Error_Data {
     // subset1 (for numbers 1 and 2), subset2 (a non-valid jar), and subset3,
     // (for numbers 4 and 5).
 
-    public static final String WAR_NAME_NONVALID_JAR = "nonValidJar.war.unpacked";
-    public static final String WAR_NAME_NONVALID_JAR_ENTRY = "nonValidJarEntry.war.unpacked";
+    public static final String WAR_NAME_NONVALID_JAR = "nonValidJar.war";
+    public static final String WAR_NAME_NONVALID_JAR_ENTRY = "nonValidJarEntry.war";
 
-    public static final String WAR_NAME_NONVVALID_PACKAGE = "nonValidPackage.war.unpacked";
-    public static final String WAR_NAME_PACKAGE_MISMATCH = "packageMismatch.war.unpacked";
+    public static final String WAR_NAME_NONVVALID_PACKAGE = "nonValidPackage.war";
+    public static final String WAR_NAME_PACKAGE_MISMATCH = "packageMismatch.war";
 
-    public static final String WAR_NAME_NONVALID_CLASS = "nonValidClass.war.unpacked";
-    public static final String WAR_NAME_CLASS_MISMATCH = "classMismatch.war.unpacked";
+    public static final String WAR_NAME_NONVALID_CLASS = "nonValidClass.war";
+    public static final String WAR_NAME_CLASS_MISMATCH = "classMismatch.war";
 
     //
 
@@ -116,7 +116,7 @@ public class AnnotationTest_Error_Data {
     // 7) Successful load of test.testpackage2.TestClass
     // 8) Failed artificial for package test.testpackage2 of TestClass
 
-    public static final String WAR_NAME_INFO_FAILURES = "infoFailures.war.unpacked";
+    public static final String WAR_NAME_INFO_FAILURES = "infoFailures.war";
 
     public static final String INFO_FAILURES_PACKAGE1 = "test.testpackage1";
     public static final String INFO_FAILURES_PACKAGE2 = "test.testpackage2";

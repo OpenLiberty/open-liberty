@@ -28,7 +28,7 @@ public interface MethodInfo extends Info {
 
     /**
      * <p>Answer the qualified name of the receiver. For methods, the qualified name is
-     * the declaring class name plus <q>.</q> plus the method name.</p>
+     * the declaring class name plus '.' plus the method name.</p>
      * 
      * <p>Qualified names provide unique IDs for packages, classes, methods,
      * and methods. The names of annotations are the names of an annotation
@@ -43,19 +43,18 @@ public interface MethodInfo extends Info {
 
     /**
      * <p>Answer the in-order names of the types of the parameters of this method.
-     * (Note: These are the parameter <weak>type</weak> names, not the
-     * parameter names.)</p>
+     * (Note: These are the parameter type names, not the parameter names.)</p>
      * 
      * @return The in-order names of the types of the parameters of this method.
      * 
-     * @see #getParameterTypes()
+     * {@link #getParameterTypes()}
      */
     public List<String> getParameterTypeNames();
 
     /**
      * <p>Answer the in-order types of the parameters of this method.</p>
      * 
-     * <p>The in-order types of the parameters of this method.</p>
+     * @return The in-order types of the parameters of this method.
      */
     public List<? extends ClassInfo> getParameterTypes();
 
@@ -66,7 +65,7 @@ public interface MethodInfo extends Info {
      * @return The names of the exceptions which may be thrown by this method,
      *         returned as a set.
      * 
-     * @see #getExceptionNames()
+     * {@link #getExceptionTypes()}
      */
     public List<String> getExceptionTypeNames();
 
@@ -144,6 +143,8 @@ public interface MethodInfo extends Info {
      * <p>If this method is on an annotation interface, answer the default value of
      * the method. If no default is defined, or if this method is not on an annotation
      * interface, answer null.</p>
+     *
+     * @return The default value of this method as an annotation attribute.
      */
     public AnnotationValue getAnnotationDefaultValue();
 }

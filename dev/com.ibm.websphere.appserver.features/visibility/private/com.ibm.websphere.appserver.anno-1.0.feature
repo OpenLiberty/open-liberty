@@ -3,11 +3,20 @@ symbolicName=com.ibm.websphere.appserver.anno-1.0
 IBM-API-Package: javax.annotation; type="spec", \
  javax.annotation.security; type="spec", \
  javax.annotation.sql; type="spec"
-IBM-SPI-Package: com.ibm.wsspi.anno.classsource, \
+IBM-SPI-Package: \
+ com.ibm.wsspi.anno.classsource, \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification, \
+ com.ibm.wsspi.annocache.classsource, \
+ com.ibm.wsspi.annocache.info, \
+ com.ibm.wsspi.annocache.service, \
+ com.ibm.wsspi.annocache.targets, \
+ com.ibm.wsspi.annocache.targets.cache, \
+ com.ibm.wsspi.annocache.util, \
+ com.ibm.ws.annocache.classsource.specification
 Manifest-Version: 1.0
 IBM-Process-Types: server, \
  client

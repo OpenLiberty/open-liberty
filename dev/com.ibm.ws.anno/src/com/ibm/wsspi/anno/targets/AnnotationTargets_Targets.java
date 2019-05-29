@@ -118,11 +118,6 @@ public interface AnnotationTargets_Targets {
      */
     void scan(ClassSource_Aggregate classSource, Set<String> specificClassNames) throws AnnotationTargets_Exception;
 
-    /**
-     * @param classSource
-     * @param greedy
-     * @throws AnnotationTargets_Exception
-     */
     void scan(ClassSource_Aggregate classSource, boolean greedy) throws AnnotationTargets_Exception;
 
     // Scanned classes ...
@@ -134,7 +129,7 @@ public interface AnnotationTargets_Targets {
      * 
      * @return True if the named class was scanned as a seed class. Otherwise, false.
      * 
-     * @see #getSeedClassNames()
+     * {@link #getSeedClassNames()}
      */
     boolean isSeedClassName(String className);
 
@@ -152,7 +147,7 @@ public interface AnnotationTargets_Targets {
      * 
      * @return True if the named class is a partial class. Otherwise, false.
      * 
-     * @see #getPartialClassNames()
+     * {@link #getPartialClassNames()}
      */
     boolean isPartialClassName(String className);
 
@@ -170,7 +165,7 @@ public interface AnnotationTargets_Targets {
      * 
      * @return True if the named class is an excluded class. Otherwise, false.
      * 
-     * @see #getExcludedClassNames()
+     * {@link #getExcludedClassNames()}
      */
     boolean isExcludedClassName(String className);
 
@@ -188,7 +183,7 @@ public interface AnnotationTargets_Targets {
      * 
      * @return True if the named class is an external class. Otherwise, false.
      * 
-     * @see #getExternalClassNames()
+     * {@link #getExternalClassNames()}
      */
     boolean isExternalClassName(String className);
 
@@ -400,27 +395,27 @@ public interface AnnotationTargets_Targets {
     
     // Policy driven result selection ...
 
-    /** <p>Synonym for {@link ClassSource_Aggregate.ScanPolicy.ALL_EXCEPT_EXTERNAL}.</p> */
+    /** <p>Synonym for {@link ClassSource_Aggregate.ScanPolicy#ALL_EXCEPT_EXTERNAL}.</p> */
     public static final int POLICY_ALL_EXCEPT_EXTERNAL = ClassSource_Aggregate.ScanPolicy.ALL_EXCEPT_EXTERNAL;
     
     /**
-     * <p>Synonym for {@link ClassSource_Aggregate.ScanPolicy.SEED} OR'ed with
-     * {@link ClassSource_Aggregate.ScanPolicy.PARTIAL}.</p>
+     * <p>Synonym for {@link ClassSource_Aggregate.ScanPolicy#SEED} OR'ed with
+     * {@link ClassSource_Aggregate.ScanPolicy#PARTIAL}.</p>
      */
     public static final int POLICY_SEED_AND_PARTIAL =
         ClassSource_Aggregate.ScanPolicy.SEED.getValue() |
         ClassSource_Aggregate.ScanPolicy.PARTIAL.getValue();    
     
-    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.SEED}.</p> */
+    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy#SEED}.</p> */
     public static final int POLICY_SEED = ClassSource_Aggregate.ScanPolicy.SEED.getValue();
     
-    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.PARTIAL}.</p> */    
+    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy#PARTIAL}.</p> */    
     public static final int POLICY_PARTIAL = ClassSource_Aggregate.ScanPolicy.PARTIAL.getValue();    
     
-    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.EXCLUDED}.</p> */        
+    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy#EXCLUDED}.</p> */        
     public static final int POLICY_EXCLUDED = ClassSource_Aggregate.ScanPolicy.EXCLUDED.getValue();        
     
-    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.EXTERNAL}.</p> */            
+    /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy#EXTERNAL}.</p> */            
     public static final int POLICY_EXTERNAL = ClassSource_Aggregate.ScanPolicy.EXTERNAL.getValue();            
     
     /**
@@ -478,7 +473,7 @@ public interface AnnotationTargets_Targets {
      * <p>Answer the names of annotations on the specified package. Restrict results
      * to only those recorded in the specified regions.</p>
      * 
-     * @param className The name of the package for which to select annotations.
+     * @param packageName The name of the package for which to select annotations.
      * @param scanPolicies The policies for which to select package annotations, as bitwise
      *            OR of scan policy values.
      * 
@@ -561,8 +556,6 @@ public interface AnnotationTargets_Targets {
     /**
      * <p>Answer the names of recorded field annotations. Select from within the
      * specified results.</p>
-     * 
-     * @param className The name of the class for which to select field annotations.
      * 
      * @param scanPolicies The policies for which to select class annotations, as bitwise
      *            OR of scan policy values.
@@ -649,7 +642,7 @@ public interface AnnotationTargets_Targets {
      * 
      * <p>Do NOT use this method if the specified annotation type
      * is not an inherited class annotation, as it is inefficient for
-     * that purpose. Use {@link #selectAnnotatedClasses()} instead.</p>
+     * that purpose. Use {@link #getAnnotatedClasses(String)} instead.</p>
      * 
      * <p>The operation does not require that the specified annotation
      * type be an inherited class annotation. The result, however, is
@@ -670,7 +663,7 @@ public interface AnnotationTargets_Targets {
     Set<String> getAllInheritedAnnotatedClasses(String annotationName);
 
     /**
-     * <p>Utility for inherited class annotations. Similar to {@link selectAllInheritedAnnotatedClasses(String)},
+     * <p>Utility for inherited class annotations. Similar to {@link #getAllInheritedAnnotatedClasses(String)},
      * except that the results are restricted to annotations declared in the specified
      * results and inherited by classes in the specified results.</p>
      * 
@@ -685,7 +678,7 @@ public interface AnnotationTargets_Targets {
     Set<String> getAllInheritedAnnotatedClasses(String annotationName, int scanPolicies);
 
     /**
-     * <p>Utility for inherited class annotations. Similar to {@link selectAllInheritedAnnotatedClasses(String)},
+     * <p>Utility for inherited class annotations. Similar to {@link #getAllInheritedAnnotatedClasses(String)},
      * except that the results are restricted to annotations declared the specified
      * results and inherited by classes in distinct specified results.</p>
      * 
@@ -701,5 +694,4 @@ public interface AnnotationTargets_Targets {
      *         and inheriting targets, but limited by selection policies.
      */
     Set<String> getAllInheritedAnnotatedClasses(String annotationName, int declarerScanPolicies, int inheritorScanPolicies);
-
 }
