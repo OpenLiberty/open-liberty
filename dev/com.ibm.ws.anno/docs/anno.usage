@@ -1,0 +1,3 @@
+c:/dev/repos-pub/open-liberty-cache/dev/com.ibm.ws.app.manager.war/src/com/ibm/ws/app/manager/ear/internal/EARDeployedAppInfo.java
+-- Used to detect EJB annotations in containers which are not yet identified as module (client or EJB) JAR files.
+-- Examines immediate classes; no inheritance APIs are used; the annotation widget is not given a class loader.

@@ -69,7 +69,7 @@ import java.util.Set;
  * <p>A web module which is not metadata-complete and which has some jars
  * marked as metadata-complete, and which has no absolute ordering, has
  * WEB-INF/classes marked as SEED, has the non-metadata complete jars marked
- * as PARTIAL.</p
+ * as PARTIAL.</p>
  * 
  * <p>A web module which is metadata-complete and which has an absolute ordering
  * has WEB-INF/classes marked as PARTIAL and has jars marked as PARTIAL or
@@ -175,6 +175,7 @@ public interface ClassSource_Aggregate extends ClassSource {
          *         for classes from the other regions.</li>
          *     <li>No annotations are recorded for classes scanned from the external
          *         region.</li>
+         * </ul>
          */
         EXTERNAL(0x08);
 
@@ -262,8 +263,6 @@ public interface ClassSource_Aggregate extends ClassSource {
      * scan policy.</p>
      * 
      * @param classSource The class source to add to this aggregate.
-     * 
-     * @param scanPolicy The policy to apply to the class source.
      */
     void addClassSource(ClassSource classSource);
 
@@ -284,7 +283,7 @@ public interface ClassSource_Aggregate extends ClassSource {
      * <p>The order is significant, and is used to handle precedence for
      * classes with multiple occurrences.</p>
      * 
-     * @return The entire list of class sources of this aggregate.</p>
+     * @return The entire list of class sources of this aggregate.
      */
     List<? extends ClassSource> getClassSources();
 

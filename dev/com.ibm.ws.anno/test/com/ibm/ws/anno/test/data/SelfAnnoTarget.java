@@ -12,8 +12,7 @@ package com.ibm.ws.anno.test.data;
 
 import com.ibm.ws.anno.test.data.sub.SelfAnno;
 
-/**
- *
- */
 @SelfAnno(value = false)
-public class SelfAnnoTarget {}
+public class SelfAnnoTarget {
+    // EMPTY
+}
