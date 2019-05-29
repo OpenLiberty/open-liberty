@@ -1,0 +1,4 @@
+-Dliberty.beta=true
+-Danno.cache.binaryFormat=true
+-Danno.cache.jandexFormat=true
+-Danno.cache.readJandexFull=true

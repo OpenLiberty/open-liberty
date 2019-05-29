@@ -12,12 +12,14 @@ package com.ibm.ws.anno.test.data;
 
 import com.ibm.ws.anno.test.data.sub.SubBase;
 
-/**
- *
- */
 public class DerivedBase extends SubBase {
+    @SuppressWarnings("hiding")
     protected int public1;
+
+    @SuppressWarnings("hiding")
     public int protected2;
+
+    @SuppressWarnings("unused")
     private int private2;
 
     int package1;

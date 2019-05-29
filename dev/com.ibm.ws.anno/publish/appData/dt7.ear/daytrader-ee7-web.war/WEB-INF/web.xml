@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * (C) Copyright IBM Corporation 2015.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    <display-name>DayTrader Web</display-name>
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Production</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param>
+           
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>-1</load-on-startup>
+        <enabled>true</enabled>
+        <async-supported>false</async-supported>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.faces</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    
+    <welcome-file-list>
+    	<welcome-file>index.html</welcome-file>
+    	<welcome-file>index.jsp</welcome-file>
+    	<welcome-file>index.faces</welcome-file>
+    </welcome-file-list>
+
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/error.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    
+    
+    <ejb-ref>
+        <ejb-ref-name>ejb/TradeSLSBBeanRemote</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home></home>        
+        <remote>com.ibm.websphere.samples.daytrader.ejb3.TradeSLSBRemote</remote>
+        <ejb-link>TradeSLSBBean</ejb-link>
+    </ejb-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TradeSLSBBean</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>        
+        <local>com.ibm.websphere.samples.daytrader.ejb3.TradeSLSBLocal</local>
+        <ejb-link>TradeSLSBBean</ejb-link>
+    </ejb-local-ref>
+   
+    <resource-ref>
+        <res-ref-name>jdbc/TradeDataSource</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <lookup-name>jdbc/TradeDataSource</lookup-name>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>jms/QueueConnectionFactory</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <lookup-name>jms/QueueConnectionFactory</lookup-name>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>jms/TopicConnectionFactory</res-ref-name>
+        <res-type>javax.jms.TopicConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <lookup-name>jms/TopicConnectionFactory</lookup-name>
+    </resource-ref> 
+      
+    <message-destination-ref>
+        <message-destination-ref-name>jms/TradeBrokerQueue</message-destination-ref-name>
+        <message-destination-type>javax.jms.Queue</message-destination-type>
+        <message-destination-usage>Produces</message-destination-usage>
+        <message-destination-link>daytrader-ee7-ejb#TradeBrokerQueue</message-destination-link>
+        <lookup-name>jms/TradeBrokerQueue</lookup-name>
+    </message-destination-ref>
+    <message-destination-ref>
+        <message-destination-ref-name>jms/TradeStreamerTopic</message-destination-ref-name>
+        <message-destination-type>javax.jms.Topic</message-destination-type>
+        <message-destination-usage>Produces</message-destination-usage>
+        <message-destination-link>daytrader-ee7-ejb#TradeStreamerTopic</message-destination-link>
+        <lookup-name>jms/TradeStreamerTopic</lookup-name>
+    </message-destination-ref>
+
+    <!-- JBOSS  
+    <resource-ref>
+        <res-ref-name>jdbc/TradeDataSource</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <lookup-name>java:/jdbc/TradeDataSource</lookup-name>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>jms/QueueConnectionFactory</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <lookup-name>java:/jms/QueueConnectionFactory</lookup-name>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>jms/TopicConnectionFactory</res-ref-name>
+        <res-type>javax.jms.TopicConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <lookup-name>java:/jms/TopicConnectionFactory</lookup-name>
+    </resource-ref> 
+      
+    <message-destination-ref>
+        <message-destination-ref-name>jms/TradeBrokerQueue</message-destination-ref-name>
+        <message-destination-type>javax.jms.Queue</message-destination-type>
+        <message-destination-usage>Produces</message-destination-usage>
+        <message-destination-link>daytrader-ee7-ejb#TradeBrokerQueue</message-destination-link>
+        <lookup-name>java:/jms/TradeBrokerQueue</lookup-name>
+    </message-destination-ref>
+    <message-destination-ref>
+        <message-destination-ref-name>jms/TradeStreamerTopic</message-destination-ref-name>
+        <message-destination-type>javax.jms.Topic</message-destination-type>
+        <message-destination-usage>Produces</message-destination-usage>
+        <message-destination-link>daytrader-ee7-ejb#TradeStreamerTopic</message-destination-link>
+        <lookup-name>java:/jms/TradeStreamerTopic</lookup-name>
+    </message-destination-ref>
+    -->
+
+    <!-- BASIC SECURITY ROLES AND CONSTRAINTS -->
+
+    <security-role>
+
+        <role-name>testing</role-name>
+
+    </security-role>
+
+
+    <security-constraint>
+
+        <web-resource-collection>
+			<web-resource-name>testing</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+
+        <auth-constraint>
+
+            <role-name>testing</role-name>
+
+        </auth-constraint>
+
+    </security-constraint>
+
+
+    <security-constraint>
+        <display-name>
+            Constraint1
+        </display-name>
+        <web-resource-collection>
+            <web-resource-name>AllAuthd area</web-resource-name>
+            <url-pattern>/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>PUT</http-method>
+            <http-method>POST</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>
+            </description>
+            <role-name>AllAuthenticated</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>
+            Constraint2
+        </display-name>
+        <web-resource-collection>
+            <web-resource-name>Protected Area</web-resource-name>
+            <url-pattern>/daytrader/servlet/PingServlet2Session2Entity/*
+            </url-pattern>
+            <url-pattern>/servlet/PingServlet2Session2Entity/*
+            </url-pattern>
+            <url-pattern>/PingServlet2Session2Entity/*</url-pattern>
+            <url-pattern>/PingServlet2Session2Entity</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>PUT</http-method>
+            <http-method>POST</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Protected Area 2</web-resource-name>
+            <url-pattern>/daytrader/servlet/TradeScenarioServlet/*
+            </url-pattern>
+            <url-pattern>/servlet/TradeScenarioServlet/*</url-pattern>
+            <url-pattern>/TradeScenarioServlet/*</url-pattern>
+            <url-pattern>TradeScenarioServlet</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>PUT</http-method>
+            <http-method>POST</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Protected Area 3</web-resource-name>
+            <url-pattern>/daytrader/servlet/TradeAppServlet/*
+            </url-pattern>
+            <url-pattern>/servlet/TradeAppServlet/*</url-pattern>
+            <url-pattern>/TradeAppServlet/*</url-pattern>
+            <url-pattern>/daytrader/app/*</url-pattern>
+            <url-pattern>/daytrader/app</url-pattern>
+            <url-pattern>/daytrader/*</url-pattern>
+            <url-pattern>/app</url-pattern>
+            <url-pattern>/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>PUT</http-method>
+            <http-method>POST</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>
+            </description>
+            <role-name>grp1</role-name>
+            <role-name>grp2</role-name>
+            <role-name>grp3</role-name>
+            <role-name>grp4</role-name>
+            <role-name>grp5</role-name>
+            <role-name>webSecOnly</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-role>
+        <description>
+            All Authenticated Users
+        </description>
+        <role-name>AllAuthenticated</role-name>
+    </security-role>
+    <security-role>
+        <description>
+            Group 1
+        </description>
+        <role-name>grp1</role-name>
+    </security-role>
+    <security-role>
+        <description>
+            Group 2
+        </description>
+        <role-name>grp2</role-name>
+    </security-role>
+    <security-role>
+        <description>
+            Group 3
+        </description>
+        <role-name>grp3</role-name>
+    </security-role>
+    <security-role>
+        <description>
+            Group 4
+        </description>
+        <role-name>grp4</role-name>
+    </security-role>
+    <security-role>
+        <description>
+            Group 5
+        </description>
+        <role-name>grp5</role-name>
+    </security-role>
+    <security-role>
+        <description>
+            WebSecOnly
+        </description>
+        <role-name>webSecOnly</role-name>
+    </security-role>
+
+    <login-config>
+
+        <auth-method>BASIC</auth-method>
+
+    </login-config>
+
+	<!-- Struts -->
+
+	 <filter>
+        <filter-name>struts2</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+    </filter>
+ 
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/struts2/*</url-pattern>
+    </filter-mapping>
+    
+</web-app>

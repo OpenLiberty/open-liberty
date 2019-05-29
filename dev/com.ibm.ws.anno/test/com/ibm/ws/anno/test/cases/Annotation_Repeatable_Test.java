@@ -31,13 +31,14 @@ import com.ibm.wsspi.anno.info.InfoStore;
 /**
  * Test case for @Repeatable annotation (new in Java 8).
  */
+@SuppressWarnings("deprecation")
 public class Annotation_Repeatable_Test extends AnnotationTest_BaseClass {
 
     @Override
     public ClassSource_Specification_Direct_EJB createClassSourceSpecification() {
         return Annotation_Repeatable_Data.createClassSourceSpecification(getClassSourceFactory(),
                                                                          getProjectPath(), //publish/files/data/anno_tests
-                                                                         getDataPath()); // RepeatableAnnotation_Test.unpacked
+                                                                         getDataPath()); // RepeatableAnnotationTest.unpacked
     }
 
     @Override

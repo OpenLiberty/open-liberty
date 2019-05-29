@@ -86,6 +86,7 @@ instrument.disabled: true
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
     com.ibm.ws.kernel.service,\
+    com.ibm.ws.kernel.security.thread;version=latest,\
     com.ibm.ws.anno;version=latest,\
     com.ibm.ws.javaee.dd.common;version=latest,\
     com.ibm.ws.javaee.dd;version=latest,\

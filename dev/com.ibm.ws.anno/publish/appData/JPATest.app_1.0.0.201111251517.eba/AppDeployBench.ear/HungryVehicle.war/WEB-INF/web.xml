@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<web-app id="WebApp_ID" version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>
+	HungryVehicle</display-name>
+	<context-param>
+		<description>
+		The location where state information is saved.
+Valid values are 'server' (typically saved in HttpSession) and 'client' (typically
+saved as a hidden field in the form.
+Default is server.</description>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>server</param-value>
+	</context-param>
+	<!-- Removed  -->
+	<!--  
+	<context-param>
+		<description>
+		Comma-delimited list of context-relative resource paths under which the JSF implementation
+will look for application configuration resources, before loading a configuration resource
+named /WEB-INF/facesconfig.xml (if such a resource exists).</description>
+		<param-name>javax.faces.CONFIG_FILES</param-name>
+		<param-value>/WEB-INF/faces-config.xml</param-value>
+	</context-param>
+	-->
+	<context-param>
+		<description>
+		The default suffix for extension-mapped resources that contain JSF components.
+Default is '.jsp'.</description>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.jsp</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Number of Views to be stored in the session when Server-Side State Saving is being used.
+Default is 15.</description>
+		<param-name>com.sun.faces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
+		<param-value>15</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		If set to true while server-side state saving is being used, a serialized representation
+of the view is stored on the server. This allows for failover and sever clustering support.
+Default is false. This parameter is not available in JSF 1.0.</description>
+		<param-name>com.sun.faces.enableHighAvailability</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		If set to true while client-side state saving is being used, reduces the number of bytes
+sent to the client by compressing the state before it is encoded and written as a hidden field.
+Default is false. This parameter is not available in JSF 1.0.</description>
+		<param-name>com.sun.faces.COMPRESS_STATE</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Monitors Faces JSP files for modifications and synchronizes a running server with
+the changes without restarting the server. If this parameter is set to false or
+removed from the deployment descriptor, any changes made to Faces JSP files may
+not be seen by the server until it is restarted. This parameter is usually set
+to true while the Faces JSP files are being developed and debugged in order to
+improve the performance of the development environment.</description>
+		<param-name>com.ibm.ws.jsf.JSP_UPDATE_CHECK</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Load JSF runtime when the application server starts up. If this parameter is set to false or removed,
+JSF runtime will be loaded and initialized when the first JSF request is processed.
+This may disable custom JSF extensions, such as factories defined in the project.</description>
+		<param-name>com.ibm.ws.jsf.LOAD_FACES_CONFIG_AT_STARTUP</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		If set to true disables use of MultipartFacesContext, allowing underlying implementations to be used.
+MultipartFacesContext is required when the FileUpload component is used, and can be disabled otherwise.</description>
+		<param-name>com.ibm.faces.DISABLE_JWL_MULTIPART_CONTEXT</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Value, in milliseconds, to be used for Expires header for resources served by the JavaScript Resource Servlet.
+Default is never (31536000000 milliseconds or 1 year).</description>
+		<param-name>com.ibm.faces.RESOURCE_EXPIRE_MS</param-name>
+		<param-value>31536000000</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Defines the strictness of the conversion when converting from a string to a date.
+The higher the value, the more exactly the value must conform to the format.
+If 0 (liberal), all 'literals' are ignored while parsing a value, mis-ordered components will be rearranged,
+any missing component is supplied using the current datetime, misspellings and incomplete spellings are allowed
+(to the extent that they can be evaluated), 'E' and other non-unique components are ignored.
+If 1 (strict), all 'literals' are ignored while parsing a value, any missing component is supplied using the current
+datetime, misspellings and incomplete spellings are allowed (to the extent that they can be evaluated),
+'E' and other non-unique components are ignored. For example if the pattern is MMMM dd, yyyy a user can enter 'Feb/02/04'
+and it will be parsed as February 02, 2004.
+If 2 (very strict), an exact match is required except long month names can be 'shortened' to the minimum number of unique
+characters and 'E' and other non-unique components are ignored. Literals must match exactly.
+Default is 1.</description>
+		<param-name>com.ibm.faces.DATETIME_ASSIST_STRICTNESS</param-name>
+		<param-value>1</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Defines the strictness of the conversion when converting from a string to a number.
+The higher the value, the more exactly the value must conform to the pattern.
+For numbers, currently strictness levels of 0 and 1 are equivalent. If the strictness is 2,
+if number is signed, the sign must be provided (otherwise it's assumed positive).
+Default is 1.</description>
+		<param-name>com.ibm.faces.NUMBER_ASSIST_STRICTNESS</param-name>
+		<param-value>1</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Defines the path for resources such as JavaScript libraries and images.
+The value can be either:
+1. An empty string. Context path of the current application will be used.
+2. A path string. Example: /project13. A number. Specifies the number of nodes to use from the context path starting from the left.
+Example: With a value of 1 if the context path is /screen/faces/SSID110267549/RID1102676
+the path will be evaluated as /screen
+Default is an empty string.</description>
+		<param-name>com.ibm.faces.USE_UNENCODED_CONTEXT_PATH</param-name>
+		<param-value></param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Sets a custom url-pattern for the JavaScript Resource servlet.
+Should match servlet mapping setting for the JavaScript Resource servlet. If the default default mapping
+value '/.ibmjsfres/*' is modified, this context-param should also be modified.
+</description>
+		<param-name>com.ibm.faces.JS_RESOURCE_SERVLET_URL_PATTERN</param-name>
+		<param-value>/.ibmjsfres/*</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		If set to true, forces JavaScript Resource Servlet to cache all resources on the server.
+This can be useful when client-side caching is turned off.</description>
+		<param-name>com.ibm.faces.JS_RESOURCE_SERVLET_CACHE</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Sets a custom charset mapping properties file similar to converter.properties in WAS.</description>
+		<param-name>com.ibm.faces.ENCODING_MAPPING</param-name>
+		<param-value>converter.properties</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		Number of Views to be stored in the session when Enhanced State Saving is being used.
+Default is 15.</description>
+		<param-name>com.ibm.faces.ENHANCED_SERVER_STATE_SAVING_SESSION_STORED_VIEWS</param-name>
+		<param-value>15</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		If set to true, the entire JavaScript library, containing code for all components, will be included
+in the generated pages as one file. If set to false or removed, multiple smaller JavaScript files will be
+included, depending on the components used on the page.Default is false.</description>
+		<param-name>com.ibm.faces.USE_HXCLIENT_FULL</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		If false, client data will not be encoded, allowing multiple portlets on a page to
+share the same client data model. By default, client data will be encoded, so any value other than
+&quot;false&quot;, or the absence of the parameter, will result in client data being encoded.
+This also affects using Page Data with the Chart or Data Tree. By default
+Page Data is encoded. Setting this value to &quot;false&quot; will also unencode any Page Data that is being used
+with either a Chart or a Data Tree.</description>
+		<param-name>com.ibm.faces.ENCODE_DATA</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<description>
+		When using Ajax components with Websphere Portal server 5.1 (versions 5.1.0.3 onwards), this value must be set to true.</description>
+		<param-name>com.ibm.faces.TURN_OFF_AJAX_PORTAL_60_PATH</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<!-- Added later -->
+	 <context-param>
+		<param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
+		<param-value>true</param-value>
+      </context-param>
+	 <context-param>
+	 	<description>
+	 	Comma-delimited list of context-relative resource paths under which the JSF implementation
+will look for application configuration resources, before loading a configuration resource
+named /WEB-INF/facesconfig.xml (if such a resource exists).</description>
+	 	<param-name>javax.faces.CONFIG_FILES</param-name>
+	 	<param-value>/WEB-INF/faces-config.xml</param-value>
+	 </context-param>
+	 <context-param>
+        <param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>
+        <param-value>false</param-value>
+     </context-param>
+     <!-- 
+      <context-param>
+		 		 <param-name>com.ibm.ws.jsf.JSF_IMPL_CHECK</param-name>
+		 		 <param-value>true</param-value>
+	  </context-param>
+	  -->	
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>JavaScript Resource Servlet</servlet-name>
+		<servlet-class>com.ibm.faces.webapp.JSResourceServlet</servlet-class>
+		<load-on-startup>-1</load-on-startup>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>FuelTypeListing</display-name>
+		<servlet-name>FuelTypeListing</servlet-name>
+		<servlet-class>com.ibm.svt.gas.webModule.servletinclude.FuelTypeListing</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>FuelType_include</display-name>
+		<servlet-name>FuelType_include</servlet-name>
+		<servlet-class>com.ibm.svt.gas.webModule.servletinclude.FuelType_include</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>PMVServlet</display-name>
+		<servlet-name>PMVServlet</servlet-name>
+		<servlet-class>com.ibm.svt.gas.webModule.jcaViolation.PMVServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>/faces/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.faces</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JavaScript Resource Servlet</servlet-name>
+		<url-pattern>/.ibmjsfres/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FuelTypeListing</servlet-name>
+		<url-pattern>/FuelTypeListing</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FuelType_include</servlet-name>
+		<url-pattern>/FuelType_include</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PMVServlet</servlet-name>
+		<url-pattern>/PMVServlet</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	<env-entry>
+		<env-entry-name>EJBClusterMapName</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value></env-entry-value>
+	</env-entry>
+	
+	
+	
+	<ejb-ref>
+		<description>
+		</description>
+		<ejb-ref-name>ejb/PriceSession</ejb-ref-name>
+		<ejb-ref-type>Session</ejb-ref-type>
+		<home>com.ibm.svt.populateModule.grade.PriceSessionHome</home>
+		<remote>com.ibm.svt.populateModule.grade.PriceSession</remote>
+		<ejb-link>StationBusinessEJBs.jar#PriceSession</ejb-link>
+	</ejb-ref>
+	
+	<filter>
+		 <filter-name>MyFacesExtensionsFilter</filter-name>
+		 <filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
+	</filter>
+	<!-- extension mapping for adding <script/>, <link/>, and other resource tags to JSF-pages  -->
+	<filter-mapping>
+    	<filter-name>MyFacesExtensionsFilter</filter-name>
+    	<!-- servlet-name must match the name of your javax.faces.webapp.FacesServlet entry -->
+    	<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+	<!-- extension mapping for serving page-independent resources (javascript, stylesheets, images, etc.)  -->
+	<filter-mapping>
+    	<filter-name>MyFacesExtensionsFilter</filter-name>
+    	<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
+	</filter-mapping>
+</web-app>
