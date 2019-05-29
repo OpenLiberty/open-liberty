@@ -31,11 +31,13 @@ import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Configuration;
 
 import org.apache.cxf.common.util.ClassHelper;
+import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.jaxrs.client.AbstractClient;
 import org.apache.cxf.jaxrs.client.ClientProxyImpl;
 import org.apache.cxf.jaxrs.client.ClientState;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
+import org.apache.cxf.jaxrs.client.spec.TLSConfiguration;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.model.FilterProviderInfo;
 import org.apache.cxf.jaxrs.model.ProviderInfo;
@@ -53,13 +55,16 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
     private ClassLoader proxyLoader;
     private boolean inheritHeaders;
     private ExecutorService executorService;
+    private TLSConfiguration secConfig;
 
     public MicroProfileClientFactoryBean(MicroProfileClientConfigurableImpl<RestClientBuilder> configuration,
-                                         String baseUri, Class<?> aClass, ExecutorService executorService) {
-        super();
+                                         String baseUri, Class<?> aClass, ExecutorService executorService,
+                                         TLSConfiguration secConfig) {
+        super(new MicroProfileServiceFactoryBean());
         this.configuration = configuration.getConfiguration();
         this.comparator = MicroProfileClientProviderFactory.createComparator(this);
         this.executorService = executorService;
+        this.secConfig = secConfig;
         super.setAddress(baseUri);
         super.setServiceClass(aClass);
         super.setProviderComparator(comparator);
@@ -95,6 +100,14 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
     @Override
     protected void initClient(AbstractClient client, Endpoint ep, boolean addHeaders) {
         super.initClient(client, ep, addHeaders);
+
+        TLSClientParameters tlsParams = secConfig.getTlsClientParams();
+        if (tlsParams.getSSLSocketFactory() != null
+            || tlsParams.getTrustManagers() != null
+            || tlsParams.getHostnameVerifier() != null) {
+            client.getConfiguration().getHttpConduit().setTlsClientParameters(tlsParams);
+        }
+
         MicroProfileClientProviderFactory factory = MicroProfileClientProviderFactory.createInstance(getBus(),
                 comparator);
         registeredProviders.add(new ProviderInfo<>(ProviderFactory.createJsonBindingProvider(factory.getContextResolversActual()), getBus(), false));
@@ -110,10 +123,10 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         CDIInterceptorWrapper interceptorWrapper = CDIInterceptorWrapper.createWrapper(getServiceClass());
         if (actualState == null) {
             clientProxy = new MicroProfileClientProxyImpl(URI.create(getAddress()), proxyLoader, cri, isRoot,
-                    inheritHeaders, executorService, configuration, interceptorWrapper, varValues);
+                    inheritHeaders, executorService, configuration, interceptorWrapper, secConfig, varValues);
         } else {
             clientProxy = new MicroProfileClientProxyImpl(actualState, proxyLoader, cri, isRoot,
-                    inheritHeaders, executorService, configuration, interceptorWrapper, varValues);
+                    inheritHeaders, executorService, configuration, interceptorWrapper, secConfig, varValues);
         }
         RestClientNotifier notifier = RestClientNotifier.getInstance();
         if (notifier != null) {

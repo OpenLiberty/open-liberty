@@ -668,11 +668,19 @@ public final class JAXRSUtils {
     }
 
     public static List<MediaType> getConsumeTypes(Consumes cm) {
-        return cm == null ? Collections.singletonList(ALL_TYPES) : getMediaTypes(cm.value());
+        return getConsumeTypes(cm, Collections.singletonList(ALL_TYPES));
+    }
+
+     public static List<MediaType> getConsumeTypes(Consumes cm, List<MediaType> defaultTypes) {
+        return cm == null ? defaultTypes : getMediaTypes(cm.value());
     }
 
     public static List<MediaType> getProduceTypes(Produces pm) {
-        return pm == null ? Collections.singletonList(ALL_TYPES) : getMediaTypes(pm.value());
+        return getProduceTypes(pm, Collections.singletonList(ALL_TYPES));
+    }
+
+     public static List<MediaType> getProduceTypes(Produces pm, List<MediaType> defaultTypes) {
+        return pm == null ? defaultTypes : getMediaTypes(pm.value());
     }
 
     public static int compareSortedConsumesMediaTypes(List<MediaType> mts1, List<MediaType> mts2, MediaType ct) {
