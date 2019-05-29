@@ -48,6 +48,11 @@
 	
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
+    <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
  
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
      
