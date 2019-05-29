@@ -10,7 +10,7 @@
 
 <suite name="microprofile-opentracing-1.3-rest-client-tck" verbose="2"
     configfailurepolicy="continue">
-    <test name="tck-package-org.eclipse.microprofile.opentracing.tck">
+    <test name="tck-package-org.eclipse.microprofile.opentracing.tck.rest.client">
         <packages>
             <package name="org.eclipse.microprofile.opentracing.tck.rest.client" />
         </packages>

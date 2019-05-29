@@ -120,6 +120,7 @@ public class MetricsMonitorTest {
         String logMsg = server.waitForStringInLog("SRVE9103I",60000);   
         Log.info(c, testName, logMsg);
         Assert.assertNotNull("No SRVE9103I message", logMsg);    
+        Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
@@ -135,6 +136,7 @@ public class MetricsMonitorTest {
     	server.setServerConfigurationFile("server_microProfile13Monitor10.xml");
     	server.startServer();
     	Log.info(c, testName, server.waitForStringInLog("CWWKS5500I",60000));
+    	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"),
           	new String[] { "vendor:" }, 

@@ -115,9 +115,9 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                     if (firstIssue == null)
                         firstIssue = t;
                     if (attempt < maxAttempts) {
-                        Log.info(c, m, "Waiting 15 seconds before attempting again");
+                        Log.info(c, m, "Waiting 120 seconds before attempting again");
                         try {
-                            Thread.sleep(15 * 1000);
+                            Thread.sleep(120 * 1000);
                         } catch (InterruptedException e) {
                         }
                     }

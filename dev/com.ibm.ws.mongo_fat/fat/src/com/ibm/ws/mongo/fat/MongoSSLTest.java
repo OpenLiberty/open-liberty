@@ -67,10 +67,8 @@ public class MongoSSLTest extends FATServletClient {
     }
 
     @Test
-    @ExpectedFFDC({ "java.security.PrivilegedActionException", "java.lang.IllegalArgumentException" })
     public void testInsertFindInvalidTruststore() throws Exception {
-        testInvalidConfig("mongo/testdb-invalid-truststore", "CWWKN0008E");
-        assertNotNull("Server exception for error CWWKE0701E was not found within the allotted interval", server.waitForStringInLogUsingMark("CWWKE0701E"));
+        testInvalidConfig("mongo/testdb-invalid-truststore", "javax.naming.NameNotFoundException");
     }
 
     @Test

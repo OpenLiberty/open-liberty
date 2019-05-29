@@ -119,6 +119,9 @@
            
         <AD id="outboundConnection" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire.config.outboundConnection"
             required="false" type="String" cardinality="2147483647" />    
+         
+        <AD id="verifyHostname" name="%repertoire.verifyHostname" description="%repertoire.verifyHostname.desc" 
+            required="false" type="Boolean" default="false" />
             
     </OCD>
 

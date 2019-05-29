@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2013 IBM Corporation and others.
+ * Copyright (c) 2005, 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -244,7 +244,6 @@ public class WSKeyStore extends Properties {
                 this.type = Constants.KEYSTORE_TYPE_JKS;
 
             } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location != null && this.location.toLowerCase().endsWith("/key.p12")) {
-                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
                 specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
                 this.type = Constants.KEYSTORE_TYPE_PKCS12;
             } else if (!type.equals(Constants.KEYSTORE_TYPE_JKS)) {
@@ -796,11 +795,16 @@ public class WSKeyStore extends Properties {
                             if (parentFile == null || parentFile.isDirectory() || parentFile.mkdirs()) {
                                 try {
                                     String serverName = cfgSvc.getServerName();
+                                    String san = null;
+                                    if (genKeyHostName != null) {
+                                        san = createCertSANInfo(genKeyHostName);
+                                    }
                                     // Call Certificate factory to go create the certificate
                                     DefaultSSLCertificateCreator certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
                                     certCreator.createDefaultSSLCertificate(keyStoreLocation, password, DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                                             new DefaultSubjectDN(genKeyHostName, serverName).getSubjectDN(),
-                                                                            DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG);
+                                                                            DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG,
+                                                                            san);
                                 } catch (IllegalArgumentException e) {
                                     // We can state that it is a password error because the keyStoreLocation is already known to be good
                                     // and the validity and DN are default values.
@@ -895,6 +899,7 @@ public class WSKeyStore extends Properties {
                     }
                 }
             }
+
         });
     }
 
@@ -1388,4 +1393,15 @@ public class WSKeyStore extends Properties {
         }
         return cannonicalLocation;
     }
+
+    private String createCertSANInfo(String hostname) {
+        String ext = null;
+
+        if (Character.isDigit(hostname.charAt(0)))
+            ext = "SAN=ip:" + hostname;
+        else
+            ext = "SAN=dns:" + hostname;
+        return ext;
+    }
+
 }

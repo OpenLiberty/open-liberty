@@ -53,7 +53,8 @@ fat.project: true
 # These features get added programatically
 tested.features: \
   jaxrs-2.1,\
-  cdi-2.0
+  cdi-2.0,\
+  appsecurity-3.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2,\

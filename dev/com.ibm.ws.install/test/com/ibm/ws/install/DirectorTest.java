@@ -280,7 +280,7 @@ public class DirectorTest {
             fail("Director.installFeature() did not throw exception");
         } catch (InstallException e) {
             // For some platforms which may fail at create temp file before download, check CWWKF1008E too
-            if (!e.getMessage().contains("CWWKF1008E") && !e.getMessage().contains("CWWKF1007E")) {
+            if (!e.getMessage().contains("CWWKF1008E") && !e.getMessage().contains("CWWKF1007E") && !e.getMessage().contains("CWWKF1014E")) {
                 outputMgr.failWithThrowable("testDirector_installLocalFeatureESAURLNotExist", e);
             }
         }
@@ -297,7 +297,7 @@ public class DirectorTest {
             fail("Director.installFeature() did not throw exception");
         } catch (InstallException e) {
             // For some platforms which cannot set the java.io.tmpdir, check CWWKF1007E
-            if (!e.getMessage().contains("CWWKF1008E") && !e.getMessage().contains("CWWKF1007E")) {
+            if (!e.getMessage().contains("CWWKF1008E") && !e.getMessage().contains("CWWKF1007E") && !e.getMessage().contains("CWWKF1014E")) {
                 outputMgr.failWithThrowable("testDirector_installLocalFeatureFailedCreateTemp", e);
             }
         } finally {

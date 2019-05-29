@@ -20,6 +20,7 @@ src: \
 	test-applications/ffdc-servlet/src, \
 	test-applications/logger-servlet/src, \
 	test-applications/missing-feature-servlet/src, \
+	test-applications/RealFlushTestApp/src, \
 	test-bundles/sample.source.handler/src, \
 	test-bundles/message.source.handler/src, \
 	test-bundles/ffdc.source.handler/src, \
@@ -54,4 +55,12 @@ fat.project: true
 	com.ibm.ws.common.encoder;version=latest, \
 	com.ibm.websphere.rest.handler;version=latest, \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+  	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+  	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+  	com.ibm.websphere.javaee.jsonp.1.0,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.ws.jaxrs.2.0.common;version=latest,\
+	com.ibm.websphere.filetransfer;version=latest,\
+	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest

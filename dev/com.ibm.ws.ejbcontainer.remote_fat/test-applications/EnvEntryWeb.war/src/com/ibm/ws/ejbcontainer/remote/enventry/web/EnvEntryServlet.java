@@ -269,9 +269,10 @@ public class EnvEntryServlet extends FATServlet {
      * </env-entry>
      * Annotate an Enum<?> instance var:
      *
-     * @Resource(name="EnvEntry_Non-existentClass_EntryName") Enum<?> ivEnvEntry_NoSuchClass;
+     * \@Resource(name="EnvEntry_Non-existentClass_EntryName")
+     * \Enum<?> ivEnvEntry_NoSuchClass;
      *
-     *                                                        - Verify that an appropriate error is issued
+     * - Verify that an appropriate error is issued
      */
     //CALLED FROM TEST CLASS
     public void testC2aEnvEntryNonExistingClass() throws Exception {
@@ -312,10 +313,11 @@ public class EnvEntryServlet extends FATServlet {
      * </env-entry>
      * Annotate an Enum<?> instance var:
      *
-     * @Resource(name="EnvEntry_Enum_EntryName") Enum<?> ivEnvEntry_Enum;
+     * \@Resource(name="EnvEntry_Enum_EntryName")
+     * \Enum<?> ivEnvEntry_Enum;
      *
-     *                                           - Verify that the <env-entry-value> is injected into Enum<?> ivEnvEntry_Enum;
-     *                                           - Verify that the Enum can be explicitly looked up by name "ivEnvEntry_Enum".
+     * - Verify that the <env-entry-value> is injected into Enum<?> ivEnvEntry_Enum;
+     * - Verify that the Enum can be explicitly looked up by name "ivEnvEntry_Enum".
      */
     @Test
     public void testE1aEnvEntryEnum() throws Exception {
@@ -351,10 +353,10 @@ public class EnvEntryServlet extends FATServlet {
      * </env-entry>
      * Annotate an Enum<?> instance var:
      *
-     * @Resource(name="EnvEntry_Non-existentEnumType_EntryName")
-     *                                                           Enum<?> ivEnvEntry_NoSuchEnumType;
+     * \@Resource(name="EnvEntry_Non-existentEnumType_EntryName")
+     * \Enum<?> ivEnvEntry_NoSuchEnumType;
      *
-     *                                                           - Verify that an appropriate error is issued
+     * - Verify that an appropriate error is issued
      */
     //CALLED FROM TEST CLASS
     public void testE2aEnvEntryNonExistingEnumType() throws Exception {
@@ -371,10 +373,10 @@ public class EnvEntryServlet extends FATServlet {
      * </env-entry>
      * Annotate an Enum<?> instance var:
      *
-     * @Resource(name="EnvEntry_Non-existentEnumValue_EntryName")
-     *                                                            Enum<?> ivEnvEntry_NoSuchEnumValue;
+     * \@Resource(name="EnvEntry_Non-existentEnumValue_EntryName")
+     * \Enum<?> ivEnvEntry_NoSuchEnumValue;
      *
-     *                                                            - Verify that an appropriate error is issued
+     * - Verify that an appropriate error is issued
      */
     //CALLED FROM TEST CLASS
     public void testE3aEnvEntryNonExistingEnumValue() throws Exception {
@@ -391,10 +393,10 @@ public class EnvEntryServlet extends FATServlet {
      * </env-entry>
      * Annotate an Enum<?> instance var:
      *
-     * @Resource(name="EnvEntry_ExistingNonEnumNonClass_EntryName")
-     *                                                              Enum<?> ivEnvEntry_NotApplicableEnumValue;
+     * \@Resource(name="EnvEntry_ExistingNonEnumNonClass_EntryName")
+     * \Enum<?> ivEnvEntry_NotApplicableEnumValue;
      *
-     *                                                              - Verify that an appropriate error is issued
+     * - Verify that an appropriate error is issued
      */
     //CALLED FROM TEST CLASS
     public void testE4aEnvEntryExistingNonEnumNonClass() throws Exception {

@@ -665,8 +665,13 @@ serverEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
 
-  # If we are running on Java 9, apply Liberty's built-in java 9 options
-  if [ -f "${JAVA_HOME}/lib/modules" ]; then
+  JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
+  if [ -z "${JAVA_HOME}" ]; then
+    JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(which java)))/lib/modules
+  fi
+
+  # If we are running on Java 9, apply Liberty's built-in java 9 options  
+  if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
 

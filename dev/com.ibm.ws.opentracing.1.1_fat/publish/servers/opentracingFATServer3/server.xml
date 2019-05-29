@@ -4,7 +4,7 @@
     <feature>componenttest-1.0</feature>
     <feature>jaxrs-2.0</feature>
     <feature>opentracing-1.1</feature>
-    <feature>usr:opentracingMock-0.31</feature>
+    <feature>usr:opentracingMock-1.1</feature>
     <feature>mpOpenTracing-1.1</feature>
   </featureManager>
 

@@ -141,7 +141,7 @@ public class CommonFilter {
             // So, I have the throw a runtimeexception if I can't parse the condition
             try {
                 ICondition condition = makeConditionWithSymbolOperand(key, operand, valueString,
-                                                                      ipAddress);
+                                                                      ipAddress, false);
                 filterCondition.add(condition);
             } catch (FilterException e) {
                 throw new RuntimeException(e);
@@ -158,14 +158,19 @@ public class CommonFilter {
         buildICondition(filterConfig.getHosts(), KEY_HOST, AuthFilterConfig.KEY_NAME, null, false);
         buildICondition(filterConfig.getUserAgents(), KEY_USER_AGENT, AuthFilterConfig.KEY_AGENT, null, false);
         buildICondition(filterConfig.getCookies(), AuthFilterConfig.KEY_COOKIE, AuthFilterConfig.KEY_NAME, null, false);
-        buildICondition(filterConfig.getRequestHeaders(), AuthFilterConfig.KEY_REQUEST_HEADER, AuthFilterConfig.KEY_NAME, AuthFilterConfig.KEY_VALUE, false);
+        buildICondition(filterConfig.getRequestHeaders(), AuthFilterConfig.KEY_REQUEST_HEADER, AuthFilterConfig.KEY_NAME, AuthFilterConfig.KEY_VALUE, false, true);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "combine filter conditions: " + filterCondition.toString());
         }
     }
 
     protected void buildICondition(List<Properties> filterElements, String elementName, String attrName, String attrValue, boolean ipAddress) {
+        buildICondition(filterElements, elementName, attrName, attrValue, ipAddress, false);
+    }
+
+    protected void buildICondition(List<Properties> filterElements, String elementName, String attrName, String attrValue, boolean ipAddress, boolean optionalAttrValue) {
         if (filterElements != null && !filterElements.isEmpty()) {
+            boolean noAttrValue = false;
             Iterator<Properties> iter = filterElements.iterator();
             while (iter.hasNext()) {
                 try {
@@ -181,7 +186,14 @@ public class CommonFilter {
                         value = props.getProperty(attrName);
                     }
 
-                    ICondition condition = makeConditionWithMatchType(key, props.getProperty(AuthFilterConfig.KEY_MATCH_TYPE), value, ipAddress);
+                    if (optionalAttrValue && value == null) {
+                        noAttrValue = true;
+                        value = key;
+                    } else {
+                        noAttrValue = false;
+                    }
+
+                    ICondition condition = makeConditionWithMatchType(key, props.getProperty(AuthFilterConfig.KEY_MATCH_TYPE), value, ipAddress, noAttrValue);
 
                     filterCondition.add(condition);
                 } catch (FilterException e) {
@@ -205,23 +217,23 @@ public class CommonFilter {
      * On Liberty: only OAUTH support the symbols configuration but currently do not call this code
      */
     private ICondition makeConditionWithSymbolOperand(String key, String operand, String valueString,
-                                                      boolean ipAddress) throws FilterException {
+                                                      boolean ipAddress, boolean noAttrValue) throws FilterException {
         if (operand.equals("==")) {
-            return new EqualCondition(key, makeValue(valueString, ipAddress), operand);
+            return new EqualCondition(key, makeValue(valueString, ipAddress), operand, noAttrValue);
         } else if (operand.equals("!=")) {
-            NotContainsCondition cond = new NotContainsCondition(key, operand);
+            NotContainsCondition cond = new NotContainsCondition(key, operand, noAttrValue);
             processOrValues(valueString, ipAddress, cond);
             return cond;
         } else if (operand.equals("^=")) {
-            OrCondition cond = new OrCondition(key, operand);
+            OrCondition cond = new OrCondition(key, operand, noAttrValue);
             processOrValues(valueString, ipAddress, cond);
             return cond;
         } else if (operand.equals("%=")) {
-            return new ContainsCondition(key, makeValue(valueString, ipAddress), operand);
+            return new ContainsCondition(key, makeValue(valueString, ipAddress), operand, noAttrValue);
         } else if (operand.equals("<")) {
-            return new LessCondition(key, makeValue(valueString, ipAddress), operand);
+            return new LessCondition(key, makeValue(valueString, ipAddress), operand, noAttrValue);
         } else if (operand.equals(">")) {
-            return new GreaterCondition(key, makeValue(valueString, ipAddress), operand);
+            return new GreaterCondition(key, makeValue(valueString, ipAddress), operand, noAttrValue);
         } else {
             Tr.error(tc, "AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE", new Object[] { operand });
             throw new FilterException(TraceNLS.getFormattedMessage(this.getClass(),
@@ -243,21 +255,21 @@ public class CommonFilter {
      * Note: the new configuration use words such as equals, notContain, contains, greaterThan or lessThan
      */
     private ICondition makeConditionWithMatchType(String key, String operand, String valueString,
-                                                  boolean ipAddress) throws FilterException {
+                                                  boolean ipAddress, boolean noAttrValue) throws FilterException {
         if (operand.equalsIgnoreCase(AuthFilterConfig.MATCH_TYPE_EQUALS)) {
-            return new EqualCondition(key, makeValue(valueString, ipAddress), operand);
+            return new EqualCondition(key, makeValue(valueString, ipAddress), operand, noAttrValue);
         } else if (operand.equalsIgnoreCase(AuthFilterConfig.MATCH_TYPE_NOT_CONTAIN)) {
-            NotContainsCondition cond = new NotContainsCondition(key, operand);
+            NotContainsCondition cond = new NotContainsCondition(key, operand, noAttrValue);
             processOrValues(valueString, ipAddress, cond);
             return cond;
         } else if (operand.equalsIgnoreCase(AuthFilterConfig.MATCH_TYPE_CONTAINS)) {
-            OrCondition cond = new OrCondition(key, operand);
+            OrCondition cond = new OrCondition(key, operand, noAttrValue);
             processOrValues(valueString, ipAddress, cond);
             return cond;
         } else if (operand.equalsIgnoreCase(AuthFilterConfig.MATCH_TYPE_LESS_THAN)) {
-            return new LessCondition(key, makeValue(valueString, ipAddress), operand);
+            return new LessCondition(key, makeValue(valueString, ipAddress), operand, noAttrValue);
         } else if (operand.equalsIgnoreCase(AuthFilterConfig.MATCH_TYPE_GREATER_THAN)) {
-            return new GreaterCondition(key, makeValue(valueString, ipAddress), operand);
+            return new GreaterCondition(key, makeValue(valueString, ipAddress), operand, noAttrValue);
         } else {
             Tr.error(tc, "AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE", new Object[] { operand });
             throw new FilterException(TraceNLS.getFormattedMessage(this.getClass(),
@@ -352,18 +364,27 @@ public class CommonFilter {
                 }
                 return false; // if no header found, the condition fails
             }
-
+            boolean noAttrValue = cond.isNoAttrValue();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Checking condition {0} {1}.", new Object[] { cond, HTTPheader });
+                Tr.debug(tc, "Checking condition {0} {1} {2}.",
+                         new Object[] { key, cond, (noAttrValue == true ? "name " + key : "value " + HTTPheader) });
             }
             try {
                 IValue compareValue;
-                if (ipAddress) {
-                    compareValue = new ValueIPAddress(HTTPheader);
-                } else {
-                    compareValue = new ValueString(HTTPheader);
+                String cv = HTTPheader;
+
+                //If condition does not have the attribute value, we will use the attribute name.
+                if (noAttrValue) {
+                    cv = key;
                 }
+                if (ipAddress) {
+                    compareValue = new ValueIPAddress(cv);
+                } else {
+                    compareValue = new ValueString(cv);
+                }
+
                 answer = cond.checkCondition(compareValue);
+
                 if (!answer) {
                     break;
                 }

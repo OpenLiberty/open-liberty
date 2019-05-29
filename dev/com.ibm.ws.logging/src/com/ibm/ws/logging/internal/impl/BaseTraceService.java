@@ -244,7 +244,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -290,7 +290,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *            the OSGi managed service.
+     *                   the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -847,10 +847,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog the trace writer
+     * @param detailLog           the trace writer
      * @param logRecord
-     * @param id the trace object id
-     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -997,7 +997,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1122,7 +1122,7 @@ public class BaseTraceService implements TrService {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s String to escape
+     * @param s  String to escape
      */
     private void jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
@@ -1205,6 +1205,216 @@ public class BaseTraceService implements TrService {
             super(trStream, autoFlush);
             this.trStream = trStream;
         }
+
+        @Override
+        public synchronized void print(boolean b) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(b);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(char c) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(int i) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(i);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(long l) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(l);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(float f) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(f);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(double d) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(d);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(char c[]) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(String s) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(s);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void print(Object obj) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(obj);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println() {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.println();
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(boolean b) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(b);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(char c) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(int i) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(i);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(long l) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(l);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(float f) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(f);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(double d) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(d);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(char c[]) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(c);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(String s) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(s);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
+        @Override
+        public synchronized void println(Object obj) {
+            TrOutputStream.isPrinting.set(true);
+            try {
+                super.print(obj);
+            } finally {
+                TrOutputStream.isPrinting.set(false);
+                super.flush();
+            }
+        }
+
     }
 
     /**
@@ -1216,6 +1426,12 @@ public class BaseTraceService implements TrService {
     public static class TrOutputStream extends ByteArrayOutputStream {
         final SystemLogHolder holder;
         final BaseTraceService service;
+        public static ThreadLocal<Boolean> isPrinting = new ThreadLocal<Boolean>() {
+            @Override
+            protected Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
 
         public TrOutputStream(SystemLogHolder slh, BaseTraceService service) {
             this.holder = slh;
@@ -1224,6 +1440,15 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void flush() throws IOException {
+
+            /*
+             * sPrinting is a ThreadLocal that is set to disable flushing while printing.
+             * This helps us ignore flush requests that the JDK automatically creates in the middle of printing large (>8k) strings.
+             * We want the whole String to be flushed in one shot for benefit of downstream event consumers.
+             */
+            if (isPrinting.get())
+                return;
+
             super.flush();
 
             if (!holder.isEnabled()) {
@@ -1276,8 +1501,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc StreamTraceComponent associated with original stream
-     * @param txt pre-formatted or raw message
+     * @param tc        StreamTraceComponent associated with original stream
+     * @param txt       pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {

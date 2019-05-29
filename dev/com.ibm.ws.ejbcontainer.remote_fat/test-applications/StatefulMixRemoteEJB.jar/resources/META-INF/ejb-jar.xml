@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+      metadata-complete="false" version="3.0">
+      <display-name>EJB3SFM</display-name>
+      <enterprise-beans>
+      
+      		
+         
+          <session id="SerializableStatefulBean">
+            <ejb-name>SerializableStatefulBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.SerializableStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>      
+            <env-entry>
+              <description>Entry for test17</description>
+              <env-entry-name>EntryA</env-entry-name>
+              <env-entry-type>java.lang.String</env-entry-type>
+              <env-entry-value>EntryAValue</env-entry-value>
+            </env-entry>     
+            <env-entry>
+              <description>Entry for test18</description>
+              <env-entry-name>ent/EntryB</env-entry-name>
+              <env-entry-type>java.lang.String</env-entry-type>
+              <env-entry-value>EntryBValue</env-entry-value>
+            </env-entry>     
+         </session>
+         <session id="NonSerializableStatefulBean">
+            <ejb-name>NonSerializableStatefulBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.NonSerializableStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>           
+            <env-entry>
+              <description>Entry for test17</description>
+              <env-entry-name>EntryA</env-entry-name>
+              <env-entry-type>java.lang.String</env-entry-type>
+              <env-entry-value>EntryAValue</env-entry-value>
+            </env-entry>     
+            <env-entry>
+              <description>Entry for test18</description>
+              <env-entry-name>ent/EntryB</env-entry-name>
+              <env-entry-type>java.lang.String</env-entry-type>
+              <env-entry-value>EntryBValue</env-entry-value>
+            </env-entry>     
+         </session>
+         <session id="SerializableBMTStatefulBean">
+            <ejb-name>SerializableBMTStatefulBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.SerializableBMTStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <env-entry>
+              <description>Entry for test17</description>
+              <env-entry-name>EntryA</env-entry-name>
+              <env-entry-type>java.lang.String</env-entry-type>
+              <env-entry-value>EntryAValue</env-entry-value>
+            </env-entry>     
+            <env-entry>
+              <description>Entry for test18</description>
+              <env-entry-name>ent/EntryB</env-entry-name>
+              <env-entry-type>java.lang.String</env-entry-type>
+              <env-entry-value>EntryBValue</env-entry-value>
+            </env-entry>     
+         </session>         
+         
+          <session id="StaticStateful">
+            <ejb-name>StaticStateful</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StaticStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>           
+         </session>
+         
+         <session id="StatefulEmptyBean">
+            <ejb-name>StatefulEmptyBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulEmptyBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type> 
+         </session>
+          
+           <session id="StatefulCLInterceptorBean">
+            <ejb-name>StatefulCLInterceptorBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulCLInterceptorBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>      
+         </session>
+         
+         <session id="StatefulCL2InterceptorBean">
+            <ejb-name>StatefulCL2InterceptorBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulCL2InterceptorBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type> 
+         </session>
+         
+           <session id="StatefulNonSerCL2InterceptorBean">
+            <ejb-name>StatefulNonSerCL2InterceptorBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulNonSerCL2InterceptorBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type> 
+         </session>
+         
+         <session id="StatefulCLSuperInterceptorBean">
+            <ejb-name>StatefulCLSuperInterceptorBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulCLSuperInterceptorBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>      
+         </session>
+         
+          <session id="StatefulCLSuperSerInterceptorBean">
+            <ejb-name>StatefulCLSuperSerInterceptorBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulCLSuperSerInterceptorBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>      
+         </session>
+         
+         <session id="StatefulCLDefInterceptorBean">
+            <ejb-name>StatefulCLDefInterceptorBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulCLDefInterceptorBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type> 
+         </session>
+         
+         <session id="StatefulDefInterceptorBean">
+            <ejb-name>StatefulDefInterceptorBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.StatefulDefInterceptorBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type> 
+         </session>
+         
+          <session id="SuperStatefulNonSerBaseBean">
+            <ejb-name>SuperStatefulNonSerBaseBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.SuperStatefulNonSerBaseBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type> 
+         </session>
+         
+           <session id="SuperStatefulSerBaseBean">
+            <ejb-name>SuperStatefulSerBaseBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.SuperStatefulSerBaseBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type> 
+         </session>
+         
+     
+         
+         <session id="CMTStateful">
+            <ejb-name>CMTStateful2</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CMTStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="AltCMTStateful">
+            <ejb-name>NoNameCMTStatefulBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.AltCMTStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="NoNameCMTStateful">
+            <ejb-name>RealNoNameBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.NoNameCMTStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="CompCMTStateful">
+            <ejb-name>CompCMTStateful</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CMTStatefulEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CMTStatefulEJBRemote</remote>
+            
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CompCMTStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+        
+       
+         <session id="SFNoBizInterfaceDefined2">
+            <ejb-name>SFNoBizInterfaceDefined2</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.SFNoBizInterfaceDefinedBean2</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+      		  <bean-method>
+      		    <method-name>finish</method-name>
+      		  </bean-method>
+      		</remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SFNoBizInterfaceDefined3">
+            <ejb-name>SFNoBizInterfaceDefined3</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.SFNoBizInterfaceDefinedBean3</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+      		  <bean-method>
+      		    <method-name>finish</method-name>
+      		  </bean-method>
+      		</remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+       
+      </enterprise-beans>
+      
+        <interceptors id="interceptors_id">
+	      <interceptor id="interceptor_id_1">
+	         <interceptor-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CLNonSerInterceptor</interceptor-class>
+	         <around-invoke>
+	            <method-name>aroundInvoke</method-name>
+	         </around-invoke>
+	         <post-activate>
+	            <lifecycle-callback-method>postActivate</lifecycle-callback-method>
+	         </post-activate>
+	         <pre-passivate>
+	            <lifecycle-callback-method>prePassivate</lifecycle-callback-method>
+	         </pre-passivate>
+	      </interceptor>
+	      <interceptor id="interceptor_id_2">
+	         <interceptor-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.DefNonSerInterceptor</interceptor-class>
+	         <around-invoke>
+	            <method-name>aroundInvoke</method-name>
+	         </around-invoke>
+	         <post-activate>
+	            <lifecycle-callback-method>postActivate</lifecycle-callback-method>
+	         </post-activate>
+	         <pre-passivate>
+	            <lifecycle-callback-method>prePassivate</lifecycle-callback-method>
+	         </pre-passivate>
+	      </interceptor>
+	 </interceptors>
+	  <assembly-descriptor id="AssemblyDescriptor_1">
+        <interceptor-binding id="interceptor_binding_id_1">
+           <ejb-name>StatefulCL2InterceptorBean</ejb-name>
+           <interceptor-order>
+             <interceptor-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CLNonSerInterceptor</interceptor-class>
+             <interceptor-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CLSerInterceptor</interceptor-class>
+           </interceptor-order>
+        </interceptor-binding>                
+        <interceptor-binding id="interceptor_binding_id_2">
+           <ejb-name>*</ejb-name>
+           <interceptor-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.DefNonSerInterceptor</interceptor-class>
+        </interceptor-binding>
+        <interceptor-binding id="interceptor_binding_id_3">
+           <ejb-name>StatefulNonSerCL2InterceptorBean</ejb-name>
+           <interceptor-order>
+             <interceptor-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CLNonSerInterceptor</interceptor-class>
+             <interceptor-class>com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.CLSerInterceptor</interceptor-class>
+           </interceptor-order>
+        </interceptor-binding>
+      </assembly-descriptor>
+     
+   </ejb-jar>

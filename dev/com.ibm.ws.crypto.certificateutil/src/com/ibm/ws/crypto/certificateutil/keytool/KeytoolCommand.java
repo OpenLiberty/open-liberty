@@ -42,9 +42,13 @@ class KeytoolCommand {
      * @param password
      * @param validity
      * @param subjectDN
+     * @param keySize
+     * @param keyType
+     * @param sigAlg
      * @param ksType
+     * @param extInfo
      */
-    KeytoolCommand(String filePath, String password, int validity, String subjectDN, int keySize, String keyType, String sigAlg, String ksType) {
+    KeytoolCommand(String filePath, String password, int validity, String subjectDN, int keySize, String keyType, String sigAlg, String ksType, String extInfo) {
 
         cmd = new ArrayList<String>();
         cmd.add(getAbsoluteKeytoolPath());
@@ -69,6 +73,8 @@ class KeytoolCommand {
         cmd.add(Integer.toString(keySize));
         cmd.add("-storetype");
         cmd.add(ksType);
+        cmd.add("-ext");
+        cmd.add(extInfo);
     }
 
     /**

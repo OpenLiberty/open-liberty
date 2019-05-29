@@ -131,6 +131,8 @@ public class AuditEvent {
     public static final String TARGET_SAF_PROFILE = "target.saf.profile";
     public static final String TARGET_SAF_CLASS = "target.saf.class";
     public static final String TARGET_AUTHORIZATION_DECISION = "target.authorization.decision";
+    public static final String TARGET_ACCESS_LEVEL = "target.access.level";
+    public static final String TARGET_SAF_ERROR_MESSAGE = "target.saf.error.message";
 
     public final static String INITIATOR = "initiator";
     public final static String INITIATOR_ID = "initiator.id";

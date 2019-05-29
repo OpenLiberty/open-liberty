@@ -140,7 +140,8 @@ public class AuthFilterConfig {
             }
         }
 
-        if (properties.isEmpty() || properties.size() != attrKeys.length) {
+        if (properties.isEmpty() ||
+            (!KEY_REQUEST_HEADER.equals(elementName) && properties.size() != attrKeys.length)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 //TODO: NLS warning msg
                 Tr.debug(tc, "The authFilter element " + elementName + " specified in the server.xml file is missing one or more of these attributes "

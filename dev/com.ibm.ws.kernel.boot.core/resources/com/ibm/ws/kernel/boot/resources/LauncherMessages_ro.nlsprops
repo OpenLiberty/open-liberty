@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -740,3 +740,5 @@ info.no.servers.defined=Nu este definit niciun server \u00een directorul de util
 info.list.of.defined.servers=Urm\u0103toarele servere sunt definite relativ la directorul de utilizatori {0}.
 info.communicate.server=A ap\u0103rut o \
 eroare de comunica\u0163ii \u00eentre comanda {0} \u015fi serverul {1}.
+
+info.serialFilterLoaded=Agentul de filtrare serial\u0103 a fost \u00eenc\u0103rcat.

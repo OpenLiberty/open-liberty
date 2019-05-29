@@ -15,6 +15,7 @@ import java.io.IOException;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.ws.management.security.ManagementSecurityConstants;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
@@ -23,27 +24,28 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
  *
  * @ibm-spi
  */
-@Component(service = { DefaultAuthorizationHelper.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = { DefaultAuthorizationHelper.class },
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           immediate = true,
+           property = { "service.vendor=IBM" })
 public class DefaultAuthorizationHelper {
 
     public boolean checkAdministratorRole(RESTRequest request, RESTResponse response) throws IOException {
         boolean isGetMethod = "GET".equals(request.getMethod());
 
-        if (request.isUserInRole("Administrator")) {
-            return true;
-        }
-        if (isGetMethod && request.isUserInRole("Viewer")) {
-            return true;
+        /*
+         * Authorize principals with the administrator role or principals with the reader role if the HTTP
+         * request method is GET.
+         */
+        boolean isAuthorized = request.isUserInRole(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME)
+                               || (isGetMethod && request.isUserInRole(ManagementSecurityConstants.READER_ROLE_NAME));
+
+        if (!isAuthorized) {
+            // Not in admin role, so built error msg
+            // TODO: Translate msg
+            response.sendError(403, "Forbidden");
         }
 
-        // Not in admin role, so built error msg
-        // TODO: Translate msg
-        if (isGetMethod) {
-            response.sendError(403, "Administrator or Viewer role needed.");
-        } else {
-            response.sendError(403, "Administrator role needed.");
-        }
-
-        return false;
+        return isAuthorized;
     }
 }

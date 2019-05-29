@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 @Version("1.0.0")
-@TraceOptions(traceGroup = "rest.validator")
+@TraceOptions(traceGroup = "rest.validation")
 package com.ibm.ws.rest.handler.validator.openapi;
 
 import org.osgi.annotation.versioning.Version;

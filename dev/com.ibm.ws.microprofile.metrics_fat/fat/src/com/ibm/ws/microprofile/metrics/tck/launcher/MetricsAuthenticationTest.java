@@ -104,9 +104,9 @@ public class MetricsAuthenticationTest {
         MetricsConnection authenticationNotSpecified = MetricsConnection.connection_administratorRole(server);
         authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
-        // check that when the authenticated user is in the Viewer role, authorization is granted
-        MetricsConnection viewerRole200 = MetricsConnection.connection_viewerRole(server);
-        viewerRole200.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+        // check that when the authenticated user is in the Reader role, authorization is granted
+        MetricsConnection readerRole200 = MetricsConnection.connection_readerRole(server);
+        readerRole200.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         // check that when the valid user is not in an authorized role, 403 FORBIDDEN is returned
         MetricsConnection unauthorized403 = MetricsConnection.connection_unauthorized(server);

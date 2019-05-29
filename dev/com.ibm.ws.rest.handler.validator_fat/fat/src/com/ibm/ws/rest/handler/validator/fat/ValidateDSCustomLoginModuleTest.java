@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -70,9 +71,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
         // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
         // so that the FFDC is not considered a test failure.
-        JsonObject response = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource")
-                        .method("POST")
-                        .run(JsonObject.class);
+        JsonObject response = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS").run(JsonObject.class);
         Log.info(c, "setUp", "DefaultDataSource response: " + response);
     }
 
@@ -203,6 +202,61 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         assertNull(err, json.get("info"));
         assertEquals(err, "java.sql.SQLException", getString(json, "class"));
         assertTrue(err, getString(json, "message").contains("No LoginModules configured for bogus"));
+    }
+
+    /*
+     * Test that a nested data source which has an atypical case can be validated
+     * when the type matches the case specified in server.xml. In this test the specific
+     * instance's uid is specified.
+     */
+    @Test
+    public void testValidateNestedDifferentCase() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/DATASOURCE/transaction%2FDATASOURCE%5Bdefault-0%5D?auth=container&authAlias=auth1")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + json;
+
+        assertEquals(err, "transaction/DATASOURCE[default-0]", json.getString("uid"));
+        assertNull(err, json.get("id"));
+        assertNull(err, json.get("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
+        assertTrue(err, json.getString("databaseProductVersion").matches(VERSION_REGEX));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
+        assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
+        assertNull(err, json.get("catalog")); // currently not supported by Derby
+        assertEquals(err, "DBUSER", json.getString("schema"));
+        assertEquals(err, "dbuser", json.getString("user"));
+    }
+
+    /*
+     * Test that a nested data source which has an atypical case can be validated
+     * when the type matches the case specified in server.xml. In this test no
+     * UID is provided.
+     */
+    @Test
+    public void testValidateNestedDifferentCaseMulitple() throws Exception {
+        JsonArray json = new HttpsRequest(server, "/ibm/api/validation/DATASOURCE?auth=container&authAlias=auth1")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + json;
+
+        assertEquals(err, 1, json.size());
+        JsonObject j = json.getJsonObject(0);
+
+        assertEquals(err, "transaction/DATASOURCE[default-0]", j.getString("uid"));
+        assertNull(err, j.get("id"));
+        assertNull(err, j.get("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "Apache Derby", j.getString("databaseProductName"));
+        assertTrue(err, j.getString("databaseProductVersion").matches(VERSION_REGEX));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", j.getString("jdbcDriverName"));
+        assertTrue(err, j.getString("jdbcDriverVersion").matches(VERSION_REGEX));
+        assertNull(err, j.get("catalog")); // currently not supported by Derby
+        assertEquals(err, "DBUSER", j.getString("schema"));
+        assertEquals(err, "dbuser", j.getString("user"));
     }
 
     private static void assertSuccessResponse(JsonObject json, String expectedUID, String expectedID, String expectedJndiName) {

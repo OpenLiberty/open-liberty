@@ -73,9 +73,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      *
      * @return the portion of the API root following /ibm/api
      */
-    public String getAPIRoot() {
-        return "/validator"; // TODO remove this and make abstract once all other code is updated
-    }
+    public abstract String getAPIRoot();
 
     /**
      * Returns the most deeply nested element name.
@@ -94,12 +92,29 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
     }
 
     /**
+     * Returns the properties for the specified service.pid.
+     *
+     * @param servicePid     service.pid value to match.
+     * @param configurations an already-obtained list of configurations.
+     * @return properties of the configuration which matches the service.pid.
+     * @throws IllegalArgumentException if no configuration with the specified service.pid appears in the list.
+     */
+    private Dictionary<String, Object> getProperties(String servicePid, Configuration[] configurations) {
+        for (Configuration c : configurations) {
+            Dictionary<String, Object> props = c.getProperties();
+            if (servicePid.equals(props.get("service.pid")))
+                return props;
+        }
+        throw new IllegalArgumentException(servicePid);
+    }
+
+    /**
      * Compute the unique identifier from the id and config.displayId.
      * If a top level configuration element has an id, the id is the unique identifier.
      * Otherwise, the config.displayId is the unique identifier.
      *
      * @param configDisplayId config.displayId of configuration element.
-     * @param id id of configuration element. Null if none.
+     * @param id              id of configuration element. Null if none.
      * @return the unique identifier (uid)
      */
     @Trivial
@@ -110,8 +125,8 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
     /**
      * Collects response information for an error condition.
      *
-     * @param request the REST API request.
-     * @param uid identifier that is unique per instance of the configuration element type. Null if unavailable.
+     * @param request      the REST API request.
+     * @param uid          identifier that is unique per instance of the configuration element type. Null if unavailable.
      * @param errorMessage error message.
      * @return implementation-specific object that is used to track response information for the specified error.
      * @throws IOException
@@ -131,6 +146,13 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "handleRequest", path); // /apiRoot/{elementName}/{uid}
 
+        if (requireAdministratorRole() && !request.isUserInRole("Administrator")) {
+            response.sendError(403, "Forbidden");
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "handleRequest", "403 Forbidden");
+            return;
+        }
+
         // TODO would like to do the following, but cannot figure out how to get path parameters with %2F (/) in values from being considered separate path parameter values
         //String uid = request.getPathVariable("uid");
         //String elementName = request.getPathVariable("elementName");
@@ -145,7 +167,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
             if (uid.length() == 0)
                 uid = null;
         }
-        String elementName = URLDecoder.decode(path.substring(apiRoot.length() + 1, endElementName), "UTF-8");
+        String elementName = path.length() < (apiRoot.length() + 1) ? "" : URLDecoder.decode(path.substring(apiRoot.length() + 1, endElementName), "UTF-8");
 
         StringBuilder filter = new StringBuilder("(&");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
@@ -194,15 +216,50 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
 
         if (configurations != null)
             for (Configuration c : configurations) {
+                // The filter can over achieve on matching configurations. Do some additional filtering.
                 Dictionary<String, Object> props = c.getProperties();
-                String configDisplayId = (String) props.get("config.displayId");
-                Dictionary<String, Object> previousProps = configMap.put(configDisplayId, props);
-                // Config involving the use of ibm:extends (such as JCA config) is a special case where the
-                // config service internally uses two configurations with the same config.displayId,
-                // in which case we want to choose the one that corresponds to the OSGi service component.
-                // It can be identified by the ibm.extends.source.factoryPid attribute.
-                if (previousProps != null && previousProps.get("ibm.extends.source.factoryPid") != null)
-                    configMap.put(configDisplayId, previousProps); // put the previous entry back because it had ibm.extends.source.factoryPid
+                String displayId = (String) props.get("config.displayId");
+                int nestedStart = -1;
+                if (elementName.length() == 0 // show all config
+                    || displayId.startsWith(elementName + '[') && !displayId.contains("]/") // matches top level config
+                    || elementName.contentEquals(displayId) // matches singleton config element
+                    || (nestedStart = displayId.lastIndexOf('/' + elementName + '[')) > 0
+                       && displayId.indexOf("]/", nestedStart) < 0
+                       && displayId.charAt(displayId.length() - 1) == ']' // matches nested config
+                    || displayId.endsWith('/' + elementName)) { // matches implicitly created sub-config elements of app-defined resources
+
+                    // Examples
+                    // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver  <-- not a data source
+                    // application[application1]/module[module1.war]/dataSource[java:module/env/jdbc/ds2]             <-- data source
+                    // persistentExecutor[px1]/databaseTaskStore[s1]/dataSource[ds1]/jdbcDriver[myDriver]             <-- not a data source
+
+                    Dictionary<String, Object> oldProps = configMap.get(displayId);
+                    if (oldProps == null) {
+                        for (String subtypePid; (subtypePid = (String) props.get("ibm.extends.subtype.pid")) != null;)
+                            props = getProperties(subtypePid, configurations);
+                        configMap.put(displayId, props);
+                    } else {
+                        //This is another config with the same config.displayId. This can be due to extended config and/or
+                        //a difference in case for nested config. Choose the item with a service.pid that does not match the
+                        //element name, as that is the one which represents the actual element. Ex:
+                        // config.displayId=dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool], service.pid=com.ibm.ws.jca.connectionManager_129 <- The config corresponding to the actual element configured
+                        // config.displayId=dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool], service.pid=CONNECTIONMANAGER_46 <- The config corresponding to what is exactly in server config
+                        String oldServicePid = (String) oldProps.get("service.pid");
+                        if (oldServicePid == null || oldServicePid.startsWith(elementName + '_'))
+                            configMap.put(displayId, props);
+
+                        // Config involving the use of ibm:extends (such as JCA config) is a special case where the
+                        // config service internally uses two (or more) configurations with the same config.displayId,
+                        // in which case we want to choose the one that corresponds to the OSGi service component.
+                        String subtypePid = (String) props.get("ibm.extends.subtype.pid");
+                        if (subtypePid != null) {
+                            do
+                                props = getProperties(subtypePid, configurations);
+                            while ((subtypePid = (String) props.get("ibm.extends.subtype.pid")) != null);
+                            configMap.put(displayId, props);
+                        }
+                    }
+                }
             }
 
         Object result;
@@ -251,9 +308,10 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
     /**
      * Collects response information for a single configuration element instance.
      *
-     * @param request the REST API request
-     * @param uid identifier that is unique per instance of the configuration element type. Null if configuration element type is a singleton (only allows a single instance).
-     * @param id the id attribute of the configuration element instance, if one is specified. Otherwise null.
+     * @param request     the REST API request
+     * @param uid         identifier that is unique per instance of the configuration element type. Null if configuration element type is a singleton (only allows a single
+     *                        instance).
+     * @param id          the id attribute of the configuration element instance, if one is specified. Otherwise null.
      * @param configProps name/value pairs representing the configuration of an instance.
      * @return implementation-specific object that is used to track response information for the specified.
      * @throws IOException
@@ -274,15 +332,27 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      * Populates the response based on the previously computed information for 0 or more configuration element instances,
      * or error conditions.
      *
-     * @param response response to populate.
+     * @param response     response to populate.
      * @param responseInfo can be any of the following <ul>
-     *            <li>Single response information, as generated by <code>handleSingleInstance</code>.</li>
-     *            <li>Error information, as generated by <code>handleError</code>.</li>
-     *            <li>ArrayList of response information, as generated by <code>handleSingleInstance</code>
-     *            and/or <code>handleError</code>, for 0 or more configuration element instances.
-     *            This is used when the {uid} path parameter is omitted.</li>
-     *            </ul>
+     *                         <li>Single response information, as generated by <code>handleSingleInstance</code>.</li>
+     *                         <li>Error information, as generated by <code>handleError</code>.</li>
+     *                         <li>ArrayList of response information, as generated by <code>handleSingleInstance</code>
+     *                         and/or <code>handleError</code>, for 0 or more configuration element instances.
+     *                         This is used when the {uid} path parameter is omitted.</li>
+     *                         </ul>
      * @throws IOException
      */
     public abstract void populateResponse(RESTResponse response, Object responseInfo) throws IOException;
+
+    /**
+     * Indicates whether usage of this endpoint should require the user to be authorized with the
+     * "Administrator" authorization role.
+     *
+     * In addition to returning true for this method, the Rest Handler must also set the service property
+     * RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY to true.
+     *
+     * @return true if the endpoint should require the "Administrator" role, false for
+     *         default authorization based on the request type
+     */
+    public abstract boolean requireAdministratorRole();
 }
