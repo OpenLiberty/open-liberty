@@ -77,7 +77,7 @@ import componenttest.app.FATServlet;
 
 @JMSConnectionFactoryDefinitions({
                                    @JMSConnectionFactoryDefinition(name = "java:comp/env/jms/cf",
-                                                                   interfaceName = "javax.jms.ConnectionFactory",
+                                                                   // interfaceName = "javax.jms.ConnectionFactory", // already the default value
                                                                    resourceAdapter = "wasJms",
                                                                    clientId = "JMSClientID6",
                                                                    maxPoolSize = 6,
@@ -88,6 +88,21 @@ import componenttest.app.FATServlet;
                                                                                   "readAhead=AlwaysOff",
                                                                                   "shareDurableSubscription=NeverShared",
                                                                                   "temporaryQueueNamePrefix=cfq"
+                                                                   }),
+                                   @JMSConnectionFactoryDefinition(name = "java:module/env/jms/qcf",
+                                                                   interfaceName = "javax.jms.QueueConnectionFactory",
+                                                                   resourceAdapter = "wasJms",
+                                                                   maxPoolSize = 7,
+                                                                   minPoolSize = 3,
+                                                                   properties = {
+                                                                                  "agedTimeout=7h9m50s",
+                                                                                  "busName=qcfBus",
+                                                                                  "connectionTimeout=70s",
+                                                                                  "enableSharingForDirectLookups=false",
+                                                                                  "maxIdleTime=7m30s",
+                                                                                  "purgePolicy=ValidateAllConnections",
+                                                                                  "reapTime=72",
+                                                                                  "temporaryQueueNamePrefix=tempq"
                                                                    })
 })
 @SuppressWarnings("serial")

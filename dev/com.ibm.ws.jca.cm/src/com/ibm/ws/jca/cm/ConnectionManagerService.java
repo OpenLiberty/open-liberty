@@ -75,6 +75,7 @@ public abstract class ConnectionManagerService extends Observable {
     public static final List<String> CONNECTION_MANAGER_PROPS = Collections.unmodifiableList(Arrays.asList(
                                                                                                            J2CConstants.POOL_AgedTimeout,
                                                                                                            J2CConstants.POOL_ConnectionTimeout,
+                                                                                                           "enableSharingForDirectLookups",
                                                                                                            MAX_IDLE_TIME,
                                                                                                            MAX_CONNECTIONS_PER_THREAD,
                                                                                                            MAX_POOL_SIZE,
