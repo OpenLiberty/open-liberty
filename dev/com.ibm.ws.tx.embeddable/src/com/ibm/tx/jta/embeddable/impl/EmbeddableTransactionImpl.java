@@ -78,9 +78,9 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     public EmbeddableTransactionImpl(EmbeddableFailureScopeController fsc) {
         super(fsc);
     }
-    
+
     public EmbeddableTransactionImpl(int txType, int timeout) {
-    	super(txType, timeout);
+        super(txType, timeout);
     }
 
     public EmbeddableTransactionImpl(int timeout) {
@@ -940,6 +940,10 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (_timeout > 0) {
             EmbeddableTimeoutManager.setTimeout(this, EmbeddableTimeoutManager.CANCEL_TIMEOUT, 0);
             _timeout = 0;
+        }
+
+        if (_inactivityTimerActive) {
+            stopInactivityTimer();
         }
 
         if (tc.isEntryEnabled())
