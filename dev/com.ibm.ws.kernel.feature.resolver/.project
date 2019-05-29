@@ -20,4 +20,16 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>bndtools.core.bndnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>com.ibm.ws.kernel.boot.core</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.kernel.boot.core/src</locationURI>
+		</link>
+		<link>
+			<name>com.ibm.ws.kernel.feature.core</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.kernel.feature.core/src</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
