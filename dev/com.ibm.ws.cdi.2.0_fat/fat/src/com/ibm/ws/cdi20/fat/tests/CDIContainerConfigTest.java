@@ -68,6 +68,6 @@ public class CDIContainerConfigTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWOWB1009W");
     }
 }
