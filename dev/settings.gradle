@@ -117,6 +117,6 @@ if (!JavaVersion.current().isJava11Compatible()) {
                             "  4) Restart your gradle daemon with './gradlew --stop'\n";
 }
 
-apply from: 'gradle/propertiesSettings.gradle'
-apply from: 'gradle/bndSettings.gradle'
-apply from: 'gradle/buildCacheSettings.gradle'
+apply from: 'wlp-gradle/propertiesSettings.gradle'
+apply from: 'wlp-gradle/bndSettings.gradle'
+apply from: 'wlp-gradle/buildCacheSettings.gradle'
