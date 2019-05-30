@@ -26,7 +26,6 @@ javax.xml.bind.annotation;version=!,\
 javax.xml.bind.annotation.adapters;version=!,\
 javax.xml.bind.attachment;version=!,\
 *
->>>>>>> Add changes to address Woodstox issue
 
 DynamicImport-Package: com.ibm.ws.jaxws.client
 
