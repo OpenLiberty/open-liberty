@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.transaction.InvalidTransactionException;
 import javax.transaction.Status;
@@ -40,9 +39,6 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
 public class SerialTransactionContextImpl implements ThreadContext {
     private static final long serialVersionUID = 1;
 
-    // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
-    private final SuspendCount suspendCounts;
-
     /**
      * Unit of work that was on the thread of execution prior to invoking the contextual task.
      */
@@ -50,19 +46,9 @@ public class SerialTransactionContextImpl implements ThreadContext {
 
     private final Transaction tx;
 
-    // TODO remove the temporary suspend count code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
-    SerialTransactionContextImpl(SuspendCount suspendCounts) {
+    SerialTransactionContextImpl() {
         try {
-            this.suspendCounts = suspendCounts;
             tx = EmbeddableTransactionManagerFactory.getTransactionManager().getTransaction();
-            if (tx != null) {
-                AtomicInteger count = suspendCounts.get(tx);
-                if (count == null) {
-                    AtomicInteger found = suspendCounts.putIfAbsent(tx, count = new AtomicInteger());
-                    if (found != null)
-                        count = found;
-                }
-            }
         } catch (SystemException x) {
             throw new RejectedExecutionException(x);
         }
@@ -80,31 +66,38 @@ public class SerialTransactionContextImpl implements ThreadContext {
 
     @Override
     public void taskStarting() throws RejectedExecutionException {
-        // TODO This current code is unlikely to be a fully reliable way of determining that a transaction
-        // will be active on 2 threads at once. It should be replaced once the transaction manager is updated
-        // to properly enforce the requirement.
-        if (tx != null && suspendCounts.get(tx).get() < 1) {
-            try {
-                tx.setRollbackOnly();
-            } catch (IllegalStateException x) {
-            } catch (SystemException x) {
-            }
-            throw new IllegalStateException("Transaction cannot be propagated to thread because it is not permitted to be active on two threads at the same time.");
-        }
-
         // Suspend whatever is currently on the thread.
+        UOWManager uowManager = UOWManagerFactory.getUOWManager();
         try {
-            UOWManager uowManager = UOWManagerFactory.getUOWManager();
             suspendedUOW = uowManager.suspend();
         } catch (com.ibm.ws.uow.embeddable.SystemException e) {
+            suspendedUOW = null;
         }
 
+        boolean resumed = false;
         try {
             EmbeddableTransactionManagerFactory.getTransactionManager().resume(tx);
+            resumed = true;
         } catch (InvalidTransactionException x) {
             throw new RejectedExecutionException(x);
         } catch (SystemException x) {
             throw new RejectedExecutionException(x);
+        } catch (IllegalStateException x) {
+            if (tx != null) {
+                try {
+                    tx.setRollbackOnly();
+                } catch (IllegalStateException isx) {
+                } catch (SystemException sysx) {
+                }
+            }
+            throw x;
+        } finally {
+            if (!resumed && suspendedUOW != null)
+                try {
+                    uowManager.resume(suspendedUOW);
+                } catch (com.ibm.ws.uow.embeddable.SystemException x) {
+                    // A prior error is already being raised, so ignore apart from logging to FFDC
+                }
         }
     }
 

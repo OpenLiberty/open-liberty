@@ -121,7 +121,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * by resuming the transaction onto another thread and performing transactional operations in it
      * while it simultaneously remains actively in use on the main thread.
      */
-//    @Test
+    @Test
     public void testJTATransactionPropagationToMultipleThreadsWithExistingTransactionManagerAPI() throws Exception {
         javax.transaction.TransactionManager tm = com.ibm.tx.jta.TransactionManagerFactory.getTransactionManager();
 
@@ -153,8 +153,15 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
             con.close();
 
-            // ensure the above runs in the same transaction while the transaction is still active on the current thread
-            assertEquals(Integer.valueOf(1), stage.join());
+            try {
+                // attempt to run under the same transaction while the transaction is still active on the current thread
+                fail("Transaction manager should not allow resume of transaction onto multiple threads at once. Result: " + stage.join());
+            } catch (CompletionException x) {
+                if (x.getCause() instanceof IllegalStateException)
+                    ; // pass - transaction manager rejected resuming transaction onto 2 threads at once
+                else
+                    throw x;
+            }
 
             tx.commit();
         } finally {
@@ -190,8 +197,15 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
             con.close();
 
-            // ensure the above runs in the same transaction while the transaction is still active on the current thread
-            assertEquals(Integer.valueOf(1), stage.join());
+            try {
+                // attempt to run under the same transaction while the transaction is still active on the current thread
+                fail("Transaction manager should not allow resume of transaction onto multiple threads at once. Result: " + stage.join());
+            } catch (CompletionException x) {
+                if (x.getCause() instanceof IllegalStateException)
+                    ; // pass - transaction manager rejected resuming transaction onto 2 threads at once
+                else
+                    throw x;
+            }
         } finally {
             tx.rollback();
         }
@@ -204,7 +218,9 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
             result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE NAME='Dubuque' OR NAME='Story'");
             assertTrue(result.next());
-            assertEquals(96571, result.getInt(1));
+            // With the transaction manager rejecting resume onto the parallel thread, the insert of Dubuque is now blocked as well
+            assertEquals(0, result.getInt(1));
+            // previously: assertEquals(96571, result.getInt(1));
         }
     }
 
@@ -589,7 +605,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * performed by the main thread.
      */
     @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
-//    @Test
+    @Test
     public void testJTATransactionUsedSeriallyWithOverlapAndCommitWithinLastStage() throws Exception {
         CompletableFuture<Integer> stage;
         tx.begin();
@@ -648,7 +664,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * performed by the main thread.
      */
     @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
-//    @Test
+    @Test
     public void testJTATransactionUsedSeriallyWithOverlapAndRollBackWithinLastStage() throws Exception {
         CompletableFuture<Integer> stage;
         tx.begin();
@@ -1546,7 +1562,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Commit the transaction after all transactional operations are finished.
      */
     @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
-//    @Test
+    @Test
     public void testTwoPhaseResourcesUsedInParallelAndCommit() throws Exception {
         tx.begin();
         try {
@@ -1602,7 +1618,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Roll back the transaction after all transactional operations are finished.
      */
     @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
-//    @Test
+    @Test
     public void testTwoPhaseResourcesUsedInParallelAndRollBack() throws Exception {
         tx.begin();
         try {
@@ -1784,7 +1800,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * at the same time. The main thread commits the transaction when the transactional operations finish.
      */
     @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
-//    @Test
+    @Test
     public void testTwoThreadsConcurrentlyOperateInJTATransactionAndCommit() throws Exception {
         tx.begin();
         try (Connection con = defaultDataSource.getConnection()) {
@@ -1837,7 +1853,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * at the same time. The main thread rolls back the transaction when the transactional operations finish.
      */
     @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
-//    @Test
+    @Test
     public void testTwoThreadsConcurrentlyOperateInJTATransactionAndRollBack() throws Exception {
         tx.begin();
         try (Connection con = defaultDataSource.getConnection()) {
