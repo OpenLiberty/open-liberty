@@ -15,6 +15,7 @@ import java.util.concurrent.Executor;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.JMSConnectionFactoryDefinition;
 import javax.resource.ConnectionFactoryDefinition;
 import javax.resource.ConnectionFactoryDefinitions;
 
@@ -31,6 +32,16 @@ import javax.resource.ConnectionFactoryDefinitions;
                       properties = {
                                      "createDatabase=create"
                       })
+
+@JMSConnectionFactoryDefinition(name = "java:app/env/jms/tcf",
+                                interfaceName = "javax.jms.TopicConnectionFactory",
+                                resourceAdapter = "ConfigTestAdapter",
+                                maxPoolSize = 8,
+                                properties = {
+                                               "enableBetaContent=true",
+                                               "portNumber=8765"
+                                })
+
 @Stateless
 @Local
 public class AppDefinedResourcesBean implements Executor {

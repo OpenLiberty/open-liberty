@@ -33,7 +33,7 @@
 
   <messagingEngine id="defaultME"/>
 
-  <resourceAdapter id="ConfigTestAdapter" location="${server.config.dir}/connectors/ConfigTestAdapter.rar"/>
+  <resourceAdapter location="${server.config.dir}/connectors/ConfigTestAdapter.rar"/>
 
   <transaction>
     <DATASOURCE transactional="false">
