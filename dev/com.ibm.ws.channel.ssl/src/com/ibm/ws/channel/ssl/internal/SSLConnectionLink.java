@@ -120,6 +120,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      */
     @Override
     public void init(VirtualConnection inVC) {
+
         this.vcHashCode = inVC.hashCode();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "init, vc=" + getVCHash());
@@ -431,7 +432,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         @Override
         public void error(IOException ioe) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.entry(tc, "error (handshake), vc=" + getVCHash());
+                Tr.debug(tc, "error (handshake), vc=" + getVCHash());
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception during unwrap, " + ioe);
@@ -440,7 +441,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // cleanup possible ALPN resources
             if (flowType == FlowType.INBOUND) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Cleanup possible ALPN resources");
+                    Tr.debug(tc, "Cleanup possible ALPN resources - error callback");
                 }
                 AlpnSupportUtils.getAlpnResult(getSSLEngine(), this.connLink);
             }
@@ -705,6 +706,9 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         encryptedAppBuffer.release();
 
         if (hsStatus == HandshakeStatus.FINISHED) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Cleanup possible ALPN resources - handshake finished");
+            }
             AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
 
             // PK16095 - take certain actions when the handshake completes
