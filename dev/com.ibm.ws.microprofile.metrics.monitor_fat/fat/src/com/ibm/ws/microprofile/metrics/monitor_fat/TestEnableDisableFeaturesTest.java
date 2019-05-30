@@ -172,14 +172,16 @@ public class TestEnableDisableFeaturesTest {
     	String testName = "testEDF2";
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: threadpool metrics should be available ------");
     	serverEDF2.startServer();
+    	Assert.assertNotNull("SRVE9103I NOT FOUND",serverEDF2.waitForStringInLogUsingMark("SRVE9103I"));
+    	serverEDF2.setMarkToEndOfLog();
     	serverEDF2.setServerConfigurationFile("server_monitor.xml");
-        String logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2001I");
-        Log.info(c, testName, logMsg);
-    	Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
-       	Log.info(c, testName, "------- threadpool metrics should be available ------");
+    	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF2.waitForStringInLogUsingMark("CWWKF0008I"));
+    	serverEDF2.waitForStringInTrace("Monitoring MXBean WebSphere:type=ThreadPoolStats", 180000);
+        Log.info(c, testName, "------- threadpool metrics should be available ------");
     	getHttpsServlet("/metrics/vendor", serverEDF2);
+    	Assert.assertNotNull("Monitoring MXBean WebSphere:type=ServletStats NOT FOUND",serverEDF2.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=ServletStats"));
+    	Assert.assertNotNull("handleNotification Exit NOT FOUND",serverEDF2.waitForStringInTraceUsingMark("handleNotification Exit"));
     	Log.info(c, testName, "------- servlet metrics should be available ------");
-        Assert.assertNotNull("A CWWKF0008I NOT FOUND",serverEDF2.waitForStringInLogUsingMark("A CWWKF0008I"));
        	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF2), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size",
