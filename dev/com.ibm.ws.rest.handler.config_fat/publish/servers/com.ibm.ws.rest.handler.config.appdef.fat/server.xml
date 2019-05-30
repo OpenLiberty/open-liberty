@@ -17,6 +17,9 @@
     <feature>ejbLite-3.2</feature>
     <feature>jca-1.7</feature>
     <feature>jdbc-4.2</feature>
+    <feature>jms-2.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
   </featureManager>
 
   <variable name="onError" value="FAIL"/>
@@ -27,6 +30,8 @@
   <application location="AppDefResourcesApp.ear">
     <classloader commonLibraryRef="Derby"/>
   </application>
+
+  <messagingEngine id="defaultME"/>
 
   <resourceAdapter id="ConfigTestAdapter" location="${server.config.dir}/connectors/ConfigTestAdapter.rar"/>
 

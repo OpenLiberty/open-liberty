@@ -16,6 +16,8 @@ import java.util.concurrent.Executor;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.annotation.sql.DataSourceDefinitions;
 import javax.ejb.EJB;
+import javax.jms.JMSConnectionFactoryDefinition;
+import javax.jms.JMSConnectionFactoryDefinitions;
 import javax.resource.ConnectionFactoryDefinition;
 import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
 import javax.servlet.annotation.WebServlet;
@@ -71,6 +73,37 @@ import componenttest.app.FATServlet;
                                                properties = "createDatabase=create",
                                                user = "dbuser4",
                                                password = "dbpwd4")
+})
+
+@JMSConnectionFactoryDefinitions({
+                                   @JMSConnectionFactoryDefinition(name = "java:comp/env/jms/cf",
+                                                                   // interfaceName = "javax.jms.ConnectionFactory", // already the default value
+                                                                   resourceAdapter = "wasJms",
+                                                                   clientId = "JMSClientID6",
+                                                                   maxPoolSize = 6,
+                                                                   user = "jmsuser",
+                                                                   password = "jmspwd",
+                                                                   properties = {
+                                                                                  "busName=cfBus",
+                                                                                  "readAhead=AlwaysOff",
+                                                                                  "shareDurableSubscription=NeverShared",
+                                                                                  "temporaryQueueNamePrefix=cfq"
+                                                                   }),
+                                   @JMSConnectionFactoryDefinition(name = "java:module/env/jms/qcf",
+                                                                   interfaceName = "javax.jms.QueueConnectionFactory",
+                                                                   resourceAdapter = "wasJms",
+                                                                   maxPoolSize = 7,
+                                                                   minPoolSize = 3,
+                                                                   properties = {
+                                                                                  "agedTimeout=7h9m50s",
+                                                                                  "busName=qcfBus",
+                                                                                  "connectionTimeout=70s",
+                                                                                  "enableSharingForDirectLookups=false",
+                                                                                  "maxIdleTime=7m30s",
+                                                                                  "purgePolicy=ValidateAllConnections",
+                                                                                  "reapTime=72",
+                                                                                  "temporaryQueueNamePrefix=tempq"
+                                                                   })
 })
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/AppDefinedResourcesServlet")
