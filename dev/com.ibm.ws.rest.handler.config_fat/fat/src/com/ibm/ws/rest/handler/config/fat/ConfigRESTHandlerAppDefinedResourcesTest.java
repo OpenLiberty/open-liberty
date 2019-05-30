@@ -64,7 +64,10 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
         ResourceAdapterArchive tca_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "ConfigTestAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
-                                        .addPackage("org.test.config.adapter"));
+                                        .addPackage("org.test.config.adapter")
+                                        .addClass("org.test.config.jmsadapter.JMSConnectionFactoryImpl")
+                                        .addClass("org.test.config.jmsadapter.JMSTopicConnectionFactoryImpl")
+                                        .addClass("org.test.config.jmsadapter.ManagedJMSTopicConnectionFactoryImpl"));
         ShrinkHelper.exportToServer(server, "connectors", tca_rar);
 
         server.startServer();
@@ -668,6 +671,52 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNull(err, props.get("temporaryTopicNamePrefix"));
         assertNull(err, props.get("userName"));
         assertNull(err, props.get("password"));
+
+        // TODO api
+    }
+
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an app-defined JMS TopicConnectionFactory.
+     */
+    @Test
+    public void testAppDefinedJMSTopicConnectionFactory() throws Exception {
+        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsTopicConnectionFactory/application[AppDefResourcesApp]%2FjmsTopicConnectionFactory[java:app%2Fenv%2Fjms%2Ftcf]")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + cf;
+
+        assertEquals(err, "jmsTopicConnectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", cf.getString("id"));
+        assertEquals(err, "java:app/env/jms/tcf", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertNull(err, cf.get("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 8, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
+
+        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
+        // assertNull(err, cf.get("creates.objectClass"));
+        // assertNull(err, cf.get("jndiName.unique"));
+
+        JsonObject props;
+        assertNotNull(err, props = cf.getJsonObject("properties.ConfigTestAdapter"));
+        assertTrue(err, props.getBoolean("enableBetaContent")); // TODO if JMS path had the same unfixed bug as JCA, this should have failed. Need to look into this.
+        assertEquals(err, "localhost", props.getString("hostName"));
+        assertEquals(err, 8765, props.getInt("portNumber"));
 
         // TODO api
     }

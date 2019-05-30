@@ -411,7 +411,7 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
 
         if ("javax.jms.QueueConnectionFactory".equals(interfaceName))
             sb.append("jmsQueueConnectionFactory");
-        else if ("javax.jms.JMSTopicConnectionFactory".equals(interfaceName))
+        else if ("javax.jms.TopicConnectionFactory".equals(interfaceName))
             sb.append("jmsTopicConnectionFactory");
         else
             sb.append("jmsConnectionFactory");
