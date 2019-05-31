@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:ejb="http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" version="3.1">
+  <display-name>testPortComponentRefApplicationEJB</display-name>
+  
+  <enterprise-beans>
+    <session>
+      <ejb-name>HelloClientBean</ejb-name>
+      <ejb-class>com.ibm.ws.jaxws.test.pcr.app.ejb.client.HelloClientBean</ejb-class>
+      <session-type>Stateless</session-type>
+
+      <service-ref>
+        <service-ref-name>services/hello</service-ref-name>
+        <service-interface>com.ibm.ws.jaxws.test.pcr.app.ejb.server.stub.HelloService</service-interface>
+        <service-ref-type>com.ibm.ws.jaxws.test.pcr.app.ejb.server.stub.Hello</service-ref-type>
+        <port-component-ref>
+          <service-endpoint-interface>com.ibm.ws.jaxws.test.pcr.app.ejb.server.stub.Hello</service-endpoint-interface>
+          <port-component-link>Hello</port-component-link>
+        </port-component-ref>
+      </service-ref>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

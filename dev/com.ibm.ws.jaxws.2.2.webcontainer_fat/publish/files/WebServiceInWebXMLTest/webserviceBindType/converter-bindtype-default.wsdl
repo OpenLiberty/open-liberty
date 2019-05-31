@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<wsdl:definitions name="ConverterSvcName-bindtype-wsdllocation" targetNamespace="http://bindtype.jaxws.samples.ibm.com" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://bindtype.jaxws.samples.ibm.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xs:schema elementFormDefault="unqualified" targetNamespace="http://bindtype.jaxws.samples.ibm.com" version="1.0" xmlns:tns="http://bindtype.jaxws.samples.ibm.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="dollarToRupees" type="tns:dollarToRupees"></xs:element>
+<xs:element name="dollarToRupeesResponse" type="tns:dollarToRupeesResponse"></xs:element>
+<xs:element name="rupeesToEuro" type="tns:rupeesToEuro"></xs:element>
+<xs:element name="rupeesToEuroResponse" type="tns:rupeesToEuroResponse"></xs:element>
+<xs:complexType name="rupeesToEuro">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:decimal"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="rupeesToEuroResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:decimal"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="dollarToRupees">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:decimal"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="dollarToRupeesResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:decimal"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="dollarToRupeesResponse">
+    <wsdl:part element="tns:dollarToRupeesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="rupeesToEuroResponse">
+    <wsdl:part element="tns:rupeesToEuroResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="dollarToRupees">
+    <wsdl:part element="tns:dollarToRupees" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="rupeesToEuro">
+    <wsdl:part element="tns:rupeesToEuro" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ConverterPortType">
+    <wsdl:operation name="rupeesToEuro">
+      <wsdl:input message="tns:rupeesToEuro" name="rupeesToEuro">
+    </wsdl:input>
+      <wsdl:output message="tns:rupeesToEuroResponse" name="rupeesToEuroResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="dollarToRupees">
+      <wsdl:input message="tns:dollarToRupees" name="dollarToRupees">
+    </wsdl:input>
+      <wsdl:output message="tns:dollarToRupeesResponse" name="dollarToRupeesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ConverterSvcName-bindtype-wsdllocationSoapBinding" type="tns:ConverterPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="rupeesToEuro">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="rupeesToEuro">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="rupeesToEuroResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="dollarToRupees">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="dollarToRupees">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="dollarToRupeesResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ConverterSvcName-bindtype-wsdllocation">
+    <wsdl:port binding="tns:ConverterSvcName-bindtype-wsdllocationSoapBinding" name="ConverterPort">
+      <soap:address location="http://localhost:8010/converter/ConverterSvcName-bindtype-wsdllocation"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
