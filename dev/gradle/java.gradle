@@ -64,7 +64,8 @@ task testReport(type: TestReport) {
   destinationDir = cnf.file('generated/testReports/allUnitTests')
 
   // Include the results from the `test` task in all subprojects
-  reportOn subprojects*.test.binResultsDir
+  //reportOn subprojects*.test.binResultsDir
+  reportOn subprojects*.test
 
   doLast {
     // Save test count properties to a file, so they can be loaded by subsequent builds
