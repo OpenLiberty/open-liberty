@@ -12,6 +12,7 @@ package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -353,14 +354,17 @@ public class ZipFileData {
 
     @Trivial
     public void displayData() {
-        if ( !ZIP_REAPER_COLLECT_TIMINGS ) {
-            return;
+        if ( ZIP_REAPER_COLLECT_TIMINGS ) {
+            introspect( new PrintWriter(System.out) );
         }
+    }
 
+    @Trivial
+    public void introspect(PrintWriter output) {
         // See the class comment for details of the state model and the
         // statistics which are gathered.
 
-        System.out.println("ZFR ZipFile [ " + path + " ] Statistics:");
+        output.println("ZFR ZipFile [ " + path + " ] Statistics:");
 
         String openText;
         if ( lastLastOpenAt == -1L ) {
@@ -377,33 +381,33 @@ public class ZipFileData {
                 " Count [ " + toCount(openCount) + " ]" +
                 " Duration [ " + toAbsSec(openDuration) + " (s) ]";
         }
-        System.out.println("ZFR " + openText);
+        output.println("ZFR " + openText);
 
         String pendingText =
                 "   Pending: First [ " + toRelSec(initialAt, firstPendAt) + " (s) ]" +
                 " Last [ " + toRelSec(initialAt, lastPendAt) + " (s) ]" +
                 " Count [ " + toCount(openToPendCount) + " ]";
-        System.out.println("ZFR " + pendingText);
+        output.println("ZFR " + pendingText);
 
         String pendingBeforeOpenText =
                 "     Pending to Open: Count [ " + toCount(pendToOpenCount) + " ]" +
                 " Duration [ " + toAbsSec(pendToOpenDuration) + " (s) ]";
-        System.out.println("ZFR " + pendingBeforeOpenText);
+        output.println("ZFR " + pendingBeforeOpenText);
 
         String pendingBeforeCloseText =
                 "     Pending to Full Close: Count [ " + toCount(pendToFullCloseCount) + " ]" +
                 " Duration [ " + toAbsSec(pendToFullCloseDuration) + " (s) ]";
-        System.out.println("ZFR " + pendingBeforeCloseText);
+        output.println("ZFR " + pendingBeforeCloseText);
 
         String closeText =
                 "   Full Close: First [ " + toRelSec(initialAt, firstFullCloseAt) + " (s) ]" +
                 " Last [ " + toRelSec(initialAt, lastFullCloseAt) + " (s) ]";
-        System.out.println("ZFR " + closeText);
+        output.println("ZFR " + closeText);
 
         String closeBeforeOpenText =
                 "     Full Close to Open: Count [ " + toCount(fullCloseToOpenCount) + " ]" +
                 " Duration [ " + toAbsSec(fullCloseToOpenDuration) + " (s) ]";
-        System.out.println(closeBeforeOpenText);
+        output.println(closeBeforeOpenText);
     }
 
     @Trivial
@@ -436,6 +440,10 @@ public class ZipFileData {
     // actual files on disk.
 
     protected final String path;
+
+    public String getPath() {
+        return path;
+    }
 
     // State ...
 
@@ -611,19 +619,19 @@ public class ZipFileData {
     @Trivial
     public boolean isFullyClosed() {
         return zipFileState == ZipFileState.FULLY_CLOSED;
-    }        
+    }
 
     protected long initialAt;
     protected long finalAt;
 
     protected int openCount;
     protected int closeCount;
-    
+
     @Trivial
     public int getActiveOpens() {
         return openCount - closeCount;
     }
-    
+
     protected int openToPendCount;
     protected int pendToOpenCount;
     protected int pendToFullCloseCount;

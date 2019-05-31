@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -93,6 +94,16 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     private final ZipFileLock zipFileLock = new ZipFileLock();
     private ZipFile zipFile;
     private int openCount;
+
+    //
+
+    public String introspect() {
+        synchronized(zipFileLock) {
+            return (
+                "ZipFileHandle@0x" + Integer.toHexString(hashCode()) +
+                " (" + path + ", " + Integer.toString(openCount) + ")" );
+        }
+    }
 
     //
 
@@ -403,5 +414,35 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         }
 
         return bytes;
+    }
+
+	protected static void introspectEntryCache(PrintWriter output) {
+		output.println();
+		output.println("Zip Entry Cache:");
+
+    	if ( ZipFileHandleImpl.zipEntries == null ) {
+    		output.println("  ** DISABLED **");
+
+    	} else {
+    		synchronized ( ZipFileHandleImpl.zipEntriesLock ) {
+	    		for ( Map.Entry<String, byte[]> zipEntryEntry : ZipFileHandleImpl.zipEntries.entrySet() ) {
+	    			output.println(
+	    				"  [ " + zipEntryEntry.getKey() + " ]" +
+	    				" [ " + Integer.toString(zipEntryEntry.getValue().length) + " bytes ]");
+	    		}
+	    	}
+	    }
+	}
+
+    protected static void introspectZipReaper(PrintWriter output) {
+		output.println();
+		output.println("Zip Reaper:");
+
+		if ( ZipFileHandleImpl.zipFileReaper == null ) {
+    		output.println("  ** DISABLED **");
+
+		} else {
+    		ZipFileHandleImpl.zipFileReaper.introspect(output);
+    	}
     }
 }

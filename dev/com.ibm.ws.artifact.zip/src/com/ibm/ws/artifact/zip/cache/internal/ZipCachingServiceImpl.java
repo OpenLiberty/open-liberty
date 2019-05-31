@@ -11,6 +11,7 @@
 package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -192,6 +193,128 @@ public class ZipCachingServiceImpl implements ZipCachingService {
                 zipFileHandles.put(path, handle);
             }
             return handle;
+        }
+    }
+
+    /**
+     * Write the state of the zip caching service to a print writer.
+     * This is provided to support Liberty introspection.
+     * 
+     * @param output The print writer to which to write the
+     *     state of the zip caching service
+     */
+    public void introspect(PrintWriter output) {
+        output.println("Zip Caching Service:");
+
+        ZipCachingServiceImpl.introspectProperties(output);
+        ZipCachingServiceImpl.introspectHandles(output);
+        ZipFileHandleImpl.introspectEntryCache(output);
+        ZipFileHandleImpl.introspectZipReaper(output);
+    }
+
+    protected static void introspectProperties(PrintWriter output) {
+        output.println();
+        output.println("Entry Cache Settings:");
+
+        introspectProperty(output,
+            "Maximum Handles",
+            ZipCachingProperties.ZIP_CACHE_HANDLE_MAX_PROPERTY_NAME,
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_HANDLE_MAX),
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_HANDLE_MAX_DEFAULT_VALUE));
+
+        introspectProperty(output,
+            "Maximum Entries",
+            ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT_PROPERTY_NAME,
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT),
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT_DEFAULT_VALUE));
+
+        introspectProperty(output,
+            "Maximum Entry Size",
+            ZipCachingProperties.ZIP_CACHE_ENTRY_MAX_PROPERTY_NAME,
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_MAX),
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_MAX_DEFAULT_VALUE));
+
+        output.println();
+        output.println("Zip Reaper Settings:");
+
+        introspectProperty(output,
+            "Maximum pending closes",
+            ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING_PROPERTY_NAME,
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING),
+            Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING_DEFAULT_VALUE));
+
+        introspectProperty(output,
+            "Fast pending minimum",
+            ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN_PROPERTY_NAME,
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN),
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN_DEFAULT_VALUE));
+
+        introspectProperty(output,
+            "Fast pending maximum",
+            ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX_PROPERTY_NAME,
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX),
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX_DEFAULT_VALUE));
+
+        introspectProperty(output,
+            "Slow pending minimum",
+            ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN_PROPERTY_NAME,
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN),
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN_DEFAULT_VALUE));
+
+        introspectProperty(output,
+            "Slow pending maximum",
+            ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX_PROPERTY_NAME,
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX),
+            Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX_DEFAULT_VALUE));
+
+        introspectProperty(output,
+            "State debugging",
+            ZipCachingProperties.ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME,
+            (ZipCachingProperties.ZIP_REAPER_DEBUG_STATE ? "enabled" : "disabled"),
+            (ZipCachingProperties.ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE ? "enabled" : "disabled"));
+
+        introspectProperty(output,
+            "Collect timings",
+            ZipCachingProperties.ZIP_REAPER_COLLECT_TIMINGS_PROPERTY_NAME,
+            Boolean.valueOf(ZipCachingProperties.ZIP_REAPER_COLLECT_TIMINGS),
+            Boolean.valueOf(ZipCachingProperties.ZIP_REAPER_COLLECT_TIMINGS_DEFAULT_VALUE));
+
+        output.println();
+        output.println("The entry cache is a cache of small zip file entries.");
+        output.println("The entry cache is disabled if either setting is 0.");
+
+        output.println();
+        output.println("The zip reaper is a service which delays closes of zip files.");
+        output.println("The zip reaper is disabled if the maximum pending closes setting is 0.");
+    }
+
+    protected static void introspectProperty(PrintWriter output, 
+        String propertyDescription,
+        String propertyName,
+        Object propertyValue,
+        Object propertyDefaultValue) {
+
+        output.println(propertyDescription);
+        output.println("  [ " + propertyName + " ] [ " + propertyValue + " ] [[ " + propertyDefaultValue + " ]]");
+    }
+
+    protected static void introspectHandles(PrintWriter output) {
+        output.println();
+        output.println("Active and Cached ZipFile Handles:");
+
+        synchronized ( ZipCachingServiceImpl.zipFileHandlesLock ) {
+            if ( ZipCachingServiceImpl.zipFileHandles.isEmpty() ) {
+                output.println("  ** NONE **");
+            } else {
+                for ( Map.Entry<String, ZipFileHandle> handleEntry : ZipCachingServiceImpl.zipFileHandles.entrySet() ) {
+                    ZipFileHandle handle = handleEntry.getValue();
+                    if ( handle instanceof ZipFileHandleImpl ) {
+                        output.println("  " + ((ZipFileHandleImpl) handle).introspect());
+                    } else {
+                        output.println("  " + handle);
+                    }
+                }
+            }
         }
     }
 }
