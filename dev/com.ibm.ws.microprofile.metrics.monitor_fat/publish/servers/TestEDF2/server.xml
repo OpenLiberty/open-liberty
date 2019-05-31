@@ -5,6 +5,8 @@
     	<feature>jdbc-4.0</feature>
     	<feature>mpMetrics-1.1</feature>
     </featureManager>
+    
+    <logging traceSpecification="*=info:com.ibm.ws.microprofile.metrics*=all:*=info:com.ibm.ws.microprofile.metrics.monitor*=all"/>
 
     <include location="../fatTestPorts.xml"/>
     <include location="serverJDBCConfig.xml"/>

@@ -176,7 +176,7 @@ public class TestEnableDisableFeaturesTest {
     	serverEDF2.setMarkToEndOfLog();
     	serverEDF2.setServerConfigurationFile("server_monitor.xml");
     	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF2.waitForStringInLogUsingMark("CWWKF0008I"));
-    	serverEDF2.waitForStringInTrace("Monitoring MXBean WebSphere:type=ThreadPoolStats", 180000);
+    	//Assert.assertNotNull("Monitoring MXBean WebSphere:type=ThreadPoolStats NOT FOUND",serverEDF2.waitForStringInTrace("Monitoring MXBean WebSphere:type=ThreadPoolStats", 180000));
         Log.info(c, testName, "------- threadpool metrics should be available ------");
     	getHttpsServlet("/metrics/vendor", serverEDF2);
     	Assert.assertNotNull("Monitoring MXBean WebSphere:type=ServletStats NOT FOUND",serverEDF2.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=ServletStats"));
