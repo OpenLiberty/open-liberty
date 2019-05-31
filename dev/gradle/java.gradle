@@ -64,7 +64,6 @@ task testReport(type: TestReport) {
   destinationDir = cnf.file('generated/testReports/allUnitTests')
 
   // Include the results from the `test` task in all subprojects
-  //reportOn subprojects*.test.binResultsDir
   reportOn subprojects*.test
 
   doLast {
