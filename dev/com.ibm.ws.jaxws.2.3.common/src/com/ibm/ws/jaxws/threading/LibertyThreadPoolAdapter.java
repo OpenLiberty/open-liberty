@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,8 @@ public class LibertyThreadPoolAdapter {
     /*
      * Called by Declarative Services to modify service configuration properties
      */
-    protected void modified(Map<String, Object> newProps) {}
+    protected void modified(Map<String, Object> newProps) {
+    }
 
     /*
      * Called by Declarative Services to deactivate service
@@ -101,7 +102,8 @@ public class LibertyThreadPoolAdapter {
     class LibertyAutomaticWorkQueueBusListener implements LibertyApplicationBusListener {
 
         @Override
-        public void preInit(Bus bus) {}
+        public void preInit(Bus bus) {
+        }
 
         @Override
         public void initComplete(Bus bus) {
@@ -118,10 +120,12 @@ public class LibertyThreadPoolAdapter {
         }
 
         @Override
-        public void preShutdown(Bus bus) {}
+        public void preShutdown(Bus bus) {
+        }
 
         @Override
-        public void postShutdown(Bus bus) {}
+        public void postShutdown(Bus bus) {
+        }
 
     }
 }
