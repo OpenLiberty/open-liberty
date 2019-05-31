@@ -323,16 +323,10 @@ public class RealFlushTest {
 
     }
 
-    @After
-    public void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.removeAllInstalledAppsForValidation();
-        }
-    }
-
     @AfterClass
     public static void completeTest() throws Exception {
         if (server != null && server.isStarted()) {
+            server.removeAllInstalledAppsForValidation();
             server.stopServer("CWWKW1001W");
         }
     }
