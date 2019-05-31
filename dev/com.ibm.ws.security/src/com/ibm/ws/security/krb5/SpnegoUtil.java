@@ -53,7 +53,8 @@ public class SpnegoUtil {
      * is an SPNEGO or Kerberos authentication token
      */
     public boolean isSpnegoOrKrb5Token(String authzHeader) {
-        if (authzHeader == null)
+
+        if (authzHeader == null || !authzHeader.startsWith("Negotiate "))
             return false;
 
         byte[] tokenByte = Base64Coder.base64Decode(Base64Coder.getBytes(extractAuthzTokenString(authzHeader)));
