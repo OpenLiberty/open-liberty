@@ -70,6 +70,10 @@ import org.eclipse.microprofile.metrics.MetricUnits;
  * <b>Note:</b> the default behaviour has changed in MicroProfile Metrics 2.0.
  * To get the old @Counted(monotonic=false) behavior, see @{@link ConcurrentGauge}
  * </p>
+ * 
+ * This annotation will throw an IllegalStateException if the constructor/method is invoked, but the metric no
+ * longer exists in the MetricRegistry.
+ * 
  */
 @Inherited
 @Documented

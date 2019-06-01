@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.osgi.service.component.annotations.Component;
@@ -26,6 +29,8 @@ public class ApplicationListener implements ApplicationStateListener {
 
     private SharedMetricRegistries sharedMetricRegistry;
 
+    public static Map<String, String> contextRoot_Map = new HashMap<String, String>();
+
     /** {@inheritDoc} */
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {}
@@ -42,6 +47,7 @@ public class ApplicationListener implements ApplicationStateListener {
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         MetricRegistry registry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.APPLICATION.getName());
+
         if (MetricRegistryImpl.class.isInstance(registry)) {
             MetricRegistryImpl impl = (MetricRegistryImpl) registry;
             impl.unRegisterApplicationMetrics(appInfo.getDeploymentName());

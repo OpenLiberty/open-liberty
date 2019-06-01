@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -51,7 +51,8 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
     private static Counter counter(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
         Metadata metadata = metricName.metadataOf(ip, Counter.class);
         String[] tags = metricName.tagOf(ip);
-        extension.addMetricName(metadata.getName());
+        MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
+        extension.addMetricID(mid);
 
         return registry.counter(metadata, Utils.tagsToTags(tags));
     }
@@ -60,7 +61,8 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
     private static ConcurrentGauge concurrentGauge(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
         Metadata metadata = metricName.metadataOf(ip, Counter.class);
         String[] tags = metricName.tagOf(ip);
-        extension.addMetricName(metadata.getName());
+        MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
+        extension.addMetricID(mid);
 
         return registry.concurrentGauge(metadata, Utils.tagsToTags(tags));
     }
@@ -83,7 +85,8 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
     private static Histogram histogram(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
         Metadata metadata = metricName.metadataOf(ip, Histogram.class);
         String tags[] = metricName.tagOf(ip);
-        extension.addMetricName(metadata.getName());
+        MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
+        extension.addMetricID(mid);
         return registry.histogram(metadata, Utils.tagsToTags(tags));
     }
 
@@ -91,7 +94,8 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
     private static Meter meter(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
         Metadata metadata = metricName.metadataOf(ip, Meter.class);
         String[] tags = metricName.tagOf(ip);
-        extension.addMetricName(metadata.getName());
+        MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
+        extension.addMetricID(mid);
         return registry.meter(metadata, Utils.tagsToTags(tags));
     }
 
@@ -99,7 +103,8 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
     private static Timer timer(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
         Metadata metadata = metricName.metadataOf(ip, Timer.class);
         String[] tags = metricName.tagOf(ip);
-        extension.addMetricName(metadata.getName());
+        MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
+        extension.addMetricID(mid);
         return registry.timer(metadata, Utils.tagsToTags(tags));
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,12 +60,11 @@ public class PrometheusBuilder {
     }
 
     public static void buildCounter(StringBuilder builder, String name, Counter counter, String description, String tags) {
-        String lineName = name;
-        if (!name.endsWith("_total")) {
-            lineName += "_total";
-        } else if (!name.endsWith("_")) {
-            lineName += "total";
-        }
+        /*
+         * As per the microprofile metric specification for prometheus output
+         * if the metric name already ends with "_total" do nothing.
+         */
+        String lineName = appendSuffixIfNeeded(getPrometheusMetricName(name), "total");
 
         getPromTypeLine(builder, lineName, "counter");
         getPromHelpLine(builder, lineName, description);
@@ -73,34 +72,20 @@ public class PrometheusBuilder {
     }
 
     public static void buildConcurrentGauge(StringBuilder builder, String name, ConcurrentGauge counter, String description, String tags) {
-        String lineName = name;
-        if (!name.endsWith("_current")) {
-            lineName += "_current";
-        } else if (!name.endsWith("_")) {
-            lineName += "total";
-        }
+        String lineName = name + "_current";
 
         getPromTypeLine(builder, lineName, "gauge");
         getPromHelpLine(builder, lineName, description);
         getPromValueLine(builder, lineName, counter.getCount(), tags);
 
-        lineName = name;
-        if (!name.endsWith("_min")) {
-            lineName += "_min";
-        } else if (!name.endsWith("_")) {
-            lineName += "_min";
-        }
+        lineName = name + "_min";
 
         getPromTypeLine(builder, lineName, "gauge");
         getPromHelpLine(builder, lineName, description);
         getPromValueLine(builder, lineName, counter.getMin(), tags);
 
-        lineName = name;
-        if (!name.endsWith("_max")) {
-            lineName += "_max";
-        } else if (!name.endsWith("_")) {
-            lineName += "_max";
-        }
+        lineName = name + "_max";
+
         getPromTypeLine(builder, lineName, "gauge");
         getPromHelpLine(builder, lineName, description);
         getPromValueLine(builder, lineName, counter.getMax(), tags);
@@ -274,10 +259,7 @@ public class PrometheusBuilder {
      * Create the Prometheus metric name by sanitizing some characters
      */
     private static String getPrometheusMetricName(String name) {
-
-        //removes undercores
-        String out = name.replaceAll("(?<!^|:)(\\p{Upper})(?=\\p{Lower})", "_$1");
-        out = out.replaceAll("(?<=\\p{Lower})(\\p{Upper})", "_$1").toLowerCase();
+        String out = name;
 
         //Change other special characters to underscore
         out = out.replaceAll("[-+_.!?@#$%^&*`'\\s]+", "_");
@@ -289,5 +271,9 @@ public class PrometheusBuilder {
         out = out.replaceAll("[^A-Za-z0-9_]", "");
 
         return out;
+    }
+
+    private static String appendSuffixIfNeeded(String metricName, String suffix) {
+        return (!metricName.endsWith("_" + suffix)) ? metricName + "_" + suffix : metricName;
     }
 }

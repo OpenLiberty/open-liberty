@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2018, 2019 IBM Corporation and others.
+* Copyright (c) 2019 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -69,7 +69,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     protected final ConcurrentMap<String, Metadata> metadata;
     protected final ConcurrentMap<MetricID, Metric> metricsMID;
     protected final ConcurrentMap<String, Metadata> metadataMID;
-    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
+    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>> applicationMap;
     private final ConfigProviderResolver configResolver;
 
     /**
@@ -85,7 +85,7 @@ public class MetricRegistryImpl extends MetricRegistry {
         this.metadata = new ConcurrentHashMap<String, Metadata>(); //duped
         this.metadataMID = new ConcurrentHashMap<String, Metadata>();
 
-        this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
+        this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>>();
 
         this.configResolver = configResolver;
     }
@@ -187,7 +187,12 @@ public class MetricRegistryImpl extends MetricRegistry {
     @FFDCIgnore({ NoSuchElementException.class })
     public <T extends Metric> T register(Metadata metadata, T metric, Tag... tags) throws IllegalArgumentException {
 
-        //refactor this to method - > validates metadata
+        /*
+         * Checks if MetaData with the given name already exists or not.
+         * If it does, then check if they match.
+         * Throw an exception otherwise.
+         * RF->f(x)
+         */
         if (metadataMID.keySet().contains(metadata.getName())) {
             Metadata existingMetadata = metadataMID.get(metadata.getName());
 
@@ -195,12 +200,14 @@ public class MetricRegistryImpl extends MetricRegistry {
                 throw new IllegalArgumentException("Metadata does not match for existing Metadata for " + metadata.getName());
             }
         }
-
+        //Create Copy of Metadata object so it can't be changed after its registered
+        //rf-rm
         MetadataBuilder metadataBuilder = Metadata.builder(metadata);
 
         ArrayList<Tag> cumulativeTags = (tags == null) ? new ArrayList<Tag>() : new ArrayList<Tag>(Arrays.asList(tags));
 
         //Append global tags to the metric
+        //rf-rm
         Config config = configResolver.getConfig(Thread.currentThread().getContextClassLoader());
         try {
             String[] globaltags = config.getValue("MP_METRICS_TAGS", String.class).split("(?<!\\\\),");
@@ -209,7 +216,7 @@ public class MetricRegistryImpl extends MetricRegistry {
                     String key = tag.substring(0, tag.indexOf("="));
                     String val = tag.substring(tag.indexOf("=") + 1);
                     if (key.length() == 0 || val.length() == 0) {
-                        throw new IllegalArgumentException("betasMalformed list of Global Tags. Tag names "
+                        throw new IllegalArgumentException("Malformed list of Global Tags. Tag names "
                                                            + "must match the following regex [a-zA-Z_][a-zA-Z0-9_]*."
                                                            + " Global Tag values must not be empty."
                                                            + " Global Tag values MUST escape equal signs `=` and commas `,`"
@@ -225,55 +232,63 @@ public class MetricRegistryImpl extends MetricRegistry {
         } catch (NoSuchElementException e) {
             //Continue if there is no global tags
         }
-        MetricID MetricID = new MetricID(metadata.getName(), tags); //test
-        //MetricID MetricID = new MetricID(metadata.getName(), cumulativeTags.toArray(new Tag[0]));
 
+        MetricID MetricID = new MetricID(metadata.getName(), tags);
         Class<T> metricClass = determineMetricClass(metric);
+
+        //Ensure all metrics with this name are the same type
         validateMetricNameToSingleType(MetricID.getName(), metricClass);
-        //System.out.println("\ngoing to add this class: " + metricClass.getName());
-        //System.out.println("name: " + MetricID.getName() + "\n tags:" + MetricID.getTagsAsString() + "\n hash: " + MetricID.hashCode());
 
-        final Metric existingMID = metricsMID.putIfAbsent(MetricID, metric);
+        /*
+         * Rest of the method officialy registers the metric
+         * Add to MetricID -> Metric Map and Name -> MetaData map
+         */
 
-        //shouldn't this go after the throw...
-        this.metadataMID.putIfAbsent(metadata.getName(), metadataBuilder.build());
+        final Metric existingMetric = metricsMID.putIfAbsent(MetricID, metric);
 
-        if (existingMID != null) {
+        if (existingMetric != null) {
             throw new IllegalArgumentException("A metric named " + MetricID.getName() + " with tags " + MetricID.getTagsAsString() + " already exists");
         }
 
-        addNameToApplicationMap(metadata.getName());
+        this.metadataMID.putIfAbsent(metadata.getName(), metadataBuilder.build());
+
+        addNameToApplicationMap(MetricID);
         return metric;
     }
 
     /**
-     * Adds the metric name to an application map.
+     * Adds the MetricID to an application map.
      * This map is not a complete list of metrics owned by an application,
      * produced metrics are managed in the MetricsExtension
      *
      * @param name
      */
-    protected void addNameToApplicationMap(String name) {
+    protected void addNameToApplicationMap(MetricID metricID) {
         String appName = getApplicationName();
-
         // If it is a base metric, the name will be null
         if (appName == null)
             return;
-        ConcurrentLinkedQueue<String> list = applicationMap.get(appName);
+        ConcurrentLinkedQueue<MetricID> list = applicationMap.get(appName);
         if (list == null) {
-            ConcurrentLinkedQueue<String> newList = new ConcurrentLinkedQueue<String>();
+            ConcurrentLinkedQueue<MetricID> newList = new ConcurrentLinkedQueue<MetricID>();
             list = applicationMap.putIfAbsent(appName, newList);
             if (list == null)
                 list = newList;
         }
-        list.add(name);
+        list.add(metricID);
+
+    }
+
+    public void unRegisterApplicationMetrics() {
+        unRegisterApplicationMetrics(getApplicationName());
     }
 
     public void unRegisterApplicationMetrics(String appName) {
-        ConcurrentLinkedQueue<String> list = applicationMap.remove(appName);
+        ConcurrentLinkedQueue<MetricID> list = applicationMap.remove(appName);
+
         if (list != null) {
-            for (String metricName : list) {
-                remove(metricName);
+            for (MetricID metricID : list) {
+                remove(metricID);
             }
         }
     }
@@ -319,7 +334,6 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     @Override
     public Counter counter(Metadata metadata) {
-        //return getOrAdd(metadata, MetricBuilder.COUNTERS);
         return this.counter(metadata, null);
     }
 
@@ -337,7 +351,6 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public Histogram histogram(String name) {
-        //return this.histogram(new Metadata(name, MetricType.HISTOGRAM));
         return this.histogram(name, null);
     }
 
@@ -414,7 +427,6 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public Timer timer(String name) {
-        // return timer(new Metadata(name, MetricType.TIMER));
         return this.timer(name, null);
     }
 
@@ -451,13 +463,6 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public boolean remove(String name) {
-        //        final Metric metric = metrics.remove(name);
-        //        metadata.remove(name);
-        //        if (metric != null) {
-        //            return true;
-        //        }
-        //return false;
-
         Iterator<Entry<MetricID, Metric>> iterator = metricsMID.entrySet().iterator();
 
         while (iterator.hasNext()) {
@@ -474,11 +479,13 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public boolean remove(MetricID MetricID) {
-        final Metric metric = metricsMID.remove(MetricID);
-        String name = MetricID.getName();
+    public boolean remove(MetricID metricID) {
+        final Metric metric = metricsMID.remove(metricID);
+        String name = metricID.getName();
+
         if (metric != null) {
             boolean isLastOne = true;
+
             for (MetricID mid : metricsMID.keySet()) {
                 if (mid.getName().equals(name)) {
                     isLastOne = false;
@@ -627,25 +634,25 @@ public class MetricRegistryImpl extends MetricRegistry {
     @SuppressWarnings("unchecked")
     private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder, Tag... tags) {
         //refactor this
+        /*
+         * Check if metric with this name already exists or not.
+         * If it does exist, checks if is of the same metric type.
+         * Will throw an exception otherwise
+         */
         validateMetricNameToSingleType(metadata.getName(), builder);
 
         MetricID metricID = new MetricID(metadata.getName(), tags);
         final Metric metric = metricsMID.get(metricID);
 
-        //Found an existing metric with matching MetricID- return that instead
-
+        //Found an existing metric with matching MetricID
         if (builder.isInstance(metric)) {
             return (T) metric;
         } else if (metric == null) { //otherwise register this new metric..
             try {
-                //perhaps a private method that takes in MetricID... and metric......
                 return register(metadata, builder.newMetric(), tags);
             } catch (IllegalArgumentException e) {
-                //could've been same MetricID
-                //could've been metric with same type
 
-                //redundant? MPM2-REVIEW
-                //Already checked and threw exception.. if following lines don't find the 'added' metrics it'll throw the exception again
+                //rf-rm
                 validateMetricNameToSingleType(metadata.getName(), builder);
 
                 final Metric added = metricsMID.get(metricID);
@@ -671,6 +678,12 @@ public class MetricRegistryImpl extends MetricRegistry {
         }
     }
 
+    /**
+     * Identify if there exists an existing metric with the same metricName, but of different type and throw an exception if so
+     *
+     * @param name metric name
+     * @param metricClass Class/Type of the metric
+     */
     private <T extends Metric> void validateMetricNameToSingleType(String name, Class<T> metricClass) {
 
         for (Entry<MetricID, Metric> entrySet : metricsMID.entrySet()) {

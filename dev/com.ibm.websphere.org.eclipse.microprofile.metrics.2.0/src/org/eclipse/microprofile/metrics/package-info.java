@@ -22,9 +22,9 @@
 
 /**
  * MicroProfile Metrics
- * 
+ *
  * <h2>Rational</h2>
- * 
+ *
  * <p>
  * To ensure reliable operation of software it is necessary to monitor essential
  * system parameters. There is already JMX as standard to expose metrics, but
@@ -33,7 +33,7 @@
  * enable monitoring in an easy fashion, the MicroProfile Metrics specification
  * provides a standard to instrument an application with metrics and provides a
  * simple REST endpoint for integration with monitoring services.
- * 
+ *
  * <h2>Adding Metrics</h2>
  * <p>
  * MicroProfile Metrics provides 5 different metric types that can be used to
@@ -43,27 +43,27 @@
  * metric and the metadata are registered against the application
  * {@link org.eclipse.microprofile.metrics.MetricRegistry MetricRegistry}, the
  * metrics will be available in the REST endpoints.
- * 
+ *
  * <h2>Metric Types</h2>
- * 
+ *
  * <p>
  * {@link org.eclipse.microprofile.metrics.Counter Counter} is used to measure
- * an increasing/decreasing value.
+ * an increasing value.
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *     Counter count = metricRegistry.counter(metadata);
  *     count.inc();
  * </code>
  * </pre>
- * 
+ *
  * {@link org.eclipse.microprofile.metrics.Counter Gauge} is used to provide the
  * immediate measurement of a value.
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *     Gauge&lt;Double&gt; temperature = new Gauge&lt;Double&gt;() {
@@ -74,48 +74,48 @@
  *     metricRegistry.register(metadata, temperature);
  * </code>
  * </pre>
- * 
- * 
+ *
+ *
  * {@link org.eclipse.microprofile.metrics.Meter Meter} is used to measure the
  * frequency of an event.
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *     Meter meter = metricRegistry.meter(metadata);
  *     meter.mark();
  * </code>
  * </pre>
- * 
- * 
+ *
+ *
  * {@link org.eclipse.microprofile.metrics.Histogram Histogram} is used to
  * sample and compute the distribution of values
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *     Histogram histogram = metricRegistry.histogram(metadata);
  *     histogram.update(score);
  * </code>
  * </pre>
- * 
+ *
  * {@link org.eclipse.microprofile.metrics.Timer Timer} is used to measure the
  * duration of an event as well as the frequency of occurrence.
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *     Timer timer = metricRegistry.timer(metadata);
  *     Timer.Context context = timer.time();
- *     
+ *
  *     ... // code that will be timed
- *     
+ *
  *     context.close();
  * </code>
  * </pre>
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("2.0")
 package org.eclipse.microprofile.metrics;

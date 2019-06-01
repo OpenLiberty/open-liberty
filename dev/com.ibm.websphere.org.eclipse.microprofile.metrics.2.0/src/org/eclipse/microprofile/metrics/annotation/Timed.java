@@ -61,6 +61,9 @@ import org.eclipse.microprofile.metrics.MetricUnits;
  * </code></pre>
  * A timer for the defining class will be created for each of the constructors/methods.
  * Each time a constructor/method is invoked, the execution will be timed with the respective timer.
+ * 
+ * This annotation will throw an IllegalStateException if the constructor/method is invoked, but the metric no
+ * longer exists in the MetricRegistry.
  */
 @Inherited
 @Documented

@@ -53,8 +53,8 @@ import org.eclipse.microprofile.metrics.MetricUnits;
  *     }
  * </code></pre>
  * A concurrent gauge with the fully qualified class name + {@code fancyName} will be created and each time the
- * {@code #fancyName(String)} method is invoked, the counter will be marked.
- * Similarly, the same applies for a constructor annotated with counted.
+ * {@code #fancyName(String)} method is invoked, the gauge will be updated.
+ * Similarly, the same applies for a constructor annotated with {@literal @}ConcurrentGauge.
  *
  * <p>
  * Given a class annotated with {@literal @}ConcurrentGauge like this:
@@ -66,8 +66,13 @@ import org.eclipse.microprofile.metrics.MetricUnits;
  *         public void cGaugedMethod2() {}
  *     }
  * </code></pre>
+ * 
  * A counter for the defining class will be created for each of the constructors/methods.
- * Each time the constructor/method is invoked, the respective counter will be marked.
+ * Each time the constructor/method is invoked, the respective gauge will be updated.
+ * 
+ * This annotation will throw an IllegalStateException if the constructor/method is invoked, but the metric no
+ * longer exists in the MetricRegistry.
+ *
  *
  * @since 2.0
  */

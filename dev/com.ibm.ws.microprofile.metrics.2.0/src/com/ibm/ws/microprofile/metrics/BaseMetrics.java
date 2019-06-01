@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,24 +83,26 @@ public class BaseMetrics {
                           new BMGauge<Number>(BaseMetricConstants.RUNTIME_OBJECT_TYPE, "Uptime"));
 
         //THREAD JVM
-        registry.register(Metadata.builder().withName("thread.count").withDisplayName("Thread Count").withDescription("thread.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
-                          new BMCounter(BaseMetricConstants.THREAD_OBJECT_TYPE, "ThreadCount"));
+        //turnGauge
+        registry.register(Metadata.builder().withName("thread.count").withDisplayName("Thread Count").withDescription("thread.count.description").withType(MetricType.GAUGE).withUnit(MetricUnits.NONE).build(),
+                          new BMGauge<Number>(BaseMetricConstants.THREAD_OBJECT_TYPE, "ThreadCount"));
 
-        registry.register(Metadata.builder().withName("thread.daemon.count").withDisplayName("Daemon Thread Count").withDescription("thread.daemon.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
-                          new BMCounter(BaseMetricConstants.THREAD_OBJECT_TYPE, "DaemonThreadCount"));
-
-        registry.register(Metadata.builder().withName("thread.max.count").withDisplayName("Peak Thread Count").withDescription("thread.max.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
-                          new BMCounter(BaseMetricConstants.THREAD_OBJECT_TYPE, "PeakThreadCount"));
+        //turnGauge
+        registry.register(Metadata.builder().withName("thread.daemon.count").withDisplayName("Daemon Thread Count").withDescription("thread.daemon.count.description").withType(MetricType.GAUGE).withUnit(MetricUnits.NONE).build(),
+                          new BMGauge<Number>(BaseMetricConstants.THREAD_OBJECT_TYPE, "DaemonThreadCount"));
+        //turnGauge
+        registry.register(Metadata.builder().withName("thread.max.count").withDisplayName("Peak Thread Count").withDescription("thread.max.count.description").withType(MetricType.GAUGE).withUnit(MetricUnits.NONE).build(),
+                          new BMGauge<Number>(BaseMetricConstants.THREAD_OBJECT_TYPE, "PeakThreadCount"));
 
         //CLASSLOADING METRICS
+        //turnGauge
+        registry.register(Metadata.builder().withName("classloader.loadedClasses.count").withDisplayName("Current Loaded Class Count").withDescription("classloader.currentLoadedClass.count.description").withType(MetricType.GAUGE).withUnit(MetricUnits.NONE).build(),
+                          new BMGauge<Number>(BaseMetricConstants.CLASSLOADING_OBJECT_TYPE, "LoadedClassCount"));
 
-        registry.register(Metadata.builder().withName("classloader.currentLoadedClass.count").withDisplayName("Current Loaded Class Count").withDescription("classloader.currentLoadedClass.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
-                          new BMCounter(BaseMetricConstants.CLASSLOADING_OBJECT_TYPE, "LoadedClassCount"));
-
-        registry.register(Metadata.builder().withName("classloader.totalLoadedClass.count").withDisplayName("Total Loaded Class Count").withDescription("classloader.totalLoadedClass.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
+        registry.register(Metadata.builder().withName("classloader.loadedClasses.total").withDisplayName("Total Loaded Class Count").withDescription("classloader.totalLoadedClass.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
                           new BMCounter(BaseMetricConstants.CLASSLOADING_OBJECT_TYPE, "TotalLoadedClassCount"));
 
-        registry.register(Metadata.builder().withName("classloader.totalUnloadedClass.count").withDisplayName("Total Unloaded Class Count").withDescription("classloader.totalUnloadedClass.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
+        registry.register(Metadata.builder().withName("classloader.unloadedClasses.total").withDisplayName("Total Unloaded Class Count").withDescription("classloader.totalUnloadedClass.count.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
                           new BMCounter(BaseMetricConstants.CLASSLOADING_OBJECT_TYPE, "UnloadedClassCount"));
 
         //OPERATING SYSTEM
@@ -117,9 +119,8 @@ public class BaseMetrics {
         for (String gcName : gcObjectNames) {
 
             String gcNameNoSpace = removeSpaces(gcName);
-
             Tag gcNameNoSpaceTag = new Tag("name", gcNameNoSpace);
-            String nameToRegister = "gc.count";
+            String nameToRegister = "gc.total";
             registry.register(Metadata.builder().withName(nameToRegister).withDisplayName("Garbage Collection Count").withDescription("garbageCollectionCount.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
                               new BMCounter(BaseMetricConstants.GC_OBJECT_TYPE_NAME + gcName, "CollectionCount"), gcNameNoSpaceTag);
 
