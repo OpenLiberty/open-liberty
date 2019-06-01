@@ -179,7 +179,6 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
 
             for (int i = 0; i < tm.length; i++) {
                 if (tm[i] != null && tm[i] instanceof X509TrustManager) {
-                    // skip the default trust manager if configured to do so.
                     try {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
@@ -407,10 +406,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
             if (wsks.getReadOnly()) {
                 issueMessage("ssl.keystore.readonly.CWPKI0810I",
                              new Object[] { tsCfgAlias },
-                             "The "
-                                                          + tsCfgAlias
-                                                          + " keystore is read only and the certificate will not be written to the keystore file.  Trust will be accepted only for this connection.");
-
+                             "The " + tsCfgAlias + " keystore is read only and the certificate will not be written to the keystore file.  Trust will be accepted only for this connection.");
             } else {
                 for (int j = 0; j < chain.length; j++) {
                     String alias = chain[j].getSubjectDN().getName();
@@ -527,13 +523,12 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
         if (chain[0] != null)
             subjectDN = chain[0].getSubjectDN().toString();
         String alias = getProperty(Constants.SSLPROP_ALIAS, cfg, SSLConfigManager.getInstance().isServerProcess());
-        // Need to fix testcases to handle new message so not issuing it for now.
-        //if (host != null && port > 0) {
-        //    String hostPort = host + ":" + port;
-        //    Tr.error(tc, "ssl.client.handshake.error.CWPKI0823E", new Object[] { subjectDN, hostPort, file, alias, extendedMessage });
-        //} else {
-        Tr.error(tc, "ssl.client.handshake.error.CWPKI0022E", new Object[] { subjectDN, file, alias, extendedMessage });
-        //}
+        if (host != null && port > 0) {
+            String hostPort = host + ":" + port;
+            Tr.error(tc, "ssl.client.handshake.error.CWPKI0823E", new Object[] { subjectDN, hostPort, file, alias, extendedMessage });
+        } else {
+            Tr.error(tc, "ssl.client.handshake.error.CWPKI0022E", new Object[] { subjectDN, file, alias, extendedMessage });
+        }
 
     }
 
@@ -679,10 +674,14 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType,
                                    Socket socket) throws CertificateException {
+        Tr.entry(tc, "checkClientTrusted", new Object[] { chain, authType, socket });
+
         try {
             for (int i = 0; i < tm.length; i++) {
                 if (tm[i] != null && tm[i] instanceof X509TrustManager) {
-                    // skip the default trust manager if configured to do so.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
+
                     ((X509ExtendedTrustManager) tm[i]).checkClientTrusted(chain, authType, socket);
                 }
             }
@@ -707,16 +706,21 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
 
             throw new CertificateException(excpt.getMessage());
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "checkClientTrusted");
     }
 
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType,
                                    SSLEngine engine) throws CertificateException {
+        Tr.entry(tc, "checkClientTrusted", new Object[] { chain, authType, engine });
 
         try {
             for (int i = 0; i < tm.length; i++) {
                 if (tm[i] != null && tm[i] instanceof X509TrustManager) {
-                    // skip the default trust manager if configured to do so.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
+
                     ((X509ExtendedTrustManager) tm[i]).checkClientTrusted(chain, authType, engine);
                 }
             }
@@ -741,6 +745,8 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
 
             throw new CertificateException(excpt.getMessage());
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "checkClientTrusted");
     }
 
     @Override
