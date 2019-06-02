@@ -268,7 +268,7 @@ public class MPConcurrentCDITestServlet extends FATServlet {
      * Verify that we disallow propagating global transactions, but do allow propagating the absence of any transaction.
      */
     @AllowedFFDC("java.lang.IllegalStateException") // test attempts to propagate active transaction to 2 threads at once
-//    @Test
+    @Test
     public void testTransactionContextPropagation() throws Exception {
         ManagedExecutor executor = appTxExecutor; // propagates ThreadContext.TRANSACTION
 
