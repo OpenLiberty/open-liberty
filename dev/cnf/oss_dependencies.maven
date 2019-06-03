@@ -298,6 +298,7 @@ org.osgi:org.osgi.service.component:1.4.0
 org.osgi:org.osgi.service.coordinator:1.0.2
 org.osgi:org.osgi.service.event:1.3.1
 org.osgi:org.osgi.service.http.whiteboard:1.0.0
+org.osgi:org.osgi.service.http.whiteboard:1.1.0
 org.osgi:org.osgi.service.http:1.2.1
 org.osgi:org.osgi.service.log:1.4.0
 org.osgi:org.osgi.service.metatype.annotations:1.4.0
