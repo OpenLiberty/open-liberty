@@ -31,7 +31,7 @@ public interface ConfigAdminConstants {
 
     String VAR_IN_USE = "WLP_VAR_IN_USE";
 
-    /** a subdirectory name where the config files would be persisted */
-    String CONFIG_PERSISTENT_SUBDIR = "configs";
+    /** name where the configs are persisted */
+    String CONFIG_PERSISTENT = "configs.data";
 
 }

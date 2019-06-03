@@ -1,0 +1,87 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/addNumbersProvider/src,\
+  test-applications/addNumbersClient/src,\
+  test-applications/calculator/src,\
+  test-applications/converter/src,\
+  test-applications/ejbServiceRefBndAppCodes/src,\
+  test-applications/helloClient/src,\
+  test-applications/helloClientDDMerge/src,\
+  test-applications/helloClientServiceResource/src,\
+  test-applications/helloEJBServer/src,\
+  test-applications/helloServer/src,\
+  test-applications/httpConduitProperties/src,\
+  test-applications/pureCXF/src,\
+  test-applications/pureCXFWSDLFirst/src,\
+  test-applications/sharedLib/src,\
+  test-applications/stubClient/src,\
+  test-applications/testBindingTypeWsdlWeb/src,\
+  test-applications/testCXFJMXSupport/src,\
+  test-applications/testEndpointPropertiesWeb/src,\
+  test-applications/testHandlerClient/src,\
+  test-applications/testHandlerClientWithoutXML/src,\
+  test-applications/testHandlerProvider/src,\
+  test-applications/testMTOM/src,\
+  test-applications/testMTOMClient/src,\
+  test-applications/testMTOMClient_withDD/src,\
+  test-applications/testPortComponentRefApplication/src,\
+  test-applications/testPortComponentRefEJBinWeb/src,\
+  test-applications/testPortComponentRefWeb/src,\
+  test-applications/testWebServiceMonitor/src,\
+  test-applications/virtualhost/src,\
+  test-applications/webServiceRefFeatures/src,\
+  test-applications/wsBndServiceRefOverride/src
+  
+
+fat.project: true
+
+# These features get added programatically
+#tested.features:
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2,\
+	com.ibm.websphere.javaee.ejb.3.2,\
+	com.ibm.websphere.javaee.jaxws.2.2,\
+	com.ibm.websphere.javaee.servlet.3.1,\
+	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.webcontainer,\
+	com.ibm.ws.webcontainer;version=latest,\
+	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20190122-2227,\
+	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
+	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
+	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20180914-1510,\
+	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653,\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20190515-1254,\
+	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
+	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
+	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\
+	org.apache.cxf.xjcplugins:cxf-xjc-ts;version=2.6.0,\
+	org.apache.cxf.xjc-utils:cxf-xjc-runtime;version=2.6.0,\
+	org.springframework:spring-aop;version=3.0.7.RELEASE,\
+	org.springframework:spring-asm;version=3.0.7.RELEASE,\
+	org.springframework:spring-beans;version=3.0.7.RELEASE,\
+	org.springframework:spring-context;version=3.0.7.RELEASE,\
+	org.springframework:spring-core;version=3.0.7.RELEASE,\
+	org.springframework:spring-expression;version=3.0.7.RELEASE,\
+	org.springframework:spring-web;version=3.0.7.RELEASE,\
+	fattest.simplicity
+  
+  
+	

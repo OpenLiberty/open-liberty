@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="http://bindingtypewsdl.test.jaxws.ws.ibm.com/" name="HelloService" 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:tns="http://bindingtypewsdl.test.jaxws.ws.ibm.com/" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://bindingtypewsdl.test.jaxws.ws.ibm.com/" xmlns:tns="http://bindingtypewsdl.test.jaxws.ws.ibm.com/">
+      <element name="sayHello" type="tns:sayHello"/>
+      <element name="sayHelloResponse" type="tns:sayHelloResponse"/>
+      <complexType name="sayHello">
+        <sequence>
+          <element name="arg0" type="xsd:string" minOccurs="0"/>
+        </sequence>
+      </complexType>
+      <complexType name="sayHelloResponse">
+        <sequence>
+          <element name="return" type="xsd:string" minOccurs="0"/>
+        </sequence>
+      </complexType>
+    </xsd:schema>
+  </types>
+  <message name="sayHello">
+    <part name="parameters" element="tns:sayHello"/>
+  </message>
+  <message name="sayHelloResponse">
+    <part name="parameters" element="tns:sayHelloResponse"/>
+  </message>
+  <portType name="Hello">
+    <operation name="sayHello">
+      <input message="tns:sayHello"/>
+      <output message="tns:sayHelloResponse"/>
+    </operation>
+  </portType>
+  <binding name="HelloPortBinding" type="tns:Hello">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="sayHello">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="HelloService">
+    <port name="HelloPort" binding="tns:HelloPortBinding">
+      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+    </port>
+  </service>
+</definitions>
+

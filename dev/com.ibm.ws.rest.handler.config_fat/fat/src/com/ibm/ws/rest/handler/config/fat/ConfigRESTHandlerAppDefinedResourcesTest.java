@@ -64,7 +64,10 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
         ResourceAdapterArchive tca_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "ConfigTestAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
-                                        .addPackage("org.test.config.adapter"));
+                                        .addPackage("org.test.config.adapter")
+                                        .addClass("org.test.config.jmsadapter.JMSConnectionFactoryImpl")
+                                        .addClass("org.test.config.jmsadapter.JMSTopicConnectionFactoryImpl")
+                                        .addClass("org.test.config.jmsadapter.ManagedJMSTopicConnectionFactoryImpl"));
         ShrinkHelper.exportToServer(server, "connectors", tca_rar);
 
         server.startServer();
@@ -98,7 +101,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory?jndiName=java:module%2Fenv%2Feis%2Fcf1")
                         .run(JsonArray.class);
         String err = "unexpected response: " + cfs;
-        assertEquals(1, cfs.size());
+        assertEquals(2, cfs.size());
 
         JsonObject cf;
         assertNotNull(err, cf = cfs.getJsonObject(0));
@@ -135,6 +138,35 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, 1515, props.getInt("portNumber"));
         assertEquals(err, "cfuser1", props.getString("userName"));
         assertEquals(err, "******", props.getString("password"));
+
+        // TODO api
+
+        assertNotNull(err, cf = cfs.getJsonObject(1));
+
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", cf.getString("id"));
+        assertEquals(err, "java:module/env/eis/cf1", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", cf.getString("module"));
+        assertNull(err, cf.get("component"));
+
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 50, cm.getInt("maxPoolSize"));
+        assertEquals(err, "FailingConnectionOnly", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        assertNotNull(err, props = cf.getJsonObject("properties.ConfigTestAdapter.DataSource"));
+        assertEquals(err, 1, props.size());
+        assertEquals(err, "localhost", props.getString("hostName"));
 
         // TODO api
 
@@ -529,6 +561,164 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "library[Derby]/file[default-0]", file.getString("uid"));
         assertNull(err, file.get("id"));
         assertTrue(err, file.getString("name").endsWith("derby.jar"));
+    }
+
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an app-defined JMS connection factory.
+     */
+    @Test
+    public void testAppDefinedJMSConnectionFactory() throws Exception {
+        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/jmsConnectionFactory?application=AppDefResourcesApp&module=AppDefResourcesApp.war")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + cfs;
+        assertEquals(1, cfs.size());
+
+        JsonObject cf;
+        assertNotNull(err, cf = cfs.getJsonObject(0));
+
+        assertEquals(err, "jmsConnectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", cf.getString("id"));
+        assertEquals(err, "java:comp/env/jms/cf", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", cf.getString("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 6, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
+
+        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
+        // assertNull(err, cf.get("creates.objectClass"));
+        // assertNull(err, cf.get("jndiName.unique"));
+
+        JsonObject props;
+        assertNotNull(err, props = cf.getJsonObject("properties.wasJms"));
+        assertEquals(err, "cfBus", props.getString("busName"));
+        // assertEquals(err, "JMSClientID6", props.getString("clientID")); // TODO why isn't the configured value honored?
+        assertEquals(err, "defaultME", props.getString("durableSubscriptionHome"));
+        assertEquals(err, "ExpressNonPersistent", props.getString("nonPersistentMapping"));
+        assertEquals(err, "ReliablePersistent", props.getString("persistentMapping"));
+        assertEquals(err, "AlwaysOff", props.getString("readAhead"));
+        assertEquals(err, "NeverShared", props.getString("shareDurableSubscription"));
+        assertEquals(err, "cfq", props.getString("temporaryQueueNamePrefix"));
+        assertEquals(err, "temp", props.getString("temporaryTopicNamePrefix"));
+        assertEquals(err, "jmsuser", props.getString("userName"));
+        assertEquals(err, "******", props.getString("password"));
+
+        // TODO api
+    }
+
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an app-defined JMS QueueConnectionFactory.
+     */
+    @Test
+    public void testAppDefinedJMSQueueConnectionFactory() throws Exception {
+        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsQueueConnectionFactory/application[AppDefResourcesApp]%2Fmodule[AppDefResourcesApp.war]%2FjmsQueueConnectionFactory[java:module%2Fenv%2Fjms%2Fqcf]")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + cf;
+
+        assertEquals(err, "jmsQueueConnectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsQueueConnectionFactory[java:module/env/jms/qcf]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsQueueConnectionFactory[java:module/env/jms/qcf]", cf.getString("id"));
+        assertEquals(err, "java:module/env/jms/qcf", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", cf.getString("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsQueueConnectionFactory[java:module/env/jms/qcf]/connectionManager",
+                     cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsQueueConnectionFactory[java:module/env/jms/qcf]/connectionManager",
+                     cm.getString("id"));
+        assertEquals(err, 25790, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 70, cm.getJsonNumber("connectionTimeout").longValue());
+        assertFalse(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 450, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 7, cm.getInt("maxPoolSize"));
+        assertEquals(err, 3, cm.getInt("minPoolSize"));
+        assertEquals(err, "ValidateAllConnections", cm.getString("purgePolicy"));
+        assertEquals(err, 72, cm.getJsonNumber("reapTime").longValue());
+
+        // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
+
+        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
+        // assertNull(err, cf.get("creates.objectClass"));
+        // assertNull(err, cf.get("jndiName.unique"));
+
+        JsonObject props;
+        assertNotNull(err, props = cf.getJsonObject("properties.wasJms"));
+        assertEquals(err, "qcfBus", props.getString("busName"));
+        assertEquals(err, "ExpressNonPersistent", props.getString("nonPersistentMapping"));
+        assertEquals(err, "ReliablePersistent", props.getString("persistentMapping"));
+        assertEquals(err, "Default", props.getString("readAhead"));
+        assertEquals(err, "tempq", props.getString("temporaryQueueNamePrefix"));
+        assertNull(err, props.get("temporaryTopicNamePrefix"));
+        assertNull(err, props.get("userName"));
+        assertNull(err, props.get("password"));
+
+        // TODO api
+    }
+
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an app-defined JMS TopicConnectionFactory.
+     */
+    @Test
+    public void testAppDefinedJMSTopicConnectionFactory() throws Exception {
+        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsTopicConnectionFactory/application[AppDefResourcesApp]%2FjmsTopicConnectionFactory[java:app%2Fenv%2Fjms%2Ftcf]")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + cf;
+
+        assertEquals(err, "jmsTopicConnectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", cf.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", cf.getString("id"));
+        assertEquals(err, "java:app/env/jms/tcf", cf.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", cf.getString("application"));
+        assertNull(err, cf.get("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]/connectionManager", cm.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]/connectionManager", cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 8, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
+
+        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
+        // assertNull(err, cf.get("creates.objectClass"));
+        // assertNull(err, cf.get("jndiName.unique"));
+
+        JsonObject props;
+        assertNotNull(err, props = cf.getJsonObject("properties.ConfigTestAdapter"));
+        assertTrue(err, props.getBoolean("enableBetaContent")); // TODO if JMS path had the same unfixed bug as JCA, this should have failed. Need to look into this.
+        assertEquals(err, "localhost", props.getString("hostName"));
+        assertEquals(err, 8765, props.getInt("portNumber"));
+
+        // TODO api
     }
 
     /*

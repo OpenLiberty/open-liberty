@@ -44,10 +44,6 @@ public interface RemoteTransactionController {
 
     public void rollback(String globalId) throws HeuristicHazardException, HeuristicCommitException, HeuristicMixedException, SystemException;
 
-    /**
-     * @param globalId
-     * @return
-     */
     public boolean replayCompletion(String globalId);
 
     public String getGlobalId() throws SystemException;

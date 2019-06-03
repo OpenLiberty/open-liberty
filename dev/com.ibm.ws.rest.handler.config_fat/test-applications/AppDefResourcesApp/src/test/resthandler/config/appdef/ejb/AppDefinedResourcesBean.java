@@ -15,6 +15,16 @@ import java.util.concurrent.Executor;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.JMSConnectionFactoryDefinition;
+import javax.resource.ConnectionFactoryDefinition;
+import javax.resource.ConnectionFactoryDefinitions;
+
+@ConnectionFactoryDefinitions({
+                                @ConnectionFactoryDefinition(name = "java:module/env/eis/cf1", // same JNDI name is used in WAR module, but okay because different scope
+                                                             interfaceName = "javax.sql.DataSource",
+                                                             resourceAdapter = "ConfigTestAdapter",
+                                                             properties = "purgePolicy=FailingConnectionOnly")
+})
 
 @DataSourceDefinition(name = "java:comp/env/jdbc/ds3", // same JNDI name is used in WAR module, but okay because different scope
                       className = "org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource",
@@ -22,6 +32,16 @@ import javax.ejb.Stateless;
                       properties = {
                                      "createDatabase=create"
                       })
+
+@JMSConnectionFactoryDefinition(name = "java:app/env/jms/tcf",
+                                interfaceName = "javax.jms.TopicConnectionFactory",
+                                resourceAdapter = "ConfigTestAdapter",
+                                maxPoolSize = 8,
+                                properties = {
+                                               "enableBetaContent=true",
+                                               "portNumber=8765"
+                                })
+
 @Stateless
 @Local
 public class AppDefinedResourcesBean implements Executor {

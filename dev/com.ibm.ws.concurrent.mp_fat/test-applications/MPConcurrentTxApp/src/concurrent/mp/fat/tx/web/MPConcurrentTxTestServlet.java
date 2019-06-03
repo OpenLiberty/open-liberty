@@ -153,8 +153,15 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
             con.close();
 
-            // ensure the above runs in the same transaction while the transaction is still active on the current thread
-            assertEquals(Integer.valueOf(1), stage.join());
+            try {
+                // attempt to run under the same transaction while the transaction is still active on the current thread
+                fail("Transaction manager should not allow resume of transaction onto multiple threads at once. Result: " + stage.join());
+            } catch (CompletionException x) {
+                if (x.getCause() instanceof IllegalStateException)
+                    ; // pass - transaction manager rejected resuming transaction onto 2 threads at once
+                else
+                    throw x;
+            }
 
             tx.commit();
         } finally {
@@ -190,8 +197,15 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
             con.close();
 
-            // ensure the above runs in the same transaction while the transaction is still active on the current thread
-            assertEquals(Integer.valueOf(1), stage.join());
+            try {
+                // attempt to run under the same transaction while the transaction is still active on the current thread
+                fail("Transaction manager should not allow resume of transaction onto multiple threads at once. Result: " + stage.join());
+            } catch (CompletionException x) {
+                if (x.getCause() instanceof IllegalStateException)
+                    ; // pass - transaction manager rejected resuming transaction onto 2 threads at once
+                else
+                    throw x;
+            }
         } finally {
             tx.rollback();
         }
@@ -204,7 +218,9 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
             result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE NAME='Dubuque' OR NAME='Story'");
             assertTrue(result.next());
-            assertEquals(96571, result.getInt(1));
+            // With the transaction manager rejecting resume onto the parallel thread, the insert of Dubuque is now blocked as well
+            assertEquals(0, result.getInt(1));
+            // previously: assertEquals(96571, result.getInt(1));
         }
     }
 

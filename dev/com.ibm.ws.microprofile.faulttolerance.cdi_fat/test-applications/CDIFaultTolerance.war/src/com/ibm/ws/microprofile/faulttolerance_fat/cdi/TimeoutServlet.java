@@ -93,12 +93,12 @@ public class TimeoutServlet extends FATServlet {
      */
     private <T> long getSampleOfConnectTimesAverage(int delayMillis, int sampleSize, TimedTestBean<T> targetBean) {
 
-        long startNanos = System.nanoTime();
         long totalNanos = 0;
         long averageMillis = 0;
 
         try {
             Thread.sleep(delayMillis);
+            long startNanos = System.nanoTime();
             for (int i = 0; i < sampleSize; i++) {
                 try {
                     targetBean.connect();
