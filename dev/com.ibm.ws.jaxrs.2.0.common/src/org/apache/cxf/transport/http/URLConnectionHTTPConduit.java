@@ -33,8 +33,6 @@ import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -43,7 +41,6 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.SystemPropertyAction;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
-import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CacheAndWriteOutputStream;
 import org.apache.cxf.message.Message;
@@ -338,25 +335,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         }
         @Override
         protected void setProtocolHeaders() throws IOException {
-            convertHeaderObjectsToStrings(outMessage);
             new Headers(outMessage).setProtocolHeadersInConnection(connection);
-        }
-
-        private void convertHeaderObjectsToStrings(Message message) {
-            Map<String, List<Object>> headers = CastUtils.cast((Map<?, ?>) message.get(Message.PROTOCOL_HEADERS));
-            if (headers == null || headers.size() < 1) {
-                return;
-            }
-            for (List<Object> headerValues : headers.values()) {
-                if (headerValues != null && !headerValues.isEmpty()) {
-                    for (int i = 0; i < headerValues.size(); i++) {
-                        Object o = headerValues.get(i);
-                        if (!(o instanceof String)) {
-                            headerValues.set(i, o.toString());
-                        }
-                    }
-                }
-            }
         }
 
         @Override
