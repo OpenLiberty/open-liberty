@@ -5,7 +5,7 @@ singleton=true
 IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.mpMetrics-2.0))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.monitor-1.0)))"
--bundles=com.ibm.ws.microprofile.metrics.monitor.2.0
+-bundles=com.ibm.ws.microprofile.metrics.2.0.monitor
 IBM-Install-Policy: when-satisfied
 kind=beta
 edition=core
