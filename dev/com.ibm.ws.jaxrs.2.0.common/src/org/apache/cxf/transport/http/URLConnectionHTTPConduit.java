@@ -351,7 +351,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                 if (headerValues != null && !headerValues.isEmpty()) {
                     for (int i = 0; i < headerValues.size(); i++) {
                         Object o = headerValues.get(i);
-                        if (!(o instanceof String)) {
+                        if ((o != null) && (!(o instanceof String))) {
                             headerValues.set(i, o.toString());
                         }
                     }
