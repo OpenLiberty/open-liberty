@@ -54,6 +54,7 @@ public enum ReturnCode implements ExitCode {
     CLIENT_RUNNER_EXCEPTION(35),
     ERROR_SERVER_PAUSE(36),
     ERROR_SERVER_RESUME(37),
+
     // All "actions" should be < 0, these are not returned externally
     MESSAGE_ACTION(-1),
     HELP_ACTION(-2),
