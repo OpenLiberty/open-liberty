@@ -31,7 +31,7 @@ Subsystem-Name: Internal Java Web Services 2.3
  com.ibm.ws.org.jvnet.mimepull, \
  com.ibm.ws.jaxws.2.3.common, \
  com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\
- com.ibm.websphere.javaee.jaxws.2.3; location:="dev/api/spec/"; apiJar=false; mavenCoordinates="javax.xml.ws:jaxws-api:2.3.0", \
+ com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/"; apiJar=false; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.0", \
  com.ibm.ws.jaxws.tools.2.2.10, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
