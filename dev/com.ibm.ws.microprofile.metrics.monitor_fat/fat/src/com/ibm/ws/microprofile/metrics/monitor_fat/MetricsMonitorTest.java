@@ -121,7 +121,8 @@ public class MetricsMonitorTest {
         Log.info(c, testName, logMsg);
         Assert.assertNotNull("No SRVE9103I message", logMsg);    
         Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
-    	Log.info(c, testName, "------- server started -----");
+        Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog(".*CWWKO0219I.*defaultHttpEndpoint-ssl.*",60000));
+        Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor: "});
@@ -137,6 +138,7 @@ public class MetricsMonitorTest {
     	server.startServer();
     	Log.info(c, testName, server.waitForStringInLog("CWWKS5500I",60000));
     	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
+    	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog(".*CWWKO0219I.*defaultHttpEndpoint-ssl.*",60000));
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"),
           	new String[] { "vendor:" }, 
