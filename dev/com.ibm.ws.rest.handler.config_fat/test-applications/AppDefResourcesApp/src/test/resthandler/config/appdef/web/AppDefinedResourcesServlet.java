@@ -18,11 +18,20 @@ import javax.annotation.sql.DataSourceDefinitions;
 import javax.ejb.EJB;
 import javax.jms.JMSConnectionFactoryDefinition;
 import javax.jms.JMSConnectionFactoryDefinitions;
+import javax.resource.AdministeredObjectDefinition;
 import javax.resource.ConnectionFactoryDefinition;
 import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
 import javax.servlet.annotation.WebServlet;
 
 import componenttest.app.FATServlet;
+
+@AdministeredObjectDefinition(name = "java:global/env/eis/conSpec1",
+                              resourceAdapter = "ConfigTestAdapter",
+                              className = "org.test.config.adapter.ConnectionSpecImpl",
+                              properties = { "connectionTimeout=10203",
+                                             "userName=aouser1",
+                                             "password=aopwd1"
+                              })
 
 @ConnectionFactoryDefinition(name = "java:module/env/eis/cf1",
                              description = "It is Test ConnectionFactory",
