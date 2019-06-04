@@ -27,6 +27,8 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 public final class ConfigFacade {
 
     private ConfigFacade() {
@@ -112,7 +114,8 @@ public final class ConfigFacade {
         }
         return OptionalLong.empty();
     }
-    
+
+    @FFDCIgnore(Throwable.class)
     private static String getConfigKey(RegisterRestClient anno) {
         try {
             return anno.configKey();
