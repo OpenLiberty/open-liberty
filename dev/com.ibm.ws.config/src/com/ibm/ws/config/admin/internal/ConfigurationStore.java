@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,16 @@ package com.ibm.ws.config.admin.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -50,8 +55,10 @@ class ConfigurationStore implements Runnable {
 
     private final File persistentConfig;
 
-    private boolean dirty = false;
-    private Future<?> saveTask = null;
+    private final Lock saveMonitor = new ReentrantLock();
+    private volatile Future<?> saveTask = null;
+    private boolean shutdown = false;
+    private final ReentrantReadWriteLock storeMonitor = new ReentrantReadWriteLock();
 
     public ConfigurationStore(ConfigAdminServiceFactory configAdminServiceFactory, BundleContext bc) {
         this.caFactory = configAdminServiceFactory;
@@ -62,68 +69,153 @@ class ConfigurationStore implements Runnable {
             Tr.debug(tc, "config store pids are [" + configurations.keySet() + "]");
     }
 
-    public synchronized void removeConfiguration(final String pid) {
-        configurations.remove(pid);
+    private final void readLock() {
+        storeMonitor.readLock().lock();
+    }
+
+    private final void readUnlock() {
+        storeMonitor.readLock().unlock();
+    }
+
+    public final void writeLock() {
+        if (storeMonitor.getReadHoldCount() > 0) {
+            // this is not supported and will cause deadlock if allowed to proceed.
+            // fail fast instead of deadlocking
+            throw new IllegalMonitorStateException("Requesting upgrade to write lock.");
+        }
+        storeMonitor.writeLock().lock();
+    }
+
+    public final void writeUnlock() {
+        storeMonitor.writeLock().unlock();
+    }
+
+    public void removeConfiguration(final String pid) {
+        writeLock();
+        try {
+            configurations.remove(pid);
+        } finally {
+            writeUnlock();
+        }
         save();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "removed configuration pid = " + pid + ", remaining pids are [" + configurations.keySet() + "]");
     }
 
-    public synchronized ExtendedConfigurationImpl getConfiguration(String pid, String location) {
-        ExtendedConfigurationImpl config = configurations.get(pid);
-        if (config == null) {
-            config = new ExtendedConfigurationImpl(caFactory, location, null, pid, null, null, null);
-            configurations.put(pid, config);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "added config " + config);
+    public ExtendedConfigurationImpl getConfiguration(String pid, String location) {
+        readLock();
+        ExtendedConfigurationImpl config;
+        try {
+            config = configurations.get(pid);
+        } finally {
+            readUnlock();
         }
+        if (config != null) {
+            return config;
+        }
+        writeLock();
+        try {
+            config = configurations.get(pid);
+            if (config == null) {
+                config = new ExtendedConfigurationImpl(caFactory, location, null, pid, null, null, null);
+                configurations.put(pid, config);
+            }
+        } finally {
+            writeUnlock();
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "added config " + config);
         return config;
     }
 
-    public synchronized ExtendedConfiguration createFactoryConfiguration(String factoryPid, String location) {
-        String pid;
-        do {
-            pid = factoryPid + "_" + configCount++;
-        } while (configurations.containsKey(pid));
-        ExtendedConfigurationImpl config = new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, null, null, null);
-        configurations.put(pid, config);
+    public ExtendedConfiguration createFactoryConfiguration(String factoryPid, String location) {
+        ExtendedConfigurationImpl config;
+        writeLock();
+        try {
+            String pid;
+            do {
+                pid = factoryPid + "_" + configCount++;
+            } while (configurations.containsKey(pid));
+            config = new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, null, null, null);
+            configurations.put(pid, config);
+        } finally {
+            writeUnlock();
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "added created factory config " + config);
         return config;
     }
 
-    public synchronized ExtendedConfigurationImpl findConfiguration(String pid) {
-        return configurations.get(pid);
-    }
-
-    public synchronized ExtendedConfigurationImpl[] getFactoryConfigurations(String factoryPid) {
-        List<ExtendedConfigurationImpl> resultList = new ArrayList<ExtendedConfigurationImpl>();
-        for (ExtendedConfigurationImpl config : configurations.values()) {
-            String otherFactoryPid = config.getFactoryPid();
-            if (otherFactoryPid != null && otherFactoryPid.equals(factoryPid))
-                resultList.add(config);
+    public ExtendedConfigurationImpl findConfiguration(String pid) {
+        readLock();
+        try {
+            return configurations.get(pid);
+        } finally {
+            readUnlock();
         }
-        return resultList.toArray(new ExtendedConfigurationImpl[resultList.size()]);
     }
 
-    public synchronized ExtendedConfiguration[] listConfigurations(Filter filter) {
-        List<ExtendedConfiguration> resultList = new ArrayList<ExtendedConfiguration>();
-        for (ExtendedConfigurationImpl config : configurations.values()) {
-            if (config.matchesFilter(filter))
-                resultList.add(config);
+    public ExtendedConfigurationImpl[] getFactoryConfigurations(String factoryPid) {
+        readLock();
+        try {
+            List<ExtendedConfigurationImpl> resultList = new ArrayList<ExtendedConfigurationImpl>();
+            for (ExtendedConfigurationImpl config : configurations.values()) {
+                String otherFactoryPid = config.getFactoryPid();
+                if (otherFactoryPid != null && otherFactoryPid.equals(factoryPid))
+                    resultList.add(config);
+            }
+            return resultList.toArray(new ExtendedConfigurationImpl[resultList.size()]);
+        } finally {
+            readUnlock();
+        }
+    }
+
+    public ExtendedConfiguration[] listConfigurations(Filter filter) {
+        List<ExtendedConfigurationImpl> resultList = new ArrayList<>();
+        readLock();
+        try {
+            resultList.addAll(configurations.values());
+        } finally {
+            readUnlock();
+        }
+        for (Iterator<ExtendedConfigurationImpl> it = resultList.iterator(); it.hasNext();) {
+            ExtendedConfigurationImpl config = it.next();
+            if (!config.matchesFilter(filter)) {
+                it.remove();
+            }
         }
         int size = resultList.size();
-        return size == 0 ? null : (ExtendedConfiguration[]) resultList.toArray(new ExtendedConfiguration[size]);
+        return size == 0 ? null : (ExtendedConfigurationImpl[]) resultList.toArray(new ExtendedConfigurationImpl[size]);
     }
 
-    public synchronized void unbindConfigurations(Bundle bundle) {
-        for (ExtendedConfigurationImpl config : configurations.values()) {
+    public void unbindConfigurations(Bundle bundle) {
+        Collection<ExtendedConfigurationImpl> currentConfigs;
+        readLock();
+        try {
+            currentConfigs = new ArrayList<>(configurations.values());
+        } finally {
+            readUnlock();
+        }
+        for (ExtendedConfigurationImpl config : currentConfigs) {
             config.unbind(bundle);
         }
     }
 
-    synchronized void saveConfigurationDatas(boolean cancelSaveTask) throws IOException {
-        if (dirty) {
+    void saveConfigurationDatas(boolean shutdown) throws IOException {
+        Future<?> currentSaveTask;
+        saveMonitor.lock();
+        try {
+            currentSaveTask = saveTask;
+            saveTask = null;
+            this.shutdown = shutdown;
+        } finally {
+            saveMonitor.unlock();
+        }
+        if (currentSaveTask == null) {
+            return;
+        }
+        readLock();
+        try {
             List<ExtendedConfigurationImpl> persistConfigs = new ArrayList<>();
             for (ExtendedConfigurationImpl persistConfig : configurations.values()) {
                 if (persistConfig.getReadOnlyProperties() != null) {
@@ -131,11 +223,12 @@ class ConfigurationStore implements Runnable {
                 }
             }
             ConfigurationStorageHelper.store(persistentConfig, persistConfigs);
-            dirty = false;
-            if (cancelSaveTask && saveTask != null) {
-                saveTask.cancel(false);
+            if (shutdown && currentSaveTask != null) {
+                currentSaveTask.cancel(false);
             }
-            saveTask = null;
+
+        } finally {
+            readUnlock();
         }
     }
 
@@ -167,10 +260,20 @@ class ConfigurationStore implements Runnable {
     /**
      *
      */
-    synchronized void save() {
-        dirty = true;
-        if (saveTask == null) {
-            saveTask = caFactory.updateQueue.addScheduled(this);
+    void save() {
+        if (saveTask != null) {
+            return;
+        }
+        saveMonitor.lock();
+        try {
+            if (shutdown) {
+                return;
+            }
+            if (saveTask == null) {
+                saveTask = caFactory.updateQueue.addScheduled(this);
+            }
+        } finally {
+            saveMonitor.unlock();
         }
     }
 
