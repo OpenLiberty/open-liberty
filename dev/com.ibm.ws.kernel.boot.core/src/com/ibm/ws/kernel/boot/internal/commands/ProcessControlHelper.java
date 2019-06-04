@@ -263,6 +263,7 @@ public class ProcessControlHelper {
             }
             rc = ReturnCode.SERVER_UNKNOWN_STATUS;
         } else {
+            rc = ReturnCode.ERROR_SERVER_START;
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStartException"), serverName));
         }
 
@@ -432,8 +433,8 @@ public class ProcessControlHelper {
      * Run the relevant command for dumping the system
      *
      * @param javaDumpActions the java dump actions to take place
-     * @param systemDump      whether this is a full dump (true) or just javadump (false)
-     * @param dumpTimestamp   the timestamp on the server dump packager of the full dump
+     * @param systemDump whether this is a full dump (true) or just javadump (false)
+     * @param dumpTimestamp the timestamp on the server dump packager of the full dump
      * @return the return code from attempting to run the dump
      */
     private ReturnCode createDumps(Set<JavaDumpAction> javaDumpActions, boolean introspect, String dumpTimestamp) {
