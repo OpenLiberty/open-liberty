@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.tck;
 
+import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,6 +20,8 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -96,7 +100,10 @@ public class FaultToleranceTck20Launcher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultToleranceTCK() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK");
+        boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
+        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
+                              Collections.emptyMap(), Collections.emptySet());
     }
 
 }
