@@ -14,6 +14,6 @@
   <short-name>tag1</short-name>
   <tag>
     <name>hitMe</name>
-    <tag-class>com.ibm.ws.fat.jsp23.testjsp23.tagHandler.JspCdiHitMeTag</tag-class>
+    <tag-class>com.ibm.ws.jsp23.fat.testjsp23.tagHandler.JspCdiHitMeTag</tag-class>
   </tag>
 </taglib>

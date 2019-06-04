@@ -14,7 +14,7 @@
        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
    <interceptors>
-       <class>com.ibm.ws.fat.jsp23.testjsp23.interceptors.InterceptMeInterceptor
+       <class>com.ibm.ws.jsp23.fat.testjsp23.interceptors.InterceptMeInterceptor
        </class>
    </interceptors>
 

@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<%@ page import="com.ibm.ws.fat.jsp23.testjsp23.beans.EL30ReserverdWordsTestBean"%>
+<%@ page import="com.ibm.ws.jsp23.fat.testjsp23.beans.EL30ReserverdWordsTestBean"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

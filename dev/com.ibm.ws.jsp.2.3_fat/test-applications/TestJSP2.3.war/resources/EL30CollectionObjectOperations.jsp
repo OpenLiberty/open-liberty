@@ -9,7 +9,7 @@
         IBM Corporation - initial API and implementation
  -->
 <%@ page import="java.util.Collection"%>
-<%@ page import="com.ibm.ws.fat.jsp23.testjsp23.beans.EL30MapCollectionObjectBean"%>
+<%@ page import="com.ibm.ws.jsp23.fat.testjsp23.beans.EL30MapCollectionObjectBean"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Set"%>

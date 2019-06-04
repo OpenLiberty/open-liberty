@@ -18,7 +18,7 @@
 </head>
  
 <%
-pageContext.getELContext().getImportHandler().importPackage("com.ibm.ws.fat.jsp23.testjsp23.beans");
+pageContext.getELContext().getImportHandler().importPackage("com.ibm.ws.jsp23.fat.testjsp23.beans");
 %>
 	<body>
 	<em><b>EL 3.0 Static Field/Method Reference Tests</b></em>
