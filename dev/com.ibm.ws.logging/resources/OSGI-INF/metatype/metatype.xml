@@ -99,6 +99,11 @@
             <Option value="INFO" label="INFO"/>
             <Option value="NONE" label="NONE"/>
         </AD>
+        
+        <AD name="%message.fields" description="%message.fields.desc" 
+            ibm:variable="com.ibm.ws.logging.message.fields"
+            id="messageFields" required="false" type="String" default="">
+        </AD>
     </OCD>
   
     <Designate pid="com.ibm.ws.logging">

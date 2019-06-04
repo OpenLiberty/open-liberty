@@ -10,16 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
@@ -34,28 +28,28 @@ public class LogTraceData extends GenericData {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
     }
 
-    private final static String[] NAMES1_1 = {
-                                               LogFieldConstants.IBM_DATETIME,
-                                               LogFieldConstants.IBM_MESSAGEID,
-                                               LogFieldConstants.IBM_THREADID,
-                                               LogFieldConstants.MODULE,
-                                               LogFieldConstants.SEVERITY,
-                                               LogFieldConstants.LOGLEVEL,
-                                               LogFieldConstants.IBM_METHODNAME,
-                                               LogFieldConstants.IBM_CLASSNAME,
-                                               LogFieldConstants.LEVELVALUE,
-                                               LogFieldConstants.THREADNAME,
-                                               LogFieldConstants.CORRELATION_ID,
-                                               LogFieldConstants.ORG,
-                                               LogFieldConstants.PRODUCT,
-                                               LogFieldConstants.COMPONENT,
-                                               LogFieldConstants.IBM_SEQUENCE,
-                                               LogFieldConstants.THROWABLE,
-                                               LogFieldConstants.THROWABLE_LOCALIZED,
-                                               LogFieldConstants.MESSAGE,
-                                               LogFieldConstants.FORMATTEDMSG,
-                                               LogFieldConstants.EXTENSIONS_KVPL,
-                                               LogFieldConstants.OBJECT_ID
+    public final static String[] NAMES1_1 = {
+                                              LogFieldConstants.IBM_DATETIME,
+                                              LogFieldConstants.IBM_MESSAGEID,
+                                              LogFieldConstants.IBM_THREADID,
+                                              LogFieldConstants.MODULE,
+                                              LogFieldConstants.SEVERITY,
+                                              LogFieldConstants.LOGLEVEL,
+                                              LogFieldConstants.IBM_METHODNAME,
+                                              LogFieldConstants.IBM_CLASSNAME,
+                                              LogFieldConstants.LEVELVALUE,
+                                              LogFieldConstants.THREADNAME,
+                                              LogFieldConstants.CORRELATION_ID,
+                                              LogFieldConstants.ORG,
+                                              LogFieldConstants.PRODUCT,
+                                              LogFieldConstants.COMPONENT,
+                                              LogFieldConstants.IBM_SEQUENCE,
+                                              LogFieldConstants.THROWABLE,
+                                              LogFieldConstants.THROWABLE_LOCALIZED,
+                                              LogFieldConstants.MESSAGE,
+                                              LogFieldConstants.FORMATTEDMSG,
+                                              LogFieldConstants.EXTENSIONS_KVPL,
+                                              LogFieldConstants.OBJECT_ID
     };
 
     private final static String[] NAMES = {
@@ -318,113 +312,197 @@ public class LogTraceData extends GenericData {
         return NAMES[20];
     }
 
-    public String getDatetimeKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
-            return MESSAGE_NAMES1_1[0];
-        } else {
+    public String getDatetimeKey1_1() {
+        return NAMES1_1[0];
+    }
+
+    public String getMessageIdKey1_1() {
+        return NAMES1_1[1];
+    }
+
+    public String getThreadIdKey1_1() {
+        return NAMES1_1[2];
+    }
+
+    public String getModuleKey1_1() {
+        return NAMES1_1[3];
+    }
+
+    public String getSeverityKey1_1() {
+        return NAMES1_1[4];
+    }
+
+    public String getLoglevelKey1_1() {
+        return NAMES1_1[5];
+    }
+
+    public String getMethodNameKey1_1() {
+        return NAMES1_1[6];
+    }
+
+    public String getClassNameKey1_1() {
+        return NAMES1_1[7];
+    }
+
+    public String getLevelValueKey1_1() {
+        return NAMES1_1[8];
+    }
+
+    public String getThreadNameKey1_1() {
+        return NAMES1_1[9];
+    }
+
+    public String getCorrelationIdKey1_1() {
+        return NAMES1_1[10];
+    }
+
+    public String getOrgKey1_1() {
+        return NAMES1_1[11];
+    }
+
+    public String getProductKey1_1() {
+        return NAMES1_1[12];
+    }
+
+    public String getComponentKey1_1() {
+        return NAMES1_1[13];
+    }
+
+    public String getSequenceKey1_1() {
+        return NAMES1_1[14];
+    }
+
+    public String getThrowableKey1_1() {
+        return NAMES1_1[15];
+    }
+
+    public String getThrowableLocalizedKey1_1() {
+        return NAMES1_1[16];
+    }
+
+    public String getMessageKey1_1() {
+        return NAMES1_1[17];
+    }
+
+    public String getFormattedMsgKey1_1() {
+        return NAMES1_1[18];
+    }
+
+    public String getExtensionsKey1_1() {
+        return NAMES1_1[19];
+    }
+
+    public String getObjectIdKey1_1() {
+        return NAMES1_1[20];
+    }
+
+    public String getDatetimeKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[0];
-        }
-
-    }
-
-    public String getMessageIdKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
-            return MESSAGE_NAMES1_1[1];
         } else {
+            return MESSAGE_NAMES1_1[0];
+        }
+
+    }
+
+    public String getMessageIdKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[1];
+        } else {
+            return MESSAGE_NAMES1_1[1];
         }
     }
 
-    public String getThreadIdKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getThreadIdKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[2];
         } else {
             return MESSAGE_NAMES1_1[2];
         }
     }
 
-    public String getModuleKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getModuleKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[3];
         } else {
             return MESSAGE_NAMES1_1[3];
         }
     }
 
-    public String getSeverityKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getSeverityKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[4];
         } else {
             return MESSAGE_NAMES1_1[4];
         }
     }
 
-    public String getLoglevelKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getLoglevelKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[5];
         } else {
             return MESSAGE_NAMES1_1[5];
         }
     }
 
-    public String getMethodNameKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getMethodNameKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[6];
         } else {
             return MESSAGE_NAMES1_1[6];
         }
     }
 
-    public String getClassNameKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getClassNameKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[7];
         } else {
             return MESSAGE_NAMES1_1[7];
         }
     }
 
-    public String getLevelValueKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getLevelValueKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[8];
         } else {
             return MESSAGE_NAMES1_1[8];
         }
     }
 
-    public String getThreadNameKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getThreadNameKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[9];
         } else {
             return MESSAGE_NAMES1_1[9];
         }
     }
 
-    public String getCorrelationIdKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getCorrelationIdKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[10];
         } else {
             return MESSAGE_NAMES1_1[10];
         }
     }
 
-    public String getOrgKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getOrgKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[11];
         } else {
             return MESSAGE_NAMES1_1[11];
         }
     }
 
-    public String getProductKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getProductKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[12];
         } else {
             return MESSAGE_NAMES1_1[12];
         }
     }
 
-    public String getComponentKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getComponentKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[13];
         } else {
             return MESSAGE_NAMES1_1[13];
@@ -432,56 +510,56 @@ public class LogTraceData extends GenericData {
 
     }
 
-    public String getSequenceKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getSequenceKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[14];
         } else {
             return MESSAGE_NAMES1_1[14];
         }
     }
 
-    public String getThrowableKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getThrowableKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[15];
         } else {
             return MESSAGE_NAMES1_1[15];
         }
     }
 
-    public String getThrowableLocalizedKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getThrowableLocalizedKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[16];
         } else {
             return MESSAGE_NAMES1_1[16];
         }
     }
 
-    public String getMessageKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getMessageKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[17];
         } else {
             return MESSAGE_NAMES1_1[17];
         }
     }
 
-    public String getFormattedMsgKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getFormattedMsgKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[18];
         } else {
             return MESSAGE_NAMES1_1[18];
         }
     }
 
-    public String getExtensionsKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getExtensionsKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[19];
         } else {
             return MESSAGE_NAMES1_1[19];
         }
     }
 
-    public String getObjectIdKey1_1(String eventType) {
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+    public String getObjectIdKeyJSON(boolean isMessageEvent) {
+        if (!isMessageEvent) {
             return TRACE_NAMES1_1[20];
         } else {
             return MESSAGE_NAMES1_1[20];
@@ -608,38 +686,10 @@ public class LogTraceData extends GenericData {
 
     public static void setjsonFields(String value) {
         jsonFields = value;
-        nameMap = convertStringtoMap(jsonFields);
     }
 
     public static String getjsonFields() {
         return jsonFields;
-    }
-
-    static Map<String, String> nameMap = convertStringtoMap(jsonFields);
-
-    public static Map<String, String> convertStringtoMap(String value) {
-        TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
-//        CollectorJsonUtils.getEventType(source, location);
-//        String eventSourceName = getSourceNameFromDataObject((LogTraceData) event);
-//        CollectorJsonHelpers.getEventType();
-        Map<String, String> map = new HashMap<>();
-        if (value == null || value == "") {
-            return map;
-        }
-
-        String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
-        for (String pair : keyValuePairs) //iterate over the pairs
-        {
-            String[] entry = pair.split(":"); //split the pairs to get key and value
-            if (entry.length == 2) {//if the mapped value is not null/correct format
-                map.put(entry[0].trim(), entry[1].trim()); //add them to the hashmap and trim whitespaces
-            } else if (entry.length == 3) {
-
-            } else {
-                Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING2");
-            }
-        }
-        return map;
     }
 
 }

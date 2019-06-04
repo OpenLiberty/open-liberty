@@ -10,6 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.Map;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.logging.internal.NLSConstants;
+
 public class GenericData {
 
     private final static int DEFAULT_SIZE = 16;
@@ -178,4 +184,38 @@ public class GenericData {
     public void setJsonMessage(String jsonMessage) {
         this.jsonMessage = jsonMessage;
     }
+
+    public static void defineDataArray() {}
+
+    public static String[] dataArray;
+
+    public static void addMapsToNamesArray(Map<String, String> map) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            for (int i = 0; i < dataArray.length; i++) {
+                if (dataArray[i].equals(entry.getKey().trim())) {
+                    dataArray[i] = entry.getValue().trim();
+                }
+            }
+        }
+    }
+
+    public static String[] addMapsToNamesArray(Map<String, String> map, String[] outputArray) {
+        TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+        boolean valueFound = false;
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            for (int i = 0; i < outputArray.length; i++) {
+                if (outputArray[i].equals(entry.getKey().trim())) {
+                    outputArray[i] = entry.getValue().trim();
+                    valueFound = true;
+                }
+            }
+            if (!valueFound) {
+                //if the value did not match any known keys, give a warning
+                Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
+            }
+            valueFound = false; //reset valueFound boolean
+        }
+        return outputArray;
+    }
+
 }

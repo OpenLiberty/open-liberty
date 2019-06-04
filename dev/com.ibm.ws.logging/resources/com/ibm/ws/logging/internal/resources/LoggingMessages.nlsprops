@@ -136,9 +136,25 @@ LOG_FILE_RESUMED=TRAS3006I: Logging messages to the {0} file has resumed.
 LOG_FILE_RESUMED.explanation=Messages can be written to the file.
 LOG_FILE_RESUMED.useraction=No action is required.
 
-JSON_FIELDS_FORMAT_WARNING=TRA3007W: The jsonFields property is incorrectly formatted.
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: The jsonFields property is incorrectly formatted.
 JSON_FIELDS_FORMAT_WARNING.explanation=The jsonFields property is incorrectly formatted.
 JSON_FIELDS_FORMAT_WARNING.useraction=Ensure the format of the jsonFields property is correct.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: The jsonFields property has too many or too few tokens in an entry.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=The jsonFields property should be formatted knownFieldName:newFieldName or eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=The jsonFields property should be formatted knownFieldName:newFieldName or eventType:knownFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Provided field name does not match one of the known field names for the specified event(s)
+JSON_FIELDS_NO_MATCH.explanation=Provided field name does not match one of the known field names
+JSON_FIELDS_NO_MATCH.useraction=Please provide a field name that matches one of the known fields
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Provided event type does not match one of the known event types
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=The accepted event types are: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=The accepted event types are: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: An invalid character was provided in the jsonFields property
+JSON_FIELDS_INVALID_CHARACHTER.explanation= Only letters, numbers, and : are accepted in the jsonFields property (i.e. no spaces)
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Only letters, numbers, and : are accepted in the jsonFields property (i.e. no spaces)
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

@@ -69,16 +69,34 @@ public class FFDCData extends GenericData {
                                              LogFieldConstants.IBM_SEQUENCE
     };
 
+    public static void defineDataArray() {
+        dataArray = new String[] {
+                                   LogFieldConstants.IBM_DATETIME,
+                                   LogFieldConstants.DATEOFFIRSTOCCURENCE,
+                                   LogFieldConstants.COUNT,
+                                   LogFieldConstants.MESSAGE,
+                                   LogFieldConstants.IBM_CLASSNAME,
+                                   LogFieldConstants.LABEL,
+                                   LogFieldConstants.IBM_EXCEPTIONNAME,
+                                   LogFieldConstants.IBM_PROBEID,
+                                   LogFieldConstants.SOURCEID,
+                                   LogFieldConstants.IBM_THREADID, //long
+                                   LogFieldConstants.IBM_STACKTRACE,
+                                   LogFieldConstants.IBM_OBJECTDETAILS,
+                                   LogFieldConstants.IBM_SEQUENCE
+        };
+    }
+
     private void setPair(int index, String s) {
-        setPair(index, FFDC_NAMES1_1[index], s);
+        setPair(index, NAMES1_1[index], s);
     }
 
     private void setPair(int index, int i) {
-        setPair(index, FFDC_NAMES1_1[index], i);
+        setPair(index, NAMES1_1[index], i);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, FFDC_NAMES1_1[index], l);
+        setPair(index, NAMES1_1[index], l);
     }
 
     public void setDatetime(long l) {
@@ -238,54 +256,107 @@ public class FFDCData extends GenericData {
     }
 
     public String getDatetimeKey1_1() {
-        return FFDC_NAMES1_1[0];
+        return NAMES1_1[0];
     }
 
     public String getDateOfFirstOccurenceKey1_1() {
-        return FFDC_NAMES1_1[1];
+        return NAMES1_1[1];
     }
 
     public String getCountKey1_1() {
-        return FFDC_NAMES1_1[2];
+        return NAMES1_1[2];
     }
 
     public String getMessageKey1_1() {
-        return FFDC_NAMES1_1[3];
+        return NAMES1_1[3];
     }
 
     public String getClassNameKey1_1() {
-        return FFDC_NAMES1_1[4];
+        return NAMES1_1[4];
     }
 
     public String getLabelKey1_1() {
-        return FFDC_NAMES1_1[5];
+        return NAMES1_1[5];
     }
 
     public String getExceptionNameKey1_1() {
-        return FFDC_NAMES1_1[6];
+        return NAMES1_1[6];
     }
 
     public String getProbeIdKey1_1() {
-        return FFDC_NAMES1_1[7];
+        return NAMES1_1[7];
     }
 
     public String getSourceIdKey1_1() {
-        return FFDC_NAMES1_1[8];
+        return NAMES1_1[8];
     }
 
     public String getThreadIdKey1_1() {
-        return FFDC_NAMES1_1[9];
+        return NAMES1_1[9];
     }
 
     public String getStacktraceKey1_1() {
-        return FFDC_NAMES1_1[10];
+        return NAMES1_1[10];
     }
 
     public String getObjectDetailsKey1_1() {
-        return FFDC_NAMES1_1[11];
+        return NAMES1_1[11];
     }
 
     public String getSequenceKey1_1() {
-        return FFDC_NAMES1_1[12];
+        return NAMES1_1[12];
     }
+
+    public String getDatetimeKeyJSON() {
+        return dataArray[0];
+    }
+
+    public String getDateOfFirstOccurenceKeyJSON() {
+        return dataArray[1];
+    }
+
+    public String getCountKeyJSON() {
+        return dataArray[2];
+    }
+
+    public String getMessageKeyJSON() {
+        return dataArray[3];
+    }
+
+    public String getClassNameKeyJSON() {
+        return dataArray[4];
+    }
+
+    public String getLabelKeyJSON() {
+        return dataArray[5];
+    }
+
+    public String getExceptionNameKeyJSON() {
+        return dataArray[6];
+    }
+
+    public String getProbeIdKeyJSON() {
+        return dataArray[7];
+    }
+
+    public String getSourceIdKeyJSON() {
+        return dataArray[8];
+    }
+
+    public String getThreadIdKeyJSON() {
+        return dataArray[9];
+    }
+
+    public String getStacktraceKeyJSON() {
+        return dataArray[10];
+    }
+
+    public String getObjectDetailsKeyJSON() {
+        return dataArray[11];
+    }
+
+    public String getSequenceKeyJSON() {
+        return dataArray[12];
+    }
+
 }

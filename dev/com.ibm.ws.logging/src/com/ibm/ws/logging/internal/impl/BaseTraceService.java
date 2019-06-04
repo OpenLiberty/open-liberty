@@ -20,6 +20,7 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -459,6 +460,7 @@ public class BaseTraceService implements TrService {
 
     public static void convertStringtoMap(String value) {
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+        boolean valueFound = false;
 
         Map<String, String> messageMap = new HashMap<>();
         Map<String, String> traceMap = new HashMap<>();
@@ -476,10 +478,27 @@ public class BaseTraceService implements TrService {
             String[] entry = pair.split(":"); //split the pairs to get key and value
             if (entry.length == 2) {//if the mapped value is intended for all event types
                 //add properties to all the hashmaps and trim whitespaces
-                messageMap.put(entry[0].trim(), entry[1].trim());
-                traceMap.put(entry[0].trim(), entry[1].trim());
-                ffdcMap.put(entry[0].trim(), entry[1].trim());
-                accessLogMap.put(entry[0].trim(), entry[1].trim());
+                if (Arrays.asList(LogTraceData.NAMES1_1).contains(entry[0].trim())) {
+                    messageMap.put(entry[0].trim(), entry[1].trim());
+                    valueFound = true;
+                }
+                if (Arrays.asList(LogTraceData.NAMES1_1).contains(entry[0].trim())) {
+                    traceMap.put(entry[0].trim(), entry[1].trim());
+                    valueFound = true;
+                }
+                if (Arrays.asList(FFDCData.NAMES1_1).contains(entry[0].trim())) {
+                    ffdcMap.put(entry[0].trim(), entry[1].trim());
+                    valueFound = true;
+                }
+                if (Arrays.asList(AccessLogData.NAMES1_1).contains(entry[0].trim())) {
+                    accessLogMap.put(entry[0].trim(), entry[1].trim());
+                    valueFound = true;
+                }
+                if (!valueFound) {
+                    //if the value does not exist in any of the known keys, give a warning
+                    Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
+                }
+                valueFound = false;//reset valueFound boolean
             } else if (entry.length == 3) {
                 //add properties to their respective hashmaps and trim whitespaces
                 if (CollectorConstants.MESSAGES_LOG_EVENT_TYPE.equals(entry[0].trim())) {
@@ -490,169 +509,67 @@ public class BaseTraceService implements TrService {
                     ffdcMap.put(entry[1].trim(), entry[2].trim());
                 } else if (CollectorConstants.ACCESS_LOG_EVENT_TYPE.equals(entry[0].trim())) {
                     accessLogMap.put(entry[1].trim(), entry[2].trim());
+                } else {
+                    Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
             } else {
-                Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING");
+                Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
             }
         }
-        addMapsToNamesArray(messageMap, traceMap, accessLogMap, ffdcMap);
-    }
+        AccessLogData.defineDataArray();
+        AccessLogData.addMapsToNamesArray(accessLogMap);
 
-    public static void addMapsToNamesArray(Map<String, String> messageMap, Map<String, String> traceMap, Map<String, String> accessLogMap, Map<String, String> ffdcMap) {
-        //iterate through the map and assign the values to the names array
-        for (Map.Entry<String, String> entry : messageMap.entrySet()) {
-            if (LogFieldConstants.IBM_DATETIME.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[0] = entry.getValue();
-            } else if (LogFieldConstants.IBM_MESSAGEID.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[1] = entry.getValue();
-            } else if (LogFieldConstants.IBM_THREADID.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[2] = entry.getKey();
-            } else if (LogFieldConstants.MODULE.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[3] = entry.getValue();
-            } else if (LogFieldConstants.SEVERITY.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[4] = entry.getValue();
-            } else if (LogFieldConstants.LOGLEVEL.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[5] = entry.getValue();
-            } else if (LogFieldConstants.IBM_METHODNAME.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[6] = entry.getKey();
-            } else if (LogFieldConstants.IBM_CLASSNAME.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[7] = entry.getValue();
-            } else if (LogFieldConstants.LEVELVALUE.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[8] = entry.getValue();
-            } else if (LogFieldConstants.THREADNAME.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[9] = entry.getValue();
-            } else if (LogFieldConstants.CORRELATION_ID.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[10] = entry.getKey();
-            } else if (LogFieldConstants.ORG.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[11] = entry.getValue();
-            } else if (LogFieldConstants.PRODUCT.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[12] = entry.getValue();
-            } else if (LogFieldConstants.COMPONENT.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[13] = entry.getValue();
-            } else if (LogFieldConstants.IBM_SEQUENCE.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[14] = entry.getKey();
-            } else if (LogFieldConstants.THROWABLE.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[15] = entry.getValue();
-            } else if (LogFieldConstants.THROWABLE_LOCALIZED.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[16] = entry.getKey();
-            } else if (LogFieldConstants.MESSAGE.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[17] = entry.getValue();
-            } else if (LogFieldConstants.FORMATTEDMSG.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[18] = entry.getValue();
-            } else if (LogFieldConstants.EXTENSIONS_KVPL.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[19] = entry.getValue();
-            } else if (LogFieldConstants.OBJECT_ID.equals(entry.getKey())) {
-                LogTraceData.MESSAGE_NAMES1_1[20] = entry.getValue();
-            }
-        }
+        FFDCData.defineDataArray();
+        FFDCData.addMapsToNamesArray(ffdcMap);
 
-        for (Map.Entry<String, String> entry : traceMap.entrySet()) {
-            if (LogFieldConstants.IBM_DATETIME.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[0] = entry.getValue();
-            } else if (LogFieldConstants.IBM_MESSAGEID.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[1] = entry.getValue();
-            } else if (LogFieldConstants.IBM_THREADID.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[2] = entry.getKey();
-            } else if (LogFieldConstants.MODULE.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[3] = entry.getValue();
-            } else if (LogFieldConstants.SEVERITY.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[4] = entry.getValue();
-            } else if (LogFieldConstants.LOGLEVEL.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[5] = entry.getValue();
-            } else if (LogFieldConstants.IBM_METHODNAME.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[6] = entry.getKey();
-            } else if (LogFieldConstants.IBM_CLASSNAME.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[7] = entry.getValue();
-            } else if (LogFieldConstants.LEVELVALUE.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[8] = entry.getValue();
-            } else if (LogFieldConstants.THREADNAME.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[9] = entry.getValue();
-            } else if (LogFieldConstants.CORRELATION_ID.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[10] = entry.getKey();
-            } else if (LogFieldConstants.ORG.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[11] = entry.getValue();
-            } else if (LogFieldConstants.PRODUCT.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[12] = entry.getValue();
-            } else if (LogFieldConstants.COMPONENT.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[13] = entry.getValue();
-            } else if (LogFieldConstants.IBM_SEQUENCE.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[14] = entry.getKey();
-            } else if (LogFieldConstants.THROWABLE.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[15] = entry.getValue();
-            } else if (LogFieldConstants.THROWABLE_LOCALIZED.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[16] = entry.getKey();
-            } else if (LogFieldConstants.MESSAGE.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[17] = entry.getValue();
-            } else if (LogFieldConstants.FORMATTEDMSG.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[18] = entry.getValue();
-            } else if (LogFieldConstants.EXTENSIONS_KVPL.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[19] = entry.getValue();
-            } else if (LogFieldConstants.OBJECT_ID.equals(entry.getKey())) {
-                LogTraceData.TRACE_NAMES1_1[20] = entry.getValue();
-            }
-        }
-
-        for (Map.Entry<String, String> entry : accessLogMap.entrySet()) {
-            if (LogFieldConstants.IBM_REQUESTSTARTTIME.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[0] = entry.getValue();
-            } else if (LogFieldConstants.IBM_URIPATH.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[1] = entry.getValue();
-            } else if (LogFieldConstants.IBM_REQUESTMETHOD.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[2] = entry.getValue();
-            } else if (LogFieldConstants.IBM_QUERYSTRING.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[3] = entry.getValue();
-            } else if (LogFieldConstants.IBM_REQUESTHOST.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[4] = entry.getValue();
-            } else if (LogFieldConstants.IBM_REQUESTPORT.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[5] = entry.getValue();
-            } else if (LogFieldConstants.IBM_REMOTEHOST.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[6] = entry.getValue();
-            } else if (LogFieldConstants.IBM_USERAGENT.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[7] = entry.getValue();
-            } else if (LogFieldConstants.IBM_REQUESTPROTOCOL.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[8] = entry.getValue();
-            } else if (LogFieldConstants.IBM_BYTESRECEIVED.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[9] = entry.getValue();
-            } else if (LogFieldConstants.IBM_RESPONSECODE.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[10] = entry.getValue();
-            } else if (LogFieldConstants.IBM_ELAPSEDTIME.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[11] = entry.getValue();
-            } else if (LogFieldConstants.IBM_DATETIME.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[12] = entry.getValue();
-            } else if (LogFieldConstants.IBM_SEQUENCE.equals(entry.getKey())) {
-                AccessLogData.ACCESS_LOG_NAMES1_1[13] = entry.getValue();
-            }
-        }
-
-        for (Map.Entry<String, String> entry : ffdcMap.entrySet()) {
-            if (LogFieldConstants.IBM_DATETIME.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[0] = entry.getValue();
-            } else if (LogFieldConstants.DATEOFFIRSTOCCURENCE.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[1] = entry.getValue();
-            } else if (LogFieldConstants.COUNT.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[2] = entry.getValue();
-            } else if (LogFieldConstants.MESSAGE.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[3] = entry.getValue();
-            } else if (LogFieldConstants.IBM_CLASSNAME.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[4] = entry.getValue();
-            } else if (LogFieldConstants.LABEL.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[5] = entry.getValue();
-            } else if (LogFieldConstants.IBM_EXCEPTIONNAME.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[6] = entry.getValue();
-            } else if (LogFieldConstants.IBM_PROBEID.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[7] = entry.getValue();
-            } else if (LogFieldConstants.SOURCEID.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[8] = entry.getValue();
-            } else if (LogFieldConstants.IBM_THREADID.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[9] = entry.getValue();
-            } else if (LogFieldConstants.IBM_STACKTRACE.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[10] = entry.getValue();
-            } else if (LogFieldConstants.IBM_OBJECTDETAILS.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[11] = entry.getValue();
-            } else if (LogFieldConstants.IBM_SEQUENCE.equals(entry.getKey())) {
-                FFDCData.FFDC_NAMES1_1[12] = entry.getValue();
-            }
-        }
+        String[] messageArray = new String[] {
+                                               LogFieldConstants.IBM_DATETIME,
+                                               LogFieldConstants.IBM_MESSAGEID,
+                                               LogFieldConstants.IBM_THREADID,
+                                               LogFieldConstants.MODULE,
+                                               LogFieldConstants.SEVERITY,
+                                               LogFieldConstants.LOGLEVEL,
+                                               LogFieldConstants.IBM_METHODNAME,
+                                               LogFieldConstants.IBM_CLASSNAME,
+                                               LogFieldConstants.LEVELVALUE,
+                                               LogFieldConstants.THREADNAME,
+                                               LogFieldConstants.CORRELATION_ID,
+                                               LogFieldConstants.ORG,
+                                               LogFieldConstants.PRODUCT,
+                                               LogFieldConstants.COMPONENT,
+                                               LogFieldConstants.IBM_SEQUENCE,
+                                               LogFieldConstants.THROWABLE,
+                                               LogFieldConstants.THROWABLE_LOCALIZED,
+                                               LogFieldConstants.MESSAGE,
+                                               LogFieldConstants.FORMATTEDMSG,
+                                               LogFieldConstants.EXTENSIONS_KVPL,
+                                               LogFieldConstants.OBJECT_ID
+        };
+        String[] traceArray = new String[] {
+                                             LogFieldConstants.IBM_DATETIME,
+                                             LogFieldConstants.IBM_MESSAGEID,
+                                             LogFieldConstants.IBM_THREADID,
+                                             LogFieldConstants.MODULE,
+                                             LogFieldConstants.SEVERITY,
+                                             LogFieldConstants.LOGLEVEL,
+                                             LogFieldConstants.IBM_METHODNAME,
+                                             LogFieldConstants.IBM_CLASSNAME,
+                                             LogFieldConstants.LEVELVALUE,
+                                             LogFieldConstants.THREADNAME,
+                                             LogFieldConstants.CORRELATION_ID,
+                                             LogFieldConstants.ORG,
+                                             LogFieldConstants.PRODUCT,
+                                             LogFieldConstants.COMPONENT,
+                                             LogFieldConstants.IBM_SEQUENCE,
+                                             LogFieldConstants.THROWABLE,
+                                             LogFieldConstants.THROWABLE_LOCALIZED,
+                                             LogFieldConstants.MESSAGE,
+                                             LogFieldConstants.FORMATTEDMSG,
+                                             LogFieldConstants.EXTENSIONS_KVPL,
+                                             LogFieldConstants.OBJECT_ID
+        };
+        LogTraceData.MESSAGE_NAMES1_1 = LogTraceData.addMapsToNamesArray(messageMap, messageArray);
+        LogTraceData.TRACE_NAMES1_1 = LogTraceData.addMapsToNamesArray(traceMap, traceArray);
     }
 
     /**
@@ -989,7 +906,6 @@ public class BaseTraceService implements TrService {
         TraceWriter detailLog = traceLog;
 
         if (levelValue >= Level.INFO.intValue()) {
-
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
 

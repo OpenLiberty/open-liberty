@@ -16,21 +16,21 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  *
  */
 public class AccessLogData extends GenericData {
-    private final static String[] NAMES1_1 = {
-                                               LogFieldConstants.IBM_REQUESTSTARTTIME,
-                                               LogFieldConstants.IBM_URIPATH,
-                                               LogFieldConstants.IBM_REQUESTMETHOD,
-                                               LogFieldConstants.IBM_QUERYSTRING,
-                                               LogFieldConstants.IBM_REQUESTHOST,
-                                               LogFieldConstants.IBM_REQUESTPORT,
-                                               LogFieldConstants.IBM_REMOTEHOST,
-                                               LogFieldConstants.IBM_USERAGENT,
-                                               LogFieldConstants.IBM_REQUESTPROTOCOL,
-                                               LogFieldConstants.IBM_BYTESRECEIVED,
-                                               LogFieldConstants.IBM_RESPONSECODE,
-                                               LogFieldConstants.IBM_ELAPSEDTIME,
-                                               LogFieldConstants.IBM_DATETIME,
-                                               LogFieldConstants.IBM_SEQUENCE
+    public final static String[] NAMES1_1 = {
+                                              LogFieldConstants.IBM_REQUESTSTARTTIME,
+                                              LogFieldConstants.IBM_URIPATH,
+                                              LogFieldConstants.IBM_REQUESTMETHOD,
+                                              LogFieldConstants.IBM_QUERYSTRING,
+                                              LogFieldConstants.IBM_REQUESTHOST,
+                                              LogFieldConstants.IBM_REQUESTPORT,
+                                              LogFieldConstants.IBM_REMOTEHOST,
+                                              LogFieldConstants.IBM_USERAGENT,
+                                              LogFieldConstants.IBM_REQUESTPROTOCOL,
+                                              LogFieldConstants.IBM_BYTESRECEIVED,
+                                              LogFieldConstants.IBM_RESPONSECODE,
+                                              LogFieldConstants.IBM_ELAPSEDTIME,
+                                              LogFieldConstants.IBM_DATETIME,
+                                              LogFieldConstants.IBM_SEQUENCE
     };
 
     private final static String[] NAMES = {
@@ -67,20 +67,39 @@ public class AccessLogData extends GenericData {
                                                    LogFieldConstants.IBM_SEQUENCE
     };
 
+    public static void defineDataArray() {
+        dataArray = new String[] {
+                                   LogFieldConstants.IBM_REQUESTSTARTTIME,
+                                   LogFieldConstants.IBM_URIPATH,
+                                   LogFieldConstants.IBM_REQUESTMETHOD,
+                                   LogFieldConstants.IBM_QUERYSTRING,
+                                   LogFieldConstants.IBM_REQUESTHOST,
+                                   LogFieldConstants.IBM_REQUESTPORT,
+                                   LogFieldConstants.IBM_REMOTEHOST,
+                                   LogFieldConstants.IBM_USERAGENT,
+                                   LogFieldConstants.IBM_REQUESTPROTOCOL,
+                                   LogFieldConstants.IBM_BYTESRECEIVED,
+                                   LogFieldConstants.IBM_RESPONSECODE,
+                                   LogFieldConstants.IBM_ELAPSEDTIME,
+                                   LogFieldConstants.IBM_DATETIME,
+                                   LogFieldConstants.IBM_SEQUENCE
+        };
+    }
+
     public AccessLogData() {
         super(14);
     }
 
     private void setPair(int index, String s) {
-        setPair(index, ACCESS_LOG_NAMES1_1[index], s);
+        setPair(index, NAMES1_1[index], s);
     }
 
     private void setPair(int index, int i) {
-        setPair(index, ACCESS_LOG_NAMES1_1[index], i);
+        setPair(index, NAMES1_1[index], i);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, ACCESS_LOG_NAMES1_1[index], l);
+        setPair(index, NAMES1_1[index], l);
     }
 
     public void setRequestStartTime(long l) {
@@ -252,59 +271,119 @@ public class AccessLogData extends GenericData {
     }
 
     public String getRequestStartTimeKey1_1() {
-//        return NAMES1_1[0];
-        return ACCESS_LOG_NAMES1_1[0];
+        return NAMES1_1[0];
     }
 
     public String getUriPathKey1_1() {
-        return ACCESS_LOG_NAMES1_1[1];
+        return NAMES1_1[1];
     }
 
     public String getRequestMethodKey1_1() {
-        return ACCESS_LOG_NAMES1_1[2];
+        return NAMES1_1[2];
     }
 
     public String getQueryStringKey1_1() {
-        return ACCESS_LOG_NAMES1_1[3];
+        return NAMES1_1[3];
     }
 
     public String getRequestHostKey1_1() {
-        return ACCESS_LOG_NAMES1_1[4];
+        return NAMES1_1[4];
     }
 
     public String getRequestPortKey1_1() {
-        return ACCESS_LOG_NAMES1_1[5];
+        return NAMES1_1[5];
     }
 
     public String getRemoteHostKey1_1() {
-        return ACCESS_LOG_NAMES1_1[6];
+        return NAMES1_1[6];
     }
 
     public String getUserAgentKey1_1() {
-        return ACCESS_LOG_NAMES1_1[7];
+        return NAMES1_1[7];
     }
 
     public String getRequestProtocolKey1_1() {
-        return ACCESS_LOG_NAMES1_1[8];
+        return NAMES1_1[8];
     }
 
     public String getBytesReceivedKey1_1() {
-        return ACCESS_LOG_NAMES1_1[9];
+        return NAMES1_1[9];
     }
 
     public String getResponseCodeKey1_1() {
-        return ACCESS_LOG_NAMES1_1[10];
+        return NAMES1_1[10];
     }
 
     public String getElapsedTimeKey1_1() {
-        return ACCESS_LOG_NAMES1_1[11];
+        return NAMES1_1[11];
     }
 
     public String getDatetimeKey1_1() {
-        return ACCESS_LOG_NAMES1_1[12];
+        return NAMES1_1[12];
     }
 
     public String getSequenceKey1_1() {
-        return ACCESS_LOG_NAMES1_1[13];
+        return NAMES1_1[13];
     }
+
+    public String getRequestStartTimeKeyJSON() {
+        return dataArray[0];
+    }
+
+    public String getUriPathKeyJSON() {
+        return dataArray[1];
+    }
+
+    public String getRequestMethodKeyJSON() {
+        return dataArray[2];
+    }
+
+    public String getQueryStringKeyJSON() {
+        return dataArray[3];
+    }
+
+    public String getRequestHostKeyJSON() {
+        return dataArray[4];
+    }
+
+    public String getRequestPortKeyJSON() {
+        return dataArray[5];
+    }
+
+    public String getRemoteHostKeyJSON() {
+        return dataArray[6];
+    }
+
+    public String getUserAgentKeyJSON() {
+        return dataArray[7];
+    }
+
+    public String getRequestProtocolKeyJSON() {
+        return dataArray[8];
+    }
+
+    public String getBytesReceivedKeyJSON() {
+        return dataArray[9];
+    }
+
+    public String getResponseCodeKeyJSON() {
+        return dataArray[10];
+    }
+
+    public String getElapsedTimeKeyJSON() {
+        return dataArray[11];
+    }
+
+    public String getDatetimeKeyJSON() {
+        return dataArray[12];
+    }
+
+    public String getSequenceKeyJSON() {
+        return dataArray[13];
+    }
+
+//    public static String[] getNamesArray() {
+//        return dataArray;
+//    }
+
 }
