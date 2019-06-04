@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<h:head>
+    <title>Page 2 Disabled</title>
+</h:head>
+<h:body>
+<p>This page should have been called from a h:link or h:button JSF tag with the disableClientWindow attribute set to true.  
+  In this case the jfwid request parameter should not have been set.  Therefore we check for null.</p>
+	<h:form id="form2Disabled">
+		<c:choose>
+           <!-- if condition -->
+           <c:when test="${param.jfwid == null}">
+			<h:outputText id="outputPassed" value="Test Passed"/>
+		   </c:when> 
+           <!-- else condition -->
+           <c:otherwise>
+			<h:outputText id="outputPassed" value="Test Failed"/>
+		   </c:otherwise>   
+        </c:choose>
+		 
+		<p>Window ID from parameter: <h:outputText id="outputWindowIdParam" value="${param.jfwid}"/></p>
+		<p>window ID from bean: <h:outputText id="outputWindowIdBean" value="${employeeBean.windowId}"/></p>		
+    </h:form>
+</h:body>
+</html>
