@@ -66,6 +66,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.config.adapter")
                                         .addClass("org.test.config.jmsadapter.JMSConnectionFactoryImpl")
+                                        .addClass("org.test.config.jmsadapter.JMSDestinationImpl")
                                         .addClass("org.test.config.jmsadapter.JMSTopicConnectionFactoryImpl")
                                         .addClass("org.test.config.jmsadapter.ManagedJMSTopicConnectionFactoryImpl"));
         ShrinkHelper.exportToServer(server, "connectors", tca_rar);
@@ -587,6 +588,30 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     }
 
     /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an application-defined JMS destination.
+     */
+    @Test
+    public void testAppDefinedDestination() throws Exception {
+        JsonObject q = new HttpsRequest(server, "/ibm/api/config/jmsDestination/jmsDestination%5Bjava:global%2Fenv%2Fjms%2Fdest1%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + q;
+
+        assertEquals(err, "jmsDestination", q.getString("configElementName"));
+        assertEquals(err, "jmsDestination[java:global/env/jms/dest1]", q.getString("uid"));
+        assertEquals(err, "jmsDestination[java:global/env/jms/dest1]", q.getString("id"));
+        assertEquals(err, "java:global/env/jms/dest1", q.getString("jndiName"));
+
+        assertNull(err, q.get("application"));
+        assertNull(err, q.get("module"));
+        assertNull(err, q.get("component"));
+
+        JsonObject props;
+        assertNotNull(err, props = q.getJsonObject("properties.ConfigTestAdapter"));
+        assertEquals(err, 1, props.size());
+        assertEquals(err, "3605 Hwy 52N, Rochester, MN 55901", props.getString("destinationName"));
+    }
+
+    /**
      * Use the /ibm/api/config rest endpoint to obtain configuration for the jdbcDriver of an app-defined data source.
      */
     @Test
@@ -774,6 +799,68 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, 8765, props.getInt("portNumber"));
 
         // TODO api
+    }
+
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an application-defined JMS queue.
+     */
+    @Test
+    public void testAppDefinedQueue() throws Exception {
+        JsonObject q = new HttpsRequest(server, "/ibm/api/config/jmsQueue/application%5BAppDefResourcesApp%5D%2FjmsQueue%5Bjava:app%2Fenv%2Fjms%2Fqueue1%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + q;
+
+        assertEquals(err, "jmsQueue", q.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsQueue[java:app/env/jms/queue1]", q.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsQueue[java:app/env/jms/queue1]", q.getString("id"));
+        assertEquals(err, "java:app/env/jms/queue1", q.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", q.getString("application"));
+        assertNull(err, q.get("module"));
+        assertNull(err, q.get("component"));
+
+        JsonObject props;
+        assertNotNull(err, props = q.getJsonObject("properties.wasJms"));
+        assertEquals(err, 4, props.size());
+        assertEquals(err, "Application", props.getString("deliveryMode"));
+        assertEquals(err, "MyQueue", props.getString("queueName"));
+        assertEquals(err, "AlwaysOff", props.getString("readAhead"));
+        assertEquals(err, 0l, props.getJsonNumber("timeToLive").longValue());
+    }
+
+    /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for application-defined administered objects,
+     * querying by module and component.
+     */
+    @Test
+    public void testAppDefinedTopicsQueryByModuleAndComponent() throws Exception {
+        JsonArray topics = new HttpsRequest(server, "/ibm/api/config/jmsTopic?module=AppDefResourcesEJB.jar&component=AppDefinedResourcesBean")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + topics;
+        assertEquals(err, 1, topics.size());
+
+        JsonObject topic;
+        assertNotNull(err, topic = topics.getJsonObject(0));
+        assertEquals(err, "jmsTopic", topic.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/jmsTopic[java:comp/env/jms/topic1]",
+                     topic.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/jmsTopic[java:comp/env/jms/topic1]",
+                     topic.getString("id"));
+        assertEquals(err, "java:comp/env/jms/topic1", topic.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", topic.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", topic.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", topic.getString("component"));
+
+        JsonObject props;
+        assertNotNull(err, props = topic.getJsonObject("properties.wasJms"));
+        assertEquals(err, 6, props.size());
+        assertEquals(err, "Application", props.getString("deliveryMode"));
+        assertEquals(err, 8, props.getInt("priority"));
+        assertEquals(err, "AsConnection", props.getString("readAhead"));
+        assertEquals(err, 246l, props.getJsonNumber("timeToLive").longValue());
+        assertEquals(err, "MyTopic", props.getString("topicName"));
+        assertEquals(err, "Default.Topic.Space", props.getString("topicSpace"));
     }
 
     /*
