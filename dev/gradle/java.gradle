@@ -76,10 +76,6 @@ task testReport(type: TestReport) {
   }
 }
 
-subprojects {
-  test.finalizedBy testReport
-}
-
 task testResults {
   dependsOn subprojects.test
 }
