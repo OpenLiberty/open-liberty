@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Verify that the wrapper and the parameters for the 
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Cannot unwrap object to {0} because {0} is not an interface class.
+NOT_AN_INTERFACE.explanation=The unwrap method only permits unwrapping to an interface class.
+NOT_AN_INTERFACE.useraction=Unwrap to a class that is an interface instead of a concrete class.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.
