@@ -47,7 +47,7 @@ public class MongoSSLInvalidTrustTest extends FATServletClient {
         // com.ibm.wsspi.logging.Introspector,
         // com.ibm.ws.runtime.update.RuntimeUpdateListener,
         // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
-        server.stopServer("CWPKI0022E:.*", // SSL HANDSHAKE FAILURE
+        server.stopServer("CWPKI0823E:.*", // SSL HANDSHAKE FAILURE
                           "CWWKE0701E",
                           "CWWKG0033W");
     }
