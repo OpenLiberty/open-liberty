@@ -34,7 +34,7 @@ public class SpnegoUtil {
      * @param authzHeader
      * @return
      */
-    protected String extractAuthzTokenString(String authzHeader) {
+    public String extractAuthzTokenString(String authzHeader) {
         String token = null;
         if (authzHeader != null) {
             StringTokenizer st = new StringTokenizer(authzHeader);
@@ -53,12 +53,18 @@ public class SpnegoUtil {
      * is an SPNEGO or Kerberos authentication token
      */
     public boolean isSpnegoOrKrb5Token(String authzHeader) {
-
         if (authzHeader == null || !authzHeader.startsWith("Negotiate "))
             return false;
 
-        byte[] tokenByte = Base64Coder.base64Decode(Base64Coder.getBytes(extractAuthzTokenString(authzHeader)));
+        return isSpnegoOrKrb5Token(Base64Coder.base64Decode(Base64Coder.getBytes(extractAuthzTokenString(authzHeader))));
 
+    }
+
+    /**
+     * @param tokenByte
+     * @return
+     */
+    public boolean isSpnegoOrKrb5Token(byte[] tokenByte) {
         if (tokenByte == null || tokenByte.length == 0)
             return false;
 
