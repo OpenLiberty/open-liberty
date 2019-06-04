@@ -16,8 +16,14 @@ import javax.annotation.sql.DataSourceDefinition;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.JMSConnectionFactoryDefinition;
+import javax.resource.AdministeredObjectDefinition;
 import javax.resource.ConnectionFactoryDefinition;
 import javax.resource.ConnectionFactoryDefinitions;
+
+@AdministeredObjectDefinition(name = "java:comp/env/eis/iSpec1",
+                              resourceAdapter = "ConfigTestAdapter",
+                              className = "org.test.config.adapter.InteractionSpecImpl",
+                              properties = "functionName=doSomethingUseful")
 
 @ConnectionFactoryDefinitions({
                                 @ConnectionFactoryDefinition(name = "java:module/env/eis/cf1", // same JNDI name is used in WAR module, but okay because different scope

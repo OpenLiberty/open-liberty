@@ -120,6 +120,36 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     }
 
     /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for application-defined administered objects,
+     * querying by component.
+     */
+    @Test
+    public void testAppDefinedAdminObjectsQueryByComponent() throws Exception {
+        JsonArray ispecs = new HttpsRequest(server, "/ibm/api/config/adminObject?component=AppDefinedResourcesBean")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + ispecs;
+        assertEquals(err, 1, ispecs.size());
+
+        JsonObject ispec;
+        assertNotNull(err, ispec = ispecs.getJsonObject(0));
+        assertEquals(err, "adminObject", ispec.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/adminObject[java:comp/env/eis/iSpec1]",
+                     ispec.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/adminObject[java:comp/env/eis/iSpec1]",
+                     ispec.getString("id"));
+        assertEquals(err, "java:comp/env/eis/iSpec1", ispec.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", ispec.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", ispec.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", ispec.getString("component"));
+
+        JsonObject props;
+        assertNotNull(err, props = ispec.getJsonObject("properties.ConfigTestAdapter.InteractionSpec"));
+        assertEquals(err, 1, props.size());
+        assertEquals(err, "doSomethingUseful", props.getString("functionName"));
+    }
+
+    /**
      * Use the /ibm/api/config REST endpoint to obtain configuration for app-defined connection factories with the
      * jndiName that is supplied as a query parameter.
      */
