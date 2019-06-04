@@ -583,8 +583,8 @@ ANNO_TARGETS_CACHE_EXCEPTION.useraction=For more information on the topic, see t
 # # {0} A string: A class name.
 # # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
 # # {2} A string: Message text from an exception.
-ANNO_TARGETS_CLASS_SCAN_EXCEPTION: CWWKC0103W: An exception occurred while scanning class {0} of {1}.  The exception was {2}.
-ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation: An error occurred while scanning class and annotations data.  The associated module may function incorrectly.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION= CWWKC0103W: An exception occurred while scanning class {0} of {1}.  The exception was {2}.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation= An error occurred while scanning class and annotations data.  The associated module may function incorrectly.
 ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=For more information on the topic, see the exception and the associated FFDC message.
 
 # # {0} A String: An internal print string of the data structure which was used to locate the class.
