@@ -16,8 +16,6 @@ Bundle-Name: JAX-WS EJB
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.ejb
 Bundle-Description: IBM JAX-WS EJB support; version=${bVersion}
 
-cxfVersion=3.2.6
-
 Service-Component: \
   com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
      implementation:=com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
