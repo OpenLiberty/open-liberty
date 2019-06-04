@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: \u4e0d\u652f\u63f4 {1
 generic.type.variables.notsupported.CWMCG0018E.explanation=\u5617\u8a66\u4f7f\u7528\u300c\u901a\u7528\u985e\u578b\u8b8a\u6578\u300d\uff08\u4f8b\u5982 List<T>\uff09\u4f86\u8f49\u63db\u3002\u9019\u662f\u4e0d\u652f\u63f4\u7684\u3002
 generic.type.variables.notsupported.CWMCG0018E.useraction=\u8acb\u6539\u7528\u5177\u9ad4\u7684\u5f15\u6578\u985e\u578b\uff0c\u4f8b\u5982 List<String>\u3002
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: \u7121\u6cd5\u555f\u52d5 {0} ConfigSource \u66f4\u65b0\u7a0b\u5f0f\u7a0b\u5e8f\u3002
+failed.to.start.refresher.CWMCG0019E.explanation=\u5728\u6307\u5b9a ConfigSource \u4e2d\u6240\u505a\u7684\u8b8a\u66f4\u672a\u53cd\u6620\u5728\u300c\u914d\u7f6e\u300d\u5be6\u4f8b\u4e2d\u3002
+failed.to.start.refresher.CWMCG0019E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: \u7121\u6cd5\u555f\u52d5 {0} ConfigSource \u66f4\u65b0\u7a0b\u5f0f\u7a0b\u5e8f\u3002\u7570\u5e38\u72c0\u6cc1\u662f\uff1a{1}\u3002
+failed.to.start.refresher.exception.CWMCG0020E.explanation=\u5728\u6307\u5b9a ConfigSource \u4e2d\u6240\u505a\u7684\u8b8a\u66f4\u672a\u53cd\u6620\u5728\u300c\u914d\u7f6e\u300d\u5be6\u4f8b\u4e2d\u3002
+failed.to.start.refresher.exception.CWMCG0020E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
 # Environment Variables Config Source
 environment.variables.config.source=\u74b0\u5883\u8b8a\u6578\u914d\u7f6e\u4f86\u6e90
 # Properties File Config Source: {0}

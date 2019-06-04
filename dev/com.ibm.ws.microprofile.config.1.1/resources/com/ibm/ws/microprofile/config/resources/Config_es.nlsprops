@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: No se soporta la vari
 generic.type.variables.notsupported.CWMCG0018E.explanation=Se ha realizado un intento de conversi\u00f3n utilizando una variable de tipo gen\u00e9rico, como List<T>. No est\u00e1 soportada.
 generic.type.variables.notsupported.CWMCG0018E.useraction=En su lugar, utilice un tipo de argumento concreto, por ejemplo List<String>.
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: No se ha poodido iniciar el proceso de renovaci\u00f3n de ConfigSource {0}.
+failed.to.start.refresher.CWMCG0019E.explanation=Los cambios de ConfigSource especificados no se ven reflejados en la instancia de configuraci\u00f3n.
+failed.to.start.refresher.CWMCG0019E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: No se ha poodido iniciar el proceso de renovaci\u00f3n de ConfigSource {0}. La excepci\u00f3n es: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=Los cambios de ConfigSource especificados no se ven reflejados en la instancia de configuraci\u00f3n.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
+
 # Environment Variables Config Source
 environment.variables.config.source=Origen de configuraci\u00f3n de variables de entorno
 # Properties File Config Source: {0}

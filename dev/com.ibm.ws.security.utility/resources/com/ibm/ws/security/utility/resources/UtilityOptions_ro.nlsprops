@@ -137,6 +137,20 @@ sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=algoritm de semn\u0103tur\u0103
 sslCert.option-desc.sigAlg=\tAlgoritmul de semn\u0103tur\u0103 al certificatului.\n\
 \tValoarea implicit\u0103 pentru algoritmul de semn\u0103tur\u0103 este {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tOp\u0163ional. Implicit, va fi generat un depozit de chei PKCS12. Pentru\n\
+\ta genera un depozit de chei JKS, specifica\u0163i op\u0163iunea --keyType cu valoarea\n\
+\tJKS. Nu este nevoie s\u0103 specifica\u0163i aceast\u0103 op\u0163iune dac\u0103 un depozit de chei PKCS12\n\
+\teste a\u015fteptat.\n\
+\tPKCS12 are un num\u0103r de avantaje: este mai extinsibil; suport\u0103\n\
+\talgoritmi criptografici puternici; \u015fi este adoptat pe scar\u0103 larg\u0103. PKCS12 este\n\
+\t\u00een mod frecvent formatul furnizat de autorit\u0103\u0163ilor de certificare c\u00e2nd \n\
+\temit certificatele.
+
+sslCert.option-key.ext=\ \ \ \ --extInfo=informa\u0163ii extensii certificat
+sslCert.option-desc.ext=\tInforma\u0163iile de extensii certificat de ad\u0103ugat la certificat.\n\
+\tExtensia implicit\u0103 este o intrare Subject Alternative Name care utilizeaz\u0103 \n\
+\tnumele de gazd\u0103.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: Zmienna typu og\u00f3
 generic.type.variables.notsupported.CWMCG0018E.explanation=Podj\u0119to pr\u00f3b\u0119 przekszta\u0142cenia przy u\u017cyciu zmiennej typu og\u00f3lnego, takiej jak List<T>. Taka operacja nie jest obs\u0142ugiwana.
 generic.type.variables.notsupported.CWMCG0018E.useraction=Zamiast tego nale\u017cy u\u017cy\u0107 konkretnego typu argumentu, na przyk\u0142ad List<String>.
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: Nie powiod\u0142o si\u0119 uruchomienie procesu od\u015bwie\u017cania elementu ConfigSource {0}.
+failed.to.start.refresher.CWMCG0019E.explanation=Zmiany podane w elemencie ConfigSource nie s\u0105 odzwierciedlane w instancji elementu Config.
+failed.to.start.refresher.CWMCG0019E.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: Nie powiod\u0142o si\u0119 uruchomienie procesu od\u015bwie\u017cania elementu ConfigSource {0}. Wyj\u0105tek: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=Zmiany podane w elemencie ConfigSource nie s\u0105 odzwierciedlane w instancji elementu Config.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
 # Environment Variables Config Source
 environment.variables.config.source=\u0179r\u00f3d\u0142o konfiguracji zmiennych \u015brodowiskowych
 # Properties File Config Source: {0}

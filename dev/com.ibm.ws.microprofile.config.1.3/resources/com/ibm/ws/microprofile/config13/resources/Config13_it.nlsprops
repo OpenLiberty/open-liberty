@@ -45,6 +45,12 @@ duplicate.application.configuration.name.CWMCG0203E.useraction=Esaminare il file
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Origine di configurazione delle propriet\u00e0 dell'applicazione XML server
 
+# Server XML Variables Config Source
+server.xml.variables.config.source=Origine di configurazione delle variabili XML server
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Origine di configurazione delle variabili XML server predefinite
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------

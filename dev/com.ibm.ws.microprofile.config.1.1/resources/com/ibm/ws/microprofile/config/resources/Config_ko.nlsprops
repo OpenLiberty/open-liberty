@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: {1} \ubcc0\ud658 \uc7
 generic.type.variables.notsupported.CWMCG0018E.explanation=List<T> \ub4f1\uc758 \uc77c\ubc18 \uc720\ud615 \ubcc0\uc218\ub97c \uc0ac\uc6a9\ud55c \ubcc0\ud658\uc774 \uc2dc\ub3c4\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 generic.type.variables.notsupported.CWMCG0018E.useraction=\uadf8 \ub300\uc2e0\uc5d0 List<String> \ub4f1\uc758 \uad6c\uccb4\uc801 \uc778\uc218 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: {0} ConfigSource \uc0c8\ub85c \uace0\uce58\uae30 \ud504\ub85c\uc138\uc2a4 \uc2dc\uc791\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+failed.to.start.refresher.CWMCG0019E.explanation=\uc9c0\uc815\ub41c ConfigSource\uc758 \ubcc0\uacbd\uc0ac\ud56d\uc740 \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uc5d0 \ubc18\uc601\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+failed.to.start.refresher.CWMCG0019E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: {0} ConfigSource \uc0c8\ub85c \uace0\uce58\uae30 \ud504\ub85c\uc138\uc2a4 \uc2dc\uc791\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {1}\uc785\ub2c8\ub2e4.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=\uc9c0\uc815\ub41c ConfigSource\uc758 \ubcc0\uacbd\uc0ac\ud56d\uc740 \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uc5d0 \ubc18\uc601\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
 # Environment Variables Config Source
 environment.variables.config.source=\ud658\uacbd \ubcc0\uc218 \uad6c\uc131 \uc18c\uc2a4
 # Properties File Config Source: {0}

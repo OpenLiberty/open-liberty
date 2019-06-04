@@ -705,6 +705,10 @@ error.package.extension=CWWKE0950E: N\u00e1zev archivn\u00edho souboru mus\u00ed
 error.package.extension.explanation=Volba --archive mus\u00ed obsahovat p\u0159\u00edponu souboru, kter\u00e1 kon\u010d\u00ed p\u0159\u00edponou .jar p\u0159i ur\u010den\u00ed --include=runnable.
 error.package.extension.useraction=P\u0159i ur\u010den\u00ed --include=runnable zadejte pro --archive n\u00e1zev souboru s p\u0159\u00edponou souboru .jar.
 
+error.package.usr.jar=CWWKE0951E: N\u00e1zev archivn\u00edho souboru nesm\u00ed kon\u010dit p\u0159\u00edponou souboru .jar, je-li pou\u017eita volba usr.
+error.package.usr.jar.explanation=Volba --archive mus\u00ed kon\u010dit p\u0159\u00edponou souboru .jar, je-li ur\u010deno --include=usr.
+error.package.usr.jar.useraction=Zadejte n\u00e1zev souboru pro --archive s p\u0159\u00edponou souboru jinou ne\u017e p\u0159\u00edponu souboru .jar, je-li zad\u00e1na volba --include=usr.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.

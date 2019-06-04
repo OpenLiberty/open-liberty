@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=\u00cencerca\u0163i s\u0103 rezo
 error.file.outside.archive=CWWKZ0132W: Fi\u015fierul {0} din arhiva {1} nu va fi extras, deoarece calea nu este inclus\u0103 \u00een arhiv\u0103.
 error.file.outside.archive.explanation=Calea fi\u015fierului specific\u0103 un director relativ. Dac\u0103 fi\u015fierul ar fi extras, ar fi plasat \u00een afara directorului r\u0103d\u0103cin\u0103 al arhivei.
 error.file.outside.archive.useraction=\u00cenl\u0103tura\u0163i din arhiv\u0103 fi\u015fierele cu c\u0103i relative.  
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: Aplica\u0163ia {0} de la loca\u0163ia {1} este expandat\u0103 la directorul {2}.
+info.expanding.app.explanation=Fi\u015fierul arhiv\u0103 pentru aplica\u0163ie este expandat pentru c\u0103 a fost configurat\u0103 expandarea automat\u0103 a aplica\u0163iei.
+info.expanding.app.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+info.loose.app=CWWKZ0134I: Aplica\u0163ia {0} utilizeaz\u0103 defini\u0163ia de aplica\u0163ie liber\u0103 la loca\u0163ia {1}.
+info.loose.app.explanation=Loca\u0163ia pentru aplica\u0163ie indic\u0103 la un fi\u015fier XML care define\u015fte o aplica\u0163ie liber\u0103. 
+info.loose.app.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+info.directory.app=CWWKZ0135I: Aplica\u0163ia {0} utilizeaz\u0103 directorul expandat de la loca\u0163ia {1}.
+info.directory.app.explanation=Loca\u0163ia pentru aplica\u0163ie indic\u0103 la un fi\u015fier director \u00een locul unui fi\u015fier arhiv\u0103. 
+info.directory.app.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+info.unexpanded.app=CWWKZ0136I: Aplica\u0163ia {0} utilizeaz\u0103 fi\u015fierul arhiv\u0103 de la loca\u0163ia {1}.
+info.unexpanded.app.explanation=Loca\u0163ia pentru aplica\u0163ie indic\u0103 la un fi\u015fier arhiv\u0103 binar. Fi\u015fierul arhiv\u0103 mu este expandat pe disc pentru c\u0103 nu a fost configurat\u0103 expandarea automat\u0103 a aplica\u0163iilor.
+info.unexpanded.app.useraction=Nicio ac\u0163iune nu este necesar\u0103.

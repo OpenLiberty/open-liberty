@@ -801,6 +801,10 @@ error.package.extension=CWWKE0950E: O nome do arquivo do archive deve terminar c
 error.package.extension.explanation=A op\u00e7\u00e3o --archive deve incluir uma extens\u00e3o do arquivo que termine com .jar durante a especifica\u00e7\u00e3o de --include=runnable.
 error.package.extension.useraction=Forne\u00e7a um nome de arquivo para --archive com uma extens\u00e3o de arquivo de .jar durante a especifica\u00e7\u00e3o de --include=runnable.
 
+error.package.usr.jar=CWWKE0951E: O nome do archive n\u00e3o deve terminar com uma extens\u00e3o de arquivo .jar quando a op\u00e7\u00e3o usr \u00e9 usada.
+error.package.usr.jar.explanation=A op\u00e7\u00e3o --archive n\u00e3o deve terminar com uma extens\u00e3o de arquivo .jar quando --include=usr \u00e9 especificado.
+error.package.usr.jar.useraction=Forne\u00e7a um nome de arquivo para --archive com uma extens\u00e3o de arquivo diferente de uma extens\u00e3o de arquivo .jar quando --include=usr for especificado.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \

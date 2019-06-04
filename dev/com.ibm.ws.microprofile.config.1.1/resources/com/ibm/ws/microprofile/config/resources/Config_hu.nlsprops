@@ -43,7 +43,7 @@ config.already.exists.CWMCG0003E.explanation=A megadott ClassLoader oszt\u00e1ly
 config.already.exists.CWMCG0003E.useraction=A 'releaseConfig' met\u00f3dus haszn\u00e1lat\u00e1val elt\u00e1vol\u00edthatja a kor\u00e1bbi p\u00e9ld\u00e1nyt, majd pr\u00f3b\u00e1lja \u00fajra a met\u00f3dust.
 
 # Unable to close the Config instance. The exception is: {0}.
-could.not.close.CWMCG0004E=CWMCG0004E: A konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1ny nem z\u00e1rhat\u00f3 le. A kiv\u00e9tel: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: A konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1ny nem z\u00e1rhat\u00f3 le. Kiv\u00e9tel: {0}.
 could.not.close.CWMCG0004E.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1ny bez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Lehet, hogy az er\u0151forr\u00e1sai nem lettek felszabad\u00edtva.
 could.not.close.CWMCG0004E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
@@ -68,17 +68,17 @@ unable.to.determine.conversion.type.CWMCG0009E.explanation=Az \u00e1talak\u00edt
 unable.to.determine.conversion.type.CWMCG0009E.useraction=Gondoskodjon r\u00f3la, hogy a megval\u00f3s\u00edt\u00e1si oszt\u00e1ly rendelkezzen megfelel\u0151 \u00e1ltal\u00e1nos t\u00edpus\u00fa v\u00e1ltoz\u00f3val az \u00e1talak\u00edt\u00f3 fel\u00fclet sz\u00e1m\u00e1ra.
 
 # Unable to discover ConfigSources. The exception is: {0}.
-unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: A ConfigSources nem t\u00e9rk\u00e9pezhet\u0151 fel. A kiv\u00e9tel: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: A ConfigSources nem t\u00e9rk\u00e9pezhet\u0151 fel. Kiv\u00e9tel: {0}.
 unable.to.discover.config.sources.CWMCG0010E.explanation=A Java ServiceLoader kiv\u00e9telt hozott l\u00e9tre. Ennek legval\u00f3sz\u00edn\u0171bb oka, hogy a megnevezett ConfigSource oszt\u00e1lyok egyike nem tal\u00e1lhat\u00f3.
 unable.to.discover.config.sources.CWMCG0010E.useraction=Ellen\u0151rizze a Java szolg\u00e1ltat\u00e1sf\u00e1jlokban megnevezett oszt\u00e1lyokat az alkalmaz\u00e1son bel\u00fcl. A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
 # Unable to discover ConfigSourceProviders. The exception is: {0}.
-unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: A ConfigSourceProviders nem t\u00e9rk\u00e9pezhet\u0151 fel. A kiv\u00e9tel: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: A ConfigSourceProviders nem t\u00e9rk\u00e9pezhet\u0151 fel. Kiv\u00e9tel: {0}.
 unable.to.discover.config.source.providers.CWMCG0011E.explanation=A Java ServiceLoader kiv\u00e9telt hozott l\u00e9tre. Ennek legval\u00f3sz\u00edn\u0171bb oka, hogy a megnevezett ConfigSourceProvider oszt\u00e1lyok egyike nem tal\u00e1lhat\u00f3.
 unable.to.discover.config.source.providers.CWMCG0011E.useraction=Ellen\u0151rizze a Java szolg\u00e1ltat\u00e1sf\u00e1jlokban megnevezett oszt\u00e1lyokat az alkalmaz\u00e1son bel\u00fcl. A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
 # Unable to discover Converters. The exception is: {0}.
-unable.to.discover.converters.CWMCG0012E=CWMCG0012E: A Converters nem t\u00e9rk\u00e9pezhet\u0151 fel. A kiv\u00e9tel: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: A Converters nem t\u00e9rk\u00e9pezhet\u0151 fel. Kiv\u00e9tel: {0}.
 unable.to.discover.converters.CWMCG0012E.explanation=A Java ServiceLoader kiv\u00e9telt hozott l\u00e9tre. Ennek legval\u00f3sz\u00edn\u0171bb oka, hogy a megnevezett Converter oszt\u00e1lyok egyike nem tal\u00e1lhat\u00f3.
 unable.to.discover.converters.CWMCG0012E.useraction=Ellen\u0151rizze a Java szolg\u00e1ltat\u00e1sf\u00e1jlokban megnevezett oszt\u00e1lyokat az alkalmaz\u00e1son bel\u00fcl. A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
@@ -111,6 +111,16 @@ implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Ellen\u0151ri
 generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: A(z) {0} generikus t\u00edpus\u00fa v\u00e1ltoz\u00f3 nem t\u00e1mogatott a(z) {1} \u00e1talak\u00edt\u00e1st\u00edpushoz.
 generic.type.variables.notsupported.CWMCG0018E.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt \u00e1talak\u00edt\u00e1sra egy generikus t\u00edpus\u00fa v\u00e1ltoz\u00f3 haszn\u00e1lat\u00e1val, mint p\u00e9ld\u00e1ul a List<T>. Ez nem t\u00e1mogatott.
 generic.type.variables.notsupported.CWMCG0018E.useraction=Haszn\u00e1ljon ehelyett egy konkr\u00e9t argumentumt\u00edpust, mint p\u00e9ld\u00e1ul a List<String>.
+
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: A(z) {0} ConfigSource friss\u00edt\u0151 folyamatot nem siker\u00fclt elind\u00edtani.
+failed.to.start.refresher.CWMCG0019E.explanation=A megadott ConfigSource v\u00e1ltoz\u00e1sait a Config p\u00e9ld\u00e1ny nem t\u00fckr\u00f6zi.
+failed.to.start.refresher.CWMCG0019E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: A(z) {0} ConfigSource friss\u00edt\u0151 folyamatot nem siker\u00fclt elind\u00edtani. A kiv\u00e9tel: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=A megadott ConfigSource v\u00e1ltoz\u00e1sait a Config p\u00e9ld\u00e1ny nem t\u00fckr\u00f6zi.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
 # Environment Variables Config Source
 environment.variables.config.source=K\u00f6rnyezeti v\u00e1ltoz\u00f3 konfigur\u00e1ci\u00f3s forr\u00e1s
