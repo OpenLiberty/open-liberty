@@ -159,7 +159,6 @@ public class Launcher {
             if (t == null)
                 t = e;
 
-            System.out.println("in Launcher, about to error.unknownException");
             System.out.println(BootstrapConstants.messages.getString("error.unableToLaunch"));
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), t.toString()));
 
