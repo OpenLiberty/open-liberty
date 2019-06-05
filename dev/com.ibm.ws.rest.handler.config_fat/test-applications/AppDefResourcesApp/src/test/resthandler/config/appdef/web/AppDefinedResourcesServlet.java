@@ -18,6 +18,7 @@ import javax.annotation.sql.DataSourceDefinitions;
 import javax.ejb.EJB;
 import javax.jms.JMSConnectionFactoryDefinition;
 import javax.jms.JMSConnectionFactoryDefinitions;
+import javax.jms.JMSDestinationDefinition;
 import javax.resource.AdministeredObjectDefinition;
 import javax.resource.ConnectionFactoryDefinition;
 import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
@@ -114,6 +115,13 @@ import componenttest.app.FATServlet;
                                                                                   "temporaryQueueNamePrefix=tempq"
                                                                    })
 })
+
+@JMSDestinationDefinition(name = "java:app/env/jms/queue1",
+                          interfaceName = "javax.jms.Queue",
+                          resourceAdapter = "wasJms",
+                          destinationName = "MyQueue",
+                          properties = "readAhead=AlwaysOff")
+
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/AppDefinedResourcesServlet")
 public class AppDefinedResourcesServlet extends FATServlet {

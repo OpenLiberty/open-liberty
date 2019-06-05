@@ -16,8 +16,16 @@ import javax.annotation.sql.DataSourceDefinition;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.JMSConnectionFactoryDefinition;
+import javax.jms.JMSDestinationDefinition;
+import javax.jms.JMSDestinationDefinitions;
+import javax.resource.AdministeredObjectDefinition;
 import javax.resource.ConnectionFactoryDefinition;
 import javax.resource.ConnectionFactoryDefinitions;
+
+@AdministeredObjectDefinition(name = "java:comp/env/eis/iSpec1",
+                              resourceAdapter = "ConfigTestAdapter",
+                              className = "org.test.config.adapter.InteractionSpecImpl",
+                              properties = "functionName=doSomethingUseful")
 
 @ConnectionFactoryDefinitions({
                                 @ConnectionFactoryDefinition(name = "java:module/env/eis/cf1", // same JNDI name is used in WAR module, but okay because different scope
@@ -41,6 +49,20 @@ import javax.resource.ConnectionFactoryDefinitions;
                                                "enableBetaContent=true",
                                                "portNumber=8765"
                                 })
+
+@JMSDestinationDefinitions({
+                             @JMSDestinationDefinition(name = "java:global/env/jms/dest1",
+                                                       interfaceName = "javax.jms.Destination",
+                                                       resourceAdapter = "ConfigTestAdapter",
+                                                       destinationName = "3605 Hwy 52N, Rochester, MN 55901"),
+                             @JMSDestinationDefinition(name = "java:comp/env/jms/topic1",
+                                                       interfaceName = "javax.jms.Topic",
+                                                       destinationName = "MyTopic",
+                                                       properties = {
+                                                                      "priority=8",
+                                                                      "timeToLive=4m6s"
+                                                       })
+})
 
 @Stateless
 @Local
