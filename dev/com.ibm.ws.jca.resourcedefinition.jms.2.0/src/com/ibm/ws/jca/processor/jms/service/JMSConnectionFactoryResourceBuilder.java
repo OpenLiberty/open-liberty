@@ -103,7 +103,7 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
     private static final String CREATES_OBJECTCLASS = "creates.objectClass";
     private static final String RESOURCE_ADAPTER = "resourceAdapter";
     private static final String INTERFACE_NAME = "interfaceName";
-    private static final String USER_NAME_PORP = "userName";
+    private static final String USER_NAME_PROP = "userName";
     private static final String USER_PROP = "user";
 
     private BundleContext bundleContext;
@@ -163,6 +163,11 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
             annotationDDProps.put(prop.getKey(), value);
         }
 
+        // TODO Connection factory's client id property might not exactly match
+        //Object clientId = props.get("clientId");
+        //if (clientId != null && !annotationDDProps.containsKey("clientID"))
+        //    annotationDDProps.put("clientID", clientId);
+
         String application = (String) annotationDDProps.remove(AppDefinedResource.APPLICATION);
         String declaringApplication = (String) annotationDDProps.remove(DECLARING_APPLICATION);
         String module = (String) annotationDDProps.remove(AppDefinedResource.MODULE);
@@ -212,7 +217,6 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         //Note: Its not necessary for the user to specify the props which has default value, so we set them in here.
         Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(resourceAdapter, interfaceName);
 
-        String configPropsPid = null;
         for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
             String key = keys.nextElement();
             Object value = connectionFactoryDefaultProps.get(key);
@@ -225,7 +229,7 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
                 value = variableRegistry.resolveString((String) value);
 
             if ("config.displayId".equals(key))
-                connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", configPropsPid = (String) value);
+                connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
             else
                 connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
         }
@@ -235,7 +239,7 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         //The key "password" do not have any inconsistency, so not handled here
         //TODO: There may some third party resource adapters which may have naming inconsistency with different properties, to handle that in future we can keep the mapping(inProp = outProp) in a collection
         //so that it can be handled dynamically.
-        annotationDDProps.put(USER_NAME_PORP, annotationDDProps.get(USER_PROP));
+        annotationDDProps.put(USER_NAME_PROP, annotationDDProps.get(USER_PROP));
 
         //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter,
         //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
@@ -243,6 +247,10 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         AttributeDefinition[] attributeDefinitions = getAttributeDefinitions(resourceAdapter, interfaceName);
         for (AttributeDefinition attributeDefinition : attributeDefinitions) {
             Object value = annotationDDProps.remove(attributeDefinition.getID());
+            // TODO standard clientId annotation attribute is not being applied to clientID resource adapter property, which varies only in case.
+            // The following is one possible way to fix,
+            //if (value == null && attributeDefinition.getID().equalsIgnoreCase("clientId"))
+            //    value = annotationDDProps.remove("clientId"); // how should the default "" value be interpreted?
             if (value != null) {
 
                 if (value instanceof String)
@@ -256,20 +264,6 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
             if ((value = annotationDDProps.remove(name)) != null)
                 cmSvcProps.put(name, value);
-
-        // TODO it seems like JMSConnectionFactoryDefinition would need the same fix as JCA ConnectionFactoryDefinition
-        // with respect to configured properties that don't have defaults, however the built-in wasJms doesn't exhibit any
-        // failures here. Is that because it has defaults for all properties? Need to write a test with a different
-        // JMS resource adapter that lacks defaults in order to verify that we need the following code:
-
-        // Add remaining properties
-        //WSConfigurationHelper configHelper = wsConfigurationHelperRef.getServiceWithException();
-        //for (Map.Entry<String, Object> entry : annotationDDProps.entrySet()) {
-        //    String key = entry.getKey();
-        //    String attrName = configHelper.getMetaTypeAttributeName(configPropsPid, key);
-        //    if (attrName != null && !"INTERNAL".equalsIgnoreCase(attrName))
-        //        connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, entry.getValue());
-        //}
 
         BundleContext bundleContext = FrameworkUtil.getBundle(ConnectionFactoryService.class).getBundleContext();
 
@@ -363,7 +357,6 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
      */
     private AttributeDefinition[] getAttributeDefinitions(String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
         Bundle bundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
-        AttributeDefinition[] ads = null;
         if (bundle != null) {
 
             MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundle);

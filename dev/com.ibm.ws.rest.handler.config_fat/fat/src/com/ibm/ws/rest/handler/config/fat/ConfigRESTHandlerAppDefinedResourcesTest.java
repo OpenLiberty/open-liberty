@@ -600,14 +600,14 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
         // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
 
-        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
-        // assertNull(err, cf.get("creates.objectClass"));
-        // assertNull(err, cf.get("jndiName.unique"));
+        assertNull(err, cf.get("creates.objectClass"));
+        assertNull(err, cf.get("jndiName.unique"));
 
         JsonObject props;
         assertNotNull(err, props = cf.getJsonObject("properties.wasJms"));
         assertEquals(err, "cfBus", props.getString("busName"));
-        // assertEquals(err, "JMSClientID6", props.getString("clientID")); // TODO why isn't the configured value honored?
+        // TODO JMSConnectionFactoryResourceBuilder doesn't consider clientId (from annotation) and clientID (defined by resource adapter) to have the same meaning
+        // assertEquals(err, "JMSClientID6", props.getString("clientID"));
         assertEquals(err, "defaultME", props.getString("durableSubscriptionHome"));
         assertEquals(err, "ExpressNonPersistent", props.getString("nonPersistentMapping"));
         assertEquals(err, "ReliablePersistent", props.getString("persistentMapping"));
@@ -657,9 +657,8 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
         // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
 
-        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
-        // assertNull(err, cf.get("creates.objectClass"));
-        // assertNull(err, cf.get("jndiName.unique"));
+        assertNull(err, cf.get("creates.objectClass"));
+        assertNull(err, cf.get("jndiName.unique"));
 
         JsonObject props;
         assertNotNull(err, props = cf.getJsonObject("properties.wasJms"));
@@ -708,13 +707,12 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
 
         // support for containerAuthDataRef/recoveryAuthDataRef was never added to app-defined connection factories
 
-        // TODO internal properties should not be included (also a problem for dataSource and connectionFactory)
-        // assertNull(err, cf.get("creates.objectClass"));
-        // assertNull(err, cf.get("jndiName.unique"));
+        assertNull(err, cf.get("creates.objectClass"));
+        assertNull(err, cf.get("jndiName.unique"));
 
         JsonObject props;
         assertNotNull(err, props = cf.getJsonObject("properties.ConfigTestAdapter"));
-        assertTrue(err, props.getBoolean("enableBetaContent")); // TODO if JMS path had the same unfixed bug as JCA, this should have failed. Need to look into this.
+        assertTrue(err, props.getBoolean("enableBetaContent"));
         assertEquals(err, "localhost", props.getString("hostName"));
         assertEquals(err, 8765, props.getInt("portNumber"));
 
