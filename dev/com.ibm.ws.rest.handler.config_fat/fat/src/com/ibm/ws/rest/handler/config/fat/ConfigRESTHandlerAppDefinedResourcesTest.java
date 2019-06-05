@@ -93,6 +93,33 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     }
 
     /**
+     * Use the /ibm/api/config REST endpoint to obtain configuration for an application-defined administered object.
+     */
+    @Test
+    public void testAppDefinedAdminObject() throws Exception {
+        JsonObject cspec = new HttpsRequest(server, "/ibm/api/config/adminObject/adminObject%5Bjava:global%2Fenv%2Feis%2FconSpec1%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + cspec;
+
+        assertEquals(err, "adminObject", cspec.getString("configElementName"));
+        assertEquals(err, "adminObject[java:global/env/eis/conSpec1]", cspec.getString("uid"));
+        assertEquals(err, "adminObject[java:global/env/eis/conSpec1]", cspec.getString("id"));
+        assertEquals(err, "java:global/env/eis/conSpec1", cspec.getString("jndiName"));
+
+        assertNull(err, cspec.get("application"));
+        assertNull(err, cspec.get("module"));
+        assertNull(err, cspec.get("component"));
+
+        JsonObject props;
+        assertNotNull(err, props = cspec.getJsonObject("properties.ConfigTestAdapter.ConnectionSpec"));
+        assertEquals(err, 4, props.size());
+        assertEquals(err, 10203l, props.getJsonNumber("connectionTimeout").longValue());
+        assertFalse(err, props.getBoolean("readOnly"));
+        assertEquals(err, "aouser1", props.getString("userName"));
+        assertEquals(err, "******", props.getString("password"));
+    }
+
+    /**
      * Use the /ibm/api/config REST endpoint to obtain configuration for app-defined connection factories with the
      * jndiName that is supplied as a query parameter.
      */

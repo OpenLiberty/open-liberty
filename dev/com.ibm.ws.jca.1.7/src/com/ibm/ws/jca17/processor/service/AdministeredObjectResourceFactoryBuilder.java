@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -210,7 +210,10 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
             if (value instanceof String)
                 value = variableRegistry.resolveString((String) value);
 
-            adminObjectSvcProps.put(BASE_PROPERTIES_KEY + key, value);
+            if ("config.displayId".equals(key))
+                adminObjectSvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", value);
+            else
+                adminObjectSvcProps.put(BASE_PROPERTIES_KEY + key, value);
         }
 
         adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
@@ -287,9 +290,9 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
      * application[MyApp]/module[MyModule]/connectionFactory[java:module/env/jdbc/cf1]
      *
      * @param application application name if data source is in java:app, java:module, or java:comp. Otherwise null.
-     * @param module module name if data source is in java:module or java:comp. Otherwise null.
-     * @param component component name if data source is in java:comp and isn't in web container. Otherwise null.
-     * @param jndiName configured JNDI name for the data source. For example, java:module/env/jca/cf1
+     * @param module      module name if data source is in java:module or java:comp. Otherwise null.
+     * @param component   component name if data source is in java:comp and isn't in web container. Otherwise null.
+     * @param jndiName    configured JNDI name for the data source. For example, java:module/env/jca/cf1
      * @return the unique identifier
      */
     private static final String getadminObjectID(String application, String module, String component, String jndiName) {
