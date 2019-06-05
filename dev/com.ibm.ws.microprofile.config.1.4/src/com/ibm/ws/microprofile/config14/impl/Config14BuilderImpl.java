@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config14.impl;
 
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
@@ -29,8 +31,8 @@ public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBu
      * @param classLoader the classloader which scopes this config
      * @param executor    the executor to use for async update threads
      */
-    public Config14BuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor) {
-        super(classLoader, executor);
+    public Config14BuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor, Set<ConfigSource> internalConfigSources) {
+        super(classLoader, executor, internalConfigSources);
     }
 
     @Override
