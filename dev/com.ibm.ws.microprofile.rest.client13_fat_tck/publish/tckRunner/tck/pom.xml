@@ -217,7 +217,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.4.11</version>
-            <scope>test</scope>
         </dependency>
         
         <dependency>
