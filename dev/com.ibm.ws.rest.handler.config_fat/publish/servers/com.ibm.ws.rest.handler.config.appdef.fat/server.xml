@@ -54,4 +54,13 @@
   </library>
   
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+  <javaPermission codebase="${server.config.dir}/connectors/ConfigTestAdapter.rar"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+  <javaPermission codebase="${server.config.dir}/connectors/ConfigTestAdapter.rar"
+                  className="javax.security.auth.PrivateCredentialPermission"
+                  signedBy="javax.resource.spi.security.PasswordCredential"
+                  principalType="*" principalName="*" actions="read"/>
+
 </server>

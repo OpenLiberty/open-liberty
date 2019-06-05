@@ -59,17 +59,17 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
 
     @Override
     public Object createConnectionFactory() throws ResourceException {
-        return createConnectionFactory(null);
+        throw new NotSupportedException();
     }
 
     @Override
     public Object createConnectionFactory(ConnectionManager cm) throws ResourceException {
-        return new ConnectionFactoryImpl();
+        return new ConnectionFactoryImpl(cm, this);
     }
 
     @Override
     public ManagedConnection createManagedConnection(Subject subject, ConnectionRequestInfo cri) throws ResourceException {
-        throw new NotSupportedException();
+        return new ManagedConnectionImpl(this);
     }
 
     public Boolean getEnableBetaContent() {

@@ -34,6 +34,6 @@ public class ManagedJDBCConnectionFactoryImpl extends ManagedConnectionFactoryIm
 
     @Override
     public Object createConnectionFactory(ConnectionManager cm) throws ResourceException {
-        return new DataSourceImpl();
+        return new DataSourceImpl(cm, this);
     }
 }
