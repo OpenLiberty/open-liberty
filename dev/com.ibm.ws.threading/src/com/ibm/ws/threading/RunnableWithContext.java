@@ -8,7 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.threading;
+package com.ibm.ws.threading;
+
+import com.ibm.wsspi.threading.WorkContext;
 
 /**
  *
