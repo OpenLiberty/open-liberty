@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,26 +86,28 @@ public class Util {
         return SHARED_METRIC_REGISTRIES.getOrCreate(registryName);
     }
 
-    public static Map<String, Number> getTimerNumbers(Timer timer) {
+    public static Map<String, Number> getTimerNumbers(Timer timer, double conversionFactor) {
         Map<String, Number> results = new HashMap<String, Number>();
+
+        // These do not need to be converted due to having their own unique unit/no unit
         results.put(Constants.COUNT, timer.getCount());
         results.put(Constants.MEAN_RATE, timer.getMeanRate());
         results.put(Constants.ONE_MINUTE_RATE, timer.getOneMinuteRate());
         results.put(Constants.FIVE_MINUTE_RATE, timer.getFiveMinuteRate());
         results.put(Constants.FIFTEEN_MINUTE_RATE, timer.getFifteenMinuteRate());
 
-        results.put(Constants.MAX, timer.getSnapshot().getMax());
-        results.put(Constants.MEAN, timer.getSnapshot().getMean());
-        results.put(Constants.MIN, timer.getSnapshot().getMin());
+        results.put(Constants.MAX, (timer.getSnapshot().getMax()) / conversionFactor);
+        results.put(Constants.MEAN, timer.getSnapshot().getMean() / conversionFactor);
+        results.put(Constants.MIN, timer.getSnapshot().getMin() / conversionFactor);
 
-        results.put(Constants.STD_DEV, timer.getSnapshot().getStdDev());
+        results.put(Constants.STD_DEV, timer.getSnapshot().getStdDev() / conversionFactor);
 
-        results.put(Constants.MEDIAN, timer.getSnapshot().getMedian());
-        results.put(Constants.PERCENTILE_75TH, timer.getSnapshot().get75thPercentile());
-        results.put(Constants.PERCENTILE_95TH, timer.getSnapshot().get95thPercentile());
-        results.put(Constants.PERCENTILE_98TH, timer.getSnapshot().get98thPercentile());
-        results.put(Constants.PERCENTILE_99TH, timer.getSnapshot().get99thPercentile());
-        results.put(Constants.PERCENTILE_999TH, timer.getSnapshot().get999thPercentile());
+        results.put(Constants.MEDIAN, timer.getSnapshot().getMedian() / conversionFactor);
+        results.put(Constants.PERCENTILE_75TH, timer.getSnapshot().get75thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_95TH, timer.getSnapshot().get95thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_98TH, timer.getSnapshot().get98thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_99TH, timer.getSnapshot().get99thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_999TH, timer.getSnapshot().get999thPercentile() / conversionFactor);
 
         return results;
     }
