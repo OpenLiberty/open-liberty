@@ -172,8 +172,10 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
         SortedSet<String> keys = new TreeSet<String>();
         for (java.util.Enumeration<String> en = config.keys(); en.hasMoreElements();) {
             String key = en.nextElement();
-            //don't display items starting with config. or service. or ibm.extends (added by config service)
-            if (key.startsWith("config.") || key.startsWith("service.") || key.startsWith("ibm.extends")) {
+            // Don't display items starting with config. or service. or ibm.extends (added by config service)
+            // Also don't display items added by app-defined resources
+            if (key.startsWith("config.") || key.startsWith("service.") || key.startsWith("ibm.extends") ||
+                key.equals("creates.objectClass") || key.equals("jndiName.unique")) {
                 continue;
             }
 

@@ -22,6 +22,8 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
@@ -43,17 +45,18 @@ import com.ibm.websphere.ras.TraceComponent;
 @Produces({ "*/*" })
 @Consumes({ "*/*" })
 @Provider
-public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
+public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object>, UnaryOperator<Jsonb> {
 
     private final static TraceComponent tc = Tr.register(JsonBProvider.class);
-    private final Jsonb jsonb;
+    private final JsonbProvider jsonbProvider;
+    private final AtomicReference<Jsonb> jsonb = new AtomicReference<>();
     private final Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers;
 
     public JsonBProvider(JsonbProvider jsonbProvider, Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers) {
         this.contextResolvers = contextResolvers;
 
         if(jsonbProvider != null) {
-            this.jsonb = jsonbProvider.create().build();
+            this.jsonbProvider = jsonbProvider;
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "<init> called with null provider - looking up via META-INF/services/"
@@ -83,11 +86,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
 
                         throw new IllegalArgumentException("jsonbProvider can't be null");
                     }});
-                if (provider != null) {
-                    this.jsonb = provider.create().build();
-                } else {
-                    this.jsonb = null;
-                }
+                this.jsonbProvider = provider;
             } catch (PrivilegedActionException ex) {
                 Throwable t = ex.getCause();
                 if (t instanceof RuntimeException) {
@@ -188,6 +187,26 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Context-injected Providers is null");
         }
-        return this.jsonb;
+        if (jsonbProvider == null) {
+            return null;
+        }
+
+        Jsonb json = jsonb.get();
+        if (json == null) {
+            return jsonb.updateAndGet(this);
+        }
+
+        return json;
+    }
+
+    /**
+     * @see java.util.function.Function#apply(java.lang.Object)
+     */
+    @Override
+    public Jsonb apply(Jsonb t) {
+        if (t != null) {
+            return t;
+        }
+        return jsonbProvider.create().build();
     }
 }
