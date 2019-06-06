@@ -55,6 +55,7 @@ import com.ibm.wsspi.validator.Validator;
            service = { Validator.class },
            property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation",
                         "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.connectionFactory",
+                        "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.connectionFactory.supertype", // used by app-defined connection factory
                         "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.jmsConnectionFactory",
                         "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.jmsQueueConnectionFactory",
                         "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.jmsTopicConnectionFactory"

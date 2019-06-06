@@ -12,13 +12,25 @@ package org.test.config.adapter;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.logging.Logger;
 
+import javax.resource.ResourceException;
+import javax.resource.spi.ConnectionManager;
 import javax.sql.DataSource;
 
 public class DataSourceImpl implements DataSource {
+    private final ConnectionManager cm;
+    private final ManagedConnectionFactoryImpl mcf;
+
+    DataSourceImpl(ConnectionManager cm, ManagedConnectionFactoryImpl mcf) {
+        this.cm = cm;
+        this.mcf = mcf;
+    }
+
     @Override
     public Connection getConnection() throws SQLException {
         return getConnection(null, null);
@@ -26,7 +38,15 @@ public class DataSourceImpl implements DataSource {
 
     @Override
     public Connection getConnection(String user, String password) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        ConnectionSpecImpl cri = new ConnectionSpecImpl();
+        cri.interfaces = new Class<?>[] { Connection.class, DatabaseMetaData.class };
+        try {
+            return (Connection) cm.allocateConnection(mcf, cri);
+        } catch (SecurityException x) {
+            throw new SQLInvalidAuthorizationSpecException(x);
+        } catch (ResourceException x) {
+            throw new SQLException(x);
+        }
     }
 
     @Override
