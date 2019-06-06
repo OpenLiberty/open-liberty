@@ -189,7 +189,6 @@ public class JPA10Injection_DMI_YesInheritance_EJB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation(applicationName);
 
         Application appRecord = new Application();
         appRecord.setLocation(applicationName + ".ear");
@@ -202,6 +201,7 @@ public class JPA10Injection_DMI_YesInheritance_EJB extends JPAFATServletClient {
             cel.add(loader);
         }
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

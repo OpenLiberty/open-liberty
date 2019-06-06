@@ -79,12 +79,12 @@ public class JPAFATServletClient extends FATServletClient {
         ShrinkHelper.addDirectory(webApp, ddlPath);
 
         ShrinkHelper.exportToServer(server, "apps", webApp, DeployOptions.OVERWRITE);
-        server.addInstalledAppForValidation("DatabaseManagement");
 
         Application appRecord = new Application();
         appRecord.setLocation("DatabaseManagement.war");
         appRecord.setName("DatabaseManagement");
 
+        server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server.updateServerConfiguration(sc);

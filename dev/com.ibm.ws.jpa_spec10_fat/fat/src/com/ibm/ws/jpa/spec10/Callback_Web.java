@@ -127,12 +127,12 @@ public class Callback_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("Callback_Web");
 
         Application appRecord = new Application();
         appRecord.setLocation("Callback_Web.ear");
         appRecord.setName("Callback_Web");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

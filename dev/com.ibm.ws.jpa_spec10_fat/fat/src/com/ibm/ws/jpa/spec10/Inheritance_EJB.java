@@ -131,12 +131,12 @@ public class Inheritance_EJB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("Inheritance10_EJB");
 
         Application appRecord = new Application();
         appRecord.setLocation("Inheritance10_EJB.ear");
         appRecord.setName("Inheritance10_EJB");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

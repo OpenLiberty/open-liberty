@@ -42,9 +42,10 @@
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 <!--  
     <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
-traceFileName="trace.log"
-maxFileSize="2000"
-maxFiles="10"
-traceFormat="BASIC" />
- -->
+-->
+    <logging traceSpecification="applications=all"
+             traceFileName="trace.log"
+             maxFileSize="2000"
+             maxFiles="10"
+             traceFormat="BASIC" />
 </server>
