@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,14 +99,14 @@ public class MetricsAuthenticationTest {
 
         //check that opening connection to /metrics requires authentication by default
 
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
 
         MetricsConnection authenticationNotSpecified = MetricsConnection.connection_administratorRole(server);
         authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         // check that when the authenticated user is in the Reader role, authorization is granted
-        MetricsConnection readerRole200 = MetricsConnection.connection_readerRole(server);
-        readerRole200.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+        //MetricsConnection readerRole200 = MetricsConnection.connection_readerRole(server);
+        //readerRole200.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         // check that when the valid user is not in an authorized role, 403 FORBIDDEN is returned
         MetricsConnection unauthorized403 = MetricsConnection.connection_unauthorized(server);
