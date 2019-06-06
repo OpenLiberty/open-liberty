@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 /**
- * Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.
+ * Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks on FAT projects.
  */
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')

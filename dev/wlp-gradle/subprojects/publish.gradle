@@ -9,15 +9,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-apply plugin: 'com.gradle.build-scan'
+/**
+ * Apply Maven Publish plugin and configure publications.
+ * See: https://docs.gradle.org/current/userguide/publishing_maven.html
+ */
+plugins.apply 'maven-publish'
 
-buildScan {
-    def acceptFile = new File(gradle.gradleUserHomeDir, "build-scans/open-liberty/gradle-scans-license-agree.txt")
-    boolean isCiServer = System.getenv().containsKey("CI")
-    boolean hasAccepted = isCiServer || acceptFile.exists() && acceptFile.text.trim() == 'yes'
-    
-    termsOfServiceUrl   = 'https://gradle.com/terms-of-service'
-    if (hasAccepted) {
-        termsOfServiceAgree = 'yes'
+publishing {
+    repositories {
+        maven {
+            url uri(cnf.file("release"))
+        }
     }
 }

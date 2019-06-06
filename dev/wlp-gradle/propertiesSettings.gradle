@@ -12,43 +12,42 @@
 import java.text.SimpleDateFormat
 
 /**
- * Set properties to gradle.userProps and rootProject.ext from:
- *  ~/gradle.startup.properties or the System property build.properties.path
- *  ./generated.properties
+ * Set additional properties on `gradle.userProps` and `rootProject.ext`.
  */
 def setProperties = { props ->
     /**
-     * Properties for automated build tasks.
+     * Properties used to configure automated build tasks.
      */
     // Retain properties from prior builds by loading from generated.properties.
     File genPropsFile = file('../generated.properties')
+    def storedProps = [
+        'tests.total.failed',
+        'tests.total.successful',
+        'zipopenliberty.archivename',
+        'zipopenliberty.runtime.archivename',
+        'zipopenliberty.kernel.archivename',
+        'zipopenliberty.webprofile8.archivename',
+        'zipopenliberty.javaee8.archivename',
+        'zipopenliberty.microprofile2.archivename'
+    ]
     if (genPropsFile.exists()) {
         Properties genProps = new Properties()
         genPropsFile.withInputStream { genProps.load(it) }
-        def propsToLoad = [
-                'tests.total.failed',
-                'tests.total.successful',
-                'zipopenliberty.archivename',
-                'zipopenliberty.runtime.archivename',
-                'zipopenliberty.kernel.archivename',
-                'zipopenliberty.webprofile8.archivename',
-                'zipopenliberty.javaee8.archivename',
-                'zipopenliberty.microprofile2.archivename'
-        ]
-        propsToLoad.each { prop ->
-            if (genProps[prop] != null) {
-                props.setProperty(prop, genProps[prop])
+        storedProps.each { key ->
+            def value = genProps[key]
+            if (value != null) {
+                props.setProperty(key, value)
             }
         }
     }
 
-    def isUsingArtifactory  = props.getProperty('is.using.artifactory') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.using.artifactory'))
-    def isAutomatedBuild    = props.getProperty("buildResultUUID") != null
-    def isPersonal          = props.getProperty('is.personal') == null              ? false : 'true'.equalsIgnoreCase(props.getProperty('is.personal'))
-    def isContinuousBuild   = props.getProperty('is.continuous.build') == null      ? false : 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
-    def isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
-    def isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
-    def isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
+    boolean isUsingArtifactory  = props.getProperty('is.using.artifactory') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.using.artifactory'))
+    boolean isAutomatedBuild    = props.getProperty("buildResultUUID") != null && props.getProperty('buildLabel') != null
+    boolean isPersonal          = props.getProperty('is.personal') == null              ? false : 'true'.equalsIgnoreCase(props.getProperty('is.personal'))
+    boolean isContinuousBuild   = props.getProperty('is.continuous.build') == null      ? false : 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
+    boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
+    boolean isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
+    boolean isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
 
     props.setProperty('is.automated.build',       isAutomatedBuild.toString())
     props.setProperty('is.personal',              isPersonal.toString())
@@ -74,7 +73,7 @@ def setProperties = { props ->
     }
 
     /**
-     * Properties for the JDK.
+     * Properties for the build's JDK dependencies.
      */
     def javaHome = org.gradle.internal.jvm.Jvm.current().getJavaHome()
     props.setProperty('java.home', javaHome.getAbsolutePath())
@@ -89,7 +88,7 @@ def setProperties = { props ->
     jdkLibs.exclude 'lib/ibmcfw.jar' //has com.ibm.nws.ejs.ras.Tr, which we don't want
 
     def jdkLibString = ""
-    Boolean isFirstPass = true;
+    boolean isFirstPass = true;
 
     jdkLibs.each { File file ->
         if (isFirstPass) {
@@ -114,30 +113,26 @@ def setProperties = { props ->
     }
 
     /**
-     * Properties used for versioning build outputs.
+     * Properties used for to version build outputs.
      */
-    def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
-    def qualifier = timestamp
+    String timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+    String qualifier = timestamp
 
     // For release builds we use the buildLabel as a consistent qualifier.
     // buildLabel is set by the RTC build engines.
-    if (isRelease && (props.getProperty('buildLabel') != null)) {
+    if (isRelease && isAutomatedBuild) {
         qualifier = props.getProperty('buildLabel')
     }
 
     props.setProperty('version.qualifier', qualifier)
     props.setProperty('buildLabel', timestamp)
 
-    gradle.rootProject { rootProject ->
-        rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")
-        rootProject.ext.releaseVersionOverride = gradle.userProps.getProperty('release.version.override')
-    }
-
     /**
-     * Set each property in userProps to extra properties on the rootProject.
+     * For each property in `gradle.userProps`, set it to rootProject's extra project properties.
      */
     gradle.rootProject { rootProject ->
         rootProject.ext.userProps = gradle.userProps
+        rootProject.ext.storedProps = storedProps
         gradle.userProps.each { prop ->
             rootProject.ext.set(prop.key, prop.value.toString())
         }

@@ -10,10 +10,10 @@
  *******************************************************************************/
 
 /**
- * Configure Gradle build cache.
+ * Configure Gradle Build Cache.
  * See: https://docs.gradle.org/current/userguide/build_cache.html
  */
-boolean isCiServer = System.getenv().containsKey("CI")
+boolean isCiServer = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))
 String buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.download.server') + '/artifactory/wasliberty-generic-local/')
 if (isCiServer) {
   buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-generic-local/')
@@ -21,7 +21,7 @@ if (isCiServer) {
 
 buildCache {
   local {
-    enabled = !isCiServer
+    enabled = !'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.automated.build'))
   }
 
   if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
