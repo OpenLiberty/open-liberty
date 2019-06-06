@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.utils;
 
-/**
- *
- */
 public class StringUtils {
 
     public static boolean isEmpty(String str) {

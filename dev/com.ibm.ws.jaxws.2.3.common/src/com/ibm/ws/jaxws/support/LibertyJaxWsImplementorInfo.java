@@ -155,7 +155,6 @@ public class LibertyJaxWsImplementorInfo extends JaxWsImplementorInfo {
         }
 
         URL wsdlUrl = JaxWsUtils.resolve(endpointInfo.getWsdlLocation(), publisherContext.getModuleMetaData().getModuleContainer());
-        // return wsdlLocation = (null == wsdlUrl ? "" : wsdlUrl.toString());
         return wsdlLocation = (null == wsdlUrl ? endpointInfo.getWsdlLocation() : wsdlUrl.toString());
     }
 

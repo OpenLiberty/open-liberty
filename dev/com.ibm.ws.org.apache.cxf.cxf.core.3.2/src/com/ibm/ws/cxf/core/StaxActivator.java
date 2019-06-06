@@ -26,13 +26,14 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 /**
- *
+ *  This is a DS Component that is used to disable the CXF Woodstox requirement. This is 
+ *  nearly straight copy of the JaxRsServiceActivator in the jaxrs.2.0.common component. 
+ *  We disable Woodstox as JAX-WS defaults IBM's XLXP if that's availbile. 
  */
 @Component(property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class StaxActivator {
-
-
 
     private static final Logger LOG = LogUtils.getL7dLogger(JAXBUtils.class);
     /*

@@ -134,9 +134,6 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
         }
 
-//        if (!wsdlLocationEmpty && wsdlUrl == null) {
-//            wsdlLocationExisted = false;
-//        }
         if (!wsdlLocationEmpty && wsdlLocationExisted) {
             return;
         }

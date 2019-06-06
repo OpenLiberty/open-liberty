@@ -19,9 +19,6 @@ import javax.xml.ws.handler.MessageContext;
 import org.apache.cxf.jaxws.context.WebServiceContextImpl;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class WebServiceContextWrapper implements WebServiceContext {
 
     private WebServiceContext context = null;

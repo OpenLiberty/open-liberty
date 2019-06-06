@@ -19,9 +19,6 @@ import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 
-/**
- *
- */
 public class JaxWsPublisherContext {
 
     public static final String SERVLET_CONTEXT = "SERVLET_CONTEXT";

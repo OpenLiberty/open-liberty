@@ -18,9 +18,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
 
-/**
- * 
- */
 public class JMXBusInitializer implements LibertyApplicationBusListener {
 
     private static final TraceComponent tc = Tr.register(JMXBusInitializer.class);

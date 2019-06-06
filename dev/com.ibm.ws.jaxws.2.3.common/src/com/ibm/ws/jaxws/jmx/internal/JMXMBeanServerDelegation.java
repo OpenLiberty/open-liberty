@@ -54,9 +54,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 
-/**
- *
- */
 public class JMXMBeanServerDelegation implements MBeanServer {
 
     private static final TraceComponent tc = Tr.register(JMXMBeanServerDelegation.class);

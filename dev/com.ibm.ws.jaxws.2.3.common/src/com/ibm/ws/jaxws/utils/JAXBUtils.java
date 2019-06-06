@@ -20,9 +20,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.util.ThreadContextAccessor;
 
-/**
- *
- */
 public class JAXBUtils {
 
     private static final TraceComponent tc = Tr.register(JAXBUtils.class);

@@ -12,9 +12,6 @@ package com.ibm.ws.jaxws.internal;
 
 import java.util.ResourceBundle;
 
-/**
- *
- */
 public class JaxWsCommonConstants {
 
     public static final String TR_RESOURCE_BUNDLE = "com.ibm.ws.jaxws.internal.resources.JaxWsCommonMessages";

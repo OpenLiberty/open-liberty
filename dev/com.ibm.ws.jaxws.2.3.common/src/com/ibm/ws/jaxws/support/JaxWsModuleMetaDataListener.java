@@ -60,7 +60,6 @@ public class JaxWsModuleMetaDataListener implements ModuleMetaDataListener, Modu
         Container moduleContainer = moduleInfo.getContainer();
 
         try {
-            //228047:  Only EJB and Web modules are appropriate for JAXWS
             if (!(JaxWsUtils.isEJBModule(moduleContainer)) &&
                 !(JaxWsUtils.isWebModule(moduleContainer))) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

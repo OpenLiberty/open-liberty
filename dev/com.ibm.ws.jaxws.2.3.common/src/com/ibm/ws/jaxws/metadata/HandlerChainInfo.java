@@ -17,9 +17,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-/**
- *
- */
 public class HandlerChainInfo implements Serializable {
 
     private static final long serialVersionUID = -637871918385157230L;

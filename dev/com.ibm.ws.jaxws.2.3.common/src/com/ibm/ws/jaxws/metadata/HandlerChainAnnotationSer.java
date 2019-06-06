@@ -14,11 +14,8 @@ import java.io.Serializable;
 
 import javax.jws.HandlerChain;
 
-/**
- *
- */
 public class HandlerChainAnnotationSer implements Serializable {
-    /**  */
+    
     private static final long serialVersionUID = 7771198760827340305L;
     private String file;
     private String name;

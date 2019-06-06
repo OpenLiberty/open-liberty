@@ -46,9 +46,7 @@ import org.w3c.dom.Node;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-/**
- *
- */
+
 @NoJSR250Annotations
 public class DynamicAttachmentProvider extends AbstractPolicyProvider implements PolicyProvider {
     private static final TraceComponent tc = Tr.register(DynamicAttachmentProvider.class);
@@ -334,7 +332,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
      */
     @Override
     public Policy getEffectivePolicy(ServiceInfo arg0, Message arg1) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -345,7 +342,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
      */
     @Override
     public Policy getEffectivePolicy(EndpointInfo arg0, Message arg1) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -356,7 +352,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
      */
     @Override
     public Policy getEffectivePolicy(BindingOperationInfo arg0, Message arg1) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -367,7 +362,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
      */
     @Override
     public Policy getEffectivePolicy(BindingMessageInfo arg0, Message arg1) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -378,7 +372,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
      */
     @Override
     public Policy getEffectivePolicy(BindingFaultInfo arg0, Message arg1) {
-        // TODO Auto-generated method stub
         return null;
     }
 

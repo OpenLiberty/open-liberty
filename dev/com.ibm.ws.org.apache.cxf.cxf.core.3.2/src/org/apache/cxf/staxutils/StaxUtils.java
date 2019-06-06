@@ -331,7 +331,6 @@ public final class StaxUtils {
                 factory = createWoodstoxFactory();
             } catch (Throwable t) {
                 if (LOG.isLoggable(Level.FINE)) {
-                    //LOG.log(Level.FINE, "Cannot create Woodstox XMLInputFactory: ", t);
                     LOG.log(Level.FINE, "Cannot create Woodstox XMLInputFactory ");
                     if(t instanceof NoClassDefFoundError)
                         LOG.log(Level.FINE, "The WoodStox API is not availible on the classpath");

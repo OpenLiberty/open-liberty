@@ -18,9 +18,6 @@ import javax.xml.ws.WebServiceContext;
 
 import com.ibm.wsspi.injectionengine.ObjectFactoryInfo;
 
-/**
- *
- */
 public class WebServiceContextObjectFactoryInfo extends ObjectFactoryInfo {
 
     /** {@inheritDoc} */

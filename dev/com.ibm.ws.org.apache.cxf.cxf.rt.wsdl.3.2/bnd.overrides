@@ -9,6 +9,7 @@ Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.wsdl.NoOpActivator
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
+*
 
 Export-Package: \
   com.ibm.ws.jaxws23.cxf.rt.wsdl,\

@@ -32,6 +32,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
  * LibertyHTTPConduit extends HTTPConduit so that we can set the TCCL when run the handleResponseInternal asynchronously
  *
  * @TJJ Added unimplemented methods
+ * TODO Implement unimplemented @Override methods
  */
 public class LibertyHTTPConduit extends HTTPConduit {
 
@@ -105,7 +106,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void setupWrappedStream() throws IOException {
-            // TODO Auto-generated method stub
+           
 
         }
 
@@ -116,7 +117,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected HttpsURLConnectionInfo getHttpsURLConnectionInfo() throws IOException {
-            // TODO Auto-generated method stub
+         
             return null;
         }
 
@@ -127,7 +128,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void setProtocolHeaders() throws IOException {
-            // TODO Auto-generated method stub
+            
 
         }
 
@@ -138,7 +139,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void setFixedLengthStreamingMode(int i) {
-            // TODO Auto-generated method stub
+   
 
         }
 
@@ -149,7 +150,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected int getResponseCode() throws IOException {
-            // TODO Auto-generated method stub
+        
             return 0;
         }
 
@@ -160,7 +161,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected String getResponseMessage() throws IOException {
-            // TODO Auto-generated method stub
+           
             return null;
         }
 
@@ -171,7 +172,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void updateResponseHeaders(Message inMessage) throws IOException {
-            // TODO Auto-generated method stub
+         
 
         }
 
@@ -182,8 +183,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void handleResponseAsync() throws IOException {
-            // TODO Auto-generated method stub
-
+            
         }
 
         /*
@@ -193,7 +193,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void closeInputStream() throws IOException {
-            // TODO Auto-generated method stub
 
         }
 
@@ -204,7 +203,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected boolean usingProxy() {
-            // TODO Auto-generated method stub
             return false;
         }
 
@@ -215,7 +213,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected InputStream getInputStream() throws IOException {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -226,7 +223,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected InputStream getPartialResponse() throws IOException {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -237,7 +233,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void setupNewConnection(String newURL) throws IOException {
-            // TODO Auto-generated method stub
 
         }
 
@@ -248,7 +243,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void retransmitStream() throws IOException {
-            // TODO Auto-generated method stub
 
         }
 
@@ -259,7 +253,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         protected void updateCookiesBeforeRetransmit() throws IOException {
-            // TODO Auto-generated method stub
 
         }
 
@@ -270,7 +263,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
          */
         @Override
         public void thresholdReached() throws IOException {
-            // TODO Auto-generated method stub
 
         }
 
@@ -284,7 +276,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
      */
     @Override
     protected void setupConnection(Message message, Address address, HTTPClientPolicy csPolicy) throws IOException {
-        // TODO Auto-generated method stub
 
     }
 
@@ -295,7 +286,6 @@ public class LibertyHTTPConduit extends HTTPConduit {
      */
     @Override
     protected OutputStream createOutputStream(Message message, boolean needToCacheRequest, boolean isChunking, int chunkThreshold) throws IOException {
-        // TODO Auto-generated method stub
         return null;
     }
 }

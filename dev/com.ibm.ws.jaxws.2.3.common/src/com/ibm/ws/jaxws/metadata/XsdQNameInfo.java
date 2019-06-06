@@ -14,12 +14,10 @@ import java.io.Serializable;
 
 import javax.xml.namespace.QName;
 
-/**
- *
- */
+
 public class XsdQNameInfo implements Serializable {
 
-    /**  */
+ 
     private static final long serialVersionUID = 2825225331176598001L;
     private QName value;
     private String id;

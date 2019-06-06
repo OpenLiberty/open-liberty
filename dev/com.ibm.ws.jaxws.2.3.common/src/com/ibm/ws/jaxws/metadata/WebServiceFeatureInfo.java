@@ -14,9 +14,6 @@ import java.io.Serializable;
 
 import javax.xml.ws.WebServiceFeature;
 
-/**
- *
- */
 public interface WebServiceFeatureInfo extends Serializable {
 
     public WebServiceFeature getWebServiceFeature();

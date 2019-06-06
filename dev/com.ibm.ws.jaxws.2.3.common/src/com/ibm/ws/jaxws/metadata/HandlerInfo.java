@@ -15,12 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- */
 public class HandlerInfo implements Serializable {
 
-    /**  */
     private static final long serialVersionUID = 938574497711221393L;
 
     private String id;

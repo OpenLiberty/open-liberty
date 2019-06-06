@@ -620,13 +620,6 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
             Class<?> inferredType = InjectionHelper.getTypeFromMember(member);
             if (typeClass.getName().equals(Object.class.getName())) { //default
                 typeClass = inferredType;
-//            } else {
-//                if (!inferredType.isAssignableFrom(typeClass)) {
-//                    Tr.error(tc, "error.service.ref.member.level.annotation.type.not.compatible",
-//                             member.getName(), member.getDeclaringClass().getName(), typeClass.getName(), inferredType.getName());
-//                    throw new InjectionException(Tr.formatMessage(tc, "error.service.ref.member.level.annotation.type.not.compatible",
-//                                                                  member.getName(), member.getDeclaringClass().getName(), typeClass.getName(), inferredType.getName()));
-//                }
             }
         }
 

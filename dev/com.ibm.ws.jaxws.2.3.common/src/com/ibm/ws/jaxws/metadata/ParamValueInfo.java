@@ -12,13 +12,10 @@ package com.ibm.ws.jaxws.metadata;
 
 import java.io.Serializable;
 
-/**
- *
- */
 public class ParamValueInfo implements Serializable {
-    /**  */
+    
     private static final long serialVersionUID = -6176841542603026554L;
-    /**  */
+  
 
     private String paramName;
     private String paramValue;

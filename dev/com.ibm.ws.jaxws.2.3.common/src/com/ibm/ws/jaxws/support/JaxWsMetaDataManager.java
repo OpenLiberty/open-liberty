@@ -116,7 +116,7 @@ public class JaxWsMetaDataManager {
      */
     public static JaxWsClientMetaData getJaxWsClientMetaData() {
         ModuleMetaData mmd = getModuleMetaData();
-        //146981
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "mmd: " + mmd);
         return getJaxWsClientMetaData(mmd);

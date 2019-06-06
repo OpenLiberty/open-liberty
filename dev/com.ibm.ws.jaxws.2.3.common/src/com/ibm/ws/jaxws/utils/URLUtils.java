@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.utils;
 
-/**
- *
- */
 public class URLUtils {
     /**
      * Checks to see if URI is absolute or relative.

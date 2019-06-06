@@ -32,7 +32,6 @@ import com.ibm.wsspi.jaxws.JaxWsService;
 /**
  * JAXWSServiceImpl is used to initial global JAX-WS configurations
  */
-
 public class JaxWsServiceImpl implements JaxWsService {
 
     private static final TraceComponent tc = Tr.register(JaxWsServiceImpl.class);

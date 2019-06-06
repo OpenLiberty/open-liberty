@@ -16,9 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-/**
- *
- */
 public class EndpointPublisherManager {
 
     private static final TraceComponent tc = Tr.register(EndpointPublisherManager.class);

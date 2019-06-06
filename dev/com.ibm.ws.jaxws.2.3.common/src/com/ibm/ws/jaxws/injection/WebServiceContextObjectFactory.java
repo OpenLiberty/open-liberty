@@ -18,9 +18,6 @@ import javax.naming.spi.ObjectFactory;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
-/**
- *
- */
 public class WebServiceContextObjectFactory implements ObjectFactory {
 
     /** {@inheritDoc} */

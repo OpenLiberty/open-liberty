@@ -251,7 +251,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 
         // Get the client metadata
         JaxWsClientMetaData declaredClientMetaData = wsrInfo.getClientMetaData();
-        //146981
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "declaredClientMetaData: " + declaredClientMetaData);
         JaxWsClientMetaData currentClientMetaData = JaxWsMetaDataManager.getJaxWsClientMetaData();
@@ -684,8 +684,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
         }
 
         if (webServicesBnd != null) {
-//            J2EEName j2eeName = jaxwsClientMetaData.getModuleMetaData().getJ2EEName();
-//            J2EEName j2eeName = ivNameSpaceConfig.getJ2EEName();
+
             String componenetName = wsrInfo.getComponenetName();
             com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef serviceRef = webServicesBnd.getServiceRef(wsrInfo.getJndiName(), componenetName);
 

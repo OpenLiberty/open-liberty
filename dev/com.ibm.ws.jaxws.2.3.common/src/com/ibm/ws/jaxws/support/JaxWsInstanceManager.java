@@ -15,9 +15,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.ibm.ws.jaxws.Destroyable;
 
-/**
- *
- */
 public class JaxWsInstanceManager {
 
     private final ClassLoader classLoader;

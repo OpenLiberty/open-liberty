@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,20 +42,13 @@ import org.w3c.dom.Node;
 
 import com.ibm.wsdl.util.xml.DOMUtils;
 
-/**
- *
- */
 public class GlobalHandlerLogicalMessageImpl extends LogicalMessageImpl {
     private final LogicalMessageContextImpl msgContext;
     private static final Logger LOG = LogUtils.getL7dLogger(GlobalHandlerLogicalMessageImpl.class);
 
-    /**
-     * @param lmctx
-     */
     public GlobalHandlerLogicalMessageImpl(LogicalMessageContextImpl lmctx) {
         super(lmctx);
         msgContext = lmctx;
-        // TODO Auto-generated constructor stub
     }
 
     @Override

@@ -14,9 +14,6 @@ import java.util.Map;
 
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
 
-/**
- *
- */
 public class LibertyApplicationBus extends ExtensionManagerBus {
 
     public enum Type {

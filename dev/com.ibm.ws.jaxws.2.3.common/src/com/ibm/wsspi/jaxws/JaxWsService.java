@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.wsspi.jaxws;
 
-/**
- *
- */
 public interface JaxWsService {
 
 }

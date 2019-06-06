@@ -34,7 +34,6 @@ public class JaxWsInjectionMetaDataListener implements InjectionMetaDataListener
     @Override
     public void injectionMetaDataCreated(InjectionMetaData injectionMetaData) throws InjectionException {
 
-        // PI22432 Adding the judgement for null
         if (injectionMetaData == null)
             return;
         

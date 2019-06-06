@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.metadata;
 
-/**
- *
- */
 public enum EndpointType {
     SERVLET, EJB, EXTENDED
 }

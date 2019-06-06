@@ -15,9 +15,6 @@ import java.io.Serializable;
 import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 
-/**
- *
- */
 public class ServiceModeInfo implements Serializable {
     private static final long serialVersionUID = -2438239508745943766L;
     private Service.Mode value;

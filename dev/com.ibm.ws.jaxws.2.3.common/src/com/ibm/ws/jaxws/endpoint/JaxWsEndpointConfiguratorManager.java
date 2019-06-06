@@ -17,9 +17,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.metadata.EndpointType;
 
-/**
- *
- */
+
 public class JaxWsEndpointConfiguratorManager {
 
     private static final TraceComponent tc = Tr.register(JaxWsEndpointConfiguratorManager.class);

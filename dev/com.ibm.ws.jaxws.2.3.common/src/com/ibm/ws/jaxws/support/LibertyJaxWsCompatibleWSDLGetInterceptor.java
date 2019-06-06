@@ -39,7 +39,6 @@ import com.ibm.websphere.ras.TraceComponent;
  * a. Report an error if the binding is not of SOAP 1.1 binding type, and the WSDL file is not included in the user applications.
  * b. Report an error If wsdlLocation is configured for the target endpoint, while the physical file could not be located.
  */
-
 public class LibertyJaxWsCompatibleWSDLGetInterceptor extends WSDLGetInterceptor {
 
     private static final TraceComponent tc = Tr.register(LibertyJaxWsCompatibleWSDLGetInterceptor.class);

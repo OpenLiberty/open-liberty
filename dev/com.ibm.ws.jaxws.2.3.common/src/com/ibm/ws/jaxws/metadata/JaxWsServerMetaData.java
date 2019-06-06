@@ -18,9 +18,6 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 
-/**
- *
- */
 public class JaxWsServerMetaData {
 
     private final LibertyApplicationBus applicationBus;

@@ -19,9 +19,6 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionTarget;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
-/**
- *
- */
 public class ReferenceContextInjectionInstanceInterceptor implements InstanceInterceptor {
 
     private final Map<Class<?>, ReferenceContext> referenceContextMap;

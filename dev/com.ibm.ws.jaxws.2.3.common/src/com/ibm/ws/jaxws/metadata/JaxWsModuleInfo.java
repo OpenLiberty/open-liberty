@@ -18,9 +18,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- */
 public class JaxWsModuleInfo implements Serializable {
 
     private static final long serialVersionUID = -8116043459266953308L;
