@@ -22,17 +22,17 @@ import java.util.regex.Pattern;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 
 import com.ibm.json.java.JSONArray;
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
  * JWT Token tools for Security testing with JWT Tokens.
- * 
+ *
  * <P>Methods in this class
  * <UL>
  * <LI>split the original string token into the different parts.
@@ -54,10 +54,10 @@ public class JwtTokenForTest {
     private String jwtSignatureString = null;
     private JsonObject jwtHeaderJson = null;
     private JsonObject jwtPayloadJson = null;
-    private JsonObject jwtSignatureJson = null;
+    private final JsonObject jwtSignatureJson = null;
     private Map<String, Object> jwtHeaderMap = null;
     private Map<String, Object> jwtPayloadMap = null;
-    private Map<String, Object> jwtSignatureMap = null;
+    private final Map<String, Object> jwtSignatureMap = null;
 
     protected static Class<?> thisClass = JwtTokenForTest.class;
 
@@ -73,7 +73,7 @@ public class JwtTokenForTest {
     /**
      * Format and load the JWT Token.
      * Split the string, decode, load maps, ...
-     * 
+     *
      * @param jwtTokenString - the original multi part JWT Token string
      * @throws Exception
      */
@@ -87,6 +87,7 @@ public class JwtTokenForTest {
         if (jwtParts.length == 3) {
             jwtSignatureString = jwtParts[2];
         }
+        Log.info(thisClass, "JwtTokenForTest", "in JwtTokenForTest - string is:" + jwtHeaderString + ":");
 
         jwtHeaderJson = deserialize(jwtHeaderString);
         jwtPayloadJson = deserialize(jwtPayloadString);
@@ -103,43 +104,43 @@ public class JwtTokenForTest {
     }
 
     public String getJwtTokenString() {
-        return this.jwtString;
+        return jwtString;
     }
 
     public JsonObject getJsonHeader() {
-        return this.jwtHeaderJson;
+        return jwtHeaderJson;
     }
 
     public String getStringHeader() {
-        return this.jwtHeaderString;
+        return jwtHeaderString;
     }
 
     public Map<String, Object> getMapHeader() {
-        return this.jwtHeaderMap;
+        return jwtHeaderMap;
     }
 
     public JsonObject getJsonPayload() {
-        return this.jwtPayloadJson;
+        return jwtPayloadJson;
     }
 
     public String getStringPayload() {
-        return this.jwtPayloadString;
+        return jwtPayloadString;
     }
 
     public Map<String, Object> getMapPayload() {
-        return this.jwtPayloadMap;
+        return jwtPayloadMap;
     }
 
     public JsonObject getJsonSignature() {
-        return this.jwtSignatureJson;
+        return jwtSignatureJson;
     }
 
     public String getStringSignature() {
-        return this.jwtSignatureString;
+        return jwtSignatureString;
     }
 
     public Map<String, Object> getMapSignature() {
-        return this.jwtSignatureMap;
+        return jwtSignatureMap;
     }
 
     /**
@@ -148,7 +149,7 @@ public class JwtTokenForTest {
      * Part 2: Payload ex:
      * {"token_type":"Bearer","aud":["client01","client02"],"sub":"testuser","upn":"testuser","groups":["group3","group2"],"realm":"BasicRealm","iss":"testIssuer","exp":1540451490,"iat":1540444290}
      * Part 3: Signature ex:
-     * 
+     *
      * @param tokenString
      *            The original encoded representation of a JWT
      * @return Three components of the JWT as an array of strings
@@ -173,7 +174,7 @@ public class JwtTokenForTest {
         return pieces;
     }
 
-    public JsonObject deserialize(String jwtPart) {
+    public static JsonObject deserialize(String jwtPart) {
 
         if (jwtPart == null) {
             return null;
@@ -182,7 +183,7 @@ public class JwtTokenForTest {
 
     }
 
-    public String fromBase64ToJsonString(String source) {
+    public static String fromBase64ToJsonString(String source) {
         return StringUtils.newStringUtf8(Base64.decodeBase64(source));
     }
 
@@ -190,7 +191,7 @@ public class JwtTokenForTest {
      * Parse the part of the jwt passed in (only handles one part of the jwt at a time (header/payload/signature(TBD))
      * Store the claims in a Map of key, claim pairs where claim will be either a string or list of strings.
      * Saved this way to validate against test application output where all values are strings.
-     * 
+     *
      * @param jsonFormattedString - the portion of the jwt token to process
      * @return - the loaded claim map
      * @throws Exception
@@ -200,13 +201,12 @@ public class JwtTokenForTest {
         if (jsonFormattedString == null) {
             return map;
         }
-
-        JSONObject object = JSONObject.parse(decodeFromBase64String(jsonFormattedString));
-        Set<Entry<String, Object>> set = object.entrySet();
-        Iterator<Entry<String, Object>> iterator = set.iterator();
+        JsonObject object = deserialize(jsonFormattedString);
+        Set<Entry<String, JsonValue>> set = object.entrySet();
+        Iterator<Entry<String, JsonValue>> iterator = set.iterator();
 
         while (iterator.hasNext()) {
-            Entry<String, Object> entry = iterator.next();
+            Entry<String, JsonValue> entry = iterator.next();
             String key = entry.getKey();
             Object value = entry.getValue();
 //            Log.info(thisClass, "claimsFromJson", "Object type: " + value.getClass());
@@ -228,10 +228,6 @@ public class JwtTokenForTest {
         return map;
     }
 
-    public static String decodeFromBase64String(String encoded) {
-        return new String(Base64.decodeBase64(encoded));
-    }
-
     public List<String> getElementValueAsListOfStrings(String key) {
 
         Object obj = jwtPayloadMap.get(key);
@@ -241,7 +237,7 @@ public class JwtTokenForTest {
 
     /**
      * Creates a list of just the claims names (the keys)
-     * 
+     *
      * @return - return the list of claims
      */
     public List<String> getPayloadClaims() {
@@ -267,7 +263,7 @@ public class JwtTokenForTest {
      * If the orginal value was a single instance of some datatype,
      * this method will return that value as a List<String> containing the
      * String representation of that value.
-     * 
+     *
      * @param obj - the "value" to convert return as a List<String>
      * @return
      */
@@ -277,9 +273,7 @@ public class JwtTokenForTest {
         if (obj == null) {
             return theList;
         }
-//        Log.info(thisClass, "createList", "Object: " + obj);
-//        Log.info(thisClass, "createList", "Object type: " + obj.getClass());
-        if (obj instanceof ArrayList) {
+       if (obj instanceof ArrayList) {
             for (String entry : (List<String>) obj) {
                 theList.add(entry);
             }
