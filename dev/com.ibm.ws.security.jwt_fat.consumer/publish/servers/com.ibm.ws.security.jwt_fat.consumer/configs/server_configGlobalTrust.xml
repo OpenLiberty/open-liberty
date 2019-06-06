@@ -1,0 +1,46 @@
+
+<server>
+
+	<featureManager>
+		<feature>timedexit-1.0</feature>
+		<feature>jwt-1.0</feature>
+		<feature>jaxrs-2.0</feature>
+	</featureManager>
+
+	<include location="${shared.config.dir}/fatTestPorts.xml" />
+
+	<include location="${shared.config.dir}/jwtConsumerClientApplication.xml" />
+	<include location="${shared.config.dir}/goodRSASSLSettings.xml" />
+ 
+ 	<jwtConsumer
+		id="trustStoreRefOmitted_RS256_withTrustedAlias"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+ 	<jwtConsumer
+		id="trustStoreRefOmitted_RS256_withoutTrustedAlias"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+	>
+	</jwtConsumer>
+
+ 	<jwtConsumer
+		id="trustStoreRefBlank_RS256_withTrustedAlias"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef=""
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+ 	<jwtConsumer
+		id="trustStoreRefBlank_RS256_withoutTrustedAlias"
+		issuer="client01"
+		trustStoreRef=""
+		signatureAlgorithm="RS256"
+	>
+	</jwtConsumer>
+</server>

@@ -21,7 +21,6 @@ Export-Package: \
 Import-Package: \
     !*.internal.*, \
     !com.ibm.ws.kernel.boot.cmdline, \
-    com.google.gson.*:resolution:=optional, \
     org.jose4j.*, \
     *
 
@@ -29,10 +28,12 @@ Private-Package: \
 
 src: \
     src,\
+    fat/src,\
     test-applications/jwtbuilder/src
 
 test.project: true
 publish.wlp.jar.disabled: true
+generate.replacement: true
 
 javac.source: 1.8
 javac.target: 1.8
@@ -60,6 +61,5 @@ javac.target: 1.8
 	com.ibm.ws.org.joda.time.1.6.2;version=latest,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
-	com.ibm.ws.org.glassfish.json.1.1, \
-	com.ibm.ws.org.jose4j.0.5.1;version=latest
-    
+	com.ibm.ws.org.glassfish.json.1.1,\
+	com.ibm.ws.org.jose4j;version=latest    

@@ -1,0 +1,21 @@
+<server>
+
+	<application
+		type="war"
+		id="jwtconsumerclient"
+		name="jwtconsumerclient"
+		location="${server.config.dir}/test-apps/jwtconsumerclient.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="EVERYONE" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="EVERYONE" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="EVERYONE" />
+			</security-role>
+		</application-bnd>
+	</application>
+</server>    
