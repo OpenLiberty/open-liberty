@@ -4,34 +4,6 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/jwtbuilder/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="lib" path="/Users/chrisc/.m2/repository/org/bitbucket/b_c/jose4j/0.5.1/jose4j-0.5.1.jar">
-		<attributes>
-			<attribute name="bsn" value="org.bitbucket.b_c:jose4j"/>
-			<attribute name="type" value="REPO"/>
-			<attribute name="project" value="com.ibm.ws.org.jose4j.0.5.1"/>
-			<attribute name="version" value="0.5.1"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/jose4j/base64url/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/http/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jca/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/json/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jwa/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jwe/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jwe/kdf/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jwk/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jws/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jwt/consumer/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jwt/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/jwx/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/keys/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/keys/resolvers/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/lang/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/mac/*"/>
-			<accessrule kind="accessible" pattern="org/jose4j/zip/*"/>
-			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
-		</accessrules>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

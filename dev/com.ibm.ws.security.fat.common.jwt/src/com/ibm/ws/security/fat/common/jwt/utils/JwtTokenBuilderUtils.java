@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.fat.common.jwt.utils;
 
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -5,9 +15,26 @@ import org.jose4j.jws.AlgorithmIdentifiers;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.ServerFileUtils;
+
 public class JwtTokenBuilderUtils {
 
     protected static Class<?> thisClass = JwtTokenBuilderUtils.class;
+    public static ServerFileUtils serverFileUtils = new ServerFileUtils();
+
+    protected static String defaultKeyFile = null;
+
+    public void setDefaultKeyFile(LibertyServer server, String keyFile) throws Exception {
+
+        defaultKeyFile = getKeyFileWithPathForServer(server, keyFile);
+
+    }
+
+    public String getKeyFileWithPathForServer(LibertyServer server, String keyFile) throws Exception {
+
+        return serverFileUtils.getServerFileLoc(server) + "/" + keyFile;
+    }
 
     /**
      * Create a new JWTTokenBuilder and initialize it with default test values
@@ -43,8 +70,18 @@ public class JwtTokenBuilderUtils {
         return jwtToken;
     }
 
-    public void updateBuilderWithRSASettings(JWTTokenBuilder builder) {
+    public void updateBuilderWithRSASettings(JWTTokenBuilder builder) throws Exception {
+        updateBuilderWithRSASettings(builder, null);
+    }
+
+    public void updateBuilderWithRSASettings(JWTTokenBuilder builder, String overrideKeyFile) throws Exception {
+
+        String keyFile = defaultKeyFile;
+        // if an override wasn't given, use the default key file
+        if (overrideKeyFile != null) {
+            keyFile = overrideKeyFile;
+        }
         builder.setAlorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-        builder.setRSAKey();
+        builder.setRSAKey(keyFile);
     }
 }

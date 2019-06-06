@@ -68,6 +68,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         // one of the JWT Consumer configs had an empty SignatureAlg value which results in a CWWKG0032W warning - mark this as "OK"
         consumerServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "signatureAlgorithm"));
 
+        // set the default signing key for this test class (individual test cases can override if needed)
+        consumerHelpers.setDefaultKeyFile(consumerServer, "rsa_privateKey.pem");
     }
 
     @Override

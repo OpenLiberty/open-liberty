@@ -65,6 +65,8 @@ public class JwtConsumerAPIMinimumConfigTests extends CommonSecurityFat {
     private static void createBuilderWithRSAClaims() throws Exception {
 
         builder = consumerHelpers.createBuilderWithDefaultClaims();
+        // set the default signing key for this test class (individual test cases can override if needed)
+        consumerHelpers.setDefaultKeyFile(consumerServer, "rsa_privateKey.pem");
         consumerHelpers.updateBuilderWithRSASettings(builder);
     }
 
