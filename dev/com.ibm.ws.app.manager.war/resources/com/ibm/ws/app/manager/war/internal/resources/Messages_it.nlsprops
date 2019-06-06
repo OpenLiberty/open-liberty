@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=Tentare di risolvere il problema
 error.file.outside.archive=CWWKZ0132W: Il file {0} nell''archivio {1} non verr\u00e0 estratto perch\u00e9 il percorso non \u00e8 contenuto all''interno dell''archivio.
 error.file.outside.archive.explanation=Il percorso del file specifica una directory relativa. L'estrazione del file risulterebbe nel posizionamento del file al di fuori della directory root dell'archivio.
 error.file.outside.archive.useraction=Rimuovere tutti i file con percorsi relativi dall'archivio.  
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: L''applicazione {0} all''ubicazione {1} viene  espansa nella directory {2}.
+info.expanding.app.explanation=Il file di archivio per l'applicazione \u00e8 in fase di espansione perch\u00e9 \u00e8 stata configurata l'espansione automatica delle applicazioni.
+info.expanding.app.useraction=Non sono richieste azioni.
+
+info.loose.app=CWWKZ0134I: L''applicazione {0} sta utilizzando la definizione applicazione debole all''ubicazione {1}.
+info.loose.app.explanation=L'ubicazione per l'applicazione punta a un file XML che definisce un'applicazione debole. 
+info.loose.app.useraction=Non sono richieste azioni.
+
+info.directory.app=CWWKZ0135I: L''applicazione {0} sta utilizzando la directory espansa all''ubicazione {1}.
+info.directory.app.explanation=L'ubicazione per l'applicazione punta a una directory invece che a un file di archivio. 
+info.directory.app.useraction=Non sono richieste azioni.
+
+info.unexpanded.app=CWWKZ0136I: L''applicazione {0} sta utilizzando il file di archivio all''ubicazione {1}.
+info.unexpanded.app.explanation=L'ubicazione per l'applicazione punta a un file di archivio binario. Il file di archivio non verr\u00e0 espanso sul disco perch\u00e9 non \u00e8 stata configurata l'espansione automatica delle applicazioni.
+info.unexpanded.app.useraction=Non sono richieste azioni.

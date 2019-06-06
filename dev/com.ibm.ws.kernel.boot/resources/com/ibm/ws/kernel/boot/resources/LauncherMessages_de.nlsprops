@@ -689,6 +689,10 @@ error.package.extension=CWWKE0950E: Der Name der Archivdatei muss mit .jar enden
 error.package.extension.explanation=Die Option --archive muss die Dateierweiterung .jar enthalten, wenn Sie --include=runnable angeben.
 error.package.extension.useraction=Geben Sie f\u00fcr die Archivdatei mit --archive die Dateierweiterung .jar an, wenn Sie --include=runnable angeben.
 
+error.package.usr.jar=CWWKE0951E: Der Archivdateiname darf nicht mit der Dateierweiterung .jar enden, wenn die Option usr verwendet wird.
+error.package.usr.jar.explanation=Die Option --archive darf nicht die Dateierweiterung .jar enthalten, wenn --include=usr angegeben wird.
+error.package.usr.jar.useraction=Geben Sie einen Dateinamen mit --archive mit einer anderen Dateierweiterung als .jar an, wenn Sie --include=usr angeben.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

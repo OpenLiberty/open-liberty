@@ -700,6 +700,10 @@ error.package.extension=CWWKE0950E: El nombre de archivo del archivo debe finali
 error.package.extension.explanation=La opci\u00f3n --archive debe incluir una extensi\u00f3n de archivo que finalice con .jar cuando se especifica --include=runnable.
 error.package.extension.useraction=Proporcione un nombre de archivo para --archive con una extensi\u00f3n de archivo .jar cuando especifique --include=runnable.
 
+error.package.usr.jar=CWWKE0951E: El nombre del archivo de archivado no debe finalizar con la extensi\u00f3n de archivo .jar cuando la se utiliza la opci\u00f3n usr.
+error.package.usr.jar.explanation=La opci\u00f3n --archive no debe finalizar con una extensi\u00f3n de archivo .jar cuando se especifica --include=usr.
+error.package.usr.jar.useraction=Proporcione un nombre de archivo para --archive con una extensi\u00f3n de archivo distinta de .jar file cuando se especifique --include=usr.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.

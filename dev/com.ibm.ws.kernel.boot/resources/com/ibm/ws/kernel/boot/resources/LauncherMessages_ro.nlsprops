@@ -698,6 +698,10 @@ error.package.extension=CWWKE0950E: Numele de fi\u015fier al arhivei trebuie s\u
 error.package.extension.explanation=Op\u0163iunea --archive trebuie s\u0103 includ\u0103 o extensie de fi\u015fier care se termin\u0103 cu .jar atunci c\u00e2nd se specific\u0103 --include=runnable.
 error.package.extension.useraction=Furniza\u0163i pentru --archive un nume de fi\u015fier cu extensia .jar atunci c\u00e2nd specifica\u0163i --include=runnable.
 
+error.package.usr.jar=CWWKE0951E: Numele fi\u015fierului arhiv\u0103 nu trebuie s\u0103 se termine cu o extensie de fi\u015fier .jar c\u00e2nd este folosit\u0103 op\u0163iunea usr.
+error.package.usr.jar.explanation=Op\u0163iunea --archive nu trebuie s\u0103 se termine cu o extensie de fi\u015fier .jar c\u00e2nd este specificat --include=usr.
+error.package.usr.jar.useraction=Furniza\u0163i un alt nume de fi\u015fier la --archive cu o alt\u0103 extensie de fi\u015fier dec\u00e2t .jar c\u00e2nd este specificat --include=usr.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

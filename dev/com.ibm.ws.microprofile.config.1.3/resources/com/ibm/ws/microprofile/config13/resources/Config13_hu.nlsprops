@@ -45,6 +45,12 @@ duplicate.application.configuration.name.CWMCG0203E.useraction=A kiszolg\u00e1l\
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Kiszolg\u00e1l\u00f3 XML alkalmaz\u00e1stulajdons\u00e1gok konfigur\u00e1ci\u00f3s forr\u00e1sa
 
+# Server XML Variables Config Source
+server.xml.variables.config.source=Kiszolg\u00e1l\u00f3 XML v\u00e1ltoz\u00f3inak konfigur\u00e1ci\u00f3s forr\u00e1sa
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Kiszolg\u00e1l\u00f3 XML alap\u00e9rtelmezett v\u00e1ltoz\u00f3inak konfigur\u00e1ci\u00f3s forr\u00e1sa
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -135,6 +135,20 @@ sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=signature algorithm
 sslCert.option-desc.sigAlg=\tA tan\u00fas\u00edtv\u00e1ny al\u00e1\u00edr\u00e1si algoritmusa.\n\
 \tAz alap\u00e9rtelmezett al\u00e1\u00edr\u00e1si algoritmus a k\u00f6vetkez\u0151: {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tNem k\u00f6telez\u0151. Alap\u00e9rtelmez\u00e9sben PKCS12 kulcst\u00e1rol\u00f3 ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra. JKS\n\
+\tkulcst\u00e1rol\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz adja meg a --keyType param\u00e9tert JKS\n\
+\t\u00e9rt\u00e9kkel. Nem kell a param\u00e9tert megadni, ha PKCS12 kulcst\u00e1rol\u00f3\n\
+\taz elv\u00e1rt.\n\
+\tA PKCS12 sz\u00e1mos el\u0151nnyel rendelkezik: kiterjeszthet\u0151bb; er\u0151sebb kriptogr\u00e1fiai\n\
+\talgoritmusokat t\u00e1mogat; \u00e9s sz\u00e9les k\u00f6r\u0171en elfogadott. A PKCS12 gyakran\n\
+\taz a form\u00e1tum, amelyet a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gok biztos\u00edtanak tan\u00fas\u00edtv\u00e1nyok\n\
+\tkiad\u00e1sakor.
+
+sslCert.option-key.ext=\ \ \ \ --extInfo=tan\u00fas\u00edtv\u00e1ny kiterjeszt\u00e9si inform\u00e1ci\u00f3k
+sslCert.option-desc.ext=\tA tan\u00fas\u00edtv\u00e1nyhoz hozz\u00e1adand\u00f3 tan\u00fas\u00edtv\u00e1ny kiterjeszt\u00e9si inform\u00e1ci\u00f3k.\n\
+\tAz alap\u00e9rtelmezett kiterjeszt\u00e9s egy T\u00e1rgy alternat\u00edv neve bejegyz\u00e9s, amely\n\
+\ta hosztnevet haszn\u00e1lja.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

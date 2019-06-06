@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=Spr\u00f3buj rozwi\u0105za\u0107
 error.file.outside.archive=CWWKZ0132W: Plik {0} w archiwum {1} nie zostanie rozpakowany, poniewa\u017c \u015bcie\u017cka nie znajduje si\u0119 w archiwum.
 error.file.outside.archive.explanation=\u015acie\u017cka do pliku okre\u015bla katalog wzgl\u0119dny. Rozpakowanie tego pliku spowoduje, \u017ce plik znajdzie si\u0119 poza katalogiem g\u0142\u00f3wnym archiwum.
 error.file.outside.archive.useraction=Usu\u0144 z archiwum wszystkie pliki ze \u015bcie\u017ckami wzgl\u0119dnymi.  
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: Aplikacja {0} w po\u0142o\u017ceniu {1} zosta\u0142a rozszerzona o katalog {2}.
+info.expanding.app.explanation=Plik archiwum aplikacji zosta\u0142 rozszerzony, poniewa\u017c skonfigurowano automatyczne rozszerzanie aplikacji.
+info.expanding.app.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.loose.app=CWWKZ0134I: Aplikacja {0} u\u017cywa lu\u017anej definicji aplikacji w po\u0142o\u017ceniu {1}.
+info.loose.app.explanation=Po\u0142o\u017cenie aplikacji wskazuje plik XML, kt\u00f3ry definiuje lu\u017an\u0105 aplikacj\u0119. 
+info.loose.app.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.directory.app=CWWKZ0135I: Aplikacja {0} u\u017cywa rozszerzonego katalogu w po\u0142o\u017ceniu {1}.
+info.directory.app.explanation=Po\u0142o\u017cenie aplikacji wskazuje katalog, a nie plik archiwum. 
+info.directory.app.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.unexpanded.app=CWWKZ0136I: Aplikacja {0} u\u017cywa rozszerzonego pliku archiwum w po\u0142o\u017ceniu {1}.
+info.unexpanded.app.explanation=Po\u0142o\u017cenie aplikacji wskazuje binarny plik archiwum. Plik archiwum nie zostanie rozszerzony na dysku, poniewa\u017c nie skonfigurowano automatycznego rozszerzania aplikacji.
+info.unexpanded.app.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

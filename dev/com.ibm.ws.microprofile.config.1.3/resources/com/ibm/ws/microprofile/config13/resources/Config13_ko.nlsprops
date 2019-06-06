@@ -45,6 +45,12 @@ duplicate.application.configuration.name.CWMCG0203E.useraction=\uc11c\ubc84 mess
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=\uc11c\ubc84 XML \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud2b9\uc131 \uad6c\uc131 \uc18c\uc2a4
 
+# Server XML Variables Config Source
+server.xml.variables.config.source=\uc11c\ubc84 XML \ubcc0\uc218 \uad6c\uc131 \uc18c\uc2a4
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=\uc11c\ubc84 XML \uae30\ubcf8 \ubcc0\uc218 \uad6c\uc131 \uc18c\uc2a4
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------

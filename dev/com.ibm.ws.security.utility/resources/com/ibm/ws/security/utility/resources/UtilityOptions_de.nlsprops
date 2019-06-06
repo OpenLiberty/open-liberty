@@ -149,6 +149,20 @@ sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=Signaturalgorithmus
 sslCert.option-desc.sigAlg=\tDer Signaturalgorithmus des Zertifikats.\n\
 \tDer Standardsignaturalgorithmus ist {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tOptional. Ein PKCS12-Keystore wird standardm\u00e4\u00dfig generiert. Wenn\n\
+\tSie einen JKS-Keystore generieren m\u00f6chten, geben Sie die Option --keyType mit dem Wert\n\
+\tJKS an. Sie m\u00fcssen diese Option nicht angeben, wenn ein PKCS12-Keystore\n\
+\terwartet wird.\n\
+\tPKCS12 bietet einige Vorteile: es ist ausbauf\u00e4hig und unterst\u00fctzt st\u00e4rkere\n\
+\tVerschl\u00fcsselungsalgorithmen und ist weit verbreitet. PKCS12 wird oft als das\n\
+\tFormat verwendet, das von Zertifizierungsstellen beim Ausstellen von \n\
+\tZertifikaten bereitgestellt wird.
+
+sslCert.option-key.ext=\ \ \ \ --extInfo=Erweiterungsinformationen f\u00fcr das Zertifikat
+sslCert.option-desc.ext=\tDie Zertifikatserweiterungsinformationen, die dem Zertifikat hinzugef\u00fcgt werden sollen.\n\
+\tDie Standarderweiterung ist ein alternativer Namenseintrag f\u00fcr das Subject, bei dem \n\
+\tder Hostname verwendet wird.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
