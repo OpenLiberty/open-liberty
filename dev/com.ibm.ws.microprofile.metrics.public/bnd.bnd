@@ -25,6 +25,11 @@ IBM-Web-Extension-Processing-Disabled: true
 Web-ContextPath: @publicMetricsURL
 OL-VirtualHost: ${admin.virtual.host}
 
+Import-Package: \
+	org.eclipse.microprofile.metrics;version="[1.0,3)",\
+	org.eclipse.microprofile.metrics.*;version="[1.0,3)",\
+	*
+
 Private-Package: \
 	com.ibm.ws.microprofile.metrics.publicapi,\
 	com.ibm.ws.microprofile.metrics.publicapi.resources
@@ -45,6 +50,7 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.microprofile.metrics;version=latest,\
+	com.ibm.ws.microprofile.metrics.2.0;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
