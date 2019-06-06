@@ -12,6 +12,7 @@ package com.ibm.ws.jmx.connector.local;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
@@ -61,39 +62,26 @@ public final class LocalConnectorActivator {
                             System.setProperty(RMI_SERVER_HOSTNAME_PROPERTY, LOOPBACK_ADDRESS);
                         }
 
-                        String localConnectorAddress = null;
                         // Start the JMX agent and retrieve the local connector address.
-                        // Use JDK internal APIs for Java 8 and older OR if the server was launched in a way that bypassed
-                        // the wlp/bin/server script and therefore did not get the -Djdk.attach.allowAttachSelf=true prop set
-                        if (JavaInfo.majorVersion() < 9 ||
-                            (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf"))) {
-                            // Use reflection to invoke...
-                            // Agent.agentmain(null);
-                            // Properties props = VMSupport.getAgentProperties()
-                            ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-                            Class<?> Agent = Class.forName("sun.management.Agent", true, systemClassLoader);
-                            Agent.getMethod("agentmain", String.class).invoke(null, (Object) null);
-
-                            localConnectorAddress = System.getProperty(LOCAL_CONNECTOR_ADDRESS_PROPERTY);
-                            if (localConnectorAddress == null) {
-                                Class<?> VMSupport = Class.forName("sun.misc.VMSupport", true, systemClassLoader);
-                                Properties props = (Properties) VMSupport.getMethod("getAgentProperties").invoke(null);
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "Attempting to retrieve the connector address from agent properties.");
-                                }
-                                localConnectorAddress = props.getProperty(LOCAL_CONNECTOR_ADDRESS_PROPERTY);
+                        // TODO: Find a proper way to get the JMX agent's local connector address
+                        //       for now we need to depend on JDK internal APIs
+                        ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+                        Class<?> clazz1 = JavaInfo.majorVersion() < 9 
+							? Class.forName("sun.management.Agent", true, systemClassLoader) 
+							: Class.forName("jdk.internal.agent.Agent", true, systemClassLoader);
+                        Method m1 = clazz1.getMethod("agentmain", String.class);
+                        m1.invoke(null, (Object) null);
+                        String localConnectorAddress = System.getProperty(LOCAL_CONNECTOR_ADDRESS_PROPERTY);
+                        if (localConnectorAddress == null) {
+                            Class<?> clazz2 = JavaInfo.majorVersion() < 9 
+								? Class.forName("sun.misc.VMSupport", true, systemClassLoader) 
+								: Class.forName("jdk.internal.vm.VMSupport", true, systemClassLoader);
+                            Method m2 = clazz2.getMethod("getAgentProperties");
+                            Properties props = (Properties) m2.invoke(null);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Attempting to retrieve the connector address from agent properties.");
                             }
-                        } else {
-                            // Use reflection to invoke...
-                            // VirtualMachine vm = VirtualMachine.attach(String.valueOf(ProcessHandle.current().pid()));
-                            // localConnectorAddress = vm.startLocalManagementAgent();
-                            Class<?> ProcessHandle = Class.forName("java.lang.ProcessHandle");
-                            Object processHandle = ProcessHandle.getMethod("current").invoke(null);
-                            long pid = (long) ProcessHandle.getMethod("pid").invoke(processHandle);
-
-                            Class<?> VirtualMachine = Class.forName("com.sun.tools.attach.VirtualMachine");
-                            Object vm = VirtualMachine.getMethod("attach", String.class).invoke(null, String.valueOf(pid));
-                            localConnectorAddress = (String) VirtualMachine.getMethod("startLocalManagementAgent").invoke(vm);
+                            localConnectorAddress = props.getProperty(LOCAL_CONNECTOR_ADDRESS_PROPERTY);
                         }
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -121,15 +109,12 @@ public final class LocalConnectorActivator {
             return LOCAL_CONNECTOR_ADDRESS;
         }
 
-        private LocalConnectorHelper() {
-        }
+        private LocalConnectorHelper() {}
     }
 
-    public LocalConnectorActivator() {
-    }
+    public LocalConnectorActivator() {}
 
-    protected void activate(ComponentContext compContext) {
-    }
+    protected void activate(ComponentContext compContext) {}
 
     protected void deactivate(ComponentContext compContext) {
         removeJMXAddressResource(localJMXAddressWorkareaFile);
