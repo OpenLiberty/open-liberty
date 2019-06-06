@@ -795,11 +795,16 @@ public class WSKeyStore extends Properties {
                             if (parentFile == null || parentFile.isDirectory() || parentFile.mkdirs()) {
                                 try {
                                     String serverName = cfgSvc.getServerName();
+                                    String san = null;
+                                    if (genKeyHostName != null) {
+                                        san = createCertSANInfo(genKeyHostName);
+                                    }
                                     // Call Certificate factory to go create the certificate
                                     DefaultSSLCertificateCreator certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
                                     certCreator.createDefaultSSLCertificate(keyStoreLocation, password, DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                                             new DefaultSubjectDN(genKeyHostName, serverName).getSubjectDN(),
-                                                                            DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG);
+                                                                            DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG,
+                                                                            san);
                                 } catch (IllegalArgumentException e) {
                                     // We can state that it is a password error because the keyStoreLocation is already known to be good
                                     // and the validity and DN are default values.
@@ -894,6 +899,7 @@ public class WSKeyStore extends Properties {
                     }
                 }
             }
+
         });
     }
 
@@ -1387,4 +1393,15 @@ public class WSKeyStore extends Properties {
         }
         return cannonicalLocation;
     }
+
+    private String createCertSANInfo(String hostname) {
+        String ext = null;
+
+        if (Character.isDigit(hostname.charAt(0)))
+            ext = "SAN=ip:" + hostname;
+        else
+            ext = "SAN=dns:" + hostname;
+        return ext;
+    }
+
 }

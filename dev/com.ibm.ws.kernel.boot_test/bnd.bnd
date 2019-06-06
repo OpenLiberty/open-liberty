@@ -26,4 +26,5 @@ test.project: true
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.ws.kernel.boot;version=latest
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest

@@ -447,18 +447,19 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
         // Otherwise, see if any of the wrapped objects implement (or themselves wrap)
         // the interface.
 
-        else
-            try 
-            {
+        else {
+            try {
                 if (tc.isDebugEnabled())
                     Tr.debug(this, tc,
                              "No existing wrappers found. Need to create a new wrapper.");
 
+                if (!interfaceClass.isInterface()) {
+                    throw new SQLException(AdapterUtil.getNLSMessage("NOT_AN_INTERFACE", interfaceClass.getName()));
+                }
+
                 Object implObject = getJDBCImplObject(interfaceClass);
 
-                if (implObject == null // Not found
-                    || !interfaceClass.isInterface()) // or not an interface. 
-                {
+                if (implObject == null) { // Not found
                     throw new SQLException( 
                     AdapterUtil.getNLSMessage("NO_WRAPPED_OBJECT", this, interfaceClass.getName())); 
                 }
@@ -502,6 +503,7 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
                     Tr.exit(this, tc, "unwrap", err);
                 throw err;
             }
+        }
 
         if (tc.isEntryEnabled())
             Tr.exit(this, tc, "unwrap", result);

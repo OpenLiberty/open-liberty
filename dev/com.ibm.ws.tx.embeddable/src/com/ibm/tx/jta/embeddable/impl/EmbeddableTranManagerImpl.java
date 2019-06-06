@@ -1,7 +1,6 @@
 package com.ibm.tx.jta.embeddable.impl;
-
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +10,10 @@ package com.ibm.tx.jta.embeddable.impl;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+import javax.transaction.InvalidTransactionException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
+import javax.transaction.Transaction;
 import javax.transaction.TransactionRolledbackException;
 
 import com.ibm.ejs.ras.Tr;
@@ -24,22 +25,18 @@ import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.tx.UOWEventListener;
 
-public class EmbeddableTranManagerImpl extends TranManagerImpl
-{
+public class EmbeddableTranManagerImpl extends TranManagerImpl {
     private static final TraceComponent tc = Tr.register(EmbeddableTranManagerImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     @Override
-    public void begin() throws NotSupportedException, SystemException
-    {
+    public void begin() throws NotSupportedException, SystemException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "begin (SPI)");
 
-        if (tx != null)
-        {
-            if (tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL)
-            {
+        if (tx != null) {
+            if (tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL) {
                 Tr.error(tc, "WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION");
                 final NotSupportedException nse = new NotSupportedException("Nested transactions are not supported.");
 
@@ -47,15 +44,13 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl
                 if (traceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "begin (SPI)", nse);
                 throw nse;
-            }
-            else
-            {
+            } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "the tx is NONINTEROP_GLOBAL it may safely be treated as null");
             }
         }
 
-        // this is a CMT, so look for Component timeout        
+        // this is a CMT, so look for Component timeout
         int timeout = ConfigurationProviderManager.getConfigurationProvider().getRuntimeMetaDataProvider().getTransactionTimeout();
         if (timeout == -1) {
             timeout = txTimeout;
@@ -74,8 +69,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl
     }
 
     @Override
-    protected EmbeddableTransactionImpl createNewTransaction(int timeout) throws SystemException
-    {
+    protected EmbeddableTransactionImpl createNewTransaction(int timeout) throws SystemException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "createNewTransaction", timeout);
 
@@ -88,15 +82,13 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl
     /**
      * Complete processing of passive transaction timeout.
      */
-    public void completeTxTimeout() throws TransactionRolledbackException
-    {
+    public void completeTxTimeout() throws TransactionRolledbackException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "completeTxTimeout");
 
-        if (tx != null && tx.isTimedOut())
-        {
+        if (tx != null && tx.isTimedOut()) {
             if (traceOn && tc.isEventEnabled())
                 Tr.event(tc, "Transaction has timed out. The transaction will be rolled back now");
             Tr.info(tc, "WTRN0041_TXN_ROLLED_BACK", tx.getTranName());
@@ -112,5 +104,53 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl
 
         if (traceOn && tc.isEntryEnabled())
             Tr.exit(tc, "completeTxTimeout");
+    }
+
+    @Override
+    public synchronized void resume(Transaction tx) throws InvalidTransactionException, IllegalStateException {
+        final boolean traceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (traceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "synchronized resume", new Object[] { this, tx });
+
+        final EmbeddableTransactionImpl t = (EmbeddableTransactionImpl) tx;
+
+        if (!t.isResumable()) {
+            final IllegalStateException ise;
+            if (t.getThread() != null) {
+                ise = new IllegalStateException("Transaction already active on thread " + String.format("%08X", t.getThread().getId()));
+            } else {
+                ise = new IllegalStateException("Transaction cannot be resumed on this thread");
+            }
+
+            if (traceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "synchronized resume", ise);
+            throw ise;
+        }
+
+        super.resume(t);
+
+        t.setThread(Thread.currentThread());
+
+        if (traceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "synchronized resume");
+    }
+
+    @Override
+    public synchronized Transaction suspend() {
+        final boolean traceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (traceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "synchronized suspend", this);
+
+        final Transaction t = super.suspend();
+
+        if (t instanceof EmbeddableTransactionImpl) {
+            ((EmbeddableTransactionImpl) t).setThread(null);
+        }
+
+        if (traceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "synchronized suspend", t);
+        return t;
     }
 }

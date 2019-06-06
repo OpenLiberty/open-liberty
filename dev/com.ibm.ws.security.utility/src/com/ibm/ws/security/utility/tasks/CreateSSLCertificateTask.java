@@ -45,6 +45,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
     static final String ARG_KEYSIZE = "--keySize";
     static final String ARG_SIGALG = "--sigAlg";
     static final String ARG_KEY_TYPE = "--keyType";
+    static final String ARG_EXT = "--ext";
 
     static final String JKS_KEYFILE = "key.jks";
     static final String PKCS12_KEYFILE = "key.p12";
@@ -176,13 +177,14 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         String subjectDN = getArgumentValue(ARG_SUBJECT, args, new DefaultSubjectDN(null, ou_name).getSubjectDN());
         int keySize = Integer.valueOf(getArgumentValue(ARG_KEYSIZE, args, String.valueOf(DefaultSSLCertificateCreator.DEFAULT_SIZE)));
         String sigAlg = getArgumentValue(ARG_SIGALG, args, DefaultSSLCertificateCreator.SIGALG);
+        String extInfo = getArgumentValue(ARG_EXT, args, null);
 
         try {
             String encoding = getArgumentValue(ARG_ENCODING, args, PasswordUtil.getDefaultEncoding());
             String key = getArgumentValue(ARG_KEY, args, null);
             stdout.println(getMessage("sslCert.createKeyStore", location));
             String encodedPassword = PasswordUtil.encode(password, encoding, key);
-            creator.createDefaultSSLCertificate(location, password, validity, subjectDN, keySize, sigAlg);
+            creator.createDefaultSSLCertificate(location, password, validity, subjectDN, keySize, sigAlg, extInfo);
             String xmlSnippet = null;
             if (serverName != null) {
                 stdout.println(getMessage("sslCert.serverXML", serverName, subjectDN));

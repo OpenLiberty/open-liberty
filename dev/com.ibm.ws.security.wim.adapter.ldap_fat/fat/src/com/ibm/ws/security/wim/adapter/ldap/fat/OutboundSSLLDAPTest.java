@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -89,7 +88,7 @@ public class OutboundSSLLDAPTest {
     @After
     public void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        myServer.stopServer("CWPKI0022E:");
+        myServer.stopServer("CWPKI0022E:", "CWPKI0823E:");
     }
 
     /**

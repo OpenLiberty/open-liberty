@@ -47,7 +47,7 @@ public class MongoSSLInvalidTrustTest extends FATServletClient {
         // com.ibm.wsspi.logging.Introspector,
         // com.ibm.ws.runtime.update.RuntimeUpdateListener,
         // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
-        server.stopServer("CWPKI0022E:.*", // SSL HANDSHAKE FAILURE
+        server.stopServer("CWPKI0823E:.*", // SSL HANDSHAKE FAILURE
                           "CWWKE0701E",
                           "CWWKG0033W");
     }
@@ -61,9 +61,9 @@ public class MongoSSLInvalidTrustTest extends FATServletClient {
     @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "sun.security.validator.ValidatorException" })
     public void testCertAuthInvalidTrust() throws Exception {
         testInvalidConfig("mongo/testdb-invalid-certificate-trust", "MongoTimeoutException");
-        // CWPKI0022E: SSL HANDSHAKE FAILURE: A signer with SubjectDN {0} was sent from the target host.  The signer might
-        // need to be added to local trust store {1}, located in SSL configuration alias {2}.
-        assertNotNull("Server exception for error CWPKI0022E was not found within the allotted interval", server.waitForStringInLogUsingMark("CWPKI0022E"));
+        // CWPKI0823E: SSL HANDSHAKE FAILURE:  A signer with SubjectDN [{0}] was sent from the host [{1}].  The signer might
+        // need to be added to local trust store [{2}], located in SSL configuration alias [{3}].  The extended error message from the SSL handshake exception is: [{4}].
+        assertNotNull("Server exception for error CWPKI0823E was not found within the allotted interval", server.waitForStringInLogUsingMark("CWPKI0823E"));
         assertNotNull("SSLHandshakeException was not found within the allotted interval", server.waitForStringInLogUsingMark("SSLHandshakeException"));
     }
 

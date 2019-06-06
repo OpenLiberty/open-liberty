@@ -18,17 +18,20 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 
-import com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants;
-
 @ApplicationScoped
 public class AsyncCallableBean implements Callable<Future<String>> {
+
+    private SyntheticTask<String> task;
+
+    public void setTask(SyntheticTask<String> task) {
+        this.task = task;
+    }
 
     /** {@inheritDoc} */
     @Override
     @Asynchronous
     public Future<String> call() throws Exception {
-        Thread.sleep(TestConstants.WORK_TIME);
-        return CompletableFuture.completedFuture("Done");
+        return CompletableFuture.completedFuture(task.call());
     }
 
 }

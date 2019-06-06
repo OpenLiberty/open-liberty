@@ -17,8 +17,6 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 
-import com.ibm.ws.microprofile.faulttolerance_fat.util.Connection;
-
 @ApplicationScoped
 public class AsyncBean2 {
 
@@ -26,8 +24,8 @@ public class AsyncBean2 {
     AsyncBean3 bean;
 
     @Asynchronous
-    public Future<Connection> connectA() throws InterruptedException {
-        return bean.connectA();
+    public Future<String> runTask(SyntheticTask<String> task) {
+        return bean.runTask(task);
     }
 
 }

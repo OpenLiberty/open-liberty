@@ -13,6 +13,37 @@
  */
 package com.ibm.ws.transport.iiop.security.config.ssl.yoko;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.security.cert.Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.HandshakeCompletedEvent;
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
+import org.apache.yoko.orb.OCI.IIOP.Util;
+import org.omg.CORBA.Policy;
+import org.omg.CORBA.TRANSIENT;
+import org.omg.CSIIOP.EstablishTrustInClient;
+import org.omg.CSIIOP.NoProtection;
+import org.omg.CSIIOP.TAG_CSI_SEC_MECH_LIST;
+import org.omg.CSIIOP.TransportAddress;
+import org.omg.IOP.TaggedComponent;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.SSLException;
@@ -29,34 +60,6 @@ import com.ibm.ws.transport.iiop.security.config.tss.TSSCompoundSecMechListConfi
 import com.ibm.ws.transport.iiop.security.config.tss.TSSSSLTransportConfig;
 import com.ibm.ws.transport.iiop.security.config.tss.TSSTransportMechConfig;
 import com.ibm.ws.transport.iiop.yoko.helper.SocketFactoryHelper;
-import org.apache.yoko.orb.OCI.IIOP.Util;
-import org.omg.CORBA.Policy;
-import org.omg.CORBA.TRANSIENT;
-import org.omg.CSIIOP.EstablishTrustInClient;
-import org.omg.CSIIOP.NoProtection;
-import org.omg.CSIIOP.TAG_CSI_SEC_MECH_LIST;
-import org.omg.CSIIOP.TransportAddress;
-import org.omg.IOP.TaggedComponent;
-
-import javax.net.ssl.HandshakeCompletedEvent;
-import javax.net.ssl.HandshakeCompletedListener;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Socket factory instance used to interface openejb2
@@ -251,10 +254,10 @@ public class SocketFactory extends SocketFactoryHelper {
             }
             // there is a situation that yoko closes and opens a server socket quickly upon updating
             // the configuration, and occasionally, the openSocket is invoked while closeSocket is processing.
-            // To avoid the issue, try binding the socket a few times. Since this is the error scenario, 
+            // To avoid the issue, try binding the socket a few times. Since this is the error scenario,
             // it is less impact for the performance.
             IOException bindError = null;
-            for (int i=0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 bindError = openSocket(port, backlog, address, socket, soReuseAddr);
                 if (bindError == null) {
                     break;
@@ -365,10 +368,10 @@ public class SocketFactory extends SocketFactoryHelper {
 
             serverSocket.setEnabledCipherSuites(cipherSuites);
 
-	    // set the SSL protocol on the server socket
-	    String protocol = sslConfig.getSSLProtocol(sslConfigName);
-	    if (protocol != null)
-		serverSocket.setEnabledProtocols(new String[] {protocol});
+            // set the SSL protocol on the server socket
+            String protocol = sslConfig.getSSLProtocol(sslConfigName);
+            if (protocol != null)
+                serverSocket.setEnabledProtocols(new String[] { protocol });
 
             boolean clientAuthRequired = ((options.requires & EstablishTrustInClient.value) == EstablishTrustInClient.value);
             boolean clientAuthSupported = ((options.supports & EstablishTrustInClient.value) == EstablishTrustInClient.value);
@@ -427,7 +430,15 @@ public class SocketFactory extends SocketFactoryHelper {
         } catch (PrivilegedActionException pae) {
             throw new IOException("Could not configure client socket", pae.getCause());
         }
-        socket.setEnabledCipherSuites(iorSuites);
+        SSLParameters params = socket.getSSLParameters();
+
+        // Check to see if hostname verification needs to be enabled
+        if (sslConfig.enableVerifyHostname(clientSSLConfigName)) {
+            params.setEndpointIdentificationAlgorithm("HTTPS");
+        }
+
+        params.setCipherSuites(iorSuites);
+        socket.setSSLParameters(params);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.debug(tc, "Created SSL socket to " + host + ":" + port);
             Tr.debug(tc, "    cipher suites:");
@@ -479,7 +490,8 @@ public class SocketFactory extends SocketFactoryHelper {
 
             TSSTransportMechConfig transport_mech = compatibleMechanisms.getTSSCompoundSecMechConfig().getTransport_mech();
             // only handle TSSSSLTransportConfig mechanisms here
-            if (!!! (transport_mech instanceof TSSSSLTransportConfig)) continue;
+            if (!!!(transport_mech instanceof TSSSSLTransportConfig))
+                continue;
             TSSSSLTransportConfig transportConfig = (TSSSSLTransportConfig) transport_mech;
             // TLS is configured.  Unless this is explicitly NoProtection, treat the configured port as an SSL port.
             final boolean useProtection = (NoProtection.value & transportConfig.getRequires()) == 0;
@@ -491,9 +503,7 @@ public class SocketFactory extends SocketFactoryHelper {
                 for (TransportAddress addr : transportConfig.getTransportAddresses()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "IOR to target " + addr.host_name + ":" + (int) (char) addr.port + " using client sslConfig " + sslConfigName);
-                    addresses.add(useProtection ?
-                            createSslTransportAddress(addr.host_name, addr.port, sslConfigName) :
-                            createPlainTransportAddress(addr.host_name, addr.port));
+                    addresses.add(useProtection ? createSslTransportAddress(addr.host_name, addr.port, sslConfigName) : createPlainTransportAddress(addr.host_name, addr.port));
                 }
             } else {
                 for (Map.Entry<ServerTransportAddress, CSSTransportMechConfig> entry : cssTransport_mechs.entrySet()) {
@@ -504,10 +514,9 @@ public class SocketFactory extends SocketFactoryHelper {
                     String sslConfigName = mech_cfg.getSslConfigName();
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "IOR to target " + addr.getHost() + ":" + (int) (char) addr.getPort()+ " using client sslConfig " + sslConfigName);
-                    addresses.add(useProtection ?
-                            createSslTransportAddress(addr.getHost(), addr.getPort(), sslConfigName) :
-                            createPlainTransportAddress(addr.getHost(), addr.getPort()));
+                        Tr.debug(tc, "IOR to target " + addr.getHost() + ":" + (int) (char) addr.getPort() + " using client sslConfig " + sslConfigName);
+                    addresses.add(useProtection ? createSslTransportAddress(addr.getHost(), addr.getPort(), sslConfigName) : createPlainTransportAddress(addr.getHost(),
+                                                                                                                                                         addr.getPort()));
                 }
             }
         }

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -562,6 +563,61 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertEquals(err, 40000, json.getInt("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("Invalid authentication"));
+    }
+
+    /*
+     * Test that the validation endpoint is not accessible when using the reader role
+     */
+    @Test
+    public void testValidateReaderRole() throws Exception {
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/validation/dataSource").basicAuth("reader", "readerpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource").basicAuth("reader", "readerpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/validation/doesnotexist").basicAuth("reader", "readerpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+    }
+
+    /*
+     * Test that the validation endpoint is not accessible to a user who is not assigned the
+     * reader or administrator role
+     */
+    @Test
+    public void testValidateUserWithoutRoles() throws Exception {
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/validation/dataSource").basicAuth("user", "userpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource").basicAuth("user", "userpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/validation/doesnotexist").basicAuth("user", "userpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
     }
 
     private static void assertSuccessResponse(JsonObject json, String expectedUID, String expectedID) {

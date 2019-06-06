@@ -41,6 +41,7 @@ public class ApplicationStateChangeListenerTest {
         mockery.checking(new Expectations() {
             {
 
+                one(info).getConfigHelper();
                 one(listener).applicationStarted(with(info));
             }
         });
@@ -62,6 +63,7 @@ public class ApplicationStateChangeListenerTest {
         mockery.checking(new Expectations() {
             {
 
+                one(info).getConfigHelper();
                 one(listener).applicationStarting(with(info));
             }
         });
@@ -83,6 +85,7 @@ public class ApplicationStateChangeListenerTest {
         mockery.checking(new Expectations() {
             {
 
+                one(info).getConfigHelper();
                 one(listener).applicationStopped(with(info));
             }
         });
@@ -104,6 +107,7 @@ public class ApplicationStateChangeListenerTest {
         mockery.checking(new Expectations() {
             {
 
+                one(info).getConfigHelper();
                 one(listener).applicationStopping(with(info));
             }
         });

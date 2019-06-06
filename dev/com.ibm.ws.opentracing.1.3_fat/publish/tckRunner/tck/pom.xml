@@ -30,7 +30,6 @@
 
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
-        <secondSuiteXmlFile>rest-client-tck-suite.xml</secondSuiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
 
@@ -197,7 +196,6 @@
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-                        <suiteXmlFile>${secondSuiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                 </configuration>

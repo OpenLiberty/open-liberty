@@ -64,14 +64,12 @@ import org.gradle.internal.os.OperatingSystem
 
 File packageDir = new File(project.buildDir, 'openliberty')
 File mavenDir = new File(project.buildDir, 'maven')
-def props = new Properties()
-rootProject.file('generated.properties').withInputStream { props.load(it) }
 
 // Set the generated zip version to the product version and the
 // version qualifier to be consistent
 // with what is used for the individual Bundle-Versions
 // as well as the server version output.
-def releaseVersion = "${bnd.libertyRelease}-" + props.getProperty("version.qualifier")
+def releaseVersion = "${bnd.libertyRelease}-" + rootProject.userProps.getProperty("version.qualifier")
 
 class PackageLibertyWithFeatures extends DefaultTask {
     Closure withFeatures
@@ -166,7 +164,7 @@ def microProfile2Features() {
 }
 
 task packageOpenLiberty(type: PackageLibertyWithFeatures) {
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures this.&gaPublicFeatures
@@ -174,7 +172,7 @@ task packageOpenLiberty(type: PackageLibertyWithFeatures) {
 }
 
 task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures { '' }
@@ -205,7 +203,7 @@ task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
             this.&removeFeature("${it}")
         }
     }
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures this.&webProfile8Features
@@ -232,7 +230,7 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
         }
     }
 
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures this.&javaee8Features
@@ -259,7 +257,7 @@ task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
         }
     }
 
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures this.&microProfile2Features
@@ -283,9 +281,8 @@ task zipOpenLiberty(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLiberty
@@ -298,9 +295,8 @@ task zipOpenLibertyKernel(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyKernel
@@ -313,9 +309,8 @@ task zipOpenLibertyWebProfile8(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyWebProfile8
@@ -328,9 +323,8 @@ task zipOpenLibertyJavaee8(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyJavaee8
@@ -342,9 +336,8 @@ task zipOpenLibertyMicroProfile2(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast {
-        props.setProperty('zipopenliberty.microprofile2.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.microprofile2.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyMicroProfile2
@@ -359,9 +352,8 @@ task zipOpenLibertyAll(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast {
-        props.setProperty('zipopenliberty.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyAll
@@ -553,10 +545,8 @@ task zipTestReport(type: Zip) {
     baseName 'openliberty_test_report'
     from cnf.file('generated/testReports/allUnitTests')
     destinationDir cnf.file('generated/testReports')
-    userProps.setProperty('gradle.test.report.zip', archivePath.toString())
-    props.setProperty('gradle.test.report.zip', archivePath.toString()) //set in memory props too
-    File propsFile = rootProject.file('generated.properties')
-    userProps.store(propsFile.newWriter(), null)
+    rootProject.userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+    rootProject.storeProps()
 }
 
 
@@ -572,26 +562,26 @@ task createJSONForPublicArtifacts {
         json.createNewFile()
 
         String testsPassed = "0"
-        if (props.getProperty("tests.total.successful") != null) {
-            testsPassed = props.getProperty("tests.total.successful")
+        if (rootProject.userProps.getProperty("tests.total.successful") != null) {
+            testsPassed = rootProject.userProps.getProperty("tests.total.successful")
 	    println "testsPassed is ${testsPassed}"
         }
         String testsTotal = "0"
-        if ((props.getProperty("tests.total.successful") != null) &&
-                (props.getProperty("tests.total.failed") != null)) {
-            def sum = Integer.valueOf(props.getProperty("tests.total.successful")) + Integer.valueOf(props.getProperty("tests.total.failed"))
+        if ((rootProject.userProps.getProperty("tests.total.successful") != null) &&
+                (rootProject.userProps.getProperty("tests.total.failed") != null)) {
+            def sum = Integer.valueOf(rootProject.userProps.getProperty("tests.total.successful")) + Integer.valueOf(rootProject.userProps.getProperty("tests.total.failed"))
             testsTotal = sum.toString()
 	    println "testsTotal is ${testsTotal}"
         }
 
-        String junitPath = props.getProperty("junit.report.zip")
-        String testReportPath = props.getProperty("gradle.test.report.zip");
-        String logPath = props.getProperty("published.gradle.log")
-        String driverLocation = props.getProperty("zipopenliberty.archivename")
-	println "junitPath is ${junitPath}"
-	println "testReportPath is ${testReportPath}"
-	println "logPath is ${logPath}"
-	println "driverLocation is ${driverLocation}"
+        String junitPath = rootProject.userProps.getProperty("junit.report.zip")
+        String testReportPath = rootProject.userProps.getProperty("gradle.test.report.zip");
+        String logPath = rootProject.userProps.getProperty("published.gradle.log")
+        String driverLocation = rootProject.userProps.getProperty("zipopenliberty.archivename")
+        println "junitPath is ${junitPath}"
+        println "testReportPath is ${testReportPath}"
+        println "logPath is ${logPath}"
+        println "driverLocation is ${driverLocation}"
 
         if (junitPath == null) {
             raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
@@ -615,7 +605,7 @@ task createJSONForPublicArtifacts {
         } else {
             testResultName = new File(junitPath).getName()
         }
-	println "testResultName is ${testResultName}"
+	    println "testResultName is ${testResultName}"
         String logName = new File(logPath).getName()
         String driverLocationName = new File(driverLocation).getName()
 
@@ -631,12 +621,11 @@ task createJSONForPublicArtifacts {
 
         json.text = JsonOutput.prettyPrint(JsonOutput.toJson(object))
 
-        props.setProperty('published.json', json.toString())
-	println "json output is:"
-	println json.toString()
+        rootProject.userProps.setProperty('published.json', json.toString())
+        println "json output is:"
+        println json.toString()
 
-        File propsFile = new File('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.storeProps()
     }
 }
 

@@ -85,7 +85,7 @@ class SystemConfiguration {
 
         ServiceReference<LibertyProcess> procRef = bc.getServiceReference(LibertyProcess.class);
         LibertyProcess libertyProcess = bc.getService(procRef);
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, libertyProcess.getArgs(), bc.getDataFile("variableCache"));
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, libertyProcess.getArgs(), bc.getDataFile("variableCacheData"));
 
         MetaTypeRegistry metatypeRegistry = metatypeRegistryTracker.getService();
 

@@ -21,7 +21,18 @@
   <variable name="onError" value="FAIL"/>
 
   <keyStore id="defaultKeyStore" password="Liberty"/>
-  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+  
+  <basicRegistry>
+    <user name="adminuser" password="adminpwd" />
+    <user name="reader" password="readerpwd" />
+    <user name="user" password="userpwd" />
+  </basicRegistry>
+  <administrator-role>
+    <user>adminuser</user>
+  </administrator-role>
+  <reader-role>
+    <user>reader</user>
+  </reader-role>
   
   <library id="Derby">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
@@ -40,7 +51,7 @@
   </dataSource>
 
   <dataSource id="jdbc/nonexistentdb" jndiName="${id}">
-    <connectionManager id="NestedConPool" agedTimeout="1h2m3s" connectionTimeout="0s" maxIdleTime="40m" reapTime="2m30s"/>
+    <CONNECTIONMANAGER id="NestedConPool" agedTimeout="1h2m3s" connectionTimeout="0s" maxIdleTime="40m" reapTime="2m30s"/>
     <jdbcDriver libraryRef="Derby"/>
    	<properties.derby.embedded databaseName="memory:doesNotExist"/>
   </dataSource>
@@ -85,6 +96,10 @@
     invalidProperty="The property's value." jdbcDriverRef="DerbyDriver" queryTimeout="2m10s"
     recoveryAuthDataRef="auth2" statementCacheSize="15" validationTimeout="20s">
     <properties databaseName="memory:defaultdb" createDatabase="create"/>
+  </dataSource>
+  
+  <dataSource id="NestedElementCase" jndiName="jdbc/nestedElementCase">
+  	<JdBcDrIvEr libraryRef="Derby" javax.sql.DataSource="org.apache.derby.jdbc.EmbeddedDataSource" />
   </dataSource>
 
   <connectionManager id="pool1" maxPoolSize="10" purgePolicy="ValidateAllConnections"/>

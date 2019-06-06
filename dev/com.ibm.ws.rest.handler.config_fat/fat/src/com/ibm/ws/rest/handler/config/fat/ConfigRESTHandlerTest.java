@@ -185,7 +185,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     public void testConfigDataSource() throws Exception {
         JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + json;
-        assertEquals(err, 6, json.size());
+        assertEquals(err, 7, json.size());
 
         JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/dataSource/").run(JsonArray.class);
         assertEquals(json, json2);
@@ -273,6 +273,32 @@ public class ConfigRESTHandlerTest extends FATServletClient {
 
         j = json.getJsonObject(2);
         assertEquals(err, "dataSource", j.getString("configElementName"));
+        assertEquals(err, "NestedElementCase", j.getString("uid"));
+        assertEquals(err, "NestedElementCase", j.getString("id"));
+        assertEquals(err, "jdbc/nestedElementCase", j.getString("jndiName"));
+        assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
+        assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
+        assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
+        assertEquals(err, "MatchOriginalRequest", j.getString("connectionSharing"));
+        assertNotNull(err, jj = j.getJsonObject("jdbcDriverRef"));
+        assertEquals(err, "JdBcDrIvEr", jj.getString("configElementName"));
+        assertEquals(err, "dataSource[NestedElementCase]/JdBcDrIvEr[default-0]", jj.getString("uid"));
+        assertNull(err, jj.get("id"));
+        assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", jj.getString("javax.sql.DataSource"));
+        assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
+        assertEquals(err, "library", jj.getString("configElementName"));
+        assertEquals(err, "Derby", jj.getString("uid"));
+        assertEquals(err, "Derby", jj.getString("id"));
+        assertEquals(err, "spec,ibm-api,api,stable", jj.getString("apiTypeVisibility"));
+        assertNotNull(err, ja = jj.getJsonArray("fileRef"));
+        assertEquals(err, 1, ja.size());
+        assertNotNull(err, jj = ja.getJsonObject(0));
+        assertEquals(err, "file", jj.getString("configElementName"));
+        assertEquals(err, "library[Derby]/file[default-0]", jj.getString("uid"));
+        assertTrue(err, jj.getString("name").endsWith("derby.jar"));
+
+        j = json.getJsonObject(3);
+        assertEquals(err, "dataSource", j.getString("configElementName"));
         assertEquals(err, "WrongDefaultAuth", j.getString("uid"));
         assertEquals(err, "WrongDefaultAuth", j.getString("id"));
         assertEquals(err, "jdbc/wrongdefaultauth", j.getString("jndiName"));
@@ -338,7 +364,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "create", j.getString("createDatabase"));
         assertEquals(err, "memory:defaultdb", j.getString("databaseName"));
 
-        j = json.getJsonObject(3);
+        j = json.getJsonObject(4);
         assertEquals(err, "dataSource", j.getString("configElementName"));
         assertEquals(err, "dataSource[default-0]", j.getString("uid"));
         assertNull(err, j.get("id"));
@@ -402,7 +428,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "create", j.getString("createDatabase"));
         assertEquals(err, "memory:defaultdb", j.getString("databaseName"));
 
-        j = json.getJsonObject(4);
+        j = json.getJsonObject(5);
         assertEquals(err, "dataSource", j.getString("configElementName"));
         assertEquals(err, "jdbc/nonexistentdb", j.getString("uid"));
         assertEquals(err, "jdbc/nonexistentdb", j.getString("id"));
@@ -410,8 +436,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, true, j.getBoolean("beginTranForResultSetScrollingAPIs"));
         assertEquals(err, true, j.getBoolean("beginTranForVendorAPIs"));
         assertNotNull(err, jj = j.getJsonObject("connectionManagerRef"));
-        assertEquals(err, "connectionManager", jj.getString("configElementName"));
-        assertEquals(err, "dataSource[jdbc/nonexistentdb]/connectionManager[NestedConPool]", jj.getString("uid"));
+        assertEquals(err, "CONNECTIONMANAGER", jj.getString("configElementName"));
+        assertEquals(err, "dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool]", jj.getString("uid"));
         assertEquals(err, "NestedConPool", jj.getString("id"));
         assertEquals(err, 3723, jj.getJsonNumber("agedTimeout").longValue());
         assertEquals(err, 0, jj.getJsonNumber("connectionTimeout").longValue());
@@ -453,7 +479,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
         assertEquals(err, "memory:doesNotExist", j.getString("databaseName"));
 
-        j = json.getJsonObject(5);
+        j = json.getJsonObject(6);
         assertEquals(err, "dataSource", j.getString("configElementName"));
         assertEquals(err, "transaction/dataSource[default-0]", j.getString("uid"));
         assertNull(err, j.get("id"));
@@ -863,5 +889,118 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "defaultTCPOptions", tcpOptionsRef.getString("id"));
         assertEquals(err, 60000, tcpOptionsRef.getInt("inactivityTimeout"));
         assertTrue(err, tcpOptionsRef.getBoolean("soReuseAddr"));
+    }
+
+    /*
+     * Test that a nested jdbcDriver element configured with a non-standard case is
+     * accessible through the config endpoint when the supplied element case matches
+     * the config is server config.
+     */
+    @Test
+    public void testConfigJDBCDriverCase() throws Exception {
+        JsonArray json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr").run(JsonArray.class);
+        String err = "unexpected response: " + json;
+        assertEquals(err, 1, json.size());
+        JsonObject j = json.getJsonObject(0);
+        assertEquals(err, "JdBcDrIvEr", j.getString("configElementName"));
+        assertEquals(err, "dataSource[NestedElementCase]/JdBcDrIvEr[default-0]", j.getString("uid"));
+        assertNull(err, j.get("id"));
+        assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", j.getString("javax.sql.DataSource"));
+        assertNotNull(err, j = j.getJsonObject("libraryRef"));
+        //Given library is already tested elsewhere, no need to check all attributes
+        assertEquals(err, "library", j.getString("configElementName"));
+        assertEquals(err, "Derby", j.getString("uid"));
+    }
+
+    /*
+     * Test that a specific nested jdbcDriver element configured with a non-standard case is
+     * not returned when the the case of the element does not match what it configured in
+     * server config. It also tests that the element is returned when the matching case is
+     * supplied.
+     */
+    @Test
+    public void testSingleInstanceJDBCDriverCase() throws Exception {
+        //This should not return a value since the incorrect case is used for the element name
+        JsonObject json = new HttpsRequest(server, "/ibm/api/config/jdbcDriver/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
+        String err = "unexpected response: " + json;
+        assertNotNull(err, json);
+        assertEquals(err, "dataSource[NestedElementCase]/JdBcDrIvEr[default-0]", json.getString("uid"));
+        assertEquals(err, "Did not find any configured instances of jdbcDriver matching the request", json.getString("error"));
+
+        json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
+        err = "unexpected response: " + json;
+        assertNotNull(err, json);
+        assertEquals(err, "JdBcDrIvEr", json.getString("configElementName"));
+        assertEquals(err, "dataSource[NestedElementCase]/JdBcDrIvEr[default-0]", json.getString("uid"));
+        assertNull(err, json.get("id"));
+        assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", json.getString("javax.sql.DataSource"));
+        assertNotNull(err, json = json.getJsonObject("libraryRef"));
+        //Given library is already tested elsewhere, no need to check all attributes
+        assertEquals(err, "library", json.getString("configElementName"));
+        assertEquals(err, "Derby", json.getString("uid"));
+    }
+
+    /*
+     * Test that the expected data is returned when querying a connection manager which
+     * was defined in a non-standard case (since connection manager has several attributes
+     * that are durations or not strings).
+     */
+    @Test
+    public void testConnectionManagerCase() throws Exception {
+        JsonArray json = new HttpsRequest(server, "/ibm/api/config/CONNECTIONMANAGER").run(JsonArray.class);
+        String err = "unexpected response: " + json;
+
+        assertEquals(err, 1, json.size());
+        JsonObject j = json.getJsonObject(0);
+        assertEquals(err, "CONNECTIONMANAGER", j.getString("configElementName"));
+        assertEquals(err, "dataSource[jdbc/nonexistentdb]/CONNECTIONMANAGER[NestedConPool]", j.getString("uid"));
+        assertEquals(err, "NestedConPool", j.getString("id"));
+        assertEquals(err, 3723, j.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 0, j.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, j.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 2400, j.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 50, j.getJsonNumber("maxPoolSize").longValue());
+        assertEquals(err, "EntirePool", j.getString("purgePolicy"));
+        assertEquals(err, 150, j.getJsonNumber("reapTime").longValue());
+    }
+
+    /*
+     * Test that the config endpoint is accessible when using the reader role
+     */
+    @Test
+    public void testConfigReaderRole() throws Exception {
+        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("reader", "readerpwd").run(JsonArray.class);
+        String err = "unexpected response: " + json;
+        assertTrue(err, json.size() > 1);
+
+        //No need to check all the details returned as they are tested elsewhere,
+        //just do a basic check the array contains data sources
+
+        JsonObject j = json.getJsonObject(0);
+        assertEquals(err, "dataSource", j.getString("configElementName"));
+
+        j = json.getJsonObject(1);
+        assertEquals(err, "dataSource", j.getString("configElementName"));
+    }
+
+    /*
+     * Test that the config endpoint is not accessible to a user who is not assigned the
+     * reader or administrator role
+     */
+    @Test
+    public void testConfigUserWithoutRoles() throws Exception {
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("user", "userpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
+
+        try {
+            JsonArray json = new HttpsRequest(server, "/ibm/api/config/doesnotexist").basicAuth("user", "userpwd").run(JsonArray.class);
+            fail("unexpected response: " + json);
+        } catch (Exception ex) {
+            assertTrue("Expected 403 response", ex.getMessage().contains("403"));
+        }
     }
 }

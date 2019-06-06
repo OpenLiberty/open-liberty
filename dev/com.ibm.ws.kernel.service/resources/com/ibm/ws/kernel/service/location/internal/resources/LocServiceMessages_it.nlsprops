@@ -45,7 +45,7 @@ missingTmpDir.useraction=Verificare che la directory specificata esista e che di
 
 relativeTmpDir=CWWKE0203I: Directory java.io.tempdir specificata con un percorso relativo. Il percorso risolto \u00e8 {0}.
 relativeTmpDir.explanation=La directory specificata come java.io.tmpdir (mediante una propriet\u00e0 di sistema o una variabile di ambiente specifica della piattaforma) era relativa e viene risolta in relazione alla directory di avvio.
-relativeTmpDir.useraction=Non \u00e8 richiesta alcuna azione.
+relativeTmpDir.useraction=Non sono richieste azioni.
 
 locationInitializationError=CWWKE0204E: Impossibile inizializzare il servizio di ubicazione della piattaforma; causa={0}.
 locationInitializationError.explanation=CMSG0001

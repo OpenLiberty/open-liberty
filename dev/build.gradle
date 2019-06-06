@@ -15,6 +15,23 @@
 ext {
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
+
+  /**
+   * Store some of the properties determined at build time to a file named `generated.properties` for future builds.
+   * The properties are used for uploading artifacts to the IBM DHE remote filesystem in a separate Gradle invocation from the one that created the artifact.
+   */
+  storeProps = {
+    Properties props = new Properties()
+    rootProject.ext.storedProps.each { key ->
+      def value = rootProject.userProps[key]
+      if (value != null) {
+        props.setProperty(key, value)
+      }
+    }
+
+    File propsFile = rootProject.file('generated.properties')
+    props.store(propsFile.newWriter(), null)
+  }
 }
 
 /**
@@ -24,15 +41,18 @@ ext {
  * Generate a HTML test report of all unit test results.
  * See: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.TestReport.html
  */
-apply from: 'gradle/java.gradle'
+apply from: 'wlp-gradle/java.gradle'
 
 /**
  * Apply biz.aQute.bnd plugin to all subprojects containing a *.bnd file.
  * See: https://github.com/bndtools/bnd/blob/master/biz.aQute.bnd.gradle/README.md
  *
- * Apply from all scripts in `gradle/subprojects`.
+ * Apply from all scripts in `wlp-gradle/subprojects`.
+ *
+ * Apply OSS Audit plugin to all non-test projects that output bundles.
+ * See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
  */
-apply from: 'gradle/biz.aQute.bnd.gradle'
+apply from: 'wlp-gradle/biz.aQute.bnd.gradle'
 
 wrapper {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')

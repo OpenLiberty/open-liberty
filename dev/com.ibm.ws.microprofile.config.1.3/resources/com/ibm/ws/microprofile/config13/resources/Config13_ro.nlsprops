@@ -45,6 +45,12 @@ duplicate.application.configuration.name.CWMCG0203E.useraction=Examina\u0163i is
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Surs\u0103 configura\u0163ie de propriet\u0103\u0163i aplica\u0163ie XML server
 
+# Server XML Variables Config Source
+server.xml.variables.config.source=Surs\u0103 de configura\u0163ie variabile XML server
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Surs\u0103 de configura\u0163ie variabile XML implicite server
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,6 +48,7 @@ public class RealFlushTest {
         generateStr8192();
         generateStr8193();
         addApp();
+        server.startServer();
     }
 
     private static void generateStr8192() {
@@ -68,9 +70,7 @@ public class RealFlushTest {
     }
 
     public static void addApp() throws Exception {
-
         ShrinkHelper.defaultDropinApp(server, "RealFlushTestApp", "com.ibm.ws.logging.flush.fat.printTests");
-        server.startServer();
     }
 
     private String getHttpServlet(String servletPath) throws Exception {
@@ -323,10 +323,11 @@ public class RealFlushTest {
 
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void completeTest() throws Exception {
         if (server != null && server.isStarted()) {
             server.removeAllInstalledAppsForValidation();
+            server.stopServer("CWWKW1001W");
         }
     }
 }

@@ -39,7 +39,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
-@Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
 public class CDIBulkheadTest extends FATServletClient {
 
@@ -73,6 +72,7 @@ public class CDIBulkheadTest extends FATServletClient {
      * Test a synchronous bulkhead by firing multiple requests at it
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testMultiRequestBulkhead() throws Exception {
 
         // Make an initial request so that everything is initialized

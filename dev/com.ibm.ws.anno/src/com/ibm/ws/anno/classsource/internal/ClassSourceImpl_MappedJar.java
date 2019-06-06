@@ -38,12 +38,14 @@ public class ClassSourceImpl_MappedJar
     extends ClassSourceImpl
     implements ClassSource_MappedJar {
 
-    public static final String CLASS_NAME = ClassSourceImpl_MappedJar.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = ClassSourceImpl_MappedJar.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedJar.class);
 
     // Top O' the world
 
-    @Trivial
+    @SuppressWarnings("unused")
+	@Trivial
     public ClassSourceImpl_MappedJar(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
         String name, ClassSource_Options options,
@@ -52,6 +54,7 @@ public class ClassSourceImpl_MappedJar
         super(factory, internMap, name, options, jarPath);
 
         this.jarPath = jarPath;
+        this.absJarPath = getAbsolutePath(jarPath);
     }
 
     //
@@ -84,7 +87,7 @@ public class ClassSourceImpl_MappedJar
              ((opens == 0) && (jarFile != null)) ||
              ((opens > 0) && (jarFile == null)) ) {
 
-            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD", getHashText(), getJarPath(), Integer.valueOf(opens));
+            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD", getHashText(), getAbsJarPath(), Integer.valueOf(opens));
 
             String eMsg = "[ " + getHashText() + " ]" +
                 " Failed to open [ " + getJarPath() + " ]" +
@@ -99,8 +102,8 @@ public class ClassSourceImpl_MappedJar
             try {
                 jarFile = UtilImpl_FileUtils.createJarFile(jarPath); // throws IOException
             } catch ( IOException e ) {
-                Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN4_EXCEPTION", getHashText(), jarPath);
-                String eMsg = "[ " + getHashText() + " ] Failed to open [ " + jarPath + " ]";
+                Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN4_EXCEPTION", getHashText(), getAbsJarPath());
+                String eMsg = "[ " + getHashText() + " ] Failed to open [ " + getAbsJarPath() + " ]";
                 throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);
             }
 
@@ -136,7 +139,7 @@ public class ClassSourceImpl_MappedJar
              ((opens == 0) && (useJarFile != null)) ||
              ((opens > 0) && (useJarFile == null)) ) {
 
-            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD", getHashText(), getJarPath(), Integer.valueOf(opens));
+            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD", getHashText(), getAbsJarPath(), Integer.valueOf(opens));
 
             opens = 0;
             useJarFile = clearJarFile();
@@ -149,7 +152,7 @@ public class ClassSourceImpl_MappedJar
                     // preferably the ultimate consumer of the exception.
                     //Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE5_EXCEPTION", getHashText(), getJarPath());
 
-                    String eMsg = "[ " + getHashText() + " ] Failed to close [ " + getJarPath() + " ]";
+                    String eMsg = "[ " + getHashText() + " ] Failed to close [ " + getAbsJarPath() + " ]";
                     throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);
                 }
             }
@@ -169,7 +172,7 @@ public class ClassSourceImpl_MappedJar
                 // preferably the ultimate consumer of the exception.
                 //Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE5_EXCEPTION", getHashText(), getJarPath());
 
-                String eMsg = "[ " + getHashText() + " ] Failed to close [ " + getJarPath() + " ]";
+                String eMsg = "[ " + getHashText() + " ] Failed to close [ " + getAbsJarPath() + " ]";
                 throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);
             }
         }
@@ -182,11 +185,17 @@ public class ClassSourceImpl_MappedJar
     //
 
     protected final String jarPath;
+    protected final String absJarPath;
 
     @Override
     @Trivial
     public String getJarPath() {
         return jarPath;
+    }
+
+    @Trivial
+    public String getAbsJarPath() {
+        return absJarPath;
     }
 
     protected JarFile jarFile;
@@ -279,14 +288,13 @@ public class ClassSourceImpl_MappedJar
                         } catch (ClassSource_Exception e) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
+                            // ANNO_TARGETS_CLASS_SCAN_EXCEPTION: 
+                            // CWWKC0103W: An exception occurred while scanning class {0} of {1}.
+                            // The exception was {3}.
 
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process entry [ " + nextEntryName + " ]" +
-                            //               " under root [ " + getJarPath() + " ]" +
-                            //               " for class [ " + nextClassName + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            Tr.warning(tc, "ANNO_TARGETS_CLSS_SCAN_EXCEPTION",
+                                nextClassName, useJarFile.getName(),
+                                e);
                         }
 
                         if ( didProcess ) {
@@ -351,7 +359,7 @@ public class ClassSourceImpl_MappedJar
         } catch ( ClassSource_Exception e ) {
             // TODO:
             String errorMessage =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
+                "Failed to read [ " + getAbsolutePath(useJandexIndexPath) + " ] from [ " + getCanonicalName() + " ]" +
                 " as JANDEX index: " + e.getMessage();
             Tr.error(tc, errorMessage);
             return null;
@@ -366,13 +374,16 @@ public class ClassSourceImpl_MappedJar
 
             if ( tc.isDebugEnabled() ) {
                 Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
-                         new Object[] { getHashText(), useJandexIndexPath, getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+                         new Object[] { getHashText(),
+                                        getAbsolutePath(useJandexIndexPath),
+                                        getCanonicalName(),
+                                        Integer.toString(jandexIndex.getKnownClasses().size()) } ));
             }
             return jandexIndex;
         } catch ( IOException e ) {
             // TODO: 
             String eMsg =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
+                "Failed to read [ " + getAbsolutePath(useJandexIndexPath) + " ] from [ " + getCanonicalName() + " ]" +
                 " as JANDEX index: " +
                 e.getMessage();
             Tr.error(tc, eMsg);
@@ -407,7 +418,7 @@ public class ClassSourceImpl_MappedJar
             String eMsg =
                 "[ " + getHashText() + " ]" +
                 " Failed to open [ " + resourceName + " ]" +
-                " in [ " + getJarPath() + " ]";
+                " in [ " + getAbsJarPath() + " ]";
             if ( className != null ) {
                 eMsg += " for class [ " + className + " ]";
             }
@@ -426,7 +437,7 @@ public class ClassSourceImpl_MappedJar
             //               " Failed to close [ " + resourceName + " ]" + " for class [ " + className + " ]" +
             //               " in [ " + getJarPath() + " ]";
             Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE6_EXCEPTION",
-                       getHashText(), resourceName, className, getJarPath());
+                       getHashText(), resourceName, className, getAbsJarPath());
         }
     }
 

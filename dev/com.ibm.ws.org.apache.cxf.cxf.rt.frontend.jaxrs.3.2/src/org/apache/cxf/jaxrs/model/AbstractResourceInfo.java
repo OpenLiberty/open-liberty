@@ -93,6 +93,91 @@ public abstract class AbstractResourceInfo {
     private boolean constructorProxiesAvailable;
     private boolean contextsAvailable;
 
+    // Liberty code change start
+    // There are many providers added during initialization.  This map maintains the providers we know about that are
+    // processed during startup so that we don't have to determine if they have @Context annotations which can be quite expensive.
+    private static final Map<String, ProviderContextInfo> CONTEXT_PROPS = new HashMap<>();
+
+    static {
+        // Using Strings instead of Class.class.getName() to avoid loading classes that aren't needed on the client / server
+        // when only one of them is used in a particular environment.  Also some classes are not visible to this bundle.
+        CONTEXT_PROPS.put("javax.ws.rs.client.ClientRequestFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.client.ClientResponseFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.container.ContainerRequestFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.container.ContainerResponseFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.container.DynamicFeature", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.core.Application", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.core.Feature", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.ext.ContextResolver", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.ext.ExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.ext.MessageBodyWriter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.ext.MessageBodyReader", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.ext.ParamConverterProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.ext.ReaderInterceptor", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("javax.ws.rs.ext.WriterInterceptor", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.BinaryDataProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.AbstractConfigurableProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.SourceProvider", new ProviderContextInfo(Collections.singleton("context"), null));
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.DataSourceProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.FormEncodingProvider", new ProviderContextInfo(Collections.singleton("mc"), null));
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.StringTextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.PrimitiveTextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.JAXBElementProvider", new ProviderContextInfo(null, Collections.singleton("setMessageContext")));
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.AbstractJAXBProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.JAXBElementTypedProvider", new ProviderContextInfo(null, Collections.singleton("setMessageContext")));
+        CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.providers.json.JsonPProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.providers.json.JsonBProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider", new ProviderContextInfo(Collections.singleton("mc"), null));
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.MultipartProvider", new ProviderContextInfo(Collections.singleton("mc"), null));
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.nio.NioMessageBodyWriter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.model.wadl.WadlGenerator", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.sse.LibertySseEventSinkContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.sse.SseContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomWebApplicationExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.security.LibertyAuthFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactory", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+    }
+
+    private static class ProviderContextInfo {
+        static final ProviderContextInfo NO_PROCESSING_REQUIRED = new ProviderContextInfo();
+
+        // Indicates that this class AND its super classes and/or interface(s) do not have a @Context annotations
+        // on fields or methods.
+        final boolean processingRequired;
+
+        // The field names in the associated class that have a @Context annotation.  Null indicates none.
+        final Set<String> fieldNames;
+
+        // The method names in the associated class that have a @Context annotation.  Null indicates none.
+        final Set<String> methodNames;
+
+        private ProviderContextInfo() {
+            this.processingRequired = false;
+            this.fieldNames = null;
+            this.methodNames = null;
+        }
+
+        ProviderContextInfo(Set<String> fields, Set<String> methods) {
+            processingRequired = true;
+            // both fieldNames and methodNames may be null and processing is still required because a parent
+            // class may have @Context annotations.
+            fieldNames = fields;
+            methodNames= methods;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(super.toString());
+            sb.append(": ");
+            sb.append(processingRequired).append(' ');
+            sb.append(fieldNames).append(' ');
+            sb.append(methodNames);
+            return sb.toString();
+        }
+    }
+    // Liberty code change end
+
     protected AbstractResourceInfo(Bus bus) {
         this.bus = bus;
     }
@@ -120,8 +205,14 @@ public abstract class AbstractResourceInfo {
 
     private void findContexts(Class<?> cls, Object provider,
                               Map<Class<?>, ThreadLocalProxy<?>> constructorProxies) {
-        findContextFields(cls, provider);
-        findContextSetterMethods(cls, provider);
+        // Liberty code change start
+        ProviderContextInfo contextInfo = CONTEXT_PROPS.get(cls.getName());
+        if (contextInfo == null || contextInfo.processingRequired) {
+            findContextFields(cls, provider, contextInfo);
+            findContextSetterMethods(cls, provider, contextInfo);
+        }
+        // Liberty code change end
+
         if (constructorProxies != null) {
             Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> proxies = getConstructorProxyMap(true);
             proxies.put(serviceClass, constructorProxies);
@@ -158,33 +249,53 @@ public abstract class AbstractResourceInfo {
         return serviceClass;
     }
 
-    private void findContextFields(final Class<?> cls, Object provider) {
+    // Liberty code change start
+    private void findContextFields(final Class<?> cls, Object provider, ProviderContextInfo contextInfo) {
+    // Liberty code change end
         if (cls == Object.class || cls == null) {
             return;
         }
-        for (Field f : ReflectionUtil.getDeclaredFields(cls)) {
-            Class<?> fType = f.getType();
-            for (Annotation a : f.getAnnotations()) {
-                //Liberty code change start defect 169218
-                //Add the FieldProxy to the set
-                if (a.annotationType() == Context.class) {
-                    contextFields = addContextField(contextFields, f);
-                    if (fType.isInterface()) {
-                        checkContextClass(fType);
 
-                        ThreadLocalProxy<?> proxy = getFieldThreadLocalProxy(f, provider);
-                        if (!InjectionUtils.VALUE_CONTEXTS.contains(f.getType().getName())) {
-                            if (addToMap(getFieldProxyMap(true), f, proxy)) {
-                                ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>> proxySet = getProxySet();
-                                proxySet.add(proxy);
+        // Liberty code change start
+        if (contextInfo == null || contextInfo.fieldNames != null) {
+        // Liberty code change end
+            for (Field f : ReflectionUtil.getDeclaredFields(cls)) {
+                // Liberty code change start
+                if (contextInfo != null && !contextInfo.fieldNames.contains(f.getName())) {
+                    continue;
+                }
+                // Liberty code change end
+                Class<?> fType = f.getType();
+                for (Annotation a : f.getAnnotations()) {
+                    //Liberty code change start defect 169218
+                    //Add the FieldProxy to the set
+                    if (a.annotationType() == Context.class) {
+                        contextFields = addContextField(contextFields, f);
+                        if (fType.isInterface()) {
+                            checkContextClass(fType);
+
+                            ThreadLocalProxy<?> proxy = getFieldThreadLocalProxy(f, provider);
+                            if (!InjectionUtils.VALUE_CONTEXTS.contains(f.getType().getName())) {
+                                if (addToMap(getFieldProxyMap(true), f, proxy)) {
+                                    ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>> proxySet = getProxySet();
+                                    proxySet.add(proxy);
+                                }
                             }
                         }
+                        //Liberty code change end
                     }
-                    //Liberty code change end
                 }
             }
+        // Liberty code change start
         }
-        findContextFields(cls.getSuperclass(), provider);
+        Class<?> superClass = cls.getSuperclass();
+        if (superClass != null && superClass != Object.class) {
+            ProviderContextInfo superContextInfo = CONTEXT_PROPS.get(superClass.getName());
+            if (superContextInfo == null || superContextInfo.processingRequired) {
+                findContextFields(superClass, provider, superContextInfo);
+            }
+        }
+        // Liberty code change end
     }
 
     private static ThreadLocalProxy<?> getFieldThreadLocalProxy(Field f, Object provider) {
@@ -285,27 +396,48 @@ public abstract class AbstractResourceInfo {
         return getProxyMap(SETTER_PROXY_MAP, create);
     }
 
-    private void findContextSetterMethods(Class<?> cls, Object provider) {
+    // Liberty code change start
+    private void findContextSetterMethods(Class<?> cls, Object provider, ProviderContextInfo contextInfo) {
+        if (contextInfo == null || contextInfo.methodNames != null) {
+            // Liberty code change end
 
-        for (Method m : cls.getMethods()) {
-
-            if (!m.getName().startsWith("set") || m.getParameterTypes().length != 1) {
-                continue;
-            }
-            for (Annotation a : m.getAnnotations()) {
-                if (a.annotationType() == Context.class) {
-                    checkContextMethod(m, provider);
-                    break;
+            for (Method m : cls.getMethods()) {
+                // Liberty code change start
+                String methodName = m.getName();
+                if (contextInfo != null && !contextInfo.methodNames.contains(methodName)) {
+                    continue;
+                }
+                if (!methodName.startsWith("set") || m.getParameterTypes().length != 1) {
+                    continue;
+                }
+                // Liberty code change end
+                for (Annotation a : m.getAnnotations()) {
+                    if (a.annotationType() == Context.class) {
+                        checkContextMethod(m, provider);
+                        break;
+                    }
                 }
             }
+        // Liberty code change start
         }
+        // Liberty code change end
         Class<?>[] interfaces = cls.getInterfaces();
         for (Class<?> i : interfaces) {
-            findContextSetterMethods(i, provider);
+            // Liberty code change start
+            ProviderContextInfo iContextInfo = CONTEXT_PROPS.get(i.getName());
+            if (iContextInfo == null || iContextInfo.processingRequired) {
+                findContextSetterMethods(i, provider, iContextInfo);
+            }
+            // Liberty code change end
         }
         Class<?> superCls = cls.getSuperclass();
         if (superCls != null && superCls != Object.class) {
-            findContextSetterMethods(superCls, provider);
+            // Liberty code change start
+            ProviderContextInfo superContextInfo = CONTEXT_PROPS.get(superCls.getName());
+            if (superContextInfo == null || superContextInfo.processingRequired) {
+                findContextSetterMethods(superCls, provider, superContextInfo);
+            }
+            // Liberty code change end
         }
     }
 

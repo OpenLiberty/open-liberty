@@ -756,6 +756,8 @@ info.resumeFailedException=Resuming the {0} server failed. Check the server logs
 info.resumingListeners.target=Resuming the specified target components of the {0} server.
 info.resumedListeners.target=Resuming the specified target components of the {0} server completed.
 info.resumeFailedException.target=Resuming the specified target components of the {0} server failed. Check the server logs for details.
+info.serverCommandAuthFailure=The command {0} failed because the process could not delete the file {1}.
+info.serverCommandCommFailure=The command {0} failed because of a communication error with the server.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

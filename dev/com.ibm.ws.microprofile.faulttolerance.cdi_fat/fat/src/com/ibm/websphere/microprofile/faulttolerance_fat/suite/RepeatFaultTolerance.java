@@ -63,12 +63,13 @@ public class RepeatFaultTolerance {
      * Return a rule to repeat tests for FT 1.1 and 2.0
      * <p>
      * This is the default because FT 1.1 and 2.0 have a mostly separate implementation so we want to ensure both are tested
+     * mp20Features includes FT 1.1, as it is an older version it will only run in full mode. 
      *
      * @param server the server name
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault(String server) {
-        return RepeatTests.with(mp20Features(server))
+        return RepeatTests.with(mp20Features(server).fullFATOnly())
                         .andWith(ft20Features(server));
     }
 

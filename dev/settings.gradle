@@ -86,11 +86,11 @@ pluginManagement {
   props.setProperty('push.ibm.repository',       pushRepoIBM)
   gradle.ext.userProps = props
 
-  /**
-   * Prefer a configured Artifactory over plugins.gradle.org.
-   * Do not fall back to plugins.gradle.org when there are Artifactory outages.
-   */
   repositories {
+    /**
+     * Prefer a configured Artifactory over plugins.gradle.org.
+     * Do not fall back to plugins.gradle.org when there are Artifactory outages.
+     */
     if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
       maven {
           credentials {
@@ -117,20 +117,6 @@ if (!JavaVersion.current().isJava11Compatible()) {
                             "  4) Restart your gradle daemon with './gradlew --stop'\n";
 }
 
-/**
- * Set properties to gradle.userProps and rootProject.ext from:
- *  ~/gradle.startup.properties or the System property build.properties.path
- *  ./generated.properties
- */
-apply from: 'gradle/propertiesSettings.gradle'
-
-/**
- * Settings for biz.aQute.bnd plugin.
- */
-apply from: 'gradle/bndSettings.gradle'
-
-/**
- * Configure Gradle build cache.
- * See: https://docs.gradle.org/current/userguide/build_cache.html
- */
-apply from: 'gradle/buildCacheSettings.gradle'
+apply from: 'wlp-gradle/propertiesSettings.gradle'
+apply from: 'wlp-gradle/bndSettings.gradle'
+apply from: 'wlp-gradle/buildCacheSettings.gradle'

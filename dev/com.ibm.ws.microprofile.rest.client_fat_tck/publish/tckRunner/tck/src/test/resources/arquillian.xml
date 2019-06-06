@@ -26,9 +26,7 @@
             <property name="verifyAppDeployTimeout">60</property>
             <property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
             <property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
-            <!-- com.ibm.tools.attach.enable=yes is for using the localConnector-1.0 feature on zOS -->
-            <!-- jdk.attach.allowAttachSelf is to allow late self-attach on JDK 11+ -->
-            <property name="javaVmArguments">-Dcom.ibm.tools.attach.enable=yes -Djdk.attach.allowAttachSelf=true</property>
+            <property name="javaVmArguments">-Dcom.ibm.tools.attach.enable=yes</property> <!-- this goes here because this tck project asks arquillian to start the server -->
         </configuration>
     </container>
 </arquillian>

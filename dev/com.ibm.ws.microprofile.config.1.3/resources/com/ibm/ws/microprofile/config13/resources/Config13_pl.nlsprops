@@ -45,6 +45,12 @@ duplicate.application.configuration.name.CWMCG0203E.useraction=Przejrzyj dzienni
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=\u0179r\u00f3d\u0142o konfiguracji w\u0142a\u015bciwo\u015bci aplikacji XML serwera
 
+# Server XML Variables Config Source
+server.xml.variables.config.source=\u0179r\u00f3d\u0142o konfiguracji zmiennych XML serwera
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=\u0179r\u00f3d\u0142o konfiguracji domy\u015blnych zmiennych XML serwera
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------

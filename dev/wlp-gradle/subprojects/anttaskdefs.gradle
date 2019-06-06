@@ -1,0 +1,62 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Define Ant tasks to use for subprojects.
+ * These taskdefs rely on classpath properties in the bndWorkspace created by `cnf/resources/bnd/anttaskdefs.bnd`.
+ *
+ * Ant tasks created:
+ *   instrumentForTrace,
+ *   instrumentWithFFDC,
+ *   com/ibm/mantis/nls/antlib.xml,
+ *   portSelector,
+ *   com/ibm/ws/wlp/feature/tasks/default.properties,
+ *   com/ibm/ws/wlp/repository/default.properties,
+ *   com/ibm/ws/repository/generator/default.properties,
+ *   com/ibm/ws/wlp/mavenFeatures/default.properties
+ */
+rootProject.ext.rasInstrumentationInputFiles = { tasks.getByPath(':wlp-rasInstrumentation:jar') }
+rootProject.ext.rasInstrumentationTaskdef = { ant ->
+    ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace',
+                classpath: bnd('repo.rasInstrumentation.path'))
+    ant.taskdef(name: 'instrumentWithFFDC', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentWithFFDC',
+                classpath: bnd('repo.rasInstrumentation.path'))
+}
+
+rootProject.ext.nlsTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml',
+                classpath: bnd('repo.nlsTasks.path'))
+}
+
+rootProject.ext.portSelectorTaskdef = { ant ->
+    ant.taskdef(name: 'portSelector', classname: 'com.ibm.aries.buildtasks.PortSelector',
+                classpath: bnd('repo.portSelector.path'))
+}
+
+rootProject.ext.featureBndTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/wlp/feature/tasks/default.properties',
+                classpath: bnd('repo.featureTasks.path'))
+}
+
+rootProject.ext.repositoryContentTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties',
+                classpath: bnd('repo.generateRepositoryContent.path'))
+}
+
+rootProject.ext.repositoryGeneratorTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/repository/generator/default.properties',
+                classpath: bnd('repo.repositoryGenerator.path'))
+}
+
+rootProject.ext.mavenRepoTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/wlp/mavenFeatures/default.properties',
+                classpath: bnd('repo.mavenRepoTasks.path'))
+}

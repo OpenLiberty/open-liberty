@@ -1,0 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Apply Gradle Build Scan plugin.
+ * See: https://docs.gradle.com/build-scan-plugin/
+ */
+initscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2' }
+    }
+    dependencies {
+        classpath 'com.gradle:build-scan-plugin:2.3'
+    }
+}
+
+rootProject {
+    apply plugin: com.gradle.scan.plugin.BuildScanPlugin
+
+    buildScan {
+        def acceptFile = new File(gradle.gradleUserHomeDir, "build-scans/open-liberty/gradle-scans-license-agree.txt")
+        boolean isCiServer = System.getenv().containsKey("CI")
+        boolean hasAccepted = isCiServer || acceptFile.exists() && acceptFile.text.trim() == 'yes'
+
+        termsOfServiceUrl   = 'https://gradle.com/terms-of-service'
+        if (hasAccepted) {
+            termsOfServiceAgree = 'yes'
+        }
+    }
+}

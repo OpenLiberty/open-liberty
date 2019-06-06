@@ -45,6 +45,12 @@ duplicate.application.configuration.name.CWMCG0203E.useraction=Zkontrolujte prot
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Zdroj konfigurace vlastnost\u00ed aplikace XML serveru
 
+# Server XML Variables Config Source
+server.xml.variables.config.source=Zdroj konfigurace prom\u011bnn\u00fdch XML serveru
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Zdroj konfigurace v\u00fdchoz\u00edch prom\u011bnn\u00fdch XML serveru
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------

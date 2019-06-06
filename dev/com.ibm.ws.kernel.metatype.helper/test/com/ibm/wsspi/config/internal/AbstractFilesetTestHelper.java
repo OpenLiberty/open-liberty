@@ -154,7 +154,7 @@ public class AbstractFilesetTestHelper {
 
     static void setAttributes(FilesetImpl fset, String dir, Boolean sensitive, String includes, String excludes, Long scanInterval) {
         fset.modified(getAttributes(dir, sensitive, includes, excludes, scanInterval));
-        Dictionary<String, Object> props = fset.getServiceRegistrationProps();
+        Dictionary<String, Object> props = fset.getServiceProperties();
         Collection<String> dirs = (Collection<String>) props.get(FileMonitor.MONITOR_DIRECTORIES);
         Assert.assertEquals("wrong size", 1, dirs.size());
         Assert.assertEquals("wrong dir", fset.getDir(), dirs.iterator().next());

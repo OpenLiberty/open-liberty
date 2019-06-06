@@ -136,17 +136,17 @@ org.apache.cxf:cxf-rt-rs-service-description:3.1.18
 org.apache.cxf:cxf-rt-transports-http:3.1.18
 org.apache.cxf:cxf-tools-common:3.1.18
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.18
-org.apache.cxf:cxf-core:3.3.0
+org.apache.cxf:cxf-core:3.3.3.20190529
 org.apache.cxf:cxf-rt-bindings-soap:3.3.0
 org.apache.cxf:cxf-rt-bindings-xml:3.3.0
 org.apache.cxf:cxf-rt-databinding-jaxb:3.3.0
-org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.0
+org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3.20190529
 org.apache.cxf:cxf-rt-frontend-jaxws:3.3.0
 org.apache.cxf:cxf-rt-frontend-simple:3.3.0
 org.apache.cxf:cxf-rt-management:3.3.0
-org.apache.cxf:cxf-rt-rs-client:3.3.0
+org.apache.cxf:cxf-rt-rs-client:3.3.3.20190529
 org.apache.cxf:cxf-rt-rs-mp-client:3.2.6
-org.apache.cxf:cxf-rt-rs-mp-client:3.3.0
+org.apache.cxf:cxf-rt-rs-mp-client:3.3.3.20190529
 org.apache.cxf:cxf-rt-rs-service-description:3.3.0
 org.apache.cxf:cxf-rt-rs-sse:3.3.0
 org.apache.cxf:cxf-rt-transports-http:3.3.0
@@ -156,6 +156,11 @@ org.apache.cxf:cxf-rt-ws-policy:3.3.0
 org.apache.cxf:cxf-rt-wsdl:3.3.0
 org.apache.cxf:cxf-tools-common:3.3.0
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.3.0
+org.apache.cxf.xjcplugins:cxf-xjc-boolean:2.6.0
+org.apache.cxf.xjcplugins:cxf-xjc-bug671:2.6.0
+org.apache.cxf.xjcplugins:cxf-xjc-dv:2.6.0
+org.apache.cxf.xjcplugins:cxf-xjc-ts:2.6.0
+org.apache.cxf.xjc-utils:cxf-xjc-runtime:2.6.0
 org.apache.derby:derby:10.11.1.1
 org.apache.derby:derbynet:10.11.1.1
 org.apache.directory.server:apacheds-service:2.0.0-M15
@@ -208,6 +213,7 @@ org.codehaus.jackson:jackson-core-asl:1.6.2
 org.codehaus.jackson:jackson-jaxrs:1.6.2
 org.codehaus.jackson:jackson-mapper-asl:1.6.2
 org.codehaus.jackson:jackson-xc:1.6.2
+org.codehaus.woodstox:stax2-api:4.2
 org.codehaus.woodstox:woodstox-core-asl:4.2.0
 org.eclipse.birt.runtime.3_7_1:org.apache.xml.serializer:2.7.1
 org.eclipse.jdt.core.compiler:ecj:4.3.1
@@ -237,6 +243,7 @@ org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-stream
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.0.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.2.0
+org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.3.1
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.1.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
@@ -269,7 +276,7 @@ org.jboss.shrinkwrap:shrinkwrap-api:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
 org.jboss.weld:weld-osgi-bundle:2.4.8.Final
-org.jboss.weld:weld-osgi-bundle:3.1.0.Final
+org.jboss.weld:weld-osgi-bundle:3.1.1.Final
 org.jmock:jmock:2.5.1
 org.jmock:jmock-junit4:2.5.1
 org.json:json:20080701
@@ -283,7 +290,7 @@ org.mongodb:mongo-java-driver:2.13.3
 org.objenesis:objenesis:1.0
 org.osgi:osgi.core:7.0.0
 org.osgi:org.osgi.core:6.0.0
-org.osgi:org.osgi.annotation.versioning:1.0.0
+org.osgi:org.osgi.annotation.versioning:1.1.0
 org.osgi:org.osgi.namespace.service:1.0.0
 org.osgi:org.osgi.service.blueprint:1.0.2
 org.osgi:org.osgi.service.cm:1.6.0
@@ -292,6 +299,7 @@ org.osgi:org.osgi.service.component:1.4.0
 org.osgi:org.osgi.service.coordinator:1.0.2
 org.osgi:org.osgi.service.event:1.3.1
 org.osgi:org.osgi.service.http.whiteboard:1.0.0
+org.osgi:org.osgi.service.http.whiteboard:1.1.0
 org.osgi:org.osgi.service.http:1.2.1
 org.osgi:org.osgi.service.log:1.4.0
 org.osgi:org.osgi.service.metatype.annotations:1.4.0
@@ -339,6 +347,13 @@ org.quartz-scheduler:quartz:2.2.1
 org.reactivestreams:reactive-streams:1.0.2
 org.reactivestreams:reactive-streams-examples:1.0.2
 org.rnorth.duct-tape:duct-tape:1.0.7
+org.springframework:spring-aop:3.0.7.RELEASE
+org.springframework:spring-asm:3.0.7.RELEASE
+org.springframework:spring-beans:3.0.7.RELEASE
+org.springframework:spring-context:3.0.7.RELEASE
+org.springframework:spring-core:3.0.7.RELEASE
+org.springframework:spring-expression:3.0.7.RELEASE
+org.springframework:spring-web:3.0.7.RELEASE
 org.springframework:spring-core:4.3.13.RELEASE
 org.springframework:spring-context:4.3.13.RELEASE
 org.springframework:spring-aop:4.3.13.RELEASE
@@ -424,3 +439,4 @@ com.cloudant:cloudant-client:2.16.0
 com.cloudant:cloudant-client:2.8.0
 com.cloudant:cloudant-http:2.16.0
 com.cloudant:cloudant-http:2.8.0
+wsdl4j:wsdl4j:1.6.2

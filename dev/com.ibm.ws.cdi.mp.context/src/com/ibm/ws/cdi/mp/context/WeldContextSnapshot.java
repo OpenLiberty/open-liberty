@@ -20,7 +20,6 @@ import org.jboss.weld.context.bound.BoundLiteral;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.context.bound.MutableBoundRequest;
-import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.manager.api.WeldManager;
 
 import com.ibm.websphere.ras.Tr;
@@ -84,8 +83,6 @@ public class WeldContextSnapshot implements ThreadContextSnapshot {
             conversationCtx.clearAndSet(contextToApply.conInstances);
         }
 
-        RequestScopedCache.invalidate();
-
         return () -> {
             // This will run after a task has executed and will clean up the CDI context
             if (existingContexts.reqCtx != null)
@@ -102,8 +99,6 @@ public class WeldContextSnapshot implements ThreadContextSnapshot {
                 existingContexts.conCtx.clearAndSet(existingContexts.conInstances);
             else
                 conversationCtx.deactivate();
-
-            RequestScopedCache.invalidate();
         };
     }
 }

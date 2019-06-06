@@ -13,11 +13,14 @@ package org.test.config.adapter;
 import javax.resource.cci.ConnectionSpec;
 import javax.resource.spi.AdministeredObject;
 import javax.resource.spi.ConfigProperty;
+import javax.resource.spi.ConnectionRequestInfo;
 
-@AdministeredObject
-public class ConnectionSpecImpl implements ConnectionSpec {
+@AdministeredObject(adminObjectInterfaces = ConnectionSpec.class)
+public class ConnectionSpecImpl implements ConnectionRequestInfo, ConnectionSpec {
     @ConfigProperty
     private Long connectionTimeout;
+
+    Class<?>[] interfaces = new Class<?>[] { javax.resource.cci.Connection.class, javax.resource.cci.ConnectionMetaData.class, javax.resource.cci.Interaction.class };
 
     @ConfigProperty(confidential = true)
     private String password;

@@ -19,23 +19,33 @@ import javax.resource.cci.ConnectionFactory;
 import javax.resource.cci.ConnectionSpec;
 import javax.resource.cci.RecordFactory;
 import javax.resource.cci.ResourceAdapterMetaData;
+import javax.resource.spi.ConnectionManager;
+import javax.resource.spi.ConnectionRequestInfo;
 
 public class ConnectionFactoryImpl implements ConnectionFactory {
     private static final long serialVersionUID = 1L;
 
+    private final ConnectionManager cm;
+    private final ManagedConnectionFactoryImpl mcf;
+
+    ConnectionFactoryImpl(ConnectionManager cm, ManagedConnectionFactoryImpl mcf) {
+        this.cm = cm;
+        this.mcf = mcf;
+    }
+
     @Override
     public Connection getConnection() throws ResourceException {
-        throw new NotSupportedException();
+        return getConnection(new ConnectionSpecImpl());
     }
 
     @Override
     public Connection getConnection(ConnectionSpec conSpec) throws ResourceException {
-        throw new NotSupportedException();
+        return (Connection) cm.allocateConnection(mcf, (ConnectionRequestInfo) conSpec);
     }
 
     @Override
     public ResourceAdapterMetaData getMetaData() throws ResourceException {
-        throw new NotSupportedException();
+        return new ResourceAdapterMetaDataImpl();
     }
 
     @Override

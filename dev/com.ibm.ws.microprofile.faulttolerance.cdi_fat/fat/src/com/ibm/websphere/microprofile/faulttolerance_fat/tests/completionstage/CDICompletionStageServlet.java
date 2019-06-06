@@ -29,6 +29,8 @@ import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet("/CDICompletionStage")
@@ -65,6 +67,7 @@ public class CDICompletionStageServlet extends FATServlet {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testCompletionStageLateCompletion() throws InterruptedException {
         CompletableFuture<Void> latch = getLatch();
         CompletableFuture<String> returnValue = getLatch();
@@ -94,6 +97,7 @@ public class CDICompletionStageServlet extends FATServlet {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testCompletionStageBulkhead() throws InterruptedException {
         // First call will wait on latch until we complete it
         CompletableFuture<Void> returnValue1 = getLatch();
@@ -120,6 +124,7 @@ public class CDICompletionStageServlet extends FATServlet {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testCompletionStageBulkheadTimeout() throws InterruptedException {
         // First call will wait on latch until we complete it
         CompletableFuture<Void> returnValue1 = getLatch();

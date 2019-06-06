@@ -96,7 +96,7 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
             String user_id = "";
 
             if (req.getQueryString() != null) {
-                String queryString = req.getQueryString();
+                String queryString = URLDecoder.decode(req.getQueryString(), "UTF-8");
 
                 if (queryString != null) {
                     int index1 = queryString.indexOf("user_id=");
@@ -128,7 +128,7 @@ public class ApplicationPasswordTokenEvent extends AuditEvent {
 
             set(AuditEvent.TARGET_METHOD, AuditUtils.getRequestMethod(req));
 
-            if (AuditUtils.getRequestMethod(req) == "POST") {
+            if (AuditUtils.getRequestMethod(req).equals("POST")) {
                 if (endpoint != null) {
                     String sos = (String) m.get("respBody");
                     if (sos != null) {

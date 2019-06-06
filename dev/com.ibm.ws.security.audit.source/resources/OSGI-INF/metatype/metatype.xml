@@ -33,7 +33,8 @@
             <Option label="%securityJmsAuthz.desc" value="SECURITY_JMS_AUTHZ"/>
             <Option label="%securitySAFAuthzDetails.desc" value="SECURITY_SAF_AUTHZ_DETAILS"/>
             <Option label="%applicationTokenMgmt.desc" value="APPLICATION_TOKEN_MANAGEMENT"/>
-   </AD>
+            <Option label="%securitySAFAuthz.desc" value="SECURITY_SAF_AUTHZ"/>   
+    </AD>
 
    <AD id="isCustomEvent" name="internal" description="%isCustomEvent.desc" required="false" type="Boolean" default="false"/>
    <AD id="auditData" name="internal" description="%auditData.desc" required="false" type="String"/>

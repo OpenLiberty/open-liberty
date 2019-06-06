@@ -375,6 +375,10 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
                                                    + ", " + Connector.class.getName() + ':' + ddTransactionSupport);
         }
 
+        // Otherwise choose NoTransaction
+        if (transactionSupport == null)
+            transactionSupport = TransactionSupportLevel.NoTransaction;
+
         if (connectionFactoryTransactionSupport != null) {
             if (connectionFactoryTransactionSupport.ordinal() > transactionSupport.ordinal())
                 throw new IllegalArgumentException(ManagedConnectionFactory.class.getName() + ':' + transactionSupport
@@ -383,8 +387,7 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
                 transactionSupport = connectionFactoryTransactionSupport;
         }
 
-        // Otherwise choose NoTransaction
-        return transactionSupport == null ? TransactionSupportLevel.NoTransaction : transactionSupport;
+        return transactionSupport;
     }
 
     @Override

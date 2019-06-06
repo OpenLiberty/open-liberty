@@ -82,10 +82,13 @@ public class DropinsTest extends ServletRunner {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
+            server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("aBrokenFile.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
+            server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("aBrokenFile.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
+            server.setMarkToEndOfLog();
         }
     }
 

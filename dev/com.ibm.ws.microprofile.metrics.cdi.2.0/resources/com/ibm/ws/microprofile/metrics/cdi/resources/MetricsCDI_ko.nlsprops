@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics CDI Impl -  range is 3000-4999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Cannot resolve forwarding gauge.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: \uac8c\uc774\uc9c0 \uba54\ud2b8\ub9ad {0}\uc5d0 \ub300\ud55c \uac12\uc744 \ud574\uacb0\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+cannot.resolve.metric.warning.CWMMC3000W.explanation=\uac8c\uc774\uc9c0\uc5d0 \ub300\ud55c \uae30\ubcf8 \uba54\uc18c\ub4dc\ub97c \ud574\uacb0\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc77c\ubc18\uc801\uc73c\ub85c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ub85c\ub4dc \ud574\uc81c\ub41c \uba54\ud2b8\ub9ad\uc5d0 \uc561\uc138\uc2a4\ud558\uc5ec \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
+cannot.resolve.metric.warning.CWMMC3000W.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uac8c\uc774\uc9c0\uac00 \uc790\ub3d9\uc73c\ub85c \ub4f1\ub85d \ucde8\uc18c\ub429\ub2c8\ub2e4.

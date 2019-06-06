@@ -518,8 +518,6 @@ goto:eof
   )
   @REM Avoid HeadlessException.
   set JVM_OPTIONS=-Djava.awt.headless=true !JVM_OPTIONS!
-  @REM allow late self attach for when the localConnector-1.0 feature is enabled
-  set JVM_OPTIONS=-Djdk.attach.allowAttachSelf=true !JVM_OPTIONS!
 
 
   @REM The order of merging the jvm.option files sets the precedence. 

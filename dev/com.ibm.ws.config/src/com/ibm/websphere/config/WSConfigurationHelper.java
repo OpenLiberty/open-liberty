@@ -77,7 +77,8 @@ public interface WSConfigurationHelper {
      * @param pid The pid or factory pid
      * @param attributeID
      * @param strValue the value in String form
-     * @return the value converted to the data type specified in metatype.
+     * @return the value converted to the data type specified in metatype. The original value is returned
+     *         if it cannot be converted, for example, due to a parsing error.
      */
     Object convert(String pid, String attributeID, String strValue);
 

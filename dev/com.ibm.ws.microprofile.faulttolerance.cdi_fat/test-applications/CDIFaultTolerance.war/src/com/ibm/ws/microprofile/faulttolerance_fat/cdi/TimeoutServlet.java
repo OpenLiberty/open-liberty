@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -55,15 +57,15 @@ public class TimeoutServlet extends FATServlet {
      * @throws ConnectException
      */
     private <T> T ignoreOutliers(TimedTestBean<T> bean, int maxMillis) throws ConnectException {
-        long startMillis = System.currentTimeMillis();
+        long startNanos = System.nanoTime();
         T result = null; //Never actually used if tests are going according to plan!
         try {
             result = bean.connect();
             throw new AssertionError("TimeoutException not thrown");
         } catch (TimeoutException e) {
             //expected!
-            long endMillis = System.currentTimeMillis();
-            long millisTaken = endMillis - startMillis;
+            long endNanos = System.nanoTime();
+            long millisTaken = MILLISECONDS.convert(endNanos - startNanos, NANOSECONDS);
             if (millisTaken > maxMillis) {
                 String msg = "TimeoutException not thrown quickly enough, duration was: " + millisTaken + "milliseconds, limit was " + maxMillis;
 
@@ -91,18 +93,23 @@ public class TimeoutServlet extends FATServlet {
      */
     private <T> long getSampleOfConnectTimesAverage(int delayMillis, int sampleSize, TimedTestBean<T> targetBean) {
 
-        long startTime = System.currentTimeMillis();
-        long totalTime = 0;
-        long averageTime = 0;
+        long totalNanos = 0;
+        long averageMillis = 0;
 
         try {
             Thread.sleep(delayMillis);
+            long startNanos = System.nanoTime();
             for (int i = 0; i < sampleSize; i++) {
-                targetBean.connect();
+                try {
+                    targetBean.connect();
+                    throw new AssertionError("TimeoutException not thrown");
+                } catch (TimeoutException e) {
+                    // expected
+                }
             }
-            totalTime = System.currentTimeMillis() - startTime;
-            averageTime = totalTime / sampleSize;
-            return averageTime;
+            totalNanos = System.nanoTime() - startNanos;
+            averageMillis = MILLISECONDS.convert(totalNanos / sampleSize, NANOSECONDS);
+            return averageMillis;
         } catch (Exception e) {
             // This will flag the original error to be reported
             // as we cannot successfully de-glitch.
@@ -173,26 +180,26 @@ public class TimeoutServlet extends FATServlet {
     @Test
     public void testNonInterruptableTimeout() throws InterruptedException {
         try {
-            bean.busyWait(1000); // Busy wait time is greater than timeout (=500)
+            bean.busyWaitTimeout(); // Busy wait which will time out
             fail("No exception thrown");
         } catch (TimeoutException e) {
             if (Thread.interrupted()) {
                 fail("Thread was in interrupted state upon return");
             }
             // This wait is to ensure our thread doesn't get interrupted later, after the method has finished
-            Thread.sleep(1000);
+            Thread.sleep(TestConstants.NEGATIVE_TIMEOUT);
         }
     }
 
     @Test
     public void testNonInterruptableDoesntTimeout() throws Exception {
-        bean.busyWait(10); // Busy wait time is less than timeout (=500)
+        bean.busyWaitNoTimeout(); // Busy wait which will not time out
 
         if (Thread.interrupted()) {
             fail("Thread was in interrupted state upon return");
         }
 
-        Thread.sleep(2000); // Wait to ensure that our thread isn't interrupted after the method has finished
+        Thread.sleep(TestConstants.NEGATIVE_TIMEOUT); // Wait to ensure that our thread isn't interrupted after the method has finished
     }
 
     /**

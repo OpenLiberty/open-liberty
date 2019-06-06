@@ -10,36 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.config.admin.internal;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
-import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.wsspi.kernel.service.location.VariableRegistry;
+import com.ibm.ws.config.admin.internal.ConfigurationStorageHelper.ConfigStorageConsumer;
 
 /**
  * ConfigurationStore manages all active configurations along with persistence. The current
@@ -47,93 +38,35 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
  * identified by their pid. Persistence details are in the constructor, saveConfiguration, and
  * deleteConfiguration and can be factored out separately if required.
  */
-class ConfigurationStore {
+class ConfigurationStore implements Runnable {
     private static final TraceComponent tc = Tr.register(ConfigurationStore.class, ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);
 
     private final ConfigAdminServiceFactory caFactory;
-    /** Centralized store/retrieve of cached config files */
-    protected PersistedConfigManager persistedConfig;
 
-    private final Map<String, ExtendedConfigurationImpl> configurations = new HashMap<String, ExtendedConfigurationImpl>();
-
-    protected boolean cachedConfigScanned = false;
-
-    /** A lock to control cachedConfigScanned modification */
-    protected final Object cachedConfigScannedLock = new Object() {};
+    private final Map<String, ExtendedConfigurationImpl> configurations;
 
     /** A counter for PID names to avoid collisions - the instance of this class should be synchronized before modifying this field */
     private long configCount = 0;
 
+    private final File persistentConfig;
+
+    private boolean dirty = false;
+    private Future<?> saveTask = null;
+
     public ConfigurationStore(ConfigAdminServiceFactory configAdminServiceFactory, BundleContext bc) {
         this.caFactory = configAdminServiceFactory;
-
-        this.persistedConfig = new PersistedConfigManager(bc.getDataFile(ConfigAdminConstants.CONFIG_PERSISTENT_SUBDIR));
-
-        synchronized (cachedConfigScannedLock) {
-            if (!cachedConfigScanned) {
-                cachedConfigScanned = true;
-                String[] pids = persistedConfig.getCachedPids();
-                for (String pid : pids) {
-                    boolean deleteFile = false;
-                    try {
-                        ExtendedConfigurationImpl config = deserializeConfigurationData(pid);
-                        if (config != null) {
-                            configurations.put(config.getPid(), config);
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                Tr.debug(tc, "added persisted config " + config);
-                        }
-                    } catch (IOException e) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(tc, "Exception while deserializing a ConfigurationImpl");
-                        FFDCFilter.processException(e, getClass().getName(),
-                                                    "Exception while deserializing a ConfigurationImpl",
-                                                    new Object[] { pid });
-
-                        deleteFile = true;
-                    }
-
-                    if (deleteFile) {
-                        persistedConfig.deleteConfigFile(pid);
-                    }
-
-                }
-            }
-        }
+        this.persistentConfig = bc.getDataFile(ConfigAdminConstants.CONFIG_PERSISTENT);
+        this.configurations = loadConfigurationDatas(this.persistentConfig);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "config store pids are [" + configurations.keySet() + "]");
     }
 
-    public void saveConfiguration(String pid, final ExtendedConfigurationImpl config) throws IOException {
-        config.checkLocked();
-
-        final File configFile = persistedConfig.getConfigFile(pid);
-
-        try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    serializeConfigurationData(configFile, config);
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw (IOException) e.getException();
-        }
-    }
-
     public synchronized void removeConfiguration(final String pid) {
         configurations.remove(pid);
+        save();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "removed configuration pid = " + pid + ", remaining pids are [" + configurations.keySet() + "]");
-
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                persistedConfig.deleteConfigFile(pid);
-                return null;
-            }
-        });
     }
 
     public synchronized ExtendedConfigurationImpl getConfiguration(String pid, String location) {
@@ -189,83 +122,64 @@ class ConfigurationStore {
         }
     }
 
-    void serializeConfigurationData(File configFile, ExtendedConfigurationImpl config) throws IOException {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            // get data outside of the sync block to prevent a deadlock, however we may have inconsistent information
-            Dictionary<String, ?> properties = config.getReadOnlyProperties();
-            Set<ConfigID> references = config.getReferences();
-            Set<String> uniqueVars = config.getUniqueVariables();
-
-            String bundleLocation = config.getBundleLocation();
-
-            // write config data
-            fos = new FileOutputStream(configFile, false);
-            oos = new ObjectOutputStream(new BufferedOutputStream(fos));
-            oos.writeObject(properties);
-            oos.writeObject(bundleLocation);
-            oos.writeBoolean(Boolean.FALSE);
-            oos.writeObject(references);
-            oos.writeObject(uniqueVars);
-        } finally {
-            ConfigUtil.closeIO(oos);
-            ConfigUtil.closeIO(fos);
+    synchronized void saveConfigurationDatas(boolean cancelSaveTask) throws IOException {
+        if (dirty) {
+            List<ExtendedConfigurationImpl> persistConfigs = new ArrayList<>();
+            for (ExtendedConfigurationImpl persistConfig : configurations.values()) {
+                if (persistConfig.getReadOnlyProperties() != null) {
+                    persistConfigs.add(persistConfig);
+                }
+            }
+            ConfigurationStorageHelper.store(persistentConfig, persistConfigs);
+            dirty = false;
+            if (cancelSaveTask && saveTask != null) {
+                saveTask.cancel(false);
+            }
+            saveTask = null;
         }
     }
 
-    /**
-     * If a serialized file does not exist, a null is returned.
-     * If a serialized file exists for the given pid, it deserializes
-     * configuration dictionary
-     * and bound location and returns in an array of size 2.
-     * Index 0 of returning array contains configuration dictionary.
-     * Index 1 of returning array contains bound bundle location in String
-     * Index 2 of returning array contains whether Meta-Type processsing was done
-     * or not
-     * (if CMConstants.METATYPE_PROCESSED, then yes. if null, then no.)
-     *
-     * @param pid
-     */
-    ExtendedConfigurationImpl deserializeConfigurationData(String pid) throws IOException {
-        ExtendedConfigurationImpl config = null;
-        File configFile = persistedConfig.getConfigFile(pid);
-        if (configFile != null) {
-
-            if (configFile.length() > 0) {
-
-                FileInputStream fis = null;
-                ObjectInputStream ois = null;
-
-                try {
-                    fis = new FileInputStream(configFile);
-                    ois = new ObjectInputStream(new BufferedInputStream(fis));
-                    @SuppressWarnings("unchecked")
-                    Dictionary<String, Object> d = (Dictionary<String, Object>) ois.readObject();
-                    String location;
-                    location = (String) ois.readObject();
-                    ois.readBoolean();
-                    @SuppressWarnings("unchecked")
-                    Set<ConfigID> references = (Set<ConfigID>) ois.readObject();
-                    @SuppressWarnings("unchecked")
-                    Set<String> uniqueVariables = (Set<String>) ois.readObject();
-
-                    String factoryPid = (String) d.get(ConfigurationAdmin.SERVICE_FACTORYPID);
-                    VariableRegistry variableRegistry = caFactory.getVariableRegistry();
-                    for (String variable : uniqueVariables) {
-                        variableRegistry.addVariable(variable, ConfigAdminConstants.VAR_IN_USE);
-                    }
-
-                    config = new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, d, references, uniqueVariables);
-                } catch (ClassNotFoundException e) {
-                    throw new IOException(e);
-                } finally {
-                    ConfigUtil.closeIO(ois);
-                    ConfigUtil.closeIO(fis);
+    private Map<String, ExtendedConfigurationImpl> loadConfigurationDatas(File configDatas) {
+        if (configDatas.isFile()) {
+            ConfigStorageConsumer<String, ExtendedConfigurationImpl> consumer = new ConfigStorageConsumer<String, ExtendedConfigurationImpl>() {
+                @Override
+                public ExtendedConfigurationImpl consumeConfigData(String location, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict) {
+                    String pid = (String) dict.get(Constants.SERVICE_PID);
+                    String factoryPid = (String) dict.get(ConfigurationAdmin.SERVICE_FACTORYPID);
+                    return new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, dict, references, uniqueVars);
                 }
+
+                @Override
+                public String getKey(ExtendedConfigurationImpl configuration) {
+                    return configuration.getPid(false);
+                }
+            };
+            try {
+                return ConfigurationStorageHelper.load(configDatas, consumer);
+            } catch (IOException e) {
+                // auto FFDC is fine
+                return new HashMap<>();
             }
         }
+        return new HashMap<>();
+    }
 
-        return config;
+    /**
+     *
+     */
+    synchronized void save() {
+        dirty = true;
+        if (saveTask == null) {
+            saveTask = caFactory.updateQueue.addScheduled(this);
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            saveConfigurationDatas(false);
+        } catch (IOException e) {
+            // Auto-FFDC is fine here
+        }
     }
 }

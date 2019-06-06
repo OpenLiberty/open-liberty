@@ -45,6 +45,12 @@ duplicate.application.configuration.name.CWMCG0203E.useraction=Ermitteln Sie das
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Konfigurationsquelle f\u00fcr Anwendungseigenschaften in der Server-XML
 
+# Server XML Variables Config Source
+server.xml.variables.config.source=Konfigurationsquelle f\u00fcr Variablen in der Server-XML
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Konfigurationsquelle f\u00fcr Standardvariablen in der Server-XML
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------
