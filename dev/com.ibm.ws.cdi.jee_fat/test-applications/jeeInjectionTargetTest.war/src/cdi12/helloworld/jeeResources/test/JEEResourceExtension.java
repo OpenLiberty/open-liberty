@@ -35,7 +35,11 @@ import cdi12.helloworld.jeeResources.ejb.interceptors.MyManagedBeanEJBIntercepto
 
 public class JEEResourceExtension implements Extension {
 
-    public List<String> logger = new ArrayList<String>();
+    private List<String> logger = new ArrayList<String>();
+
+    public List<String> getLogger() {
+        return logger;
+    }
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event) {
         logger.add("BeforeBeanDiscovery!");
