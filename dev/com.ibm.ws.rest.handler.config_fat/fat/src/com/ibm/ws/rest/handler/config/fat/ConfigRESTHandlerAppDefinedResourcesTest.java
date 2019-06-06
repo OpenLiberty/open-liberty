@@ -974,7 +974,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "60.91.109", j.getString("resourceAdapterVersion"));
         assertEquals(err, "OpenLiberty", j.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", j.getString("resourceAdapterDescription"));
-        assertEquals(err, "1.7", j.getString("resourceAdapterJCASupport")); // TODO change to specVersion so that we avoid using the JCA acronym from Java EE
+        assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
         assertEquals(err, "cfuser1", j.getString("user"));
 
         assertNotNull(err, j = array.getJsonObject(1)); // a javax.sql.DataSource
