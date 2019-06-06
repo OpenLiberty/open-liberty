@@ -155,6 +155,7 @@ org.apache.cxf:cxf-rt-ws-addr:3.3.0
 org.apache.cxf:cxf-rt-ws-policy:3.3.0
 org.apache.cxf:cxf-rt-wsdl:3.3.0
 org.apache.cxf:cxf-tools-common:3.3.0
+org.apache.cxf:cxf-tools-validator:3.3.0
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.3.0
 org.apache.cxf.xjcplugins:cxf-xjc-boolean:2.6.0
 org.apache.cxf.xjcplugins:cxf-xjc-bug671:2.6.0

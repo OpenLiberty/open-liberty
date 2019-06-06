@@ -39,6 +39,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -330,7 +331,9 @@ public final class StaxUtils {
                 factory = createWoodstoxFactory();
             } catch (Throwable t) {
                 if (LOG.isLoggable(Level.FINE)) {
-                    LOG.log(Level.FINE, "Cannot create Woodstox XMLInputFactory: ", t);
+                    LOG.log(Level.FINE, "Cannot create Woodstox XMLInputFactory ");
+                    if(t instanceof NoClassDefFoundError)
+                        LOG.log(Level.FINE, "The WoodStox API is not availible on the classpath");
                 }
             }
 
