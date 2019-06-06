@@ -32,6 +32,8 @@ import com.ibm.ws.microprofile.faulttolerance_fat.cdi.AnnotationsDisabledServlet
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -41,6 +43,7 @@ import componenttest.topology.utils.HttpUtils;
  * Test the server when the non-Fallback annotations are disabled by setting MP_Fault_Tolerance_NonFallback_Enabled = false
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class CDIAnnotationsDisabledTest extends FATServletClient {
 
     private final static String SERVER_NAME = "CDIFaultTolerance";
