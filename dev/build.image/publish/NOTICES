@@ -1,6 +1,6 @@
 NOTICES AND INFORMATION
 
-Open Liberty 19.0.0.5
+Open Liberty 19.0.0.6
 Copyright 1999-2019 IBM Corporation and others
 
 This product includes software developed at
@@ -41,15 +41,6 @@ Apache Commons Logging
 Apache Commons Pool 
 Apache Commons Weaver
 Apache CXF
-Apache CXF Command Line Tools Common
-Apache CXF Command Line Tools WADLTn JAXRS Frontend
-Apache CXF JAX RS Client
-Apache CXF JAX RS Server Side Events Support
-Apache CXF JAX RS Service Description
-Apache CXF MicroProfile Client
-Apache CXF Runtime HTTP Async Transport
-Apache CXF Runtime HTTP Transport
-Apache CXF Runtime JAX RS Frontend
 Apache Ektorp
 Apache Felix GoGo
 Apache Felix OSGi Bundle Repository
@@ -413,7 +404,7 @@ EPL. The Program includes all or portions of the following software which IBM ob
 The following subset of Excluded Components was obtained from the Eclipse Foundation: 
 OSGi Framework, OSGi Materials, pixman, XHTML DTDs, MXJ4,  
 AspectJ Runtime,  AsjectJ Tools, IBM Eclipse SDK, IBM Eclipse Help System, 3.4.3 components,  
-Higgens Token Server, TPTP , EMF, Eclipse OSGi, Eclipse Equinox (OSGi Services), Eclipse Equinox metatype, Eclipselink, EcliplseLink Hermes JPQL Parser, EclipseLink ANTLR, EclipseLink ASM, EclipseLink Core, EclipseLink DBWS, EclipseLink DBWS Builder, EclipseLink JPA RS, EclipseLink JPA Modelgen (non OSGi), EclipseLink Moxy,  EclipseLink NoSQL Database Extensions, EclipseLink JPA, EclipseLink OracleDDL Parser, EclipseLink SDO EclipseLink NoSQL, Eclipse JDT Core Batch Compiler, PAHO Client, ECJ, Yasson, Open Liberty, jakarta mail
+Higgens Token Server, TPTP , EMF, Eclipse OSGi, Eclipse Equinox (OSGi Services), Eclipse Equinox metatype, Eclipselink, EcliplseLink Hermes JPQL Parser, EclipseLink ANTLR, EclipseLink ASM, EclipseLink Core, EclipseLink DBWS, EclipseLink DBWS Builder, EclipseLink JPA RS, EclipseLink JPA Modelgen (non OSGi), EclipseLink Moxy,  EclipseLink NoSQL Database Extensions, EclipseLink JPA, EclipseLink OracleDDL Parser, EclipseLink SDO EclipseLink NoSQL, Eclipse JDT Core Batch Compiler, PAHO Client, ECJ, Yasson, jakarta mail
 
 (herein collectively referred to as "Eclipse Code"). Notices and important information, including instructions for obtaining source code, for the Eclipse Code may be found in associated "about.html" files ("About Files") that accompany the Eclipse Code. These About Files are provided for informational purposes only, and notwithstanding anything to the contrary therein, your use of such Eclipse Code shall be governed by the terms of the IBM end user license agreement.
 
