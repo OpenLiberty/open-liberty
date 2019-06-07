@@ -74,6 +74,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "TestClient1", json.getString("clientID"));
     }
 
@@ -167,6 +168,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", j.getString("clientID"));
 
         // [1]: config.displayId=jmsConnectionFactory[jmscf1]
@@ -210,6 +212,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
         assertNull(err, json.get("clientID"));
     }
 
@@ -234,6 +237,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", json.getString("clientID"));
 
         assertNotNull(err, json = tcfs.getJsonObject(1));
@@ -245,6 +249,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "tcf2id", json.getString("clientID"));
 
         assertNotNull(err, json = tcfs.getJsonObject(2));
@@ -256,6 +261,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "tcf3id", json.getString("clientID"));
     }
 
@@ -274,6 +280,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
         assertNull(err, json.get("clientID"));
     }
 
@@ -292,6 +299,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", json.getString("clientID"));
     }
 }

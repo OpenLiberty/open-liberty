@@ -10,18 +10,38 @@
  *******************************************************************************/
 package org.test.config.jmsadapter;
 
+import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
+import javax.resource.spi.ConnectionManager;
 
 public class JMSTopicConnectionFactoryImpl extends JMSConnectionFactoryImpl implements TopicConnectionFactory {
+    final ConnectionManager cm;
+    final ManagedJMSTopicConnectionFactoryImpl mcf;
+
+    JMSTopicConnectionFactoryImpl(ConnectionManager cm, ManagedJMSTopicConnectionFactoryImpl mcf) {
+        this.cm = cm;
+        this.mcf = mcf;
+    }
+
+    @Override
+    public Connection createConnection() throws JMSException {
+        return createTopicConnection();
+    }
+
+    @Override
+    public Connection createConnection(String user, String password) throws JMSException {
+        return createTopicConnection(user, password);
+    }
+
     @Override
     public TopicConnection createTopicConnection() throws JMSException {
-        throw new UnsupportedOperationException();
+        return createTopicConnection(null, null);
     }
 
     @Override
     public TopicConnection createTopicConnection(String user, String password) throws JMSException {
-        throw new UnsupportedOperationException();
+        return new JMSTopicConnectionImpl(this);
     }
 }
