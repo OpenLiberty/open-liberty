@@ -50,7 +50,7 @@ public class WsLogManager extends LogManager {
      * disableReset() method, to prevent losing logging during JVM shutdown.
      */
     private boolean resetEnabled = true;
-    
+
 	private static boolean svBinaryLoggingEnable = false ;
 
     /**
@@ -65,7 +65,7 @@ public class WsLogManager extends LogManager {
      * "java.util.logging.configureByServer" is specified, the configuration is
      * expected to be provided by server by calling
      * readConfiguration(InputStream) method.
-     * 
+     *
      * @see java.util.logging.LogManager#readConfiguration()
      */
     @Override
@@ -84,11 +84,11 @@ public class WsLogManager extends LogManager {
     /**
      * Returns an instance of WsLogger with specified name. If an instance with
      * specified name does not exist, it will be created.
-     * 
+     *
      * @param name
      *            name of the logger to obtain
      * @return Logger instance of a logger with specified name
-     * 
+     *
      */
     @Override
     public Logger getLogger(String name) {
@@ -123,30 +123,28 @@ public class WsLogManager extends LogManager {
         // create a new logger. If not, it will return null.
         if (logger == null) {
             boolean createNewLogger = false;
-            boolean foundCaller = false;
-
-            Exception ex = new Exception();
-            StackTraceElement[] ste = ex.getStackTrace();
             Class<?> caller = null;
 
-            int i = 0;
+            // If the caller of this method is not a JUL class then return null
+            // If the caller of this method is a JUL class find the caller of
+            // JUL and construct a new logger.
 
-            while (!foundCaller && i < ste.length) {
-                StackTraceElement s = ste[i++];
+            Class<?>[] callStack = StackFinderSingleton.instance.getCallStack();
 
-                // A) look for com.ibm.ws.bootstrap.WsLogManager.getLogger
-                if (s.getClassName().equals(CLASS_NAME) && s.getMethodName().equals("getLogger")) {
-                    // B) java.util.logging.Logger.getLogger
-                    while (!foundCaller && i < ste.length) {
-                        s = ste[i++];
-                        if (s.getClassName().equals("java.util.logging.Logger") && s.getMethodName().equals("getLogger")) {
-                            createNewLogger = true;
-                        } else if (createNewLogger) {
-                            caller = StackFinderSingleton.instance.getCaller(i, s.getClassName());
-                            foundCaller = caller != null;
-                        }
-                    }
+            String className = callStack[2].getName();
+            if ("java.util.logging.LogManager".equals(className) ||
+                "java.util.logging.Logger".equals(className)) {
+              // we are in the case where getLogger is being called by JUL
+              // so we need to find the non JUL caller.
+              createNewLogger = true;
+              for (int i = 2; i < callStack.length; i++) {
+                className = callStack[i].getName();
+                if (!("java.util.logging.LogManager".equals(className) ||
+                      "java.util.logging.Logger".equals(className))) {
+                  caller = callStack[i];
+                  break;
                 }
+              }
             }
 
             if (createNewLogger) {
@@ -197,7 +195,7 @@ public class WsLogManager extends LogManager {
 
     /**
      * Returns the value of internal flag controlling execution of reset method.
-     * 
+     *
      * @return boolean value indicating if reset method is enabled or not
      */
     public boolean isResetEnabled() {
@@ -207,25 +205,25 @@ public class WsLogManager extends LogManager {
     /**
      * Query whether the log manager is configured by the Java
      * logging.properties file or by the server.
-     * 
+     *
      * @return boolean, true means logging.properties based
      */
     public static boolean isConfiguredByLoggingProperties() {
         return configureByLoggingProperties;
     }
-    
+
 	/**
 	 * Get the boolean to determine if binary logging is enabled
-	 * 
+	 *
 	 * @return boolean value for this environment variable
 	 */
-	public static boolean isBinaryLoggingEnabled() { 
-		return svBinaryLoggingEnable; 
+	public static boolean isBinaryLoggingEnabled() {
+		return svBinaryLoggingEnable;
 	}
-	
+
 	/**
 	 * set the value for binary logging if pulled from elsewhere
-	 * 
+	 *
 	 * @param binaryLogEnable the value indicating if binary logging is enabled or disabled
 	 */
 	public static void setBinaryLoggingEnabled(boolean binaryLogEnable) {
@@ -236,7 +234,7 @@ public class WsLogManager extends LogManager {
      * Called by TrLoggerHelper#setTrLogger. The WsLogger class is part of the
      * logging jar/bundle: when the LogProvider is initialized, a callback is made
      * to provide the Logger class that should be used for constructed Logger instancs.
-     * 
+     *
      * @param clazz
      */
     public static void setWsLogger(Class<?> clazz) {
@@ -258,33 +256,10 @@ public class WsLogManager extends LogManager {
     }
 
     public static class StackFinder extends SecurityManager {
-        @SuppressWarnings({ "unchecked" })
-        public Class<?> getCaller(int i, String className) {
-            Class<?> aClass = null;
 
-            Class<?> stack[] = this.getClassContext();
-
-            // Try the index first: the stacks should be the same.
-            aClass = stack[i];
-            if (aClass.getName().equals(className)) {
-                return aClass;
-            }
-
-            // Walk the stack backwards to find the calling class:
-            // can't use Class.forName, because we want the class as loaded
-            // by it's original classloader
-            for (Class<?> bClass : stack) {
-                // Find the first class in the stack that _isn't_ Tr or StackFinder,
-                // etc. Use the name rather than the class instance (to also work across
-                // classloaders, should that happen)
-                String name = bClass.getName();
-                if (name.equals(className)) {
-                    aClass = bClass;
-                    break;
-                }
-            }
-
-            return aClass;
+        public Class<?>[] getCallStack() {
+          return getClassContext();
         }
+
     }
 }
