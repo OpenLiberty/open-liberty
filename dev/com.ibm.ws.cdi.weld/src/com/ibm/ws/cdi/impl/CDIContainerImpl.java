@@ -234,7 +234,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
@@ -250,6 +250,16 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                     bda.addBeanDeploymentArchive(extBDA);
                     if (extBDA.extensionCanSeeApplicationBDAs() && !discoveredBdas.isExcluded(bda)) {
                         extBDA.addBeanDeploymentArchive(bda);
+                    }
+                }
+            }
+        }
+        //allow extensions which can see application BDAs to also see other extensions
+        for (WebSphereBeanDeploymentArchive extBDA : extensions) {
+            if (extBDA.extensionCanSeeApplicationBDAs()) {
+                for (WebSphereBeanDeploymentArchive otherBDA : extensions) {
+                    if (extBDA != otherBDA) {
+                        extBDA.addBeanDeploymentArchive(otherBDA);
                     }
                 }
             }
