@@ -37,6 +37,7 @@ Import-Package: \
    !javax.xml.bind.*, \
    com.ibm.ws.jaxrs20.metadata, \
    javax.annotation;version=!,\
+   com.ibm.ws.cdi.utils;resolution:=optional,\
    *
 
 Include-Resource: OSGI-INF=resources/OSGI-INF

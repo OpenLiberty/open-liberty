@@ -46,7 +46,7 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
 
     private final static TraceComponent tc = Tr.register(LibertyJaxRsInvoker.class);
 
-    private final Class cxfBeanValidationProviderClass;
+    private final Class<?> cxfBeanValidationProviderClass;
     private final Map<String, Method> cxfBeanValidationProviderMethodsMap = new HashMap<String, Method>();
 
     private final boolean isEnableBeanValidation;
@@ -60,8 +60,22 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
     private volatile Object beanValidationProvider = null;
     private static final String cxfBeanValidationProviderClassName = "org.apache.cxf.validation.BeanValidationProvider";//"com.ibm.ws.jaxrs20.beanvalidation.component.BeanValidationProviderLocal";
     private boolean validateServiceObject = true;
+    private static final boolean isCDI20Enabled = canLoad("com.ibm.ws.cdi.utils.WeldCDIUtils");
 
     //private ClassLoader commonBundleClassLoader = null;
+
+    @FFDCIgnore(Throwable.class)
+    private static boolean canLoad(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (Throwable t) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to load " + className + " (could be expected)", t);
+            }
+            return false;
+        }
+    }
 
     private static class BeanValidationFaultListener implements FaultListener {
 
@@ -136,7 +150,7 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
      * @param methodName
      * @param paramTypes
      */
-    private void cacheValidationMethod(String methodName, Class[] paramTypes) {
+    private void cacheValidationMethod(String methodName, Class<?>[] paramTypes) {
         try {
             Method m = cxfBeanValidationProviderClass.getMethod(methodName, paramTypes);
             cxfBeanValidationProviderMethodsMap.put(methodName, m);
@@ -251,7 +265,9 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
 
                 }
                 //theProvider.validateParameters(serviceObject, m, params.toArray());
-                callValidationMethod("validateParameters", new Object[] { realServiceObject, m, params.toArray() }, theProvider);
+                if (!isCDI20Enabled) {
+                    callValidationMethod("validateParameters", new Object[] { realServiceObject, m, params.toArray() }, theProvider);
+                }
 
             } catch (RuntimeException e) {
                 // Since BeanValidation is enabled, if this exception is a ConstraintViolationException
@@ -272,7 +288,7 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
 
         Object response = super.invoke(exchange, realServiceObject, m, params);
 
-        if (isEnableBeanValidation && cxfBeanValidationProviderClass != null && theProvider != null) {
+        if (isEnableBeanValidation && cxfBeanValidationProviderClass != null && theProvider != null && !isCDI20Enabled) {
 
             if (response instanceof MessageContentsList) {
                 MessageContentsList list = (MessageContentsList) response;
@@ -402,7 +418,7 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
         if (provider == null)
             return;
 
-        if (!provider.getClass().getName().equals(this.cxfBeanValidationProviderClassName))
+        if (!provider.getClass().getName().equals(cxfBeanValidationProviderClassName))
             return;
 
         this.beanValidationProvider = provider;
