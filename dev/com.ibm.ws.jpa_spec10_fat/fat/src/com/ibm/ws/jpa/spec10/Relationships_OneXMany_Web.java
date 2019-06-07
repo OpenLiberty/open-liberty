@@ -124,12 +124,12 @@ public class Relationships_OneXMany_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("OneXMany_Web");
 
         Application appRecord = new Application();
         appRecord.setLocation("OneXMany_Web.ear");
         appRecord.setName("OneXMany_Web");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

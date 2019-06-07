@@ -141,12 +141,12 @@ public class Relationships_OneXMany_EJB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("OneXMany_EJB");
 
         Application appRecord = new Application();
         appRecord.setLocation("OneXMany_EJB.ear");
         appRecord.setName("OneXMany_EJB");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

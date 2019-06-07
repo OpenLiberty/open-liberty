@@ -122,12 +122,12 @@ public class Inheritance_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("Inheritance_Web");
 
         Application appRecord = new Application();
         appRecord.setLocation("Inheritance_Web.ear");
         appRecord.setName("Inheritance_Web");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

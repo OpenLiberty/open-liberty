@@ -129,12 +129,12 @@ public class Relationships_OneXOne_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("OneXOne_Web");
 
         Application appRecord = new Application();
         appRecord.setLocation("OneXOne_Web.ear");
         appRecord.setName("OneXOne_Web");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

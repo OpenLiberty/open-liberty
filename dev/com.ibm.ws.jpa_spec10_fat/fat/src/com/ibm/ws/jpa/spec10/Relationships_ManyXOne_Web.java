@@ -126,12 +126,12 @@ public class Relationships_ManyXOne_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("ManyXOne_Web");
 
         Application appRecord = new Application();
         appRecord.setLocation("ManyXOne_Web.ear");
         appRecord.setName("ManyXOne_Web");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);
