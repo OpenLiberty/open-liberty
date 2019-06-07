@@ -55,10 +55,10 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
 
     @Override
     public ManagedExecutor build() {
-        Set<String> cleared = this.cleared == null ? contextManager.getDefault("ManagedExecutor/cleared", DEFAULT_CLEARED) : this.cleared;
-        int maxAsync = this.maxAsync == UNDEFINED ? contextManager.getDefault("ManagedExecutor/maxAsync", -1) : this.maxAsync;
-        int maxQueued = this.maxQueued == UNDEFINED ? contextManager.getDefault("ManagedExecutor/maxQueued", -1) : this.maxQueued;
-        Set<String> propagated = this.propagated == null ? contextManager.getDefault("ManagedExecutor/propagated", DEFAULT_PROPAGATED) : this.propagated;
+        Set<String> cleared = this.cleared == null ? contextManager.getDefault("mp.context.ManagedExecutor.cleared", "ManagedExecutor/cleared", DEFAULT_CLEARED) : this.cleared;
+        int maxAsync = this.maxAsync == UNDEFINED ? contextManager.getDefault("mp.context.ManagedExecutor.maxAsync", "ManagedExecutor/maxAsync", -1) : this.maxAsync;
+        int maxQueued = this.maxQueued == UNDEFINED ? contextManager.getDefault("mp.context.ManagedExecutor.maxQueued", "ManagedExecutor/maxQueued", -1) : this.maxQueued;
+        Set<String> propagated = this.propagated == null ? contextManager.getDefault("mp.context.ManagedExecutor.propagated", "ManagedExecutor/propagated", DEFAULT_PROPAGATED) : this.propagated;
 
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);

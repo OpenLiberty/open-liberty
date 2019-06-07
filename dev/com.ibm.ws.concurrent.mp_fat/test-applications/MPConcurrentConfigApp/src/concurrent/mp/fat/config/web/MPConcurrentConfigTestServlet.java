@@ -220,8 +220,8 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     @Test
     public void testMPConfigSpecifiesDefaultAsyncAndQueuedMaximumsForManagedExecutor() throws Exception {
         // Defaults:
-        // ManagedExecutor/maxAsync=2
-        // ManagedExecutor/maxQueued=3
+        // mp.context.ManagedExecutor.maxAsync=2
+        // mp.context.ManagedExecutor.maxQueued=3
         ManagedExecutor executor = ManagedExecutor.builder().build();
 
         // schedule 2 tasks to block and wait for them to start
@@ -271,8 +271,8 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     @Test
     public void testMPConfigSpecifiesDefaultContextPropagationForManagedExecutor() throws Exception {
         // Defaults:
-        // ManagedExecutor/cleared=Transaction
-        // ManagedExecutor/propagated=City,Application
+        // mp.context.ManagedExecutor.cleared=Transaction
+        // mp.context.ManagedExecutor.propagated=City,Application
         ManagedExecutor executor = ManagedExecutor.builder()
                         .maxAsync(10)
                         .build();
@@ -304,9 +304,9 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     @Test
     public void testMPConfigSpecifiesDefaultContextPropagationForThreadContext() throws Exception {
         // Defaults:
-        // ThreadContext/cleared=
-        // ThreadContext/propagated=State
-        // ThreadContext/unchanged=Remaining
+        // mp.context.ThreadContext.cleared=
+        // mp.context.ThreadContext.propagated=State
+        // mp.context.ThreadContext.unchanged=Remaining
         ThreadContext threadContext = ThreadContext.builder().build();
 
         CurrentLocation.setLocation("Owatonna", "Minnesota");
