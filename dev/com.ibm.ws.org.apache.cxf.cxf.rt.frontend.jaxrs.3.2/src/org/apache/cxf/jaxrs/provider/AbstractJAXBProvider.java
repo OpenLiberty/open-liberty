@@ -157,7 +157,7 @@ public abstract class AbstractJAXBProvider<T> extends AbstractConfigurableProvid
             throw new RuntimeException(t);
         }
     }
-    
+
     public void setXmlRootAsJaxbElement(boolean xmlRootAsJaxbElement) {
         this.xmlRootAsJaxbElement = xmlRootAsJaxbElement;
     }
