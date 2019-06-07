@@ -315,7 +315,10 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             if (properties != null) {
                 Object enableSharingForDirectLookups = properties.get("enableSharingForDirectLookups");
                 sharingScope = enableSharingForDirectLookups == null
-                               || (Boolean) enableSharingForDirectLookups ? ResourceRefInfo.SHARING_SCOPE_SHAREABLE : ResourceRefInfo.SHARING_SCOPE_UNSHAREABLE;
+                               || Boolean.TRUE.equals(enableSharingForDirectLookups)
+                               || enableSharingForDirectLookups instanceof String && Boolean.parseBoolean((String) enableSharingForDirectLookups) //
+                                               ? ResourceRefInfo.SHARING_SCOPE_SHAREABLE //
+                                               : ResourceRefInfo.SHARING_SCOPE_UNSHAREABLE;
             } else {
                 sharingScope = ResourceRefInfo.SHARING_SCOPE_SHAREABLE;
             }

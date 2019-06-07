@@ -95,7 +95,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
         assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
-        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "1.7", json.getString("connectorSpecVersion"));
         assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
@@ -122,7 +122,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
         assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
-        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "1.7", json.getString("connectorSpecVersion"));
         assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
@@ -219,7 +219,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
         assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
-        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "1.7", json.getString("connectorSpecVersion"));
         assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
@@ -242,7 +242,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
         assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
-        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "1.7", json.getString("connectorSpecVersion"));
         assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
@@ -382,7 +382,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "TestValidationAdapter", j.getString("resourceAdapterName"));
         assertEquals(err, "28.45.53", j.getString("resourceAdapterVersion"));
-        assertEquals(err, "1.7", j.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
         assertEquals(err, "OpenLiberty", j.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", j.getString("resourceAdapterDescription"));
         assertEquals(err, "TestValidationEIS", j.getString("eisProductName"));
@@ -584,7 +584,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
         assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
-        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "1.7", json.getString("connectorSpecVersion"));
         assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));

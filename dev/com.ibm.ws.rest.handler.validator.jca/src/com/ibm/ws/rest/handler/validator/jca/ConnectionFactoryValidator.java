@@ -236,10 +236,6 @@ public class ConnectionFactoryValidator implements Validator {
             result.put("resourceAdapterName", adapterData.getAdapterName());
             result.put("resourceAdapterVersion", adapterData.getAdapterVersion());
 
-            String spec = adapterData.getSpecVersion();
-            if (spec != null && spec.length() > 0)
-                result.put("resourceAdapterJCASupport", spec);
-
             String vendor = adapterData.getAdapterVendorName();
             if (vendor != null && vendor.length() > 0)
                 result.put("resourceAdapterVendor", vendor);
@@ -247,6 +243,10 @@ public class ConnectionFactoryValidator implements Validator {
             String desc = adapterData.getAdapterShortDescription();
             if (desc != null && desc.length() > 0)
                 result.put("resourceAdapterDescription", desc);
+
+            String spec = adapterData.getSpecVersion();
+            if (spec != null && spec.length() > 0)
+                result.put("connectorSpecVersion", spec);
         } catch (NotSupportedException ignore) {
         } catch (UnsupportedOperationException ignore) {
         }
@@ -260,7 +260,7 @@ public class ConnectionFactoryValidator implements Validator {
 
             if (conSpec == null) {
                 // TODO find ConnectionSpec impl another way?
-                throw new RuntimeException("Unable to locate javax.resource.cci.ConnectionSpec impl from resource adapter.");
+                throw new RuntimeException("Unable to locate " + ConnectionSpec.class.getName() + " impl from resource adapter.");
             }
         }
 

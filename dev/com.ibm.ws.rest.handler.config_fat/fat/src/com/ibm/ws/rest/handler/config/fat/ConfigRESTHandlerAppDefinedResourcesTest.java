@@ -974,7 +974,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "60.91.109", j.getString("resourceAdapterVersion"));
         assertEquals(err, "OpenLiberty", j.getString("resourceAdapterVendor"));
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", j.getString("resourceAdapterDescription"));
-        assertEquals(err, "1.7", j.getString("resourceAdapterJCASupport")); // TODO change to specVersion so that we avoid using the JCA acronym from Java EE
+        assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
         assertEquals(err, "cfuser1", j.getString("user"));
 
         assertNotNull(err, j = array.getJsonObject(1)); // a javax.sql.DataSource
@@ -1110,5 +1110,44 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
         assertEquals(err, "DBUSER3", info.getString("schema"));
         assertEquals(err, "dbuser3", info.getString("user"));
+    }
+
+    /**
+     * Use the /ibm/api/validator REST endpoint to validate an application-defined JMS connection factory
+     */
+    @Test
+    public void testValidateAppDefinedJMSConnectionFactory() throws Exception {
+        JsonObject j = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FjmsConnectionFactory%5Bjava%3Acomp%2Fenv%2Fjms%2Fcf%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + j;
+
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", j.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", j.getString("id"));
+        assertEquals(err, "java:comp/env/jms/cf", j.getString("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "IBM", j.getString("jmsProviderName"));
+        assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
+        assertEquals(err, "clientID", j.getString("clientID"));
+    }
+
+    /**
+     * Use the /ibm/api/validator REST endpoint to validate an application-defined JMS queue connection factory
+     */
+    @Test
+    public void testValidateAppDefinedJMSQueueConnectionFactory() throws Exception {
+        JsonObject j = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FjmsQueueConnectionFactory%5Bjava%3Amodule%2Fenv%2Fjms%2Fqcf%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + j;
+
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsQueueConnectionFactory[java:module/env/jms/qcf]", j.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsQueueConnectionFactory[java:module/env/jms/qcf]", j.getString("id"));
+        assertEquals(err, "java:module/env/jms/qcf", j.getString("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "IBM", j.getString("jmsProviderName"));
+        assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
     }
 }
