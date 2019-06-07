@@ -51,4 +51,9 @@ public interface FeatureResource extends HeaderElementDefinition {
     public List<String> getTolerates();
 
     public Integer getRequireJava();
+
+    /**
+     * @return the activation type for the resource
+     **/
+    ActivationType getActivationType();
 }

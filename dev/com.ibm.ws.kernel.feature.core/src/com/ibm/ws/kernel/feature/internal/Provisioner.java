@@ -41,6 +41,7 @@ import org.eclipse.equinox.region.RegionDigraph.FilteredRegion;
 import org.eclipse.equinox.region.RegionDigraphVisitor;
 import org.eclipse.equinox.region.RegionFilter;
 import org.eclipse.equinox.region.RegionFilterBuilder;
+import org.eclipse.osgi.container.Module;
 import org.eclipse.osgi.container.ModuleWiring;
 import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.Bundle;
@@ -67,6 +68,7 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.ApiRegion;
 import com.ibm.ws.kernel.feature.internal.BundleList.FeatureResourceHandler;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryHolder;
@@ -399,6 +401,9 @@ public class Provisioner {
                     Region productRegion = getProductRegion(productName);
                     // Bundle will just be returned if something from this location exists already.
                     bundle = productRegion.installBundleAtLocation(location, new URL(urlString).openStream());
+                    if (ActivationType.parallel.equals(fr.getActivationType())) {
+                        bundle.adapt(Module.class).setParallelActivation(true);
+                    }
                 }
                 return bundle;
             }
