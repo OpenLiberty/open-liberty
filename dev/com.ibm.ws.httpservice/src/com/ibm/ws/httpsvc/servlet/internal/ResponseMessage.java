@@ -35,7 +35,7 @@ import com.ibm.wsspi.http.HttpResponse;
  */
 public class ResponseMessage implements HttpServletResponse {
     /** Debug variable */
-    private static final TraceComponent tc = Tr.register(ResponseMessage.class);
+    private static final TraceComponent tc = Tr.register(ResponseMessage.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP, null);
 
     /** HTTP response message wrapped by this servlet interface */
     private HttpResponse response = null;
@@ -59,7 +59,7 @@ public class ResponseMessage implements HttpServletResponse {
 
     /**
      * Constructor.
-     * 
+     *
      * @param conn
      * @param req
      */
@@ -69,7 +69,7 @@ public class ResponseMessage implements HttpServletResponse {
 
     /**
      * Initialize this response message with the input connection.
-     * 
+     *
      * @param conn
      * @param req
      */
@@ -233,7 +233,7 @@ public class ResponseMessage implements HttpServletResponse {
 
     /**
      * Convert a possible URI to a full URL.
-     * 
+     *
      * @param uri
      * @return String
      */
@@ -430,9 +430,7 @@ public class ResponseMessage implements HttpServletResponse {
             throw new IllegalStateException("Output stream already obtained");
         }
         if (null == this.outWriter) {
-            this.outWriter = new PrintWriter(
-                            new OutputStreamWriter(
-                                            this.outStream, getCharacterEncoding()), false);
+            this.outWriter = new PrintWriter(new OutputStreamWriter(this.outStream, getCharacterEncoding()), false);
         }
         return this.outWriter;
     }
@@ -485,7 +483,7 @@ public class ResponseMessage implements HttpServletResponse {
                 }
                 if (add) {
                     this.response.addCookie(
-                                    convertCookie(SessionInfo.encodeCookie(info)));
+                                            convertCookie(SessionInfo.encodeCookie(info)));
                 }
             }
         } // end-if-request-session-exists
@@ -665,7 +663,7 @@ public class ResponseMessage implements HttpServletResponse {
     /**
      * Convert from a J2EE spec cookie to the HTTP transport (non-servlet) cookie
      * object.
-     * 
+     *
      * @param cookie
      * @return HttpCookie
      */
@@ -718,12 +716,12 @@ public class ResponseMessage implements HttpServletResponse {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletResponse#setContentLengthLong(long)
      */
     @Override
     public void setContentLengthLong(long len) {
-        // TODO Servlet3.1 updates        
+        // TODO Servlet3.1 updates
     }
 
 }

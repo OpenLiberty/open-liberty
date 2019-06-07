@@ -39,6 +39,7 @@ import com.ibm.ws.container.service.naming.RemoteObjectInstanceFactory;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.injectionengine.InternalInjectionEngine;
 import com.ibm.ws.injectionengine.osgi.internal.IndirectReference;
+import com.ibm.ws.injectionengine.osgi.internal.OSGiInjectionConfigConstants;
 import com.ibm.ws.injectionengine.osgi.internal.OSGiInjectionEngineImpl;
 import com.ibm.ws.injectionengine.osgi.internal.OSGiInjectionScopeData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -52,14 +53,14 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 /**
  * This {@link JavaColonNamingHelper} implementation provides support for
  * the standard Java EE component naming context (java:comp/env). <p>
- * 
+ *
  * It is registered on the JNDI NamingHelper whiteboard and will be
  * consulted during object lookup in the appropriate namespace. <p>
  */
 @Component(service = { JavaColonNamingHelper.class, RemoteJavaColonNamingHelper.class })
 @Trivial
 public class InjectionJavaColonHelper implements JavaColonNamingHelper, RemoteJavaColonNamingHelper {
-    private static final TraceComponent tc = Tr.register(InjectionJavaColonHelper.class);
+    private static final TraceComponent tc = Tr.register(InjectionJavaColonHelper.class, OSGiInjectionConfigConstants.traceGroup, OSGiInjectionConfigConstants.messageBundle);
 
     private OSGiInjectionEngineImpl injectionEngine;
 
@@ -143,7 +144,7 @@ public class InjectionJavaColonHelper implements JavaColonNamingHelper, RemoteJa
     /**
      * Internal method to obtain the injection metadata associated with
      * the specified component metadata. <p>
-     * 
+     *
      * @return the associated injection metadata; or null if none exists
      */
     protected OSGiInjectionScopeData getInjectionScopeData(NamingConstants.JavaColonNamespace namespace) throws NamingException {
@@ -172,7 +173,7 @@ public class InjectionJavaColonHelper implements JavaColonNamingHelper, RemoteJa
     /**
      * Internal method that creates a NamingException that contains helpful
      * information regarding why a binding failed to resolve. <p>
-     * 
+     *
      * The returned exception will provide similar information as the
      * CannotInstantiateObjectException from traditional WAS.
      */
@@ -228,7 +229,7 @@ public class InjectionJavaColonHelper implements JavaColonNamingHelper, RemoteJa
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.naming.remote.RemoteJavaColonNamingHelper#getRemoteObjectInstance(com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace,
      * java.lang.String)
      */
@@ -299,7 +300,7 @@ public class InjectionJavaColonHelper implements JavaColonNamingHelper, RemoteJa
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.naming.remote.RemoteJavaColonNamingHelper#hasRemoteObjectWithPrefix(com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace,
      * java.lang.String)
      */
@@ -310,7 +311,7 @@ public class InjectionJavaColonHelper implements JavaColonNamingHelper, RemoteJa
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.naming.remote.RemoteJavaColonNamingHelper#listRemoteInstances(com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace,
      * java.lang.String)
      */

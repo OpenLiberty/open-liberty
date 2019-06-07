@@ -38,7 +38,7 @@ import com.ibm.wsspi.http.VirtualHost;
  * bundle.
  */
 public class HttpServiceContainer implements HttpContainer {
-    private static final TraceComponent tc = Tr.register(HttpServiceContainer.class);
+    private static final TraceComponent tc = Tr.register(HttpServiceContainer.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP, null);
 
     private static final class SingletonSessionManager {
         static final SessionManager instance = new SessionManager();
@@ -61,7 +61,7 @@ public class HttpServiceContainer implements HttpContainer {
 
     /**
      * Activate this DS component.
-     * 
+     *
      * @param context
      * @throws Exception
      */
@@ -77,7 +77,7 @@ public class HttpServiceContainer implements HttpContainer {
 
     /**
      * Deactivate this DS component.
-     * 
+     *
      * @param context
      * @throws Exception
      */
@@ -137,7 +137,7 @@ public class HttpServiceContainer implements HttpContainer {
     /**
      * DS method for runtime updates to configuration without stopping and
      * restarting the component.
-     * 
+     *
      * @param properties
      */
     protected void modified(Map<?, ?> properties) {
@@ -151,7 +151,7 @@ public class HttpServiceContainer implements HttpContainer {
 
     /**
      * Process configuration information.
-     * 
+     *
      * @param properties
      */
     protected synchronized void processConfig(Dictionary<?, ?> properties) {
