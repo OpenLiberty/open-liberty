@@ -399,7 +399,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
 
         JsonObject props;
         assertNotNull(err, props = cf.getJsonObject("properties.jmsra"));
-        assertEquals(err, 4, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, 5, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "DefaultClientId", props.getString("clientId"));
         assertEquals(err, "%", props.getString("escapeChar"));
         assertEquals(err, "localhost", props.getString("hostName"));
         assertEquals(err, "user3", props.getString("userName"));
@@ -439,7 +440,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
 
         JsonObject props;
         assertNotNull(err, props = cf.getJsonObject("properties.jmsra"));
-        assertEquals(err, 1, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, "DefaultClientId", props.getString("clientId"));
         assertEquals(err, "host4.rchland.ibm.com", props.getString("hostName"));
     }
 }
