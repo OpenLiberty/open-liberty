@@ -129,7 +129,7 @@ public abstract class AbstractClient implements Client {
 
     protected ClientConfiguration cfg = new ClientConfiguration();
     private ClientState state;
-    private final AtomicBoolean closed = new AtomicBoolean();
+    private AtomicBoolean closed = new AtomicBoolean();
     protected AbstractClient(ClientState initialState) {
         this.state = initialState;
     }
@@ -373,6 +373,7 @@ public abstract class AbstractClient implements Client {
             state = null;
             cfg = null;
         }
+        closed = null;
     }
 
     public void removeAllHeaders() {
@@ -918,7 +919,7 @@ public abstract class AbstractClient implements Client {
         return results.toArray(new String[0]);
     }
 
-    public ClientConfiguration getConfiguration() {
+    protected ClientConfiguration getConfiguration() {
         return cfg;
     }
 
@@ -988,7 +989,7 @@ public abstract class AbstractClient implements Client {
             outMessage.put(Message.PROCESS_ONEWAY_RESPONSE, true);
         }
     }
-    protected void checkClosed() {
+    private void checkClosed() {
         if (closed.get()) {
             throw new IllegalStateException("Client is closed");
         }

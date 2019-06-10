@@ -83,7 +83,3 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.4-ad5
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.4-ad5b7c6
 com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
 com.ibm.ws.org.apache.commons:commons-compress:1.16.1
-org.apache.cxf:cxf-core:3.3.3.20190529
-org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3.20190529
-org.apache.cxf:cxf-rt-rs-client:3.3.3.20190529
-org.apache.cxf:cxf-rt-rs-mp-client:3.3.3.20190529

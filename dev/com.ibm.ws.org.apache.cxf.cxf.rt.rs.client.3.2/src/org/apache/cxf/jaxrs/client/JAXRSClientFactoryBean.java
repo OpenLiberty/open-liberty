@@ -18,7 +18,6 @@
  */
 package org.apache.cxf.jaxrs.client;
 
-import java.io.Closeable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -320,8 +319,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
                     return proxyLoader == null ? serviceClass.getClassLoader() : proxyLoader;
                 }
             });
-            Class<?>[] ifaces = new Class<?>[]{Client.class, InvocationHandlerAware.class, Closeable.class,
-                cri.getServiceClass()};
+            Class<?>[] ifaces = new Class[]{Client.class, InvocationHandlerAware.class, cri.getServiceClass()};
             Client actualClient = (Client)ProxyHelper.getProxy(theLoader, ifaces, proxyImpl);
             proxyImpl.setProxyClient(actualClient);
             notifyLifecycleManager(actualClient);
