@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: Acela\u015fi tip de context de fir de execu\u0163ie, {0}, este furnizat de mai mul\u0163i furnizori de context de fir disponibili \u00een aplica\u0163ie. Furnizorii de context de fir de execu\u0163ie sunt: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=Specifica\u0163ia MicroProfile Context Propagation nu permite mai mult de un ThreadContextProvider pentru fiecare tip de context.
+CWWKC1150.duplicate.context.explanation=Specifica\u0163ia MicroProfile Concurrency nu permite mai mult de un ThreadContextProvider pentru fiecare tip de context.
 CWWKC1150.duplicate.context.useraction=Actualiza\u0163i aplica\u0163ia sau bibliotecile disponibile, sau ambele, astfel \u00eenc\u00e2t s\u0103 nu existe mai mult de un ThreadContextProvider cu tipul specificat.
 
 # do not translate: cleared, propagated

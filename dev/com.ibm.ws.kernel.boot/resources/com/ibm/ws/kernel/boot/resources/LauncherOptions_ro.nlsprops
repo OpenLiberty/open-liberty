@@ -15,7 +15,7 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Utilizare: java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName {0} [o\u0163iuni]  
+\t-jar bin/tools/ws-server.jar serverName {0} [options]  
 scriptUsage=Utilizare: {0} {1} serverName [options] [JVM options]
 
 use.actions=Ac\u0163iuni:
@@ -96,8 +96,7 @@ action-key.registerWinService=\ \ \ \ --registerWinService
 action-desc.registerWinService=\t\u00cenregistreaz\u0103 serverul specificat ca un program serviciu Windows.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.startWinService=\ \ \ \ --startWinService
-action-desc.startWinService=\tPorne\u015fte serverul specificat ca un program serviciu Windows. \
-            \n\
+action-desc.startWinService=\tPorne\u015fte serverul specificat ca un program serviciu Windows.             \n\
 \tTrebuie s\u0103 fie \u00eenregistrat \u00eenainte de pornire.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.stopWinService=\ \ \ \ --stopWinService
@@ -121,7 +120,7 @@ action-desc.resume=\tRepune\u0163i \u00een func\u0163iune toate componentele pus
 option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tCur\u0103\u0163a\u0163i toate informa\u0163iile din cache legate de aceast\u0103 instan\u0163\u0103 de server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-option-key.archive=\ \ \ \ --archive="cale spre fi\u015fierul arhiv\u0103 \u0163int\u0103"
+option-key.archive=\ \ \ \ --arhiv\u0103="cale spre fi\u015fierul arhiv\u0103 \u0163int\u0103"
 option-desc.dump.archive=\tSpecifica\u0163i \u0163inta arhivei de generat de ac\u0163iunea de creare dump.       \n\
 \t\u0162inta poate fi specificat\u0103 fie ca o cale absolut\u0103, fie ca o          \n\
 \tcale relativ\u0103. Dac\u0103 este omis\u0103 aceast\u0103 op\u0163iune, este creat\u0103 arhiva de fi\u015fiere\n\

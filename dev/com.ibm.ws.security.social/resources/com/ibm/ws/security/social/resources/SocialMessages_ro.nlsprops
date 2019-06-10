@@ -17,7 +17,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS5400 - CWWKS5499
-ADD_ID={0} ({1})
+ADD_ID={0}{1})
 ADD_ID.explanation=Numai utilizare intern\u0103.
 ADD_ID.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
@@ -83,41 +83,41 @@ SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u01
 # 0=Exception message
 TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: Semn\u0103tura pentru o cerere Twitter autorizat\u0103 nu poate fi creat\u0103: {0}
 TWITTER_ERROR_CREATING_SIGNATURE.explanation=Cererile Twitter autorizate trebuie s\u0103 fie semnate folosind algoritmul de semn\u0103tur\u0103 HMAC-SHA1. Fie a fost o problem\u0103 la ob\u0163inerea algoritmului de semn\u0103tur\u0103 necesar sau cheia furnizat\u0103 nu a putut fi folosit\u0103 la ini\u0163ializarea algoritmului de semn\u0103tur\u0103.
-TWITTER_ERROR_CREATING_SIGNATURE.useraction=Verifica\u0163i faptul c\u0103 sistemul dumneavoastr\u0103 suport\u0103 algoritmul de semn\u0103tur\u0103 HMAC-SHA1. Verifica\u0163i secretul consumatorului \u015fi valorile secrete de jeton cerere. Aceste dou\u0103 valori sunt utilizate ca parte din cheia pentru algoritmul de semn\u0103tur\u0103. Dac\u0103 o valoare este format\u0103 gre\u015fit sau con\u0163ine caractere care nu poate fi codificate \u00een compatibilitate cu RFC 3986, ar putea fi nevoie s\u0103 ob\u0163ine\u0163i o nou\u0103 valoare.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Verifica\u0163i faptul c\u0103 sistemul dumneavoastr\u0103 suport\u0103 algoritmul de semn\u0103tur\u0103 HMAC-SHA1. Verifica\u0163i secretul consumatorului \u015fi valorile secrete de jeton de cerere. Aceste dou\u0103 valori sunt utilizate ca parte din cheia pentru algoritmul de semn\u0103tur\u0103. Dac\u0103 o valoare este format\u0103 gre\u015fit sau con\u0163ine caractere care nu poate fi codificate \u00een compatibilitate cu RFC 3986, ar putea fi nevoie s\u0103 ob\u0163ine\u0163i o nou\u0103 valoare.
 
 # Do not translate "Authorization" or "OAuth"
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
-TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: R\u0103spunsul de la punctul final [{0}] Twitter nu a con\u0163inut niciun parametru \u00een formatul a\u015fteptat. R\u0103spunsul a fost: [{1}]
-TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=R\u0103spunsul de la punctul final Twitter a fost probabil nul sau gol. Cererea ini\u0163ial\u0103 s-ar putea s\u0103 fi fost direc\u0163ionat\u0103 la punctul final gre\u015fit. R\u0103spunsurile de la punctele finale Twitter ar trebui s\u0103 fie un \u015fir de perechi de cheie \u015fi valoare. Cheia \u015fi valoarea sunt a\u015fteptate s\u0103 fie separate printr-un semn egal ("=") \u015fi mai multe perechi cheie \u015fi valoare sunt a\u015fteptate s\u0103 fie separate de un caracter ampersand ("&").
-TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 c\u0103tre punctele finale Twitter corecte. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 cheia consumator \u015fi URL-ul apel invers corecte sunt configurate.
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: R\u0103spunsul de la punctul final Twitter [{0}] nu a con\u0163inut niciun parametru \u00een formatul a\u015fteptat. R\u0103spunsul a fost: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=R\u0103spunsul de la punctul final Twitter a fost probabil nul sau gol. Cererea ini\u0163ial\u0103 s-ar putea s\u0103 fi fost direc\u0163ionat\u0103 la punctul final gre\u015fit. R\u0103spunsurile de la punctele finale Twitter ar trebui s\u0103 fie un \u015fir de perechi cheie \u015fi valoare. Cheia \u015fi valoarea sunt a\u015fteptate s\u0103 fie separate printr-un semn egal ("=") \u015fi mai multe perechi cheie \u015fi valoare sunt a\u015fteptate s\u0103 fie separate de un caracter ampersand ("&").
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 c\u0103tre punctele finale Twitter corecte. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL de apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 sunt configurate cheia consumator \u015fi URL-ul de apel invers corecte.
 
 # Do not translate "Authorization"
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
-TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: R\u0103spunsul de la punctul final [{0}] Twitter nu a con\u0163inut unul sau mai mul\u0163i parametri necesari. Parametrii necesari care lipsesc din r\u0103spuns sunt [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: R\u0103spunsul de la punctul final Twitter [{0}] nu a con\u0163inut unul sau mai mul\u0163i parametri necesari. Parametrii necesari care lipsesc din r\u0103spuns sunt [{1}].
 TWITTER_RESPONSE_MISSING_PARAMETER.explanation=R\u0103spunsurile de la fiecare punct final Twitter au returnat propriul set de parametri. R\u0103spunsul Twitter primit nu con\u0163ine parametrii necesari care sunt lista\u0163i \u00een mesaj. Cererea ini\u0163ial\u0103 s-ar putea s\u0103 fi fost direc\u0163ionat\u0103 la punctul final gre\u015fit.
-TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 c\u0103tre punctele finale Twitter corecte. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 cheia consumator \u015fi URL-ul apel invers corecte sunt configurate.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 c\u0103tre punctele finale Twitter corecte. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 sunt configurate cheia consumator \u015fi URL-ul de apel invers corecte.
 
 # 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
-TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: Valoarea parametrului [{0}] din r\u0103spunsul de la punctul final [{1}] Twitter nu s-a potrivit cu valoarea a\u015fteptat\u0103 [{2}]. Valoarea din r\u0103spuns a fost [{3}].
-TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=Parametrul care este specificat \u00een mesaj trebuie s\u0103 aib\u0103 o valoare care s\u0103 se potriveasc\u0103 cu valoarea a\u015fteptat\u0103. Acesta este un scenariu pu\u0163in probabil unde Twitter a procesat cu succes o cerere dar a returnat o valoare nea\u015fteptat\u0103 pentru parametru.
-TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 URL-ul apel invers configurat pentru aplica\u0163ie arat\u0103 un URL valid pe care Twitter \u00eel poate redirec\u0163iona o dat\u0103 ce autorizarea este acordat\u0103.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: Valoarea parametrului [{0}] din r\u0103spunsul de la punctul final Twitter [{1}] nu s-a potrivit cu valoarea a\u015fteptat\u0103 [{2}]. Valoarea din r\u0103spuns a fost [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=Parametrul care este specificat \u00een mesaj trebuie s\u0103 aib\u0103 o valoare care s\u0103 se potriveasc\u0103 cu valoarea a\u015fteptat\u0103. Acesta este un scenariu pu\u0163in probabil acolo unde Twitter a procesat cu succes o cerere dar a returnat o valoare nea\u015fteptat\u0103 pentru parametru.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 URL-ul de apel invers configurat pentru aplica\u0163ie arat\u0103 un URL valid pe care Twitter \u00eel poate redirec\u0163iona odat\u0103 ce este acordat\u0103 autorizarea.
 
 # Do not translate "Authorization"
 # 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
-TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: Parametrul [{0}] a fost gol \u00een r\u0103spunsul de la punctul final [{1}] Twitter. O valoare pentru acest parametru trebuie s\u0103 fie furnizat\u0103 pentru a procesa cererea de autoriza\u0163ie.
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: Parametrul [{0}] a fost gol \u00een r\u0103spunsul de la punctul final Twitter [{1}]. O valoare pentru acest parametru trebuie s\u0103 fie furnizat\u0103 pentru a procesa cererea de autoriza\u0163ie.
 TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=R\u0103spunsul de la punctul final Twitter a con\u0163inut parametrul specificat \u00een mesaj dar nu a furnizat o valoare pentru parametru.
 TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Verifica\u0163i faptul c\u0103 r\u0103spunsul de la punctul final Twitter a con\u0163inut to\u0163i parametrii a\u015ftepta\u0163i \u015fi valorile pentru acei parametri. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 cheia consumator \u015fi URL-ul apel invers corecte sunt configurate.
 
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token")
-TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: R\u0103spunsul de la punctul final [{0}] Twitter nu a putut fi evaluat deoarece nu exist\u0103 niciun con\u0163inut \u00een corpul r\u0103spunsului.
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: R\u0103spunsul de la punctul final Twitter [{0}] nu a putut fi evaluat deoarece nu exist\u0103 niciun con\u0163inut \u00een corpul r\u0103spunsului.
 TWITTER_EMPTY_RESPONSE_BODY.explanation=Cererea ini\u0163ial\u0103 s-ar putea s\u0103 fi fost direc\u0163ionat\u0103 la punctul final gre\u015fit Twitter sau a existat o eroare la procesarea r\u0103spunsului de la punctul final.
 TWITTER_EMPTY_RESPONSE_BODY.useraction=Verifica\u0163i istoricele serverului pentru orice alte mesaje ce ar putea indica o e\u015fuare. Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 la punctul final corespunz\u0103tor.
 
 # Do not translate "Authorization" or "OAuth"
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
-TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: Cererea punctului final [{0}] Twitter a e\u015fuat. Statusul r\u0103spunsului a fost [{1}] \u015fi con\u0163inutul r\u0103spunsului a fost: [{2}]
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: Cererea punctului final Twitter [{0}] a e\u015fuat. Starea r\u0103spunsului a fost [{1}] \u015fi con\u0163inutul r\u0103spunsului a fost: [{2}]
 TWITTER_ENDPOINT_REQUEST_FAILED.explanation=Cererea ini\u0163ial\u0103 probabil a con\u0163inut date de autorizare incorecte sau a fost interzis\u0103 de la realizarea opera\u0163iei cerute. Punctele finale Twitter care necesit\u0103 autorizare trebuie s\u0103 aib\u0103 un antet Authorization care se potrive\u015fte cu un formatul specific. Pentru cererile autorizate, este probabil ca o parte din datele utilizate pentru a crea antetul Authorization, cum ar fi semn\u0103tura sau jetonul OAuth, a fost formatat gre\u015fit sau incorect. Codul de stare furnizat \u00een mesaj trebuie s\u0103 indice o cauz\u0103 specific\u0103 de ce a e\u015fuat cererea.
-TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Dac\u0103 cererea a fost neautorizat\u0103, verifica\u0163i c\u0103 cererea con\u0163ine un antet Authorization cu datele de autorizare corecte. Dac\u0103 datele de autorizare includ un jeton OAuth, verifica\u0163i c\u0103 jetonul este \u00eenc\u0103 valid sau lua\u0163i \u00een considerare ob\u0163inerea un nou jeton. Verifica\u0163i c\u0103 cererea nu este identic\u0103 cu o cerere anterioar\u0103 prin compararea semn\u0103turilor din antetele Authorization ale cererilor. Dac\u0103 cererea a fost interzis\u0103, verifica\u0163i c\u0103 aplica\u0163ia Twitter permite opera\u0163ia cerut\u0103.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Dac\u0103 cererea a fost neautorizat\u0103, verifica\u0163i c\u0103 cererea con\u0163ine un antet Authorization cu datele de autorizare corecte. Dac\u0103 datele de autorizare includ un jeton OAuth, verifica\u0163i c\u0103 jetonul este \u00eenc\u0103 valid sau lua\u0163i \u00een considerare ob\u0163inerea un nou jeton. Verifica\u0163i c\u0103 cererea nu este identic\u0103 cu o cerere anterioar\u0103, prin compararea semn\u0103turilor din anteturile Authorization ale cererilor. Dac\u0103 cererea a fost interzis\u0103, verifica\u0163i c\u0103 aplica\u0163ia Twitter permite opera\u0163ia cerut\u0103.
 
 # 0=Outgoing request URL, 1=Parameter name
 OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: Cererea de ie\u015fire la [{0}] ar putea s\u0103 nu aib\u0103 succes deoarece parametrul [{1}] lipse\u015fte sau este gol.
@@ -131,17 +131,17 @@ EXCEPTION_INITIALIZING_URL.useraction=Verifica\u0163i c\u0103 \u015firul specifi
 
 # Do not translate "GET" or "POST"
 # 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
-TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: O eroare a fost \u00eent\u00e2lnit\u0103 la procesarea cererii la punctul final [{0}] Twitter: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: O eroare a fost \u00eent\u00e2lnit\u0103 la procesarea cererii la punctul final Twitter [{0}]: {1}
 TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=Una dintre urm\u0103toarele situa\u0163ii a ap\u0103rut probabil: 1. A existat o eroare la deschiderea unei conexiuni la punctul final specificat. 2. Metoda cererii pentru cerere nu a fost un protocol cunoscut, cum ar fi GET sau POST. 3. A exista o eroare la scrierea datelor POST la conexiune. 4. A existat o eroare la citirea r\u0103spunsului de la punctul final Twitter.
 TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=Vede\u0163i textul erorii din mesaj pentru informa\u0163ii suplimentare despre e\u015fuare. Verifica\u0163i faptul c\u0103 sistemul a men\u0163inut conectivitatea \u00een timpul cererii. Verifica\u0163i c\u0103 o metod\u0103 de cerere cunoscut\u0103, cum ar fi GET sau POST, a fost utilizat\u0103 pentru cerere.
 
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token")
-TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: Cererea de autorizare a e\u015fuat deoarece a existat o eroare la crearea rezultatului de la punctul final [{0}] Twitter.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: Cererea de autorizare a e\u015fuat deoarece a existat o eroare la crearea rezultatului de la punctul final Twitter [{0}].
 TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation=Fie niciun rezultat nu a fost returnat sau a fost returnat un rezultat gol de la cererea specificat\u0103. O eroare trebuie s\u0103 fi survenit \u00een timpul lans\u0103rii sau proces\u0103rii cererii.
 TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction=Verifica\u0163i istoricul serverului pentru mesajele de eroare suplimentare care indic\u0103 unde a ap\u0103rut e\u015fuarea.
 
 # 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
-TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: O eroare a fost \u00eent\u00e2lnit\u0103 la redirec\u0163ionarea r\u0103spunsului de la punctul final [{0}] Twitter: {1}
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: O eroare a fost \u00eent\u00e2lnit\u0103 la redirec\u0163ionarea r\u0103spunsului de la punctul final Twitter [{0}]: {1}
 TWITTER_REDIRECT_IOEXCEPTION.explanation=URL-ul la care r\u0103spunsul a fost redirec\u0163ionat s-ar putea s\u0103 nu fi fost valid sau nu a fost capabil s\u0103 serveasc\u0103 cererea.
 TWITTER_REDIRECT_IOEXCEPTION.useraction=Verifica\u0163i c\u0103 \u0163inta de redirec\u0163ionare este disponibil\u0103 \u015fi poate servi cererea. Vede\u0163i mesajul erorii pentru informa\u0163ii suplimentare despre e\u015fuare.
 
@@ -151,17 +151,17 @@ TWITTER_TOKEN_DOES_NOT_MATCH.explanation=Cererea de intrare trebuie s\u0103 incl
 TWITTER_TOKEN_DOES_NOT_MATCH.useraction=Verifica\u0163i c\u0103 cererea de intrare corespunde unei cereri anterioare pentru un jeton cerere OAuth. Lua\u0163i \u00een considerare \u00eenceperea fluxului de autorizare din nou pentru a ob\u0163ine un nou jeton cerere OAuth.
 
 # 0=Endpoint ("oauth/access_token"), 1=Parameter name
-TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: Cererea inten\u0163ionat\u0103 pentru punctul final [{0}] Twitter are lips\u0103 un parametru necesar. Parametrii necesari care lipsesc din cerere sunt: {1}.
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: Cererea inten\u0163ionat\u0103 pentru punctul final Twitter [{0}] are lips\u0103 un parametru necesar. Parametrii necesari care lipsesc din cerere sunt: {1}.
 TWITTER_REQUEST_MISSING_PARAMETER.explanation=Cererea trebuie s\u0103 con\u0163in\u0103 to\u0163i parametrii afi\u015fa\u0163i \u00een mesaj. Cererea nu con\u0163ine niciun parametru afi\u015fat \u00een mesaj.
 TWITTER_REQUEST_MISSING_PARAMETER.useraction=Verifica\u0163i dac\u0103 cererea include to\u0163i parametrii necesari.
 
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token")
-TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: R\u0103spunsul de la punctul final [{0}] Twitter nu a putu fi determinat. O eroare cel mai probabil a survenit \u00een timpul lans\u0103rii sau proces\u0103rii cererii.
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: R\u0103spunsul de la punctul final Twitter [{0}] nu a putu fi determinat. O eroare cel mai probabil a survenit \u00een timpul lans\u0103rii sau proces\u0103rii cererii.
 TWITTER_RESPONSE_STATUS_MISSING.explanation=Un c\u00e2mp al st\u0103rii r\u0103spunsului este a\u015fteptat pentru a determina rezultatul cererii de autorizare.
 TWITTER_RESPONSE_STATUS_MISSING.useraction=Verifica\u0163i istoricul serverului pentru mesajele de eroare suplimentare care indic\u0103 unde a ap\u0103rut alt\u0103 eroare.
 
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
-TWITTER_RESPONSE_FAILURE=CWWKS5424E: Nu s-a putut procesa r\u0103spunsul de la punctul final [{0}] Twitter. {1}
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: Nu se poate procesa r\u0103spunsul de la punctul final Twitter [{0}]. {1}
 TWITTER_RESPONSE_FAILURE.explanation=Starea r\u0103spunsului inclus\u0103 \u00een mesaj nu a indicat un rezultat cu succes. O e\u015fuare trebuie s\u0103 fi survenit \u00een timpul lans\u0103rii sau proces\u0103rii cererii.
 TWITTER_RESPONSE_FAILURE.useraction=Dac\u0103 mesajul con\u0163ine alt mesaj de eroare, verifica\u0163i ac\u0163iunea utilizatorului pentru acel mesaj. Altfel, verifica\u0163i istoricul serverului pentru mesajele de eroare suplimentare care pot s\u0103 indice unde a ap\u0103rut alt\u0103 eroare.
 
@@ -242,7 +242,7 @@ ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=Furniza\u0163i un jeton de acces nenu
 # Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
 # 0=socialLogin element ID, 1=Error message
 ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: Caracteristica de logare social\u0103 nu poate cripta jetonul de acces furnizat utiliz\u00e2nd cheia public\u0103 specificat\u0103 de configura\u0163ia de logare social\u0103 [{0}]. {1}
-ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=Cheia public\u0103 care este folosit\u0103 pentru a cripta jetonul de acces ar putea fi malformat\u0103 sau nevalid\u0103 sau algoritmul de criptare RSA cerul ar putea fi indisponibil.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=Cheia public\u0103 care este folosit\u0103 pentru a cripta jetonul de acces ar putea fi malformat\u0103 sau nevalid\u0103 sau algoritmul de criptare RSA cerut ar putea fi indisponibil.
 ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Verifica\u0163i c\u0103 cheia public\u0103 care este configurat\u0103 pentru configura\u0163ia de logare social\u0103 specificat\u0103 este valid\u0103 \u015fi poate fi utilizat\u0103 pentru criptarea RSA.
 
 # Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
@@ -401,7 +401,7 @@ ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=Vede\u0163i ac\u0163iunea de utiliz
 # 0=Private key alias, 1=Keystore ID, 2=Exception message
 ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: Nu poate fi \u00eenc\u0103rcat\u0103 o cheie privat\u0103 cu aliasul [{0}] din depozitul de chei [{1}]. {2}
 ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=E posibil s\u0103 nu fie prezent\u0103 o cheie privat\u0103 cu aliasul specificat \u00een depozitul de chei, cheia privat\u0103 ar putea s\u0103 nu fie de tipul corect, e posibil ca depozitul de chei s\u0103 nu fie ini\u0163ializat \u00eenc\u0103 sau ca depozitul de chei s\u0103 nu existe \u00een configura\u0163ia serverului.
-ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Verifica\u0163i c\u0103 este inclus\u0103 o cheie privat\u0103 cu alias-ul specificat \u00een depozitul de chei \u015fi cheia privat\u0103 este de tipul corect. Verifica\u0163i c\u0103 este prezent un depozit de \u00eencrederi cu ID-ul specificat \u00een configura\u0163ia serverului \u015fi c\u0103 a fost procesat cu succes.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Verifica\u0163i c\u0103 este inclus\u0103 o cheie privat\u0103 cu alias-ul specificat \u00een depozitul de chei \u015fi cheia privat\u0103 este de tipul corect. Verifica\u0163i c\u0103 este prezent un depozit de chei cu ID-ul specificat \u00een configura\u0163ia serverului \u015fi c\u0103 a fost procesat cu succes.
 
 # 0=Keystore ID, 1=Exception message
 ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: Nu poate fi \u00eenc\u0103rcat\u0103 o cheie privat\u0103 din depozitul de chei [{0}]. {1}
@@ -513,7 +513,7 @@ USERAPI_NULL_RESP_STR.useraction=Verifica\u0163i c\u0103 punctul final specifica
 # do not translate CODE
 CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: A e\u015fuat o cerere de logare social\u0103 pentru c\u0103 atributul CODE de cerere a fost nul sau gol.
 CODE_PARAMETER_NULL_OR_EMPTY.explanation=Un atribut CODE gol sau lips\u0103 din cererea de logare social\u0103 a cauzat o eroare. 
-CODE_PARAMETER_NULL_OR_EMPTY.useraction=Verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia de logare social\u0103 pentru atributul CODE \u015fi c\u0103 serviciul la distan\u0163\u0103 func\u0163ioneaz\u0103 corect.
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia de logare social\u0103 pentru serviciul media social \u015fi c\u0103 serviciul la distan\u0163\u0103 func\u0163ioneaz\u0103 corect.
 
 # 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
 REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: O cerere de autentificare pentru logarea social\u0103 a e\u015fuat deoarece mediul social a returnat urm\u0103toarea eroare {0}: {1}. URI-ul de eroare a fost [{2}].
