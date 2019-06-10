@@ -17,6 +17,9 @@ Subsystem-Name: MicroProfile Reactive Messaging 1.0
  com.ibm.ws.io.smallrye.reactive.converters, \
  com.ibm.ws.io.smallrye.reactive.messaging, \
  com.ibm.ws.io.reactivex.rxjava.2.2, \
- com.ibm.ws.org.apache.commons.lang3
+ com.ibm.ws.org.apache.commons.lang3, \
+ com.ibm.ws.microprofile.reactive.messaging.kafka, \
+ com.ibm.ws.microprofile.reactive.messaging.kafka.adapter, \
+ com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
 kind=noship
 edition=full
