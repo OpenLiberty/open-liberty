@@ -12,6 +12,7 @@
 
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common.jwt'),
+	project(':com.ibm.ws.org.jose4j'),
   	  'commons-logging:commons-logging:1.1.3',
       'org.apache.httpcomponents:httpclient:4.5.4',
       'org.apache.httpcomponents:httpcore:4.4.9',
@@ -29,18 +30,6 @@ dependencies {
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0',
       'org.slf4j:slf4j-api:1.7.7'
-/*
-,
-      'org.bitbucket.b_c:jose4j:0.6.4'
-      ,
-      'org.bitbucket.b_c:jose4j:0.5.1'
-      ,
-      'org.jose4j:json:0.5.1'
-      ,
-      'org.jose4j:org.jose4j:0.5.1'
-com.ibm.ws.org.jose4j.0.5.1_1.0.28.jar
-      'com.ibm.ws.org.jose4j:org.jose4j:0.5.1'
-*/
       
 }
 
@@ -63,18 +52,11 @@ task jwtconsumerclient(type: War, dependsOn: classes) {
   }
   
   /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
-  copy{
-    from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar"))
-    into "build/classes/java/main"
-  }
-  
-   from ("build/classes/java/main") {
-    include "org/jose4j/**/*.class"    
+     from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
     into "WEB-INF/classes"
   }
   /* end of jose4j copy */
 }
-
 
 assemble {
   dependsOn \
