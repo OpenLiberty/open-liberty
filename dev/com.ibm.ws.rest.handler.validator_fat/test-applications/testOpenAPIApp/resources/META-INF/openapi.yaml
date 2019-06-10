@@ -1,0 +1,36 @@
+# *******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# *******************************************************************************
+openapi: "3.0.2"
+info:
+  title: Validation API
+  version: "1.0"
+  description: The validation endpoint tests the basic configuration of resources by attempting to perform a simple operation on them.
+servers:
+  - url: https://127.0.0.1:8020/ibm/api
+paths:
+  /validation/dataSource/{uid}:
+    get:
+      summary: Validation of a Data Source
+      description: Shows the validation result for the specified data source.
+      parameters:
+        - name: uid
+          in: path
+          description: Unique identifier. For a dataSource configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as `dataSource[default-0]` or `databaseStore[defaultDatabaseStore]/dataSource[default-0]` or `transaction/dataSource[default-0]`.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Validation result retrieved
+          content:
+            application/json:
+              schema:
+                type: object

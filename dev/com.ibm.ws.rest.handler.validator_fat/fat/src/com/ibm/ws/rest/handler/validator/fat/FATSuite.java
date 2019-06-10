@@ -22,7 +22,8 @@ import componenttest.topology.utils.HttpUtils;
                 ValidateDataSourceTest.class,
                 ValidateJCATest.class,
                 ValidateJMSTest.class,
-                ValidateDSCustomLoginModuleTest.class
+                ValidateDSCustomLoginModuleTest.class,
+                ValidateOpenApiSchemaTest.class
 })
 
 public class FATSuite {
