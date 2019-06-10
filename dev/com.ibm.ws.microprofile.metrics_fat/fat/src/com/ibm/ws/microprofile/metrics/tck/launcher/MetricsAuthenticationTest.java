@@ -83,7 +83,6 @@ public class MetricsAuthenticationTest {
     }
 
     private void waitForInstallationsToFinish(LibertyServer server) throws Exception {
-        server.setMarkToEndOfLog();
         assertNotNull("[/metrics] failed to initialize", server.waitForStringInLog("SRVE0242I.*/metrics.*Initialization successful", TIMEOUT * 3, server.getDefaultLogFile()));
     }
 
