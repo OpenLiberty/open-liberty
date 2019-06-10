@@ -21,10 +21,8 @@ org.apache.cxf.bindings.soap.*,\
 !org.apache.aries.*,\
 !org.apache.cxf.transport.https,\
 !org.osgi.service.blueprint.*,\
-javax.xml.bind;version=!,\
-javax.xml.bind.annotation;version=!,\
-javax.xml.bind.annotation.adapters;version=!,\
-javax.xml.bind.attachment;version=!,\
+javax.xml.bind.*;version="[2.3,3)",\
+javax.xml.ws.*;version="[2.3,3)", \
 *
 
 DynamicImport-Package: com.ibm.ws.jaxws.client
