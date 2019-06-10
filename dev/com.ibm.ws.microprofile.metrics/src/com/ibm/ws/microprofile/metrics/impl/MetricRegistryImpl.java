@@ -433,7 +433,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder) {
+    private synchronized <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder) {
         final Metric metric = metrics.get(metadata.getName());
         if (builder.isInstance(metric)) {
             return (T) metric;
