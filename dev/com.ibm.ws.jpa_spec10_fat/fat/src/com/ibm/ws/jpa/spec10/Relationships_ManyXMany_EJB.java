@@ -148,12 +148,12 @@ public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("ManyXMany_EJB");
 
         Application appRecord = new Application();
         appRecord.setLocation("ManyXMany_EJB.ear");
         appRecord.setName("ManyXMany_EJB");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

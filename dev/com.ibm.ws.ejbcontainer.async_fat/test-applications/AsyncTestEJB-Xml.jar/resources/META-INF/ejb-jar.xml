@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+         metadata-complete="true" version="3.1">
+
+  <module-name>AsyncTestEJB-Xml</module-name>
+  <display-name>AsyncTestEJB-Xml</display-name>
+
+  <enterprise-beans>
+    <session>
+      <ejb-name>BasicSingletonLocalBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.BasicSingletonLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.BasicSingletonLocalBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <async-method>
+        <method-name>*</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>BasicStatefulLocalBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.BasicStatefulLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.BasicStatefulLocalBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <async-method>
+        <method-name>test_fireAndForget</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+  	<session>
+      <ejb-name>BasicStatelessLocalBean</ejb-name>
+  	  <business-local>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.BasicStatelessLocal</business-local>
+  	  <ejb-class>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.BasicStatelessLocalBean</ejb-class>
+  	  <session-type>Stateless</session-type>
+  	  <async-method>
+  	    <method-name>*</method-name>
+  	  </async-method>
+  	  <transaction-type>Container</transaction-type>
+  	</session>
+
+    <session>
+      <ejb-name>ResultsSingletonLocalFutureBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.ResultsSingletonLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.ResultsSingletonLocalFutureBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <async-method>
+        <method-name>*</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+    
+    <session>
+      <ejb-name>ResultsStatelessLocalFutureBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.ResultsStatelessLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.ResultsStatelessLocalFutureBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <async-method>
+        <method-name>*</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+    
+    <session>
+      <ejb-name>Style2XMLBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.Style2XMLLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.Style2XMLBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <async-method>
+        <method-name>test_xmlStyle2</method-name>
+      </async-method>
+    </session>
+    
+    <session>
+      <ejb-name>Style3XMLBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.Style3XMLLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.xml.ejb.Style3XMLBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <async-method>
+        <method-name>test_xmlStyle3</method-name>
+        <method-params>
+          <method-param>java.lang.String</method-param>
+        </method-params>
+      </async-method>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

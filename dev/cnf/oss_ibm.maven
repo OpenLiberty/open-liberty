@@ -69,12 +69,12 @@ com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.region:1.4.300.v20181116-155
 com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.14.0.v20190506-1517
 com.ibm.ws.org.eclipse.jdt.core.compiler:ecj:4.4.2
 com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:0.20190322.204445.1
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr:2.6.8.WAS-bfe4e8a
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm:2.6.8.WAS-bfe4e8a
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.8.WAS-bfe4e8a
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.8.WAS-bfe4e8a
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.8.WAS-bfe4e8a
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.8.WAS-bfe4e8a
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr:2.6.8.WAS-2bc3d99
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm:2.6.8.WAS-2bc3d99
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.8.WAS-2bc3d99
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.8.WAS-2bc3d99
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.8.WAS-2bc3d99
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.8.WAS-2bc3d99
 org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.4-ad5b7c6
 org.eclipse.persistence:org.eclipse.persistence.asm:2.7.4-ad5b7c6
 org.eclipse.persistence:org.eclipse.persistence.core:2.7.4-ad5b7c6
@@ -83,3 +83,7 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.4-ad5
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.4-ad5b7c6
 com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
 com.ibm.ws.org.apache.commons:commons-compress:1.16.1
+org.apache.cxf:cxf-core:3.3.3.20190529
+org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3.20190529
+org.apache.cxf:cxf-rt-rs-client:3.3.3.20190529
+org.apache.cxf:cxf-rt-rs-mp-client:3.3.3.20190529

@@ -660,7 +660,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                 connectionPropertyChanged && mcf.supportsGetTypeMap ? getTypeMap() : cri.ivTypeMap,
                                 holdabilityChanged ? getHoldability() : cri.ivHoldability,
                                 connectionPropertyChanged && mcf.supportsGetSchema ? getSchemaSafely() : cri.ivSchema,
-                                connectionPropertyChanged && mcf.supportsGetNetworkTimeout ? getNetworkTimeoutSafely() : cri.ivNetworkTimeout,
+                                connectionPropertyChanged && mcf.supportsGetNetworkTimeout ? Integer.valueOf(getNetworkTimeoutSafely()) : cri.ivNetworkTimeout,
                                 cri.ivConfigID,
                                 cri.supportIsolvlSwitching);
 
@@ -2117,17 +2117,20 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 setTypeMap(cri.ivTypeMap);
             }
             
-            if (mcf.supportsGetNetworkTimeout && cri.ivNetworkTimeout != currentNetworkTimeout) {
+            // Use the default timeout if cri.ivNetworkTimeout hasn't been initialized.
+            final int timeoutToSet = cri.ivNetworkTimeout == null ? defaultNetworkTimeout : cri.ivNetworkTimeout;
+            
+            if (mcf.supportsGetNetworkTimeout && currentNetworkTimeout != timeoutToSet) {
                 final ExecutorService libertyThreadPool = mcf.connectorSvc.getLibertyThreadPool();
                 // setNetworkTimeout is the only JDBC Connection property that may perform access checks
                 if (System.getSecurityManager() == null) {
-                    setNetworkTimeout(libertyThreadPool, cri.ivNetworkTimeout);
+                    setNetworkTimeout(libertyThreadPool, timeoutToSet);
                 } else {
                     try {
                         AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
                             @Override
                             public Void run() throws Exception {
-                                setNetworkTimeout(libertyThreadPool, cri.ivNetworkTimeout);
+                                setNetworkTimeout(libertyThreadPool, timeoutToSet);
                                 return null;
                             }
                         });
@@ -2173,7 +2176,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                    "Schema:        " + defaultSchema + "/" + (cri.ivSchema == null ? defaultSchema : cri.ivSchema),
                                    "ShardingKey:   " + initialShardingKey + "/" + cri.ivShardingKey,
                                    "SuperShardingK:" + initialSuperShardingKey + "/" + cri.ivSuperShardingKey,
-                                   "NetworkTimeout:" + defaultNetworkTimeout + "/" + (cri.ivNetworkTimeout == 0 ? defaultNetworkTimeout : cri.ivNetworkTimeout),
+                                   "NetworkTimeout:" + defaultNetworkTimeout + "/" + (cri.ivNetworkTimeout == null ? defaultNetworkTimeout : cri.ivNetworkTimeout),
                                    "IsReadOnly:    " + defaultReadOnly + "/" + (cri.ivReadOnly == null ? defaultReadOnly : cri.ivReadOnly), 
                                    "TypeMap:       " + defaultTypeMap + "/" + (cri.ivTypeMap == null ? defaultTypeMap : cri.ivTypeMap),
                                    "Holdability:   " + AdapterUtil.getCursorHoldabilityString(previousHoldability) +

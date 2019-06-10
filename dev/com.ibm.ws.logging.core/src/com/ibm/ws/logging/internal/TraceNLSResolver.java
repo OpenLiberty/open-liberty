@@ -79,7 +79,7 @@ public class TraceNLSResolver {
      * 
      * @see #makeNoise()
      */
-    private static final TraceComponent tc = com.ibm.websphere.ras.Tr.register(TraceNLSResolver.class);
+    private static final TraceComponent tc = com.ibm.websphere.ras.Tr.register(TraceNLSResolver.class,NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
     /**
      * Name of property used to enable noise-making when messages can't be

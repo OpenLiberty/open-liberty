@@ -168,12 +168,12 @@ public class Callback_EJB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("Callback_EJB");
 
         Application appRecord = new Application();
         appRecord.setLocation("Callback_EJB.ear");
         appRecord.setName("Callback_EJB");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

@@ -33,7 +33,7 @@ import com.ibm.wsspi.requestContext.RequestContext;
  @SuppressWarnings("deprecation")
 public class RequestProbeIntrospector implements IntrospectableService {
 
-    private static final TraceComponent tc = Tr.register(RequestProbeIntrospector.class);
+    private static final TraceComponent tc = Tr.register(RequestProbeIntrospector.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
     private static final int EXTRA_SPACE_REQUIRED = 2;
     
    

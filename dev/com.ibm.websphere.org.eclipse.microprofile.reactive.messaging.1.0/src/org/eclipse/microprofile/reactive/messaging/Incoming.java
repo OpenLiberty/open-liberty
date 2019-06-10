@@ -18,6 +18,10 @@
  */
 package org.eclipse.microprofile.reactive.messaging;
 
+
+import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,13 +33,11 @@ import java.lang.annotation.Target;
  * Methods annotated with this annotation must have one of the following shapes:
  * </p>
  * <ul>
- * <li>Take zero parameters, and return a {@link org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder}.</li>
- * <li>Take zero parameters, and return a {@link org.reactivestreams.Subscriber}.</li>
- * <li>Take zero parameters, and return a {@link org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder}.</li>
- * <li>Take zero parameters, and return a {@link org.reactivestreams.Processor}.</li>
+ * <li>Take zero parameters, and return a {@link SubscriberBuilder} or a {@link org.reactivestreams.Subscriber}.</li>
+ * <li>Take zero parameters, and return a {@link ProcessorBuilder} or a {@link org.reactivestreams.Processor}.</li>
  * <li>Accept a single parameter, and return a {@link java.util.concurrent.CompletionStage}.</li>
- * <li>Accept a single parameter, and return void.</li>
- * <li>Accept a single parameter, and return any type.</li>
+ * <li>Accept a single parameter, and return {@code void}.</li>
+ * <li>Accept a single parameter, and return <em>any</em> type.</li>
  * </ul>
  * <p>
  * In addition, implementations of this specification may allow returning additional types, such as implementation
@@ -57,8 +59,8 @@ import java.lang.annotation.Target;
  * so that the container can ack it.
  * </p>
  * <p>
- * If the incoming message is not wrapped, then the container is responsible for automatically acking messages. When
- * the ack is done depends on the shape of the method - for subscriber shapes, it may either be done before or after
+ * If the incoming message is not wrapped, then the container is responsible for automatically acknowledging messages.
+ * When the ack is done depends on the shape of the method - for subscriber shapes, it may either be done before or after
  * passing a message to the subscriber (note that it doesn't matter which, since compliant Reactive Streams
  * implementations don't allow throwing exceptions directly from the subscriber). For processor shapes, it should be
  * when the processor emits an element. In this case, it is assumed, and the application must ensure, that there is
@@ -69,7 +71,8 @@ import java.lang.annotation.Target;
  * </p>
  * <p>
  * If there is an output value, and it is wrapped, then it is the containers responsibility to invoke
- * {@link Message#ack()} on each message emitted.
+ * {@link Message#ack()} on each message emitted, except if indicated otherwise with the {@link Acknowledgment}
+ * annotation.
  * </p>
  * <p>
  * {@code Incoming} annotated methods may also have an {@link Outgoing} annotation, in which case, they must have a
@@ -87,35 +90,9 @@ import java.lang.annotation.Target;
 public @interface Incoming {
 
     /**
-     * The value of the consumed stream.
-     * <p>
-     * If not set, it is assumed some other messaging provider specific mechanism will be used to identify which
-     * messages this subscriber will receive.
+     * The name of the consumed channel.
      *
-     * @return the name of the consumed stream
+     * @return the name of the consumed channel, must not be blank.
      */
-    String value() default "";
-
-    /**
-     * The messaging provider.
-     * <p>
-     * If not set, then the container may provide a container specific mechanism for selecting a default messaging
-     * provider.
-     * </p>
-     * <p>
-     * Note that not all messaging providers are compatible with all containers, it is up to each container to
-     * decide which messaging providers it will accept, to define the messaging provider classes to pass here, and
-     * to potentially offer a container specific extension point for plugging in new containers.
-     * </p>
-     * <p>
-     * If the container does not support the selected messaging provider, it must raise a deployment exception before
-     * the container is initialized.
-     * </p>
-     * <p>
-     * The use of this property is inherently non portable.
-     * </p>
-     *
-     * @return the messaging provider
-     */
-    Class<? extends MessagingProvider> provider() default MessagingProvider.class;
+    String value();
 }

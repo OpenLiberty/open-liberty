@@ -36,6 +36,8 @@
       <name>-</name>
       <actions>read</actions>
    </permission>
-
-
+   <permission>
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>accessClassInPackage.com.sun.org.apache.xerces.internal.dom</name>
+   </permission>
 </permissions>

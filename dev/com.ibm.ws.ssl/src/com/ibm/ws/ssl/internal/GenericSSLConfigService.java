@@ -21,7 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
  */
 public abstract class GenericSSLConfigService {
     /** Trace service */
-    private static final TraceComponent tc = Tr.register(GenericSSLConfigService.class);
+    private static final TraceComponent tc = Tr.register(GenericSSLConfigService.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     protected volatile Map<String, Object> config = null;
     private volatile Map<String, Object> myProps = null;

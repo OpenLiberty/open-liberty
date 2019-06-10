@@ -27,7 +27,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class BeanValidation12Test extends AbstractTest {
-
+    
     private static final String PARAM_URL_PATTERN = "rest";
 
     @Server("com.ibm.ws.jaxrs20.cdi12.fat.beanvalidation")
@@ -42,7 +42,7 @@ public class BeanValidation12Test extends AbstractTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("SRVE0777E", "SRVE0315E");
     }
 
     @Before
@@ -76,5 +76,20 @@ public class BeanValidation12Test extends AbstractTest {
     public void testIsViolatedInSingletonWithCDI12_BeanValidation() throws Exception {
         runGetMethod("/rest/singleton/book", 400, "Hello from SimpleBean", true);
 //        String uri = TestUtils.getBaseTestUri(appname, PARAM_URL_PATTERN, "/singleton/book");
+    }
+    
+    @Test
+    public void testValidatorOnlyInvokedOnceValidParamAndResponse() throws Exception {
+        runGetMethod("/rest/singleValidation/test?test=validParamAndReturn", 200, "VALID 1:1", true);
+    }
+    
+    @Test
+    public void testValidatorOnlyInvokedOnceInvalidParam() throws Exception {
+        runGetMethod("/rest/singleValidation/test?test=invalidParam", 200, "INVALID 1:0", true);
+    }
+    
+    @Test
+    public void testValidatorOnlyInvokedOnceInvalidReturn() throws Exception {
+        runGetMethod("/rest/singleValidation/test?test=invalidReturn", 200, "INVALID 1:1", true);
     }
 }
