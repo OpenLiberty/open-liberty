@@ -216,13 +216,7 @@ class ConfigurationStore implements Runnable {
         }
         readLock();
         try {
-            List<ExtendedConfigurationImpl> persistConfigs = new ArrayList<>();
-            for (ExtendedConfigurationImpl persistConfig : configurations.values()) {
-                if (persistConfig.getReadOnlyProperties() != null) {
-                    persistConfigs.add(persistConfig);
-                }
-            }
-            ConfigurationStorageHelper.store(persistentConfig, persistConfigs);
+            ConfigurationStorageHelper.store(persistentConfig, configurations.values());
             if (shutdown && currentSaveTask != null) {
                 currentSaveTask.cancel(false);
             }
