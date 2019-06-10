@@ -43,7 +43,7 @@ public class Health20TCKLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMH0052W", "CWWKZ0002E");
+        server.stopServer("CWMH0052W", "CWWKZ0002E", "SRVE0190E");
     }
 
     @Test
