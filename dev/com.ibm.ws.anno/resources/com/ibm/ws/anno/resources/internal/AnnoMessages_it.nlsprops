@@ -36,7 +36,7 @@
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: la chiusura dell''origine [{1}] [{2}] ha avuto esito negativo. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=La chiusura per la risorsa ha provocato un'eccezione.
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource
@@ -44,14 +44,14 @@ ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Per ulteriori informazioni, consult
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: la chiusura della risorsa [{1}] [{2}] ha avuto esito negativo. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=La chiusura del flusso di input per la risorsa ha causato un'eccezione.
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: l''apertura della risorsa [{1}] per la classe [{2}] ha avuto esito negativo.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=L'apertura di un InputStream per la risorsa ha causato un'eccezione.
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} file name
@@ -69,7 +69,7 @@ ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=Non \u00e8 disponibile alcuna azione
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: [ {0} ]: l''apertura di [{1}] come [{2}] nel root [{3}] per la classe [{4}] non \u00e8 riuscita.
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=L'apertura di un InputStream per la risorsa ha causato un'eccezione.
-ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the resource name, class name plus path
@@ -86,7 +86,7 @@ ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=Verificare che il percorso della r
 # # {4} the name of the class
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: [ {0} ]: la chiusura di [{1}] come [{2}] nel root [{3}] per la classe [{4}] non \u00e8 riuscita.
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=Un tentativo di chiusura di InputStream per la classe ha causato un'eccezione.
-ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a directory name
@@ -111,7 +111,7 @@ ANNO_CLASSSOURCE_NOT_FILE.useraction=Non \u00e8 disponibile alcuna azione dell'u
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: [ {0} ]: apertura di [{1}] non riuscita per la risorsa [{2}] nel root [{3}] per la classe [{4}].
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=Il tentativo di apertura di un InputStream per il file ha causato un'eccezione.
-ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -120,13 +120,13 @@ ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Per ulteriori informazioni, consulta
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: la chiusura della risorsa [{1}] nel root [{2}] per la classe [{3}] non \u00e8 riuscita. Messaggio di errore: {4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=La chiusura di InputStream per la risorsa ha causato un'eccezione.
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]: apertura di [{1}] non riuscita con un''eccezione.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Si stava tentando di aprire il file come file Jar e ci\u00f2 ha causato un'eccezione.
-ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the jar file
@@ -139,7 +139,7 @@ ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
 # # {1} The name of a jar file
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: chiusura di [{1}] non riuscita.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Un tentativo di chiusura dell'oggetto JarFile ha causato un'eccezione.
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a resource name
@@ -147,7 +147,7 @@ ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Per ulteriori informazioni, consult
 # # {3} a jar file path
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: apertura di [{1}] per la classe [{2}] in [{3}] non riuscita.
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=\u00c8 stata rilevata una voce per la classe nel file jar, ma la creazione di un InputStream per la classe ha causato un'eccezione.
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -156,7 +156,7 @@ ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Per ulteriori informazioni, consulta
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: chiusura della risorsa [{1}] per la classe [{2}] in [{3}] non riuscita. Messaggio di errore: {4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=La chiusura di un flusso di input per la risorsa ha provocato un'eccezione.
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a java class name
@@ -195,7 +195,7 @@ ANNO_CLASSINFO_EXISTS4.useraction=Non \u00e8 disponibile alcuna azione dell'uten
 # # {1} the name of a class
 ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: [ {0} ] La scansione della classe [{1}] ha causato un''eccezione. Il messaggio \u00e8: [{2}] causato da [{3}].
 ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=La scansione di una classe per le annotazioni ha causato un'eccezione.
-ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
@@ -222,33 +222,33 @@ ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Verificare che la classe sia inclusa ne
 # # {2} The error message from the exception
 ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: [ {0} ]: l''apertura di [{1}] ha causato un''eccezione. Il messaggio \u00e8: {2}
 ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=L'apertura di un'origine classe ha causato un'eccezione.
-ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A hashcode id used to identify the object causing the exception
 ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ]: la chiusura di [{1}] ha causato un''eccezione.
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=La chiusura di un'origine classe ha causato un'eccezione.
-ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ]: apertura di un flusso di input per la risorsa [{1}] per la classe [{2}] non riuscita con un''eccezione.
 ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Quando il processo di scansione dell'annotazione ha tentato di aprire un flusso di input per la classe, si \u00e8 verificata un'eccezione.
-ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: [ {0} ]: chiusura di un flusso di input per la risorsa [{1}] per la classe [{2}] non riuscita con un''eccezione.
 ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=Quando il processo di scansione dell'annotazione ha tentato di chiudere un flusso di input per la classe, si \u00e8 verificata un'eccezione.
-ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} The class name
 # # {1} the full resource name for the class
 ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: La creazione di un lettore classe per la classe [ {0} ] dalla risorsa [{1}] non \u00e8 riuscita con un''eccezione.
 ANNO_CREATE_READER_EXCEPTION.explanation=Il processo di scansione dell'annotazione stava creando un ClassReader per elaborare il flusso di input per la risorsa e ci\u00f2 ha causato un'eccezione.
-ANNO_CREATE_READER_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CREATE_READER_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a parameter name
@@ -326,23 +326,23 @@ ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
 
 ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: Si \u00e8 verificata un''eccezione durante la scansione dei dati di annotazione e classe. L''eccezione era {0}.
 ANNO_TARGETS_SCAN_EXCEPTION.explanation=Si \u00e8 verificato un errore durante la scansione dei dati di annotazioni e classe.  Il modulo associato potrebbe non funzionare correttamente.
-ANNO_TARGETS_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: Si \u00e8 verificata un'eccezione mentre si concludeva la scrittura dei dati di annotazioni e classe.
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=Si \u00e8 verificato un problema mentre si concludeva la scrittura dei dati di annotazioni e classe.  La cache dei dati di annotazioni e classe potrebbe non essere completa e potrebbe essere necessario ripulirla.
-ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: Si \u00e8 verificata un'eccezione durante la lettura dei dati di annotazioni.
 ANNO_TARGETS_READ_EXCEPTION.explanation=Si \u00e8 verificato un problema durante la lettura dei dati di annotazioni e classe.  Se si procede con l'elaborazione si potrebbero ottenere risultati non corretti poich\u00e9 sono stati letti dati non completi.  \u00c8 necessario ripulire la cache dei dati di annotazioni e classe.
-ANNO_TARGETS_READ_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_TARGETS_READ_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: Si \u00e8 verificata un'eccezione durante la scrittura dei dati di annotazioni.
 ANNO_TARGETS_WRITE_EXCEPTION.explanation=Si \u00e8 verificato un problema durante la scrittura dei dati di annotazioni e classe.  La riga visualizzata non \u00e8 stata scritta in modo corretto nei dati di annotazioni e classe.  La cache dei dati di annotazioni e classe potrebbe non essere completa e potrebbe essere necessario ripulirla.
-ANNO_TARGETS_WRITE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Si \u00e8 verificata un''eccezione durante la scansione della classe [ {0} ] per individuare le informazioni sulla classe e sulle annotazioni.
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Si \u00e8 verificato un problema durante il tentativo di eseguire la scansione di una classe per individuare le informazioni sulla classe e sulle annotazioni.  Esaminare la classe visualizzata per assicurarsi che possa essere letta e che contenga byte di classe validi.
-ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Si \u00e8 verificata un''eccezione durante la creazione di un lettore di codice di byte della classe per la classe [ {0} ].
 ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Si \u00e8 verificato un problema durante la preparazione di un lettore di codice di byte della classe.  \u00c8 possibile che i valori del codice di byte per tale classe non siano validi o che il file classe non sia leggibile.  Come risultato, le informazioni di annotazioni e classe per la classe in questione non saranno disponibili e il modulo che utilizza la classe potrebbe non funzionare correttamente.
@@ -406,7 +406,7 @@ ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
 # #{3} The hashcode id of the resource being closed
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]: viene eliminata l''eccezione di chiusura supplementare {1} da {2} [ {3} ]
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=Si \u00e8 verificata un'eccezione durante il tentativo di chiudere la risorsa.
-ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} The name of the class
 # # {1} The name of the JAR file the class is in.
@@ -421,14 +421,14 @@ ANNO_TARGETS_CORRUPT_CLASS.useraction=\u00c8 possibile sostituire o rimuovere la
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: [ {0} ]: l''apertura dell''origine classe child [{1}] ha causato un''eccezione. Messaggio di errore: {2}
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=L'apertura dell'origine classe child ha causato un'eccezione.
-ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode ID that identifies the object emitting the message
 # # {1} A hashcode ID that identifies the object causing the exception
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: [ {0} ]: chiusura dell''origine classe child [{1}] non riuscita. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=La chiusura dell'origine classe child ha causato un'eccezione.
-ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} An entry name
@@ -436,7 +436,7 @@ ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, co
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: [ {0} ] L''elaborazione della voce [{1}] per la classe [{2}] ha causato un''eccezione. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=L'elaborazione delle informazioni sulla classe lette da una voce ha causato un'eccezione.
-ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -445,7 +445,7 @@ ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, con
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: [ {0} ]: chiusura della voce [{1}] per la classe [{2}] in [{3}] non riuscita. Messaggio di errore: {4}
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=La chiusura della voce ha provocato un'eccezione.
-ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A file name
@@ -453,7 +453,7 @@ ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, co
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: [ {0} ] L''elaborazione del file [{1}] per la classe [{2}] ha causato un''eccezione. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=L'elaborazione delle informazioni sulla classe lette da un file ha causato un'eccezione.
-ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -462,7 +462,7 @@ ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, cons
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: [ {0} ]: la chiusura della risorsa [{1}] nel root [{2}] per la classe [{3}] non \u00e8 riuscita. Messaggio di errore: {4}
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=La chiusura del file ha provocato un'eccezione.
-ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -470,7 +470,7 @@ ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, con
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: [ {0} ] L''elaborazione della voce JAR [{1}] per la classe [{2}] ha causato un''eccezione. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=L'elaborazione delle informazioni sulla classe lette da una voce JAR ha causato un'eccezione.
-ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -479,7 +479,7 @@ ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, 
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: [ {0} ]: chiusura della voce JAR [{1}] per la classe [{2}] in [{3}] non riuscita. Messaggio di errore: {4}
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=La chiusura del file ha provocato un'eccezione.
-ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -487,7 +487,7 @@ ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni,
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: [ {0} ] L''elaborazione della risorsa [{1}] per la classe [{2}] ha causato un''eccezione. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=L'elaborazione delle informazioni sulla classe lette da una risorsa ha causato un'eccezione.
-ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The resource name
@@ -495,7 +495,7 @@ ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, 
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: [ {0} ]: la chiusura della risorsa [{1}] [{2}] ha avuto esito negativo. Messaggio di errore: {3}
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=La chiusura della risorsa ha provocato un'eccezione.
-ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The target convertion type
@@ -519,48 +519,77 @@ ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=Non \u00e8 disponibile alcuna 
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] L''elaborazione delle informazioni Jandex per la classe [{1}] ha causato un''eccezione. Messaggio di errore: {2}
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=L'elaborazione delle informazioni Jandex di una classe ha causato un'eccezione.
-ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Apertura della risorsa indice Jandex [{1}] non riuscita.  Messaggio di errore: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Apertura della risorsa indice Jandex [{1}] da [{2}] non riuscita.  Messaggio di errore: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=Il tentativo di aprire la risorsa indice Jandex ha causato un'eccezione.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Lettura della risorsa indice Jandex [{1}] non riuscita.  Messaggio di errore: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Lettura della risorsa indice Jandex [{1}] da [{2}] non riuscita.  Messaggio di errore: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=Il tentativo di leggere l'indice Jandex non \u00e8 riuscito con un'eccezione.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] Apertura del file indice Jandex [{1}] non riuscita.  Messaggio di errore: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=Il tentativo di aprire la risorsa indice Jandex ha causato un'eccezione.
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] Lettura del file indice Jandex [{1}] non riuscita.  Messaggio di errore: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=Il tentativo di leggere l'indice Jandex non \u00e8 riuscito con un'eccezione.
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Per ulteriori informazioni, consultare il testo dell'eccezione ed il messaggio FFDC associato.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
 
 # # {0} A class name
-ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Errore interno di scansione classe: l''elaborazione Jandex duplica l''elaborazione della classe [ {0} ].
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Errore interno di scansione classe: l''elaborazione Jandex ha rilevato un duplicato di classe [{0}].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 
-# # {0} A number
-# # {1} A number
-# # {2} A number
-# # {3} A number
-# # {4} The name of a file or the name of a directory
-# # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: Lettura di indici Jandex per {0} su {1} archivi ({2} su {3} classi) in {4}. 
-ANNO_JANDEX_USAGE.explanation=Questo mostra il numero di archivi nel modulo che sono stati elaborati leggendo gli indici Jandex piuttosto che eseguendo la scansione dei file di classe reali.  Inoltre mostra il numero totale di classi nell'applicazione che sono state elaborate dalla lettura degli indici Jandex.
-ANNO_JANDEX_USAGE.useraction=Se \u00e8 previsto che gli indici Jandex siano letti per l'applicazione, non c'\u00e8 alcuna azione.  Se gli indici Jandex non devono essere letti per l'applicazione, impostare l'attributo useJandex="false" nell'elemento application in server.xml. In alternativa, impostare useJandex="false" nell'elemento applicationManger in server.xml per ignorare gli indici Jandex in tutte le applicazioni.
+# # {0} A number: The count of module locations which had Jandex indexes.
+# # {1} A number: The total count of module locations.
+# # {2} A number: The count of module classes which were read from a Jandex index.
+# # {3} A number: The total count of module classes.
+# # {4} A string: A module name
+ANNO_JANDEX_USAGE=CWWKC0092I: Copertura Jandex del modulo {4}: gli indici Jandex sono stati letti per {0} di {1} ubicazioni modulo; gli indici Jandex hanno fornito {2} di {3} classi modulo.
+ANNO_JANDEX_USAGE.explanation=Visualizza la proporzione di un modulo che \u00e8 stato sottoposto a scansione alla ricerca di annotazioni utilizzando gli indici di Jandex.  Le ubicazioni del modulo sono il modulo stesso oppure, per un modulo Web, sono la cartella WEB-INF/classes o i file Jar WEB-INF/lib del modulo.
+ANNO_JANDEX_USAGE.useraction=Non \u00e8 richiesta alcuna azione se \u00e8 previsto che gli indici Jandex siano letti per l'applicazione. Per ignorare gli indici Jandex per una singola applicazione, impostare l'attributo useJandex="false" nell'elemento 'application' di tale applicazione in server.xml. In alternativa, per ignorare gli indici Jandex in tutte le applicazioni, impostare useJandex="false" nell'elemento 'applicationManger' in server.xml.
 
+# # {0} A string: An application name.
+# # {1} A string: A module name.
+# # {2} A number: The total count of module locations.
+# # {3} A number: The count of module locations which had Jandex indexes.
+# # {4} A number: The total count of module classes.
+# # {5} A number: The count of module classes which were read from a Jandex index.
+ANNOCACHE_JANDEX_USAGE=CWWKC0093I: Copertura Jandex del modulo {1} nell''applicazione {0}: gli indici Jandex sono stati letti per {3} di {2} ubicazioni modulo; gli indici Jandex hanno fornito {5} di {4} classi modulo.
+ANNOCACHE_JANDEX_USAGE.explanation=Visualizza la proporzione di un modulo che \u00e8 stato sottoposto a scansione alla ricerca di annotazioni utilizzando gli indici di Jandex.  Le ubicazioni del modulo sono il modulo stesso oppure, per un modulo Web, sono la cartella WEB-INF/classes o i file Jar WEB-INF/lib del modulo.
+ANNOCACHE_JANDEX_USAGE.useraction=Non \u00e8 richiesta alcuna azione se \u00e8 previsto che gli indici Jandex siano letti per l'applicazione. Per ignorare gli indici Jandex per una singola applicazione, impostare l'attributo useJandex="false" nell'elemento 'application' di tale applicazione in server.xml. In alternativa, per ignorare gli indici Jandex in tutte le applicazioni, impostare useJandex="false" nell'elemento 'applicationManger' in server.xml.
+
+# # {0} A string: Message text from an exception.
+ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: Errore cache elaborazione annotazione: {0}
+ANNO_TARGETS_CACHE_EXCEPTION.explanation=Si \u00e8 verificata un'eccezione durante l'accesso ai dati della cache delle annotazioni.
+ANNO_TARGETS_CACHE_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
+
+# # {0} A string: A class name.
+# # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
+# # {2} A string: Message text from an exception.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION=CWWKC0103W: Si \u00e8 verificata un''eccezione durante la scansione dei dati della classe {0} di {1}.  L''eccezione era {2}.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation=Si \u00e8 verificato un errore durante la scansione dei dati di annotazioni e classe.  Il modulo associato potrebbe non funzionare correttamente.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=Per ulteriori informazioni sull'argomento, consultare l'eccezione e il messaggio FFDC associato.
+
+# # {0} A String: An internal print string of the data structure which was used to locate the class.
+# # {1} A String: A class name.
+# # {2} A String: A class name.
+ANNO_TARGETS_CLASS_NAME_MISMATCH=CWWKC0105W: Errore interno di scansione classe: visitatore {0} nome classe letta {1} da una risorsa che dovrebbe avere il nome classe {2}.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.explanation=La directory e il nome di una risorsa ".class" non corrispondono al nome della classe registrato nella risorsa ".class". La risorsa classe verr\u00e0 ignorata.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.useraction=Spostare la risorsa classe nella directory che corrisponde al nome qualificato della classe. Ridenominare la risorsa classe in modo che corrisponda al nome qualificato della classe.
