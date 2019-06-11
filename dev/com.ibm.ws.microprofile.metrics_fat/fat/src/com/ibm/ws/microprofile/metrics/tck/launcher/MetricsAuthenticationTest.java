@@ -79,11 +79,11 @@ public class MetricsAuthenticationTest {
     }
 
     private void waitForMetricsEndpoint(LibertyServer server) throws Exception {
-        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT * 3, server.getDefaultLogFile()));
+        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLogUsingMark("CWWKT0016I.*/metrics/", server.getDefaultLogFile()));
     }
 
     private void waitForInstallationsToFinish(LibertyServer server) throws Exception {
-        assertNotNull("[/metrics] failed to initialize", server.waitForStringInLog("SRVE0242I.*/metrics.*Initialization successful", TIMEOUT * 3, server.getDefaultLogFile()));
+        assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*", server.getDefaultLogFile()));
     }
 
     private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication) throws Exception {
