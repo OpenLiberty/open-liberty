@@ -39,8 +39,8 @@ public class WsLogManager extends LogManager {
      */
     private static final String CONFIGURE_BY_LOGGING_PROPERTIES_FILE = "java.util.logging.configureByLoggingPropertiesFile";
 
-    private static final boolean configureByServer = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
-    private static final boolean configureByLoggingProperties = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
+    private static boolean configureByServer = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
+    private static boolean configureByLoggingProperties = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
 
     private static volatile Constructor<?> wsLogger;
 
@@ -70,7 +70,14 @@ public class WsLogManager extends LogManager {
      */
     @Override
     public void readConfiguration() throws IOException, SecurityException {
-        if (!configureByServer || configureByLoggingProperties) {
+    	
+    	boolean configureByServerLocal = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
+    	boolean configureByLoggingPropertiesLocal = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
+        
+    	configureByServer = configureByServerLocal;
+    	configureByLoggingProperties = configureByLoggingPropertiesLocal;
+    	
+    	if (!configureByServer || configureByLoggingProperties) {
             super.readConfiguration();
         } else {
             // Add a ConsoleHandler to the root logger until we're far enough
