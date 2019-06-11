@@ -112,7 +112,9 @@ public class ConnectionFactoryValidator implements Validator {
     }
 
     @Override
-    public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
+    public LinkedHashMap<String, ?> validate(Object instance,
+                                             @Sensitive Map<String, Object> props, // @Sensitive prevents auto-FFDC from including password value
+                                             Locale locale) {
         final String methodName = "validate";
         String user = (String) props.get("user");
         String password = (String) props.get("password");
