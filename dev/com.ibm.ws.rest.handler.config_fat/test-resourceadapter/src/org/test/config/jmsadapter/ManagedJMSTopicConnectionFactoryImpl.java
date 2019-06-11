@@ -12,11 +12,12 @@ package org.test.config.jmsadapter;
 
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
+import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
+import javax.resource.spi.ConfigProperty;
 import javax.resource.spi.ConnectionDefinition;
 import javax.resource.spi.ConnectionManager;
 
-import org.test.config.adapter.ConnectionImpl;
 import org.test.config.adapter.ManagedConnectionFactoryImpl;
 
 /**
@@ -25,17 +26,28 @@ import org.test.config.adapter.ManagedConnectionFactoryImpl;
 @ConnectionDefinition(connectionFactory = TopicConnectionFactory.class,
                       connectionFactoryImpl = JMSTopicConnectionFactoryImpl.class,
                       connection = TopicConnection.class,
-                      connectionImpl = ConnectionImpl.class)
+                      connectionImpl = JMSTopicConnectionImpl.class)
 public class ManagedJMSTopicConnectionFactoryImpl extends ManagedConnectionFactoryImpl {
     private static final long serialVersionUID = 1L;
 
+    @ConfigProperty(defaultValue = "DefaultClientId")
+    String clientId;
+
     @Override
     public Object createConnectionFactory() throws ResourceException {
-        return createConnectionFactory(null);
+        throw new NotSupportedException();
     }
 
     @Override
     public Object createConnectionFactory(ConnectionManager cm) throws ResourceException {
-        return new JMSTopicConnectionFactoryImpl();
+        return new JMSTopicConnectionFactoryImpl(cm, this);
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String value) {
+        clientId = value;
     }
 }

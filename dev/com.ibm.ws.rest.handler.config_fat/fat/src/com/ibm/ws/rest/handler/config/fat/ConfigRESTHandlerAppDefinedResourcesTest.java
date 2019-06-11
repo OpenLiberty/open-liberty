@@ -68,7 +68,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                                         .addClass("org.test.config.jmsadapter.JMSConnectionFactoryImpl")
                                         .addClass("org.test.config.jmsadapter.JMSDestinationImpl")
                                         .addClass("org.test.config.jmsadapter.JMSTopicConnectionFactoryImpl")
-                                        .addClass("org.test.config.jmsadapter.ManagedJMSTopicConnectionFactoryImpl"));
+                                        .addClass("org.test.config.jmsadapter.JMSTopicConnectionImpl")
+                                        .addClass("org.test.config.jmsadapter.ManagedJMSTopicConnectionFactoryImpl")
+                                        .addClass("org.test.config.jmsadapter.NoOpSessionImpl"));
         ShrinkHelper.exportToServer(server, "connectors", tca_rar);
 
         server.startServer();
@@ -1129,6 +1131,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", j.getString("clientID"));
     }
 
@@ -1149,5 +1152,27 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
+    }
+
+    /**
+     * Use the /ibm/api/validator REST endpoint to validate an application-defined JMS topic connection factory
+     */
+    @Test
+    public void testValidateAppDefinedJMSTopicConnectionFactory() throws Exception {
+        JsonObject j = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory/application%5BAppDefResourcesApp%5D%2FjmsTopicConnectionFactory%5Bjava%3Aapp%2Fenv%2Fjms%2Ftcf%5D")
+                        .run(JsonObject.class);
+        String err = "unexpected response: " + j;
+
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", j.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", j.getString("id"));
+        assertEquals(err, "java:app/env/jms/tcf", j.getString("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "TestConfig Messaging Provider", j.getString("jmsProviderName"));
+        assertEquals(err, "88.105.137", j.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
+        assertEquals(err, "AppDefinedClientId", j.getString("clientID"));
     }
 }
