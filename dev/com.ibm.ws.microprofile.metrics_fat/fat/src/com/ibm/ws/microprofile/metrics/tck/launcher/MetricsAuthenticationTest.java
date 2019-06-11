@@ -82,7 +82,9 @@ public class MetricsAuthenticationTest {
         assertNotNull("Web application is not available at */metrics/", server.waitForStringInLogUsingMark("CWWKT0016I.*/metrics/", server.getDefaultLogFile()));
     }
 
-    private void waitForInstallationsToFinish(LibertyServer server) throws Exception {
+    private void waitForPrerequisites(LibertyServer server) throws Exception {
+        assertNotNull("TCP Channel defaultHttpEndpoint has not started (port 8010)", server.waitForStringInLog("CWWKO0219I.*8010.*", server.getDefaultLogFile()));
+        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (port 8020)", server.waitForStringInLog("CWWKO0219I.*8020.*", server.getDefaultLogFile()));
         assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*", server.getDefaultLogFile()));
     }
 
@@ -98,8 +100,8 @@ public class MetricsAuthenticationTest {
 
     private void testMetricsAuth() throws Exception {
 
-        // wait for installations to complete before running test
-        waitForInstallationsToFinish(server);
+        // wait for installations to complete and TCP channels to be started before running test
+        waitForPrerequisites(server);
 
         //1. When authentication is not explicitly set in server.xml, it defaults to private,
         //  i.e. requires authentication into metrics endpoint
