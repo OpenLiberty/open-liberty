@@ -14,13 +14,13 @@ javac.source: 1.8
 javac.target: 1.8
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-rs-client;3.3.0}!/!META-INF/*,\
+   @${repo;org.apache.cxf:cxf-rt-rs-client;3.3.3.20190529}!/!META-INF/*,\
    com/ibm/ws=${bin}/com/ibm/ws,\
    org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
   javax.activation:activation;version=1.1,\
-  org.apache.cxf:cxf-rt-rs-client;version=3.3.0,\
+  org.apache.cxf:cxf-rt-rs-client;version=3.3.3.20190529,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.ws.logging.core,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\

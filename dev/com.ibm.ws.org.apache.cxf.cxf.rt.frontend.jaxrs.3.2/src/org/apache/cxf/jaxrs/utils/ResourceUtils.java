@@ -300,7 +300,21 @@ public final class ResourceUtils {
                                                             boolean root,
                                                             boolean enableStatic,
                                                             Bus bus) {
-        ClassResourceInfo cri = new ClassResourceInfo(rClass, sClass, root, enableStatic, bus);
+        return createClassResourceInfo(rClass, sClass, parent, root, enableStatic, bus, null, null);
+    }
+
+     //CHECKSTYLE:OFF
+    public static ClassResourceInfo createClassResourceInfo(final Class<?> rClass,
+                                                            final Class<?> sClass,
+                                                            ClassResourceInfo parent,
+                                                            boolean root,
+                                                            boolean enableStatic,
+                                                            Bus bus,
+                                                            List<MediaType> defaultConsumes,
+                                                            List<MediaType> defaultProduces) {
+    //CHECKSTYLE:ON
+        ClassResourceInfo cri = new ClassResourceInfo(rClass, sClass, root, enableStatic, bus,
+                                                      defaultConsumes, defaultProduces);
         cri.setParent(parent);
 
         if (root) {
