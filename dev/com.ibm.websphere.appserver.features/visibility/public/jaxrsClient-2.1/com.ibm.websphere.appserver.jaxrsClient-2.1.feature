@@ -21,3 +21,4 @@ Subsystem-Name: Java RESTful Services Client 2.1
 com.ibm.ws.cxf.client
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

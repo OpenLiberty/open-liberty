@@ -4,3 +4,4 @@ Manifest-Version: 1.0
 -bundles=com.ibm.ws.request.probes
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

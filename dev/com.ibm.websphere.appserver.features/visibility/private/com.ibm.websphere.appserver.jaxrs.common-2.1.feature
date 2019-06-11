@@ -36,3 +36,4 @@ IBM-App-ForceRestart: uninstall, \
   bin/jaxrs/tools/wadl2java.jar
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
