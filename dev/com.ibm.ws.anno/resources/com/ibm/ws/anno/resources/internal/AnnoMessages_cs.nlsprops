@@ -521,17 +521,19 @@ ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] Zpracov\u00e1n\u00ed 
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=Zpracov\u00e1n\u00ed informac\u00ed Jandex t\u0159\u00eddy zp\u016fsobilo v\u00fdjimku.
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Otev\u0159en\u00ed prost\u0159edku indexu Jandex [{1}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Otev\u0159en\u00ed prost\u0159edku indexu Jandex [{1}] z [{2}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=Pokus o otev\u0159en\u00ed prost\u0159edku indexu Jandex zp\u016fsobil v\u00fdjimku.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] \u010cten\u00ed prost\u0159edku indexu Jandex [{1}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] \u010cten\u00ed prost\u0159edku indexu Jandex [{1}] z [{2}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=Pokus o \u010dten\u00ed indexu Jandex se nezda\u0159il s v\u00fdjimkou.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
@@ -550,17 +552,44 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=Pokus o \u010dten\u00ed 
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
 # # {0} A class name
-ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: Jandex zpracov\u00e1v\u00e1 duplicitn\u00ed zpracov\u00e1n\u00ed t\u0159\u00eddy [{0}].
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: Jandex zpracov\u00e1v\u00e1 rozpoznan\u00fd duplik\u00e1t t\u0159\u00eddy [{0}].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 
-# # {0} A number
-# # {1} A number
-# # {2} A number
-# # {3} A number
-# # {4} The name of a file or the name of a directory
-# # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: \u010c\u00edst indexy Jandex pro {0} z {1} archiv\u016f ({2} z {3} t\u0159\u00edd) v {4}. 
-ANNO_JANDEX_USAGE.explanation=Zobrazuje po\u010det archiv\u016f v modulu, kter\u00e9 byly zpracov\u00e1ny \u010dten\u00edm index\u016f Jandex, sp\u00ed\u0161e ne\u017e skenov\u00e1n\u00edm skute\u010dn\u00fdch soubor\u016f t\u0159\u00edd. Zobrazuje tak\u00e9 celkov\u00fd po\u010det t\u0159\u00edd v aplikaci, kter\u00e9 byly zpracov\u00e1ny \u010dten\u00edm index\u016f Jandex.
-ANNO_JANDEX_USAGE.useraction=Jestli\u017ee jsou indexy Jandex ur\u010deny ke \u010dten\u00ed pro aplikaci, nen\u00ed \u017e\u00e1dn\u00e1 akce. Pokud nemaj\u00ed b\u00fdt indexy Jandex \u010dteny pro aplikaci, potom nastavte atribut useJandex="false" v prvku aplikace v souboru server.xml. Voliteln\u011b nastavte parametr useJandex="false" v prvku applicationManger v souboru server.xml pro ignorov\u00e1n\u00ed index\u016f Jandex ve v\u0161ech aplikac\u00edch.
+# # {0} A number: The count of module locations which had Jandex indexes.
+# # {1} A number: The total count of module locations.
+# # {2} A number: The count of module classes which were read from a Jandex index.
+# # {3} A number: The total count of module classes.
+# # {4} A string: A module name
+ANNO_JANDEX_USAGE=CWWKC0092I: Pokryt\u00ed Jandex modulu {4}: Indexy Jandex byly p\u0159e\u010dteny pro {0} um\u00edst\u011bn\u00ed modulu z {1}; indexy Jandex byly poskytnuty pro {2} t\u0159\u00eddy modulu z {3}.
+ANNO_JANDEX_USAGE.explanation=To ukazuje proporce modulu, u kter\u00e9ho byly skenov\u00e1ny anotace pomoc\u00ed index\u016f Jandex. Um\u00edst\u011bn\u00ed modulu jsou bu\u010f samotn\u00fd modul, nebo, pro webov\u00fd modul, to je slo\u017eka WEB-INF/classes a soubory WEB-INF/lib Jar modulu.
+ANNO_JANDEX_USAGE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce, pokud jsou indexy Jandex ur\u010deny ke \u010dten\u00ed pro aplikaci. Chcete-li ignorovat indexy pro jedinou aplikaci, potom nastavte atribut useJandex="false" v prvku 'application' dan\u00e9 aplikace v souboru server.xml. Voliteln\u011b chcete-li ignorovat indexy Jandex ve v\u0161ech aplikac\u00edch, nastavte useJandex="false" v prvku 'applicationManger' v souboru server.xml.
 
+# # {0} A string: An application name.
+# # {1} A string: A module name.
+# # {2} A number: The total count of module locations.
+# # {3} A number: The count of module locations which had Jandex indexes.
+# # {4} A number: The total count of module classes.
+# # {5} A number: The count of module classes which were read from a Jandex index.
+ANNOCACHE_JANDEX_USAGE=CWWKC0093I: Pokryt\u00ed Jandex modulu {1} v aplikaci {0}: Indexy Jandex byly p\u0159e\u010dteny pro {3} um\u00edst\u011bn\u00ed modulu z {2}; indexy Jandex byly poskytnuty pro {5} t\u0159\u00eddy modulu z {4}.
+ANNOCACHE_JANDEX_USAGE.explanation=To ukazuje proporce modulu, u kter\u00e9ho byly skenov\u00e1ny anotace pomoc\u00ed index\u016f Jandex. Um\u00edst\u011bn\u00ed modulu jsou bu\u010f samotn\u00fd modul, nebo, pro webov\u00fd modul, to je slo\u017eka WEB-INF/classes a soubory WEB-INF/lib Jar modulu.
+ANNOCACHE_JANDEX_USAGE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce, pokud jsou indexy Jandex ur\u010deny ke \u010dten\u00ed pro aplikaci. Chcete-li ignorovat indexy pro jedinou aplikaci, potom nastavte atribut useJandex="false" v prvku 'application' dan\u00e9 aplikace v souboru server.xml. Voliteln\u011b chcete-li ignorovat indexy Jandex ve v\u0161ech aplikac\u00edch, nastavte useJandex="false" v prvku 'applicationManger' v souboru server.xml.
+
+# # {0} A string: Message text from an exception.
+ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: Chyba mezipam\u011bti p\u0159i zpracov\u00e1n\u00ed anotac\u00ed: {0}
+ANNO_TARGETS_CACHE_EXCEPTION.explanation=Do\u0161lo k v\u00fdjimce v dob\u011b p\u0159\u00edstupu k anotac\u00edm dat v mezipam\u011bti.
+ANNO_TARGETS_CACHE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A string: A class name.
+# # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
+# # {2} A string: Message text from an exception.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION=CWWKC0103W: Do\u0161lo k v\u00fdjimce p\u0159i skenov\u00e1n\u00ed t\u0159\u00eddy {0} z {1}. V\u00fdjimka: {2}.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation=Do\u0161lo k chyb\u011b p\u0159i proch\u00e1zen\u00ed dat t\u0159\u00eddy a anotac\u00ed. P\u0159idru\u017een\u00fd modul m\u016f\u017ee pracovat chybn\u011b.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A String: An internal print string of the data structure which was used to locate the class.
+# # {1} A String: A class name.
+# # {2} A String: A class name.
+ANNO_TARGETS_CLASS_NAME_MISMATCH=CWWKC0105W: Intern\u00ed chyba skenov\u00e1n\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk {0} \u010dte n\u00e1zev t\u0159\u00eddy {1} z prost\u0159edku, kter\u00fd by m\u011bl m\u00edt n\u00e1zev t\u0159\u00eddy {2}.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.explanation=Adres\u00e1\u0159 a n\u00e1zev prost\u0159edku ".class" neodpov\u00edd\u00e1 n\u00e1zvu t\u0159\u00eddy, kter\u00fd je zaznamen\u00e1n v r\u00e1mci prost\u0159edku ".class". Prost\u0159edek t\u0159\u00eddy bude ignorov\u00e1n.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.useraction=P\u0159esu\u0148te prost\u0159edek t\u0159\u00eddy do adres\u00e1\u0159e, kter\u00fd odpov\u00edd\u00e1 \u00fapln\u00e9mu n\u00e1zvu t\u0159\u00eddy. P\u0159ejmenujte prost\u0159edek t\u0159\u00eddy tak, aby odpov\u00eddal \u00fapln\u00e9mu n\u00e1zvu t\u0159\u00eddy.
