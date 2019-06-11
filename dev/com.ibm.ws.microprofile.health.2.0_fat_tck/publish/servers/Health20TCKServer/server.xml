@@ -15,7 +15,7 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
-   
+
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 
