@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -359,55 +359,112 @@ public class ZipFileData {
         }
     }
 
+    // ZipFile [ C:\\dev\\repos-pub\\open-liberty-locking\\dev\\build.image\\wlp\\usr\\servers\\com.ibm.ws.artifact.dynamism\\apps\\jarneeder.war ]
+    //   State [ FULLY_CLOSED ]
+    //   Open:       [ 000003 ] [ 000000.039148 (s) ]
+    //    First:       [ 000000.001436 (s) ]
+    //    Last:        [ 000000.137198 (s) ]
+    //   Pending:    [ 000003 ] [ 000000.227502 (s) ]
+    //     to Open:    [ 000001 ] [ 000000.001700 (s) ]
+    //     to Close:   [ 000002 ] [ 000000.225801 (s) ]
+    //    First:       [ 000000.003472 (s) ]
+    //    Last:        [ 000000.173709 (s) ]
+    //   Close:      [ 000003 ]
+    //     to Open:    [ 000002 ] [ 000000.114947 (s) ]
+    //    First:       [ 000000.022250 (s) ]
+    //    Last:        [ 000000.383034 (s) ]
+
+	//    protected int openCount;
+	//    protected int closeCount;
+	//
+	//    protected int openToPendCount;
+	//    protected int pendToOpenCount;
+	//    protected int pendToFullCloseCount;
+	//    protected int fullCloseToOpenCount;
+	//
+	//    protected long firstOpenAt;
+	//    protected long lastLastOpenAt;
+	//    protected long lastOpenAt;
+	//
+	//    protected long firstPendAt;
+	//    protected long lastPendAt;
+	//    
+	//    protected long firstFullCloseAt;
+	//    protected long lastFullCloseAt;
+	//
+	//    protected long openDuration;
+	//    protected long pendToOpenDuration;
+	//    protected long pendToFullCloseDuration;
+	//    protected long fullCloseToOpenDuration;
+    
     @Trivial
     public void introspect(PrintWriter output) {
         // See the class comment for details of the state model and the
         // statistics which are gathered.
 
-        output.println("ZFR ZipFile [ " + path + " ] Statistics:");
+        output.println("ZipFile [ " + path + " ]");
+        output.println("  State [ " + zipFileState + " ]");
 
-        String openText;
-        if ( lastLastOpenAt == -1L ) {
-            openText =
-                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
-                " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
-        } else {
-            openText =
-                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
-                " Next Last [ " + toRelSec(initialAt, lastLastOpenAt) + " (s) ]" +
-                " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
-        }
-        output.println("ZFR " + openText);
+        String openText =
+            "  Open:       [ " + toCount(openCount) + " ]" +
+            " [ " + toAbsSec(openDuration) + " (s) ]";
+        output.println(openText);
+
+        String firstOpenText =
+            "   First:       [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]";
+        output.println(firstOpenText);
+
+        String lastOpenText =
+            "   Last:        [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]";
+        output.println(lastOpenText);
 
         String pendingText =
-                "   Pending: First [ " + toRelSec(initialAt, firstPendAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastPendAt) + " (s) ]" +
-                " Count [ " + toCount(openToPendCount) + " ]";
-        output.println("ZFR " + pendingText);
+            "  Pending:    [ " + toCount(pendToOpenCount + pendToFullCloseCount) + " ]" +
+            " [ " + toAbsSec(pendToOpenDuration + pendToFullCloseDuration) + " (s) ]";
+        output.println(pendingText);
 
-        String pendingBeforeOpenText =
-                "     Pending to Open: Count [ " + toCount(pendToOpenCount) + " ]" +
-                " Duration [ " + toAbsSec(pendToOpenDuration) + " (s) ]";
-        output.println("ZFR " + pendingBeforeOpenText);
+        String pendingToOpenText =
+            "    to Open:    [ " + toCount(pendToOpenCount) + " ]" +
+            " [ " + toAbsSec(pendToOpenDuration) + " (s) ]";
+        output.println(pendingToOpenText);
 
-        String pendingBeforeCloseText =
-                "     Pending to Full Close: Count [ " + toCount(pendToFullCloseCount) + " ]" +
-                " Duration [ " + toAbsSec(pendToFullCloseDuration) + " (s) ]";
-        output.println("ZFR " + pendingBeforeCloseText);
+        String pendingToFullCloseText =
+            "    to Close:   [ " + toCount(pendToFullCloseCount) + " ]" +
+            " [ " + toAbsSec(pendToFullCloseDuration) + " (s) ]";
+        output.println(pendingToFullCloseText);
+
+        if ( firstPendAt != -1 ) {
+            String firstPendingText =
+                "   First:       [ " + toRelSec(initialAt, firstPendAt) + " (s) ]";
+            output.println(firstPendingText);
+        }
+
+        if ( lastPendAt != -1 ) {
+            String lastPendingText =
+                "   Last:        [ " + toRelSec(initialAt, lastPendAt) + " (s) ]";
+            output.println(lastPendingText);
+        }
 
         String closeText =
-                "   Full Close: First [ " + toRelSec(initialAt, firstFullCloseAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastFullCloseAt) + " (s) ]";
-        output.println("ZFR " + closeText);
+            "  Close:      [ " + toCount(closeCount) + " ]";
+        output.println(closeText);
 
-        String closeBeforeOpenText =
-                "     Full Close to Open: Count [ " + toCount(fullCloseToOpenCount) + " ]" +
-                " Duration [ " + toAbsSec(fullCloseToOpenDuration) + " (s) ]";
-        output.println(closeBeforeOpenText);
+        String closeToOpenText =
+            "    to Open:    [ " + toCount(fullCloseToOpenCount) + " ]" +
+            " [ " + toAbsSec(fullCloseToOpenDuration) + " (s) ]";
+        output.println(closeToOpenText);
+
+        if ( firstFullCloseAt != -1 ) {
+            String firstCloseText =
+                "   First:       [ " + toRelSec(initialAt, firstFullCloseAt) + " (s) ]";
+            output.println(firstCloseText);
+        }
+
+        if ( lastFullCloseAt != -1 ) {
+            String lastCloseText =
+                "   Last:        [ " + toRelSec(initialAt, lastFullCloseAt) + " (s) ]";
+            output.println(lastCloseText);
+        }
     }
 
     @Trivial

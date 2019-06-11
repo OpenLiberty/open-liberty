@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,33 @@ import java.security.PrivilegedExceptionAction;
  *
  */
 class Utils {
+
+    /**
+     * Recursively remove a file/directory.
+     *
+     * @param f
+     * @return true if the delete succeeded, false otherwise
+     */
+    static boolean removeFile(File f) {
+        if (Utils.fileIsFile(f)) {
+            return Utils.deleteFile(f);
+        } else {
+            //delete directory f..
+            boolean ok = true;
+            //remove all the children..
+            File children[] = Utils.listFiles(f);
+            if (children != null) {
+                for (File child : children) {
+                    ok &= removeFile(child);
+                }
+            }
+            //once children are deleted, remove the directory
+            if (ok) {
+                ok &= Utils.deleteFile(f);
+            }
+            return ok;
+        }
+    }
 
     static FileOutputStream getOutputStream(final File target, final boolean append) throws IOException {
         try {

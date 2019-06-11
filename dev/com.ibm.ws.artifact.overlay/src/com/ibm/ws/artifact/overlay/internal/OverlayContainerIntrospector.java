@@ -8,7 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.artifact.zip.cache.internal;
+
+package com.ibm.ws.artifact.overlay.internal;
 
 import java.io.PrintWriter;
 
@@ -18,55 +19,54 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.artifact.zip.cache.ZipCachingService;
+import com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;
 import com.ibm.wsspi.logging.Introspector;
 
 /**
- * Service hook for introspecting the zip caching service.
- * 
- * A declarative service component annotation links the introspector
- * to the zip caching service.
+ * Service hook for introspecting overlay containers.
  */
 @Component(immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { Constants.SERVICE_VENDOR + "=" + "IBM" })
-public class ZipCachingIntrospector implements Introspector {
+public class OverlayContainerIntrospector implements Introspector {
+    // Tie the overlay container introspector to the overlay container
+    // factory.  There should be at most one active overlay container
+    // factory.
 
-    private ZipCachingServiceImpl zipCachingService;
+    private OverlayContainerFactoryImpl factory;
 
     @Reference
-    protected void setZipCachingService(ZipCachingService zipCachingService) {
-        if ( zipCachingService instanceof ZipCachingServiceImpl ) {
-            this.zipCachingService = (ZipCachingServiceImpl) zipCachingService;
+    public synchronized void setOverlayContainerFactory(OverlayContainerFactory factory) {
+        if ( factory instanceof OverlayContainerFactoryImpl ) {
+            this.factory = (OverlayContainerFactoryImpl) factory; 
         }
     }
 
     @SuppressWarnings("hiding")
-	protected void unsetZipCachingService(ZipCachingService zipCachingService) {
-        this.zipCachingService = null;
+    protected synchronized void unsetOverlayContainerFactory(OverlayContainerFactory factory) {
+        this.factory = null;
     }
 
-    //
+    // Introspector API ...
 
     @Override
     @Trivial
     public String getIntrospectorName() {
-        return "ZipCachingIntrospector";
+        return "OverlayContainerIntrospector";
     }
 
     @Override
     @Trivial
     public String getIntrospectorDescription() {
-        return "Liberty zip file caching diagnostics";
+        return "Overlay container diagnostics";
     }
 
     @Override
     public void introspect(PrintWriter outputWriter) throws Exception {
-        if ( zipCachingService == null ) {
-            outputWriter.println("No ZipCachingServiceImpl configured");
+        if ( factory == null ) {
+            outputWriter.println("No overlay factory configured");
         } else {
-        	zipCachingService.introspect(outputWriter);
+            factory.introspect(outputWriter);
         }
-        outputWriter.println();
     }
 }

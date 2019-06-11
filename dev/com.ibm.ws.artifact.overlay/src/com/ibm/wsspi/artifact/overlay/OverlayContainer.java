@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,179 +17,182 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 
 /**
- * Version of overlay container with only support for adding/overriding
- * of entries.
- * <p>
- * Overlay Container extends the Artifact API Container, making it useable whereever
- * such Containers are used.
- * <br>
- * The aim is to allow a Container to be Wrapped with a layer that can..
- * <ul>
- * <li> Mask & UnMask Entries that may be contained inside. A Masked path does not have to exist already, and if Masked, will also hide overlaid entries.
- * Masked Paths can be dirs, entries, subdirs, etc.
- * <li> Overlay an Entry, or UnOverlay an Entry. Overlaid Entries will return the supplied Entry instead of looking in the wrapped Container for it.
- * UnOverlaying an entry will restore access to the original Entry in the wrapped container.
- * </ul><p><p>
- * Overlaid Entries may override Entry.convertToContainer, but if so the Overlay <em>must not</em> contain overlaid Entries for paths within Containers returned from such
- * overrides.
+ * Type for root overlay containers.
+ * 
+ * Supports masking of entries, and addition or replacement of entries using a file
+ * overlay. 
  */
 public interface OverlayContainer extends ArtifactContainer {
-
     /**
-     * Set the location this overlay should use to obtain & store data to.<p>
-     * f must exist, must be a directory, and must be writable.<p>
-     * Until this method is called, addEntry is non functional on this overlay.
-     * 
-     * @param cacheDirForOverlayContent location to hold extracted nested overlaid archives if any.
-     * @param f Directory to hold overlay data.
-     * @throws IllegalStateException if the directory has already been set
-     * @throws IllegalArgumentException if f does not exist/is not a directory
+     * Set the cache directory of the overlay container, and set
+     * the overlay file of the container.
+     *
+     * The cache directory must exist, must be a directory, and
+     * must be writable.
+     *
+     * (Note: The cache directory and the overlay file relate to
+     * distinct function.  The coupling is accepted as the dual
+     * assignments complete the initialization of a new overlay
+     * container.)
+	 *
+     * @param cacheDir The cache directory of the overlay container.
+     * @param overlayFile The directory containing overlay content for the
+     *     container. 
      */
-    public void setOverlayDirectory(File cacheDirForOverlayContent, File f);
+    public void setOverlayDirectory(File cacheDir, File overlayFile);
+
+    // Masking ...
 
     /**
-     * Get the Container this Overlay is wrapping<p>
-     * Intended to allow access to original data, to avoid users creating the
-     * 'remove, read data, add new overlay based on orig data'
-     * pattern.
-     */
-    public ArtifactContainer getContainerBeingOverlaid();
-
-    /**
-     * Hides any Entry at the path supplied.<p>
-     * Applies to both overlaid, and original Entries. <br>
-     * Applies even if Entry is added via overlay after mask invocation.
-     * 
-     * @param path The path to hide.
+     * Mask the entry at the specified path.
+     *
+     * @param path The path to mask.
      */
     public void mask(String path);
 
     /**
-     * UnHides an Entry previously hidden via 'mask'.
-     * <br>
-     * Has no effect if path is not masked.
-     * 
-     * @param path The path to unhide.
+     * Unmask an entry at the specified path.
+     *
+     * @param path The path to unmask.
      */
     public void unMask(String path);
 
     /**
-     * Query if a path is currently masked via 'mask'.
+     * Tell if a path is masked.
      * 
-     * @param path The path to query.
-     * @return true if masked, false otherwise.
+     * @param path The path to test.
+     *
+     * @return True or false telling if a path is masked.
      */
     public boolean isMasked(String path);
 
     /**
      * Obtain the current set of masked paths.
      * 
-     * @return Set of Strings comprising the current mask entries.
+     * @return The set of masked paths.
      */
     public Set<String> getMaskedPaths();
 
-    /**
-     * Adds an Entry to the Overlay.<p>
-     * Entry is added at Entry.getPath(), Entry/path need not already exist within the Container<br>
-     * User must ensure that Entry remains usable.
-     * (Eg underlying artifacts are not closed, removed etc)
-     * <p>
-     * If the Entry is convertible to Container, behavior is undefined if
-     * attempts are made to overlay the contained paths via this method.
-     * 
-     * @param e the Entry to Add.
-     * @return true if the entry was added successfully, false otherwise.
-     */
-    public boolean addToOverlay(ArtifactEntry e);
+    // File overlays ...
 
     /**
-     * Adds an Entry to the Overlay.<p>
-     * Entry is added at path Entry/path need not already exist within the Container<br>
-     * User must ensure that Entry remains usable.
-     * (Eg underlying artifacts are not closed, removed etc)
-     * <p>
-     * If the Entry is convertible to Container, behavior is undefined if
-     * attempts are made to overlay the contained paths via this method.
+     * Attempt to add an entry to this overlay container.
      * 
-     * @param e the Entry to Add.
-     * @param path the Location to add the Entry at within the Overlay (Entry.getPath is ignored).
-     * @param representsNewRoot if e can convertToContainer, should that container be treated as isRoot true? (Entry.convertToContainer.isRoot is ignored).
-     * @return true if the entry was added successfully, false otherwise.
+     * @param entry The entry which is to be added.
+     *
+     * @return True or false telling if the entry was added.
      */
-    public boolean addToOverlay(ArtifactEntry e, String path, boolean representsNewRoot);
+    public boolean addToOverlay(ArtifactEntry entry);
 
     /**
-     * Removes any overlay for a given path.<p>
+     * Attempt to add an entry to this overlay container.  Override the path
+     * and root settings of the entry.
      * 
-     * @param path The path to stop overlaying.
+     * @param entry The entry which is to be added.
+     * @param path The path to assign to the entry.
+     * @param isRoot Override of the whether the entry is a root entry.
+     *
+     * @return True or false telling if the entry was added.
+     */
+    public boolean addToOverlay(ArtifactEntry entry, String path, boolean isRoot);
+
+    /**
+     * Remove an entry from the overlay.
+     * 
+     * @param path The path to remove from the overlay.
+     * 
+     * @return True or false telling if an entry was removed.
      */
     public boolean removeFromOverlay(String path);
 
     /**
-     * Queries if a path is currently overlaid.<p>
-     * Note this will only query the paths added via addToOverlay, if Entries added via
-     * addToOverlay can convert to containers, paths within will NOT be reported
+     * Tell if an entry is overlaid.
      * 
-     * @param path The path to query
-     * @return true if the path has an overlay registered. False otherwise.
+     * @param path The path to test.
+     *
+     * @return True or false telling if the path is overlaid.
      */
     public boolean isOverlaid(String path);
 
     /**
-     * Obtains the set of paths within the OverlayContainer known to be overlaid.
+     * Answer the paths of overlaid entries.
      * 
-     * @return The set of paths within the OverlayContainer known to be overlaid.
+     * @return The paths of overlaid entries.
      */
     public Set<String> getOverlaidPaths();
 
-    /**
-     * Obtain the nested overlay stored for a given path.<p>
-     * Overlays apply within a given Root of an ArtifactContainer only, if you
-     * navigate to a container where isRoot=true, then it is a new Overlay, and
-     * if you wish to override content in it, you must obtain it via this method.<p>
-     * 
-     * This method will return null if the path does not represent an ArtifactEntry where
-     * isRoot=true, within the current overlay.
-     * 
-     * @param path Path to obtain Overlay for nested root.
-     * @return Overlay if one is available, null otherwise.
-     */
-    public OverlayContainer getOverlayForEntryPath(String path);
+    //
 
     /**
-     * Obtain the overlay container that holds this one.<p>
-     * May return null if this overlay container overlays the top most root.
-     * 
-     * @return the OverlayContainer that holds this OverlayContainer, or null if there is none.
+     * Answer the root container of the entry of this overlay container.
+     *
+     * Answer null if this overlay container is a root-of-roots
+     * container.  (A root-of-roots overlay container has an entry
+     * if and only if the container is not a root-of-roots container.)
+     *
+     * @return The root container of the entry of this overlay container.
+     *     Null if this container is a root-of-roots container.
      */
     public OverlayContainer getParentOverlay();
 
     /**
-     * Stores some data associated with the given container/entry path within
-     * non persistent in memory cache associated with this overlay instance.
-     * 
-     * @param path Path to associate data with.
-     * @param owner Class of caller setting data, allows multiple adapters to cache against a given path.
-     * @param data Data to store for caller.
+     * Answer the base container of the overlay container.
+     *
+     * @return The base container of the overlay container.
      */
-    public void addToNonPersistentCache(String path, Class owner, Object data);
+    public ArtifactContainer getContainerBeingOverlaid();
 
     /**
-     * Removes some data associated with the given container/entry path within
-     * non persistent in memory cache associated with this overlay instance.
-     * 
-     * @param path Path to associate data with.
-     * @param owner Class of caller setting data, allows multiple adapters to cache against a given path.
+     * Answer a nested root overlay container for a specified path.
+     *
+     * Answer null if the the path does not reach an entry, or if the
+     * entry does not convert to a root container.
+     *
+     * @param path The path to retrieve as a nested root overlay container.
+     *
+     * @return A nested root overlay container. Created or retrieved from
+     *     cache. Null if no entry is found at the specified path, or if
+     *     the entry does not convert to a root container.
      */
+    public OverlayContainer getOverlayForEntryPath(String path);
+
+    // Non-persistent cache ...
+
+    /**
+     * Store data to the cache managed by this container.  Map the
+     * data to a specified path and data type.
+     *
+     * The data should be of the specified data type.  This is
+     * not enforced by the API.
+     * 
+     * @param path The path to map to the data.
+     * @param dataType The data type to map to the data.
+     * @param data Data to be mapped.
+     */
+    @SuppressWarnings("rawtypes")
+    public void addToNonPersistentCache(String path, Class dataType, Object data);
+
+    /**
+     * Remove data from the cache managed by this container.  Unmap the
+     * data from the specified path and data type.
+     * 
+     * Do nothing if the data is not mapped to the specified path and data type.
+     * 
+     * @param path The path mapped to the data.
+     * @param dataType The data type mapped to the data.
+     */
+    @SuppressWarnings("rawtypes")
     public void removeFromNonPersistentCache(String path, Class owner);
 
     /**
-     * Obtains some data associated with the given container/entry path within
-     * non persistent in memory cache associated with this overlay instance.
+     * Retrieve data from the cache managed by this container.
      * 
-     * @param path Path associated with data.
-     * @param owner Class of caller getting data, allows multiple adapters to cache against a given path.
-     * @returns Cached data if any was held, or null if none was known.
+     * @param path The path which is mapped to the target data.
+     * @param dataType The data type which is mapped to the target data.
+     *
+     * @return Data mapped to the specified path and data type.  Null if
+     *     no data is mapped to the path and data type.
      */
-    public Object getFromNonPersistentCache(String path, Class owner);
+    @SuppressWarnings("rawtypes")
+    public Object getFromNonPersistentCache(String path, Class dataType);
 }

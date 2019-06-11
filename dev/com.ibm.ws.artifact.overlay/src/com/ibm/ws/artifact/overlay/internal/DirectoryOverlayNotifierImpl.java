@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,14 +22,18 @@ import com.ibm.ws.artifact.ArtifactListenerSelector;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
-import com.ibm.wsspi.artifact.ArtifactNotifier.ArtifactListener;
 import com.ibm.wsspi.artifact.DefaultArtifactNotification;
 
 /**
- *
+ * Notifier implementation for directory overlay containers.
+ * 
+ * TODO: This code was not reviewed and updated during the update which added
+ *       the overlay container and overlay cache introspector. 
  */
-public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.ws.artifact.ArtifactNotifierExtension.ArtifactListener {
-    private final DirectoryBasedOverlayContainerImpl root;
+public class DirectoryOverlayNotifierImpl
+    implements ArtifactNotifier, com.ibm.ws.artifact.ArtifactNotifierExtension.ArtifactListener {
+
+    private final DirectoryOverlayContainerImpl root;
     private final ArtifactContainer overlayContainer;
     private final ArtifactContainer overlaidContainer;
 
@@ -38,13 +42,17 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.
     private final Map<String, Collection<ArtifactListenerSelector>> listeners;
     private final Set<String> pathsMonitored = new HashSet<String>();
 
-    private final DirectoryBasedOverlayNotifier parentNotifier;
+    private final DirectoryOverlayNotifierImpl parentNotifier;
     private final String pathOfEntryInParent;
 
     private String id;
 
-    public DirectoryBasedOverlayNotifier(DirectoryBasedOverlayContainerImpl root, ArtifactContainer artifactContainer, DirectoryBasedOverlayNotifier parent,
-                                         ArtifactEntry entryInParent) {
+    public DirectoryOverlayNotifierImpl(
+        DirectoryOverlayContainerImpl root,
+        ArtifactContainer artifactContainer,
+        DirectoryOverlayNotifierImpl parent,
+        ArtifactEntry entryInParent) {
+
         this.root = root;
         this.overlayContainer = artifactContainer;
         this.overlaidContainer = root.getContainerBeingOverlaid();
@@ -270,10 +278,10 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.
             Set<String> filteredRemoved = filterExistingPaths(removed.getPaths());
 
             //remove the converted from the set..
-            Set<String> newAdd = new HashSet(filterMaskedPaths(added.getPaths()));
+            Set<String> newAdd = new HashSet<>(filterMaskedPaths(added.getPaths()));
             newAdd.removeAll(filteredAdd);
 
-            Set<String> newRemoved = new HashSet(filterMaskedPaths(removed.getPaths()));
+            Set<String> newRemoved = new HashSet<>(filterMaskedPaths(removed.getPaths()));
             newRemoved.removeAll(filteredRemoved);
 
             Set<String> newModified = new HashSet<String>(modified.getPaths().size());
@@ -334,11 +342,11 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.
         return new DefaultArtifactNotification(root, gatheredPaths);
     }
 
-    private void notifyAllListeners(Collection<String> created, Collection<String> deleted, Collection<String> modified, String filter) {
+    private void notifyAllListeners(Collection<String> created, Collection<String> deleted, Collection<String> modified, String filterId) {
         //if we have changed.. and we have a parent, tell the parent the entry changed.
         //this helps simulate jar behavior
         if (this.parentNotifier != null) {
-            this.parentNotifier.notifyAllListeners(Collections.<String> emptySet(), Collections.<String> emptySet(), Collections.<String> singleton(pathOfEntryInParent), filter);
+            this.parentNotifier.notifyAllListeners(Collections.<String> emptySet(), Collections.<String> emptySet(), Collections.<String> singleton(pathOfEntryInParent), filterId);
         }
 
         for (Map.Entry<String, Collection<ArtifactListenerSelector>> listenersForPath : listeners.entrySet()) {
@@ -350,9 +358,9 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.
             if (!createdForPath.getPaths().isEmpty() || !modifiedForPath.getPaths().isEmpty() || !deletedForPath.getPaths().isEmpty()) {
                 for (ArtifactListenerSelector listener : listenersForPath.getValue()) {
                     // If there is no filter, or the artifact listener id does not match the filter, skip the notification.
-                    if (filter != null) {
-                        String id = listener.getId();
-                        if (!(filter.equals(id))) {
+                    if (filterId != null) {
+                        String listenerId = listener.getId();
+                        if (!(filterId.equals(listenerId))) {
                             continue;
                         }
                     }
