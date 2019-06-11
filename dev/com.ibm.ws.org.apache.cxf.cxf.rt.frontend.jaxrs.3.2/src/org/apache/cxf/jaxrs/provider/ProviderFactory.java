@@ -1164,7 +1164,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         //Liberty code change end
     }
 
-    List<ProviderInfo<ContextResolver<?>>> getContextResolvers() {
+    public List<ProviderInfo<ContextResolver<?>>> getContextResolvers() {
         //Liberty code change start
         return Collections.unmodifiableList(contextResolvers.get());
         //Liberty code change end

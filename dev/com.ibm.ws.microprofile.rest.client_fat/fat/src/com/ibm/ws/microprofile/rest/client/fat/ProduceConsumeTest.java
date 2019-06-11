@@ -38,11 +38,8 @@ public class ProduceConsumeTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction()
-                 .withID("mpRestClient-1.2")
-                 .addFeature("mpRestClient-1.2")
-                 .removeFeature("mpRestClient-1.1")
-                 .forServers(SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.2", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.3", SERVER_NAME));
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = ProduceConsumeTestServlet.class, contextRoot = appName)

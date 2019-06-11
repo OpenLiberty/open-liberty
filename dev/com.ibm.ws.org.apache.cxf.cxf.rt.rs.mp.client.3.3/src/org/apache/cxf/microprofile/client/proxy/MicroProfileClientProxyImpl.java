@@ -428,6 +428,7 @@ public class MicroProfileClientProxyImpl extends ClientProxyImpl {
     @Trivial
     @Override
     public Object invoke(Object o, Method m, Object[] params) throws Throwable {
+        checkClosed();
         objectInstance = o;
         return interceptorWrapper.invoke(o, m, params, new Invoker(o, m, params, this));
     }

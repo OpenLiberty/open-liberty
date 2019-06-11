@@ -129,7 +129,7 @@ public final class ClassLoaderUtils {
             url = cluClassloader.getResource(resourceName.substring(1));
         }
 
-        if (url == null) {
+        if (url == null && callingClass != null) {
             ClassLoader cl = callingClass.getClassLoader();
 
             if (cl != null) {
@@ -137,7 +137,7 @@ public final class ClassLoaderUtils {
             }
         }
 
-        if (url == null) {
+        if (url == null && callingClass != null) {
             url = callingClass.getResource(resourceName);
         }
 
@@ -300,6 +300,11 @@ public final class ClassLoaderUtils {
         ClassLoader loader = getClassLoader(type);
         return loader == null ? "null" : loader.toString();
     }
+
+    public static Class<?> loadClassFromContextLoader(String className) throws ClassNotFoundException {
+        return getContextClassLoader().loadClass(className);
+    }
+
     @FFDCIgnore({ClassNotFoundException.class, ClassNotFoundException.class})
     private static Class<?> loadClass2(String className, Class<?> callingClass)
         throws ClassNotFoundException {

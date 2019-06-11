@@ -18,6 +18,7 @@
  */
 package org.apache.cxf.jaxrs.client;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -99,7 +100,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  *
  */
 public class ClientProxyImpl extends AbstractClient implements
-    InvocationHandlerAware, InvocationHandler {
+    InvocationHandlerAware, InvocationHandler, Closeable {
 
     protected static final Logger LOG = LogUtils.getL7dLogger(ClientProxyImpl.class);
     protected static final ResourceBundle BUNDLE = BundleUtils.getBundle(ClientProxyImpl.class);
@@ -262,10 +263,11 @@ public class ClientProxyImpl extends AbstractClient implements
     @Override
     @Trivial //Liberty change - required to avoid tracing StackOverflowException
     public Object invoke(Object o, Method m, Object[] params) throws Throwable {
-
+        checkClosed();
         Class<?> declaringClass = m.getDeclaringClass();
         if (Client.class == declaringClass || InvocationHandlerAware.class == declaringClass
-            || Object.class == declaringClass) {
+            || Object.class == declaringClass || Closeable.class == declaringClass
+            || AutoCloseable.class == declaringClass) {
             return m.invoke(this, params);
         }
         resetResponse();
@@ -472,8 +474,9 @@ public class ClientProxyImpl extends AbstractClient implements
 
         List<MediaType> accepts = getAccept(headers);
         if (accepts == null) {
-            boolean produceWildcard = ori.getProduceTypes().isEmpty()
-                || ori.getProduceTypes().get(0).equals(MediaType.WILDCARD_TYPE);
+            List<MediaType> produceTypes = ori.getProduceTypes();
+            boolean produceWildcard = produceTypes.isEmpty()
+                || produceTypes.get(0).equals(MediaType.WILDCARD_TYPE);
             if (produceWildcard) {
                 accepts = InjectionUtils.isPrimitive(responseClass)
                     ? Collections.singletonList(MediaType.TEXT_PLAIN_TYPE)
@@ -481,7 +484,7 @@ public class ClientProxyImpl extends AbstractClient implements
             } else if (responseClass == Void.class || responseClass == Void.TYPE) {
                 accepts = Collections.singletonList(MediaType.WILDCARD_TYPE);
             } else {
-                accepts = ori.getProduceTypes();
+                accepts = produceTypes;
             }
 
             for (MediaType mt : accepts) {
