@@ -23,6 +23,8 @@ import com.ibm.websphere.simplicity.PortType;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -31,6 +33,7 @@ import componenttest.topology.utils.MvnUtils;
  * There is a detailed output on specific
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class Health20TCKLauncher {
 
     @Server("Health20TCKServer")
@@ -38,12 +41,12 @@ public class Health20TCKLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.startServer();
+        server.startServer("console.log", true, true);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMH0052W", "CWWKZ0002E", "SRVE0190E");
+        server.stopServer("CWMH0052W", "CWWKZ0002E", "SRVE0190E", "CWWKZ0014W");
     }
 
     @Test

@@ -18,18 +18,21 @@
     <display-name>HealthCheckServlet</display-name>
     <servlet-name>HealthCheckServlet</servlet-name>
     <servlet-class>com.ibm.ws.microprofile.health20.internal.servlet.HealthCheckServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   
   <servlet>
     <display-name>HealthCheckLivenessServlet</display-name>
     <servlet-name>HealthCheckLivenessServlet</servlet-name>
     <servlet-class>com.ibm.ws.microprofile.health20.internal.servlet.HealthCheckLivenessServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   
   <servlet>
     <display-name>HealthCheckReadinessServlet</display-name>
     <servlet-name>HealthCheckReadinessServlet</servlet-name>
     <servlet-class>com.ibm.ws.microprofile.health20.internal.servlet.HealthCheckReadinessServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
 
   <servlet-mapping>
