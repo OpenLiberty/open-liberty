@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,11 @@ public class MetricsAuthenticationTest {
     }
 
     private void waitForMetricsEndpoint(LibertyServer server) throws Exception {
-        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT * 2, server.getDefaultLogFile()));
+        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLogUsingMark("CWWKT0016I.*/metrics/", server.getDefaultLogFile()));
+    }
+
+    private void waitForInstallationsToFinish(LibertyServer server) throws Exception {
+        assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*", server.getDefaultLogFile()));
     }
 
     private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication) throws Exception {
@@ -94,12 +98,15 @@ public class MetricsAuthenticationTest {
 
     private void testMetricsAuth() throws Exception {
 
+        // wait for installations to complete before running test
+        waitForInstallationsToFinish(server);
+
         //1. When authentication is not explicitly set in server.xml, it defaults to private,
         //  i.e. requires authentication into metrics endpoint
 
         //check that opening connection to /metrics requires authentication by default
 
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
 
         MetricsConnection authenticationNotSpecified = MetricsConnection.connection_administratorRole(server);
         authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
