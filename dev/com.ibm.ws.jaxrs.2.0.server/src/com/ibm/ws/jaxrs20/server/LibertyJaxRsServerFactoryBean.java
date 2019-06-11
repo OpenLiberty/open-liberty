@@ -209,6 +209,9 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
         /**
          * step 5: set ApplicationInfo object to ServerFactoryBean
          */
+        if (replaced) {
+            appinfo = new ApplicationInfo(app, this.getBus());
+        }
         super.setApplicationInfo(appinfo);
         endpointInfo.setApp(app);
     }
