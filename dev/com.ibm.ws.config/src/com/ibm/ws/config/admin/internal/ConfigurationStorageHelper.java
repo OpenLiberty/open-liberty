@@ -34,6 +34,7 @@ import java.util.Set;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
@@ -145,15 +146,36 @@ public class ConfigurationStorageHelper {
 
     }
 
+    @FFDCIgnore(IllegalStateException.class)
     public static void store(File configFile, Collection<? extends ExtendedConfiguration> configs) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(configFile, false)))) {
             dos.writeByte(VERSION);
-            dos.writeInt(configs.size());
+            // This secondary list is needed so we can collect the valid number of configs:
+            // non-null properties and not deleted (indicated with an IllegalStateException)
+            List<Object[]> configDatas = new ArrayList<>(configs.size());
             for (ExtendedConfiguration config : configs) {
-                Dictionary<String, ?> properties = config.getReadOnlyProperties();
-                Set<ConfigID> references = config.getReferences();
-                Set<String> uniqueVars = config.getUniqueVariables();
-                String bundleLocation = config.getBundleLocation();
+                try {
+                    Dictionary<String, ?> properties = config.getReadOnlyProperties();
+                    Set<ConfigID> references = config.getReferences();
+                    Set<String> uniqueVars = config.getUniqueVariables();
+                    String bundleLocation = config.getBundleLocation();
+                    if (properties != null) {
+                        configDatas.add(new Object[] { properties, references, uniqueVars, bundleLocation });
+                    }
+                } catch (IllegalStateException e) {
+                    // ignore FFDC
+                }
+            }
+            // now we have all the valid configs and their dictionaries to save
+            dos.writeInt(configDatas.size());
+            for (Object[] configData : configDatas) {
+                @SuppressWarnings("unchecked")
+                Dictionary<String, ?> properties = (Dictionary<String, ?>) configData[0];
+                @SuppressWarnings("unchecked")
+                Set<ConfigID> references = (Set<ConfigID>) configData[1];
+                @SuppressWarnings("unchecked")
+                Set<String> uniqueVars = (Set<String>) configData[2];
+                String bundleLocation = (String) configData[3];
                 store(dos, properties, bundleLocation, references, uniqueVars);
             }
         }
