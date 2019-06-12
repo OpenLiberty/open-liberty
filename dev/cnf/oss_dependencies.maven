@@ -20,7 +20,6 @@ com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1
 com.google.code.gson:gson:2.2.4
 com.google.guava:guava:27.0.1-android
-com.google.guava:guava:27.0.1-jre
 com.google.inject:guice:2.0
 com.graphql-java:graphql-java:11.0
 com.graphql-java:graphql-java-servlet:6.1.3
