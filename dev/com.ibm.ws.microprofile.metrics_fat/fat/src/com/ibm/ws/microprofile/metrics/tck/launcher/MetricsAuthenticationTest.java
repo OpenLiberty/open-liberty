@@ -79,13 +79,16 @@ public class MetricsAuthenticationTest {
     }
 
     private void waitForMetricsEndpoint(LibertyServer server) throws Exception {
-        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLogUsingMark("CWWKT0016I.*/metrics/", server.getDefaultLogFile()));
+        // by default waitForStringInLogUsingMark will look at the default log when a log is not specified
+        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLogUsingMark("CWWKT0016I.*/metrics/"));
     }
 
     private void waitForPrerequisites(LibertyServer server) throws Exception {
-        assertNotNull("TCP Channel defaultHttpEndpoint has not started (port 8010)", server.waitForStringInLog("CWWKO0219I.*8010.*", server.getDefaultLogFile()));
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (port 8020)", server.waitForStringInLog("CWWKO0219I.*8020.*", server.getDefaultLogFile()));
-        assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*", server.getDefaultLogFile()));
+        String regex1 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default", "8010") + ".*";
+        String regex2 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default.secure", "8020") + ".*";
+        assertNotNull("TCP Channel defaultHttpEndpoint has not started", server.waitForStringInLog(regex1));
+        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started", server.waitForStringInLog(regex2));
+        assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*"));
     }
 
     private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication) throws Exception {
@@ -107,8 +110,6 @@ public class MetricsAuthenticationTest {
         //  i.e. requires authentication into metrics endpoint
 
         //check that opening connection to /metrics requires authentication by default
-
-        //Thread.sleep(10000);
 
         MetricsConnection authenticationNotSpecified = MetricsConnection.connection_administratorRole(server);
         authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
@@ -138,7 +139,6 @@ public class MetricsAuthenticationTest {
         setMetricsAuthConfig(server, false);
         waitForMetricsEndpoint(server);
         MetricsConnection authenticationFalse = MetricsConnection.connection_unauthenticated(server);
-        //Thread.sleep(5000);
         authenticationFalse.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         //4. When mpMetrics authentication option is removed from the server.xml,
