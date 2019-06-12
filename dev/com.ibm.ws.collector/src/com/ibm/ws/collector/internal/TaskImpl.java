@@ -68,6 +68,11 @@ public class TaskImpl extends Task implements Runnable {
                 } catch (InterruptedException exit) {
                     //Exit
                     done = true;
+                } catch (NullPointerException e) {
+                    //Rare occurrence where BufferMgr is cleaned before the thread is stopped
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(tc, "Unexpected NullPointerException caught. Task will continue.", e);
+                    }
                 } catch (Exception e) {
                     //FFDC
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
