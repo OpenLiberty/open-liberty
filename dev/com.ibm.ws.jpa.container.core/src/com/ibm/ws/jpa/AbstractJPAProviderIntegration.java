@@ -63,7 +63,7 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
      * Log version information about the specified persistence provider, if it can be determined.
      *
      * @param providerName fully qualified class name of JPA persistence provider
-     * @param loader class loader with access to the JPA provider classes
+     * @param loader       class loader with access to the JPA provider classes
      */
     @FFDCIgnore(Exception.class)
     private void logProviderInfo(String providerName, ClassLoader loader) {
@@ -143,8 +143,22 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
         String providerName = puInfo.getPersistenceProviderClassName();
         if (PROVIDER_ECLIPSELINK.equals(providerName)) {
             props.put("eclipselink.target-server", "WebSphere_Liberty");
-            if (puInfo instanceof com.ibm.ws.jpa.management.JPAPUnitInfo)
+            if (puInfo instanceof com.ibm.ws.jpa.management.JPAPUnitInfo) {
                 props.put("eclipselink.application-id", ((com.ibm.ws.jpa.management.JPAPUnitInfo) puInfo).getApplName());
+            }
+
+            Properties properties = puInfo.getProperties();
+            /*
+             * Section 4.8.5 of the JPA Specification:
+             * If SUM, AVG, MAX, or MIN is used, and there are no values
+             * to which the aggregate function can be applied, the result of
+             * the aggregate function is NULL.
+             *
+             * Set this property to so that EclipseLink does not return null by default
+             */
+            if (!properties.containsKey("eclipselink.allow-null-max-min")) {
+                props.put("eclipselink.allow-null-max-min", "false");
+            }
         } else if (PROVIDER_HIBERNATE.equals(providerName)) {
             // Hibernate had vastly outdated built-in knowledge of WebSphere API, until version 5.2.13+ and 5.3+.
             // If the version of Hibernate has the Liberty JtaPlatform, use it

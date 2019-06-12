@@ -103,7 +103,7 @@ class LogChannel {
             case 2: // FINER
             case 1: // FINEST
             case 0: // TRACE
-                Tr.debug(_tc, formattedMessage);
+                Tr.debug(_tc, msgParm);
                 break;
         }// end switch
 

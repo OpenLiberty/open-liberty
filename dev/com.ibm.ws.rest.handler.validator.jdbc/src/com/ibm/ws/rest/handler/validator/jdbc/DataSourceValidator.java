@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
@@ -49,7 +50,9 @@ public class DataSourceValidator implements Validator {
      * @see com.ibm.wsspi.validator.Validator#validate(java.lang.Object, java.util.Map, java.util.Locale)
      */
     @Override
-    public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
+    public LinkedHashMap<String, ?> validate(Object instance,
+                                             @Sensitive Map<String, Object> props, // @Sensitive prevents auto-FFDC from including password value
+                                             Locale locale) {
         final String methodName = "validate";
         String user = (String) props.get("user");
         String pass = (String) props.get("password");

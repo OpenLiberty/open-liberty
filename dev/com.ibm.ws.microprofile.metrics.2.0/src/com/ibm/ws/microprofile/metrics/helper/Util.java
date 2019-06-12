@@ -103,7 +103,7 @@ public class Util {
         return SHARED_METRIC_REGISTRIES.getOrCreate(registryName);
     }
 
-    public static Map<String, Number> getTimerNumbers(Timer timer, String tags) {
+    public static Map<String, Number> getTimerNumbers(Timer timer, String tags, double conversionFactor) {
         Map<String, Number> results = new HashMap<String, Number>();
         results.put(Constants.COUNT + tags, timer.getCount());
         results.put(Constants.MEAN_RATE + tags, timer.getMeanRate());
@@ -111,18 +111,18 @@ public class Util {
         results.put(Constants.FIVE_MINUTE_RATE + tags, timer.getFiveMinuteRate());
         results.put(Constants.FIFTEEN_MINUTE_RATE + tags, timer.getFifteenMinuteRate());
 
-        results.put(Constants.MAX + tags, timer.getSnapshot().getMax());
-        results.put(Constants.MEAN + tags, timer.getSnapshot().getMean());
-        results.put(Constants.MIN + tags, timer.getSnapshot().getMin());
+        results.put(Constants.MAX + tags, timer.getSnapshot().getMax() / conversionFactor);
+        results.put(Constants.MEAN + tags, timer.getSnapshot().getMean() / conversionFactor);
+        results.put(Constants.MIN + tags, timer.getSnapshot().getMin() / conversionFactor);
 
-        results.put(Constants.STD_DEV + tags, timer.getSnapshot().getStdDev());
+        results.put(Constants.STD_DEV + tags, timer.getSnapshot().getStdDev() / conversionFactor);
 
-        results.put(Constants.MEDIAN + tags, timer.getSnapshot().getMedian());
-        results.put(Constants.PERCENTILE_75TH + tags, timer.getSnapshot().get75thPercentile());
-        results.put(Constants.PERCENTILE_95TH + tags, timer.getSnapshot().get95thPercentile());
-        results.put(Constants.PERCENTILE_98TH + tags, timer.getSnapshot().get98thPercentile());
-        results.put(Constants.PERCENTILE_99TH + tags, timer.getSnapshot().get99thPercentile());
-        results.put(Constants.PERCENTILE_999TH + tags, timer.getSnapshot().get999thPercentile());
+        results.put(Constants.MEDIAN + tags, timer.getSnapshot().getMedian() / conversionFactor);
+        results.put(Constants.PERCENTILE_75TH + tags, timer.getSnapshot().get75thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_95TH + tags, timer.getSnapshot().get95thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_98TH + tags, timer.getSnapshot().get98thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_99TH + tags, timer.getSnapshot().get99thPercentile() / conversionFactor);
+        results.put(Constants.PERCENTILE_999TH + tags, timer.getSnapshot().get999thPercentile() / conversionFactor);
 
         return results;
     }

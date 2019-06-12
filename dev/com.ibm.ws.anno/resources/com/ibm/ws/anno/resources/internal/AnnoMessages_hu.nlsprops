@@ -36,7 +36,7 @@
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: A(z) [{1}] [{2}] forr\u00e1s bez\u00e1r\u00e1sa meghi\u00fasult. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=Az er\u0151forr\u00e1s bez\u00e1r\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource
@@ -44,14 +44,14 @@ ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: A(z) [{1}] er\u0151forr\u00e1s bez\u00e1r\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n meghi\u00fasult. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=Az er\u0151forr\u00e1s bemeneti adatfolyam\u00e1nak bez\u00e1r\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: A(z) [{1}] er\u0151forr\u00e1s megnyit\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n meghi\u00fasult.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Az er\u0151forr\u00e1s egyik InputStream elem\u00e9nek megnyit\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} file name
@@ -69,7 +69,7 @@ ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=Nincs teend\u0151.
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: [ {0} ]: A(z) [{1}] megnyit\u00e1sa [{2}] a(z) [{3}] gy\u00f6k\u00e9r alatt [{4}] oszt\u00e1lyra meghi\u00fasult.
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=Az er\u0151forr\u00e1s egyik InputStream elem\u00e9nek megnyit\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the resource name, class name plus path
@@ -86,7 +86,7 @@ ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=Ellen\u0151rizze, hogy az oszt\u00
 # # {4} the name of the class
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: [ {0} ]: A(z) [{1}] bez\u00e1r\u00e1sa mint [{2}] a(z) [{4}] oszt\u00e1ly [{3}] gy\u00f6kere alatt meghi\u00fasult.
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=Az oszt\u00e1ly InputStream elem\u00e9nek bez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a directory name
@@ -111,7 +111,7 @@ ANNO_CLASSSOURCE_NOT_FILE.useraction=Nincs teend\u0151.
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: [ {0} ]: A(z) [{1}] megnyit\u00e1sa meghi\u00fasult a(z) [{4}] oszt\u00e1ly [{3}] gy\u00f6kere alatti [{2}] er\u0151forr\u00e1s eset\u00e9ben.
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=A f\u00e1jl egyik InputStream elem\u00e9nek megnyit\u00e1s\u00e1ra tett k\u00eds\u00e9rlet kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -120,13 +120,13 @@ ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: A(z) [{3}] oszt\u00e1ly [{2}] gy\u00f6kere alatti [{1}] er\u0151forr\u00e1s bez\u00e1r\u00e1sa meghi\u00fasult. Hiba\u00fczenet: {4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=Az er\u0151forr\u00e1s InputStream elem\u00e9nek bez\u00e1r\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]: A(z) [{1}] megnyit\u00e1sa kiv\u00e9tellel meghi\u00fasult.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=A f\u00e1jl mint JarFile ker\u00fclt megnyit\u00e1sra, \u00e9s ez a m\u0171velet kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the jar file
@@ -139,7 +139,7 @@ ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
 # # {1} The name of a jar file
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: A(z) [{1}] bez\u00e1r\u00e1sa meghi\u00fasult.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=A JarFile objektum bez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a resource name
@@ -147,7 +147,7 @@ ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\
 # # {3} a jar file path
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: A(z) [{1}] megnyit\u00e1sa a(z) [{2}] oszt\u00e1lyhoz meghi\u00fasult a k\u00f6vetkez\u0151ben: [{3}]
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=A rendszer egy bejegyz\u00e9st \u00e9szlelt a jar f\u00e1jl oszt\u00e1lya eset\u00e9ben, azonban az oszt\u00e1ly InputStream elem\u00e9nek l\u00e9trehoz\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -156,7 +156,7 @@ ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: A(z) [{1}] er\u0151forr\u00e1s bez\u00e1r\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n meghi\u00fasult a k\u00f6vetkez\u0151ben: [{3}] Hiba\u00fczenet: {4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=Az er\u0151forr\u00e1s egyik InputStream elem\u00e9nek bez\u00e1r\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a java class name
@@ -195,7 +195,7 @@ ANNO_CLASSINFO_EXISTS4.useraction=Nincs teend\u0151.
 # # {1} the name of a class
 ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: [ {0} ] A(z) [{1}] oszt\u00e1ly elemz\u00e9se kiv\u00e9telt okozott. Az \u00fczenet: [{2}], amit a k\u00f6vetkez\u0151 okozott: [{3}].
 ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=A feljegyz\u00e9sek keres\u00e9se az oszt\u00e1lyban kiv\u00e9telt okozott.
-ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
@@ -222,33 +222,33 @@ ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e
 # # {2} The error message from the exception
 ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: [ {0} ]: A(z) [{1}] megnyit\u00e1sa kiv\u00e9telt okozott. Az \u00fczenet: {2}
 ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=Egy oszt\u00e1lyforr\u00e1s megnyit\u00e1sa kiv\u00e9telt okozott.
-ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A hashcode id used to identify the object causing the exception
 ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ]: A(z) [{1}] bez\u00e1r\u00e1sa kiv\u00e9telt okozott
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=Egy oszt\u00e1lyforr\u00e1s bez\u00e1r\u00e1sa kiv\u00e9telt okozott.
-ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ]: A(z) [{2}] oszt\u00e1ly [{1}] er\u0151forr\u00e1sa egyik bemeneti adatfolyam\u00e1nak megnyit\u00e1sa kiv\u00e9tellel meghi\u00fasult.
 ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor a feljegyz\u00e9skeres\u00e9si folyamat megpr\u00f3b\u00e1lta megnyitni az oszt\u00e1ly egyik bemeneti adatfolyam\u00e1t.
-ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: [ {0} ]: A(z) [{2}] oszt\u00e1ly [{1}] er\u0151forr\u00e1sa egyik bemeneti adatfolyam\u00e1nak bez\u00e1r\u00e1sa kiv\u00e9tellel meghi\u00fasult.
 ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor a feljegyz\u00e9skeres\u00e9si folyamat megpr\u00f3b\u00e1lta bez\u00e1rni az oszt\u00e1ly bemeneti adatfolyam\u00e1t.
-ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} The class name
 # # {1} the full resource name for the class
 ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: A(z) [ {0} ] oszt\u00e1ly oszt\u00e1lyolvas\u00f3j\u00e1nak l\u00e9trehoz\u00e1sa a(z) [{1}] er\u0151forr\u00e1sb\u00f3l kiv\u00e9tellel meghi\u00fasult.
 ANNO_CREATE_READER_EXCEPTION.explanation=A feljegyz\u00e9skeres\u00e9si folyamat egy ClassReader elemet hozott l\u00e9tre az er\u0151forr\u00e1s bemeneti adatfolyam\u00e1nak feldolgoz\u00e1s\u00e1ra, \u00e9s ez okozta a kiv\u00e9telt.
-ANNO_CREATE_READER_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CREATE_READER_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a parameter name
@@ -326,23 +326,23 @@ ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
 
 ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: Kiv\u00e9tel t\u00f6rt\u00e9nt az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok keres\u00e9se sor\u00e1n. A kiv\u00e9tel: {0}.
 ANNO_TARGETS_SCAN_EXCEPTION.explanation=Hiba t\u00f6rt\u00e9nt az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok keres\u00e9se sor\u00e1n.  A t\u00e1rs\u00edtott modul helytelen\u00fcl m\u0171k\u00f6dhet.
-ANNO_TARGETS_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: Kiv\u00e9tel t\u00f6rt\u00e9nt az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok \u00edr\u00e1s\u00e1nak befejez\u00e9se sor\u00e1n.
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=Probl\u00e9ma mer\u00fclt fel az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok \u00edr\u00e1s\u00e1nak befejez\u00e9se sor\u00e1n.  El\u0151fordulhat, hogy az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok gyors\u00edt\u00f3t\u00e1ra hi\u00e1nyos \u00e9s ki kell \u00fcr\u00edteni.
-ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: Kiv\u00e9tel t\u00f6rt\u00e9nt a feljegyz\u00e9sadatok olvas\u00e1sa sor\u00e1n.
 ANNO_TARGETS_READ_EXCEPTION.explanation=Probl\u00e9ma mer\u00fclt fel az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok olvas\u00e1sa sor\u00e1n.  A tov\u00e1bbi feldolgoz\u00e1s helytelen eredm\u00e9nyeket \u00e1ll\u00edthat el\u0151, mivel a rendszer hi\u00e1nyos adatokat olvasott be.  Ki kell \u00fcr\u00edteni az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok gyors\u00edt\u00f3t\u00e1r\u00e1t.
-ANNO_TARGETS_READ_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_TARGETS_READ_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: Kiv\u00e9tel t\u00f6rt\u00e9nt a feljegyz\u00e9sadatok \u00edr\u00e1sa sor\u00e1n.
 ANNO_TARGETS_WRITE_EXCEPTION.explanation=Probl\u00e9ma mer\u00fclt fel az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok \u00edr\u00e1sa sor\u00e1n.  A megjelen\u00edtett sort nem siker\u00fclt az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatokba \u00edrni.  El\u0151fordulhat, hogy az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok gyors\u00edt\u00f3t\u00e1ra hi\u00e1nyos \u00e9s ki kell \u00fcr\u00edteni.
-ANNO_TARGETS_WRITE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Kiv\u00e9tel t\u00f6rt\u00e9nt az oszt\u00e1lyinform\u00e1ci\u00f3k \u00e9s feljegyz\u00e9sinform\u00e1ci\u00f3k [ {0} ] oszt\u00e1lyban t\u00f6rt\u00e9n\u0151 keres\u00e9se sor\u00e1n.
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Probl\u00e9ma mer\u00fclt fel az oszt\u00e1lyinform\u00e1ci\u00f3k \u00e9s feljegyz\u00e9sinform\u00e1ci\u00f3k egy oszt\u00e1lyban t\u00f6rt\u00e9n\u0151 keres\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.  Tekintse \u00e1t a megjelen\u00edtett oszt\u00e1lyt, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy olvashat\u00f3 \u00e9s \u00e9rv\u00e9nyes oszt\u00e1ly byte-okat tartalmaz.
-ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [ {0} ] oszt\u00e1ly oszt\u00e1ly byte k\u00f3dolvas\u00f3j\u00e1nak l\u00e9trehoz\u00e1sa sor\u00e1n.
 ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Probl\u00e9ma mer\u00fclt fel az oszt\u00e1ly byte k\u00f3dolvas\u00f3 el\u0151k\u00e9sz\u00edt\u00e9se sor\u00e1n.  El\u0151fordulhat, hogy az adott oszt\u00e1ly byte k\u00f3d \u00e9rt\u00e9kei nem \u00e9rv\u00e9nyesek, vagy az oszt\u00e1lyf\u00e1jl nem olvashat\u00f3.  Ennek eredm\u00e9nyek\u00e9nt az adott oszt\u00e1ly oszt\u00e1ly- \u00e9s feljegyz\u00e9sinform\u00e1ci\u00f3i nem \u00e9rhet\u0151k el, \u00e9s az oszt\u00e1lyt haszn\u00e1l\u00f3 modul nem m\u0171k\u00f6dik megfelel\u0151en.
@@ -406,7 +406,7 @@ ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
 # #{3} The hashcode id of the resource being closed
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]: A(z) {1} t\u00f6bblet bez\u00e1r\u00e1si kiv\u00e9tel eldob\u00e1sa a(z) {2} [ {3} ] er\u0151forr\u00e1sb\u00f3l
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az er\u0151forr\u00e1s bez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
-ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} The name of the class
 # # {1} The name of the JAR file the class is in.
@@ -421,14 +421,14 @@ ANNO_TARGETS_CORRUPT_CLASS.useraction=Az oszt\u00e1lyt le lehet cser\u00e9lni, e
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: [ {0} ]: A(z) [{1}] lesz\u00e1rmazott oszt\u00e1ly forr\u00e1s megnyit\u00e1sa kiv\u00e9telt okozott. Hiba\u00fczenet: {2}
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=A lesz\u00e1rmazott oszt\u00e1ly forr\u00e1s megnyit\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode ID that identifies the object emitting the message
 # # {1} A hashcode ID that identifies the object causing the exception
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: [ {0} ]: A(z) [{1}] lesz\u00e1rmazott oszt\u00e1ly forr\u00e1s bez\u00e1r\u00e1sa meghi\u00fasult. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=A lesz\u00e1rmazott oszt\u00e1ly forr\u00e1s bez\u00e1r\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} An entry name
@@ -436,7 +436,7 @@ ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u0
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: [ {0} ] A(z) [{1}] bejegyz\u00e9s feldolgoz\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n kiv\u00e9telt okozott. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=Egy bejegyz\u00e9sb\u0151l beolvasott oszt\u00e1ly inform\u00e1ci\u00f3k feldolgoz\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -445,7 +445,7 @@ ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: [ {0} ]: A(z) [{1}] bejegyz\u00e9s bez\u00e1r\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n meghi\u00fasult a k\u00f6vetkez\u0151ben: [{3}]. Hiba\u00fczenet: {4}
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=A bejegyz\u00e9s bez\u00e1r\u00e1sa egy kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A file name
@@ -453,7 +453,7 @@ ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u0
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: [ {0} ] A(z) [{1}] f\u00e1jl feldolgoz\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n kiv\u00e9telt okozott. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=Egy f\u00e1jlb\u00f3l beolvasott oszt\u00e1ly inform\u00e1ci\u00f3k feldolgoz\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -462,7 +462,7 @@ ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: [ {0} ]: A(z) [{3}] oszt\u00e1ly [{2}] gy\u00f6kere alatti [{1}] er\u0151forr\u00e1s bez\u00e1r\u00e1sa meghi\u00fasult. Hiba\u00fczenet: {4}
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=A f\u00e1jl bez\u00e1r\u00e1sa egy kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -470,7 +470,7 @@ ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: [ {0} ] A(z) [{1}] JAR bejegyz\u00e9s feldolgoz\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n kiv\u00e9telt okozott. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=Egy JAR bejegyz\u00e9sb\u0151l beolvasott oszt\u00e1ly inform\u00e1ci\u00f3k feldolgoz\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -479,7 +479,7 @@ ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: [ {0} ]: A(z) [{1}] JAR bejegyz\u00e9s bez\u00e1r\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n meghi\u00fasult a k\u00f6vetkez\u0151ben: [{3}]. Hiba\u00fczenet: {4}
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=A f\u00e1jl bez\u00e1r\u00e1sa egy kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -487,7 +487,7 @@ ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: [ {0} ] A(z) [{1}] er\u0151forr\u00e1s feldolgoz\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n kiv\u00e9telt okozott. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=Egy er\u0151forr\u00e1sb\u00f3l beolvasott oszt\u00e1ly inform\u00e1ci\u00f3k feldolgoz\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The resource name
@@ -495,7 +495,7 @@ ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: [ {0} ]: A(z) [{1}] er\u0151forr\u00e1s bez\u00e1r\u00e1sa a(z) [{2}] oszt\u00e1ly eset\u00e9n meghi\u00fasult. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=Az er\u0151forr\u00e1s bez\u00e1r\u00e1sa egy kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The target convertion type
@@ -519,48 +519,77 @@ ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=Nincs teend\u0151.
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] A Jandex inform\u00e1ci\u00f3k feldolgoz\u00e1sa a(z) [{1}] oszt\u00e1ly eset\u00e9n kiv\u00e9telt okozott. Hiba\u00fczenet: {2}
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=Egy oszt\u00e1ly Jandex inform\u00e1ci\u00f3inak feldolgoz\u00e1sa kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] A(z) [{1}] Jandex index er\u0151forr\u00e1s megnyit\u00e1sa meghi\u00fasult.  Hiba\u00fczenet: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] A(z) [{1}]  Jandex index er\u0151forr\u00e1s megnyit\u00e1sa meghi\u00fasult a k\u00f6vetkez\u0151r\u0151l: [{2}].  Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=A Jandex index er\u0151forr\u00e1s megnyit\u00e1s\u00e1ra tett k\u00eds\u00e9rlet kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] A(z) [{1}] Jandex index er\u0151forr\u00e1s beolvas\u00e1sa meghi\u00fasult.  Hiba\u00fczenet: {2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] A(z) [{1}]  Jandex index er\u0151forr\u00e1s beolvas\u00e1sa meghi\u00fasult a k\u00f6vetkez\u0151r\u0151l: [{2}]. Hiba\u00fczenet: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=A Jandex index beolvas\u00e1s\u00e1ra tett k\u00eds\u00e9rlet egy kiv\u00e9tellel meghi\u00fasult.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] A(z) [{1}] Jandex indexf\u00e1jl megnyit\u00e1sa meghi\u00fasult.  Hiba\u00fczenet: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=A Jandex index er\u0151forr\u00e1s megnyit\u00e1s\u00e1ra tett k\u00eds\u00e9rlet kiv\u00e9telt okozott.
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] A(z) [{1}] Jandex indexf\u00e1jl beolvas\u00e1sa meghi\u00fasult.  Hiba\u00fczenet: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=A Jandex index beolvas\u00e1s\u00e1ra tett k\u00eds\u00e9rlet egy kiv\u00e9tellel meghi\u00fasult.
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
 # # {0} A class name
-ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Oszt\u00e1lyelemz\u00e9si bels\u0151 hiba: Jandex feldolgoz\u00e1s - a(z) [ {0} ] oszt\u00e1ly t\u00f6bbsz\u00f6r\u00f6s feldolgoz\u00e1sa.
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Oszt\u00e1lyelemz\u00e9si bels\u0151 hiba: A Jandex feldolgoz\u00e1s a(z) [ {0} ] oszt\u00e1ly egy m\u00e1sodp\u00e9ld\u00e1ny\u00e1ba \u00fctk\u00f6z\u00f6tt.
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 
-# # {0} A number
-# # {1} A number
-# # {2} A number
-# # {3} A number
-# # {4} The name of a file or the name of a directory
-# # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: Jandex indexek beolvasva {0} / {1} arch\u00edvumhoz ({2} / {3} oszt\u00e1ly) {4} alatt. 
-ANNO_JANDEX_USAGE.explanation=Megjelen\u00edti a modulban l\u00e9v\u0151 arch\u00edvumok sz\u00e1m\u00e1t, amelyek a Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva, \u00e9s nem a t\u00e9nyleges oszt\u00e1lyf\u00e1jlok elemz\u00e9s\u00e9vel.  Megjelen\u00edti az alkalmaz\u00e1sban l\u00e9v\u0151 oszt\u00e1lyok sz\u00e1m\u00e1t is, amelyek Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva.
-ANNO_JANDEX_USAGE.useraction=Ha a Jandex indexek beolvas\u00e1sa az alkalmaz\u00e1shoz sz\u00e1nd\u00e9kos, akkor nincs teend\u0151.  Ha a Jandex indexeket nem kellene beolvasni az alkalmaz\u00e1shoz, akkor \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot a server.xml f\u00e1jl application elem\u00e9ben. Ennek alternat\u00edv\u00e1jak\u00e9nt \u00e1ll\u00edtsa be a useJandex="false" tulajdons\u00e1got a server.xml f\u00e1jl applicationManger elem\u00e9ben a Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz az alkalmaz\u00e1shoz.
+# # {0} A number: The count of module locations which had Jandex indexes.
+# # {1} A number: The total count of module locations.
+# # {2} A number: The count of module classes which were read from a Jandex index.
+# # {3} A number: The total count of module classes.
+# # {4} A string: A module name
+ANNO_JANDEX_USAGE=CWWKC0092I: A(z) {4} modul Jandex lefedetts\u00e9ge: A Jandex indexek be lettek olvasva {0} / {1} modulhely eset\u00e9n; {2} / {3} moduloszt\u00e1lyhoz biztos\u00edtva vannak Jandex indexek.
+ANNO_JANDEX_USAGE.explanation=Ez egy modul ar\u00e1nyait mutatja, amelyhez Jandex indexek haszn\u00e1lat\u00e1val lettek elemezve a feljegyz\u00e9sek. A modulhelyek vagy mag\u00e1t a modult jelentik, vagy webmodulok eset\u00e9n a modul WEB-INF/classes mapp\u00e1j\u00e1t \u00e9s WEB-INF/lib Jar f\u00e1jljait.
+ANNO_JANDEX_USAGE.useraction=Ha a Jandex indexek beolvas\u00e1sa az alkalmaz\u00e1shoz sz\u00e1nd\u00e9kos, akkor nincs teend\u0151. A Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz egyetlen alkalmaz\u00e1shoz, \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot az alkalmaz\u00e1s server.xml f\u00e1jlj\u00e1nak 'application' elem\u00e9ben. Ennek alternat\u00edv\u00e1jak\u00e9nt, a Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz az \u00f6sszes alkalmaz\u00e1sban, \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot a server.xml f\u00e1jl 'applicationManger' elem\u00e9ben.
 
+# # {0} A string: An application name.
+# # {1} A string: A module name.
+# # {2} A number: The total count of module locations.
+# # {3} A number: The count of module locations which had Jandex indexes.
+# # {4} A number: The total count of module classes.
+# # {5} A number: The count of module classes which were read from a Jandex index.
+ANNOCACHE_JANDEX_USAGE=CWWKC0093I: A(z) {1} modul Jandex lefedetts\u00e9ge a(z) {0} alkalmaz\u00e1sban: A Jandex indexek be lettek olvasva {3} / {2} modulhely eset\u00e9n; {5} / {4} moduloszt\u00e1lyhoz biztos\u00edtva vannak Jandex indexek.
+ANNOCACHE_JANDEX_USAGE.explanation=Ez egy modul ar\u00e1nyait mutatja, amelyhez Jandex indexek haszn\u00e1lat\u00e1val lettek elemezve a feljegyz\u00e9sek.  A modulhelyek vagy mag\u00e1t a modult jelentik, vagy webmodulok eset\u00e9n a modul WEB-INF/classes mapp\u00e1j\u00e1t \u00e9s WEB-INF/lib Jar f\u00e1jljait.
+ANNOCACHE_JANDEX_USAGE.useraction=Ha a Jandex indexek beolvas\u00e1sa az alkalmaz\u00e1shoz sz\u00e1nd\u00e9kos, akkor nincs teend\u0151.  A Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz egyetlen alkalmaz\u00e1shoz, \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot az alkalmaz\u00e1s server.xml f\u00e1jlj\u00e1nak 'application' elem\u00e9ben. Ennek alternat\u00edv\u00e1jak\u00e9nt, a Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz az \u00f6sszes alkalmaz\u00e1sban, \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot a server.xml f\u00e1jl 'applicationManger' elem\u00e9ben.
+
+# # {0} A string: Message text from an exception.
+ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: Feljegyz\u00e9sfeldolgoz\u00e1si gyors\u00edt\u00f3t\u00e1r hiba: {0}
+ANNO_TARGETS_CACHE_EXCEPTION.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a feljegyz\u00e9s gyors\u00edt\u00f3t\u00e1r adatok el\u00e9r\u00e9sekor.
+ANNO_TARGETS_CACHE_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+
+# # {0} A string: A class name.
+# # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
+# # {2} A string: Message text from an exception.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION=CWWKC0103W: Kiv\u00e9tel t\u00f6rt\u00e9nt {0} / {1} oszt\u00e1ly elemz\u00e9sekor.  A kiv\u00e9tel: {2}.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation=Hiba t\u00f6rt\u00e9nt az oszt\u00e1ly- \u00e9s feljegyz\u00e9sadatok keres\u00e9se sor\u00e1n.  A t\u00e1rs\u00edtott modul helytelen\u00fcl m\u0171k\u00f6dhet.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=A t\u00e9mak\u00f6rrel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+
+# # {0} A String: An internal print string of the data structure which was used to locate the class.
+# # {1} A String: A class name.
+# # {2} A String: A class name.
+ANNO_TARGETS_CLASS_NAME_MISMATCH=CWWKC0105W: Oszt\u00e1lyelemz\u00e9si bels\u0151 hiba: A(z) {0} l\u00e1togat\u00f3 a(z) {1} oszt\u00e1lynevet egy olyan er\u0151forr\u00e1sb\u00f3l olvasta be, amelynek {2} oszt\u00e1lyn\u00e9vvel kellene rendelkeznie.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.explanation=Egy ".class" er\u0151forr\u00e1s k\u00f6nyvt\u00e1ra \u00e9s neve nem egyezik meg a ".class" er\u0151forr\u00e1son bel\u00fcl r\u00f6gz\u00edtett oszt\u00e1ly nev\u00e9vel. Az oszt\u00e1ly er\u0151forr\u00e1s figyelmen k\u00edv\u00fcl marad.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.useraction=Helyezze \u00e1t az oszt\u00e1ly er\u0151forr\u00e1st az oszt\u00e1ly min\u0151s\u00edtett nev\u00e9nek megfelel\u0151 k\u00f6nyvt\u00e1rba. Nevezze \u00e1t az oszt\u00e1ly er\u0151forr\u00e1st, hogy megfeleljen az oszt\u00e1ly min\u0151s\u00edtett nev\u00e9nek.

@@ -231,7 +231,7 @@ info.loose.app.explanation=La ubicaci\u00f3n de la aplicaci\u00f3n apunta a un a
 info.loose.app.useraction=No se requiere ninguna acci\u00f3n.
 
 info.directory.app=CWWKZ0135I: La aplicaci\u00f3n {0} est\u00e1 utilizando el directorio expandido en la ubicaci\u00f3n {1}.
-info.directory.app.explanation=La ubicaci\u00f3n de la aplicaci\u00f3n apunta a un directorio en lugar de a un archivo de archivado.
+info.directory.app.explanation=La ubicaci\u00f3n de la aplicaci\u00f3n apunta a un directorio en lugar de a un archivo de archivado. 
 info.directory.app.useraction=No se requiere ninguna acci\u00f3n.
 
 info.unexpanded.app=CWWKZ0136I: La aplicaci\u00f3n {0} est\u00e1 utilizando el archivo de archivado en la ubicaci\u00f3n {1}.

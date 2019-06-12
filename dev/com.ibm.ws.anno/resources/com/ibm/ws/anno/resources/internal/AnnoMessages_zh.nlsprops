@@ -36,7 +36,7 @@
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]\uff1a\u5173\u95ed\u6e90 [{1}] [{2}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=\u5173\u95ed\u8d44\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource
@@ -44,14 +44,14 @@ ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]\uff1a\u5173\u95ed [{2}] \u7c7b\u7684\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=\u5bf9\u8be5\u8d44\u6e90\u5173\u95ed\u8f93\u5165\u6d41\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]\uff1a\u6253\u5f00 [{2}] \u7c7b\u7684\u8d44\u6e90 [{1}] \u5931\u8d25\u3002
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=\u5bf9\u8be5\u8d44\u6e90\u6253\u5f00\u8f93\u5165\u6d41\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} file name
@@ -68,7 +68,7 @@ ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: [ {0} ]\uff1a\u5728\u7c7b [{4}] \u7684\u6839 [{3}] \u4e0b\u5c06 [{1}] \u4f5c\u4e3a [{2}] \u6253\u5f00\u5931\u8d25\u3002
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=\u5bf9\u8be5\u8d44\u6e90\u6253\u5f00\u8f93\u5165\u6d41\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the resource name, class name plus path
@@ -85,7 +85,7 @@ ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=\u8bf7\u9a8c\u8bc1\u8be5\u7c7b\u76
 # # {4} the name of the class
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: [ {0} ]\uff1a\u5728\u7c7b [{4}] \u7684\u6839 [{3}] \u4e0b\u5173\u95ed\u4f5c\u4e3a [{2}] \u7684 [{1}] \u5931\u8d25\u3002
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=\u5c1d\u8bd5\u5bf9\u8be5\u7c7b\u5173\u95ed\u8f93\u5165\u6d41\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a directory name
@@ -109,7 +109,7 @@ ANNO_CLASSSOURCE_NOT_FILE.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: [ {0} ]\uff1a\u5728\u7c7b [{4}] \u7684\u6839 [{3}] \u4e0b\u5bf9\u8d44\u6e90 [{2}] \u6253\u5f00 [{1}] \u5931\u8d25\u3002
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=\u5c1d\u8bd5\u5bf9\u8be5\u6587\u4ef6\u6253\u5f00\u8f93\u5165\u6d41\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -118,13 +118,13 @@ ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]\uff1a\u5728\u7c7b [{3}] \u7684\u6839 [{2}] \u4e0b\u5173\u95ed\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=\u5bf9\u8be5\u8d44\u6e90\u5173\u95ed\u8f93\u5165\u6d41\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]\uff1a\u6253\u5f00 [{1}] \u5931\u8d25\uff0c\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=\u5c06\u8be5\u6587\u4ef6\u4f5c\u4e3a JAR \u6587\u4ef6\u6253\u5f00\uff0c\u4f46\u8be5\u64cd\u4f5c\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the jar file
@@ -137,7 +137,7 @@ ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
 # # {1} The name of a jar file
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]\uff1a\u5173\u95ed [{1}] \u5931\u8d25\u3002
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=\u5c1d\u8bd5\u5173\u95ed JAR \u6587\u4ef6\u5bf9\u8c61\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a resource name
@@ -145,7 +145,7 @@ ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548
 # # {3} a jar file path
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]\uff1a\u5bf9 [{3}] \u4e2d\u7684\u7c7b [{2}] \u6253\u5f00 [{1}] \u5931\u8d25\u3002
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=\u5728 JAR \u6587\u4ef6\u4e2d\u68c0\u6d4b\u5230\u8be5\u7c7b\u7684\u6761\u76ee\uff0c\u4f46\u5728\u5bf9\u8be5\u7c7b\u521b\u5efa\u8f93\u5165\u6d41\u65f6\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -154,7 +154,7 @@ ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]\uff1a\u5bf9 [{3}] \u4e2d\u7684\u7c7b [{2}] \u5173\u95ed\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=\u5bf9\u8be5\u8d44\u6e90\u5173\u95ed\u8f93\u5165\u6d41\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a java class name
@@ -188,7 +188,7 @@ ANNO_CLASSINFO_EXISTS4.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64
 # # {1} the name of a class
 ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: [ {0} ] \u626b\u63cf\u7c7b [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002\u6d88\u606f\u4e3a\uff1a[{2}]\uff0c\u7531 [{3}] \u5bfc\u81f4\u3002
 ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=\u5bf9\u6ce8\u91ca\u7c7b\u8fdb\u884c\u626b\u63cf\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
@@ -213,33 +213,33 @@ ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=\u8bf7\u9a8c\u8bc1\u8be5\u7c7b\u662f\u5
 # # {2} The error message from the exception
 ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: [ {0} ]\uff1a\u6253\u5f00 [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002\u6d88\u606f\u4e3a\uff1a{2}
 ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=\u6253\u5f00\u7c7b\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A hashcode id used to identify the object causing the exception
 ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ]\uff1a\u5173\u95ed [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=\u5173\u95ed\u7c7b\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ]: \u5bf9\u7c7b [{2}] \u7684\u8d44\u6e90 [{1}] \u6253\u5f00\u8f93\u5165\u6d41\u5931\u8d25\uff0c\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=\u6ce8\u91ca\u626b\u63cf\u8fdb\u7a0b\u5c1d\u8bd5\u5bf9\u8be5\u7c7b\u6253\u5f00\u8f93\u5165\u6d41\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
-ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: [ {0} ]\uff1a\u5bf9\u7c7b [{2}] \u7684\u8d44\u6e90 [{1}] \u5173\u95ed\u8f93\u5165\u6d41\u5931\u8d25\uff0c\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=\u6ce8\u91ca\u626b\u63cf\u8fdb\u7a0b\u5c1d\u8bd5\u5bf9\u8be5\u7c7b\u5173\u95ed\u8f93\u5165\u6d41\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
-ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} The class name
 # # {1} the full resource name for the class
 ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: \u901a\u8fc7\u8d44\u6e90 [{1}] \u5bf9\u7c7b [ {0} ] \u521b\u5efa\u7c7b\u9605\u8bfb\u5668\u5931\u8d25\uff0c\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_CREATE_READER_EXCEPTION.explanation=\u6ce8\u91ca\u626b\u63cf\u8fdb\u7a0b\u521b\u5efa ClassReader \u4ee5\u5904\u7406\u8be5\u8d44\u6e90\u7684\u8f93\u5165\u6d41\uff0c\u4f46\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CREATE_READER_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CREATE_READER_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a parameter name
@@ -317,23 +317,23 @@ ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
 
 ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: \u626b\u63cf\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002\u5f02\u5e38\u4e3a {0}\u3002
 ANNO_TARGETS_SCAN_EXCEPTION.explanation=\u626b\u63cf\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u5173\u8054\u6a21\u5757\u53ef\u80fd\u65e0\u6cd5\u6b63\u5e38\u5de5\u4f5c\u3002
-ANNO_TARGETS_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: \u63a8\u65ad\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u7684\u5199\u5165\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=\u63a8\u65ad\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u7684\u5199\u5165\u65f6\uff0c\u53d1\u751f\u4e86\u95ee\u9898\u3002\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u7684\u9ad8\u901f\u7f13\u5b58\u53ef\u80fd\u4e0d\u5b8c\u6574\uff0c\u56e0\u6b64\u5e94\u8be5\u6e05\u9664\u3002
-ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: \u8bfb\u53d6\u6ce8\u91ca\u6570\u636e\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_TARGETS_READ_EXCEPTION.explanation=\u8bfb\u53d6\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u65f6\uff0c\u53d1\u751f\u4e86\u95ee\u9898\u3002\u8fdb\u4e00\u6b65\u5904\u7406\u53ef\u80fd\u5bfc\u81f4\u7ed3\u679c\u9519\u8bef\uff0c\u56e0\u4e3a\u8bfb\u53d6\u7684\u6570\u636e\u4e0d\u5b8c\u6574\u3002\u5e94\u8be5\u6e05\u9664\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u7684\u9ad8\u901f\u7f13\u5b58\u3002
-ANNO_TARGETS_READ_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_TARGETS_READ_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: \u5199\u5165\u6ce8\u91ca\u6570\u636e\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_TARGETS_WRITE_EXCEPTION.explanation=\u5199\u5165\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u65f6\uff0c\u53d1\u751f\u4e86\u95ee\u9898\u3002\u6240\u663e\u793a\u884c\u672a\u6210\u529f\u5199\u81f3\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u3002\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u7684\u9ad8\u901f\u7f13\u5b58\u53ef\u80fd\u4e0d\u5b8c\u6574\uff0c\u56e0\u6b64\u5e94\u8be5\u6e05\u9664\u3002
-ANNO_TARGETS_WRITE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: \u626b\u63cf\u7c7b [ {0} ] \u4ee5\u67e5\u627e\u7c7b\u4fe1\u606f\u548c\u6ce8\u91ca\u4fe1\u606f\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=\u5c1d\u8bd5\u626b\u63cf\u7c7b\u4ee5\u67e5\u627e\u7c7b\u4fe1\u606f\u548c\u6ce8\u91ca\u4fe1\u606f\u65f6\uff0c\u53d1\u751f\u4e86\u95ee\u9898\u3002\u8bf7\u67e5\u770b\u6240\u663e\u793a\u7c7b\u4ee5\u786e\u4fdd\u5b83\u53ef\u8bfb\u53d6\u5e76\u5305\u542b\u6709\u6548\u7c7b\u5b57\u8282\u3002
-ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: \u4e3a\u7c7b [ {0} ] \u521b\u5efa\u7c7b\u5b57\u8282\u4ee3\u7801\u9605\u8bfb\u5668\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
 ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=\u51c6\u5907\u7c7b\u5b57\u8282\u4ee3\u7801\u9605\u8bfb\u5668\u65f6\uff0c\u53d1\u751f\u4e86\u95ee\u9898\u3002\u8be5\u7c7b\u7684\u5b57\u8282\u4ee3\u7801\u503c\u53ef\u80fd\u65e0\u6548\uff0c\u6216\u8005\u7c7b\u6587\u4ef6\u53ef\u80fd\u4e0d\u53ef\u8bfb\u3002\u56e0\u6b64\uff0c\u8be5\u7c7b\u7684\u7c7b\u4fe1\u606f\u548c\u6ce8\u91ca\u4fe1\u606f\u5c06\u4e0d\u53ef\u7528\uff0c\u4f7f\u7528\u8be5\u7c7b\u7684\u6a21\u5757\u4e5f\u53ef\u80fd\u65e0\u6cd5\u6b63\u5e38\u5de5\u4f5c\u3002
@@ -397,7 +397,7 @@ ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
 # #{3} The hashcode id of the resource being closed
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]\uff1a\u6b63\u5e9f\u5f03\u6765\u81ea {2} [ {3} ] \u7684\u989d\u5916\u5173\u95ed\u5f02\u5e38 {1}
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=\u5c1d\u8bd5\u5173\u95ed\u8d44\u6e90\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} The name of the class
 # # {1} The name of the JAR file the class is in.
@@ -412,14 +412,14 @@ ANNO_TARGETS_CORRUPT_CLASS.useraction=\u6839\u636e\u8be5\u7c7b\u5bf9\u5e94\u7528
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: [ {0} ]\uff1a\u6253\u5f00\u5b50\u7c7b\u6e90 [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002\u9519\u8bef\u6d88\u606f\uff1a{2}
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=\u6253\u5f00\u5b50\u7c7b\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode ID that identifies the object emitting the message
 # # {1} A hashcode ID that identifies the object causing the exception
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: [ {0} ]\uff1a\u5173\u95ed\u5b50\u7c7b\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=\u5173\u95ed\u5b50\u7c7b\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} An entry name
@@ -427,7 +427,7 @@ ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: [ {0} ]\uff1a\u5904\u7406\u7c7b [{2}] \u7684\u6761\u76ee [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=\u5904\u7406\u4ece\u6761\u76ee\u4e2d\u8bfb\u53d6\u7684\u7c7b\u4fe1\u606f\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -436,7 +436,7 @@ ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: [ {0} ]\uff1a\u5bf9 [{3}] \u4e2d\u7684\u7c7b [{2}] \u5173\u95ed\u6761\u76ee [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{4}
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=\u5173\u95ed\u6761\u76ee\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A file name
@@ -444,7 +444,7 @@ ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: [ {0} ]\uff1a\u5904\u7406\u7c7b [{2}] \u7684\u6587\u4ef6 [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=\u5904\u7406\u4ece\u6587\u4ef6\u4e2d\u8bfb\u53d6\u7684\u7c7b\u4fe1\u606f\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -453,7 +453,7 @@ ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: [ {0} ]\uff1a\u5173\u95ed\u7c7b [{3}] \u7684\u6839 [{2}] \u4e0b\u7684\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{4}
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=\u5173\u95ed\u6587\u4ef6\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -461,7 +461,7 @@ ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: [ {0} ]\uff1a\u5904\u7406\u7c7b [{2}] \u7684 JAR \u6761\u76ee [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=\u5904\u7406\u4ece JAR \u6761\u76ee\u4e2d\u8bfb\u53d6\u7684\u7c7b\u4fe1\u606f\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A JAR entry name
@@ -470,7 +470,7 @@ ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: [ {0} ]\uff1a\u5bf9 [{3}] \u4e2d\u7684\u7c7b [{2}] \u5173\u95ed JAR \u6761\u76ee [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{4}
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=\u5173\u95ed\u6587\u4ef6\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
@@ -478,7 +478,7 @@ ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: [ {0} ]\uff1a\u5904\u7406\u7c7b [{2}] \u7684\u8d44\u6e90 [{1}] \u5bfc\u81f4\u5f02\u5e38\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=\u5904\u7406\u4ece\u8d44\u6e90\u4e2d\u8bfb\u53d6\u7684\u7c7b\u4fe1\u606f\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The resource name
@@ -486,7 +486,7 @@ ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: [ {0} ]\uff1a\u5173\u95ed [{2}] \u7c7b\u7684\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=\u5173\u95ed\u8d44\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The target convertion type
@@ -508,48 +508,77 @@ ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=\u6ca1\u6709\u53ef\u7528\u7684
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ]\uff1a\u5904\u7406\u7c7b [{1}] \u7684 Jandex \u4fe1\u606f\u5bfc\u81f4\u5f02\u5e38\u3002\u9519\u8bef\u6d88\u606f\uff1a{2}
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=\u5904\u7406\u7c7b\u7684 Jandex \u4fe1\u606f\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ]\uff1a\u6253\u5f00 Jandex \u7d22\u5f15\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ]\uff1a\u4ece [{2}] \u6253\u5f00 Jandex \u7d22\u5f15\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=\u5c1d\u8bd5\u6253\u5f00 Jandex \u7d22\u5f15\u8d44\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ]\uff1a\u8bfb\u53d6 Jandex \u7d22\u5f15\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{2}
+# # {0} A String: A hashcode id used to identify the object emitting the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ]\uff1a\u4ece [{2}] \u8bfb\u53d6 Jandex \u7d22\u5f15\u8d44\u6e90 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=\u5c1d\u8bd5\u8bfb\u53d6 Jandex \u7d22\u5f15\u5931\u8d25\uff0c\u53d1\u751f\u4e86\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ]\uff1a\u6253\u5f00 Jandex \u7d22\u5f15\u6587\u4ef6 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=\u5c1d\u8bd5\u6253\u5f00 Jandex \u7d22\u5f15\u8d44\u6e90\u5bfc\u81f4\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ]\uff1a\u8bfb\u53d6 Jandex \u7d22\u5f15\u6587\u4ef6 [{1}] \u5931\u8d25\u3002\u9519\u8bef\u6d88\u606f\uff1a{2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=\u5c1d\u8bd5\u8bfb\u53d6 Jandex \u7d22\u5f15\u5931\u8d25\uff0c\u53d1\u751f\u4e86\u5f02\u5e38\u3002
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
 
 # # {0} A class name
-ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: \u7c7b\u626b\u63cf\u5185\u90e8\u9519\u8bef\uff1aJandex \u5904\u7406\u4e0e\u7c7b [ {0} ] \u7684\u5904\u7406\u91cd\u590d\u3002
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: \u7c7b\u626b\u63cf\u5185\u90e8\u9519\u8bef\uff1aJandex \u5904\u7406\u9047\u5230\u7c7b [{0}] \u7684\u91cd\u590d\u9879\u3002
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 
-# # {0} A number
-# # {1} A number
-# # {2} A number
-# # {3} A number
-# # {4} The name of a file or the name of a directory
-# # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: \u5728 {4} \u4e2d\u8bfb\u53d6 {0} \u4e2a\u5f52\u6863\uff08\u603b\u5171 {1} \u4e2a\u5f52\u6863\uff09\uff08{2} \u4e2a\u7c7b\uff0c\u603b\u5171 {3} \u4e2a\u7c7b\uff09\u7684 Jandex \u7d22\u5f15\u3002
-ANNO_JANDEX_USAGE.explanation=\u8fd9\u5c06\u663e\u793a\u901a\u8fc7\u8bfb\u53d6 Jandex \u7d22\u5f15\uff08\u800c\u4e0d\u662f\u901a\u8fc7\u626b\u63cf\u5b9e\u9645\u7684\u7c7b\u6587\u4ef6\uff09\u800c\u5904\u7406\u7684\u6a21\u5757\u4e2d\u7684\u5f52\u6863\u6570\u3002\u5b83\u8fd8\u663e\u793a\u901a\u8fc7\u8bfb\u53d6 Jandex \u7d22\u5f15\u800c\u5904\u7406\u7684\u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684\u7c7b\u7684\u603b\u6570\u3002
-ANNO_JANDEX_USAGE.useraction=\u5982\u679c\u6253\u7b97\u8bfb\u53d6\u5e94\u7528\u7a0b\u5e8f\u7684 Jandex \u7d22\u5f15\uff0c\u90a3\u4e48\u4e0d\u9700\u8981\u6267\u884c\u64cd\u4f5c\u3002\u5982\u679c\u672a\u8bfb\u53d6\u5e94\u7528\u7a0b\u5e8f\u7684 Jandex \u7d22\u5f15\uff0c\u90a3\u4e48\u5728 server.xml \u4e2d\u7684\u5e94\u7528\u7a0b\u5e8f\u5143\u7d20\u4e2d\u8bbe\u7f6e useJandex="false" \u5c5e\u6027\u3002\u6b64\u5916\uff0c\u5728 server.xml \u4e2d\u7684 applicationManger \u5143\u7d20\u4e2d\u8bbe\u7f6e useJandex="false"\uff0c\u4ee5\u5728\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5ffd\u7565 Jandex \u7d22\u5f15\u3002
+# # {0} A number: The count of module locations which had Jandex indexes.
+# # {1} A number: The total count of module locations.
+# # {2} A number: The count of module classes which were read from a Jandex index.
+# # {3} A number: The total count of module classes.
+# # {4} A string: A module name
+ANNO_JANDEX_USAGE=CWWKC0092I: \u6a21\u5757 {4} \u7684 Jandex \u8986\u76d6\u8303\u56f4\uff1a\u5df2\u9488\u5bf9 {1} \u4e2a\u6a21\u5757\u4f4d\u7f6e\u4e2d\u7684 {0} \u4e2a\u8bfb\u53d6 Jandex \u7d22\u5f15\uff1bJandex \u7d22\u5f15\u63d0\u4f9b\u4e86 {3} \u4e2a\u6a21\u5757\u7c7b\u4e2d\u7684 {2} \u4e2a\u3002
+ANNO_JANDEX_USAGE.explanation=\u8fd9\u663e\u793a\u7cfb\u7edf\u4f7f\u7528 Jandex \u7d22\u5f15\u626b\u63cf\u4ee5\u83b7\u53d6\u6ce8\u91ca\u7684\u6a21\u5757\u7684\u6bd4\u4f8b\u3002\u6a21\u5757\u4f4d\u7f6e\u4e3a\u6a21\u5757\u81ea\u8eab\u6216\uff08\u5bf9\u4e8e Web \u6a21\u5757\uff09\u6a21\u5757\u7684 WEB-INF/classes \u6587\u4ef6\u5939\u548c WEB-INF/lib JAR \u6587\u4ef6\u3002
+ANNO_JANDEX_USAGE.useraction=\u5982\u679c\u8ba1\u5212\u8bfb\u53d6\u5e94\u7528\u7a0b\u5e8f\u7684 Jandex \u7d22\u5f15\uff0c\u90a3\u4e48\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u8981\u5ffd\u7565\u5355\u4e2a\u5e94\u7528\u7a0b\u5e8f\u7684 Jandex \u7d22\u5f15\uff0c\u8bf7\u5728 server.xml \u5185\u8be5\u5e94\u7528\u7a0b\u5e8f\u7684\u201capplication\u201d\u5143\u7d20\u4e2d\u8bbe\u7f6e useJandex="false" \u5c5e\u6027\u3002\u6216\u8005\uff0c\u8981\u5ffd\u7565\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 Jandex \u7d22\u5f15\uff0c\u8bf7\u5728 server.xml \u7684 applicationManger \u5143\u7d20\u4e2d\u8bbe\u7f6e useJandex="false"\u3002
 
+# # {0} A string: An application name.
+# # {1} A string: A module name.
+# # {2} A number: The total count of module locations.
+# # {3} A number: The count of module locations which had Jandex indexes.
+# # {4} A number: The total count of module classes.
+# # {5} A number: The count of module classes which were read from a Jandex index.
+ANNOCACHE_JANDEX_USAGE=CWWKC0093I: \u5e94\u7528\u7a0b\u5e8f {0} \u4e2d\u6a21\u5757 {1} \u7684 Jandex \u8986\u76d6\u8303\u56f4\uff1a\u5df2\u9488\u5bf9 {2} \u4e2a\u6a21\u5757\u4f4d\u7f6e\u4e2d\u7684 {3} \u4e2a\u8bfb\u53d6 Jandex \u7d22\u5f15\uff1bJandex \u7d22\u5f15\u63d0\u4f9b\u4e86 {4} \u4e2a\u6a21\u5757\u7c7b\u4e2d\u7684 {5} \u4e2a\u3002
+ANNOCACHE_JANDEX_USAGE.explanation=\u8fd9\u663e\u793a\u7cfb\u7edf\u4f7f\u7528 Jandex \u7d22\u5f15\u626b\u63cf\u4ee5\u83b7\u53d6\u6ce8\u91ca\u7684\u6a21\u5757\u7684\u6bd4\u4f8b\u3002\u6a21\u5757\u4f4d\u7f6e\u4e3a\u6a21\u5757\u81ea\u8eab\u6216\uff08\u5bf9\u4e8e Web \u6a21\u5757\uff09\u6a21\u5757\u7684 WEB-INF/classes \u6587\u4ef6\u5939\u548c WEB-INF/lib JAR \u6587\u4ef6\u3002
+ANNOCACHE_JANDEX_USAGE.useraction=\u5982\u679c\u8ba1\u5212\u8bfb\u53d6\u5e94\u7528\u7a0b\u5e8f\u7684 Jandex \u7d22\u5f15\uff0c\u90a3\u4e48\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u8981\u5ffd\u7565\u5355\u4e2a\u5e94\u7528\u7a0b\u5e8f\u7684 Jandex \u7d22\u5f15\uff0c\u8bf7\u5728 server.xml \u5185\u8be5\u5e94\u7528\u7a0b\u5e8f\u7684\u201capplication\u201d\u5143\u7d20\u4e2d\u8bbe\u7f6e useJandex="false" \u5c5e\u6027\u3002\u6216\u8005\uff0c\u8981\u5ffd\u7565\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 Jandex \u7d22\u5f15\uff0c\u8bf7\u5728 server.xml \u7684 applicationManger \u5143\u7d20\u4e2d\u8bbe\u7f6e useJandex="false"\u3002
+
+# # {0} A string: Message text from an exception.
+ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: \u6ce8\u91ca\u5904\u7406\u7f13\u5b58\u9519\u8bef\uff1a{0}
+ANNO_TARGETS_CACHE_EXCEPTION.explanation=\u8bbf\u95ee\u6ce8\u91ca\u7f13\u5b58\u6570\u636e\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+ANNO_TARGETS_CACHE_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
+
+# # {0} A string: A class name.
+# # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
+# # {2} A string: Message text from an exception.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION=CWWKC0103W: \u626b\u63cf {1} \u7684\u7c7b {0} \u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002 \u5f02\u5e38\u4e3a {2}
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation=\u626b\u63cf\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u5173\u8054\u6a21\u5757\u53ef\u80fd\u65e0\u6cd5\u6b63\u5e38\u5de5\u4f5c\u3002
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=\u6709\u5173\u672c\u4e3b\u9898\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054 FFDC \u6d88\u606f\u3002
+
+# # {0} A String: An internal print string of the data structure which was used to locate the class.
+# # {1} A String: A class name.
+# # {2} A String: A class name.
+ANNO_TARGETS_CLASS_NAME_MISMATCH=CWWKC0105W: \u7c7b\u626b\u63cf\u5185\u90e8\u9519\u8bef\uff1a\u8bbf\u95ee\u8005 {0} \u4ece\u7c7b\u540d\u5e94\u4e3a {2} \u7684\u8d44\u6e90\u4e2d\u8bfb\u53d6\u5230\u7c7b\u540d {1}\u3002
+ANNO_TARGETS_CLASS_NAME_MISMATCH.explanation=\u201c.class\u201d\u8d44\u6e90\u7684\u76ee\u5f55\u548c\u540d\u79f0\u4e0e\u8be5\u201c.class\u201d\u8d44\u6e90\u5185\u8bb0\u5f55\u7684\u7c7b\u7684\u540d\u79f0\u4e0d\u5339\u914d\u3002\u8be5\u7c7b\u8d44\u6e90\u5c06\u88ab\u5ffd\u7565\u3002
+ANNO_TARGETS_CLASS_NAME_MISMATCH.useraction=\u8bf7\u5c06\u8be5\u7c7b\u8d44\u6e90\u79fb\u81f3\u4e0e\u8be5\u7c7b\u7684\u9650\u5b9a\u540d\u79f0\u76f8\u5339\u914d\u7684\u76ee\u5f55\u3002\u91cd\u547d\u540d\u8be5\u7c7b\u8d44\u6e90\u4ee5\u4e0e\u8be5\u7c7b\u7684\u9650\u5b9a\u540d\u79f0\u76f8\u5339\u914d\u3002

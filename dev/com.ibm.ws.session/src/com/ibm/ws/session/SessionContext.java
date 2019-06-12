@@ -352,7 +352,12 @@ public class SessionContext {
     public IStorer createStorer(SessionManagerConfig smc, IStore store) {
         IStorer storer = null;
         if (smc.getEnableTimeBasedWrite()) {
-            storer = new TBWSessionStorer(store, 10); // 10 seconds is fixed - not configurable
+            if (smc.getPropertyWriterInterval() < 10) {
+                storer = new TBWSessionStorer(store, (int)smc.getPropertyWriterInterval());
+            }
+            else {
+                storer = new TBWSessionStorer(store, 10); // 10 seconds is fixed - not configurable
+            }
         } else if (smc.getEnableManualWrite()) {
             storer = new ManualSessionStorer();
         } else {

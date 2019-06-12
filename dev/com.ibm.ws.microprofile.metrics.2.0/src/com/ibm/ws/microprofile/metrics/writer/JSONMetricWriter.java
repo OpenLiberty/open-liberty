@@ -19,9 +19,11 @@ import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.json.java.JSONObject;
@@ -77,17 +79,17 @@ public class JSONMetricWriter implements OutputWriter {
     }
 
     private JSONObject getMetricsAsJson(String registryName) throws NoSuchRegistryException, EmptyRegistryException {
-        return getJsonFromMetricMap(Util.getMetricsAsMap(registryName));
+        return getJsonFromMetricMap(Util.getMetricsAsMap(registryName), Util.getMetricsMetadataAsMap(registryName));
     }
 
     private JSONObject getMetricsAsJson(String registryName, String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
-        return getJsonFromMetricMap(Util.getMetricsAsMap(registryName, metricName));
+        return getJsonFromMetricMap(Util.getMetricsAsMap(registryName, metricName), Util.getMetricsMetadataAsMap(registryName, metricName));
     }
 
     private static final TraceComponent tc = Tr.register(JSONMetricWriter.class);
 
     @FFDCIgnore({ IllegalStateException.class })
-    private JSONObject getJsonFromMetricMap(Map<MetricID, Metric> metricMap) {
+    private JSONObject getJsonFromMetricMap(Map<MetricID, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
         JSONObject jsonObject = new JSONObject();
 
         //For each Metric that was returned
@@ -97,6 +99,36 @@ public class JSONMetricWriter implements OutputWriter {
             String metricName = metricID.getName();
             String metricNameWithTags = metricName;
             String tags = "";
+
+            Metadata metricMetaData = metricMetadataMap.get(metricName);
+            String unit = metricMetaData.getUnit().get();
+
+            // If an invalid unit is entered, default to nanoseconds
+            double conversionFactor = 1;
+
+            switch (unit) {
+                case MetricUnits.NANOSECONDS:
+                    conversionFactor = 1;
+                    break;
+                case MetricUnits.MICROSECONDS:
+                    conversionFactor = 1000;
+                    break;
+                case MetricUnits.MILLISECONDS:
+                    conversionFactor = 1000000;
+                    break;
+                case MetricUnits.SECONDS:
+                    conversionFactor = 1000000000L;
+                    break;
+                case MetricUnits.MINUTES:
+                    conversionFactor = 60 * 1000000000L;
+                    break;
+                case MetricUnits.HOURS:
+                    conversionFactor = 60 * 60 * 1000000000L;
+                    break;
+                case MetricUnits.DAYS:
+                    conversionFactor = 24 * 60 * 60 * 1000000000L;
+                    break;
+            }
 
             if (tagsMap.size() != 0) {
                 for (Entry<String, String> tagsMapEntrySet : tagsMap.entrySet()) {
@@ -128,7 +160,7 @@ public class JSONMetricWriter implements OutputWriter {
                     // The forwarding gauge is likely unloaded. A warning has already been emitted
                 }
             } else if (Timer.class.isInstance(metric)) {
-                jsonObject.put(metricName, getJsonFromMap(Util.getTimerNumbers((Timer) metric, tags), metricName, jsonObject));
+                jsonObject.put(metricName, getJsonFromMap(Util.getTimerNumbers((Timer) metric, tags, conversionFactor), metricName, jsonObject));
             } else if (Histogram.class.isInstance(metric)) {
                 jsonObject.put(metricName, getJsonFromMap(Util.getHistogramNumbers((Histogram) metric, tags), metricName, jsonObject));
             } else if (Meter.class.isInstance(metric)) {

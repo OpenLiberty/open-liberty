@@ -44,6 +44,7 @@ import javax.resource.ConnectionFactoryDefinitions;
 @JMSConnectionFactoryDefinition(name = "java:app/env/jms/tcf",
                                 interfaceName = "javax.jms.TopicConnectionFactory",
                                 resourceAdapter = "ConfigTestAdapter",
+                                clientId = "AppDefinedClientId",
                                 maxPoolSize = 8,
                                 properties = {
                                                "enableBetaContent=true",

@@ -55,6 +55,10 @@ public class JMSConnectionFactoryValidator implements JMSValidator {
                     String provVersion = conData.getProviderVersion();
                     if (provVersion != null && provVersion.length() > 0)
                         result.put("jmsProviderVersion", provVersion);
+
+                    String specVersion = conData.getJMSVersion();
+                    if (specVersion != null && specVersion.length() > 0)
+                        result.put("jmsProviderSpecVersion", specVersion);
                 } catch (UnsupportedOperationException ignore) {
                 }
 
@@ -89,6 +93,10 @@ public class JMSConnectionFactoryValidator implements JMSValidator {
                         String provVersion = conData.getProviderVersion();
                         if (provVersion != null && provVersion.length() > 0)
                             result.put("jmsProviderVersion", provVersion);
+
+                        String specVersion = conData.getJMSVersion();
+                        if (specVersion != null && specVersion.length() > 0)
+                            result.put("jmsProviderSpecVersion", specVersion);
                     } catch (UnsupportedOperationException ignore) {
                     }
 
@@ -123,6 +131,10 @@ public class JMSConnectionFactoryValidator implements JMSValidator {
                     String provVersion = conData.getProviderVersion();
                     if (provVersion != null && provVersion.length() > 0)
                         result.put("jmsProviderVersion", provVersion);
+
+                    String specVersion = conData.getJMSVersion();
+                    if (specVersion != null && specVersion.length() > 0)
+                        result.put("jmsProviderSpecVersion", specVersion);
                 } catch (UnsupportedOperationException ignore) {
                 }
 
