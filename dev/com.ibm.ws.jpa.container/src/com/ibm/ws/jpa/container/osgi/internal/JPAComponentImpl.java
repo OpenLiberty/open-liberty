@@ -81,6 +81,7 @@ import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -106,6 +107,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private static final String REFERENCE_JPA_PROVIDER = "jpaProvider";
     private static final String REFERENCE_JPA_PROPS_PROVIDER = "jpaPropsProvider";
     private static final String REFERENCE_APP_COORD = "appCoord";
+    private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
 
     private ComponentContext context;
     private Dictionary<String, Object> props;
@@ -118,6 +120,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private final ConcurrentServiceReferenceSet<ResourceBindingListener> resourceBindingListeners = new ConcurrentServiceReferenceSet<ResourceBindingListener>(REFERENCE_RESOURCE_BINDING_LISTENERS);
     private final AtomicServiceReference<JPAProviderIntegration> providerIntegrationSR = new AtomicServiceReference<JPAProviderIntegration>(REFERENCE_JPA_PROVIDER);
     private final ConcurrentServiceReferenceSet<JPAEMFPropertyProvider> propProviderSRs = new ConcurrentServiceReferenceSet<JPAEMFPropertyProvider>(REFERENCE_JPA_PROPS_PROVIDER);
+    private ClassLoadingService classLoadingService;
 
     @Activate
     protected void activate(ComponentContext cc) {
@@ -766,6 +769,25 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
 
     protected void unsetJpaRuntime(ServiceReference<JPARuntime> reference) {
         jpaRuntime.unsetReference(reference);
+    }
+
+    @Reference(name = REFERENCE_CLASSLOADING_SERVICE, service = ClassLoadingService.class)
+    protected void setClassLoadingService(ClassLoadingService ref) {
+        classLoadingService = ref;
+    }
+
+    protected void unsetClassLoadingService(ClassLoadingService ref) {
+        classLoadingService = null;
+    }
+
+    @Override
+    public ClassLoader createThreadContextClassLoader(ClassLoader appClassloader) {
+        return classLoadingService.createThreadContextClassLoader(appClassloader);
+    }
+
+    @Override
+    public void destroyThreadContextClassLoader(ClassLoader tcclassloader) {
+        classLoadingService.destroyThreadContextClassLoader(tcclassloader);
     }
 
     @Override
