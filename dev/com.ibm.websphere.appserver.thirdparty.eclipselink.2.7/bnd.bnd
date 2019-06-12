@@ -116,7 +116,6 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/localization/i18n/*.class
 
 -buildpath: \
-	org.eclipse.persistence.core;version=2.7.4.v20190115-ad5b7c6b2a;strategy=exact,\
 	org.eclipse.persistence.jpa;version=2.7.4.v20190115-ad5b7c6b2a;strategy=exact,\
 	javax.persistence:javax.persistence-api;version=2.2, \
 	com.ibm.websphere.org.osgi.core,\
