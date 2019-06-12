@@ -16,7 +16,7 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  *
  */
 public class AccessLogData extends GenericData {
-    public final static String[] NAMES1_1 = {
+    public static final String[] NAMES1_1 = {
                                               LogFieldConstants.IBM_REQUESTSTARTTIME,
                                               LogFieldConstants.IBM_URIPATH,
                                               LogFieldConstants.IBM_REQUESTMETHOD,
@@ -50,44 +50,35 @@ public class AccessLogData extends GenericData {
                                             LogFieldConstants.SEQUENCE
     };
 
-    public static String[] ACCESS_LOG_NAMES1_1 = {
-                                                   LogFieldConstants.IBM_REQUESTSTARTTIME,
-                                                   LogFieldConstants.IBM_URIPATH,
-                                                   LogFieldConstants.IBM_REQUESTMETHOD,
-                                                   LogFieldConstants.IBM_QUERYSTRING,
-                                                   LogFieldConstants.IBM_REQUESTHOST,
-                                                   LogFieldConstants.IBM_REQUESTPORT,
-                                                   LogFieldConstants.IBM_REMOTEHOST,
-                                                   LogFieldConstants.IBM_USERAGENT,
-                                                   LogFieldConstants.IBM_REQUESTPROTOCOL,
-                                                   LogFieldConstants.IBM_BYTESRECEIVED,
-                                                   LogFieldConstants.IBM_RESPONSECODE,
-                                                   LogFieldConstants.IBM_ELAPSEDTIME,
-                                                   LogFieldConstants.IBM_DATETIME,
-                                                   LogFieldConstants.IBM_SEQUENCE
+    public static String[] dataArray = {
+                                         LogFieldConstants.IBM_REQUESTSTARTTIME,
+                                         LogFieldConstants.IBM_URIPATH,
+                                         LogFieldConstants.IBM_REQUESTMETHOD,
+                                         LogFieldConstants.IBM_QUERYSTRING,
+                                         LogFieldConstants.IBM_REQUESTHOST,
+                                         LogFieldConstants.IBM_REQUESTPORT,
+                                         LogFieldConstants.IBM_REMOTEHOST,
+                                         LogFieldConstants.IBM_USERAGENT,
+                                         LogFieldConstants.IBM_REQUESTPROTOCOL,
+                                         LogFieldConstants.IBM_BYTESRECEIVED,
+                                         LogFieldConstants.IBM_RESPONSECODE,
+                                         LogFieldConstants.IBM_ELAPSEDTIME,
+                                         LogFieldConstants.IBM_DATETIME,
+                                         LogFieldConstants.IBM_SEQUENCE
     };
-
-    public static void defineDataArray() {
-        dataArray = new String[] {
-                                   LogFieldConstants.IBM_REQUESTSTARTTIME,
-                                   LogFieldConstants.IBM_URIPATH,
-                                   LogFieldConstants.IBM_REQUESTMETHOD,
-                                   LogFieldConstants.IBM_QUERYSTRING,
-                                   LogFieldConstants.IBM_REQUESTHOST,
-                                   LogFieldConstants.IBM_REQUESTPORT,
-                                   LogFieldConstants.IBM_REMOTEHOST,
-                                   LogFieldConstants.IBM_USERAGENT,
-                                   LogFieldConstants.IBM_REQUESTPROTOCOL,
-                                   LogFieldConstants.IBM_BYTESRECEIVED,
-                                   LogFieldConstants.IBM_RESPONSECODE,
-                                   LogFieldConstants.IBM_ELAPSEDTIME,
-                                   LogFieldConstants.IBM_DATETIME,
-                                   LogFieldConstants.IBM_SEQUENCE
-        };
-    }
 
     public AccessLogData() {
         super(14);
+    }
+
+    @Override
+    public String[] getDataArray() {
+        return dataArray;
+    }
+
+    @Override
+    public String[] getOriginalFieldNames() {
+        return NAMES1_1;
     }
 
     private void setPair(int index, String s) {
@@ -381,9 +372,5 @@ public class AccessLogData extends GenericData {
     public String getSequenceKeyJSON() {
         return dataArray[13];
     }
-
-//    public static String[] getNamesArray() {
-//        return dataArray;
-//    }
 
 }

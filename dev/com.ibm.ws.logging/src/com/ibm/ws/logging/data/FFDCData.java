@@ -52,39 +52,30 @@ public class FFDCData extends GenericData {
                                               LogFieldConstants.IBM_OBJECTDETAILS,
                                               LogFieldConstants.IBM_SEQUENCE
     };
-
-    public static String[] FFDC_NAMES1_1 = {
-                                             LogFieldConstants.IBM_DATETIME,
-                                             LogFieldConstants.DATEOFFIRSTOCCURENCE,
-                                             LogFieldConstants.COUNT,
-                                             LogFieldConstants.MESSAGE,
-                                             LogFieldConstants.IBM_CLASSNAME,
-                                             LogFieldConstants.LABEL,
-                                             LogFieldConstants.IBM_EXCEPTIONNAME,
-                                             LogFieldConstants.IBM_PROBEID,
-                                             LogFieldConstants.SOURCEID,
-                                             LogFieldConstants.IBM_THREADID, //long
-                                             LogFieldConstants.IBM_STACKTRACE,
-                                             LogFieldConstants.IBM_OBJECTDETAILS,
-                                             LogFieldConstants.IBM_SEQUENCE
+    public static String[] dataArray = {
+                                         LogFieldConstants.IBM_DATETIME,
+                                         LogFieldConstants.DATEOFFIRSTOCCURENCE,
+                                         LogFieldConstants.COUNT,
+                                         LogFieldConstants.MESSAGE,
+                                         LogFieldConstants.IBM_CLASSNAME,
+                                         LogFieldConstants.LABEL,
+                                         LogFieldConstants.IBM_EXCEPTIONNAME,
+                                         LogFieldConstants.IBM_PROBEID,
+                                         LogFieldConstants.SOURCEID,
+                                         LogFieldConstants.IBM_THREADID, //long
+                                         LogFieldConstants.IBM_STACKTRACE,
+                                         LogFieldConstants.IBM_OBJECTDETAILS,
+                                         LogFieldConstants.IBM_SEQUENCE
     };
 
-    public static void defineDataArray() {
-        dataArray = new String[] {
-                                   LogFieldConstants.IBM_DATETIME,
-                                   LogFieldConstants.DATEOFFIRSTOCCURENCE,
-                                   LogFieldConstants.COUNT,
-                                   LogFieldConstants.MESSAGE,
-                                   LogFieldConstants.IBM_CLASSNAME,
-                                   LogFieldConstants.LABEL,
-                                   LogFieldConstants.IBM_EXCEPTIONNAME,
-                                   LogFieldConstants.IBM_PROBEID,
-                                   LogFieldConstants.SOURCEID,
-                                   LogFieldConstants.IBM_THREADID, //long
-                                   LogFieldConstants.IBM_STACKTRACE,
-                                   LogFieldConstants.IBM_OBJECTDETAILS,
-                                   LogFieldConstants.IBM_SEQUENCE
-        };
+    @Override
+    public String[] getDataArray() {
+        return dataArray;
+    }
+
+    @Override
+    public String[] getOriginalFieldNames() {
+        return NAMES1_1;
     }
 
     private void setPair(int index, String s) {

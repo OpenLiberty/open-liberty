@@ -48,7 +48,6 @@ import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.collector.CollectorConstants;
-import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.LogTraceData;
@@ -460,6 +459,9 @@ public class BaseTraceService implements TrService {
 
     public static void convertStringtoMap(String value) {
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+        FFDCData fd = new FFDCData();
+        AccessLogData ald = new AccessLogData();
+
         boolean valueFound = false;
 
         Map<String, String> messageMap = new HashMap<>();
@@ -516,60 +518,12 @@ public class BaseTraceService implements TrService {
                 Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
             }
         }
-        AccessLogData.defineDataArray();
-        AccessLogData.addMapsToNamesArray(accessLogMap);
 
-        FFDCData.defineDataArray();
-        FFDCData.addMapsToNamesArray(ffdcMap);
+        fd.addMapsToNamesArray(ffdcMap);
+        ald.addMapsToNamesArray(accessLogMap);
 
-        String[] messageArray = new String[] {
-                                               LogFieldConstants.IBM_DATETIME,
-                                               LogFieldConstants.IBM_MESSAGEID,
-                                               LogFieldConstants.IBM_THREADID,
-                                               LogFieldConstants.MODULE,
-                                               LogFieldConstants.SEVERITY,
-                                               LogFieldConstants.LOGLEVEL,
-                                               LogFieldConstants.IBM_METHODNAME,
-                                               LogFieldConstants.IBM_CLASSNAME,
-                                               LogFieldConstants.LEVELVALUE,
-                                               LogFieldConstants.THREADNAME,
-                                               LogFieldConstants.CORRELATION_ID,
-                                               LogFieldConstants.ORG,
-                                               LogFieldConstants.PRODUCT,
-                                               LogFieldConstants.COMPONENT,
-                                               LogFieldConstants.IBM_SEQUENCE,
-                                               LogFieldConstants.THROWABLE,
-                                               LogFieldConstants.THROWABLE_LOCALIZED,
-                                               LogFieldConstants.MESSAGE,
-                                               LogFieldConstants.FORMATTEDMSG,
-                                               LogFieldConstants.EXTENSIONS_KVPL,
-                                               LogFieldConstants.OBJECT_ID
-        };
-        String[] traceArray = new String[] {
-                                             LogFieldConstants.IBM_DATETIME,
-                                             LogFieldConstants.IBM_MESSAGEID,
-                                             LogFieldConstants.IBM_THREADID,
-                                             LogFieldConstants.MODULE,
-                                             LogFieldConstants.SEVERITY,
-                                             LogFieldConstants.LOGLEVEL,
-                                             LogFieldConstants.IBM_METHODNAME,
-                                             LogFieldConstants.IBM_CLASSNAME,
-                                             LogFieldConstants.LEVELVALUE,
-                                             LogFieldConstants.THREADNAME,
-                                             LogFieldConstants.CORRELATION_ID,
-                                             LogFieldConstants.ORG,
-                                             LogFieldConstants.PRODUCT,
-                                             LogFieldConstants.COMPONENT,
-                                             LogFieldConstants.IBM_SEQUENCE,
-                                             LogFieldConstants.THROWABLE,
-                                             LogFieldConstants.THROWABLE_LOCALIZED,
-                                             LogFieldConstants.MESSAGE,
-                                             LogFieldConstants.FORMATTEDMSG,
-                                             LogFieldConstants.EXTENSIONS_KVPL,
-                                             LogFieldConstants.OBJECT_ID
-        };
-        LogTraceData.MESSAGE_NAMES1_1 = LogTraceData.addMapsToNamesArray(messageMap, messageArray);
-        LogTraceData.TRACE_NAMES1_1 = LogTraceData.addMapsToNamesArray(traceMap, traceArray);
+        LogTraceData.MESSAGE_NAMES1_1 = LogTraceData.addMapsToNamesArray(messageMap, LogTraceData.NAMES1_1);
+        LogTraceData.TRACE_NAMES1_1 = LogTraceData.addMapsToNamesArray(traceMap, LogTraceData.NAMES1_1);
     }
 
     /**

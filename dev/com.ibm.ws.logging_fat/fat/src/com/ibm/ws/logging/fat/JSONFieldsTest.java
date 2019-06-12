@@ -103,7 +103,7 @@ public class JSONFieldsTest {
     }
 
     @Test
-    public void jsonFieldsErrorChecking() throws Exception {
+    public void jsonFieldsEmptyMap() throws Exception {
         // Set jsonFields property in server.xml
         setUp(server_xml);
         //map the ibm_datetime field to blank field name
@@ -111,6 +111,42 @@ public class JSONFieldsTest {
 
         //the default field name should be used
         List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("ibm_datetime", MESSAGE_LOG);
+        assertTrue("The default field name was not returned", lines.size() > 0);
+    }
+
+    @Test
+    public void jsonFieldsUnknownKey() throws Exception {
+        // Set jsonFields property in server.xml
+        setUp(server_xml);
+        //provide an unknown fieldname
+        setServerConfiguration(true, "testing:error", server_xml);
+
+        //a warning should be given when a non-recognized key is provided
+        List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("TRAS3009W", MESSAGE_LOG);
+        assertTrue("The default field name was not returned", lines.size() > 0);
+    }
+
+    @Test
+    public void jsonFieldsTooManyTokens() throws Exception {
+        // Set jsonFields property in server.xml
+        setUp(server_xml);
+        //provide an unknown fieldname
+        setServerConfiguration(true, "provide:too:many:tokens", server_xml);
+
+        //a warning should be given when an entry with too many or too few tokens is provided
+        List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("TRAS3008W", MESSAGE_LOG);
+        assertTrue("The default field name was not returned", lines.size() > 0);
+    }
+
+    @Test
+    public void jsonFieldsWrongEventType() throws Exception {
+        // Set jsonFields property in server.xml
+        setUp(server_xml);
+        //provide an unknown fieldname
+        setServerConfiguration(true, "liberty_notevent:message:log", server_xml);
+
+        //a warning should be given when an entry with too many or too few tokens is provided
+        List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("TRAS3010W", MESSAGE_LOG);
         assertTrue("The default field name was not returned", lines.size() > 0);
     }
 

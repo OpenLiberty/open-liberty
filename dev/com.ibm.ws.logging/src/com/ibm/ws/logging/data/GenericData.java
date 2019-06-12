@@ -185,23 +185,31 @@ public class GenericData {
         this.jsonMessage = jsonMessage;
     }
 
-    public static void defineDataArray() {}
+    public String[] originalFieldNames = getOriginalFieldNames();
+    public String[] dataArray = getDataArray();
 
-    public static String[] dataArray;
+    public String[] getDataArray() {
+        return null;
+    }
 
-    public static void addMapsToNamesArray(Map<String, String> map) {
+    public String[] getOriginalFieldNames() {
+        return null;
+    }
+
+    public void addMapsToNamesArray(Map<String, String> map) {
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            for (int i = 0; i < dataArray.length; i++) {
-                if (dataArray[i].equals(entry.getKey().trim())) {
+            for (int i = 0; i < originalFieldNames.length; i++) {
+                if (originalFieldNames[i].equals(entry.getKey().trim())) {
                     dataArray[i] = entry.getValue().trim();
                 }
             }
         }
     }
 
-    public static String[] addMapsToNamesArray(Map<String, String> map, String[] outputArray) {
+    public static String[] addMapsToNamesArray(Map<String, String> map, String[] inputArray) {
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         boolean valueFound = false;
+        String[] outputArray = inputArray.clone();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             for (int i = 0; i < outputArray.length; i++) {
                 if (outputArray[i].equals(entry.getKey().trim())) {
