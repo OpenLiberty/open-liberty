@@ -104,3 +104,84 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  uid:
+                    description: "unique identifier"
+                    type: string
+                    example: "myDataSource"
+                  id:
+                    description: "id of dataSource"
+                    type: string
+                    example: "myDataSource"
+                  jndiName:
+                    description: "jndiName of dataSource"
+                    type: string
+                    example: "jdbc/ds1"
+                  successful:
+                    description: "result of validation"
+                    type: boolean
+                    example: false
+                  info:
+                    type: object
+                    properties:
+                      databaseProductName:
+                        type: string
+                        example: "VeryFast Enterprise DB"
+                      databaseProductVersion:
+                        type: string
+                        example: "44.117.125"
+                      jdbcDriverName:
+                        type: string
+                        example: "EvenFaster JDBC"
+                      jdbcDriverVersion:
+                        type: string
+                        example: "52.165.173"
+                      catalog:
+                        type: string
+                        example: "exampledb"
+                      schema:
+                        type: string
+                        example: "MYSCHEMA"
+                      user:
+                        type: string
+                        example: "dbuser1"
+                  failure:
+                    $ref: "#/components/schemas/validation.dataSource.cause"
+                required:
+                  - uid
+                  - successful
+components:
+  schemas:
+    validation.dataSource.cause:
+      type: object
+      properties:
+        sqlState:
+          type: string
+        errorCode:
+          type: integer
+        class:
+          type: string
+        message:
+          type: string
+        stack:
+          type: array
+          items:
+            type: string
+        cause:
+          $ref: "#/components/schemas/validation.dataSource.cause"
+      example:
+        sqlState: "08004"
+        errorCode: 9409
+        class: "java.sql.SQLInvalidAuthorizationSpecException"
+        message: "User has insufficient privileges to access database."
+        stack:
+          - "org.example.efjdbc.EFConnection.isValid(EFConnection.java:253)"
+          - "com.ibm.ws.rest.handler.validator.jdbc.DataSourceValidator(DataSourceValidator.java:129)"
+          - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.validateSingleInstance(ValidatorRestHandler:231)"
+        cause:
+          class: "javax.security.auth.login.LoginException"
+          message: "unauthorized"
+          stack:
+            - "org.example.efjdbc.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
+            - "org.example.efjdbc.EFConnection.authenticate(EFConnection.java:223)"
+            - "org.example.efjdbc.EFConnection.deferredLogin(EFConnection.java:385)"
