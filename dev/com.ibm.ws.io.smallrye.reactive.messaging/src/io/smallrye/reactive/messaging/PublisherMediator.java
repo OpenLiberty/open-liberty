@@ -109,17 +109,17 @@ public class PublisherMediator extends AbstractMediator {
   }
 
   private <T> void produceIndividualPayloads() {
-    setPublisher(ReactiveStreams.<T>generate(this::invoke)
+    setPublisher(ReactiveStreams.<T>generate(() -> invoke())
       .map(Message::of));
   }
 
   private void produceIndividualCompletionStageOfMessages() {
-    setPublisher(ReactiveStreams.<CompletionStage<Message>>generate(this::invoke)
+    setPublisher(ReactiveStreams.<CompletionStage<Message>>generate(() -> invoke())
       .flatMapCompletionStage(Function.identity()));
   }
 
   private <P> void produceIndividualCompletionStageOfPayloads() {
-    setPublisher(ReactiveStreams.<CompletionStage<P>>generate(this::invoke)
+    setPublisher(ReactiveStreams.<CompletionStage<P>>generate(() -> invoke())
       .flatMapCompletionStage(Function.identity())
       .map(Message::of));
   }
