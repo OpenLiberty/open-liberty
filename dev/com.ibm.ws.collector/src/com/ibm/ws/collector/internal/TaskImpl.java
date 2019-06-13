@@ -30,7 +30,7 @@ public class TaskImpl extends Task implements Runnable {
 
     private volatile Future<?> future = null;
 
-    @FFDCIgnore(value = { InterruptedException.class, IllegalArgumentException.class })
+    @FFDCIgnore(value = { InterruptedException.class, IllegalArgumentException.class, NullPointerException.class })
     @Override
     public void run() {
         //Set the thread local to indicate that any trace or logging
