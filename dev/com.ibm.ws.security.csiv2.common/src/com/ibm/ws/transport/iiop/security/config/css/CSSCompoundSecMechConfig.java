@@ -22,15 +22,13 @@ import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.SSLException;
-
+import org.omg.CORBA.Any;
+import org.omg.CORBA.ORB;
+import org.omg.CORBA.UserException;
 import org.omg.CSI.EstablishContext;
 import org.omg.CSI.SASContextBody;
 import org.omg.CSI.SASContextBodyHelper;
 import org.omg.CSIIOP.TransportAddress;
-import org.omg.CORBA.Any;
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.UserException;
 import org.omg.IOP.Codec;
 import org.omg.IOP.SecurityAttributeService;
 import org.omg.IOP.ServiceContext;
@@ -40,6 +38,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.csiv2.config.ssl.SSLConfig;
 import com.ibm.ws.security.csiv2.config.tss.ServerTransportAddress;
 import com.ibm.ws.security.csiv2.util.SecurityServices;
@@ -142,14 +141,14 @@ public class CSSCompoundSecMechConfig implements Serializable {
     private boolean extractSSLTransportForEachAddress(TSSCompoundSecMechConfig requirement) {
 
         //from the requirement get the addresses
-        Object transportConfig = requirement.getTransport_mech();
+	Object transportConfig = requirement.getTransport_mech();
+	
+	//If SSL is not enabled, return false 
+	if (!(transportConfig instanceof TSSSSLTransportConfig)) {
+	    return false;
+	}
 
-        //If SSL is not enabled, return false 
-        if (!(transportConfig instanceof TSSSSLTransportConfig)) {
-            return false;
-        }
-
-        TransportAddress[] addresses = ((TSSSSLTransportConfig) transportConfig).getTransportAddresses();
+        TransportAddress[] addresses = ((TSSSSLTransportConfig)transportConfig).getTransportAddresses();
         if (addresses.length == 0) {
             return false;
         }
