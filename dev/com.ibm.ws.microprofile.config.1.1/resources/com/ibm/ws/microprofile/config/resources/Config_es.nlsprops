@@ -28,7 +28,7 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # Config is closed.
-config.closed.CWMCG0001E=CWMCG0001E: La configuraci\u00f3n est\u00e1 cerrada.
+config.closed.CWMCG0001E=CWMCG0001E: Se ha cerrado la configuraci\u00f3n.
 config.closed.CWMCG0001E.explanation=Las operaciones no se pueden realizar en una instancia de configuraci\u00f3n que se ha cerrado.
 config.closed.CWMCG0001E.useraction=Obtenga una instancia de configuraci\u00f3n nueva y vuelve a intentar la operaci\u00f3n.
 
@@ -58,12 +58,12 @@ conversion.exception.CWMCG0007E.explanation=Un conversor ha lanzado una excepci\
 conversion.exception.CWMCG0007E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
 
 # Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
-unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: No se ha podido convertir la serie "{0}" a un valor de tipo booleano. Se esperada uno de [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: No se ha podido convertir la serie "{0}" a un valor de tipo booleano. Se esperaba uno de los valores [true, yes, on, false, no, off].
 unable.to.convert.boolean.CWMCG0008E.explanation=La serie de entrada no era un valor booleano v\u00e1lido.
 unable.to.convert.boolean.CWMCG0008E.useraction=Actualice la serie de entrada de origen y vuelva a intentar la operaci\u00f3n.
 
 # Could not determine conversion type of Converter class {0}.
-unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: No se ha podido determinar el tipo de conversi\u00f3n de la clase de conversor {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: No se ha podido determinar el tipo d conversi\u00f3n de la clase de convertidor {0}.
 unable.to.determine.conversion.type.CWMCG0009E.explanation=La clase de implementaci\u00f3n de conversor no ten\u00eda un tipo gen\u00e9rico id\u00f3neo.
 unable.to.determine.conversion.type.CWMCG0009E.useraction=Aseg\u00farese de que la clase de implementaci\u00f3n tiene una variable de tipo gen\u00e9rico apto para la interfaz de conversor.
 
