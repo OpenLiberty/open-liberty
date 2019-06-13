@@ -26,12 +26,6 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
 
     /** {@inheritDoc} */
     @Override
-    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg) throws CertificateException {
-        return (createDefaultSSLCertificate(filePath, password, validity, subjectDN, keySize, sigAlg, null));
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
                                             String extInfo) throws CertificateException {
 

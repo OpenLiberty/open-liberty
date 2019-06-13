@@ -92,21 +92,6 @@ public interface DefaultSSLCertificateCreator {
      * @param subjectDN The subjectDN. Use {@link DefaultSubjectDN} to construct the default value.
      * @param keySize The size of the certificate key. Default is 2048.
      * @param sigAlg The signature algorithm of the certificate. Default is SHA256withRSA.
-     * @return File representing the created keystore
-     * @throws CertificateException if the certificate could not be created
-     * @throws IllegalArgumentException if an argument violates the minimum required value or if the value is otherwise considered invalid
-     */
-    File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg) throws CertificateException;
-
-    /**
-     * Creates a default SSL certificate.
-     *
-     * @param filePath The valid, complete path on the file system of the keystore to create. e.g. /tmp/key.p12
-     * @param password Minimum 6 characters
-     * @param validity Minimum 365 days (?)
-     * @param subjectDN The subjectDN. Use {@link DefaultSubjectDN} to construct the default value.
-     * @param keySize The size of the certificate key. Default is 2048.
-     * @param sigAlg The signature algorithm of the certificate. Default is SHA256withRSA.
      * @param extInfo Extension information to include in the cerificate.
      * @return File representing the created keystore
      * @throws CertificateException if the certificate could not be created
