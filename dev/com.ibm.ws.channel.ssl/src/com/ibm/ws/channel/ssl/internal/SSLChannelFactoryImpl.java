@@ -16,6 +16,8 @@ import java.util.Map;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.ChannelFactoryData;
 import com.ibm.websphere.channelfw.OutboundChannelDefinition;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.channelfw.Channel;
 import com.ibm.wsspi.channelfw.SSLChannelFactory;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
@@ -31,6 +33,14 @@ public class SSLChannelFactoryImpl implements SSLChannelFactory {
     private Map<String, Channel> existingChannels = null;
     /** Property map that may or may not exist for the factory. */
     private Map<Object, Object> commonProperties = null;
+
+    // one shot flag for initializing ALPN only once for all channel instances.
+    boolean ALPNAlreadyInit = false;
+
+    /** Trace component for WAS. Protect for use by inner classes. */
+    protected static final TraceComponent tc = Tr.register(SSLChannelFactoryImpl.class,
+                                                           SSLChannelConstants.SSL_TRACE_NAME,
+                                                           SSLChannelConstants.SSL_BUNDLE);
 
     /**
      * Constructor.
@@ -87,7 +97,7 @@ public class SSLChannelFactoryImpl implements SSLChannelFactory {
 
     /**
      * Remove a channel from the existing channels list.
-     * 
+     *
      * @param channelName
      */
     public synchronized void removeChannel(String channelName) {
@@ -110,6 +120,16 @@ public class SSLChannelFactoryImpl implements SSLChannelFactory {
         this.commonProperties = props;
     }
 
+    public synchronized void initALPN() {
+        if (!ALPNAlreadyInit) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "One shot initialization of ALPN");
+            }
+            ALPNAlreadyInit = true;
+            SSLAlpnNegotiator.InitALPN();
+        }
+    }
+
     /*
      * @see com.ibm.wsspi.channelfw.ChannelFactory#getOutboundChannelDefinition(java.util.Map)
      */
@@ -128,7 +148,7 @@ public class SSLChannelFactoryImpl implements SSLChannelFactory {
 
         /**
          * Constructor.
-         * 
+         *
          * @param props
          */
         protected SSLOutboundDefinition(Map<Object, Object> props) {
