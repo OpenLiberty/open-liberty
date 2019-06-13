@@ -22,6 +22,8 @@ import java.util.List;
 import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,6 +51,15 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
                         .addPackages(true, "web")//
                         .addAsManifestResource(new File("test-applications/testOpenAPIApp/resources/META-INF/openapi.yaml"));
         ShrinkHelper.exportDropinAppToServer(server, app);
+
+        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValAdapter.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("org.test.validator.adapter"));
+        ShrinkHelper.exportToServer(server, "dropins", rar);
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "customLoginModule.jar");
+        jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
+        ShrinkHelper.exportToServer(server, "/", jar);
 
         server.startServer();
 

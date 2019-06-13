@@ -33,7 +33,12 @@
   <reader-role>
     <user>reader</user>
   </reader-role>
-    
+
+  <connectionFactory id="cf1" jndiName="eis/cf1">
+    <containerAuthData user="cfuser1" password="1cfuser"/>
+    <properties.TestValAdapter.ConnectionFactory hostName="myhost.openliberty.io" portNumber="6543"/>
+  </connectionFactory>
+
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="Derby"/>
    	<properties.derby.embedded databaseName="memory:derbydb" createDatabase="create"/>
