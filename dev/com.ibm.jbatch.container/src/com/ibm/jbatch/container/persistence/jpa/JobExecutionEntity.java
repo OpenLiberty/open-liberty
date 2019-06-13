@@ -50,6 +50,9 @@ import com.ibm.jbatch.container.ws.WSJobExecution;
                  * " (SELECT MAX(e.executionNumberForThisInstance) FROM JobExecutionEntity e WHERE e.jobInstance.instanceId = :id)"),
                  */
 
+                @NamedQuery(name = JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_JOB_INST_ID, query = "SELECT e.jobExecId FROM JobExecutionEntity e" +
+                                                                                                   " WHERE e.jobInstance.instanceId in :instanceList ORDER BY e.createTime DESC"),
+
                 @NamedQuery(name = JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_NAME_AND_STATUSES_QUERY, query = "SELECT e.jobExecId FROM JobExecutionEntity e" +
                                                                                                                " WHERE e.jobInstance.jobName=:name AND e.batchStatus IN :status ORDER BY e.createTime DESC"),
                 @NamedQuery(name = JobExecutionEntity.GET_JOB_EXECUTIONS_BY_SERVERID_AND_STATUSES_QUERY, query = "SELECT e FROM JobExecutionEntity e" +
@@ -76,6 +79,7 @@ public class JobExecutionEntity extends JobThreadExecutionBase implements JobExe
     public static final String GET_JOB_EXECUTIONS_BY_SERVERID_AND_STATUSES_QUERY = "JobExecutionEntity.getJobExecutionsByServerIdAndStatusesQuery";
     public static final String GET_JOB_EXECUTIONS_MOST_TO_LEAST_RECENT_BY_INSTANCE = "JobExecutionEntity.getJobExecutionsMostToLeastRecentByInstanceQuery";
     public static final String GET_JOB_EXECUTIONS_BY_JOB_INST_ID_AND_JOB_EXEC_NUM = "JobExecutionEntity.getJobExecutionsByJobInstanceIdAndJobExecNumberQuery";
+    public static final String GET_JOB_EXECUTIONIDS_BY_JOB_INST_ID = "JobExecutionEntity.getJobExecutionsByJobInstanceId";
     /*
      * Key
      */
