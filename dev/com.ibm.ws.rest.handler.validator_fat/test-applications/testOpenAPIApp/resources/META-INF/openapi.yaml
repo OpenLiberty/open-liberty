@@ -273,7 +273,7 @@ components:
           class: "javax.resource.spi.SecurityException"
           message: "User has insufficient privileges to access the backend data store."
           stack:
-            - "org.example.lca.ConnectionImpl.isValid(EFConnection.java:)"
+            - "org.example.lca.ConnectionImpl.createInteraction(ConnectionImpl.java:146)"
             - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validateCCIConnectionFactory(ConnectionFactoryValidator.java:304)"
             - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validate(ConnectionFactoryValidator.java:169)"
             - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.handleSingleInstance(ValidatorRestHandler:231)"
