@@ -18,17 +18,39 @@ servers:
 paths:
   /validation/dataSource/{uid}:
     get:
-      summary: Validation of a Data Source
       tags:
       - Validation
+      summary: Validation of a Data Source
       description: "Retrieves the validation result for the specified data source. Validation involves establishing a connection to the database, querying basic metadata information, and performing the `java.sql.Connection.isValid` operation."
       parameters:
         - name: uid
           in: path
-          description: "**Unique identifier**. For a data source configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as `databaseStore[defaultDatabaseStore]/dataSource[default-0]`."
+          description: "**Unique identifier**. For a data source configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *databaseStore[defaultDatabaseStore]/dataSource[default-0]*."
           required: true
           schema:
             type: string
+            example: DefaultDataSource
+          examples:
+            example-ds-id:
+              summary: "Top-level dataSource with id"
+              description: "The default data source is configured at top-level and has an id of DefaultDataSource."
+              value: "DefaultDataSource"
+            example-ds-no-id:
+              summary: "Top-level dataSource without id"
+              description: "A generated uid for top-level data sources which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "dataSource[default-0]"
+            example-ds-nested:
+              summary: "Nested dataSource without id"
+              description: "References the first dataSource (index 0) that is nested under the databaseStore element with id of defaultDatabaseStore."
+              value: "databaseStore[defaultDatabaseStore]/dataSource[default-0]"
+            example-ds-nested-under-singleton:
+              summary: "Nested dataSource (without id) under singleton"
+              description: "References the first dataSource (index 0) that is nested under the transaction element. The transaction element is a singleton and cannot have an id."
+              value: "transaction/dataSource[default-0]"
+            example-ds-app-def:
+              summary: "App-defined data source"
+              description: "References a data source defined by @DataSourceDefinition within the MyApp application, in the MyWebModule module, with a name of java:module/env/jdbc/ds1"
+              value: "application[MyApp]/module[MyWebModule]/dataSource[java:comp/module/env/jdbc/ds1]"
         - name: X-Validation-User
           in: header
           description: "**User**. Supplies a user name when not using Container-managed authentication."
@@ -58,6 +80,23 @@ paths:
           description: "**Custom Login**. Supplies the `name` of a `jaasLoginContextEntry` to use for Container-managed authentication."
           schema:
             type: string
+# requestBody in GET will be allowed again in a newer version of OpenAPI
+# see https://github.com/OAI/OpenAPI-Specification/pull/1937
+#      requestBody:
+#        description: "Additional details for request, including **Login Config Properties**"
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                loginConfigProperties:
+#                  type: object
+#                  additionalProperties:
+#                    type: string
+#              example:
+#                loginConfigProperties:
+#                  loginProp1: val1
+#                  loginProp2: val2
       responses:
         200:
           description: Validation result retrieved
@@ -65,3 +104,84 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  uid:
+                    description: "unique identifier"
+                    type: string
+                    example: "myDataSource"
+                  id:
+                    description: "id of dataSource"
+                    type: string
+                    example: "myDataSource"
+                  jndiName:
+                    description: "jndiName of dataSource"
+                    type: string
+                    example: "jdbc/ds1"
+                  successful:
+                    description: "result of validation"
+                    type: boolean
+                    example: false
+                  info:
+                    type: object
+                    properties:
+                      databaseProductName:
+                        type: string
+                        example: "VeryFast Enterprise DB"
+                      databaseProductVersion:
+                        type: string
+                        example: "44.117.125"
+                      jdbcDriverName:
+                        type: string
+                        example: "EvenFaster JDBC"
+                      jdbcDriverVersion:
+                        type: string
+                        example: "52.165.173"
+                      catalog:
+                        type: string
+                        example: "exampledb"
+                      schema:
+                        type: string
+                        example: "MYSCHEMA"
+                      user:
+                        type: string
+                        example: "dbuser1"
+                  failure:
+                    $ref: "#/components/schemas/validation.dataSource.cause"
+                required:
+                  - uid
+                  - successful
+components:
+  schemas:
+    validation.dataSource.cause:
+      type: object
+      properties:
+        sqlState:
+          type: string
+        errorCode:
+          type: integer
+        class:
+          type: string
+        message:
+          type: string
+        stack:
+          type: array
+          items:
+            type: string
+        cause:
+          $ref: "#/components/schemas/validation.dataSource.cause"
+      example:
+        sqlState: "08004"
+        errorCode: 9409
+        class: "java.sql.SQLInvalidAuthorizationSpecException"
+        message: "User has insufficient privileges to access database."
+        stack:
+          - "org.example.efjdbc.EFConnection.isValid(EFConnection.java:253)"
+          - "com.ibm.ws.rest.handler.validator.jdbc.DataSourceValidator(DataSourceValidator.java:129)"
+          - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.validateSingleInstance(ValidatorRestHandler:231)"
+        cause:
+          class: "javax.security.auth.login.LoginException"
+          message: "unauthorized"
+          stack:
+            - "org.example.efjdbc.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
+            - "org.example.efjdbc.EFConnection.authenticate(EFConnection.java:223)"
+            - "org.example.efjdbc.EFConnection.deferredLogin(EFConnection.java:385)"
