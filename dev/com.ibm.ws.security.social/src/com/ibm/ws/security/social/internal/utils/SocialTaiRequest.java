@@ -142,7 +142,8 @@ public class SocialTaiRequest {
             throw exception;
         }
         if (this.socialLoginConfig == null) {
-        	boolean localAuthNotEnabled = ! SocialLoginTAI.getSocialLoginWebappConfig().isLocalAuthenticationEnabled();  
+        	boolean localAuthNotEnabled = ! ( SocialLoginTAI.getSocialLoginWebappConfig() != null 
+        			&& SocialLoginTAI.getSocialLoginWebappConfig().isLocalAuthenticationEnabled());  
         	// if we have only one provider but local auth is enabled, need to choose between those two.
             if (this.filteredConfigs != null) {
                 if (this.filteredConfigs.size() == 1 && localAuthNotEnabled) {
