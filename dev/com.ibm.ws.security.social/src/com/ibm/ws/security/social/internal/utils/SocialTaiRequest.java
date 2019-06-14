@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.tai.SocialLoginTAI;
 
 /*
  * Store the data for a httpServletRequest session
@@ -141,8 +142,10 @@ public class SocialTaiRequest {
             throw exception;
         }
         if (this.socialLoginConfig == null) {
+        	boolean localAuthNotEnabled = ! SocialLoginTAI.getSocialLoginWebappConfig().isLocalAuthenticationEnabled();  
+        	// if we have only one provider but local auth is enabled, need to choose between those two.
             if (this.filteredConfigs != null) {
-                if (this.filteredConfigs.size() == 1) {
+                if (this.filteredConfigs.size() == 1 && localAuthNotEnabled) {
                     this.socialLoginConfig = this.filteredConfigs.get(0);
                 } else {
                     // error handling -- multiple socialLoginConfig qualified and we do not know how to select
@@ -150,7 +153,7 @@ public class SocialTaiRequest {
                     throw new SocialLoginException("SOCIAL_LOGIN_MANY_PROVIDERS", null, new Object[] { configIds });
                 }
             } else if (this.genericConfigs != null) {
-                if (this.genericConfigs.size() == 1) {
+                if (this.genericConfigs.size() == 1 && localAuthNotEnabled) {
                     this.socialLoginConfig = this.genericConfigs.get(0);
                 } else {
                     // error handling -- multiple socialLoginConfig qualified and we do not know how to select
