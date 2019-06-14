@@ -27,6 +27,22 @@ public class PrivHelper {
 
     public static final String JAXB_PERMISSION = "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";";
 
+    /**
+     * This permission is needed to workaround a missing JDK permission which the JDK should be granting itself by default.
+     * For further details/status see: https://github.com/eclipse/openj9/issues/6119
+     */
+    public static final String LOCALCONNECTOR_PERMISSION = "permission java.lang.RuntimePermission \"accessClassInPackage.com.ibm.tools.attach.target\";\n" +
+                                                           "permission java.lang.RuntimePermission \"accessUserInformation\";\n" +
+                                                           "permission java.lang.RuntimePermission \"jdk.internal.perf.Perf.getPerf\";\n" +
+                                                           "permission com.sun.tools.attach.AttachPermission \"createAttachProvider\";\n" +
+                                                           "permission com.sun.tools.attach.AttachPermission \"attachVirtualMachine\";\n" +
+                                                           "permission java.io.FilePermission \"<<ALL FILES>>\", \"read,write,delete\";\n" +
+                                                           "permission javax.management.MBeanServerPermission \"createMBeanServer\";\n" +
+                                                           "permission java.net.SocketPermission \"*\", \"accept,connect,resolve\";\n" +
+                                                           "permission java.util.PropertyPermission \"com.sun.management.*\", \"read\";\n" +
+                                                           "permission java.util.PropertyPermission \"java.rmi.server.randomIDs\", \"write\";\n" +
+                                                           "permission java.util.PropertyPermission \"com.ibm.tools.attach.*\", \"read\";";
+
     public static String getProperty(final String prop) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
@@ -57,9 +73,9 @@ public class PrivHelper {
     /**
      * Creates a new policy file that combines the JDK's default policy set and permissions passed into this method.
      *
-     * @param server The LibertyServer to install the custom policy file for
+     * @param server           The LibertyServer to install the custom policy file for
      * @param permissionsToAdd Permission(s) to add to the JDK default policies, for example:<br>
-     *            <code>permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";</code>
+     *                             <code>permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";</code>
      */
     public static void generateCustomPolicy(LibertyServer server, String... permissionsToAdd) throws Exception {
         if (!server.isJava2SecurityEnabled() || permissionsToAdd == null || permissionsToAdd.length == 0)
@@ -74,9 +90,9 @@ public class PrivHelper {
         String policyContents = FileUtils.readFile(policyPath);
 
         // Add in our custom policy for JAX-B permissions:
-        StringBuilder sb = new StringBuilder("        // Permissions added by FAT bucket\n");
+        StringBuilder sb = new StringBuilder("    // Permissions added by FAT bucket\n");
         for (String permToAdd : permissionsToAdd)
-            sb.append("        ").append(permToAdd).append('\n');
+            sb.append("    ").append(permToAdd).append('\n');
         if (!policyContents.contains("grant {"))
             throw new Exception("Policy file did not contain special token 'grant {'.  The contents were: " + policyContents);
         policyContents = policyContents.replace("grant {", "grant {\n" + sb.toString() + '\n');
