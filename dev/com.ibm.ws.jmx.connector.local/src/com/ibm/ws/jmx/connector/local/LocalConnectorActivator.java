@@ -12,6 +12,7 @@ package com.ibm.ws.jmx.connector.local;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
@@ -63,10 +64,11 @@ public final class LocalConnectorActivator {
 
                         String localConnectorAddress = null;
                         // Start the JMX agent and retrieve the local connector address.
-                        // Use JDK internal APIs for Java 8 and older OR if the server was launched in a way that bypassed
-                        // the wlp/bin/server script and therefore did not get the -Djdk.attach.allowAttachSelf=true prop set
                         if (JavaInfo.majorVersion() < 9 ||
                             (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf"))) {
+                            // Use JDK internal APIs for Java 8 and older OR if the server was launched in a way that bypassed
+                            // the wlp/bin/server script and therefore did not get the -Djdk.attach.allowAttachSelf=true prop set
+
                             // Use reflection to invoke...
                             // Agent.agentmain(null);
                             // Properties props = VMSupport.getAgentProperties()
@@ -84,6 +86,13 @@ public final class LocalConnectorActivator {
                                 localConnectorAddress = props.getProperty(LOCAL_CONNECTOR_ADDRESS_PROPERTY);
                             }
                         } else {
+                            // This code path uses public Java APIs and is the preferred approach for self-attach (used for JDK 9+)
+
+                            // Manually initialize the PlatformMBeanServer here where we have access to com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder.
+                            // If we do not manually initialize here, Hotspot will try to do so using JDK classloaders when we call
+                            // VirtualMachine.startLocalManagementAgent() which will fail with a CNFE.
+                            ManagementFactory.getPlatformMBeanServer();
+
                             // Use reflection to invoke...
                             // VirtualMachine vm = VirtualMachine.attach(String.valueOf(ProcessHandle.current().pid()));
                             // localConnectorAddress = vm.startLocalManagementAgent();
