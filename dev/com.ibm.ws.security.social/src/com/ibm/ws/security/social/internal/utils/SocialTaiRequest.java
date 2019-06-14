@@ -131,6 +131,11 @@ public class SocialTaiRequest {
         }
         return allConfigIds;
     }
+    
+    protected  boolean isLocalAuthEnabled() {
+    	return ( SocialLoginTAI.getSocialLoginWebappConfig() != null 
+    			&& SocialLoginTAI.getSocialLoginWebappConfig().isLocalAuthenticationEnabled());
+    }
 
     /**
      * @return
@@ -141,20 +146,18 @@ public class SocialTaiRequest {
             this.taiException = null;
             throw exception;
         }
-        if (this.socialLoginConfig == null) {
-        	boolean localAuthNotEnabled = ! ( SocialLoginTAI.getSocialLoginWebappConfig() != null 
-        			&& SocialLoginTAI.getSocialLoginWebappConfig().isLocalAuthenticationEnabled());  
+        if (this.socialLoginConfig == null) {          	
         	// if we have only one provider but local auth is enabled, need to choose between those two.
-            if (this.filteredConfigs != null) {
-                if (this.filteredConfigs.size() == 1 && localAuthNotEnabled) {
+            if (this.filteredConfigs != null) {            	
+                if (this.filteredConfigs.size() == 1 && ! isLocalAuthEnabled()) {
                     this.socialLoginConfig = this.filteredConfigs.get(0);
                 } else {
                     // error handling -- multiple socialLoginConfig qualified and we do not know how to select
                     String configIds = getConfigIds(filteredConfigs);
                     throw new SocialLoginException("SOCIAL_LOGIN_MANY_PROVIDERS", null, new Object[] { configIds });
                 }
-            } else if (this.genericConfigs != null) {
-                if (this.genericConfigs.size() == 1 && localAuthNotEnabled) {
+            } else if (this.genericConfigs != null) {            	
+                if (this.genericConfigs.size() == 1 && ! isLocalAuthEnabled()) {
                     this.socialLoginConfig = this.genericConfigs.get(0);
                 } else {
                     // error handling -- multiple socialLoginConfig qualified and we do not know how to select
