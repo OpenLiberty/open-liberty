@@ -321,7 +321,7 @@ components:
           user: "dbuser1"
         failure:
           sqlState: "08004"
-          errorCode: 9409
+          errorCode: "9409"
           class: "java.sql.SQLInvalidAuthorizationSpecException"
           message: "User has insufficient privileges to access database."
           stack:
@@ -358,8 +358,7 @@ components:
         sqlState:
           type: string
         errorCode:
-          #TODO type is not consistent between JCA and JDBC. Convert to string?
-          type: integer
+          type: string
         class:
           type: string
         message:

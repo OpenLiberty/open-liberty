@@ -115,7 +115,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         assertNull(err, json.get("failure"));
         assertNull(err, json.get("info"));
         assertEquals(err, "08004", getString(json, "sqlState"));
-        assertEquals(err, 40000, json.getInt("errorCode"));
+        assertEquals(err, "40000", json.getString("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientException", getString(json, "class"));
         assertTrue(err, getString(json, "message").contains("Invalid authentication"));
     }
