@@ -57,7 +57,6 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 ServerStartJVMOptionsTest.class,
                 PauseResumeCommandTest.class,
                 EmbeddedServerMergeProductExtensionTest.class,
-                ServerEndpointControlMBeanTest.class,
-                UlimitTest.class
+                ServerEndpointControlMBeanTest.class
 })
 public class FATSuite {}
