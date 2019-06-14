@@ -86,7 +86,7 @@ public class SSLAlpnNegotiator {
     private static Method ibmAlpnPut;
     private static Method ibmAlpnDelete;
 
-    static {
+    static void InitALPN() {
         if (!nativeAlpnPresent) {
             try {
                 ibmAlpn = ClassLoader.getSystemClassLoader().loadClass("com.ibm.jsse2.ext.ALPNJSSEExt");
