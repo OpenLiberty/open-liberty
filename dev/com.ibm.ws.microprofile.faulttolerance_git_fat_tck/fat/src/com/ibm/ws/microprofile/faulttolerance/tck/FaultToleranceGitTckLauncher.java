@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
@@ -51,6 +52,7 @@ public class FaultToleranceGitTckLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
         server.startServer();
     }
 

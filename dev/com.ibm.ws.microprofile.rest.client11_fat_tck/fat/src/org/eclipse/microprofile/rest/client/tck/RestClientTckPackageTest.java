@@ -11,6 +11,7 @@
 package org.eclipse.microprofile.rest.client.tck;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -37,6 +39,11 @@ public class RestClientTckPackageTest {
 
     @Server("FATServer")
     public static LibertyServer server;
+    
+    @BeforeClass
+    public static void setup() throws Exception {
+    	PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
+    }
 
     @AfterClass
     public static void tearDown() throws Exception {

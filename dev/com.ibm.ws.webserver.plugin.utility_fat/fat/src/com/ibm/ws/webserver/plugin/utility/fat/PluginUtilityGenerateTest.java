@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.PrivHelper;
 
 
 /**
@@ -54,6 +55,7 @@ public class PluginUtilityGenerateTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
+    	PrivHelper.generateCustomPolicy(localAccessServer, PrivHelper.LOCALCONNECTOR_PERMISSION);
         localAccessServer.startServer();
 
         // Pause for the smarter planet message

@@ -20,6 +20,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -31,10 +32,11 @@ public class RestClientTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
-//    @BeforeClass
-//    public static void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
+    	PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
 //        server.startServer();
-//    }
+    }
 //
     @AfterClass
     public static void tearDown() throws Exception {

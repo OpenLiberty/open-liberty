@@ -36,6 +36,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * Tests that applications on the Liberty profile can access the RuntimeUpdateNotificationMBean, register
@@ -77,6 +78,7 @@ public class ConfigUpdateDeliveryTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
         server.startServer();
 
         WebArchive dropinsApp = ShrinkHelper.buildDefaultApp("mbean", "web");

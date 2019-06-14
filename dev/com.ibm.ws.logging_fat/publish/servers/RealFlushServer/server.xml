@@ -4,7 +4,6 @@
 	
     <featureManager>
         <feature>jsp-2.3</feature>
-        <feature>localConnector-1.0</feature>
         <feature>cdi-2.0</feature>
         <feature>json-1.0</feature>
         <feature>jaxrsClient-2.1</feature>

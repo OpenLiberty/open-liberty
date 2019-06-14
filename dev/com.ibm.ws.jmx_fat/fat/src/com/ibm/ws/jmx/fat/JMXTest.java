@@ -39,6 +39,7 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 public class JMXTest {
@@ -52,6 +53,7 @@ public class JMXTest {
         server.installSystemFeature("jmxtest-1.0");
         server.copyFileToLibertyInstallRoot("lib", "bundles/com.ibm.ws.jmx.fat.jmxtest.jar");
 
+        PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
         server.startServer();
         assertNotNull("JMXConnectorServer started not found", server.waitForStringInLog("JMXConnectorServer is ready"));
     }

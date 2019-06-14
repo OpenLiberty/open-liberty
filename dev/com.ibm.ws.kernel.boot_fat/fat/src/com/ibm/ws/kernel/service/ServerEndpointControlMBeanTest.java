@@ -49,6 +49,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 import junit.framework.Assert;
 
 /**
@@ -87,6 +88,7 @@ public class ServerEndpointControlMBeanTest {
     public static void setup() throws Exception {
         final String METHOD_NAME = "setup";
         Log.entering(c, METHOD_NAME);
+        PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
         server.startServer();
         // set up local connector
         MBeanServerConnection mbsc = getMBeanServer(server.getServerRoot());

@@ -20,6 +20,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 public class MPConcurrencyTCKLauncher {
@@ -29,6 +30,7 @@ public class MPConcurrencyTCKLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
         server.startServer();
     }
 

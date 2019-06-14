@@ -23,6 +23,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -37,6 +38,7 @@ public class Mpjwt11TCKLauncher_aud_noenv2 {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
         // PrivHelper looked promising for fine grained java2sec exception management but did not work.
         //PrivHelper.generateCustomPolicy(server, "permission java.net.SocketPermission \"127.0.0.1\", \"resolve\"");
         server.startServer();

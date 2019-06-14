@@ -25,6 +25,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -38,6 +39,7 @@ public class ReactiveStreamsTCKLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.LOCALCONNECTOR_PERMISSION);
         Map<String, String> props = new HashMap<String, String>();
         //Set timeout for the tests.
         props.put("DEFAULT_TIMEOUT_MILLIS", "10000");//Increase timeout before tests fail.
