@@ -202,6 +202,7 @@ org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.johnzon:johnzon-core:1.1.8
 org.apache.johnzon:johnzon-jsonb:1.1.8
 org.apache.johnzon:johnzon-mapper:1.1.8
+org.apache.kafka:kafka-clients:2.2.0
 org.apache.maven:maven-model:3.5.0
 org.apache.myfaces.core:myfaces-api:2.2.12
 org.apache.myfaces.core:myfaces-api:2.3.2
@@ -407,6 +408,7 @@ org.springframework.boot:spring-boot:2.1.2.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.1.2.RELEASE
 org.testcontainers:database-commons:1.11.1
 org.testcontainers:jdbc:1.11.1
+org.testcontainers:kafka:1.11.1
 org.testcontainers:postgresql:1.11.1
 org.testcontainers:testcontainers:1.11.1
 io.projectreactor:reactor-core:3.1.8.RELEASE
