@@ -28,7 +28,7 @@ import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
 public class TraceSource implements Source {
-    private static final TraceComponent tc = Tr.register(TraceSource.class, null, null);
+    private static final TraceComponent tc = Tr.register(TraceSource.class);
     private final SequenceNumber sequenceNumber = new SequenceNumber();
     private final String sourceName = "com.ibm.ws.logging.source.trace";
     private final String location = "memory";

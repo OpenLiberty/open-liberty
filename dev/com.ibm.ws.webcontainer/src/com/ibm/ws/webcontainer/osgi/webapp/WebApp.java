@@ -103,7 +103,7 @@ import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 @SuppressWarnings("unchecked")
 public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements ComponentNameSpaceConfigurationProvider
 {
-  private static final TraceComponent tc = Tr.register(WebApp.class,com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants.TR_GROUP, com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants.NLS_PROPS);
+  private static final TraceComponent tc = Tr.register(WebApp.class);
   protected static final String CLASS_NAME = "com.ibm.ws.webcontainer.osgi.webapp.WebApp";
 
 

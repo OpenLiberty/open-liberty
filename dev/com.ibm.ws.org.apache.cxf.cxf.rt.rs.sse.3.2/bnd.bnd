@@ -16,8 +16,6 @@ javac.target: 1.8
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-rs-sse;3.3.0}!/!META-INF/*,\
    org/apache/cxf=${bin}/org/apache/cxf
-   
-instrument.classesExcludes: org/apache/cxf/jaxrs/sse/client/SseEventSourceImpl$InboundSseEventListenerImpl.class
 
 -buildpath: org.apache.cxf:cxf-rt-rs-sse;version=3.3.0,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\

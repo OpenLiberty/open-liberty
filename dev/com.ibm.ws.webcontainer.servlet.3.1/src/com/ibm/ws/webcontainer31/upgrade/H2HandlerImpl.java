@@ -32,7 +32,7 @@ import com.ibm.wsspi.http.ee8.Http2InboundConnection;
  */
 public class H2HandlerImpl implements H2Handler {
 
-    private static final TraceComponent tc = Tr.register(H2HandlerImpl.class,null);
+    private static final TraceComponent tc = Tr.register(H2HandlerImpl.class);
 
     /**
      * Determines if a given request is an http2 upgrade request
