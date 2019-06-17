@@ -169,7 +169,6 @@ public class WebSphereTrTracingMethodAdapter extends AbstractRasMethodAdapter<Ab
         }
 
         TraceOptionsData traceOptionsData = getClassAdapter().getTraceOptionsData();
-        if (traceOptionsData == null) return;
         visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
 
         List<String> traceGroups = traceOptionsData.getTraceGroups();

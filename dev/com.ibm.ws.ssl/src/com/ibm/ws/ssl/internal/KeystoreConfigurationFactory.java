@@ -58,7 +58,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
 public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
     /** Trace service */
-    private static final TraceComponent tc = Tr.register(KeystoreConfigurationFactory.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(KeystoreConfigurationFactory.class);
 
     private final AtomicServiceReference<WsLocationAdmin> locSvc = new AtomicServiceReference<WsLocationAdmin>("LocMgr");
     private final ConcurrentHashMap<String, KeystoreConfig> keyConfigs = new ConcurrentHashMap<String, KeystoreConfig>();
