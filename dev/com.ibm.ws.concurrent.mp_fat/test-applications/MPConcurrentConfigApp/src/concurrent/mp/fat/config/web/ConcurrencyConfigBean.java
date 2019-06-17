@@ -18,9 +18,9 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class ConcurrencyConfigBean {
@@ -32,7 +32,7 @@ public class ConcurrencyConfigBean {
         return ManagedExecutor.builder().maxAsync(a).maxQueued(q).propagated(ThreadContext.SECURITY, ThreadContext.APPLICATION).build();
     }
 
-    // MicroProfile Concurrency automatically shuts down ManagedExecutors when the application stops.
+    // MicroProfile Context Propagation automatically shuts down ManagedExecutors when the application stops.
     // But even if the application writes its own disposer, it shouldn't get an error.
     void disposeExecutor(@Disposes @Named("securityAndAppContextExecutor") ManagedExecutor exec) {
         exec.shutdownNow();
