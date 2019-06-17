@@ -100,19 +100,25 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
         assertEquals(err, "DBUSER1", json.getString("schema"));
         assertEquals(err, "dbuser1", json.getString("user"));
+    }
 
-        request.method("POST");
-        json = request.run(JsonObject.class);
-        err = "Unexpected json response: " + json.toString();
-        assertEquals(err, "DefaultDataSource", json.getString("uid"));
-        assertEquals(err, "DefaultDataSource", json.getString("id"));
+    /**
+     * Single test method to verify that JMS is set up properly in this server.
+     */
+    @Test
+    public void testDefaultJMSConnectionFactory() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/DefaultJMSConnectionFactory");
+        JsonObject json = request.run(JsonObject.class);
+        String err = "Unexpected json response: " + json.toString();
+        assertEquals(err, "DefaultJMSConnectionFactory", json.getString("uid"));
+        assertEquals(err, "DefaultJMSConnectionFactory", json.getString("id"));
         assertNull(err, json.get("jndiName"));
         assertTrue(err, json.getBoolean("successful"));
         assertNull(err, json.get("failure"));
         assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
-        assertTrue(err, json.getString("databaseProductVersion").matches(VERSION_REGEX));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
-        assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
+        assertEquals(err, "IBM", json.getString("jmsProviderName"));
+        assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, "clientID", json.getString("clientID"));
     }
 }
