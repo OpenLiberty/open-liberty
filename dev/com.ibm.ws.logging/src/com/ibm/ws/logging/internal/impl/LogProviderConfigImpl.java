@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.FFDCSummaryPolicy;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
 import com.ibm.ws.logging.utils.FileLogHolder;
@@ -38,7 +37,7 @@ import com.ibm.wsspi.logprovider.TrService;
  */
 public class LogProviderConfigImpl implements LogProviderConfig {
 
-    private final static TraceComponent tc = Tr.register(LogProviderConfigImpl.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+    private final static TraceComponent tc = Tr.register(LogProviderConfigImpl.class);
 
     /** TrService delegate */
     protected final TrService trDelegate;

@@ -36,7 +36,7 @@ import com.ibm.ws.kernel.boot.logging.WsLogManager;
  */
 @SuppressWarnings("deprecation")
 public class WsLogger extends Logger implements TraceStateChangeListener {
-    private static final TraceComponent tc = Tr.register(WsLogger.class,NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+    private static final TraceComponent tc = Tr.register(WsLogger.class);
 
     //
     // ResourceBundle cached with this WsLogger

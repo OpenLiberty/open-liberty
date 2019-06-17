@@ -83,8 +83,7 @@ import com.ibm.wsspi.security.audit.AuditService;
            immediate = true)
 public class AuditPE implements ProbeExtension {
 
-	private static final TraceComponent tc = Tr.register(AuditPE.class, "requestProbe",
-			"com.ibm.ws.request.probe.internal.resources.LoggingMessages");
+	private static final TraceComponent tc = Tr.register(AuditPE.class);
 
 	private static final String requestProbeType = "websphere.security.audit.test";
 	private static final String KEY_AUDIT_SERVICE = "auditService";

@@ -49,7 +49,7 @@ import com.ibm.ws.ffdc.FFDCConfigurator;
  * the RAS Tr configuration.
  */
 public class LoggingConfigurationService implements ManagedService {
-    private static final TraceComponent tc = Tr.register(LoggingConfigurationService.class,OsgiLogConstants.TRACE_GROUP,OsgiLogConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(LoggingConfigurationService.class);
 
     /** PID: identifies bundle to ConfigAdminService */
     public static final String RAS_TR_CFG_PID = "com.ibm.ws.logging";

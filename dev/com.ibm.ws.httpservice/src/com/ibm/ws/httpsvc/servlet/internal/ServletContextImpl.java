@@ -56,7 +56,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * Implementation of a servlet context object.
  */
 public class ServletContextImpl implements ExtServletContext {
-    private static final TraceComponent tc = Tr.register(ServletContextImpl.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP, null);
+    private static final TraceComponent tc = Tr.register(ServletContextImpl.class);
 
     private Bundle bundle;
     private ServletContext rootContext;
@@ -239,17 +239,20 @@ public class ServletContextImpl implements ExtServletContext {
     }
 
     @Override
-    public Dynamic addFilter(String arg0, String arg1) throws IllegalArgumentException, IllegalStateException {
+    public Dynamic addFilter(String arg0, String arg1)
+                    throws IllegalArgumentException, IllegalStateException {
         return null;
     }
 
     @Override
-    public Dynamic addFilter(String arg0, Filter arg1) throws IllegalArgumentException, IllegalStateException {
+    public Dynamic addFilter(String arg0, Filter arg1)
+                    throws IllegalArgumentException, IllegalStateException {
         return null;
     }
 
     @Override
-    public Dynamic addFilter(String arg0, Class<? extends Filter> arg1) throws IllegalArgumentException, IllegalStateException {
+    public Dynamic addFilter(String arg0, Class<? extends Filter> arg1)
+                    throws IllegalArgumentException, IllegalStateException {
         return null;
     }
 
@@ -264,34 +267,40 @@ public class ServletContextImpl implements ExtServletContext {
 
     @Override
     public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
-                                                                String arg1) throws IllegalArgumentException, IllegalStateException {
+                                                                String arg1)
+                    throws IllegalArgumentException, IllegalStateException {
         return null;
     }
 
     @Override
     public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
-                                                                Servlet arg1) throws IllegalArgumentException, IllegalStateException {
+                                                                Servlet arg1)
+                    throws IllegalArgumentException, IllegalStateException {
         return null;
     }
 
     @Override
     public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
-                                                                Class<? extends Servlet> arg1) throws IllegalArgumentException, IllegalStateException {
+                                                                Class<? extends Servlet> arg1)
+                    throws IllegalArgumentException, IllegalStateException {
         return null;
     }
 
     @Override
-    public <T extends Filter> T createFilter(Class<T> arg0) throws ServletException {
+    public <T extends Filter> T createFilter(Class<T> arg0)
+                    throws ServletException {
         return null;
     }
 
     @Override
-    public <T extends EventListener> T createListener(Class<T> arg0) throws ServletException {
+    public <T extends EventListener> T createListener(Class<T> arg0)
+                    throws ServletException {
         return null;
     }
 
     @Override
-    public <T extends Servlet> T createServlet(Class<T> arg0) throws ServletException {
+    public <T extends Servlet> T createServlet(Class<T> arg0)
+                    throws ServletException {
         return null;
     }
 
@@ -372,13 +381,14 @@ public class ServletContextImpl implements ExtServletContext {
     }
 
     @Override
-    public boolean handleSecurity(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public boolean handleSecurity(HttpServletRequest req, HttpServletResponse res)
+                    throws IOException {
         return this.httpContext.handleSecurity(req, res);
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.servlet.ServletContext#getVirtualServerName()
      */
     @Override

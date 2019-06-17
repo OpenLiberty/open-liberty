@@ -85,8 +85,7 @@ import com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig;
  */
 public class PluginGenerator {
 
-    private static final TraceComponent tc = Tr.register(PluginGenerator.class,com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants.TR_GROUP,
-                                                         com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants.NLS_PROPS);
+    private static final TraceComponent tc = Tr.register(PluginGenerator.class);
     private static final String styleSheet =
         " <xsl:stylesheet version=\"1.0\"                                   \n" +
         "     xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">           \n" +
