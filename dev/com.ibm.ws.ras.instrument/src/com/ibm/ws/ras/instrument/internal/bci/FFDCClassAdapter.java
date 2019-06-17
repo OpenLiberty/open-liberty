@@ -16,6 +16,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import com.ibm.ws.ras.instrument.annotation.InjectedFFDC;
+import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 
 /**
@@ -42,12 +43,19 @@ public class FFDCClassAdapter extends AbstractRasClassAdapter {
      * True if the class is already instrumented.
      */
     private boolean instrumented;
+    
+    private ClassTraceInfo traceInfo;
 
     public FFDCClassAdapter(ClassVisitor visitor, ClassInfo classInfo) {
         super(visitor, classInfo);
     }
 
-    @Override
+    public FFDCClassAdapter(ClassVisitor visitor, ClassInfo classInfo, ClassTraceInfo info) {
+    	super(visitor, classInfo);
+    	traceInfo = info;
+	}
+
+	@Override
     public RasMethodAdapter createRasMethodAdapter(MethodVisitor mv, int access, String name, String descriptor, String signature, String[] exceptions) {
         return new FFDCMethodAdapter(this, mv, access, name, descriptor, signature, exceptions);
     }

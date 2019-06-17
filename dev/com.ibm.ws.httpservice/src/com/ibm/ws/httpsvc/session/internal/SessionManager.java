@@ -35,7 +35,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 public class SessionManager {
 
     /** Debug variable */
-    private static final TraceComponent tc = Tr.register(SessionManager.class);
+    private static final TraceComponent tc = Tr.register(SessionManager.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP);
 
     private final Object timerLock = new TimerLock();
     private ScheduledEventService scheduler = null;
@@ -57,7 +57,7 @@ public class SessionManager {
 
     /**
      * DS method to activate this component.
-     * 
+     *
      * @param context
      */
     public void activate(ComponentContext context) {
@@ -69,7 +69,7 @@ public class SessionManager {
 
     /**
      * DS method to deactivate this component.
-     * 
+     *
      * @param context
      */
     public void deactivate(ComponentContext context) {
@@ -91,7 +91,7 @@ public class SessionManager {
     /**
      * DS method for runtime updates to configuration without stopping and
      * restarting the component.
-     * 
+     *
      * @param properties
      */
     protected void modified(Map<?, ?> properties) {
@@ -106,7 +106,7 @@ public class SessionManager {
     /**
      * Method called when the properties for the session manager have been
      * found or udpated.
-     * 
+     *
      * @param props
      */
     public void processConfig(Dictionary<?, ?> props) {
@@ -148,7 +148,7 @@ public class SessionManager {
 
     /**
      * DS method for setting the timer service reference.
-     * 
+     *
      * @param ref
      */
     protected void setScheduledEventService(ScheduledEventService ref) {
@@ -159,7 +159,7 @@ public class SessionManager {
 
     /**
      * DS method for removing the timer service reference.
-     * 
+     *
      * @param mgr
      */
     protected void unsetScheduledEventService(ScheduledEventService ref) {
@@ -223,7 +223,7 @@ public class SessionManager {
      * Access the appropriate session configuration information for a given
      * context. If config does not exist for a given application, then the
      * common manager level config is returned.
-     * 
+     *
      * @param info
      * @return SessionConfig
      */
@@ -234,7 +234,7 @@ public class SessionManager {
     /**
      * Access, and possibly create if not found, a session for the given
      * client information.
-     * 
+     *
      * @param info
      * @param create
      * @return SessionImpl, null if not found and create flag is false

@@ -41,7 +41,7 @@ public class RequestProbeBCIManagerImpl {
     	return requestProbeTransformDescriptors;
 	}
 
-	private static final TraceComponent tc = Tr.register(RequestProbeBCIManagerImpl.class);
+	private static final TraceComponent tc = Tr.register(RequestProbeBCIManagerImpl.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 
     synchronized void activate(BundleContext bundleContext, Map<String, Object> properties) throws Exception {
         if (tc.isEntryEnabled()) {

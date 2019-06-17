@@ -32,7 +32,7 @@ import com.ibm.ws.transport.iiop.security.util.Util;
 @TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 public class ClientSASITTDistinguishedName implements CSSSASIdentityToken {
 
-    private static TraceComponent tc = Tr.register(ClientSASITTDistinguishedName.class);
+    private static TraceComponent tc = Tr.register(ClientSASITTDistinguishedName.class,TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     /** {@inheritDoc} */
     @FFDCIgnore(Exception.class)

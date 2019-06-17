@@ -54,7 +54,9 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
 public class DropinMonitor {
-    private static final TraceComponent _tc = Tr.register(DropinMonitor.class);
+    private static final TraceComponent _tc = Tr.register(DropinMonitor.class, new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
+                                                          com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES,
+                                                          "com.ibm.ws.app.manager.internal.monitor.DropinMonitor");
 
     private BundleContext _ctx;
     private WsLocationAdmin locationService;
@@ -347,7 +349,7 @@ public class DropinMonitor {
     /**
      * Returns the message helper for the specified application handler type.
      *
-     * @param type application handler type
+     * @param type     application handler type
      * @param fileName file name from which type can be inferred if not specified
      * @return the message helper for the specified application handler type.
      */
@@ -384,9 +386,9 @@ public class DropinMonitor {
      * Takes a file and an optional file type, and updates the file. If no type is given it will use the
      * extension of the file given.
      *
-     * @param ca the configuration admin service.
+     * @param ca          the configuration admin service.
      * @param currentFile the file of the application to install. Can be a directory
-     * @param type the type of the application.
+     * @param type        the type of the application.
      *
      */
     private void startApplication(File currentFile, String type) {
