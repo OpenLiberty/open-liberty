@@ -378,13 +378,23 @@ public class DirectoryOverlayContainerImpl implements OverlayContainer {
         boolean overlayIsDir = overlayExists && FileUtils.fileIsDirectory(overlayDir);
 
         if ( !overlayIsDir ) {
-            if ( overlayExists || (FileUtils.listFiles(overlayParentDir).length != 0) ) {
-                // Exists as a simple file (and the parent must be non-empty),
-                // Or does not exist and the parent is empty.
-                throw new IllegalArgumentException();
+            if ( overlayExists ) {
+                throw new IllegalArgumentException("Overlay [ " + overlayDir.getAbsolutePath() + " ] exists and is not a directory");
             } else {
-                // Must not exist. 
-                FileUtils.fileMkDirs(overlayDir);
+                File[] peers = FileUtils.listFiles(overlayParentDir);
+                if ( peers.length != 0 ) {
+                    System.out.println("Overlay parent [ " + overlayParentDir.getAbsolutePath() + " ]");
+                    System.out.println("Overlay [ " + overlayDir.getAbsolutePath() + " ]");
+                    for ( File peer : peers ) {
+                        System.out.println("  Peer [ " + peer.getName() + " ]");
+                    }
+                    throw new IllegalArgumentException(
+                        "Overlay [ " + overlayParentDir.getAbsolutePath() + " ]" +
+                        " has children, but does not have [ " + overlayDir.getAbsolutePath() + " ]");
+                } else {
+                    // Must not exist. 
+                    FileUtils.fileMkDirs(overlayDir);
+                }
             }
         } else {
             // Exists as a directory: Use as is.
