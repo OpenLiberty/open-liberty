@@ -37,7 +37,6 @@ public abstract class InjectionRuntimeContextHelper {
         protected InjectionRuntimeContext initialValue() {
 
             InjectionRuntimeContext irc = new InjectionRuntimeContext();
-            InjectionRuntimeContextHelper.setRuntimeContext(irc);
             return irc;
 
         }

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs20.server.internal;
+package com.ibm.ws.jaxrs20.ejb;
 
 import java.io.File;
 import java.security.AccessController;

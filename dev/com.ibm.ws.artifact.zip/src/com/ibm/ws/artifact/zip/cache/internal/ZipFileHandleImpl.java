@@ -87,10 +87,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private class ZipFileLock {
-        // EMPTY
-    }
-    private final ZipFileLock zipFileLock = new ZipFileLock();
+    private final Integer zipFileLock = new Integer(0);
     private ZipFile zipFile;
     private int openCount;
 
@@ -207,10 +204,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private static class ZipEntriesLock {
-        // EMPTY
-    }
-    private static final ZipEntriesLock zipEntriesLock = new ZipEntriesLock();
+    private static final Integer zipEntriesLock = new Integer(1);
     private static final Map<String, byte[]> zipEntries;
 
     static {

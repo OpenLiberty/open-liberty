@@ -68,18 +68,12 @@ import com.ibm.ws.jaxrs20.multipart.impl.MultipartBodyImpl;
 public class IBMMultipartProvider extends AbstractConfigurableProvider implements MessageBodyReader<Object>, MessageBodyWriter<Object> {
 
     private final MultipartProvider multipartProvider = new MultipartProvider();
-    private static final Set<Class<?>> WELL_KNOWN_MULTIPART_CLASSES;
     private static final String SUPPORT_TYPE_AS_MULTIPART = "support.type.as.multipart";
     private static final Set<String> MULTIPART_SUBTYPES;
     private static final Set<String> STR_WELL_KNOWN_MULTIPART_CLASSES;
     private static final String ACTIVE_JAXRS_PROVIDER_KEY = "active.jaxrs.provider";
     private static final Logger LOG = LogUtils.getL7dLogger(IBMMultipartProvider.class);
     static {
-        WELL_KNOWN_MULTIPART_CLASSES = new HashSet<Class<?>>();
-        WELL_KNOWN_MULTIPART_CLASSES.add(com.ibm.websphere.jaxrs20.multipart.IMultipartBody.class);
-        WELL_KNOWN_MULTIPART_CLASSES.add(com.ibm.websphere.jaxrs20.multipart.IAttachment.class);
-        WELL_KNOWN_MULTIPART_CLASSES.add(com.ibm.ws.jaxrs20.multipart.impl.MultipartBodyImpl.class);
-        WELL_KNOWN_MULTIPART_CLASSES.add(com.ibm.ws.jaxrs20.multipart.impl.AttachmentImpl.class);
         STR_WELL_KNOWN_MULTIPART_CLASSES = new HashSet<String>();
         STR_WELL_KNOWN_MULTIPART_CLASSES.add("com.ibm.websphere.jaxrs20.multipart.IMultipartBody");
         STR_WELL_KNOWN_MULTIPART_CLASSES.add("com.ibm.websphere.jaxrs20.multipart.IAttachment");
@@ -181,7 +175,6 @@ public class IBMMultipartProvider extends AbstractConfigurableProvider implement
                                 MediaType mt) {
         if (mediaTypeSupported(mt)
             && (STR_WELL_KNOWN_MULTIPART_CLASSES.contains(type.getName())
-                || WELL_KNOWN_MULTIPART_CLASSES.contains(type)
                 || Collection.class.isAssignableFrom(type)
                 || Map.class.isAssignableFrom(type) && type != MultivaluedMap.class
                 || AnnotationUtils.getAnnotation(anns, Multipart.class) != null

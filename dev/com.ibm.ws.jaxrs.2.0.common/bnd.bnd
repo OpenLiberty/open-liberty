@@ -32,8 +32,6 @@ Export-Package: \
 	com.ibm.ws.jaxrs20.api;provide=true,\
 	com.ibm.ws.jaxrs20.bus,\
 	com.ibm.ws.jaxrs20.metadata,\
-	com.ibm.ws.jaxrs20.metadata.builder,\
-	com.ibm.ws.jaxrs20.support,\
 	com.ibm.ws.jaxrs20.utils,\
 	com.ibm.ws.jaxrs20.endpoint,\
 	com.ibm.ws.jaxrs20.injection,\
