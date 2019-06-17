@@ -297,6 +297,27 @@ public class KernelBootstrap {
     }
 
     /**
+     * Force stop the server. This emulates the path that the server stop action takes:
+     * it calls shutdown on the LauncherDelegate, and then waits until it can obtain
+     * the server lock to ensure the server has stopped.
+     *
+     * @throws InterruptedException
+     */
+    public ReturnCode shutdown(boolean force) throws InterruptedException {
+        delegateCreated.await();
+        // If we have a delegate, call shutdown with force flag to stop the server
+        if (launcherDelegate != null && launcherDelegate.shutdown(force)) {
+            // if shutdown stopped the server, we need to wait until we can obtain
+            // the server lock (the serverLock is released in the finally block of
+            // the go() method.. )
+            return serverLock.waitForStop();
+        }
+
+        // Server did not propertly start (no delegate), so stop is fine.
+        return ReturnCode.OK;
+    }
+
+    /**
      * This sets up the system property which is consulted by
      * java.lang.management.ManagementFactory and javax.management.MBeanServerFactory.
      */
