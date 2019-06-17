@@ -29,7 +29,7 @@ import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
 
 @Trivial
 final class Util {
-    static final TraceComponent tc = Tr.register(Util.class,"ClassLoadingService","com.ibm.ws.classloading.internal.resources.ClassLoadingServiceMessages");
+    static final TraceComponent tc = Tr.register(Util.class);
 
     private Util() {
         throw null;

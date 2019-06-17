@@ -19,8 +19,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import com.ibm.ws.ras.instrument.internal.introspect.TraceObjectFieldAnnotationVisitor;
-import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
-import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 
 public class LibertyTracePreprocessClassAdapter extends AbstractTracingRasClassAdapter {
 
@@ -32,13 +30,7 @@ public class LibertyTracePreprocessClassAdapter extends AbstractTracingRasClassA
         this.initializeTraceObjectField = initializeTraceObjectField;
     }
 
-    public LibertyTracePreprocessClassAdapter(ClassVisitor visitor, boolean initializeTraceObjectField, ClassTraceInfo info) {
-    	super(visitor, null);
-    	this.initializeTraceObjectField = initializeTraceObjectField;
-    	traceInfo = info;
-	}
-
-	@Override
+    @Override
     public AnnotationVisitor visitAnnotation(String name, boolean visible) {
         AnnotationVisitor av = super.visitAnnotation(name, visible);
         if (name.equals(TRACE_OBJECT_FIELD_TYPE.getDescriptor())) {
@@ -79,11 +71,4 @@ public class LibertyTracePreprocessClassAdapter extends AbstractTracingRasClassA
     public boolean isTraceObjectFieldInitializationRequired() {
         return initializeTraceObjectField;
     }
-
-	@Override
-	public boolean isTrivial() {
-		
-		return false;
-	}
-
 }

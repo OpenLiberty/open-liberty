@@ -69,7 +69,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
     /** Key that reference clients use to target an active SSL component */
     private static final String SSL_SUPPORT_KEY = "SSLSupport";
 
-    private static final TraceComponent tc = Tr.register(SSLComponent.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(SSLComponent.class);
 
     protected static final String MY_ALIAS = "sslDefault";
 
@@ -281,7 +281,8 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
+    }
 
     @Reference(service = FeatureProvisioner.class)
     protected synchronized void setKernelProvisioner(FeatureProvisioner provisionerService) {

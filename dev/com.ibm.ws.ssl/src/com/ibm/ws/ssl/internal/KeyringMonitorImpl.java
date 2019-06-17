@@ -27,7 +27,7 @@ import com.ibm.ws.ssl.KeyringMonitor;
 public class KeyringMonitorImpl implements KeyringMonitor {
 
     /** Trace service */
-    private static final TraceComponent tc = Tr.register(KeyringMonitorImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(KeyringMonitorImpl.class);
 
     private final KeyringBasedActionable actionable;
 
@@ -39,7 +39,7 @@ public class KeyringMonitorImpl implements KeyringMonitor {
      * Registers this KeyringMonitor to start monitoring the specified keyrings
      * by mbean notification.
      *
-     * @param id      of keyrings to monitor.
+     * @param id of keyrings to monitor.
      * @param trigger what trigger the keyring update notification mbean
      * @return The <code>KeyringMonitor</code> service registration.
      */
