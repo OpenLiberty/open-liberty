@@ -94,7 +94,9 @@ public class AsyncRemoteTests extends AbstractTest {
     @AfterClass
     public static void afterClass() throws Exception {
         // CNTR0328W - AsyncFutureCancelRemoteTest/testAsyncRecancelledTrueParameter
-        server.stopServer("CNTR0328W");
+        // CWWKE1102W - AsyncFutureCancelLocalTest: Remove when ExecutorServiceImpl.RunnableWrapper properly handles cancel
+        // CWWKE1107W - AsyncFutureCancelLocalTest: Remove when ExecutorServiceImpl.RunnableWrapper properly handles cancel
+        server.stopServer("CNTR0328W", "CWWKE1102W", "CWWKE1107W");
     }
 
 }
