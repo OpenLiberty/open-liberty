@@ -14,10 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import javax.net.SocketFactory;
+
 import org.testcontainers.dockerclient.DockerClientProviderStrategy;
 import org.testcontainers.dockerclient.InvalidConfigurationException;
 
-import com.github.dockerjava.api.command.PingCmd;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -102,19 +103,25 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 10; // attempt up to 10 times for remote builds
             config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
             client = getClientForConfig(config);
-//            int timeout = useRemoteDocker() ? 60 : 10;
             Throwable firstIssue = null;
             for (int attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {
                     Log.info(c, m, "Attempting to ping docker daemon. Attempt [" + attempt + "]");
-                    try (PingCmd ping = client.pingCmd()) {
-                        ping.exec();
-                    }
-                    Log.info(c, m, "Ping successful");
-                    Log.info(c, m, "Found docker client settings from environment");
+                    String dockerHost = config.getDockerHost().toASCIIString().replace("tcp://", "https://");
+                    Log.info(c, m, "  Pinging URL: " + dockerHost);
+                    SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
+                    String resp = new HttpsRequest(dockerHost + "/_ping")
+                                    .sslSocketFactory(sslSf)
+                                    .run(String.class);
+                    // Using the Testcontainers API directly causes intermittent failures with ping
+                    // Instead of using their mechanism, attempt to use a manually constructed ping
+                    // try (PingCmd ping = client.pingCmd()) {
+                    //     ping.exec();
+                    // }
+                    Log.info(c, m, "  Ping successful. Response: " + resp);
                     return;
                 } catch (Throwable t) {
-                    Log.error(c, m, t, "ping failed");
+                    Log.error(c, m, t, "  Ping failed.");
                     if (firstIssue == null)
                         firstIssue = t;
                     if (attempt < maxAttempts) {

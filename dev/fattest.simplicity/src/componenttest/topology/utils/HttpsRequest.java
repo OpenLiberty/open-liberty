@@ -17,10 +17,12 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonStructure;
+import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -38,6 +40,7 @@ public class HttpsRequest {
     private Integer timeout;
     private boolean silent = false;
     private int responseCode = -1;
+    private SSLSocketFactory sf = null;
 
     public HttpsRequest(String url) {
         this.url = url;
@@ -63,6 +66,13 @@ public class HttpsRequest {
      */
     public HttpsRequest requestProp(String key, String value) {
         props.put(key, value);
+        return this;
+    }
+
+    public HttpsRequest sslSocketFactory(SocketFactory sslSf) {
+        if (!(sslSf instanceof SSLSocketFactory))
+            throw new IllegalArgumentException("Socket factory must be an instanceof SSLSocketFactory, but was: " + sslSf);
+        this.sf = (SSLSocketFactory) sslSf;
         return this;
     }
 
@@ -126,6 +136,9 @@ public class HttpsRequest {
 
         HttpsURLConnection con = (HttpsURLConnection) new URL(url).openConnection();
         try {
+            if (allowInsecure && sf != null)
+                throw new IllegalStateException("Cannot set allowInsecure=true and sslSocketFactory because " +
+                                                " allowInsecure=true installs its own sslSocketFactory.");
             if (allowInsecure) {
                 //All hosts are valid
                 HostnameVerifier allHostsValid = new HostnameVerifier() {
@@ -144,12 +157,10 @@ public class HttpsRequest {
                     }
 
                     @Override
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                    }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
 
                     @Override
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                    }
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
                 } };
                 try {
                     SSLContext sc = SSLContext.getInstance("TLS");
@@ -160,7 +171,9 @@ public class HttpsRequest {
                     System.err.println("CheckServerAvailability hit an error when trying to ignore certificates.");
                     e.printStackTrace();
                 }
-
+            }
+            if (sf != null) {
+                con.setSSLSocketFactory(sf);
             }
 
             con.setDoInput(true);
