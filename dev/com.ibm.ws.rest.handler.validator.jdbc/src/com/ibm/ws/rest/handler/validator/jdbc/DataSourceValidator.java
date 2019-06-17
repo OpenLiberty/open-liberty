@@ -136,13 +136,17 @@ public class DataSourceValidator implements Validator {
             }
         } catch (Throwable x) {
             ArrayList<String> sqlStates = new ArrayList<String>();
-            ArrayList<Integer> errorCodes = new ArrayList<Integer>();
+            ArrayList<String> errorCodes = new ArrayList<String>();
             Set<Throwable> causes = new HashSet<Throwable>(); // avoid cycles in exception chain
             for (Throwable cause = x; cause != null && causes.add(cause); cause = cause.getCause()) {
                 String sqlState = cause instanceof SQLException ? ((SQLException) cause).getSQLState() : null;
-                Integer errorCode = cause instanceof SQLException ? ((SQLException) cause).getErrorCode() : null;
-                if (sqlState == null && Integer.valueOf(0).equals(errorCode))
-                    errorCode = null; // Omit, because it is unlikely that the database actually returned an error code of 0
+                String errorCode = null;
+                if (cause instanceof SQLException) {
+                    int ec = ((SQLException) cause).getErrorCode();
+                    errorCode = sqlState == null && ec == 0 //
+                                    ? null // Omit, because it is unlikely that the database actually returned an error code of 0
+                                    : Integer.toString(ec);
+                }
                 sqlStates.add(sqlState);
                 errorCodes.add(errorCode);
             }

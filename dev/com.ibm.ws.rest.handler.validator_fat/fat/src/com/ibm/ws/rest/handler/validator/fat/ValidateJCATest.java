@@ -151,7 +151,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertEquals(err, "08001", json.getString("sqlState"));
-        assertEquals(err, 127, json.getInt("errorCode"));
+        assertEquals(err, "127", json.getString("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
         assertEquals(err, "Connection rejected for user names that end in '5'.", json.getString("message"));
         JsonArray stack = json.getJsonArray("stack");
@@ -176,7 +176,7 @@ public class ValidateJCATest extends FATServletClient {
         // cause
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertEquals(err, "28000", json.getString("sqlState"));
-        assertEquals(err, 0, json.getInt("errorCode"));
+        assertEquals(err, "0", json.getString("errorCode"));
         assertEquals(err, "java.sql.SQLInvalidAuthorizationSpecException", json.getString("class"));
         assertEquals(err, "The database is unable to accept user names that include a '5'.", json.getString("message"));
         stack = json.getJsonArray("stack");
@@ -309,7 +309,7 @@ public class ValidateJCATest extends FATServletClient {
 
         // cause
         assertNotNull(err, json = json.getJsonObject("cause"));
-        assertEquals(err, -13579, json.getInt("errorCode"));
+        assertEquals(err, "-13579", json.getString("errorCode"));
         assertEquals(err, "08006", json.getString("sqlState"));
         assertEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Database appears to be down."));
