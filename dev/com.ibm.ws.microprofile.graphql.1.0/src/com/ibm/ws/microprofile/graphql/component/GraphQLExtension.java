@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -68,6 +69,9 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<TracingInterceptor> interceptorType = beanManager.createAnnotatedType(TracingInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
+
+        AnnotatedType<AuthInterceptor> authInterceptorType = beanManager.createAnnotatedType(AuthInterceptor.class);
+        beforeBeanDiscovery.addAnnotatedType(authInterceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
 
         if (canLoad("com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory") && metricsEnabled) {
             AnnotatedType<MetricsInterceptor> metricsInterceptorType = beanManager.createAnnotatedType(MetricsInterceptor.class);
@@ -123,6 +127,20 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         ModuleMetaData mmd = cmd.getModuleMetaData();
         return mmd;
+    }
+
+    static void forEachComponentInApp(Consumer<Class<?>> consumer) {
+        ModuleMetaData mmd = getModuleMetaData();
+        Set<Bean<?>> beans = graphQLComponents.get(mmd);
+        if (beans == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "No GraphQL components found for module " + mmd);
+            }
+            return;
+        }
+        beans.stream()
+             .map(bean -> { return bean.getBeanClass();})
+             .forEach(consumer);
     }
 
     private boolean canLoad(String className) {

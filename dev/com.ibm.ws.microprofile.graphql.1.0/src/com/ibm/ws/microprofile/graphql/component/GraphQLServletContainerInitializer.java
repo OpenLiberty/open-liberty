@@ -12,8 +12,10 @@ package com.ibm.ws.microprofile.graphql.component;
 
 import java.util.Set;
 
+import javax.annotation.security.DeclareRoles;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -54,12 +56,25 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         GraphQLSchema schema = GraphQLExtension.createSchema(beanManager);
 
         if (schema != null) {
+            GraphQLExtension.forEachComponentInApp(cls -> {
+                DeclareRoles dRoles = cls.getAnnotation(DeclareRoles.class);
+                if (dRoles != null) {
+                    String[] roles = dRoles.value();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Roles declared from " + cls + ": {)}", roles);
+                    }
+                    sc.declareRoles(dRoles.value());
+                }
+            });
+
             SimpleGraphQLHttpServlet graphQLServlet = SimpleGraphQLHttpServlet.newBuilder(schema).build();
             ServletRegistration.Dynamic endpointservlet = sc.addServlet(servletname, graphQLServlet);
             endpointservlet.addMapping("/" + path + "/*");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "GraphQL servlet registered at /" + path);
             }
+            FilterRegistration.Dynamic authFilter = sc.addFilter("AuthFilter", new AuthFilter());
+            authFilter.addMappingForServletNames(null, true, servletname);
 
             GraphQLSchemaServlet graphQLSchemaServlet = new GraphQLSchemaServlet(schema);
             ServletRegistration.Dynamic schemaservlet = sc.addServlet(servletname + "Schema", graphQLSchemaServlet);
