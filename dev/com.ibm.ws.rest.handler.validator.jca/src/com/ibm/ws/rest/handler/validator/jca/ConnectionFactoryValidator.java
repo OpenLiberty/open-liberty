@@ -204,9 +204,10 @@ public class ConnectionFactoryValidator implements Validator {
                 if (cause instanceof ResourceException)
                     errorCode = ((ResourceException) cause).getErrorCode();
                 else if (cause instanceof SQLException) {
-                    errorCode = cause instanceof SQLException ? ((SQLException) cause).getErrorCode() : null;
-                    if (sqlState == null && Integer.valueOf(0).equals(errorCode))
-                        errorCode = null; // Omit, because it is unlikely that the database actually returned an error code of 0
+                    int ec = ((SQLException) cause).getErrorCode();
+                    errorCode = sqlState == null && ec == 0 //
+                                    ? null // Omit, because it is unlikely that the database actually returned an error code of 0
+                                    : Integer.toString(ec);
                 }
                 errorCodes.add(errorCode);
             }

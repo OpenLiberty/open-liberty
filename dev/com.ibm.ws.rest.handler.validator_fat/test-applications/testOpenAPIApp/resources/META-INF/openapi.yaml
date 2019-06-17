@@ -16,52 +16,356 @@ info:
 servers:
   - url: https://127.0.0.1:8020/ibm/api
 paths:
-  /validation/dataSource/{uid}:
+  /validation/connectionFactory/:
     get:
-      summary: Validation of a Data Source
       tags:
       - Validation
-      description: "Retrieves the validation result for the specified data source. Validation involves establishing a connection to the database, querying basic metadata information, and performing the `java.sql.Connection.isValid` operation."
+      summary: Validation of all connection factories
+      description: "Retrieves the validation results for all connection factories (apart from JMS, which uses different config elements). Validation involves establishing a connection to the backend, querying basic metadata information, and performing additional interface-specific operations. For JDBC connection factories, the `java.sql.Connection.isValid` operation is invoked. For CCI connection factories, the `javax.resource.cci.Connection.createInteraction` operation is invoked."
+      parameters:
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation results retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/validation.connectionFactory.result"
+  /validation/connectionFactory/{uid}:
+    get:
+      tags:
+      - Validation
+      summary: Validation of a Connection Factory
+      description: "Retrieves the validation result for the specified connection factory. Validation involves establishing a connection to the backend, querying basic metadata information, and performing additional interface-specific operations. For JDBC connection factories, the `java.sql.Connection.isValid` operation is invoked. For CCI connection factories, the `javax.resource.cci.Connection.createInteraction` operation is invoked."
       parameters:
         - name: uid
           in: path
-          description: "**Unique identifier**. For a data source configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as `databaseStore[defaultDatabaseStore]/dataSource[default-0]`."
+          description: "**Unique identifier**. For a connection factory configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *connectionFactory[default-0]*."
           required: true
           schema:
             type: string
-        - name: X-Validation-User
-          in: header
-          description: "**User**. Supplies a user name when not using Container-managed authentication."
-          schema:
-            type: string
-        - name: X-Validation-Password
-          in: header
-          description: "**Password**. Supplies a password when not using Container-managed authentication."
-          schema:
-            type: string
-            format: password
-        - name: auth
-          in: query
-          description: "**Authentication**. Determines whether to use a resource reference with Application-managed or Container-managed authentication, or no resource reference."
-          schema:
-           type: string
-           enum:
-             - application
-             - container
-        - name: authAlias
-          in: query
-          description: "**Authentication Alias**. Supplies the `id` of an `authData` to use for Container-managed authentication."
-          schema:
-            type: string
-        - name: loginConfig
-          in: query
-          description: "**Custom Login**. Supplies the `name` of a `jaasLoginContextEntry` to use for Container-managed authentication."
-          schema:
-            type: string
+            example: "MyConFactory"
+          examples:
+            example-cf-id:
+              summary: "Top-level connection factory with id"
+              description: "In this case, the uid is the same as the id."
+              value: "myConFactory"
+            example-cf-no-id:
+              summary: "Top-level connection factory without id"
+              description: "A generated uid for top-level connection factories which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "connectionFactory[default-0]"
+            example-cf-app-def:
+              summary: "App-defined connection factory"
+              description: "References a connection factory defined by @ConnectionFactoryDefinition within the MyApp application, with a name of java:app/env/eis/cf1"
+              value: "application[MyApp]/connectionFactory[java:app/env/eis/cf1]"
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
       responses:
         200:
           description: Validation result retrieved
           content:
             application/json:
               schema:
+                $ref: "#/components/schemas/validation.connectionFactory.result"
+  /validation/dataSource/:
+    get:
+      tags:
+      - Validation
+      summary: Validation of all Data Sources
+      description: "Retrieves the validation results for all data sources. Validation involves establishing a connection to the database, querying basic metadata information, and performing the `java.sql.Connection.isValid` operation."
+      parameters:
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation results retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/validation.dataSource.result"
+  /validation/dataSource/{uid}:
+    get:
+      tags:
+      - Validation
+      summary: Validation of a Data Source
+      description: "Retrieves the validation result for the specified data source. Validation involves establishing a connection to the database, querying basic metadata information, and performing the `java.sql.Connection.isValid` operation."
+      parameters:
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For a data source configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *databaseStore[defaultDatabaseStore]/dataSource[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "DefaultDataSource"
+          examples:
+            example-ds-id:
+              summary: "Top-level dataSource with id"
+              description: "The default data source is configured at top-level and has an id of DefaultDataSource."
+              value: "DefaultDataSource"
+            example-ds-no-id:
+              summary: "Top-level dataSource without id"
+              description: "A generated uid for top-level data sources which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "dataSource[default-0]"
+            example-ds-nested:
+              summary: "Nested dataSource without id"
+              description: "References the first dataSource (index 0) that is nested under the databaseStore element with id of defaultDatabaseStore."
+              value: "databaseStore[defaultDatabaseStore]/dataSource[default-0]"
+            example-ds-nested-under-singleton:
+              summary: "Nested dataSource (without id) under singleton"
+              description: "References the first dataSource (index 0) that is nested under the transaction element. The transaction element is a singleton and cannot have an id."
+              value: "transaction/dataSource[default-0]"
+            example-ds-app-def:
+              summary: "App-defined data source"
+              description: "References a data source defined by @DataSourceDefinition within the MyApp application, in the MyWebModule module, with a name of java:module/env/jdbc/ds1"
+              value: "application[MyApp]/module[MyWebModule]/dataSource[java:module/env/jdbc/ds1]"
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation result retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/validation.dataSource.result"
+components:
+  parameters:
+    X-Validation-User:
+      name: X-Validation-User
+      in: header
+      description: "**User**. Supplies a user name when not using Container-managed authentication."
+      schema:
+        type: string
+    X-Validation-Password:
+      name: X-Validation-Password
+      in: header
+      description: "**Password**. Supplies a password when not using Container-managed authentication."
+      schema:
+        type: string
+        format: password
+    auth:
+      name: auth
+      in: query
+      description: "**Authentication**. Determines whether to use a resource reference with Application-managed or Container-managed authentication, or no resource reference."
+      schema:
+       type: string
+       enum:
+         - application
+         - container
+    authAlias:
+      name: authAlias
+      in: query
+      description: "**Authentication Alias**. Supplies the `id` of an `authData` to use for Container-managed authentication."
+      schema:
+        type: string
+    loginConfig:
+      name: loginConfig
+      in: query
+      description: "**Custom Login**. Supplies the `name` of a `jaasLoginContextEntry` to use for Container-managed authentication."
+      schema:
+        type: string
+  requestBodies:
+    loginConfigProperties:
+      description: "Additional details for request, including **Login Config Properties**"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              loginConfigProperties:
                 type: object
+                additionalProperties:
+                  type: string
+            example:
+              loginConfigProperties:
+                loginProp1: val1
+                loginProp2: val2
+  schemas:
+    validation.connectionFactory.result:
+      type: object
+      properties:
+        uid:
+          description: "unique identifier"
+          type: string
+        id:
+          description: "id of connectionFactory"
+          type: string
+        jndiName:
+          description: "jndiName of connectionFactory"
+          type: string
+        successful:
+          description: "result of validation"
+          type: boolean
+        info:
+          anyOf:
+            - type: object
+              properties:
+                resourceAdapterName:
+                  type: string
+                resourceAdapterVersion:
+                  type: string
+                resourceAdapterVendor:
+                  type: string
+                resourceAdapterDescription:
+                  type: string
+                connectorSpecVersion:
+                  type: string
+                eisProductName:
+                  type: string
+                eisProductVersion:
+                  type: string
+                user:
+                  type: string
+            - $ref: "#/components/schemas/info"
+        failure:
+          $ref: "#/components/schemas/cause"
+      required:
+        - uid
+        - successful
+      example:
+        uid: "myConnectionFactory"
+        id: "myConnectionFactory"
+        jndiName: "eis/conFactory1"
+        successful: false
+        info:
+          resourceAdapterName: "LibConnect Adapter"
+          resourceAdapterVersion: "104.153.185"
+          resourceAdapterVendor: "OpenLiberty"
+          resourceAdapterDescription: "This isn't a real resource adapter."
+          connectorSepcVersion: "1.7"
+          eisProductName: "VeryFast Enterprise DB"
+          eisProductVersion: "44.117.125"
+          user: "dbuser1"
+        failure:
+          errorCode: "ERR_NOT_AUTHORIZED"
+          class: "javax.resource.spi.SecurityException"
+          message: "User has insufficient privileges to access the backend data store."
+          stack:
+            - "org.example.lca.ConnectionImpl.createInteraction(ConnectionImpl.java:146)"
+            - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validateCCIConnectionFactory(ConnectionFactoryValidator.java:304)"
+            - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validate(ConnectionFactoryValidator.java:169)"
+            - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.handleSingleInstance(ValidatorRestHandler:231)"
+          cause:
+            class: "javax.security.auth.login.LoginException"
+            message: "unauthorized"
+            stack:
+              - "org.example.lca.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
+              - "org.example.lca.ConnectionImpl.authenticate(EFConnection.java:223)"
+              - "org.example.lca.ConnectionImpl.deferredLogin(EFConnection.java:385)"
+    validation.dataSource.result:
+      type: object
+      properties:
+        uid:
+          description: "unique identifier"
+          type: string
+        id:
+          description: "id of dataSource"
+          type: string
+        jndiName:
+          description: "jndiName of dataSource"
+          type: string
+        successful:
+          description: "result of validation"
+          type: boolean
+        info:
+          $ref: "#/components/schemas/info"
+        failure:
+          $ref: "#/components/schemas/cause"
+      required:
+        - uid
+        - successful
+      example:
+        uid: "myDataSource"
+        id: "myDataSource"
+        jndiName: "jdbc/ds1"
+        successful: false
+        info:
+          databaseProductName: "VeryFast Enterprise DB"
+          databaseProductVersion: "44.117.125"
+          jdbcProductName: "EvenFaster JDBC"
+          jdbcProductVersion: "52.165.173"
+          catalog: "exampledb"
+          schema: "MYSCHEMA"
+          user: "dbuser1"
+        failure:
+          sqlState: "08004"
+          errorCode: "9409"
+          class: "java.sql.SQLInvalidAuthorizationSpecException"
+          message: "User has insufficient privileges to access database."
+          stack:
+            - "org.example.efjdbc.EFConnection.isValid(EFConnection.java:253)"
+            - "com.ibm.ws.rest.handler.validator.jdbc.DataSourceValidator(DataSourceValidator.java:129)"
+            - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.handleSingleInstance(ValidatorRestHandler:231)"
+          cause:
+            class: "javax.security.auth.login.LoginException"
+            message: "unauthorized"
+            stack:
+              - "org.example.efjdbc.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
+              - "org.example.efjdbc.EFConnection.authenticate(EFConnection.java:223)"
+              - "org.example.efjdbc.EFConnection.deferredLogin(EFConnection.java:385)"
+    info:
+      type: object
+      properties:
+        databaseProductName:
+          type: string
+        databaseProductVersion:
+          type: string
+        jdbcDriverName:
+          type: string
+        jdbcDriverVersion:
+          type: string
+        catalog:
+          type: string
+        schema:
+          type: string
+        user:
+          type: string
+    cause:
+      type: object
+      properties:
+        sqlState:
+          type: string
+        errorCode:
+          type: string
+        class:
+          type: string
+        message:
+          type: string
+        stack:
+          type: array
+          items:
+            type: string
+        cause:
+          $ref: "#/components/schemas/cause"

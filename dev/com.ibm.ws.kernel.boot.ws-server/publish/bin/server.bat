@@ -48,6 +48,9 @@
 @REM              or set to n to startup without waiting for a debugger to attach.
 @REM              The default value is y.
 @REM
+@REM WLP_DEBUG_REMOTE - Whether to allow remote debugging or not. This can be set
+@REM              to y to allow remote debugging. The default value is n. 
+@REM
 @REM ----------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
@@ -123,7 +126,9 @@ if "help" == "%ACTION%" (
 ) else if "debug" == "%ACTION%" (
   if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7777
   if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
-  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
+  if not defined WLP_DEBUG_REMOTE set WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
+  if not defined WLP_DEBUG_REMOTE_HOST set WLP_DEBUG_REMOTE_HOST=""
+  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_REMOTE_HOST!!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
   call:runServer
 ) else if "status" == "%ACTION%" (
   call:serverStatus

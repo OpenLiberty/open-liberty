@@ -23,7 +23,6 @@ import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
@@ -33,7 +32,7 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
  */
 public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
 
-    private static final TraceComponent tc = Tr.register(JsonLogHandler.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+    private static final TraceComponent tc = Tr.register(JsonLogHandler.class);
 
     protected String serverHostName = null;
     protected String serverName = null;
@@ -65,8 +64,8 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
      * Constructor for the JsonLoghandler which will establish server information needed
      * to fill in the fields of the JSON data object
      *
-     * @param serverName  The wlp servername
-     * @param wlpUserDir  The wlp user directory
+     * @param serverName The wlp servername
+     * @param wlpUserDir The wlp user directory
      * @param sourcesList The first sourceList to subscribe to collectorManager with
      */
     public JsonLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {

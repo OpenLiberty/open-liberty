@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,16 @@ public class MetricsAuthenticationTest {
     }
 
     private void waitForMetricsEndpoint(LibertyServer server) throws Exception {
-        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT * 2, server.getDefaultLogFile()));
+        // by default waitForStringInLogUsingMark will look at the default log when a log is not specified
+        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLogUsingMark("CWWKT0016I.*/metrics/"));
+    }
+
+    private void waitForPrerequisites(LibertyServer server) throws Exception {
+        String regex1 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default", "8010") + ".*";
+        String regex2 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default.secure", "8020") + ".*";
+        assertNotNull("TCP Channel defaultHttpEndpoint has not started", server.waitForStringInLog(regex1));
+        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started", server.waitForStringInLog(regex2));
+        assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*"));
     }
 
     private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication) throws Exception {
@@ -94,12 +103,13 @@ public class MetricsAuthenticationTest {
 
     private void testMetricsAuth() throws Exception {
 
+        // wait for installations to complete and TCP channels to be started before running test
+        waitForPrerequisites(server);
+
         //1. When authentication is not explicitly set in server.xml, it defaults to private,
         //  i.e. requires authentication into metrics endpoint
 
         //check that opening connection to /metrics requires authentication by default
-
-        Thread.sleep(10000);
 
         MetricsConnection authenticationNotSpecified = MetricsConnection.connection_administratorRole(server);
         authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
@@ -129,7 +139,6 @@ public class MetricsAuthenticationTest {
         setMetricsAuthConfig(server, false);
         waitForMetricsEndpoint(server);
         MetricsConnection authenticationFalse = MetricsConnection.connection_unauthenticated(server);
-        //Thread.sleep(5000);
         authenticationFalse.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         //4. When mpMetrics authentication option is removed from the server.xml,

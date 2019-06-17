@@ -55,18 +55,17 @@
 #              or set to n to startup without waiting for a debugger to attach.
 #              The default value is y. 
 #
+# WLP_DEBUG_REMOTE - Whether to allow remote debugging or not. This can be set
+#              to y to allow remote debugging. The default value is n. 
+#
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
-#                   to be used.
+#              to be used.
 #
 # WLP_ZOS_PROCEDURE - The name of the STC procedure to be used to start the 
-#                     server in a z/OS environment.
+#              server in a z/OS environment.
 #
 # WLP_ZOS_JOBNAME - The job name to use when starting the server in
-#                   a z/OS environment.
-#
-# WLP_FILE_SOFT_LIMIT - The soft limit of the number of file descriptors / open 
-#               files allowed.  The default value is 4096. 
-#
+#              a z/OS environment.
 #
 ###############################################################################
 
@@ -121,7 +120,6 @@ esac
 ##
 PS_P='ps -p'
 UMASK_O='umask o='
-ULIMIT_N='ulimit -n'
 tryShellExtensions=true
 os400lib=false
 shareclassesCacheDirPerm=true
@@ -778,17 +776,6 @@ serverUmask()
   fi
 }
 
-## call the ulimit -n value to set the specified number of open
-## files or set the default to 4096.
-setUlimit()
-{
-   if [ -z "${WLP_FILE_SOFT_LIMIT}" ]; then
-      $ULIMIT_N 4096 2> /dev/null
-   else
-      $ULIMIT_N "${WLP_FILE_SOFT_LIMIT}" 2> /dev/null
-   fi
-}
-
 ##
 ## javaCmd: Execute a java-based command.  Arguments are:
 ##
@@ -1081,11 +1068,15 @@ case "$ACTION" in
         then
           WLP_DEBUG_SUSPEND=y
         fi
-        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_ADDRESS}"
+        if [ "${WLP_DEBUG_REMOTE}" = "y"]
+        then
+          WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
+        else
+          WLP_DEBUG_REMOTE_HOST=""
+        fi
+        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_REMOTE_HOST}${WLP_DEBUG_ADDRESS}"
       fi
 
-      setUlimit
-      
       serverWorkingDirectory
 
       # WLP_JAR_CYGWIN is used only in support of java -jar startup of a Liberty server.
@@ -1154,8 +1145,6 @@ case "$ACTION" in
         touchIfNotExist "${SERVER_OUTPUT_DIR}/workarea/.sLock"
         rmIfExist "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
 
-        setUlimit
-    
         # Start the target server with the provided arguments
         serverCmd "${X_LOG_DIR}/${X_LOG_FILE}" "$@"
         rc=$?

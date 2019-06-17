@@ -44,7 +44,7 @@ public class SSLSupportImpl implements SSLSupport {
     private SSLSupportOptional delegate;
     private Map<String, Object> props;
     private volatile ServiceRegistration<SSLSupport> registration;
-    private static final TraceComponent tc = Tr.register(SSLSupportImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(SSLSupportImpl.class);
 
     public SSLSupportImpl() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

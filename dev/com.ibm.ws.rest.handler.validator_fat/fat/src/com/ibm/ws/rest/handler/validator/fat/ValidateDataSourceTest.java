@@ -160,7 +160,7 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertNull(err, json.get("failure"));
         assertNull(err, json.get("info"));
         assertEquals(err, "08004", json.getString("sqlState"));
-        assertEquals(err, 40000, json.getInt("errorCode"));
+        assertEquals(err, "40000", json.getString("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("Invalid authentication"));
     }
@@ -287,7 +287,7 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertNull(err, j.get("info"));
         assertNotNull(err, j = j.getJsonObject("failure"));
         assertEquals(err, "XJ004", j.getString("sqlState"));
-        assertEquals(err, 40000, j.getInt("errorCode"));
+        assertEquals(err, "40000", j.getString("errorCode"));
         assertEquals(err, "java.sql.SQLException", j.getString("class"));
         assertTrue(err, j.getString("message").contains("memory:doesNotExist"));
         JsonArray stack = j.getJsonArray("stack");
@@ -486,7 +486,7 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertNull(err, json.get("failure"));
         assertNull(err, json.get("info"));
         assertEquals(err, "XJ004", json.getString("sqlState"));
-        assertEquals(err, 40000, json.getInt("errorCode"));
+        assertEquals(err, "40000", json.getString("errorCode"));
         assertEquals(err, "java.sql.SQLException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("memory:doesNotExist"));
         JsonArray stack = json.getJsonArray("stack");
@@ -533,7 +533,7 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertNull(err, json.get("failure"));
         assertNull(err, json.get("info"));
         assertEquals(err, "08004", json.getString("sqlState"));
-        assertEquals(err, 40000, json.getInt("errorCode"));
+        assertEquals(err, "40000", json.getString("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("Invalid authentication"));
     }
@@ -560,7 +560,7 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertNull(err, json.get("failure"));
         assertNull(err, json.get("info"));
         assertEquals(err, "08004", json.getString("sqlState"));
-        assertEquals(err, 40000, json.getInt("errorCode"));
+        assertEquals(err, "40000", json.getString("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("Invalid authentication"));
     }
