@@ -20,7 +20,7 @@ import com.ibm.wsspi.persistence.internal.PersistenceServiceConstants;
 
 @Trivial
 public class TraceLog extends ServerLog {
-    private final TraceComponent _tc = Tr.register(LogChannel.class, PersistenceServiceConstants.TRACE_GROUP);
+    private static final TraceComponent _tc = Tr.register(LogChannel.class, PersistenceServiceConstants.TRACE_GROUP);
 
     @Override
     public void log(SessionLogEntry entry) {
