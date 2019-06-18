@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Vetoed;
 
+import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
@@ -46,7 +47,7 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
-import org.w3c.dom.css.Counter;
+import org.eclipse.microprofile.metrics.Timer;
 
 /**
  * A registry of metric instances.
@@ -145,7 +146,7 @@ public class MetricRegistryImpl extends MetricRegistry {
      *
      * @param name   the name of the metric
      * @param metric the metric
-     * @param        <T> the type of the metric
+     * @param <T>    the type of the metric
      * @return {@code metric}
      * @throws IllegalArgumentException if the name is already registered
      */
@@ -432,7 +433,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    @FFDCIgnore({ java.lang.IllegalArgumentException.class })
+    @FFDCIgnore({java.lang.IllegalArgumentException.class})
     private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder) {
         final Metric metric = metrics.get(metadata.getName());
         if (builder.isInstance(metric)) {
