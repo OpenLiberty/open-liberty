@@ -1,0 +1,39 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>timedexit-1.0</feature>
+        <!-- intentionally do not enable ssl-1.0 -->
+    </featureManager>
+
+    <application location="postgresqlApp.war">
+        <classloader commonLibraryRef="PostgresLib"/>
+    </application>
+    
+    <library id="PostgresLib">
+        <file name="${shared.resource.dir}/postgres/postgresql.jar"/>
+    </library>
+    
+    <dataSource jndiName="jdbc/postgres/ssl/native">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             ssl="true"
+                             sslKey="${server.config.dir}/resources/security/outboundKeys.p12"
+                             sslRootCert="${server.config.dir}/resources/security/server.crt"
+                             sslMode="verify-ca"/>
+    </dataSource>
+    
+    <!-- use different port than 'server-PostgreSQLSSLTest' which runs at the same time as this one -->
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_secondary}" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+    
+    <!-- Needed because this sysprop is read by static init of the org.postgresql.jdbc.PgStatement class, which could be triggered by many different 
+         code paths in the Liberty code and it's not feasible to doPriv all of those paths or worth eagerly loading the PgStatement class -->
+    <javaPermission codeBase="${server.config.dir}/apps/postgresqlApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    
+    <javaPermission codeBase="${server.config.dir}/jdbc/driver.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${shared.resource.dir}/postgres/postgresql.jar" className="java.security.AllPermission"/>
+
+</server>
