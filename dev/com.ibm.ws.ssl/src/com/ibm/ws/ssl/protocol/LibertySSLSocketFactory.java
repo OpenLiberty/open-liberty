@@ -376,8 +376,10 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(s, host, port, autoClose);
 
-            SSLParameters p = createSSLParameters(sslprops, socket);
-            socket.setSSLParameters(p);
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
 
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
@@ -455,8 +457,10 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(host, port);
 
-            SSLParameters p = createSSLParameters(sslprops, socket);
-            socket.setSSLParameters(p);
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
 
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
@@ -543,8 +547,10 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(address, port, localAddress, localPort);
 
-            SSLParameters p = createSSLParameters(sslprops, socket);
-            socket.setSSLParameters(p);
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
 
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
