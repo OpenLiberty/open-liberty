@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.Map;
+
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
 /**
@@ -50,35 +52,14 @@ public class AccessLogData extends GenericData {
                                             LogFieldConstants.SEQUENCE
     };
 
-    public static String[] dataArray = {
-                                         LogFieldConstants.IBM_REQUESTSTARTTIME,
-                                         LogFieldConstants.IBM_URIPATH,
-                                         LogFieldConstants.IBM_REQUESTMETHOD,
-                                         LogFieldConstants.IBM_QUERYSTRING,
-                                         LogFieldConstants.IBM_REQUESTHOST,
-                                         LogFieldConstants.IBM_REQUESTPORT,
-                                         LogFieldConstants.IBM_REMOTEHOST,
-                                         LogFieldConstants.IBM_USERAGENT,
-                                         LogFieldConstants.IBM_REQUESTPROTOCOL,
-                                         LogFieldConstants.IBM_BYTESRECEIVED,
-                                         LogFieldConstants.IBM_RESPONSECODE,
-                                         LogFieldConstants.IBM_ELAPSEDTIME,
-                                         LogFieldConstants.IBM_DATETIME,
-                                         LogFieldConstants.IBM_SEQUENCE
-    };
+    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
+
+    public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
+        jsonLoggingNameAliases.newAliases(newAliases);
+    }
 
     public AccessLogData() {
         super(14);
-    }
-
-    @Override
-    public String[] getDataArray() {
-        return dataArray;
-    }
-
-    @Override
-    public String[] getOriginalFieldNames() {
-        return NAMES1_1;
     }
 
     private void setPair(int index, String s) {
@@ -318,59 +299,59 @@ public class AccessLogData extends GenericData {
     }
 
     public String getRequestStartTimeKeyJSON() {
-        return dataArray[0];
+        return jsonLoggingNameAliases.getAlias(0);
     }
 
     public String getUriPathKeyJSON() {
-        return dataArray[1];
+        return jsonLoggingNameAliases.getAlias(1);
     }
 
     public String getRequestMethodKeyJSON() {
-        return dataArray[2];
+        return jsonLoggingNameAliases.getAlias(2);
     }
 
     public String getQueryStringKeyJSON() {
-        return dataArray[3];
+        return jsonLoggingNameAliases.getAlias(3);
     }
 
     public String getRequestHostKeyJSON() {
-        return dataArray[4];
+        return jsonLoggingNameAliases.getAlias(4);
     }
 
     public String getRequestPortKeyJSON() {
-        return dataArray[5];
+        return jsonLoggingNameAliases.getAlias(5);
     }
 
     public String getRemoteHostKeyJSON() {
-        return dataArray[6];
+        return jsonLoggingNameAliases.getAlias(6);
     }
 
     public String getUserAgentKeyJSON() {
-        return dataArray[7];
+        return jsonLoggingNameAliases.getAlias(7);
     }
 
     public String getRequestProtocolKeyJSON() {
-        return dataArray[8];
+        return jsonLoggingNameAliases.getAlias(8);
     }
 
     public String getBytesReceivedKeyJSON() {
-        return dataArray[9];
+        return jsonLoggingNameAliases.getAlias(9);
     }
 
     public String getResponseCodeKeyJSON() {
-        return dataArray[10];
+        return jsonLoggingNameAliases.getAlias(10);
     }
 
     public String getElapsedTimeKeyJSON() {
-        return dataArray[11];
+        return jsonLoggingNameAliases.getAlias(11);
     }
 
     public String getDatetimeKeyJSON() {
-        return dataArray[12];
+        return jsonLoggingNameAliases.getAlias(12);
     }
 
     public String getSequenceKeyJSON() {
-        return dataArray[13];
+        return jsonLoggingNameAliases.getAlias(13);
     }
 
 }

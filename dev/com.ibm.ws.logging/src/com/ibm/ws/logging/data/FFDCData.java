@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.Map;
+
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
 /**
@@ -52,30 +54,11 @@ public class FFDCData extends GenericData {
                                               LogFieldConstants.IBM_OBJECTDETAILS,
                                               LogFieldConstants.IBM_SEQUENCE
     };
-    public static String[] dataArray = {
-                                         LogFieldConstants.IBM_DATETIME,
-                                         LogFieldConstants.DATEOFFIRSTOCCURENCE,
-                                         LogFieldConstants.COUNT,
-                                         LogFieldConstants.MESSAGE,
-                                         LogFieldConstants.IBM_CLASSNAME,
-                                         LogFieldConstants.LABEL,
-                                         LogFieldConstants.IBM_EXCEPTIONNAME,
-                                         LogFieldConstants.IBM_PROBEID,
-                                         LogFieldConstants.SOURCEID,
-                                         LogFieldConstants.IBM_THREADID, //long
-                                         LogFieldConstants.IBM_STACKTRACE,
-                                         LogFieldConstants.IBM_OBJECTDETAILS,
-                                         LogFieldConstants.IBM_SEQUENCE
-    };
 
-    @Override
-    public String[] getDataArray() {
-        return dataArray;
-    }
+    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
 
-    @Override
-    public String[] getOriginalFieldNames() {
-        return NAMES1_1;
+    public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
+        jsonLoggingNameAliases.newAliases(newAliases);
     }
 
     private void setPair(int index, String s) {
@@ -299,55 +282,55 @@ public class FFDCData extends GenericData {
     }
 
     public String getDatetimeKeyJSON() {
-        return dataArray[0];
+        return jsonLoggingNameAliases.getAlias(0);
     }
 
     public String getDateOfFirstOccurenceKeyJSON() {
-        return dataArray[1];
+        return jsonLoggingNameAliases.getAlias(1);
     }
 
     public String getCountKeyJSON() {
-        return dataArray[2];
+        return jsonLoggingNameAliases.getAlias(2);
     }
 
     public String getMessageKeyJSON() {
-        return dataArray[3];
+        return jsonLoggingNameAliases.getAlias(3);
     }
 
     public String getClassNameKeyJSON() {
-        return dataArray[4];
+        return jsonLoggingNameAliases.getAlias(4);
     }
 
     public String getLabelKeyJSON() {
-        return dataArray[5];
+        return jsonLoggingNameAliases.getAlias(5);
     }
 
     public String getExceptionNameKeyJSON() {
-        return dataArray[6];
+        return jsonLoggingNameAliases.getAlias(6);
     }
 
     public String getProbeIdKeyJSON() {
-        return dataArray[7];
+        return jsonLoggingNameAliases.getAlias(7);
     }
 
     public String getSourceIdKeyJSON() {
-        return dataArray[8];
+        return jsonLoggingNameAliases.getAlias(8);
     }
 
     public String getThreadIdKeyJSON() {
-        return dataArray[9];
+        return jsonLoggingNameAliases.getAlias(9);
     }
 
     public String getStacktraceKeyJSON() {
-        return dataArray[10];
+        return jsonLoggingNameAliases.getAlias(10);
     }
 
     public String getObjectDetailsKeyJSON() {
-        return dataArray[11];
+        return jsonLoggingNameAliases.getAlias(11);
     }
 
     public String getSequenceKeyJSON() {
-        return dataArray[12];
+        return jsonLoggingNameAliases.getAlias(12);
     }
 
 }

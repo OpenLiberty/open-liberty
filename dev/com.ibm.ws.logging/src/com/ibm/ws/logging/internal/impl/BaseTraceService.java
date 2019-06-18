@@ -505,7 +505,7 @@ public class BaseTraceService implements TrService {
                 //add properties to their respective hashmaps and trim whitespaces
                 if (CollectorConstants.MESSAGES_LOG_EVENT_TYPE.equals(entry[0].trim())) {
                     messageMap.put(entry[1].trim(), entry[2].trim());
-                } else if (CollectorConstants.TRACE_LOG_EVENT_TYPE.equals(entry[0])) {
+                } else if (CollectorConstants.TRACE_LOG_EVENT_TYPE.equals(entry[0].trim())) {
                     traceMap.put(entry[1].trim(), entry[2].trim());
                 } else if (CollectorConstants.FFDC_EVENT_TYPE.equals(entry[0].trim())) {
                     ffdcMap.put(entry[1].trim(), entry[2].trim());
@@ -518,12 +518,10 @@ public class BaseTraceService implements TrService {
                 Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
             }
         }
-
-        fd.addMapsToNamesArray(ffdcMap);
-        ald.addMapsToNamesArray(accessLogMap);
-
-        LogTraceData.MESSAGE_NAMES1_1 = LogTraceData.addMapsToNamesArray(messageMap, LogTraceData.NAMES1_1);
-        LogTraceData.TRACE_NAMES1_1 = LogTraceData.addMapsToNamesArray(traceMap, LogTraceData.NAMES1_1);
+        AccessLogData.newJsonLoggingNameAliases(accessLogMap);
+        FFDCData.newJsonLoggingNameAliases(ffdcMap);
+        LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
+        LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
     }
 
     /**

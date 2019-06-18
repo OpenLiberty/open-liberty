@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,6 +124,18 @@ public class LogTraceData extends GenericData {
                                               LogFieldConstants.EXTENSIONS_KVPL,
                                               LogFieldConstants.OBJECT_ID
     };
+
+    private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
+
+    public static void newJsonLoggingNameAliasesMessage(Map<String, String> newAliases) {
+        jsonLoggingNameAliasesMessages.newAliases(newAliases);
+    }
+
+    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
+
+    public static void newJsonLoggingNameAliasesTrace(Map<String, String> newAliases) {
+        jsonLoggingNameAliasesTrace.newAliases(newAliases);
+    }
 
     public LogTraceData() {
         super(21);
@@ -398,171 +411,171 @@ public class LogTraceData extends GenericData {
 
     public String getDatetimeKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[0];
+            return jsonLoggingNameAliasesTrace.getAlias(0);
         } else {
-            return MESSAGE_NAMES1_1[0];
+            return jsonLoggingNameAliasesMessages.getAlias(0);
         }
 
     }
 
     public String getMessageIdKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[1];
+            return jsonLoggingNameAliasesTrace.getAlias(1);
         } else {
-            return MESSAGE_NAMES1_1[1];
+            return jsonLoggingNameAliasesMessages.getAlias(1);
         }
     }
 
     public String getThreadIdKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[2];
+            return jsonLoggingNameAliasesTrace.getAlias(2);
         } else {
-            return MESSAGE_NAMES1_1[2];
+            return jsonLoggingNameAliasesMessages.getAlias(2);
         }
     }
 
     public String getModuleKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[3];
+            return jsonLoggingNameAliasesTrace.getAlias(3);
         } else {
-            return MESSAGE_NAMES1_1[3];
+            return jsonLoggingNameAliasesMessages.getAlias(3);
         }
     }
 
     public String getSeverityKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[4];
+            return jsonLoggingNameAliasesTrace.getAlias(4);
         } else {
-            return MESSAGE_NAMES1_1[4];
+            return jsonLoggingNameAliasesMessages.getAlias(4);
         }
     }
 
     public String getLoglevelKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[5];
+            return jsonLoggingNameAliasesTrace.getAlias(5);
         } else {
-            return MESSAGE_NAMES1_1[5];
+            return jsonLoggingNameAliasesMessages.getAlias(5);
         }
     }
 
     public String getMethodNameKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[6];
+            return jsonLoggingNameAliasesTrace.getAlias(6);
         } else {
-            return MESSAGE_NAMES1_1[6];
+            return jsonLoggingNameAliasesMessages.getAlias(6);
         }
     }
 
     public String getClassNameKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[7];
+            return jsonLoggingNameAliasesTrace.getAlias(7);
         } else {
-            return MESSAGE_NAMES1_1[7];
+            return jsonLoggingNameAliasesMessages.getAlias(7);
         }
     }
 
     public String getLevelValueKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[8];
+            return jsonLoggingNameAliasesTrace.getAlias(8);
         } else {
-            return MESSAGE_NAMES1_1[8];
+            return jsonLoggingNameAliasesMessages.getAlias(8);
         }
     }
 
     public String getThreadNameKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[9];
+            return jsonLoggingNameAliasesTrace.getAlias(9);
         } else {
-            return MESSAGE_NAMES1_1[9];
+            return jsonLoggingNameAliasesMessages.getAlias(9);
         }
     }
 
     public String getCorrelationIdKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[10];
+            return jsonLoggingNameAliasesTrace.getAlias(10);
         } else {
-            return MESSAGE_NAMES1_1[10];
+            return jsonLoggingNameAliasesMessages.getAlias(10);
         }
     }
 
     public String getOrgKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[11];
+            return jsonLoggingNameAliasesTrace.getAlias(11);
         } else {
-            return MESSAGE_NAMES1_1[11];
+            return jsonLoggingNameAliasesMessages.getAlias(11);
         }
     }
 
     public String getProductKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[12];
+            return jsonLoggingNameAliasesTrace.getAlias(12);
         } else {
-            return MESSAGE_NAMES1_1[12];
+            return jsonLoggingNameAliasesMessages.getAlias(12);
         }
     }
 
     public String getComponentKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[13];
+            return jsonLoggingNameAliasesTrace.getAlias(13);
         } else {
-            return MESSAGE_NAMES1_1[13];
+            return jsonLoggingNameAliasesMessages.getAlias(13);
         }
 
     }
 
     public String getSequenceKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[14];
+            return jsonLoggingNameAliasesTrace.getAlias(14);
         } else {
-            return MESSAGE_NAMES1_1[14];
+            return jsonLoggingNameAliasesMessages.getAlias(14);
         }
     }
 
     public String getThrowableKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[15];
+            return jsonLoggingNameAliasesTrace.getAlias(15);
         } else {
-            return MESSAGE_NAMES1_1[15];
+            return jsonLoggingNameAliasesMessages.getAlias(15);
         }
     }
 
     public String getThrowableLocalizedKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[16];
+            return jsonLoggingNameAliasesTrace.getAlias(16);
         } else {
-            return MESSAGE_NAMES1_1[16];
+            return jsonLoggingNameAliasesMessages.getAlias(16);
         }
     }
 
     public String getMessageKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[17];
+            return jsonLoggingNameAliasesTrace.getAlias(17);
         } else {
-            return MESSAGE_NAMES1_1[17];
+            return jsonLoggingNameAliasesMessages.getAlias(17);
         }
     }
 
     public String getFormattedMsgKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[18];
+            return jsonLoggingNameAliasesTrace.getAlias(18);
         } else {
-            return MESSAGE_NAMES1_1[18];
+            return jsonLoggingNameAliasesMessages.getAlias(18);
         }
     }
 
     public String getExtensionsKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[19];
+            return jsonLoggingNameAliasesTrace.getAlias(19);
         } else {
-            return MESSAGE_NAMES1_1[19];
+            return jsonLoggingNameAliasesMessages.getAlias(19);
         }
     }
 
     public String getObjectIdKeyJSON(boolean isMessageEvent) {
         if (!isMessageEvent) {
-            return TRACE_NAMES1_1[20];
+            return jsonLoggingNameAliasesTrace.getAlias(20);
         } else {
-            return MESSAGE_NAMES1_1[20];
+            return jsonLoggingNameAliasesMessages.getAlias(20);
         }
     }
 
@@ -680,16 +693,6 @@ public class LogTraceData extends GenericData {
         if (matcher.find())
             messageId = msg.substring(matcher.start(), matcher.end() - 1);
         return messageId;
-    }
-
-    public static String jsonFields;
-
-    public static void setjsonFields(String value) {
-        jsonFields = value;
-    }
-
-    public static String getjsonFields() {
-        return jsonFields;
     }
 
 }
