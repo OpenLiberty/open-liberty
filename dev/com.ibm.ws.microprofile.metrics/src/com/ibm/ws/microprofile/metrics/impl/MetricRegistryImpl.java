@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Vetoed;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
