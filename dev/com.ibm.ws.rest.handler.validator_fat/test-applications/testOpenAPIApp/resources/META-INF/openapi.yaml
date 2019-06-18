@@ -16,6 +16,56 @@ info:
 servers:
   - url: https://127.0.0.1:8020/ibm/api
 paths:
+  /validation/cloudantDatabase/:
+    get:
+      tags:
+      - Validation
+      summary: Validation of all Cloudant Database configurations
+      description: "Retrieves the validation results for all cloudantDatabase configuration elements. Validation involves establishing a connection to the database and querying basic metadata information."
+      parameters:
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+      responses:
+        200:
+          description: Validation results retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/validation.cloudantDatabase.result"
+  /validation/cloudantDatabase/{uid}:
+    get:
+      tags:
+      - Validation
+      summary: Validation of a Cloudant Database configuration
+      description: "Retrieves the validation result for the specified cloudantDatabase configuration element. Validation involves establishing a connection to the database and querying basic metadata information."
+      parameters:
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For a cloudantDatabase element configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *cloudantDatabase[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "MyCloudantDB"
+          examples:
+            example-cloudantdb-id:
+              summary: "Top-level cloudantDatabase element with id"
+              description: "In this case, the uid is the same as the id."
+              value: "myConFactory"
+            example-cloudantdb-no-id:
+              summary: "Top-level cloudantDatabase element without id"
+              description: "A generated uid for top-level cloudantDatabase configuration element which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "cloudantDatabase[default-0]"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+      responses:
+        200:
+          description: Validation result retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/validation.cloudantDatabase.result"
   /validation/connectionFactory/:
     get:
       tags:
@@ -417,6 +467,50 @@ components:
                 loginProp1: val1
                 loginProp2: val2
   schemas:
+    validation.cloudantDatabase.result:
+      type: object
+      properties:
+        uid:
+          description: "unique identifier"
+          type: string
+        id:
+          description: "id of cloudantDatabase"
+          type: string
+        jndiName:
+          description: "jndiName of cloudantDatabase"
+          type: string
+        successful:
+          description: "result of validation"
+          type: boolean
+        info:
+          type: object
+          properties:
+            uri:
+              type: string
+            serverVersion:
+              type: string
+            vendorName:
+              type: string
+            vendorVersion:
+              type: string
+            vendorVariant:
+              type: string
+        failure:
+          $ref: "#/components/schemas/cause"
+      required:
+        - uid
+        - successful
+      example:
+        uid: "myCloudantDB"
+        id: "myCloudantDB"
+        jndiName: "cloudant/db1"
+        successful: true
+        info:
+          uri: "http://myhost.rchland.ibm.com:5984/exampledb1"
+          serverVersion: "2.0.0"
+          vendorName: "IBM Cloudant"
+          vendorVersion: "1.1.0"
+          vendorVariant: "local"
     validation.connectionFactory.result:
       type: object
       properties:
