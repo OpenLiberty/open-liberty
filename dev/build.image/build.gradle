@@ -163,6 +163,11 @@ def microProfile2Features() {
     features
 }
 
+def microProfile3Features() {
+    String features = project.file('profiles/microProfile3/features.xml').readLines()
+    features
+}
+
 task packageOpenLiberty(type: PackageLibertyWithFeatures) {
     enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
@@ -273,6 +278,29 @@ task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
     }
 }
 
+task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
+    doFirst {
+        excludedFeatures.each {
+            this.&removeFeature("${it}")
+        }
+    }
+
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures this.&microProfile3Features
+    outputTo packageDir
+    doLast {
+        copy {
+            from "$packageDir/wlp/templates/servers/microProfile3/server.xml" 
+            into "$packageDir/wlp/templates/servers/defaultServer" 
+        }
+        excludedFeatures.each {
+            this.&restoreFeature("${it}")
+        }
+    }
+}
+
 // Includes only kind=ga features.
 task zipOpenLiberty(type: Zip) {
     dependsOn packageOpenLiberty
@@ -341,6 +369,19 @@ task zipOpenLibertyMicroProfile2(type: Zip) {
     }
 }
 publish.dependsOn zipOpenLibertyMicroProfile2
+
+task zipOpenLibertyMicroProfile3(type: Zip) {
+    dependsOn packageOpenLibertyMicroProfile3
+    baseName 'openliberty-microProfile3'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+    doLast {
+        rootProject.userProps.setProperty('zipopenliberty.microprofile3.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyMicroProfile3
 
 // Includes all features.
 task zipOpenLibertyAll(type: Zip) {
