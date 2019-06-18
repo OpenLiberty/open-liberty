@@ -21,7 +21,7 @@ import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
 /**
  *
  */
-public class JobExecutionEntityExtractor extends ClassExtractor {
+public class StepThreadExecutionEntityExtractor extends ClassExtractor {
 
     /** {@inheritDoc} */
     @Override
@@ -36,17 +36,15 @@ public class JobExecutionEntityExtractor extends ClassExtractor {
         Integer tableversion = null;
 
         try {
-            tableversion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getJobExecutionTableVersionField();
+            tableversion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getStepThreadExecutionTableVersionField();
         } catch (Exception ex) {
             throw new BatchRuntimeException(ex);
         }
 
-        if (tableversion == 3) {
-            return JobExecutionEntityV3.class;
-        } else if (tableversion == 2) {
-            return JobExecutionEntityV2.class;
+        if (tableversion == 2) {
+            return StepThreadExecutionEntityV2.class;
         } else {
-            return JobExecutionEntity.class;
+            return StepThreadExecutionEntity.class;
         }
     }
 

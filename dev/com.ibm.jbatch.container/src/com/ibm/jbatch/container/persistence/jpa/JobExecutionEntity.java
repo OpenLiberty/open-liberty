@@ -101,30 +101,20 @@ public class JobExecutionEntity extends JobThreadExecutionBase implements JobExe
     @JoinColumn(name = "FK_JOBINSTANCEID", nullable = false)
     private JobInstanceEntity jobInstance;
 
-    //@OneToMany(mappedBy="jobExec",cascade=CascadeType.REMOVE)
+    //@OneToMany(mappedBy = "jobExec", cascade = CascadeType.REMOVE)
     //private Collection<RemotableSplitFlowEntity> splitFlowExecutions;
-
-    //@OneToMany(mappedBy="jobExec",cascade=CascadeType.REMOVE)
-    //private Collection<RemotablePartitionEntity> partitionExecutions;
 
     @OneToMany(mappedBy = "jobExec", cascade = CascadeType.REMOVE)
     private Collection<StepThreadExecutionEntity> stepThreadExecutions;
 
-    /*
-     * 222050 - backout 205106
-     *
-     * @OneToMany(mappedBy = "jobExec", cascade = CascadeType.REMOVE)
-     * private Collection<RemotablePartitionEntity> remotablePartitions;
-     */
-
     // For JPA
-    public JobExecutionEntity() {}
+    public JobExecutionEntity() {
+    }
 
     // For in-memory persistence
     public JobExecutionEntity(long jobExecId) {
         this.jobExecId = jobExecId;
         //this.splitFlowExecutions = new ArrayList<RemotableSplitFlowEntity>();
-        // 222050 - backout 205106 this.remotablePartitions = Collections.synchronizedList(new ArrayList<RemotablePartitionEntity>());
         this.stepThreadExecutions = Collections.synchronizedList(new ArrayList<StepThreadExecutionEntity>());
     }
 
@@ -146,14 +136,11 @@ public class JobExecutionEntity extends JobThreadExecutionBase implements JobExe
     }
 
     public Collection<RemotablePartitionEntity> getRemotablePartitions() {
-        // 220050 - Backout 205106
-        // return remotablePartitions;
         return null;
     }
 
     public void setRemotablePartitions(Collection<RemotablePartitionEntity> remotablePartitions) {
-        // 222050 - Backout 205106
-        // this.remotablePartitions = remotablePartitions;
+        // Intentionally empty, see JobExecutionEntityV3
     }
 
     @Override

@@ -21,43 +21,39 @@ import com.ibm.jbatch.container.ws.WSTopLevelStepExecution;
  * @author skurz
  *
  */
-public class WSStepThreadExecutionAggregateImpl implements
-		WSStepThreadExecutionAggregate {
-	
-	private WSTopLevelStepExecution topLevelStepExecution;
-	
-	// 222050 - Backout 205106
-	// private List<WSPartitionStepAggregate> partitionAggregate;
-	private List<WSPartitionStepThreadExecution> partitionLevelStepExecutions;
-	
+public class WSStepThreadExecutionAggregateImpl implements WSStepThreadExecutionAggregate {
 
-	public WSTopLevelStepExecution getTopLevelStepExecution() {
-		return topLevelStepExecution;
-	}
+    private WSTopLevelStepExecution topLevelStepExecution;
 
-	public void setTopLevelStepExecution(WSTopLevelStepExecution topLevelStepExecution) {
-		this.topLevelStepExecution = topLevelStepExecution;
-	}
+    private List<WSPartitionStepAggregate> partitionAggregate;
 
-	
-	public List<WSPartitionStepAggregate> getPartitionAggregate() {
-		//222050 - Backout 205106
-	        // return partitionAggregate;
-	        return null;
-	}
+    private List<WSPartitionStepThreadExecution> partitionLevelStepExecutions;
 
-	public void setPartitionAggregate(List<WSPartitionStepAggregate> partitionAggregate) {
-		//222050 - Backout 205106
-	        //this.partitionAggregate = partitionAggregate
-	}
-	
-	public List<WSPartitionStepThreadExecution> getPartitionLevelStepExecutions() {
-            return partitionLevelStepExecutions;
-        }
+    @Override
+    public WSTopLevelStepExecution getTopLevelStepExecution() {
+        return topLevelStepExecution;
+    }
 
-        public void setPartitionLevelStepExecutions(
-                    List<WSPartitionStepThreadExecution> partitionLevelStepExecutions) {
-            this.partitionLevelStepExecutions = partitionLevelStepExecutions;
-        }
-	
+    public void setTopLevelStepExecution(WSTopLevelStepExecution topLevelStepExecution) {
+        this.topLevelStepExecution = topLevelStepExecution;
+    }
+
+    public List<WSPartitionStepAggregate> getPartitionAggregate() {
+        return partitionAggregate;
+    }
+
+    public void setPartitionAggregate(List<WSPartitionStepAggregate> partitionAggregate) {
+        this.partitionAggregate = partitionAggregate;
+    }
+
+    @Override
+    public List<WSPartitionStepThreadExecution> getPartitionLevelStepExecutions() {
+        return partitionLevelStepExecutions;
+    }
+
+    public void setPartitionLevelStepExecutions(
+                                                List<WSPartitionStepThreadExecution> partitionLevelStepExecutions) {
+        this.partitionLevelStepExecutions = partitionLevelStepExecutions;
+    }
+
 }

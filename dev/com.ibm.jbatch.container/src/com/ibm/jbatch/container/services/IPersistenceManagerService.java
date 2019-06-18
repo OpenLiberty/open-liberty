@@ -588,4 +588,8 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      */
     Integer getJobInstanceTableVersionField();
 
+    /**
+     * @return the step thread execution version field, initialized or not (may return 'null')
+     */
+    Integer getStepThreadExecutionTableVersionField();
 }
