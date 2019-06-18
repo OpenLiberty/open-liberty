@@ -354,7 +354,7 @@ public class DirectoryOverlayContainerImpl implements OverlayContainer {
         this.cacheDir = cacheDir;
 
         // if ( !( (FileUtils.listFiles(overlayParentDir).length == 0) ||
-        //         (FileUtils.fileExists(overlayDir) && FileUtils.fileIsDirectory(overlayDir)) ) ) {
+        //         (FileUtils.fileExists(overlayDir) && Utils.fileIsDirectory(overlayDir)) ) ) {
         //     throw new IllegalArgumentException();
         // }
         // if (!FileUtils.fileExists(overlayDir)) {
@@ -375,7 +375,21 @@ public class DirectoryOverlayContainerImpl implements OverlayContainer {
         File overlayDir = new File(overlayParentDir, ".overlay");
 
         boolean overlayExists = FileUtils.fileExists(overlayDir);
-        boolean overlayIsDir = overlayExists && FileUtils.fileIsDirectory(overlayDir);
+        boolean overlayIsDir = overlayExists && Utils.fileIsDirectory(overlayDir);
+
+        boolean altOverlayIsDir_1 = Utils.fileIsDirectory(overlayDir);
+        boolean altOverlayIsDir_2 = FileUtils.fileIsDirectory(overlayDir);
+
+        if ( altOverlayIsDir_1 != overlayIsDir ) {
+            System.out.println(
+                "Inconsistent directory test [ " + overlayDir.getAbsolutePath() + " ]:" +
+                " Exists + Utils [ " + overlayIsDir + " ] Utils [ " + altOverlayIsDir_1 + " ]"); 
+        }
+        if ( altOverlayIsDir_2 != overlayIsDir ) {
+            System.out.println(
+                "Inconsistent directory test [ " + overlayDir.getAbsolutePath() + " ]:" +
+                " Utils [ " + overlayIsDir + " ] FileUtils [ " + altOverlayIsDir_2 + " ]"); 
+        }
 
         if ( !overlayIsDir ) {
             if ( overlayExists ) {
