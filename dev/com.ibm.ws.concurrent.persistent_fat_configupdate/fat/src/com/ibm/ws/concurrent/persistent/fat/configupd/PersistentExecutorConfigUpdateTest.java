@@ -13,6 +13,7 @@ package com.ibm.ws.concurrent.persistent.fat.configupd;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,12 +22,16 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -38,6 +43,8 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class PersistentExecutorConfigUpdateTest {
     private static final Set<String> appNames = Collections.singleton("persistcfgtest");
+
+    public static final String APP_NAME = "persistcfgtest";
 
     private static ServerConfiguration originalConfig;
 
@@ -98,8 +105,11 @@ public class PersistentExecutorConfigUpdateTest {
     @BeforeClass
     public static void setUp() throws Exception {
         originalConfig = server.getServerConfiguration();
-        for (String name : appNames)
-            server.addInstalledAppForValidation(name);
+
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                .addPackage("web")
+                .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/web.xml"));
+		    ShrinkHelper.exportToServer(server, "dropins", app);
         server.startServer();
     }
 
