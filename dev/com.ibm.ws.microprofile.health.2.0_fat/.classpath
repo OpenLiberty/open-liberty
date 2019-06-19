@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/DelayedHealthCheckApp/src"/>
+	<classpathentry kind="src" path="test-applications/MultipleHealthCheckApp/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="/com.ibm.websphere.org.eclipse.microprofile.health.2.0/build/libs/com.ibm.websphere.org.eclipse.microprofile.health.2.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
