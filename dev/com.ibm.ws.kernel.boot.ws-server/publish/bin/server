@@ -67,6 +67,10 @@
 # WLP_ZOS_JOBNAME - The job name to use when starting the server in
 #              a z/OS environment.
 #
+# WLP_FILE_SOFT_LIMIT - The soft limit of the number of file descriptors / open 
+#               files allowed.  The default value is 4096. 
+#
+#
 ###############################################################################
 
 SERVER_UNKNOWN_STATUS=5
@@ -120,6 +124,7 @@ esac
 ##
 PS_P='ps -p'
 UMASK_O='umask o='
+ULIMIT_N='ulimit -n'
 tryShellExtensions=true
 os400lib=false
 shareclassesCacheDirPerm=true
@@ -776,6 +781,25 @@ serverUmask()
   fi
 }
 
+## call the "ulimit" command to set the specified number of open
+## files (-n option) to a default of 4096.  If the user has specified
+## a value in the shell, it should be incremented up to 4096, else if larger,
+## it should be left alone.  The WLP_FILE_SOFT_LIMIT env variable can
+## be used to override to a specific value and will overwrite any prior
+## set values from the shell.
+setUlimit()
+{
+   if [ ! -z "${WLP_FILE_SOFT_LIMIT}" ]; then
+      $ULIMIT_N "${WLP_FILE_SOFT_LIMIT}" 2> /dev/null
+   else
+      curUlimit=`$ULIMIT_N`
+      echo $curLimit
+      if [ "${curUlimit}" -lt  4096 ]; then
+         $ULIMIT_N 4096 2> /dev/null
+      fi
+   fi
+}
+
 ##
 ## javaCmd: Execute a java-based command.  Arguments are:
 ##
@@ -1077,6 +1101,8 @@ case "$ACTION" in
         JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_REMOTE_HOST}${WLP_DEBUG_ADDRESS}"
       fi
 
+      setUlimit
+      
       serverWorkingDirectory
 
       # WLP_JAR_CYGWIN is used only in support of java -jar startup of a Liberty server.
@@ -1145,6 +1171,8 @@ case "$ACTION" in
         touchIfNotExist "${SERVER_OUTPUT_DIR}/workarea/.sLock"
         rmIfExist "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
 
+        setUlimit
+    
         # Start the target server with the provided arguments
         serverCmd "${X_LOG_DIR}/${X_LOG_FILE}" "$@"
         rc=$?
