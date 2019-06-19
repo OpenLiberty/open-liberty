@@ -60,5 +60,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.concurrent.1.0;version=latest
+    com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+    com.ibm.ws.microprofile.metrics.common;version=latest
 
