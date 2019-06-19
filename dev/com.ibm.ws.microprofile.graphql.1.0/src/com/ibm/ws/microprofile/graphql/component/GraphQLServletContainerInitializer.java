@@ -61,7 +61,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 if (dRoles != null) {
                     String[] roles = dRoles.value();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Roles declared from " + cls + ": {)}", roles);
+                        Tr.debug(tc, "Roles declared from " + cls + ": {0}", roles);
                     }
                     sc.declareRoles(dRoles.value());
                 }
@@ -73,6 +73,9 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "GraphQL servlet registered at /" + path);
             }
+            
+            //TODO: ensure that we document that @DeclareRoles, @DenyAll, @RolesAllowed or @PermitAll is required on at
+            // least one @GraphQLApi class in order to enable security checks
             FilterRegistration.Dynamic authFilter = sc.addFilter("AuthFilter", new AuthFilter());
             authFilter.addMappingForServletNames(null, true, servletname);
 

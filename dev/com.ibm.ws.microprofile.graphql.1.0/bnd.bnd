@@ -32,6 +32,7 @@ Import-Package: \
   com.ibm.ws.microprofile.metrics.cdi.producer; version="[1.0.0,2.0.0)";resolution:=optional,\
   org.eclipse.microprofile.config;resolution:=optional,\
   org.eclipse.microprofile.metrics;resolution:=optional,\
+  com.ibm.ws.security.javaeesec;resolution:=optional,\
   *
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"

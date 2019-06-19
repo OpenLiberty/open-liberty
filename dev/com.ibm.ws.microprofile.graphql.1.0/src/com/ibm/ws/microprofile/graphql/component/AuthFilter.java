@@ -25,25 +25,26 @@ public class AuthFilter extends HttpFilter {
     private static TraceComponent tc = Tr.register(AuthFilter.class);
 
     private static ThreadLocal<HttpServletRequest> request = new ThreadLocal<>();
+    private static ThreadLocal<HttpServletResponse> response = new ThreadLocal<>();
 
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
         throws IOException, ServletException {
-
-        boolean authenticated = req.authenticate(res);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "authenticated = " + authenticated);
-        }
-
         try {
             request.set(req);
+            response.set(res);
             chain.doFilter(req, res);
         } finally {
             request.remove();
+            response.remove();
         }
     }
 
     static HttpServletRequest getCurrentRequest() {
         return request.get();
+    }
+
+    static HttpServletResponse getCurrentResponse() {
+        return response.get();
     }
 }

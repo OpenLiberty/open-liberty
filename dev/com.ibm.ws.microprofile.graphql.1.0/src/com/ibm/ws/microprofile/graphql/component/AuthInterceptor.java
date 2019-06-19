@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.graphql.component;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.graphql.GraphQLApi;
 
@@ -40,6 +42,20 @@ public class AuthInterceptor {
 
     @AroundInvoke
     public Object checkAuthorized(InvocationContext ctx) throws Exception {
+        if (!GraphQLExtension.appContainsSecurityAnnotations()) {
+            return ctx.proceed();
+        }
+
+        HttpServletRequest req = AuthFilter.getCurrentRequest();
+        HttpServletResponse res = AuthFilter.getCurrentResponse();
+        if (req == null || res == null) {
+            throw new IllegalStateException();
+        }
+
+        boolean authenticated = req.authenticate(res);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "authenticated = " + authenticated);
+        }
         Method m = ctx.getMethod();
 
         if (isAuthorized(m)) {
@@ -52,6 +68,7 @@ public class AuthInterceptor {
         throw new Exception("Unauthorized");
     }
 
+    //TODO: can we make this logic shared with JAX-RS?
     private static boolean isAuthorized(Method m) {
         // First check annotations on methods
         if (m.getAnnotation(DenyAll.class) != null) {
@@ -60,12 +77,7 @@ public class AuthInterceptor {
             }
             return false;
         }
-        if (m.getAnnotation(PermitAll.class) != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "@PermitAll on method");
-            }
-            return true;
-        }
+        
         RolesAllowed rolesAllowed = m.getAnnotation(RolesAllowed.class);
         if (rolesAllowed != null) {
             HttpServletRequest req = AuthFilter.getCurrentRequest();
@@ -81,6 +93,13 @@ public class AuthInterceptor {
                 Tr.debug(tc, "User " + req.getUserPrincipal() + " is not in role defined in @RolesAllowed on method.");
             }
             return false;
+        }
+
+        if (m.getAnnotation(PermitAll.class) != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "@PermitAll on method");
+            }
+            return true;
         }
 
         // if method has no annotations, check class level

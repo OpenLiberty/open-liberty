@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -26,42 +25,46 @@ import org.eclipse.microprofile.graphql.Query;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 
 @GraphQLApi
-@DeclareRoles({"Role1", "Role2"})
-@RolesAllowed("Role1")
-public class RolesAllowedEndpoint {
-    private static Logger LOG = Logger.getLogger(RolesAllowedEndpoint.class.getName());
+public class MultiAnnosEndpoint {
+    private static Logger LOG = Logger.getLogger(MultiAnnosEndpoint.class.getName());
     
     private final List<Widget> allWidgets = new ArrayList<>();
 
-    public RolesAllowedEndpoint() {
+    public MultiAnnosEndpoint() {
         allWidgets.add(new Widget("Notebook", 20, 2.0));
         allWidgets.add(new Widget("Pencil", 200, 0.5));
     }
 
-    @Query("rolesAllowedClass")
-    public List<Widget> rolesAllowedClass() {
-        LOG.info("rolesAllowedClass invoked");
-        return allWidgets;
-    }
-
-    @Query("rolesAllowedClassDenyAllMethod")
-    @DenyAll
-    public List<Widget> rolesAllowedClassDenyAllMethod() {
-        LOG.info("rolesAllowedClassDenyAllMethod invoked");
-        return allWidgets;
-    }
-
-    @Query("rolesAllowedClassPermitAllMethod")
+    @Query("denyAllAndPermitAll")
+    @DenyAll // should win
     @PermitAll
-    public List<Widget> rolesAllowedClassPermitAllMethod() {
-        LOG.info("rolesAllowedClassPermitAllMethod invoked");
+    public List<Widget> denyAllAndPermitAll() {
+        LOG.info("denyAllAndPermitAll invoked");
         return allWidgets;
     }
 
-    @Query("rolesAllowedClassRolesAllowedMethod")
+    @Query("denyAllAndRolesAllowed")
+    @DenyAll // should win
     @RolesAllowed("Role1")
-    public List<Widget> noAnnoClassRolesAllowedMethod() {
-        LOG.info("noAnnoClassRolesAllowedMethod invoked");
+    public List<Widget> rolesAllowedClassDenyAllMethod() {
+        LOG.info("denyAllAndRolesAllowed invoked");
+        return allWidgets;
+    }
+
+    @Query("rolesAllowedAndPermitAll")
+    @PermitAll
+    @RolesAllowed("Role1") // should win
+    public List<Widget> rolesAllowedClassPermitAllMethod() {
+        LOG.info("rolesAllowedAndPermitAll invoked");
+        return allWidgets;
+    }
+
+    @Query("allThree")
+    @DenyAll // should win
+    @PermitAll
+    @RolesAllowed("Role1")
+    public List<Widget> allThree() {
+        LOG.info("allThree invoked");
         return allWidgets;
     }
 }

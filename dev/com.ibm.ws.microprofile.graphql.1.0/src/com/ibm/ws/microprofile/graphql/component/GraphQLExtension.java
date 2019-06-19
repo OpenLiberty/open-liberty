@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.graphql.component;
 
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
@@ -19,7 +20,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -27,6 +33,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
+
 
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.SchemaPrinter;
@@ -39,6 +46,7 @@ import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIServiceUtils;
@@ -60,8 +68,9 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         return "true".equalsIgnoreCase(System.getProperty("com.ibm.ws.microprofile.graphql.enable.metrics", "true"));
     });
 
-    private static final Map<ModuleMetaData, Set<Bean<?>>> graphQLComponents = new WeakHashMap<>();
-    private static final Map<ModuleMetaData, GraphQLSchema> graphQLSchemas = new WeakHashMap<>();
+    private static final Map<J2EEName, Set<Bean<?>>> graphQLComponents = new WeakHashMap<>();
+    private static final Map<J2EEName, GraphQLSchema> graphQLSchemas = new WeakHashMap<>();
+    private static final Map<J2EEName, Boolean> containsSecAnnotations = new WeakHashMap<>();
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         //register the interceptor binding and in the interceptor itself
@@ -70,9 +79,13 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         AnnotatedType<TracingInterceptor> interceptorType = beanManager.createAnnotatedType(TracingInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
 
-        AnnotatedType<AuthInterceptor> authInterceptorType = beanManager.createAnnotatedType(AuthInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(authInterceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
+        // only add the auth interceptor is security is enabled and app contains a class-level security annotation
+        if (canLoad("com.ibm.ws.security.javaeesec.AuthContext")) {
+            AnnotatedType<AuthInterceptor> authInterceptorType = beanManager.createAnnotatedType(AuthInterceptor.class);
+            beforeBeanDiscovery.addAnnotatedType(authInterceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
+        }
 
+        // only add the metrics collection interceptor if metrics is enabled
         if (canLoad("com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory") && metricsEnabled) {
             AnnotatedType<MetricsInterceptor> metricsInterceptorType = beanManager.createAnnotatedType(MetricsInterceptor.class);
             beforeBeanDiscovery.addAnnotatedType(metricsInterceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(metricsInterceptorType, this.getClass()));
@@ -85,18 +98,22 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "adding GraphQLApi bean: " + bean);
             }
-            //TODO: add interceptor(s) set via DS - i.e. metric capturing interceptor
-            ModuleMetaData mmd = getModuleMetaData();
-            graphQLComponents.computeIfAbsent(mmd, k -> {
+
+            J2EEName mmdName = getModuleMetaDataName();
+            graphQLComponents.computeIfAbsent(mmdName, k -> {
                 return new HashSet<>();
             });
-            graphQLComponents.get(mmd).add(bean);
+            graphQLComponents.get(mmdName).add(bean);
+
+            if (containsSecurityAnnotations(bean.getBeanClass())) {
+                containsSecAnnotations.put(mmdName, true);
+            }
         }
     }
 
     static GraphQLSchema createSchema(BeanManager beanManager) {
-        ModuleMetaData mmd = getModuleMetaData();
-        Set<Bean<?>> beans = graphQLComponents.get(getModuleMetaData());
+        J2EEName mmdName = getModuleMetaDataName();
+        Set<Bean<?>> beans = graphQLComponents.get(mmdName);
         if (beans == null || beans.size() < 1) {
             return null;
         }
@@ -113,34 +130,50 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
 
         GraphQLSchema schema = schemaGen.generate();
         synchronized (graphQLSchemas) {
-            graphQLSchemas.put(mmd, schema);
+            graphQLSchemas.put(mmdName, schema);
         }
         return schema;
     }
 
-//    static Set<Bean<?>> getGraphQLComponents() {
-//        Set<Bean<?>> set = graphQLComponents.get(getModuleMetaData());
-//        return set == null ? Collections.emptySet() : set;
-//    }
-
-    static ModuleMetaData getModuleMetaData() {
+    static J2EEName getModuleMetaDataName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         ModuleMetaData mmd = cmd.getModuleMetaData();
-        return mmd;
+        return mmd.getJ2EEName();
     }
 
     static void forEachComponentInApp(Consumer<Class<?>> consumer) {
-        ModuleMetaData mmd = getModuleMetaData();
-        Set<Bean<?>> beans = graphQLComponents.get(mmd);
+        getBeans().stream()
+                  .map(bean -> { return bean.getBeanClass();})
+                  .forEach(consumer);
+    }
+
+    static boolean appContainsSecurityAnnotations() {
+        return containsSecAnnotations.get(getModuleMetaDataName());
+    }
+
+    private static boolean containsSecurityAnnotations(Class<?> cls) {
+        for (Annotation anno : cls.getAnnotations()) {
+            Class<?> annoType = anno.annotationType();
+            if (annoType == DeclareRoles.class ||
+                annoType == DenyAll.class ||
+                annoType == PermitAll.class ||
+                annoType == RolesAllowed.class) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Set<Bean<?>> getBeans() {
+        J2EEName mmdName = getModuleMetaDataName();
+        Set<Bean<?>> beans = graphQLComponents.get(mmdName);
         if (beans == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "No GraphQL components found for module " + mmd);
+                Tr.debug(tc, "No GraphQL components found for module " + mmdName);
             }
-            return;
+            return Collections.emptySet();
         }
-        beans.stream()
-             .map(bean -> { return bean.getBeanClass();})
-             .forEach(consumer);
+        return beans;
     }
 
     private boolean canLoad(String className) {
@@ -167,7 +200,7 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         out.println("Schemas:");
         synchronized (graphQLSchemas) {
             graphQLSchemas.forEach((k, v) -> {
-                out.println("*  Module: " + k.getJ2EEName());
+                out.println("*  Module: " + k);
                 out.println();
                 out.println(new SchemaPrinter().print(v));
             });

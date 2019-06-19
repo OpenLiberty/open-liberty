@@ -61,7 +61,7 @@ public class RolesAuthTestServlet extends FATServlet {
     @Override
     public void init() throws ServletException {
         String contextPath = getSysProp("com.ibm.ws.microprofile.graphql.fat.contextpath", "graphql");
-        String baseUriStr = "http://localhost:" + getSysProp("bvt.prop.HTTP", "8010") + "/rolesAuthApp/" + contextPath;
+        String baseUriStr = "http://localhost:" + getSysProp("bvt.prop.HTTP_default", "8010") + "/rolesAuthApp/" + contextPath;
         LOG.info("baseUrl = " + baseUriStr);
         URI baseUri = URI.create(baseUriStr);
         builder = RestClientBuilder.newBuilder()
@@ -97,7 +97,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("noAnnoClassPermitAllMethod", USER2, false);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithNoSecAnnoClassDenyAllMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithNoSecAnnoClassDenyAllMethod(HttpServletRequest req, 
                                                                                    HttpServletResponse res) throws Exception {
         runQuery("noAnnoClassDenyAllMethod", null, true);
     }
@@ -107,7 +107,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("noAnnoClassDenyAllMethod", USER1, true);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithNoSecAnnoClassRolesAllowedMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithNoSecAnnoClassRolesAllowedMethod(HttpServletRequest req, 
                                                                                         HttpServletResponse res) throws Exception {
         runQuery("noAnnoClassRolesAllowedMethod", null, true);
     }
@@ -146,7 +146,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("denyAllClassPermitAllMethod", USER2, false);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithDenyAllClassDenyAllMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithDenyAllClassDenyAllMethod(HttpServletRequest req, 
                                                                                  HttpServletResponse res) throws Exception {
         runQuery("denyAllClassDenyAllMethod", null, true);
     }
@@ -156,7 +156,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("denyAllClassDenyAllMethod", USER1, true);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithDenyAllClassRolesAllowedMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithDenyAllClassRolesAllowedMethod(HttpServletRequest req, 
                                                                                       HttpServletResponse res) throws Exception {
         runQuery("denyAllClassRolesAllowedMethod", null, true);
     }
@@ -195,7 +195,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("permitAllClassPermitAllMethod", USER2, false);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithPermitAllClassDenyAllMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithPermitAllClassDenyAllMethod(HttpServletRequest req, 
                                                                                    HttpServletResponse res) throws Exception {
         runQuery("permitAllClassDenyAllMethod", null, true);
     }
@@ -205,7 +205,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("permitAllClassDenyAllMethod", USER1, true);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithPermitAllClassRolesAllowedMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithPermitAllClassRolesAllowedMethod(HttpServletRequest req, 
                                                                                         HttpServletResponse res) throws Exception {
         runQuery("permitAllClassRolesAllowedMethod", null, true);
     }
@@ -249,7 +249,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("rolesAllowedClassPermitAllMethod", USER2, false);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithRolesAllowedClassDenyAllMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithRolesAllowedClassDenyAllMethod(HttpServletRequest req, 
                                                                                       HttpServletResponse res) throws Exception {
         runQuery("rolesAllowedClassDenyAllMethod", null, true);
     }
@@ -259,7 +259,7 @@ public class RolesAuthTestServlet extends FATServlet {
         runQuery("rolesAllowedClassDenyAllMethod", USER1, true);
     }
     @Test
-    public void testUNAUTHENTICATECannotAccessQueryWithRolesAllowedClassRolesAllowedMethod(HttpServletRequest req, 
+    public void testUNAUTHENTICATEDCannotAccessQueryWithRolesAllowedClassRolesAllowedMethod(HttpServletRequest req, 
                                                                                            HttpServletResponse res) throws Exception {
         runQuery("rolesAllowedClassRolesAllowedMethod", null, true);
     }
@@ -272,6 +272,64 @@ public class RolesAuthTestServlet extends FATServlet {
     public void testUserNotInRoleCannotAccessQueryWithRolesAllowedClassRolesAllowedMethod(HttpServletRequest req, 
                                                                                           HttpServletResponse res) throws Exception {
         runQuery("rolesAllowedClassRolesAllowedMethod", USER2, true);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Multiple annotations at same level (method) - per docs, @DenyAll trumps @RolesAllowed(...) which trumps @PermitAll
+    @Test
+    public void testUNAUTHENTICATEDCannotAccessQueryWithDenyAllAndPermitAll(HttpServletRequest req, 
+                                                                            HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndPermitAll", null, true);
+    }
+    @Test
+    public void testUserInRoleCannotAccessQueryWithDenyAllAndPermitAll(HttpServletRequest req, 
+                                                                       HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndPermitAll", USER1, true);
+    }
+    @Test
+    public void testUNAUTHENTICATEDCannotAccessQueryWithDenyAllAndRolesAllowed(HttpServletRequest req, 
+                                                                               HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndRolesAllowed", null, true);
+    }
+    @Test
+    public void testUserInRoleCannotAccessQueryWithDenyAllAndRolesAllowed(HttpServletRequest req, 
+                                                                          HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndRolesAllowed", USER1, true);
+    }
+    @Test
+    public void testUserNotInRoleCannotAccessQueryWithDenyAllAndRolesAllowed(HttpServletRequest req, 
+                                                                             HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndRolesAllowed", USER2, true);
+    }
+    @Test
+    public void testUNAUTHENTICATEDCannotAccessQueryWithPermitAllAndRolesAllowed(HttpServletRequest req, 
+                                                                                 HttpServletResponse res) throws Exception {
+        runQuery("rolesAllowedAndPermitAll", null, true);
+    }
+    @Test
+    public void testUserInRoleCanAccessQueryWithPermitAllAndRolesAllowed(HttpServletRequest req, 
+                                                                         HttpServletResponse res) throws Exception {
+        runQuery("rolesAllowedAndPermitAll", USER1, false);
+    }
+    @Test
+    public void testUserNotInRoleCannotAccessQueryWithPermitAllAndRolesAllowed(HttpServletRequest req, 
+                                                                               HttpServletResponse res) throws Exception {
+        runQuery("rolesAllowedAndPermitAll", USER2, true);
+    }
+    @Test
+    public void testUNAUTHENTICATEDCannotAccessQueryWithAllAnnotations(HttpServletRequest req, 
+                                                                       HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndRolesAllowed", null, true);
+    }
+    @Test
+    public void testUserInRoleCannotAccessQueryWithAllAnnotations(HttpServletRequest req, 
+                                                                  HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndRolesAllowed", USER1, true);
+    }
+    @Test
+    public void testUserNotInRoleCannotAccessQueryWithAllAnnotations(HttpServletRequest req, 
+                                                                     HttpServletResponse res) throws Exception {
+        runQuery("denyAllAndRolesAllowed", USER2, true);
     }
 
     public void runQuery(String queryName, String auth, boolean expectAuthFailure) throws Exception {
@@ -309,19 +367,5 @@ public class RolesAuthTestServlet extends FATServlet {
             assertTrue("Authorization failure occurred when user should have been granted access", errors.isEmpty());
         }
         System.out.println("Response: " + response);
-        /*List<Widget> widgets = response.getData().getAllWidgets();
-        assertEquals(2, widgets.size());
-        for (Widget widget : widgets) {
-            String name = widget.getName();
-            assertNotNull(name);
-            if ("Notebook".equals(name)) {
-                assertEquals(20, widget.getQuantity());
-            } else if ("Pencil".equals(name)) {
-                assertEquals(200, widget.getQuantity());
-            } else {
-                fail("Unexpected widget: " + widget);
-            }
-            assertEquals(-1.0, widget.getWeight(), 0.1); // weight wasn't specified in the query
-        }*/
     }
 }
