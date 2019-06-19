@@ -65,9 +65,12 @@ public final class LocalConnectorActivator {
                         String localConnectorAddress = null;
                         // Start the JMX agent and retrieve the local connector address.
                         if (JavaInfo.majorVersion() < 9 ||
-                            (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf"))) {
+                            (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf") ||
+                             System.getSecurityManager() != null)) {
                             // Use JDK internal APIs for Java 8 and older OR if the server was launched in a way that bypassed
                             // the wlp/bin/server script and therefore did not get the -Djdk.attach.allowAttachSelf=true prop set
+                            // TODO: Also go down this path if j2sec is enabled, because the proper API path has permission issues
+                            //       which are being looked at under https://github.com/eclipse/openj9/issues/6119
 
                             // Use reflection to invoke...
                             // Agent.agentmain(null);
