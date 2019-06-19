@@ -16,11 +16,61 @@ info:
 servers:
   - url: https://127.0.0.1:8020/ibm/api
 paths:
+  /validation/cloudantDatabase/:
+    get:
+      tags:
+      - Validation
+      summary: Validation of all Cloudant Database configurations
+      description: "Retrieves the validation results for all cloudantDatabase configuration elements. Validation involves establishing a connection to the database and querying basic metadata information."
+      parameters:
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+      responses:
+        200:
+          description: Validation results retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/validation.cloudantDatabase.result"
+  /validation/cloudantDatabase/{uid}:
+    get:
+      tags:
+      - Validation
+      summary: Validation of a Cloudant Database configuration
+      description: "Retrieves the validation result for the specified cloudantDatabase configuration element. Validation involves establishing a connection to the database and querying basic metadata information."
+      parameters:
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For a cloudantDatabase element configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *cloudantDatabase[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "MyCloudantDB"
+          examples:
+            example-cloudantdb-id:
+              summary: "Top-level cloudantDatabase element with id"
+              description: "In this case, the uid is the same as the id."
+              value: "myConFactory"
+            example-cloudantdb-no-id:
+              summary: "Top-level cloudantDatabase element without id"
+              description: "A generated uid for top-level cloudantDatabase configuration element which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "cloudantDatabase[default-0]"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+      responses:
+        200:
+          description: Validation result retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/validation.cloudantDatabase.result"
   /validation/connectionFactory/:
     get:
       tags:
       - Validation
-      summary: Validation of all connection factories
+      summary: Validation of all Connection Factories
       description: "Retrieves the validation results for all connection factories (apart from JMS, which uses different config elements). Validation involves establishing a connection to the backend, querying basic metadata information, and performing additional interface-specific operations. For JDBC connection factories, the `java.sql.Connection.isValid` operation is invoked. For CCI connection factories, the `javax.resource.cci.Connection.createInteraction` operation is invoked."
       parameters:
         - $ref: "#/components/parameters/X-Validation-User"
@@ -160,6 +210,210 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/validation.dataSource.result"
+  /validation/jmsConnectionFactory/:
+    get:
+      tags:
+      - Validation
+      summary: Validation of all basic JMS Connection Factories
+      description: "Retrieves the validation results for all basic JMS connection factories (apart from QueueConnectionFactory and TopicConnectionFactory, which uses different config elements). Validation involves establishing a connection to the backend, querying basic metadata information, and creating & closing a session."
+      parameters:
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation results retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/validation.jms.result"
+  /validation/jmsConnectionFactory/{uid}:
+    get:
+      tags:
+      - Validation
+      summary: Validation of a basic JMS Connection Factory
+      description: "Retrieves the validation result for the specified basic JMS connection factory. Validation involves establishing a connection to the backend, querying basic metadata information, and creating & closing a session."
+      parameters:
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For a JMS connection factory configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *jmsConnectionFactory[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "DefaultJMSConnectionFactory"
+          examples:
+            example-jmscf-id:
+              summary: "Top-level JMS connection factory with id"
+              description: "In this case, the uid is the same as the id."
+              value: "DefaultJMSConnectionFactory"
+            example-jmscf-no-id:
+              summary: "Top-level JMS connection factory without id"
+              description: "A generated uid for top-level JMS connection factories which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "jmsConnectionFactory[default-0]"
+            example-jmscf-app-def:
+              summary: "App-defined JMS connection factory"
+              description: "References a JMS connection factory defined by @JMSConnectionFactoryDefinition within the MyApp application, with a name of java:app/env/jms/cf1"
+              value: "application[MyApp]/jmsConnectionFactory[java:app/env/jms/cf1]"
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation result retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/validation.jms.result"
+  /validation/jmsQueueConnectionFactory/:
+    get:
+      tags:
+      - Validation
+      summary: Validation of all JMS Queue Connection Factories
+      description: "Retrieves the validation results for all JMS queue connection factories. Validation involves establishing a connection to the backend, querying basic metadata information, and creating & closing a session."
+      parameters:
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation results retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/validation.jms.result"
+  /validation/jmsQueueConnectionFactory/{uid}:
+    get:
+      tags:
+      - Validation
+      summary: Validation of a JMS Queue Connection Factory
+      description: "Retrieves the validation result for the specified JMS queue connection factory. Validation involves establishing a connection to the backend, querying basic metadata information, and creating & closing a session."
+      parameters:
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For a JMS queue connection factory configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *jmsQueueConnectionFactory[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "MyQueueConFactory"
+          examples:
+            example-qcf-id:
+              summary: "Top-level JMS queue connection factory with id"
+              description: "In this case, the uid is the same as the id."
+              value: "myQueueConFactory"
+            example-qcf-no-id:
+              summary: "Top-level JMS queue connection factory without id"
+              description: "A generated uid for top-level JMS queue connection factories which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "jmsQueueConnectionFactory[default-0]"
+            example-qcf-app-def:
+              summary: "App-defined JMS queue connection factory"
+              description: "References a JMS queue connection factory defined by @JMSConnectionFactoryDefinition within the MyApp application, in the MyWebModule module, with a name of java:module/env/jms/qcf1"
+              value: "application[MyApp]/module[MyWebModule]/jmsQueueConnectionFactory[java:module/env/jms/qcf1]"
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation result retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/validation.jms.result"
+  /validation/jmsTopicConnectionFactory/:
+    get:
+      tags:
+      - Validation
+      summary: Validation of all JMS Topic Connection Factories
+      description: "Retrieves the validation results for all JMS topic connection factories. Validation involves establishing a connection to the backend, querying basic metadata information, and creating & closing a session."
+      parameters:
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation results retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/validation.jms.result"
+  /validation/jmsTopicConnectionFactory/{uid}:
+    get:
+      tags:
+      - Validation
+      summary: Validation of a JMS Topic Connection Factory
+      description: "Retrieves the validation result for the specified JMS topic connection factory. Validation involves establishing a connection to the backend, querying basic metadata information, and creating & closing a session."
+      parameters:
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For a JMS topic connection factory configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *jmsTopicConnectionFactory[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "MyTopicConFactory"
+          examples:
+            example-tcf-id:
+              summary: "Top-level JMS topic connection factory with id"
+              description: "In this case, the uid is the same as the id."
+              value: "myTopicConFactory"
+            example-tcf-no-id:
+              summary: "Top-level JMS topic connection factory without id"
+              description: "A generated uid for top-level JMS topic connection factories which lack an id is computed based on the order of appearance within server config, starting at 0."
+              value: "jmsTopicConnectionFactory[default-0]"
+            example-tcf-app-def:
+              summary: "App-defined JMS topic connection factory"
+              description: "References a JMS topic connection factory defined by @JMSConnectionFactoryDefinition within the MyApp application, in the MyWebModule module, with a name of java:comp/env/jms/tcf1"
+              value: "application[MyApp]/module[MyWebModule]/jmsTopicConnectionFactory[java:copy/env/jms/tcf1]"
+        - $ref: "#/components/parameters/X-Validation-User"
+        - $ref: "#/components/parameters/X-Validation-Password"
+        - $ref: "#/components/parameters/auth"
+        - $ref: "#/components/parameters/authAlias"
+        - $ref: "#/components/parameters/loginConfig"
+      # requestBody in GET will be allowed again in a newer version of OpenAPI
+      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
+      #requestBody:
+      #  $ref: "#/components/requestBodies/loginConfigProperties"
+      responses:
+        200:
+          description: Validation result retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/validation.jms.result"
 components:
   parameters:
     X-Validation-User:
@@ -213,6 +467,50 @@ components:
                 loginProp1: val1
                 loginProp2: val2
   schemas:
+    validation.cloudantDatabase.result:
+      type: object
+      properties:
+        uid:
+          description: "unique identifier"
+          type: string
+        id:
+          description: "id of cloudantDatabase"
+          type: string
+        jndiName:
+          description: "jndiName of cloudantDatabase"
+          type: string
+        successful:
+          description: "result of validation"
+          type: boolean
+        info:
+          type: object
+          properties:
+            uri:
+              type: string
+            serverVersion:
+              type: string
+            vendorName:
+              type: string
+            vendorVersion:
+              type: string
+            vendorVariant:
+              type: string
+        failure:
+          $ref: "#/components/schemas/cause"
+      required:
+        - uid
+        - successful
+      example:
+        uid: "myCloudantDB"
+        id: "myCloudantDB"
+        jndiName: "cloudant/db1"
+        successful: true
+        info:
+          uri: "http://myhost.rchland.ibm.com:5984/exampledb1"
+          serverVersion: "2.0.0"
+          vendorName: "IBM Cloudant"
+          vendorVersion: "1.1.0"
+          vendorVariant: "local"
     validation.connectionFactory.result:
       type: object
       properties:
@@ -335,6 +633,63 @@ components:
               - "org.example.efjdbc.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
               - "org.example.efjdbc.EFConnection.authenticate(EFConnection.java:223)"
               - "org.example.efjdbc.EFConnection.deferredLogin(EFConnection.java:385)"
+    validation.jms.result:
+      type: object
+      properties:
+        uid:
+          description: "unique identifier"
+          type: string
+        id:
+          description: "id of config element"
+          type: string
+        jndiName:
+          description: "jndiName of config element"
+          type: string
+        successful:
+          description: "result of validation"
+          type: boolean
+        info:
+          type: object
+          properties:
+            jmsProviderName:
+              type: string
+            jmsProviderVersion:
+              type: string
+            jmsProviderSpecVersion:
+              type: string
+            clientID:
+              type: string
+        failure:
+          $ref: "#/components/schemas/cause"
+      required:
+        - uid
+        - successful
+      example:
+        uid: "myJMS1"
+        id: "myJMS1"
+        jndiName: "jms/cf1"
+        successful: false
+        info:
+          jmsProviderName: "OpenL Messaging Provider"
+          jmsProviderVersion: "39.80.89"
+          jmsProviderSpecVersion: "2.0"
+          clientID: "MyClient"
+        failure:
+          errorCode: "ERR_UNAUTHORIZED"
+          class: "javax.jms.SecurityException"
+          message: "User lacks authority to send or receive messages."
+          stack:
+            - "org.example.am.JMSConnectionImpl.createSession(JMSConnectionImpl.java:71)"
+            - "com.ibm.ws.rest.handler.validator.jms.JMSConnectionFactoryValidator.validate(JMSConnectionFactoryValidator.java:150)"
+            - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validate(ConnectionFactoryValidator.java:189)"
+            - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.handleSingleInstance(ValidatorRestHandler:231)"
+          cause:
+            class: "javax.security.auth.login.LoginException"
+            message: "unauthorized"
+            stack:
+              - "org.example.lca.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
+              - "org.example.lca.ConnectionImpl.authenticate(EFConnection.java:223)"
+              - "org.example.lca.ConnectionImpl.deferredLogin(EFConnection.java:385)"
     info:
       type: object
       properties:
