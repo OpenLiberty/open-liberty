@@ -11,6 +11,7 @@
 package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -586,10 +587,10 @@ public class ZipFileReaper {
          * registered zip files.
          */
         public void run() {
-            Thread reaperThread = getReaperThread();
+            Thread useReaperThread = getReaperThread();
 
             // The reaper is shut down by being interrupted.
-            reaperThread.interrupt();
+            useReaperThread.interrupt();
 
             // This join is necessary to ensure that the reaper
             // thread can complete its shutdown steps.  Otherwise,
@@ -599,7 +600,7 @@ public class ZipFileReaper {
             // Maybe, the shutdown steps should be invoked directly
             // from here.
             try {
-                reaperThread.join(); // throws InterruptedException
+                useReaperThread.join(); // throws InterruptedException
             } catch ( InterruptedException e ) {
                 // Ignore
             }
@@ -1355,6 +1356,40 @@ public class ZipFileReaper {
             }
             
             return ( (data == null) ? null : data.zipFileState );
+        }
+    }
+
+    //
+
+    public void introspect(PrintWriter output) {
+        synchronized ( reaperLock ) {
+            output.println("  IsActive [ " + Boolean.valueOf(isActive) + " ]");
+            output.println("  Initial  [ " + toAbsSec(initialAt) + " (s) ]");
+            output.println("  Final    [ " + toAbsSec(finalAt) + " (s) ]");
+            
+            output.println();
+            output.println("  Reaper   [ " + reaperThread + " ]");
+
+            output.println();
+            output.println("Active and Pending Data:");
+            if ( storage.isEmpty() ) {
+                output.println("  ** NONE **");
+            } else {
+                for ( Map.Entry<String, ZipFileData> reaperEntry : storage.entrySet() ) {
+                    output.println();
+                    reaperEntry.getValue().introspect(output);
+                }
+            }
+
+            pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY);
+            pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY);
+
+            if ( completedStorage == null ) {
+                output.println();
+                output.println("Completed zip file data is not being tracked");
+            } else {
+                completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY);
+            }
         }
     }
 }

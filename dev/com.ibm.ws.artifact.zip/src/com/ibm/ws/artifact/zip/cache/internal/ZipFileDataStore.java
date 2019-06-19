@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.artifact.zip.cache.internal;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -136,10 +137,10 @@ public class ZipFileDataStore {
         }
 
         @Trivial
-        public void putBetween(Cell prev, Cell next) {
-            if ( this == prev ) {
+        public void putBetween(Cell prevCell, Cell nextCell) {
+            if ( this == prevCell ) {
                 throw new IllegalArgumentException("Cannot put a cell after itself");
-            } else if ( this == next ) {
+            } else if ( this == nextCell ) {
                 throw new IllegalArgumentException("Cannot put a cell before itself");
             }
 
@@ -155,11 +156,11 @@ public class ZipFileDataStore {
             //      ==>
             //    A.next == B; C.prev == B; B.prev == A; B.next == C
 
-            this.next = next;
-            next.prev = this;
+            this.next = nextCell;
+            nextCell.prev = this;
 
-            this.prev = prev;
-            prev.next = this;
+            this.prev = prevCell;
+            prevCell.next = this;
         }
     }
 
@@ -434,6 +435,41 @@ public class ZipFileDataStore {
             throw new IllegalStateException("Null prev.next " + cellText(cellNo, cell) + " " + cellText(cellNo - 1, cell.prev));
         } else if ( cell.prev.next != cell ) {
             throw new IllegalStateException("Non-returning prev.next " + cellText(cellNo, cell) + " " + cellText(cellNo + 1, cell.prev) + " " + cellText(cellNo, cell.prev.next));            
+        }
+    }
+
+    //
+
+    protected static final boolean DISPLAY_FULLY = true;
+    protected static final boolean DISPLAY_SPARSELY = false;
+    
+    /**
+     * Display the state of this data store to a print writer.
+     * 
+     * According to the display parameter, show the complete
+     * information for the data, or display just the names of the
+     * data.
+     *
+     * @param output The print writer which will receive output. 
+     * @param displayFully Control parameter: When true, display the
+     *     full details of each element.  When false, display just
+     *     the names of each element.
+     */
+    protected void introspect(PrintWriter output, boolean displayFully) {
+        output.println();
+        output.println("Zip File Data [ " + getName() + " ]");
+        if ( isEmpty() ) {
+            output.println("  ** NONE **");
+        } else {
+            Iterator<ZipFileData> values = values();
+            while ( values.hasNext() ) {
+                if ( displayFully ) {
+                    output.println();
+                    values.next().introspect(output);
+                } else {
+                    output.println( "  [ " + values.next().getPath() + " ]");
+                }
+            }
         }
     }
 }

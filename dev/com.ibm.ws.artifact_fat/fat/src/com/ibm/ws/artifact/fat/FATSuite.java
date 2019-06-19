@@ -15,7 +15,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { FATResourceProtocol.class })
+@SuiteClasses( { 
+                    FATResourceProtocol.class, 
+                    FATReaperVerification.class
+                })
 public class FATSuite {
     // EMPTY
 }
