@@ -1,0 +1,15 @@
+<server description="Test server to verify zip reaper functionality">
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+<logging traceSpecification="com.ibm.ws.artifact.zip*=all" />
+
+<include location="../fatTestPorts.xml"/>
+
+<application location="jarneeder.war"/>
+<application location="testServlet1.war" />
+<application location="testServlet2.war" />
+
+</server>
