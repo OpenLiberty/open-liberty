@@ -10,12 +10,84 @@
 # *******************************************************************************
 openapi: "3.0.2"
 info:
-  title: Validation API
+  title: Config and Validation API
   version: "1.0"
-  description: Tests the basic configuration of resources by attempting to perform a simple operation on them.
+  description: "The Config REST endpoint retrieves information about configured elements and lists available REST API for each. The Validation REST endpoint tests the basic configuration of resources by attempting to perform a simple operation on them."
 servers:
   - url: https://127.0.0.1:8020/ibm/api
 paths:
+  /config/{elementName}:
+    get:
+      tags:
+      - Config
+      summary: "Config info for instances of one config element type"
+      description: "Retrieves information about configured instances of a single type of configuration element."
+      parameters:
+        - name: elementName
+          in: path
+          description: "**Configuration element name**. The type of configuration element, such as `dataSource` or `application`."
+          required: true
+          schema:
+            type: string
+            example: "dataSource"
+      responses:
+        200:
+          description: "Configuration info retrieved"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/config.result"
+  /config/{elementName}/{uid}:
+    get:
+      tags:
+      - Config
+      summary: "Config info for single element"
+      description: "Retrieves information about a single configured element."
+      parameters:
+        - name: elementName
+          in: path
+          description: "**Configuration element name**. The type of configuration element, such as `dataSource` or `application`."
+          required: true
+          schema:
+            type: string
+            example: "dataSource"
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For an element configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *dataSource[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "DefaultDataSource"
+          examples:
+            example-id:
+              summary: "Top-level element with id"
+              description: "The uid of a top-level config element is the value of its `id` attribute, if present."
+              value: "DefaultDataSource"
+            example-no-id:
+              summary: "Top-level element without id"
+              description: "The uid of a top-level config element without an `id` attribute is computed based on the order of appearance within server config, starting at 0."
+              value: "jmsConnectionFactory[default-0]"
+            example-nested:
+              summary: "Nested element without id"
+              description: "This example shows a generated uid for the first connectionManager (index 0, lacking an id) that is nested under a dataSource element with id of DefaultDataSource."
+              value: "dataSource[DefaultDataSource]/connectionManager[default-0]"
+            example-nested-under-singleton:
+              summary: "Nested element (without id) under singleton"
+              description: "This example shows a generated uid for the first dataSource (index 0, lacking an id) that is nested under the transaction element. The transaction element is a singleton and cannot have an id."
+              value: "transaction/dataSource[default-0]"
+            example-app-def:
+              summary: "App-defined resource"
+              description: "The uid for application-defined resources, such as @DataSourceDefinition and @JMSConnectionFactoryDefinition, is computed based on the configured name and qualified by its scope. This example is for a @DataSourceDefinition in the MyApp application, in the MyWebModule module, with a name of java:module/env/jdbc/ds1"
+              value: "application[MyApp]/module[MyWebModule]/dataSource[java:module/env/jdbc/ds1]"
+      responses:
+        200:
+          description: "Configuration info retrieved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/config.result"
   /validation/cloudantDatabase/:
     get:
       tags:
@@ -78,10 +150,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation results retrieved
@@ -123,10 +193,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation result retrieved
@@ -146,10 +214,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation results retrieved
@@ -199,10 +265,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation result retrieved
@@ -222,10 +286,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation results retrieved
@@ -267,10 +329,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation result retrieved
@@ -290,10 +350,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation results retrieved
@@ -335,10 +393,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation result retrieved
@@ -358,10 +414,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation results retrieved
@@ -403,10 +457,8 @@ paths:
         - $ref: "#/components/parameters/auth"
         - $ref: "#/components/parameters/authAlias"
         - $ref: "#/components/parameters/loginConfig"
-      # requestBody in GET will be allowed again in a newer version of OpenAPI
-      # see https://github.com/OAI/OpenAPI-Specification/pull/1937
-      #requestBody:
-      #  $ref: "#/components/requestBodies/loginConfigProperties"
+        - $ref: "#/components/parameters/X-Login-Config-Props"
+        - $ref: "#/components/parameters/headerParamsURLEncoded"
       responses:
         200:
           description: Validation result retrieved
@@ -419,13 +471,13 @@ components:
     X-Validation-User:
       name: X-Validation-User
       in: header
-      description: "**User**. Supplies a user name when not using Container-managed authentication."
+      description: "**User**. Supplies a user name when not using Container-managed authentication. All non-ASCII characters must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
       schema:
         type: string
     X-Validation-Password:
       name: X-Validation-Password
       in: header
-      description: "**Password**. Supplies a password when not using Container-managed authentication."
+      description: "**Password**. Supplies a password when not using Container-managed authentication. All non-ASCII characters must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
       schema:
         type: string
         format: password
@@ -450,23 +502,87 @@ components:
       description: "**Custom Login**. Supplies the `name` of a `jaasLoginContextEntry` to use for Container-managed authentication."
       schema:
         type: string
-  requestBodies:
-    loginConfigProperties:
-      description: "Additional details for request, including **Login Config Properties**"
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              loginConfigProperties:
-                type: object
-                additionalProperties:
-                  type: string
-            example:
-              loginConfigProperties:
-                loginProp1: val1
-                loginProp2: val2
+    X-Login-Config-Props:
+      name: X-Login-Config-Props
+      in: header
+      description: "**Login Config Properties**. Supply login config properties as name/value pairs. Each name/value pair is a list element, within which the name and value are delimited by the first `=` character. For example, *prop1=value1*. All non-ASCII characters must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
+      schema:
+        type: array
+        items:
+          type: string
+    headerParamsURLEncoded:
+      name: headerParamsURLEncoded
+      in: query
+      description: "Enable this if you URL-encode values for header parameters, such as X-Validation-User, X-Validation-Password, or X-Login-Config-Props. URL encoding is necessary to supply values that include non-ASCII characters."
+      schema:
+        type: boolean
+      example: false
   schemas:
+    config.result:
+      type: object
+      properties:
+        configElementName:
+          description: "config element name"
+          type: string
+        uid:
+          description: "unique identifier"
+          type: string
+        id:
+          description: "id of configuration element"
+          type: string
+        jndiName:
+          description: "jndiName of configuration element"
+          type: string
+        api:
+          description: "relative paths to available REST endpoints for this configuration element"
+          type: array
+          items:
+            type: string
+      additionalProperties:
+        anyOf:
+          - type: boolean
+          - type: number
+          - type: string
+          - $ref: "#/components/schemas/config.result"
+          - type: object
+          - type: array
+            items:
+              $ref: "#/components/schemas/config.result"
+      required:
+        - configElementName
+      example:
+        configElementName: "dataSource"
+        uid: "DefaultDataSource"
+        id: "DefaultDataSource"
+        beginTranForResultSetScrollingAPIs: true
+        beginTranForVendorAPIs: true
+        connectionSharing: "MatchOriginalRequest"
+        containerAuthDataRef:
+          configElementName: "containerAuthData"
+          uid: "dataSource[DefaultDataSource]/containerAuthData[default-0]"
+          password: "******"
+          user: "derbyuser1"
+        enableConnectionCasting: false
+        jdbcDriverRef:
+          configElementName: "jdbcDriver"
+          uid: "dataSource[DefaultDataSource]/jdbcDriver[default-0]"
+          libraryRef:
+            configElementName: "library"
+            uid: "Derby"
+            id: "Derby"
+            apiTypeVisibility: "spec,ibm-api,api,stable"
+            fileRef:
+              - configElementName: "file"
+                uid: "library[Derby]/file[default-0]"
+                name: "/Users/myself/drivers/derby/derby.jar"
+        statementCacheSize: 10,
+        syncQueryTimeoutWithTransactionTimeout: false,
+        transactional: true,
+        properties.derby.embedded:
+          createDatabase: "create"
+          databaseName: "memory:derbydb"
+        api:
+          - "/ibm/api/validation/dataSource/DefaultDataSource"
     validation.cloudantDatabase.result:
       type: object
       properties:
