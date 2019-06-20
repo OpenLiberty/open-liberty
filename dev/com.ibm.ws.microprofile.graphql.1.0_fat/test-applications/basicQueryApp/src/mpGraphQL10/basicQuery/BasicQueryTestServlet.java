@@ -55,7 +55,7 @@ public class BasicQueryTestServlet extends FATServlet {
     @Override
     public void init() throws ServletException {
         String contextPath = getSysProp("com.ibm.ws.microprofile.graphql.fat.contextpath", "graphql");
-        String baseUriStr = "http://localhost:" + getSysProp("bvt.prop.HTTP", "8010") + "/basicQueryApp/" + contextPath;
+        String baseUriStr = "http://localhost:" + getSysProp("bvt.prop.HTTP_default", "8010") + "/basicQueryApp/" + contextPath;
         LOG.info("baseUrl = " + baseUriStr);
         URI baseUri = URI.create(baseUriStr);
         builder = RestClientBuilder.newBuilder()
