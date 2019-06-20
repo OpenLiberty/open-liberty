@@ -148,7 +148,6 @@ public class AuthDataServiceImpl implements AuthDataService {
 
     private Subject obtainSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) {
         Subject subject = createSubject(managedConnectionFactory, authData);
-        addInvocationSubjectPrincipal(subject);
         optimize(subject);
         return subject;
     }
