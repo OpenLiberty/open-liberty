@@ -140,7 +140,8 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      * @see com.ibm.wsspi.rest.handler.RESTHandler#handleRequest(com.ibm.wsspi.rest.handler.RESTRequest, com.ibm.wsspi.rest.handler.RESTResponse)
      */
     @Override
-    public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+    public void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+
         String path = request.getPath();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())

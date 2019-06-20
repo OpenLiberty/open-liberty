@@ -1003,4 +1003,14 @@ public class ConfigRESTHandlerTest extends FATServletClient {
             assertTrue("Expected 403 response", ex.getMessage().contains("403"));
         }
     }
+
+    // Invoke /ibm/api/config/dataSource/{uid} with HTTP POST (should not be allowed)
+    @Test
+    public void testPOSTRejected() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource")
+                        .method("POST")
+                        .expectCode(405) // Method Not Allowed
+                        .run(JsonObject.class);
+        assertNull("Json response should be empty.", json);
+    }
 }

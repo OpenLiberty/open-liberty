@@ -135,6 +135,7 @@ public class HttpsRequest {
         }
 
         HttpsURLConnection con = (HttpsURLConnection) new URL(url).openConnection();
+
         try {
             if (allowInsecure && sf != null)
                 throw new IllegalStateException("Cannot set allowInsecure=true and sslSocketFactory because " +
@@ -180,9 +181,13 @@ public class HttpsRequest {
             con.setDoOutput(true);
             con.setRequestMethod(reqMethod);
 
+            if ("GET".equals(con.getRequestMethod()) && json != null) {
+                throw new IllegalStateException("Writing a JSON body to a GET request will force the connection to be switched to a POST request at the JDK layer.");
+            }
+
             if (json != null) {
                 con.setRequestProperty("Content-Type", "application/json");
-                OutputStream out = con.getOutputStream();
+                OutputStream out = con.getOutputStream(); //This line will change a GET request to a POST request
                 out.write(json.getBytes("UTF-8"));
                 out.close();
             } else {
