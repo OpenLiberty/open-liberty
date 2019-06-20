@@ -13,7 +13,6 @@ package com.ibm.ws.concurrent.persistent.fat.configupd;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,9 +21,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -36,6 +32,7 @@ import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -105,11 +102,7 @@ public class PersistentExecutorConfigUpdateTest {
     @BeforeClass
     public static void setUp() throws Exception {
         originalConfig = server.getServerConfiguration();
-
-        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                .addPackage("web")
-                .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/web.xml"));
-		    ShrinkHelper.exportToServer(server, "dropins", app);
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
         server.startServer();
     }
 
@@ -120,8 +113,9 @@ public class PersistentExecutorConfigUpdateTest {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted())
-            server.stopServer("CWNEN1000E", "CWWKC1501W", "CWWKC1511W");
+        if (server != null && server.isStarted()) {
+        	server.stopServer("CWNEN1000E");
+        }
     }
 
     /**
@@ -320,8 +314,7 @@ public class PersistentExecutorConfigUpdateTest {
     /**
      * Starting with retry limit 10, retrying every 2 seconds, schedule a task that always fails. Update config with 10ms retry interval and make sure the task ends with failure.
      */
-    // TODO is ExpectedFFDC broken? It's currently failing the test even though the expected FFDC is indeed logged.
-    // @ExpectedFFDC("javax.naming.NamingException")
+    @ExpectedFFDC("javax.naming.NamingException")
     @Test
     public void testReduceTheRetryInterval() throws Exception {
         try {
@@ -364,8 +357,7 @@ public class PersistentExecutorConfigUpdateTest {
      * Verify the task runs successfully, then cancel it.
      * Schedule a task that does a java:comp lookup. Verify it fails.
      */
-    // TODO is ExpectedFFDC broken? It's currently failing the test even though the expected FFDC is indeed logged.
-    // @ExpectedFFDC("javax.naming.NamingException")
+    @ExpectedFFDC("javax.naming.NamingException")
     @Test
     public void testReplaceTheContextService() throws Exception {
         StringBuilder output = runInServlet(
