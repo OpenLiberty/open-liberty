@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -179,8 +180,8 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         ServiceReference<?>[] targetRefs;
         try {
             String filter = "(|" + FilterUtils.createPropertyFilter("service.pid", (String) config.get("service.pid")) // config without super type
-                           + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
-                           + ")";
+                            + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
+                            + ")";
             targetRefs = getServiceReferences(context.getBundleContext(), (String) null, filter);
         } catch (InvalidSyntaxException x) {
             targetRefs = null; // same error handling as not found
@@ -210,12 +211,19 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             for (String key : request.getParameterMap().keySet()) {
                 params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
             }
+            boolean headerParamsEncoded = Boolean.parseBoolean((String) params.get("headerParamsEncoded"));
             String user = request.getHeader("X-Validation-User");
-            if (user != null)
+            if (user != null) {
+                if (headerParamsEncoded)
+                    user = URLDecoder.decode(user, "UTF-8");
                 params.put("user", resolvePotentialVariable(user));
+            }
             String pass = request.getHeader("X-Validation-Password");
-            if (pass != null)
-                params.put("password", pass == null ? null : variableRegistry.resolveRawString(pass));
+            if (pass != null) {
+                if (headerParamsEncoded)
+                    pass = URLDecoder.decode(pass, "UTF-8");
+                params.put("password", variableRegistry.resolveRawString(pass));
+            }
             String contentType = request.getContentType();
             if ("application/json".equalsIgnoreCase(contentType)) {
                 params.put(Validator.JSON_BODY_KEY, read(request.getInputStream()));

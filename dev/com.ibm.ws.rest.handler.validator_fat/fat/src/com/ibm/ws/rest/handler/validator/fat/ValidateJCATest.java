@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,12 +106,15 @@ public class ValidateJCATest extends FATServletClient {
 
     /**
      * Validate a connectionFactory using application authentication and specify a user/password.
+     * Include unicode characters in the header parameters by URL encoding them.
      */
     @Test
     public void testApplicationAuthForConnectionFactoryWithSpecifiedUser() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application")
-                        .requestProp("X-Validation-User", "user1")
-                        .requestProp("X-Validation-Password", "1user");
+        String encodedUser = URLEncoder.encode("user\u217b1", "UTF-8");
+        String encodedPwd = URLEncoder.encode("1user\u217b", "UTF-8");
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application&headerParamsEncoded=true")
+                        .requestProp("X-Validation-User", encodedUser)
+                        .requestProp("X-Validation-Password", encodedPwd);
         JsonObject json = request.method("GET").run(JsonObject.class);
 
         String err = "Unexpected json response: " + json;
@@ -127,7 +131,7 @@ public class ValidateJCATest extends FATServletClient {
         assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
         assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
-        assertEquals(err, "user1", json.getString("user"));
+        assertEquals(err, "user\u217b1", json.getString("user"));
     }
 
     /**
@@ -229,10 +233,12 @@ public class ValidateJCATest extends FATServletClient {
 
     /**
      * Validate a connectionFactory using container authentication and explicitly specifying the authData element from server config to use.
+     * Use a unicode value in a query parameter.
      */
     @Test
     public void testContainerAuthForConnectionFactoryWithSpecifiedAuthData() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=container&authAlias=auth2").run(JsonObject.class);
+        String encodedAuthAlias = URLEncoder.encode("auth-\u2171", "UTF-8");
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=container&authAlias=" + encodedAuthAlias).run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "cf1", json.getString("uid"));
         assertEquals(err, "cf1", json.getString("id"));
