@@ -40,7 +40,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -121,10 +120,12 @@ public class ConnectionFactoryValidator implements Validator {
         String auth = (String) props.get("auth");
         String authAlias = (String) props.get("authAlias");
         String loginConfig = (String) props.get("loginConfig");
+        @SuppressWarnings("unchecked")
+        Map<String, String> loginConfigProps = (Map<String, String>) props.get("loginConfigProps");
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, methodName, user, password == null ? null : "******", auth, authAlias, loginConfig);
+            Tr.entry(this, tc, methodName, user, password == null ? null : "******", auth, authAlias, loginConfig, loginConfigProps == null ? null : loginConfigProps.entrySet());
 
         JMSValidator jmsValidator = null;
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
@@ -145,22 +146,11 @@ public class ConnectionFactoryValidator implements Validator {
                 if (loginConfig != null) {
                     // Add custom login module name and properties
                     config.setLoginConfigurationName(loginConfig);
-                    String requestBodyString = (String) props.get("json");
-                    JSONObject requestBodyJson = requestBodyString == null ? null : JSONObject.parse(requestBodyString);
-                    if (requestBodyJson != null && requestBodyJson.containsKey("loginConfigProperties")) {
-                        Object loginConfigProperties = requestBodyJson.get("loginConfigProperties");
-                        if (loginConfigProperties instanceof JSONObject) {
-                            JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
-                            for (Object entry : loginConfigProps.entrySet()) {
-                                @SuppressWarnings("unchecked")
-                                Entry<String, Object> e = (Entry<String, Object>) entry;
-                                if (trace && tc.isDebugEnabled())
-                                    Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
-                                Object value = e.getValue();
-                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
-                            }
+                    if (loginConfigProps != null)
+                        for (Entry<String, String> entry : loginConfigProps.entrySet()) {
+                            Object value = entry.getValue();
+                            config.addLoginProperty(entry.getKey(), value == null ? null : value.toString());
                         }
-                    }
                 }
             }
 

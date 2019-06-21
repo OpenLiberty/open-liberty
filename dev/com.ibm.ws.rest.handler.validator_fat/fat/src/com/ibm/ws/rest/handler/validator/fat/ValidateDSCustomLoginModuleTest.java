@@ -153,17 +153,13 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      * <property name="custom-login-prop" value="foo"/>
      * </custom-login-configuration>
      * </resource-ref>
-     *
-     * TODO: Figure out a different way to pass custom login properties.
-     * Writing to the body of the request switches the request from "GET" to "POST"
      */
-    //@Test
+    @Test
     public void testCustomLoginModuleProperties() throws Exception {
         String URL = "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry";
-        String propsJson = "{ \"loginConfigProperties\": { \"" + TestLoginModule.CUSTOM_PROPERTY_KEY + "\": \"foo\" } }";
         JsonObject json = new HttpsRequest(server, URL)
                         .method("GET")
-                        .jsonBody(propsJson)
+                        .requestProp("X-Login-Config-Props", TestLoginModule.CUSTOM_PROPERTY_KEY + "=foo")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         assertSuccessResponse(json, "customLoginDSWebBnd", "customLoginDSWebBnd", "jdbc/customLoginDSWebBnd");
