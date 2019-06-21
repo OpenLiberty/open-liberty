@@ -12,7 +12,8 @@ Subsystem-Name: MicroProfile Reactive Messaging 1.0
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.messaging-1.0, \
  com.ibm.websphere.appserver.mpReactiveStreams-1.0, \
  com.ibm.websphere.appserver.mpConfig-1.3, \
- com.ibm.websphere.appserver.cdi-2.0
+ com.ibm.websphere.appserver.cdi-2.0, \
+ com.ibm.websphere.appserver.concurrent-1.0
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.io.smallrye.reactive.converters, \
  com.ibm.ws.io.smallrye.reactive.messaging, \
