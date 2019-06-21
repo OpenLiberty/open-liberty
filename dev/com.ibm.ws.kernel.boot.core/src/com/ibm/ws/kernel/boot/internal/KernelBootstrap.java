@@ -283,17 +283,7 @@ public class KernelBootstrap {
      * @throws InterruptedException
      */
     public ReturnCode shutdown() throws InterruptedException {
-        delegateCreated.await();
-        // If we have a delegate, call shutdown to stop the server
-        if (launcherDelegate != null && launcherDelegate.shutdown()) {
-            // if shutdown stopped the server, we need to wait until we can obtain
-            // the server lock (the serverLock is released in the finally block of
-            // the go() method.. )
-            return serverLock.waitForStop();
-        }
-
-        // Server did not propertly start (no delegate), so stop is fine.
-        return ReturnCode.OK;
+        return shutdown(false);
     }
 
     /**

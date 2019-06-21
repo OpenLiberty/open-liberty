@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -390,14 +390,14 @@ public class EmbeddedServerImpl implements Server {
          * @param arguments
          */
         StopOperation(String... arguments) {
-            List<String> cmdArgs = new ArrayList<String>(Arrays.asList(arguments));
+            List<String> cmdArgs = Arrays.asList(arguments);
 
             if (0 < cmdArgs.size()) {
                 Iterator<String> i = cmdArgs.listIterator();
                 while (i.hasNext()) {
                     String arg = i.next();
 
-                    if (arg.equalsIgnoreCase("--force")) {
+                    if ((arg != null) && (arg.equalsIgnoreCase("--force"))) {
                         isForceShutdown = true;
                     } else {
                         // Ignore unknown arguments so we do not break anyone

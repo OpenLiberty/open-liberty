@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,15 +128,7 @@ public class LauncherDelegateImpl implements LauncherDelegate {
      */
     @Override
     public boolean shutdown() throws InterruptedException {
-        // Prevent shutdown before the server has properly started
-        managerLatch.await();
-
-        if (manager == null)
-            return false;
-
-        manager.shutdownFramework();
-        manager.waitForShutdown();
-        return true;
+        return shutdown(false);
     }
 
     /**
