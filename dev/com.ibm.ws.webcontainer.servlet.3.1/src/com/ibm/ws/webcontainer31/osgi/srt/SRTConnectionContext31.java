@@ -171,9 +171,13 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                             Tr.debug(tc, "tcm -->" + tcm);
                         }
                         tcm.pushContextData();
-                        
-                        //call application handler init 
-                        handler.init(upgradedCon);
+
+                        try {
+                            //call application handler init 
+                            handler.init(upgradedCon);
+                        } finally {
+                            tcm.popContextData();
+                        }
                     }
                 }
                 catch (Throwable th)
