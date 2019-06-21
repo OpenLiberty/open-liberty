@@ -377,6 +377,9 @@ public class DirectoryOverlayContainerImpl implements OverlayContainer {
         boolean overlayExists = FileUtils.fileExists(overlayDir);
         boolean overlayIsDir = overlayExists && Utils.fileIsDirectory(overlayDir);
 
+        // Overlay parent [ CACHE_ADAPT/com.ibm.ws.classloading.sharedlibrary_40 ]
+        //        Overlay [ CACHE_ADAPT/com.ibm.ws.classloading.sharedlibrary_40/.overlay ]
+
         boolean altOverlayIsDir_1 = Utils.fileIsDirectory(overlayDir);
         boolean altOverlayIsDir_2 = FileUtils.fileIsDirectory(overlayDir);
 
@@ -397,14 +400,22 @@ public class DirectoryOverlayContainerImpl implements OverlayContainer {
             } else {
                 File[] peers = FileUtils.listFiles(overlayParentDir);
                 if ( peers.length != 0 ) {
-                    System.out.println("Overlay parent [ " + overlayParentDir.getAbsolutePath() + " ]");
-                    System.out.println("Overlay [ " + overlayDir.getAbsolutePath() + " ]");
+                    System.out.println("Overlay parent [ " + overlayParentDir.getName() + " ] Abs [ " + overlayParentDir.getAbsolutePath() + " ]");
+                    System.out.println("  Exists [ " + overlayParentDir.exists() + " ] Abs [ " + overlayParentDir.getAbsoluteFile().exists() + " ]");
+                    System.out.println("Overlay [ " + overlayDir.getName() + " ] Abs [ " + overlayDir.getAbsolutePath() + " ]");
+                    System.out.println("  Exists [ " + overlayDir.exists() + " ] Abs [ " + overlayDir.getAbsoluteFile().exists() + " ]");
+
                     for ( File peer : peers ) {
-                        System.out.println("  Peer [ " + peer.getName() + " ]");
+                        System.out.println("  Peer [ " + peer.getName() + " ] Abs [ " + peer.getAbsolutePath() + " ]");
+                        System.out.println("    Exists    [ " + peer.exists() + " ] Abs [ " + peer.getAbsoluteFile().exists() + " ]");
                     }
+
+                    //           Peer [ .overlay ]
+
                     throw new IllegalArgumentException(
                         "Overlay [ " + overlayParentDir.getAbsolutePath() + " ]" +
                         " has children, but does not have [ " + overlayDir.getAbsolutePath() + " ]");
+
                 } else {
                     // Must not exist. 
                     FileUtils.fileMkDirs(overlayDir);
