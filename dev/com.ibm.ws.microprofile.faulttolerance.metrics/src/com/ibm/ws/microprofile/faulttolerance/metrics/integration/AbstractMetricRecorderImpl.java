@@ -75,7 +75,7 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
 
     private final MetaDataFactory metadataFactory;
 
-    protected enum CircuitBreakerState {
+    private enum CircuitBreakerState {
         CLOSED,
         HALF_OPEN,
         OPEN
@@ -135,12 +135,12 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null) {
-            Metadata bceMetricsMetadata = metadataFactory.create(metricPrefix
+            Metadata bheMetricsMetadata = metadataFactory.create(metricPrefix
                                                                  + ".bulkhead.executionDuration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS);
             bulkheadConcurrentExecutions = gauge(registry, metricPrefix + ".bulkhead.concurrentExecutions", MetricUnits.NONE, this::getConcurrentExecutions);
             bulkheadRejectionsCounter = registry.counter(metricPrefix + ".bulkhead.callsRejected.total");
             bulkheadAcceptedCounter = registry.counter(metricPrefix + ".bulkhead.callsAccepted.total");
-            bulkheadExecutionDuration = registry.histogram(bceMetricsMetadata);
+            bulkheadExecutionDuration = registry.histogram(bheMetricsMetadata);
         } else {
             bulkheadConcurrentExecutions = null;
             bulkheadRejectionsCounter = null;
@@ -149,10 +149,10 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null && isAsync == AsyncType.ASYNC) {
-            Metadata bqPopulationMeta = metadataFactory.create(metricPrefix
-                                                               + ".bulkhead.waiting.duration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS);
+            Metadata bhWaitingTimeMeta = metadataFactory.create(metricPrefix
+                                                                + ".bulkhead.waiting.duration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS);
             bulkheadQueuePopulation = gauge(registry, metricPrefix + ".bulkhead.waitingQueue.population", MetricUnits.NONE, this::getQueuePopulation);
-            bulkheadQueueWaitTimeHistogram = registry.histogram(bqPopulationMeta);
+            bulkheadQueueWaitTimeHistogram = registry.histogram(bhWaitingTimeMeta);
         } else {
             bulkheadQueuePopulation = null;
             bulkheadQueueWaitTimeHistogram = null;
@@ -353,7 +353,7 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
     }
 
     @Trivial
-    protected synchronized long getCircuitBreakerAccumulatedOpen() {
+    private synchronized long getCircuitBreakerAccumulatedOpen() {
         long computedNanos = openNanos;
         if (circuitBreakerState == CircuitBreakerState.OPEN) {
             computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
@@ -362,7 +362,7 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
     }
 
     @Trivial
-    protected synchronized long getCircuitBreakerAccumulatedHalfOpen() {
+    private synchronized long getCircuitBreakerAccumulatedHalfOpen() {
         long computedNanos = halfOpenNanos;
         if (circuitBreakerState == CircuitBreakerState.HALF_OPEN) {
             computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
@@ -371,7 +371,7 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
     }
 
     @Trivial
-    protected synchronized long getCircuitBreakerAccumulatedClosed() {
+    private synchronized long getCircuitBreakerAccumulatedClosed() {
         long computedNanos = closedNanos;
         if (circuitBreakerState == CircuitBreakerState.CLOSED) {
             computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
@@ -380,7 +380,7 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
     }
 
     @Trivial
-    protected Long getConcurrentExecutions() {
+    private Long getConcurrentExecutions() {
         if (concurrentExecutionCountSupplier != null) {
             return concurrentExecutionCountSupplier.getAsLong();
         } else {
@@ -396,7 +396,7 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
     }
 
     @Trivial
-    protected Long getQueuePopulation() {
+    private Long getQueuePopulation() {
         if (queuePopulationSupplier != null) {
             return queuePopulationSupplier.getAsLong();
         } else {
