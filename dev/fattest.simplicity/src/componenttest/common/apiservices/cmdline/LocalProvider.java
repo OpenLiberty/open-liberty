@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,47 +37,230 @@ import com.ibm.websphere.simplicity.log.Log;
 public class LocalProvider {
     private static final Class<? extends LocalProvider> CLASS = LocalProvider.class;
 
-    private static final String WLP_CYGWIN_HOME = System.getenv("WLP_CYGWIN_HOME");
+    // System helpers ...
 
-    protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
-
-    public static boolean rename(RemoteFile oldPath, RemoteFile newPath) throws Exception {
-        return new File(oldPath.toString()).renameTo(new File(newPath.getAbsolutePath()));
+    public static Date getDate(Machine machine) throws Exception {
+        return new Date( System.currentTimeMillis() );
     }
 
-    public static boolean copy(RemoteFile sourceFile, RemoteFile destFile,
-                               boolean binary) throws Exception {
-        File src = new File(sourceFile.getAbsolutePath());
-        File dest = new File(destFile.getAbsolutePath());
-        if (dest.exists() && dest.isDirectory()) {
-            dest = new File(destFile.getAbsolutePath() + File.separatorChar
-                            + src.getName());
-        } else if (!dest.exists())
-            dest.getParentFile().mkdirs();
-        FileInputStream fis = new FileInputStream(src);
-        FileOutputStream fos = new FileOutputStream(dest);
-        int read;
+    public static String getOSName(Machine machine) throws Exception {
+        return System.getProperty("os.name");
+    }
+
+    public static String getTempDir() throws Exception {
+        return System.getProperty("java.io.tmpdir");
+    }
+
+    // Remote connection status ...
+
+    /**
+     * Tell if this provider is connected.  Always answer true, since this
+     * is a local provider and is always connected.
+     *
+     * @return True or false telling if this provider is connected.  This
+     *     implementation always answers true.
+     *
+     * @throws Exception Thrown if an error occurs testing the connection.
+     */
+    public static boolean isConnected() throws Exception {
+        return true;
+    }
+
+    // Simple file operations ...
+
+    public static boolean mkdir(RemoteFile remoteFile) throws Exception {
+        return remoteFile.asFile().mkdir();
+    }
+
+    public static boolean mkdirs(RemoteFile remoteFile) throws Exception {
+        return remoteFile.asFile().mkdirs();
+    }
+
+    public static InputStream openFileForReading(RemoteFile remoteFile) throws Exception {
+        return new FileInputStream( remoteFile.asFile() );
+    }
+
+    public static OutputStream openFileForWriting(RemoteFile remoteFile, boolean append) throws Exception {
+        return new FileOutputStream( remoteFile.asFile(), append );
+    }
+
+    public static boolean exists(RemoteFile remoteFile) throws Exception {
+        return remoteFile.asFile().exists();
+    }
+
+    public static boolean isDirectory(RemoteFile remoteFile) throws Exception {
+        return remoteFile.asFile().isDirectory();
+    }
+
+    public static boolean isFile(RemoteFile remoteFile) throws Exception {
+        return remoteFile.asFile().isFile();
+    }
+
+    public static long lastModified(RemoteFile remoteFile) {
+    	return remoteFile.asFile().lastModified();
+    }
+
+    public static long length(RemoteFile remoteFile) {
+    	return remoteFile.asFile().length();
+    }
+
+    // Possible orphan ...
+
+    /**
+     * Tell if a machine / host is local: That is, if it has a null host name,
+     * or if the host is the current host.
+     *
+     * See {@link Machine#getHostname()} and {@link Machine#isLocal()}.
+     *
+     * @param host The machine which is to be tested.
+     *
+     * @return True or false telling if the machine is local.
+     */
+    public static boolean isLocal(Machine host) {
+        return ( (host.getHostname() == null) || host.isLocal() );
+    }
+
+    /**
+     * This operation does not seem to be in use, and has limited effect:
+     * The implementation verifies that the host and file are both local.
+     * If either is non-local, an exception is thrown.  If both are local,
+     * the file is returned.
+     *
+     * The test seems to ensure that the t
+     * 
+     * @param targetHost The host that is the target of an operation.
+     * @param targetFile The file that is the target of an operation.
+     *
+     * @return The target file.
+     *
+     * @throws Exception Thrown if either the host or the file is non-local.
+     */
+    public static RemoteFile ensureFileIsOnMachine(Machine targetHost, RemoteFile targetFile) throws Exception {
+        if ( !targetHost.isLocal() || !targetFile.getMachine().isLocal() ) {
+            throw new Exception("A remote provider is required to transfer files between physical machines.");
+        }
+        return targetFile;
+    }
+
+    // Move and rename
+
+    /**
+     * Attempt to move a file.  Answer true or false telling if the move was successful.
+     *
+     * Expected exceptions from the move operation are captured and false is returned.
+     *
+     * The move is performed as an atomic operation.  Time attributes of the file are preserved.
+     * See {@link Files#move}. and {@link StandardCopyOption#ATOMIC_MOVE}.
+     *
+     * @param src The source file.
+     * @param dest The destination file.
+     *
+     * @return True or false telling if the move was successful.
+     *
+     * @throws Exception Thrown if the move failed unexpectedly.
+     */
+    public static boolean move(RemoteFile src, RemoteFile dest) throws Exception {
+        String methodName = "move";
         try {
-            byte[] buffer = new byte[8192];
-            while ((read = fis.read(buffer)) > 0) {
-                fos.write(buffer, 0, read);
+            return ( Files.move( src.asPath(), dest.asPath(), StandardCopyOption.ATOMIC_MOVE) != null );
+        } catch ( IOException e ) {
+            Log.error(CLASS,  methodName, e, "Failed to move " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
+            return false;
+        }
+    }
+
+    /**
+     * Attempt to rename a file.  Answer true or false telling if the rename was successful.
+     *
+     * Expected exceptions from the rename operation are captured and false is returned.
+     *
+     * The operation is not necessarily atomic.  See {@link File#renameTo}.
+     *
+     * @param src The source file.
+     * @param dest The destination file.
+     *
+     * @return True or false telling if the rename was successful.
+     *
+     * @throws Exception Thrown if the rename failed unexpectedly.
+     */
+    public static boolean rename(RemoteFile src, RemoteFile dest) {
+        return src.asFile().renameTo(dest.asFile());
+    }
+
+    /**
+     * Attempt to copy a file.  Answer true or false telling if the copy was successful.
+     *
+     * If the copy destination is a directory, copy the source file as an immediate child
+     * of the destination.  The copy destination may be a simple file, in which case the
+     * copy destination will be overwritten.
+     *
+     * Expected exceptions from the copy operation are captured and false is returned.
+     *
+     * The operation not generally atomic.
+	 *
+     * @param src The source file.
+     * @param dest The destination file.
+     * @param binary Control parameter: If true, perform a binary copy.  If
+     *     false perform a text copy.  Currently ignored.  Always perform a
+     *     binary copy.
+     * @return True or false telling if the copy was successful.
+     *
+     * @throws Exception Thrown if the copy failed unexpectedly.
+     */
+    public static boolean copy(RemoteFile src, RemoteFile dest, boolean binary) throws Exception {
+        String methodName = "copy";
+        try {
+            long bytesWritten = basicCopy(src, dest);
+            Log.info(CLASS, methodName, "Copied " + bytesWritten + " bytes from " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
+            return true;
+        } catch ( IOException e ) {
+            Log.error(CLASS,  methodName, e, "Failed to copy from " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
+            return false;
+        }
+    }
+
+    private static long basicCopy(RemoteFile src, RemoteFile dest) throws IOException {
+        File srcFile = src.asFile();
+        File destFile = dest.asFile();
+
+        if ( destFile.isDirectory()) {
+            destFile = new File(destFile, srcFile.getName());        
+        }
+
+        long totalRead = 0L;
+
+        FileInputStream inputStream = null;
+        FileOutputStream outputStream = null;
+
+        try {
+            inputStream = new FileInputStream(srcFile); // throws IOException
+            outputStream = new FileOutputStream(destFile); // throws IOException
+
+            int read;
+            byte[] buffer = new byte[16 * 1024];
+            while ((read = inputStream.read(buffer)) != -1) { // throws IOException
+                totalRead += read;
+                outputStream.write(buffer, 0, read); // throws IOException
             }
-        } catch (Exception e) {
-            throw e;
+
         } finally {
-            try {
-                fis.close();
-            } catch (Exception e) {
-                // let it go
+            if ( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch ( IOException e ) {
+                    Log.warning(CLASS, "Failed to close " + src.getAbsolutePath() + ": " + e.getMessage());
+                }
             }
-            try {
-                fos.close();
-            } catch (Exception e) {
-                // let it go
+            if ( outputStream != null ) {
+                try {
+                    outputStream.close();
+                } catch ( IOException e ) {
+                    Log.warning(CLASS, "Failed to close " + dest.getAbsolutePath() + ": " + e.getMessage());
+                }
             }
         }
 
-        return dest.exists();
+        return totalRead;
     }
 
     //
@@ -88,390 +274,401 @@ public class LocalProvider {
      * delete all nested children despite any failures on particular
      * children.
      *
-     * @param remoteFile The remote file providing the path which is to
-     *     be deleted.
+     * @param remoteFile The remote file which is to be deleted.
      *
-     * @return True or false telling if the file was successfully deleted.
+     * @return True or false telling if the file was deleted.
      *     True if the file does not exist.
-     * 
-     * @throws Exception Thrown in case of an error deleting the file.
-     *     Not currently thrown.
+     *
+     * @throws Exception Thrown if the delete unexpectedly failed.
      */
     public static boolean delete(RemoteFile remoteFile) throws Exception {
-        return delete( new File( remoteFile.getAbsolutePath() ) );
+    	return delete( remoteFile.asFile() );
     }
 
     /**
-     * Delete a file which may be either a simple file or a directory.
+     * Recursively delete a file.
      *
-     * If a directory, recursively delete the contents of the directory
-     * before deleting the directory itself.
+     * Report failure, but continue deleting other children when a
+     * particular child delete fails.
      *
      * @param file The file which is to be deleted.
      *
      * @return True or false telling if the file was deleted.
+     *
+     * @throws Exception Thrown if the deleted failed for an unexpected
+     *     reason.
      */
-    private static boolean delete(File file) {
-        if ( !file.exists() ) {
-            return true;
+    private static boolean delete(File file) throws Exception {
+    	String methodName = "delete";
+
+    	if ( !file.exists() ) {
+    		return false;
+    	}
+
+    	Path path = file.toPath();
+
+    	if ( file.isDirectory() ) {
+        	File failedChild = null;
+
+        	for ( File child : file.listFiles() ) {
+    			if ( !delete(child) ) {
+    				if ( failedChild == null ) {
+    					failedChild = child;
+    				}
+    			}
+    		}
+
+    		if ( failedChild != null ) {
+        		Log.warning(CLASS, methodName + ": Cannot delete " + path + ": Failed to delete child " + failedChild.toPath());
+    		}
+    		return false;
+    	}
+
+    	try {
+    		Files.delete(path);
+    		return true;
+    	} catch ( IOException e ) {
+    		Log.warning(CLASS, methodName + ": Failed to delete " + path);
+    		return false;
+    	}
+
+    }
+
+    // File listing ...
+
+    /**
+     * List the files beneath a specified file.  Conditionally, recurse.  Answer
+     * the collected absolute paths of the child files.
+     *
+     * Answer an empty array if the target file is not a directory.  Do not collect
+     * the path to the target file.
+     *
+     * @param remoteFile The file which is to be listed.
+     * @param recurse Control parameter: Tells whether to list children recursively.
+     *
+     * @return The collect absolute paths of the listed files.
+     *
+     * @throws Exception Thrown if an error occurs obtaining the listing.
+     */
+    public static String[] list(RemoteFile remoteFile, boolean recurse) throws Exception {
+        List<String> collectedPaths = new ArrayList<String>();
+        collectPaths( remoteFile.asFile(), recurse, collectedPaths );
+        return collectedPaths.toArray( new String[ collectedPaths.size() ] );
+    }
+
+    /**
+     * List the files beneath a specified file.  Do not recurse.  Answer
+     * the names of the child files.
+     *
+     * Answer null if the remote file is not a directory.
+     *
+     * @param remoteFile The file which is to be listed.
+     *
+     * @return The names of child files of the remote file.
+     *
+     * @throws Exception Thrown if an error occurs obtaining the listing.
+     */
+    public static String[] list(RemoteFile remoteFile) throws Exception {
+		return remoteFile.asFile().list();
+    }
+
+    /**
+     * Collect the absolute paths of the children of a target file.  Place no paths
+     * if the target file is not a directory.
+     *
+     * Do not collect the path to the target file.
+     *
+     * @param file The file for which to collect absolute paths.
+     * @param recurse Control parameter: If true, recurse when collecting paths.
+     * @param collectedPaths The collected absolute paths.
+     *
+     * @throws Exception Thrown if an error occurs obtaining child paths.
+     */
+    public static void collectPaths(File file, boolean recurse, List<String> collectedPaths) throws Exception {
+        File[] children = file.listFiles();
+        if ( children == null ) {
+            Log.warning(CLASS,  "Request to list non-directory " + file.getAbsolutePath());
+            return;
         }
 
-        if ( file.isDirectory() ) {
-            for ( File childFile : file.listFiles() ) {
-                // Ignore any child delete failure: The parent
-                // delete will subsequently fail.
-                @SuppressWarnings("unused")
-                boolean didDeleteChild = delete(childFile);
+        for ( File child : children ) {
+            collectedPaths.add( child.getAbsolutePath() );
+            if ( recurse && child.isDirectory() ) {
+                collectPaths(child, recurse, collectedPaths);
             }
         }
-
-        return file.delete();
     }
 
-    //
+    // Process execution utility ...
 
-    public static ProgramOutput executeCommand(Machine machine, String cmd,
-                                               String[] parameters, String workDir, Properties envVars) throws Exception {
-        ByteArrayOutputStream bufferOut = new ByteArrayOutputStream();
-        ByteArrayOutputStream bufferErr = new ByteArrayOutputStream();
-        int rc = execute(machine, cmd, parameters, envVars, workDir, bufferOut,
-                         bufferErr, false);
-        ProgramOutput ret = new ProgramOutput(cmd, rc, bufferOut.toString(), bufferErr.toString());
-        return ret;
+    public static ProgramOutput executeCommand(
+        Machine host,
+        String cmd, String[] parmArray, String workPath, Properties envp) throws Exception {
+
+        ByteArrayOutputStream stdOutStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream stdErrStream = new ByteArrayOutputStream();
+        int rc = execute(host, cmd, parmArray, envp, workPath, stdOutStream, stdErrStream, IS_NOT_ASYNC);
+        return new ProgramOutput(cmd, rc, stdOutStream.toString(), stdErrStream.toString());
     }
 
-    public static void executeCommandAsync(Machine machine, String cmd, String[] parameters, String workDir, Properties envVars, OutputStream redirect) throws Exception {
-        execute(machine, cmd, parameters, envVars, workDir, redirect, null, true);
+    public static void executeCommandAsync(
+        Machine host,
+        String cmd, String[] parmArray, String workPath, Properties envp,
+        OutputStream stdOutStream) throws Exception {
+
+        execute(host, cmd, parmArray, envp, workPath, stdOutStream, null, IS_ASYNC);
+        // null stdErr stream
     }
 
-    private static final int execute(Machine machine, final String command,
-                                     final String[] parameterArray, Properties envp,
-                                     final String workDir, final OutputStream stdOutStream,
-                                     final OutputStream stdErrStream, boolean async) throws Exception {
-        final String method = "execute";
-        Log.entering(CLASS, method, "async is " + async);
+    private static final String WLP_CYGWIN_HOME = System.getenv("WLP_CYGWIN_HOME");
+    protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
-        if (command == null) {
-            throw new IllegalArgumentException("command cannot be null.");
+    private static final boolean IS_ASYNC = true;
+    private static final boolean IS_NOT_ASYNC = false;
+
+    private static final int execute(
+        Machine host,
+        String cmd, String[] parmArray, Properties envp, String workPath,
+        OutputStream stdOutStream, OutputStream stdErrStream,
+        boolean async) throws Exception {
+
+        String methodName = "execute";
+        Log.entering(CLASS, methodName, "Async " + async);
+
+        if ( cmd == null ) {
+            throw new IllegalArgumentException("Null command");
         }
-        String[] cmd = null;
-        if (parameterArray != null) {
-            cmd = new String[parameterArray.length + 1];
-            cmd[0] = command;
-            for (int i = 0; i < parameterArray.length; i++) {
-                cmd[i + 1] = parameterArray[i];
+
+        String[] cmdArray = null;
+        if ( parmArray != null ) {
+            cmdArray = new String[parmArray.length + 1];
+            cmdArray[0] = cmd;
+            for ( int parmNo = 0; parmNo < parmArray.length; parmNo++ ) {
+                cmdArray[parmNo + 1] = parmArray[parmNo];
             }
         } else {
-            cmd = new String[] { command };
+            cmdArray = new String[] { cmd };
         }
 
-        /*
-         * Windows does not permit execution of batch files directly through
-         * Runtime.exec. We have to wrap the call to the batch file with a call
-         * to "cmd /c".
-         */
-        if (machine.getOperatingSystem() == OperatingSystem.WINDOWS && WLP_CYGWIN_HOME == null) {
-            if (!cmd[0].startsWith("cmd /c")) {
-                String[] tmp = new String[cmd.length + 2];
-                tmp[0] = "cmd";
-                tmp[1] = "/c";
-                for (int i = 0; i < cmd.length; i++)
-                    tmp[i + 2] = cmd[i];
-                cmd = tmp;
+        // Windows does not permit execution of batch files directly through
+        // Runtime.exec. We have to wrap the call to the batch file with a call
+        // to "cmd /c".
+
+        if ( (host.getOperatingSystem() == OperatingSystem.WINDOWS) && (WLP_CYGWIN_HOME == null) ) {
+            if ( !cmdArray[0].startsWith("cmd /c") ) {
+                String[] adjustedCmdArray = new String[cmdArray.length + 2];
+                adjustedCmdArray[0] = "cmd";
+                adjustedCmdArray[1] = "/c";
+                for ( int elementNo = 0; elementNo < cmdArray.length; elementNo++ ) {
+                    adjustedCmdArray[elementNo + 2] = cmdArray[elementNo];
+                }
+                cmdArray = adjustedCmdArray;
             }
         } else {
-            if (!cmd[0].startsWith("sh -c")) {
-                String[] tmp = new String[3];
-                String parsedCommand = shArrayTransform(cmd);
-                tmp[0] = WLP_CYGWIN_HOME == null ? "sh" : WLP_CYGWIN_HOME + "/bin/sh";
-                tmp[1] = "-c";
-                tmp[2] = parsedCommand;
-                cmd = tmp;
+            if ( !cmdArray[0].startsWith("sh -c") ) {
+                cmdArray = new String[] {
+                    ((WLP_CYGWIN_HOME == null) ? "sh" : (WLP_CYGWIN_HOME + "/bin/sh")),
+                    "-c",
+                    collapse(cmdArray) };
             }
         }
 
-        // By default, the subprocess should inherit the working directory of
-        // the current process
-        File dir = null;
-        if (workDir != null) {
-            dir = new File(workDir);
-            if (!dir.isDirectory()) {
-                dir = null;
+        File workDir;
+        if ( workPath != null ) {
+            workDir = new File(workPath);
+            if ( !workDir.isDirectory() ) {
+                workDir = null;
             }
+        } else {
+            workDir = null; // Inherit
         }
 
-        /*
-         * make sure SystemRoot is defined. For some reason on WindowsXP this
-         * disappears when passing in evn variables causing socket issues
-         */
-        if (envp != null
-            && machine.getOperatingSystem() == OperatingSystem.WINDOWS) {
+        // Make sure SystemRoot is defined.
+        // On WindowsXP this disappears, causing socket issues.
+
+        if ( (envp != null) && (host.getOperatingSystem() == OperatingSystem.WINDOWS) ) {
             boolean systemRootFound = false;
-            for (Object p : envp.keySet()) {
-                // first check if the user defined it. most likely not
-                if (envp.get(p) != null
-                    && ((String) envp.get(p)).startsWith("SystemRoot")) {
+            for ( Object envKey : envp.keySet() ) {
+                Object envValue = envp.get(envKey);
+                if ( (envValue != null) && ((String) envValue).startsWith("SystemRoot") ) {
                     systemRootFound = true;
                     break;
                 }
             }
-            if (!systemRootFound) {
-                // not user defined, so lets make sure it stays set. most likely
-                // scenario
+
+            if ( !systemRootFound ) {
                 String systemRoot = System.getenv("SystemRoot");
                 envp.setProperty("SystemRoot", systemRoot);
             }
         }
 
-        //Create the ProcessBuilder object here as we need the environment property map
-        ProcessBuilder pb = new ProcessBuilder();
+        ProcessBuilder processBuilder = new ProcessBuilder();
 
-        //Inject the the environment properties
-        if (envp != null) {
-            Map<String, String> tmp = pb.environment(); //This will already have the system environment
-            for (Map.Entry<Object, Object> p : envp.entrySet()) {
-                tmp.put((String) p.getKey(), (String) p.getValue());
+        if ( envp != null ) {
+            Map<String, String> pbEnv = processBuilder.environment();
+            for ( Map.Entry<Object, Object> envpEntry : envp.entrySet() ) {
+                pbEnv.put( (String) envpEntry.getKey(), (String) envpEntry.getValue() );
             }
         }
 
-        // execute the command
-        pb.command(cmd);
-        if (dir != null)
-            pb.directory(dir);
-        pb.redirectErrorStream(true);
-        Process proc = pb.start(); // Runtime.getRuntime().exec(cmd, envVars,
-        // dir);
+        processBuilder.command(cmdArray);
+
+        if ( workDir != null ) {
+            processBuilder.directory(workDir);
+        }
+
+        processBuilder.redirectErrorStream(true);
+
+        Process process = processBuilder.start();
+        // Runtime.getRuntime().exec(cmd, envVars, dir);
 
         StreamGobbler outputGobbler = null;
 
-        // Is this a good place to encode the assumption that on z/OS the console.log is going to be
-        // produced in EBCDIC even if the default charset is an ASCII one?
-        if (async && machine.getOperatingSystem() == OperatingSystem.ZOS) {
-            outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, true, Charset.forName(EBCDIC_CHARSET_NAME));
-        } else {
-            outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, async);
-        }
+        // TODO: Is this a good place to encode the assumption that
+        // on z/OS the console.log is going to be produced in EBCDIC
+        // even if the default character set is ASCII?
 
-        // listen to subprocess output
+        // TODO: Why is the character set conditioned on 'async'?
+
+        InputStream processInput = process.getInputStream();
+        if ( async && (host.getOperatingSystem() == OperatingSystem.ZOS) ) {
+            outputGobbler = new StreamGobbler(processInput, stdOutStream, true, Charset.forName(EBCDIC_CHARSET_NAME));
+        } else {
+            outputGobbler = new StreamGobbler(processInput, stdOutStream, async);
+        }
         outputGobbler.start();
 
-        if (async) {
-            Log.exiting(CLASS, method);
-            return -1;
+        if ( async ) {
+            Log.exiting(CLASS, methodName);
+            return -1; // Async launch, so don't have the actual return value.
         }
 
-        // wait till completion
-        proc.waitFor();
-        // let the streams catch up (critical step)
+        process.waitFor();
         outputGobbler.doJoin();
-        Log.exiting(CLASS, method);
-        return proc.exitValue();
+
+        int exitValue = process.exitValue();
+
+        Log.exiting(CLASS, methodName);
+        return exitValue;
     }
 
-    /**
-     * This method takes the parameter array and turns it into one long string for
-     * use by the sh -c part of running the command locally on linux
-     *
-     * @param cmd
-     * @return
-     */
-    private static String shArrayTransform(String[] cmd) {
-        String returned = "";
-        for (int i = 0; i < cmd.length; i++) {
-            returned += cmd[i] + " ";
-        }
-        returned = returned.substring(0, (returned.length() - 1)); //should remove the space at the end;
-        return returned;
-    }
-
-    public static synchronized AsyncProgramOutput executeCommandAsync(Machine machine,
-                                                                      String cmd, String[] parameters, String workDir,
-                                                                      Properties envVars) throws Exception {
-        String[] tmp = new String[parameters.length + 1];
-        tmp[0] = cmd;
-        for (int i = 0; i < parameters.length; i++) {
-            tmp[i + 1] = parameters[i];
-        }
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command(tmp);
-
-        /*
-         * What we're aiming for here is a command which doesn't block,
-         * but we don't really care about its life continuing past the life
-         * of this process (with nohup). We also don't think wsscript is
-         * a great idea, since it pops up firewall questions, which isn't
-         * really viable on an unattended machine.
-         * ProcessBuilder.start() should be sufficient for our needs.
-         */
-        Process process = builder.start();
-        return new AsyncProgramOutput(cmd, parameters, process);
-
-    }
-
-    public static boolean exists(RemoteFile file) throws Exception {
-        File f = new File(file.getAbsolutePath());
-        return f.exists();
-    }
-
-    public static String getOSName(Machine machine) throws Exception {
-        return System.getProperty("os.name");
-    }
-
-    public static boolean isDirectory(RemoteFile dir) throws Exception {
-        File f = new File(dir.getAbsolutePath());
-        return f.isDirectory();
-    }
-
-    public static boolean isFile(RemoteFile file) throws Exception {
-        File f = new File(file.getAbsolutePath());
-        return f.isFile();
-    }
-
-    public static String[] list(RemoteFile file, boolean recursive) throws Exception {
-        File f = new File(file.getAbsolutePath());
-        List<String> list = new ArrayList<String>();
-        String[] children = listDirectory(f);
-        for (int i = 0; i < children.length; i++) {
-            File child = new File(f, children[i]);
-            list.add(child.getAbsolutePath());
-            if (recursive && child.isDirectory()) {
-                RemoteFile childKey = new RemoteFile(file.getMachine(), child.getAbsolutePath());
-                String[] grandchildren = list(childKey, recursive);
-                for (int k = 0; k < grandchildren.length; ++k) {
-                    list.add(grandchildren[k]);
-                }
+    private static String collapse(String[] cmd) {
+        StringBuilder cmdText = new StringBuilder();
+        for ( int elementNo = 0; elementNo < cmd.length; elementNo++ ) {
+            if ( elementNo > 0 ) {
+                cmdText.append(' ');
             }
+            cmdText.append( cmd[elementNo] );
         }
-        return list.toArray(new String[0]);
+        return cmdText.toString();
     }
 
-    private static final String[] listDirectory(File directory) {
-        File[] files = directory.listFiles();
-        String[] result = new String[files.length];
-        for (int i = 0; i < files.length; i++) {
-            result[i] = files[i].getName();
+    public static synchronized AsyncProgramOutput executeCommandAsync(
+        Machine machine,
+        String cmd, String[] parmArray, String workPath, Properties envp)
+        throws Exception {
+
+        String[] cmdArray = new String[parmArray.length + 1];
+        cmdArray[0] = cmd;
+        for  ( int elementNo = 0; elementNo < parmArray.length; elementNo++ ) {
+            cmdArray[elementNo + 1] = parmArray[elementNo];
         }
-        return result;
-    }
 
-    public static boolean mkdir(RemoteFile dir) throws Exception {
-        File f = new File(dir.getAbsolutePath());
-        return f.mkdir();
-    }
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command(cmdArray);
 
-    public static boolean mkdirs(RemoteFile dir) throws Exception {
-        File f = new File(dir.getAbsolutePath());
-        return f.mkdirs();
-    }
+        // What we're aiming for here is a command which doesn't block,
+        // but we don't really care about its life continuing past the life
+        // of this process (with nohup). We also don't think wsscript is
+        // a great idea, since it pops up firewall questions, which isn't
+        // really viable on an unattended machine.
+        // ProcessBuilder.start() should be sufficient for our needs.
 
-    public static boolean isConnected() throws Exception {
-        return true;
-    }
+        Process process = processBuilder.start();
+        return new AsyncProgramOutput(cmd, parmArray, process);
 
-    public static String getTempDir() throws Exception {
-        return System.getProperty("java.io.tmpdir");
-    }
-
-    public static InputStream openFileForReading(RemoteFile file) throws Exception {
-        return new FileInputStream(file.getAbsolutePath());
-    }
-
-    public static OutputStream openFileForWriting(RemoteFile file,
-                                                  boolean append) throws Exception {
-        return new FileOutputStream(file.getAbsolutePath(), append);
     }
 
     public static ProgramOutput killProcess(Machine machine, int processId) throws Exception {
-        final String method = "killProcess";
-        Log.entering(CLASS, method, new Object[] { processId });
-        String cmd = null;
-        String[] parameters = null;
-        if (machine.getOperatingSystem() != OperatingSystem.WINDOWS) {
+        String methodName = "killProcess";
+        Log.entering(CLASS, methodName, new Object[] { processId });
+
+        // Defect 42663: For some reason passing the kill command with the parameters does
+        // not seem to work.
+        //
+        // I do not understand why, but, giving the whole already built command does work.
+        //
+        // This may need investigation later but for the time being this appears to fix
+        //the non-killing problem.        
+
+        String cmd;
+        String[] parmArray;
+
+        if ( machine.getOperatingSystem() != OperatingSystem.WINDOWS ) {
             cmd = "kill" + " -9 " + processId;
-            // Defect 42663: For some reason passing the kill command with the parameters does not seem to work.
-            // I do not understand why but giving the whole already built command does work...
-            // This may need investigation later but for the time being this appears to fix the non-killing problem
-            //  parameters = new String[] { "-9", "" + processId };
+            parmArray = null;
+            // parmArray = new String[] { "-9", "" + processId };
         } else {
             cmd = "taskkill";
-            parameters = new String[] { "/F", "/PID", "" + processId };
+            parmArray = new String[] { "/F", "/PID", "" + processId };
         }
-        Log.finer(CLASS, method, cmd, parameters);
-        return executeCommand(machine, cmd, parameters, null, null);
-    }
 
-    public static RemoteFile ensureFileIsOnMachine(Machine target,
-                                                   RemoteFile file) throws Exception {
-        if ((target.getHostname() != null && !target.isLocal())
-            || (file.getMachine().getHostname() != null && !file.getMachine().isLocal()))
-            throw new Exception("A remote provider is required to transfer files between physical machines.");
-        // If we're here, the file already exists on the local machine
-        return file;
-    }
+        Log.finer(CLASS, methodName, cmd, parmArray);
+        ProgramOutput output = executeCommand(machine, cmd, parmArray, null, null);
 
-    public static Date getDate(Machine machine) throws Exception {
-        System.out.println(System.currentTimeMillis());
-        return new Date(System.currentTimeMillis());
+        Log.exiting(CLASS, methodName);
+        return output;
     }
-
 }
+
+/* InputCopier appears to be obsolete. */
 
 /**
  * This Runnable basically just copies the input from one stream and copies it
  * to the output of another. It is designed to copy the output from the Orca
  * server process to a file, although it is more general than this.
  *
- * <p>
  * It is critical that it reads from an InputStream, and the InputStream from
  * the Orca Process, because the other stream types perform buffering this can
  * cause all kinds of problems like, causing hangs in the child process because
  * we did not read all the content, or only part of the output being captured to
  * file.
- * </p>
  */
 class InputCopier implements Runnable {
-
-    /** The input stream to read from */
     private final InputStream input;
-    /** The output stream to write to */
     private final OutputStream output;
 
-    /**
-     * @param serverOut
-     *            the output from the Orca process, ownership is passed and this
-     *            stream is closed at the end of the thread
-     * @param writer
-     *            the file to write to, ownership is passed and this stream is
-     *            closed at the end of the thread
-     */
-    public InputCopier(InputStream serverOut, OutputStream writer) {
-        input = serverOut;
-        output = writer;
+    public InputCopier(InputStream input, OutputStream output) {
+        this.input = input;
+        this.output = output;
     }
 
     @Override
     public void run() {
-        int len;
-
-        // create a byte buffer
-        byte[] buffer = new byte[1024];
+        byte[] transferBuffer = new byte[16 * 1024];
 
         try {
-            // read in some data into the buffer, keep doing this until
-            // we get -1 back which generally indicates that stream is
-            // closed.
-            while ((len = input.read(buffer)) != -1) {
-                // and write and flush
-                output.write(buffer, 0, len);
-                output.flush();
+            try {
+                int bytesRead;
+                while ( (bytesRead = input.read(transferBuffer)) != -1 ) {
+                    output.write(transferBuffer, 0, bytesRead);
+                    output.flush();
+                }
+            } catch ( IOException e ) {
+                e.printStackTrace();
             }
 
-            // close the streams
-            output.close();
-            input.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } finally {
+            try {
+                output.close();
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+            try {
+                input.close();
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
         }
     }
-
 }

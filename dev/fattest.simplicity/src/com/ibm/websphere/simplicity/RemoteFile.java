@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,10 @@
 package com.ibm.websphere.simplicity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -36,21 +34,37 @@ import componenttest.common.apiservices.cmdline.LocalProvider;
  */
 public class RemoteFile {
     @SuppressWarnings("rawtypes")
-    private static final Class c = RemoteFile.class;
+    private static final Class CLASS = RemoteFile.class;
 
     // Retry utility ...
+
+    public static final long ALLOWED_OVERAGE_NS = TimeUnit.MILLISECONDS.toNanos(50L); // 1/20 sec
 
     /**
      * Sleep a specified interval, measured in nanoseconds.
      * See {@link TimeUnit#NANOSECONDS}.
      *
-     * @param ns The interval, in nanoseconds.
+     * @param requestedNs The interval, in nanoseconds.
      *
      * @throws InterruptedException Thrown if if the sleep is
      *     interrupted.
      */
-    public static void sleep(long ns) throws InterruptedException {
-        TimeUnit.NANOSECONDS.sleep(ns); // throws InterruptedException
+    public static void sleep(long requestedNs) throws InterruptedException {
+        String methodName = "sleep";
+
+        long startNs = System.nanoTime();
+        TimeUnit.NANOSECONDS.sleep(requestedNs);
+        long endNs = System.nanoTime();
+
+        long actualNs = endNs - startNs;
+        if ( actualNs < requestedNs ) {
+            Log.warning(CLASS, methodName + ": Truncated: Requested [ " + requestedNs + " (ns) ]; Actual [ " + actualNs + " (ns) ]");
+        } else {
+            long extraNs = actualNs - requestedNs;
+            if ( extraNs > ALLOWED_OVERAGE_NS ) {
+                Log.warning(CLASS, methodName + ": Extended: Requested [ " + requestedNs + " (ns) ]; Actual [ " + actualNs + " (ns) ]");
+            }
+        }
     }
 
     /**
@@ -80,459 +94,1146 @@ public class RemoteFile {
     public static final long STANDARD_RETRY_INTERVAL_NS =
         TimeUnit.MILLISECONDS.toNanos(200 * 2);
 
+    public static final long STANDARD_RETRY_MAX_NS =
+        TimeUnit.SECONDS.toNanos(120L);
+
     public static final long STANDARD_RETRY_PARTIAL_INTERVAL_NS =
         TimeUnit.MILLISECONDS.toNanos(50);
 
+    /**
+     * Functional interface for {@link #retry}.
+     * 
+     * The operation, {@link Operation#act()} is based on
+     * {@link Files#deleteIfExists(Path)}, which answers false
+     * if the file does not exist, and which throws an exception
+     * if the file does exist but could not be deleted.
+     */
     public interface Operation {
+        /**
+         * Attempt an operation.
+         *
+         * @return True or false telling if the operation failed.
+         *
+         * @throws Exception Thrown if the operation failed for exceptional reasons.
+         */
         public boolean act() throws Exception;
     }
 
     public boolean retry(Operation op, long retryNs) throws Exception {
         String methodName = "retry";
 
-        boolean didAct = op.act();
-        if ( didAct ) {
-            return true;
-        }
-
         if ( retryNs < 0 ) {
-            Log.info(c, methodName, "Retry interval [ " + retryNs + " ] for [ " + getAbsolutePath() + " ] is less then 0"); 
+            Log.warning(CLASS, methodName +
+                ": Increased interval [ " + retryNs + " (ns) ] to [ 0 (ns) ]" +
+                " for [ " + getAbsolutePath() + " ]");
             retryNs = 0;
+
+        } else if ( retryNs > STANDARD_RETRY_MAX_NS ) {
+            Log.warning(CLASS, methodName +
+                ": Decreased interval [ " + retryNs + " (ns) ] to [ " + STANDARD_RETRY_MAX_NS + " (ns) ]" +
+                " for [ " + getAbsolutePath() + " ]");
+            retryNs = STANDARD_RETRY_MAX_NS;
         }
 
-        if ( retryNs == 0 ) {
-            return false;
-        }
+        // Split the retry interval into pieces.
+        //
+        // This is intended to balance between overly frequent retries
+        // and overly long delays.
 
         int retryCount = ((int) (retryNs / STANDARD_RETRY_PARTIAL_INTERVAL_NS));
         if ( (retryNs % STANDARD_RETRY_PARTIAL_INTERVAL_NS) > 0 ) {
             retryCount++;
         }
 
-        for ( int retryNo = 0; !didAct && retryNo < retryCount; retryNo++ ) {
-            didAct = op.act();
+        // Plus one: An initial try, then a retry per partial interval.
+        //
+        // A delay of 0 results in a retry count of 0, which turns into
+        // just an initial attempt and no retries.
+
+        for ( int retryNo = 0; retryNo < retryCount + 1; retryNo++ ) {
+            if ( retryNo > 0 ) { // Only retry after the first attempt.
+                sleep(STANDARD_RETRY_PARTIAL_INTERVAL_NS);
+            }
+
+            if ( retryNo == retryCount ) {
+                return op.act(); // Last try: Allow the exception to escape.
+
+            } else {
+                try {
+                    return op.act();
+                } catch ( Exception e ) {
+                    Log.info(CLASS, methodName, "Failed attempt [ " + retryNo + " ]: " + e.getMessage());
+                }
+            }
         }
 
-        return didAct;
+        throw new IllegalStateException(); // Can't get here
     }
 
+    // Basic state:
+
+    // 'host', 'name', and 'absPath' are never null.
     //
+    // 'name' is empty if the file is a root file.
+    //
+    // 'absPath' is a single slash if the file is a root file.  'absPath'
+    // always starts with a single slash, and always uses forward slashes.
+    //
+    // 'parentPath' is null if the file is a root file.
+    //
+    // 'parentFile' is null until assigned.  'parentFile' remains null only
+    // if the file is a root file.  'parentFile' is assigned on demand in a
+    // thread safe manner.
+    //
+    // 'localFile' is null until assigned.  'localFile' remains null only if the
+    // file is a non-local file.  'localFile' is assigned on demand in a thread
+    // safe manner.
+    //
+    // 'path' is null until assigned, after which it is never null.  'path'
+    // is assigned on demand in a thread safe manner.
 
     private final Machine host;
-    private String filePath;
+
     private final String parentPath;
-    private String name;
-    private File localFile; // non-null only if Machine.isLocal() returns true
-    private final Charset encoding;
+    private volatile RemoteFile parentFile;
+
+    private final String name;
+    private final String absPath;
+    private final File localFile;
+    private volatile Path path;
 
     /**
-     * Construct an instance based on the fully qualified path of the remote
-     * file.
-     * 
-     * @param host
-     *            The {@link Machine} where this file is physically located
-     * @param filePath
-     *            The fully qualified (absolute) path of the file
-     */
-    public RemoteFile(Machine host, String filePath) {
-        this(host, filePath, Charset.defaultCharset());
-    }
-
-    /**
-     * Construct an instance based on the fully qualified path of the remote
-     * file.
-     * 
-     * @param host
-     *            The {@link Machine} where this file is physically located
-     * @param filePath
-     *            The fully qualified (absolute) path of the file
-     * @param encoding
-     *            The character set the file is encoded in
-     */
-    public RemoteFile(Machine host, String filePath, Charset encoding) {
-        this.host = host;
-        this.filePath = convertPath(filePath);
-        this.parentPath = convertPath(getParentPath(filePath));
-        this.encoding = encoding;
-        init();
-    }
-
-    /**
-     * Construct an instance based on the parent of the remote file.
-     * 
-     * @param host
-     *            The {@link Machine} where this file is physically located
-     * @param parent
-     *            The remote file's parent directory
-     * @param name
-     *            The name of the file
-     */
-    public RemoteFile(Machine host, RemoteFile parent, String name) {
-        this(host, parent, name, Charset.defaultCharset());
-    }
-
-    /**
-     * Construct an instance based on the parent of the remote file.
-     * 
-     * @param host
-     *            The {@link Machine} where this file is physically located
-     * @param parent
-     *            The remote file's parent directory
-     * @param name
-     *            The name of the file
-     * @param encoding
-     *            The character set the file is encoded in
-     */
-    public RemoteFile(Machine host, RemoteFile parent, String name, Charset encoding) {
-        if (parent.getAbsolutePath().endsWith("/")
-            || parent.getAbsolutePath().endsWith("\\")) {
-            this.filePath = convertPath(parent.getAbsolutePath() + name);
-        } else {
-            this.filePath = convertPath(parent.getAbsolutePath() + "/" + name);
-        }
-        this.parentPath = parent.getAbsolutePath();
-        this.name = name;
-        this.host = host;
-        this.encoding = encoding;
-        init();
-    }
-
-    /**
-     * Construct an instance based on the parent of the remote file. Assumes that the new instance resides on the same machine as the parent file.
-     * 
-     * @param parent
-     *            The remote file's parent directory
-     * @param name
-     *            The name of the file
-     */
-    public RemoteFile(RemoteFile parent, String name) {
-        this(parent.getMachine(), parent, name, Charset.defaultCharset());
-    }
-
-    /**
-     * Construct an instance based on the parent of the remote file. Assumes that the new instance resides on the same machine as the parent file.
-     * 
-     * @param parent
-     *            The remote file's parent directory
-     * @param name
-     *            The name of the file
-     * @param encoding
-     *            The character set the file is encoded in
-     */
-    public RemoteFile(RemoteFile parent, String name, Charset encoding) {
-        this(parent.getMachine(), parent, name, encoding);
-    }
-
-    /**
-     * Get the {@link Machine} of this RemoteFile
-     * 
-     * @return The {@link Machine}
+     * Answer the machine / host of this file.
+     *
+     * @return The host of this file.
      */
     public Machine getMachine() {
         return host;
     }
 
     /**
-     * Returns a String representation the parent directory of this file, or
-     * null if this pathname does not name a parent directory.
-     * 
-     * @return A String representation of this remote file's parent directory
+     * Tell if this file is local.  A remote file is local if
+     * the file's host is local.  See {@link Machine#isLocal()}.
+     *
+     * @return True or false telling if this file is local.
+     */
+    public boolean isLocal() {
+        return host.isLocal;
+    }
+
+    /**
+     * Answer the the path of the parent of this file.  Answer
+     * null if this file is a root file.
+     *
+     * @return The path of the parent of this file.
+     *
+     * @throws Exception Thrown if an error occurs obtaining the
+     *     path of the parent of this file.  Never thrown by this
+     *     implementation.
      */
     public String getParent() throws Exception {
-        RemoteFile parent = getParentFile();
-        if (parent == null) {
+        return parentPath;
+    }
+
+    /**
+     * Answer the parent of this remote file.
+     * 
+     * Answer null if this remote file is a root file.
+     * 
+     * Put the new parent file on the specified host, and set the
+     * encoding of the new parent file to the specified encoding. 
+     *
+     * @param parentHost The host of the new parent file.
+     * @param parentEncoding The encoding of the new parent file.
+     *
+     * @return The parent of this remote file.
+     */    
+    public RemoteFile getParentFile(Machine parentHost, Charset parentEncoding) {
+        if ( parentPath == null ) {
             return null;
         } else {
-            return parent.getAbsolutePath();
+            return new RemoteFile(parentHost, parentPath, parentEncoding); 
         }
     }
 
     /**
-     * Returns a RemoteFile representation of the parent directory of this file
-     * or null if this pathname does not name a parent directory.
+     * Answer the parent of this remote file.
      * 
-     * @return A RemoteFile representation of the parent directory.
-     * @throws Exception
+     * Answer null if this remote file is a root file.
+     * 
+     * Put the new parent file on the same host as this remote file.
+     *
+     * Use the default encoding for the parent file.
+     *
+     * The parent value is assigned at most once, and may be accessed
+     * freely with very little performance cost.
+     * 
+     * @return The parent of this remote file.
      */
-    public RemoteFile getParentFile() throws Exception {
-        String path = parentPath;
-        if (path == null) {
+    public RemoteFile getParentFile() {
+        if ( parentPath == null ) {
             return null;
+        } else {
+            if ( parentFile == null ) {
+                synchronized ( this ) {
+                    if ( parentFile == null ) {
+                        parentFile = createPeer(parentPath);
+                    }
+                }
+            }
+            return parentFile;
         }
-        return new RemoteFile(host, path);
     }
 
     /**
-     * Returns the absolute pathname string of this RemoteFile in the form
-     * /dir1/dir2/file
-     * 
-     * @return The absolute pathname of this RemoteFile
+     * Answer the name of this file.  An empty string if this file is a
+     * root file.  Never null.
+     *
+     * @return The name of this file.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Answer the full absolute path of this file.  Never null or empty.
+     * A single slash character for a root file.
+     *
+     * @return The full absolute path of this file.
      */
     public String getAbsolutePath() {
-        return filePath;
+        return absPath;
     }
 
     /**
-     * <p>
-     * Searches a directory for file names matching a numeric prefix, and
-     * returns a new File instance representing a new (unique) file in that
-     * directory. Successive calls to this method for the same directory and
-     * prefix will produce an alphabetically sorted list of child files. For example:
-     * prefix01_nameA, prefix02_nameB, prefix03_nameC, prefix04_nameC, etc. Note
-     * that the returned File will not yet exist on the file system.
-     * </p>
-     * <p>
-     * This method is not thread-safe.
-     * </p>
+     * Answer this remote file as a {@link java.io.File}.
+     *
+     * Answer null if this remote file is not local.
+     *
+     * @return This file as a {@link java.io.File}.
+     */
+    public File asFile() {
+        return localFile;
+    }
+
+    /**
+     * Answer this file as a path.
+     *
+     * The path value is assigned at most once, and may be accessed
+     * freely with very little performance cost.
+     *
+     * @return This file as a path.
+     */
+    public Path asPath() {
+        if ( path == null ) {
+            synchronized ( this ) {
+                if ( path == null ) {
+                    path = FileSystems.getDefault().getPath( getAbsolutePath() );
+                }
+            }
+        }
+        return path;
+    }
+
+    // Simple operations ...
+
+    // Passive operations ...
+
+    public boolean exists() throws Exception {
+        return providerExists();
+    }
+
+    public boolean isDirectory() throws Exception {
+        return providerIsDirectory();
+    }
+
+    public boolean isFile() throws Exception {
+        return providerIsFile();
+    }
+
+    public long lastModified() {
+        return providerLastModified();
+    }
+
+    public long length() {
+        return providerLength();
+    }
+
+    // A complex 'list(boolean recurse)' is also available.
+
+    public String[] list() throws Exception {
+        return providerList();
+    }
+
+    // Active operations ...
+
+    public InputStream openForReading() throws Exception {
+        return providerOpenFileForReading();
+    }
+
+    public OutputStream openForWriting(boolean append) throws Exception {
+        return providerOpenFileForWriting(append);
+    }
+
+    public boolean mkdir() throws Exception {
+        return providerMkdir();
+    }
+
+    public boolean mkdirs() throws Exception {
+        return providerMkdirs();
+    }
+
+    // 'move', 'rename', 'copy', and 'delete' are complex operations:
+    //     'move', 'rename', and 'delete' have retry logic.
+    //     'copy' and 'delete' are recursive.
+
+    private boolean basicMove(RemoteFile dest) throws Exception {
+        // No local implementation is available.
+        return providerMove(dest);
+    }
+
+    private boolean basicRename(RemoteFile dest) throws Exception {
+        // No local implementation is available.
+        return providerRename(dest);
+    }
+
+    private boolean basicCopy(RemoteFile dest, boolean binary) throws Exception {
+        // No local implementation is available. 
+        return providerCopy(dest, binary);
+    }
+
+    private boolean basicDelete() throws Exception {
+        // No local implementation is available.
+        return providerDelete();
+    }
+
+    // Content handling assist: Associate an encoding with this file.
+
+    // Note that the encoding can be changed!
+
+    private Charset encoding;
+
+    public void setEncoding(Charset encoding) {
+        this.encoding = encoding;
+    }
+
+    public Charset getEncoding() {
+        return encoding;
+    }
+
+    // Factory assists ...
+
+    /**
+     * Answer the path of the parent of a specified path.
+     *
+     * The specified path must already be normalized, and must
+     * start with a leading slash.
+     *
+     * Answer null if the specified path is a root path.
      * 
-     * @param prefix
-     *            an optional String that proceeds ordering information. All
-     *            characters must match: [a-zA-Z_0-9\\.]
-     * @param digits
-     *            the number of digits to use for generated identifiers
-     * @param suffix
-     *            the optional name of the desired file, without any numeric identifier.
-     *            All characters must match: [a-zA-Z_0-9\\.]
-     * @return a new RemoteFile representing a unique child of the parent. The file must be created before use.
-     * @throws IllegalArgumentException
-     *             if this instance does not denote a directory,
-     *             if input arguments are invalid,
-     *             or if the file cannot be created
+     * Except when the result path is the root path, the result path
+     * never has a trailing slash.
+     *
+     * @param childPath The path for which to answer the parent path.
+     *
+     * @return The parent of the path.
+     */
+    private static String trimTail(String childPath) {
+        int childLen = childPath.length();
+
+        // Answer null for a root path.
+        //   /                ==> return null
+
+        if ( childLen == 1 ) {
+            return null;
+        }
+
+        // Strip off any trailing slash.  The resulting path cannot be empty.
+        //   /dir1/dir2/dir3/ ==> /dir1/dir2/dir3
+        //   /dir1/dir2/      ==> /dir1/dir2
+        //   /dir1/           ==> /dir1
+
+        if ( childPath.charAt(childLen - 1) == '/' ) {
+            childPath = childPath.substring(0, childLen - 1);
+        }
+
+        // Strip off the last slash and anything following, unless the last
+        // slash is the first character.
+        //   /dir1/dir2/dir3 ==> /dir1/dir2
+        //   /dir1/dir2      ==> /dir1
+        //   /dir1           ==> /
+
+        int lastSlashIndex = childPath.lastIndexOf('/');
+        if ( lastSlashIndex == 0 ) {
+            return "/";
+        } else {
+            return childPath.substring(0, lastSlashIndex);
+        }
+    }
+
+    /**
+     * Normalize the path.  Unless the path is a root path,
+     * remove any trailing slash.  Answer null for a null path,
+     * and answer an empty path for an empty path.
+     *
+     * @param path The path to process.
+     *
+     * @return The path normalized with the trailing slash removed.
+     */
+    private static String trimSlash(String path) {
+        if ( path == null ) {
+            throw new IllegalArgumentException("Path is null");
+        }
+
+        int pathLen = path.length();
+        if ( pathLen == 0 ) {
+            throw new IllegalArgumentException("Path is empty");
+        }
+
+        // Always normalize.
+        path = path.replace('\\', '/');
+
+        if ( path.charAt(0) != '/' ) {
+            throw new IllegalArgumentException("Path [" + path + " ] is not absolute");
+        }
+
+        if ( pathLen == 1 ) {
+            return path; // Do not strip the slash from a root path.
+        } else if ( path.charAt(pathLen - 1) != '/' ) {
+            return path; // No trailing slash.
+        } else {
+            return path.substring(0, pathLen - 1);
+        }
+    }
+
+    // Constructors ...
+
+    /**
+     * Create a new direct child of this file.  The new child
+     * file has the same host and encoding as this file.
+     *
+     * @param name The name of the new child file.
+     *
+     * @return The new child file.
+     */
+    public RemoteFile createChild(String name) {
+        return new RemoteFile(this, name);
+    }
+
+    /**
+     * Create a peer of this file.  The new peer file has the
+     * same host and encoding as this file.
+     *
+     * @param absPath The full path to the file.
+     *
+     * @return The new peer file.
+     */
+    public RemoteFile createPeer(String absPath) {
+        return new RemoteFile( getMachine(), absPath, getEncoding() );
+    }
+
+    /**
+     * Direct remote file constructor: Create a remote file for
+     * a specified host and path.  The remote file uses the
+     * default character set.
+     *
+     * @param host The host of the new remote file.
+     * @param path The path of the new remote file.
+     */
+    public RemoteFile(Machine host, String filePath) {
+        this( host, filePath, Charset.defaultCharset() );
+    }
+
+    /**
+     * Direct remote file constructor: Create a remote file for
+     * a specified host and path. Give a specific encoding to the
+     * new remote file.
+     *
+     * The file path must start with a leading slash.
+     *
+     * @param host The host of the new remote file.
+     * @param path The path of the new remote file.
+     * @param encoding The encoding of the new remote file.
+     */
+    public RemoteFile(Machine host, String filePath, Charset encoding) {
+        this.host = host;
+
+        this.absPath = trimSlash(filePath);
+        this.parentPath = trimTail(this.absPath); // Null for a root path.
+
+        int startIndex = this.absPath.lastIndexOf('/');
+        this.name = this.absPath.substring(startIndex + 1); // Empty for a root path.
+
+        if ( this.isLocal() ) {
+            this.localFile = new File(this.absPath);
+        } else {
+            this.localFile = null;
+        }
+
+        this.encoding = encoding;
+    }
+
+    /**
+     * Indirect remote file constructor: Create a remote file as an immediate
+     * child of another remote file. Use the same host for the new remote file
+     * as is used by the parent remote file.  Use the default character set for
+     * the new remote file.
+     *
+     * @param parent The parent of the new remote file.
+     * @param name The name of the new remote file.
+     */
+    public RemoteFile(RemoteFile parent, String name) {
+        this( parent.getMachine(), parent, name, Charset.defaultCharset() );
+    }
+
+    /**
+     * Indirect remote file constructor: Create a remote file as an immediate
+     * child of another remote file. Use the same host for the new remote file
+     * as is used by the parent remote file.  Give a specific encoding to the
+     * new remote file.
+     *
+     * @param parent The parent of the new remote file.
+     * @param name The name of the new remote file.
+     * @param encoding The encoding of the new remote file.
+     */
+    public RemoteFile(RemoteFile parent, String name, Charset encoding) {
+        this( parent.getMachine(), parent, name, encoding );
+    }
+
+    /**
+     * Indirect remote file constructor: Create a remote file as an immediate
+     * child of another remote file. Give a specific host to the new remote
+     * file.  Use the default character set for the new remote file.
+     *
+     * @param host The host of the new remote file.
+     * @param parent The parent of the new remote file.
+     * @param name The name of the new remote file.
+     */    
+    public RemoteFile(Machine host, RemoteFile parent, String name) {
+        this( host, parent, name, Charset.defaultCharset() );
+    }
+
+    /**
+     * Indirect remote file constructor: Create a remote file as an immediate
+     * child of another remote file. Give a specific host to the new remote file.
+     * Give a specific encoding to the new remote file.
+     *
+     * @param host The host of the new remote file.
+     * @param parentFile The parent of the new remote file.
+     * @param name The name of the new remote file.
+     * @param encoding The encoding of the new remote file.
+     */
+    public RemoteFile(Machine host, RemoteFile parentFile, String name, Charset encoding) {
+        this.host = host;
+
+        this.parentPath = parentFile.getAbsolutePath(); // Always start with a leading slash.
+
+        if ( name == null ) {
+            throw new IllegalArgumentException("Name is null");
+        } else if ( name.isEmpty() ) {
+            throw new IllegalArgumentException("Name is empty");
+        }
+        this.name = name;
+
+        // Don't add a slash if the parent path is the root path.
+        if ( this.parentPath.length() == 1 ) {
+            this.absPath = this.parentPath + name;
+        } else {
+            this.absPath = this.parentPath + '/' + name;
+        }
+
+        if ( this.isLocal() ) {
+            this.localFile = new File(this.absPath);
+        } else {
+            this.localFile = null;
+        }
+
+        this.encoding = encoding;
+    }
+
+    @Override
+    public String toString() {
+        return getAbsolutePath();
+    }
+
+    private volatile String printString;
+
+    // Would prefer for this implementation to be used for 'toString', but
+    // existing code relies on that answering the absolute path.
+
+    public String printString() {
+        if ( printString == null ) {
+            synchronized ( this ) {
+                if ( printString == null ) {
+                    printString = getAbsolutePath() + ": " + getMachine().getHostname();
+                }
+            }
+        }
+        return printString;
+    }
+
+    //
+
+    // zero or more characters matching [a-zA-Z_0-9\\.].  The '-' character is not allowed!    
+    private static final Pattern wordCharacters = Pattern.compile("[\\w\\.]*");
+
+    /**
+     * Answer a new unique file in this directory having the specified prefix and suffix, and
+     * with a digits field padded to a specified length.  Answer the file with with digits one
+     * higher than the currently available files.
+     *
+     * The full pattern for generated files is:
+     * 
+     * <code>
+     *     prefix + digits + '-' + suffix
+     * </code>
+     *
+     * A dash is placed after the digits only if a suffix is present.
+     *
+     * The first generated digits value is "1", zero padded to the left.
+     *
+     * The generated file is not created.  Concurrent calls to generate a new unique file
+     * will answer the same value.
+     *
+     * @param prefix An optional prefix to the file name.  The prefix must match the
+     *     pattern "[a-zA-Z_0-9\\.]".
+     * @param digits The number of characters in the digits field.
+     * @param suffix An optional suffix to the file name.  The suffix must match the
+     *     pattern "[a-zA-Z_0-9\\.]".
+     *
+     * @return A new unique remote file.
+     *
+     * @throws IllegalArgumentException Thrown if this file is not a directory, or if
+     *     the prefix, digits, or suffix values are not valid, or if a new unique file
+     *     could not be generated.
      */
     public RemoteFile getOrderedChild(String prefix, int digits, String suffix) throws Exception {
-        RemoteFile[] children = list(false);
-        if (children == null) {
-            throw new IllegalArgumentException("Does not denote a directory: " + this);
+        RemoteFile[] children = list(DO_NOT_RECURSE);
+        if ( children == null ) {
+            throw new IllegalArgumentException("Not a directory: " + printString());
         }
-        Pattern wordCharacters = Pattern.compile("[\\w\\.]*"); // zero or more characters matching [a-zA-Z_0-9\\.].  The '-' character is not allowed!
-        if (suffix != null) {
-            if (!wordCharacters.matcher(suffix).matches()) { // if the file name contains a non-word character
-                throw new IllegalArgumentException("Invalid characters detected in proposed file name: " + suffix);
+
+        if ( suffix != null)  {
+            if ( !wordCharacters.matcher(suffix).matches() ) {
+                throw new IllegalArgumentException("Non-valid suffix: " + suffix);
             }
         }
-        int prefixLength = 0;
-        if (prefix != null) {
-            if (!wordCharacters.matcher(prefix).matches()) { // if the file name contains a non-word character
-                throw new IllegalArgumentException("Invalid characters detected in file prefix: " + prefix);
+
+        int prefixLength;
+        if ( prefix != null ) {
+            if ( !wordCharacters.matcher(prefix).matches() ) {
+                throw new IllegalArgumentException("Non-valid prefix: " + prefix);
             }
             prefixLength = prefix.length();
+        } else {
+            prefixLength = 0;
         }
-        long highest = 0;
-        for (RemoteFile child : children) {
-            if (child == null) {
-                continue; // ignore children with a null name
-            }
+
+        long highestChildNumber = 0;
+
+        for ( RemoteFile child : children ) {
             String childName = child.getName();
-            if (prefixLength > 0 && !childName.startsWith(prefix)) {
-                continue; // ignore children missing our prefix in their name
+
+            if ( prefixLength > 0 ) {
+                if ( !childName.regionMatches(0, prefix, 0, prefixLength) ) {
+                   continue; // Doesn't start with the prefix; ignore.
+                } else {
+                    childName = childName.substring(prefixLength);
+                }
             }
-            childName = childName.substring(prefixLength); // remove prefix from the name (if it exists)
-            int dashIndex = childName.indexOf("-");
-            if (dashIndex > -1) {
-                childName = childName.substring(0, dashIndex); // remove suffix from the name (if it exists)
+
+            if ( suffix != null ) {
+                int dashIndex = childName.indexOf("-");
+                if ( dashIndex > -1 ) {
+                    if ( !childName.regionMatches(dashIndex + 1, suffix, 0, suffix.length()) ) {
+                        continue; // Doesn't end with the suffix; ignore.
+                    }
+                    childName = childName.substring(0, dashIndex);
+                } else {
+                    continue; // Doesn't have a dash; ignore.
+                }
             }
-            long number;
+
+            long childNumber;
             try {
-                number = Long.parseLong(childName);
-            } catch (Exception e) {
-                continue; // ignore children without a number between the prefix and suffix
+                childNumber = Long.parseLong(childName);
+            } catch ( Exception e ) {
+                continue; // Non-numeric where digits are expected; ignore.
             }
-            if (number > highest) {
-                highest = number;
+
+            if ( childNumber > highestChildNumber ) {
+                highestChildNumber = childNumber;
             }
         }
-        StringBuilder newName = new StringBuilder();
-        if (prefixLength > 0) {
-            newName.append(prefix);
+
+        StringBuilder nextChildName = new StringBuilder();
+
+        if ( prefixLength > 0 ) {
+            nextChildName.append(prefix);
         }
-        newName.append(zeroPad(highest + 1, digits));
-        if (suffix != null) {
-            newName.append("-");
-            newName.append(suffix);
+
+        nextChildName.append( zeroPad(highestChildNumber + 1, digits) );
+
+        if ( suffix != null ) {
+            nextChildName.append('-');
+            nextChildName.append(suffix);
         }
-        return new RemoteFile(getMachine(), this, newName.toString());
+
+        return createChild( nextChildName.toString() );
     }
+
+    private static final String PAD_TEXT = "00000000000000000000";
+    private static final int PAD_LIMIT = 18;
 
     /**
      * Prepends zeros to the left of the input number to ensure that the input
      * number is a total of <code>width</code> digits. Truncates the input
      * number if it has more than <code>width</code> digits.
      * 
-     * @param number
+     * @param numberX
      *            a positive integer (negative integers cause problems with odd
      *            widths)
-     * @param width
+     * @param targetDigits
      *            the number of characters that you want in a String
      *            representation of <code>number</code>; must be a positive
      *            integer smaller than 18 (larger numbers cause an overflow
      *            issue)
      * @return a zero-padded String representation of the input number
      */
-    private String zeroPad(long number, int width) {
-        long n = Math.abs(number);
-        long w = width;
-        if (w < 0) {
-            w = 0;
-        } else if (w > 18) {
-            w = 18;
+    private String zeroPad(long number, int targetDigits) {
+        if ( number < 0 ) {
+            throw new IllegalArgumentException("Pad of number less than zero [ " + number + " ]");
         }
-        long wrapAt = (long) Math.pow(10, w);
-        return String.valueOf(n % wrapAt + wrapAt).substring(1);
+
+        if ( targetDigits < 0 ) {
+            targetDigits = 0;
+        } else if ( targetDigits > PAD_LIMIT ) {
+            targetDigits = PAD_LIMIT;
+        }
+
+        String numberText = Long.toString(number);
+
+        int missingDigits = targetDigits - numberText.length();
+        if ( missingDigits == 0 ) {
+            return numberText;
+        } else if ( missingDigits < 0 ) {
+            return numberText.substring(-missingDigits); // Truncate
+        } else {
+            return PAD_TEXT.substring(0, missingDigits) + numberText; // Zero fill to the left
+        }
+    }
+
+    // Complex operation: List
+
+    /**
+     * Answer the child files of this file.
+     * 
+     * Answer null if this file is not a directory.
+     * 
+     * Answer all immediate children, including immediate children which are directories.
+     * 
+     * If requested, answer children recursively.
+     *
+     * The collection of children is depth first.
+     *
+     * @param recurse Control parameter: Tell if children are to be collected
+     *     recursively.
+     * 
+     * @return The collected children of this file, conditionally recursing.
+     *     Null if this file is not a directory.
+     *
+     * @throws Exception Thrown if an error occurs while obtaining the listing.
+     */
+    public RemoteFile[] list(boolean recurse) throws Exception {
+        if ( !isDirectory() ) {
+            return null;
+        }
+
+        List<RemoteFile> children = new ArrayList<RemoteFile>();
+
+        list(recurse, children);
+
+        return children.toArray( new RemoteFile[ children.size() ] );
     }
 
     /**
-     * Copies the file or directory represented by this instance to a remote
-     * machine.
+     * Collect the child files of this file.
      * 
-     * @param destFile
-     *            The location on the remote device where you want to place this
-     *            file
-     * @param recursive
-     *            If this instance represents a directory, whether or not to
-     *            recursively transfer all files and directories within this
-     *            directory
-     * @param overwrite
-     *            true if files should be overwritten durin the copy. If this is
-     *            false and a file is encountered in the destination of the
-     *            copy, an Exception is thrown.
-     * @return true if the copy was successful
+     * Collection nothing if this file is not a directory.
+     * 
+     * Collect all immediate children, including immediate children which are directories.
+     * 
+     * If requested, Collection children recursively.
+     *
+     * The placement of children is depth first.
+     * 
+     * @param recurse Control parameter: Tell if children are to be collected
+     *     recursively.
+     * 
+     * @return The collected children of this file, conditionally recursing.
+     *
+     * @throws Exception Thrown if an error occurs while obtaining the listing.
      */
-    public boolean copyToDest(RemoteFile destFile, boolean recursive,
-                              boolean overwrite) throws Exception {
-        return RemoteFile.copy(this, destFile, recursive, overwrite, true);
+    public void list(boolean recurse, List<RemoteFile> children) throws Exception {
+        String[] childNames = list();
+        if ( childNames == null ) {
+            return; // Not a directory
+        }
+
+        for ( String childName : childNames ) {
+            RemoteFile remoteChild = createChild(childName);
+
+            children.add(remoteChild);
+
+            if ( recurse ) { // Depth first!
+                remoteChild.list(recurse, children);
+            }
+        }
     }
 
-    /**
-     * Copies the file or directory represented by this instance to a remote
-     * machine.
-     * 
-     * @param destFile
-     *            The location on the remote device where you want to place this
-     *            file
-     * @param recursive
-     *            If this instance represents a directory, whether or not to
-     *            recursively transfer all files and directories within this
-     *            directory
-     * @param overwrite
-     *            true if files should be overwritten durin the copy. If this is
-     *            false and a file is encountered in the destination of the
-     *            copy, an Exception is thrown.
-     * @return true if the copy was successful
-     */
-    public boolean copyToDestText(RemoteFile destFile, boolean recursive,
-                                  boolean overwrite) throws Exception {
-        return RemoteFile.copy(this, destFile, recursive, overwrite, false);
-    }
+    // Copy helpers ...
 
-    /**
-     * Copies the file or directory represented by this instance to a remote
-     * machine. If this is a directory the copy is not done recursively. Files
-     * are overwritten during the copy.
-     * 
-     * @param destFile
-     *            The location on the remote device where you want to place this
-     *            file
-     * @return true if the copy was successful
-     * @throws Exception
-     */
+    // Fully defaulted: Do not recurse, do overwrite, do binary copies.
+
     public boolean copyToDest(RemoteFile destFile) throws Exception {
-        return RemoteFile.copy(this, destFile, false, true, true);
+        return RemoteFile.copy(this, destFile, DO_NOT_RECURSE, DO_OVERWRITE, IS_BINARY);
     }
 
-    /**
-     * Copies the file or directory represented by this instance to a remote
-     * machine. If this is a directory the copy is not done recursively. Files
-     * are overwritten during the copy.
-     * 
-     * @param destFile
-     *            The location on the remote device where you want to place this
-     *            file
-     * @return true if the copy was successful
-     * @throws Exception
-     */
-    public boolean copyToDestText(RemoteFile destFile) throws Exception {
-        return RemoteFile.copy(this, destFile, false, true, false);
-    }
-
-    /**
-     * Copies the file or directory from a RemoteMachine to the path specified
-     * by this instance
-     * 
-     * @param srcFile
-     *            The location on the remote device where you want to get this
-     *            file
-     * @param recursive
-     *            If this srcFile represents a directory, whether or not to
-     *            recursively transfer all files and directories within the
-     *            source directory
-     * @param overwrite
-     *            true if files should be overwritten durin the copy. If this is
-     *            false and a file is encountered in the destination of the
-     *            copy, an Exception is thrown.
-     * @return true if the copy was successful
-     */
-    public boolean copyFromSource(RemoteFile srcFile, boolean recursive,
-                                  boolean overwrite) throws Exception {
-        return RemoteFile.copy(srcFile, this, recursive, overwrite, true);
-    }
-
-    /**
-     * Copies the file or directory from a RemoteMachine to the path specified
-     * by this instance
-     * 
-     * @param srcFile
-     *            The location on the remote device where you want to get this
-     *            file
-     * @param recursive
-     *            If this srcFile represents a directory, whether or not to
-     *            recursively transfer all files and directories within the
-     *            source directory
-     * @param overwrite
-     *            true if files should be overwritten durin the copy. If this is
-     *            false and a file is encountered in the destination of the
-     *            copy, an Exception is thrown.
-     * @return true if the copy was successful
-     */
-    public boolean copyFromSourceText(RemoteFile srcFile, boolean recursive,
-                                      boolean overwrite) throws Exception {
-        return RemoteFile.copy(srcFile, this, recursive, overwrite, false);
-    }
-
-    /**
-     * Copies the file or directory from a RemoteMachine to the path specified
-     * by this instance. If the source is a directory the copy is not done
-     * recursively. Files are overwritten during the copy.
-     * 
-     * @param srcFile
-     *            The location on the remote device where you want to get this
-     *            file
-     * @return true if the copy was successful
-     * @throws Exception
-     */
     public boolean copyFromSource(RemoteFile srcFile) throws Exception {
-        return RemoteFile.copy(srcFile, this, false, true, true);
+        return RemoteFile.copy(srcFile, this, DO_NOT_RECURSE, DO_OVERWRITE, IS_BINARY);
+    }
+
+    // Fully parameterized.
+
+    public boolean copyToDest(
+        RemoteFile destFile,
+        boolean recurse, boolean overwrite, boolean isBinary) throws Exception {
+
+        return RemoteFile.copy(this, destFile, recurse, overwrite, isBinary);
+    }
+
+    public boolean copyFromSource(
+        RemoteFile srcFile,
+        boolean recurse, boolean overwrite, boolean isBinary) throws Exception {
+        return RemoteFile.copy(srcFile, this, recurse, overwrite, isBinary);
+    }
+
+    // Parameterized binary copy.
+
+    public boolean copyToDest(
+        RemoteFile destFile, boolean recurse, boolean overwrite) throws Exception {
+        return RemoteFile.copy(this, destFile, recurse, overwrite, IS_BINARY);
+    }
+
+    public boolean copyFromSource(
+        RemoteFile srcFile, boolean recurse, boolean overwrite) throws Exception {
+        return RemoteFile.copy(srcFile, this, recurse, overwrite, IS_BINARY);
+    }
+
+    // Defaulted with binary as options.
+
+    public boolean copyFromSource(RemoteFile srcFile, boolean binary) throws Exception {
+        return RemoteFile.copy(srcFile, this, DO_NOT_RECURSE, DO_OVERWRITE, binary);
+    }
+
+    // Defaulted text.
+
+    public boolean copyToDestText(RemoteFile destFile) throws Exception {
+        return RemoteFile.copy(this, destFile, DO_NOT_RECURSE, DO_OVERWRITE, IS_TEXT);
+    }
+
+    // Parameterized text.
+
+    public boolean copyToDestText(RemoteFile destFile, boolean recurse, boolean overwrite)
+        throws Exception {
+        return RemoteFile.copy(this, destFile, recurse, overwrite, IS_TEXT);
+    }
+
+    public boolean copyFromSourceText(RemoteFile srcFile, boolean recurse, boolean overwrite)
+        throws Exception {
+        return RemoteFile.copy(srcFile, this, recurse, overwrite, IS_TEXT);
+    }
+
+    // Complex Operation: Copy
+
+    // Copy is implemented as a static operation.  The source file, which might
+    // be an internal parameter, is shifted to be an external parameter.
+
+    public static final boolean DO_RECURSE = true;
+    public static final boolean DO_NOT_RECURSE = false;
+
+    public static final boolean DO_OVERWRITE = true;
+    public static final boolean DO_NOT_OVERWRITE = false;
+    
+    public static final boolean IS_BINARY = true;
+    public static final boolean IS_NOT_BINARY = false;
+    public static final boolean IS_TEXT = false;
+    public static final boolean IS_NOT_TEXT = true;
+
+    private static Exception copyFailure(String srcText, String destText, String error) {
+        return new Exception("Failed to copy " + srcText + " onto " + destText + ": " + error);
     }
 
     /**
-     * Copies the file or directory from a RemoteMachine to the path specified
-     * by this instance. If the source is a directory the copy is not done
-     * recursively. Files are overwritten during the copy.
+     * Copy a source file onto a destination file.
+     *
+     * Copy operations are not retried.  However, delete operations which are
+     * initiated by copy are retry enabled.
+     *
+     * There are complex rules for handling file combinations.  Particular
+     * conditions are whether the source file is a simple file or a directory,
+     * whether the destination file exists, and whether the destination file,
+     * if it exists, is a simple file or a directory:
+     *
+     * A copy of a simple file onto a directory is adjusted to be a copy of the
+     * simple file into the directory.
      * 
-     * @param srcFile
-     *            The location on the remote device where you want to get this
-     *            file
-     * @param binary
-     *            true if you want the file transfered in binary, ascii if false
-     * @return true if the copy was successful
-     * @throws Exception
+     * A copy of a directory onto a directory is done by copying the directories
+     * recursively.
+     * 
+     * The copy operation creates destination directories as needed.  A failure occurs
+     * if one of the destination ancestors is not a directory.
+     *
+     * A copy of a simple file onto an existing file (either a file or a directory) starts
+     * by deleting the existing file.  That fails if overwrite is not enabled.  Deletion
+     * occurs after adjusting for copying a source file onto a directory.
+     *
+     * @param src The source file which is to be copied.
+     * @param dest The destination file which is to receive the copy.
+     * @param resurse Control parameter: Tells if the copy is to be performed
+     *     recursively.  Only matters if the source file is a directory.
+     * @param overwrite Control parameter: Tell if copying should proceed
+     *     if the destination already exists.  Copying onto an existing
+     *     destination requires that the destination first be deleted.
+     * @param binary Control parameter: Tell if the copy should be a binary
+     *     copy or a text copy.  This parameter is currently unused.  All copies
+     *     are currently binary copies.
+     *
+     * @return True or false telling if the copy was successful.
+     *
+     * @throws Exception Thrown if the copy fails for unexpected reasons.
      */
-    public boolean copyFromSource(RemoteFile srcFile, boolean binary)
-                    throws Exception {
-        return RemoteFile.copy(srcFile, this, false, true, binary);
+    public static boolean copy(
+        RemoteFile src, RemoteFile dest,
+        boolean recurse, boolean overwrite, boolean binary) throws Exception {
+
+        String method = "copy";
+
+        String srcText = src.printString();
+        String destText = dest.printString();
+
+        boolean srcExists = src.exists();
+        boolean srcIsDir = srcExists && src.isDirectory();
+
+        boolean destExists = dest.exists();
+        boolean destIsDir = destExists && dest.isDirectory();
+
+        Log.info(CLASS, method, "Copy " + srcText + " onto " + destText);
+        Log.info(CLASS, method, "Recurse " + recurse + "; Overwrite " + overwrite + "; Binary " + binary);
+
+        Log.info(CLASS, method, "Source exists " + srcExists + " as directory " + srcIsDir);
+        Log.info(CLASS, method, "Destination exists " + destExists + " as directory " + destIsDir);
+
+        if ( !srcExists ) {
+            throw copyFailure(srcText, destText, "Source does not exist");
+        }
+
+        if ( !destExists ) {
+            // No dest: Make sure first the parent exists and is a directory.
+
+            RemoteFile destParent = dest.getParentFile();
+            String destParentText = destParent.printString();
+
+            if ( !destParent.exists() ) {
+                Log.info(CLASS,  method, "Creating destination parent directory " + destParentText);
+                destParent.mkdirs();
+                if ( !destParent.exists() || !destParent.isDirectory() ) {
+                    throw copyFailure(srcText, destText, "Failed to create destination parent directory " + destParentText);
+                }
+            } else if ( !destParent.isDirectory() ) {
+                throw copyFailure(srcText, destText, "Destination parent is not a directory " + destParentText);
+            }
+
+            // The destination parent now exists and is a directory.  The destination, however,
+            // still does not exist.
+
+            // Next, if the source is a directory, create the destination as a directory.
+
+            if ( srcIsDir ) {
+                Log.info(CLASS, method, "Creating destination directory " + destText);
+                dest.mkdir();
+                if ( !dest.exists() || !dest.isDirectory() ) {
+                    throw copyFailure(srcText, destText, "Failed to recreate destination directory"); 
+                }
+                destExists = true;
+                destIsDir = true;
+            } else {
+                // The destination still does not exist.
+            }
+
+            // Proceed to copy, either as a simple file or as a directory.
+
+        } else if ( !srcIsDir ) {
+            // Will copy a simple file ...
+
+            // If the destination is a directory, adjust the destination to be a
+            // child of the initially specified destination.
+
+            if ( destIsDir ) {
+                dest = dest.createChild( src.getName() );
+                destText = dest.printString();
+                destExists = dest.exists();
+                destIsDir = destExists && dest.isDirectory();
+            }
+
+            // The destination initially existed, but might not after the adjustment.
+
+            // If the destination exists, since this is a simple file copy, the destination
+            // must be deleted.  Don't allow that unless overwrite is enabled.
+
+            if ( destExists ) {
+                if ( !overwrite ) {
+                    throw copyFailure(srcText, destText, "Overwrite not allowed");
+                }
+                dest.delete();
+                if ( dest.exists() ) {
+                    throw copyFailure(srcText, destText, "Failed to delete destination");
+                }
+                destExists = false;
+                destIsDir = false;
+            } else {
+                // The destination still doesn't exist.
+                // The destination parent must still exist, since it was set as
+                // the child of an existing directory.
+            }
+
+        } else if ( !destIsDir ) {
+            // Will copy as a directory.  The destination, if not a directory, must
+            // be deleted.  Don't allow that unless overwrite is enabled.
+
+            if ( !overwrite ) {
+                throw copyFailure(srcText, destText, "Overwrite not allowed");
+            }
+            dest.delete();
+            if ( dest.exists() ) {
+                throw copyFailure(srcText, destText, "Failed to delete destination");
+            }
+            dest.mkdir();
+            if ( !dest.exists() || !dest.isDirectory() ) {
+                throw copyFailure(srcText, destText, "Failed to recreate destination directory"); 
+            }
+            destExists = true;
+            destIsDir = true;
+
+        } else {
+            // The source and the destination are both known to exist as directories.
+        }
+
+        if ( !srcIsDir ) {
+            Log.info(CLASS,  method, "Copy source file " + srcText + " onto destination file " + destText);
+            if ( !src.basicCopy(dest, binary) ) {
+                throw copyFailure(srcText, destText, "Copy failure");
+            }
+            return true;
+
+        } else {
+            Log.info(CLASS,  method, "Copy source directory " + srcText + " onto destination directory " + destText);
+
+            if ( !recurse ) {
+                // Nothing left to copy: Recurs is not enabled.
+                return true;
+
+            } else {
+                RemoteFile[] srcChildren = src.list(DO_NOT_RECURSE);
+                if ( srcChildren == null ) {
+                    Log.warning(CLASS, method + ": Null children copying " + srcText);
+                    return true;
+                }
+                for ( RemoteFile srcChild : srcChildren ) {
+                    RemoteFile destChild = dest.createChild( srcChild.getName() );
+                    if ( !RemoteFile.copy(srcChild, destChild, recurse, overwrite, binary) ) {
+                        throw copyFailure(srcText, destText, "Failed to copy child " + srcChild.getName());
+                    }
+                }
+                return true;
+            }
+        }
     }
 
-    // Delete ...
+    // Complex Operation: Move
 
+    /**
+     * Attempt to move a file.
+     *
+     * Retry in case of a failure, up to the standard retry interval.
+     *
+     * @return True or false telling if the move was successful.
+     *     Answer true if the file already does not exist.
+     *
+     * @throws Exception Thrown if the move failed unexpectedly.
+     */
+    public boolean move(RemoteFile dest) throws Exception {
+        return move(dest, STANDARD_RETRY_INTERVAL_NS);
+    }
+
+    public boolean moveNoRetry(RemoteFile dest) throws Exception {
+        return move(dest, 0L);
+    }
+
+    public boolean move(final RemoteFile dest, long retryNs) throws Exception {
+        Operation moveOp = new Operation() {
+            public boolean act() throws Exception {
+                return basicMove(dest);
+            }
+        };
+        return retry(moveOp, retryNs);
+        // return retry( () -> basicRename(dest), retryNs );
+    }
+
+    // Complete Operation: Rename
+
+    /**
+     * Attempt to rename a file.
+     *
+     * Retry in case of a failure, up to the standard retry interval.
+     *
+     * @return True or false telling if the rename was successful.
+     *     Answer true if the file already does not exist.
+     *
+     * @throws Exception Thrown if the rename failed unexpectedly.
+     */
+    public boolean rename(RemoteFile dest) throws Exception {
+        return rename(dest, STANDARD_RETRY_INTERVAL_NS);
+    }
+
+    public boolean renameNoRetry(RemoteFile dest) throws Exception {
+        return rename(dest, 0L);
+    }
+
+    public boolean rename(final RemoteFile dest, long retryNs) throws Exception {
+        Operation renameOp = new Operation() {
+            public boolean act() throws Exception {
+                return basicRename(dest);
+            }
+        };
+        return retry(renameOp, retryNs);
+        // return retry( () -> basicRename(dest), retryNs );
+    }
+
+    // Complete operation: Delete
+
+    /**
+     * Attempt to delete a file and all of its children.  The file may
+     * be a simple file or a directory.  When the file is a directory,
+     * recursively delete the file's children before deleting the file.
+     *
+     * Retry in case of a failure, up to the standard retry interval.
+     *
+     * @return True or false telling if the delete was successful.
+     *     Answer true if the file already does not exist.
+     *
+     * @throws Exception Thrown if the delete failed unexpectedly.
+     */
     public boolean delete() throws Exception {
         return delete(STANDARD_RETRY_INTERVAL_NS);
     }
@@ -551,427 +1252,14 @@ public class RemoteFile {
         // return retry( () -> basicDelete(), retryNs );
     }
 
-    public boolean deleteLocalDirectory(File localDir) throws Exception {
-        return deleteLocalDirectory(localDir, STANDARD_RETRY_INTERVAL_NS);
-    }
-
-    public boolean deleteLocalDirectoryNoRetry(File localDir) throws Exception {
-        return deleteLocalDirectory(localDir, 0L);
-    }
-
-    public boolean deleteLocalDirectory(final File localDir, long retryNs) throws Exception {
-        Operation deleteOp = new Operation() {
-            public boolean act() {
-                return basicDeleteLocalDirectory(localDir);
-            }
-        };
-        return retry(deleteOp, retryNs);
-        // return retry( () -> basicDeleteLocalDirectory(localDir), retryNs );
-    }
-
-    private boolean basicDelete() throws Exception {
-        if ( host.isLocal() ) { // This is 'localFile != null' in open-liberty.
-            if ( localFile.isDirectory() ) {
-                return basicDeleteLocalDirectory(localFile);
-            } else {
-                return basicDeleteLocalFile(localFile);
-            }
-        } else {
-            return basicDeleteRemoteFile();
-        }
-    }
-
-    private boolean basicDeleteLocalDirectory(File localDir) {
-        if ( !localDir.exists() ) {
-            return true;
-        }
-
-        File[] files = localDir.listFiles();
-        for ( File file : files ) {
-            if ( file.isDirectory() ) {
-                if ( !basicDeleteLocalDirectory(file) ) {
-                    return false;
-                }
-            } else {
-                if ( !basicDeleteLocalFile(file) ) {
-                    return false;
-                }
-            }
-        }
-
-        return ( basicDeleteLocalFile(localDir) );
-    }
-
-    private boolean basicDeleteLocalFile(File useLocalFile) {
-        String methodName = "basicDeleteLocalFile";
-
-        Path localPath = useLocalFile.toPath();
-        try {
-            return Files.deleteIfExists(localPath);
-        } catch ( IOException e ) {
-            Log.info(c, methodName, "Failed to delete '" + localPath + "': " + e.getMessage());
-            return false;
-        }
-    }
-
-    private boolean basicDeleteRemoteFile() throws Exception {
-        return providerDelete();
-    }
-
-    //
-
-    /**
-     * Tests whether the file represented by this RemoteFile is a directory.
-     * 
-     * @return true if and only if the file denoted by this abstract pathname
-     *         exists and is a directory; false otherwise
-     */
-    public boolean isDirectory() throws Exception {
-        if (!exists()) {
-            return false;
-        }
-        if (host.isLocal())
-            return localFile.isDirectory();
-        else
-            return providerIsDirectory();
-    }
-
-    /**
-     * Tests whether the file denoted by this RemoteFile is a normal file. A
-     * file is normal if it is not a directory and, in addition, satisfies other
-     * system-dependent criteria. Any non-directory file created by a Java
-     * application is guaranteed to be a normal file.
-     * 
-     * @return true if and only if the file denoted by this abstract pathname
-     *         exists and is a normal file; false otherwise
-     */
-    public boolean isFile() throws Exception {
-        if (!exists()) {
-            return false;
-        }
-        if (host.isLocal())
-            return localFile.isFile();
-        else
-            return providerIsFile();
-    }
-
-    /**
-     * Tests whether the file or directory denoted by this Remotefile exists
-     * 
-     * @return if and only if the file or directory denoted by this abstract
-     *         pathname exists; false otherwise
-     */
-    public boolean exists() throws Exception {
-        if (host.isLocal())
-            return localFile.exists();
-        else
-            return providerExists();
-    }
-
-    /**
-     * Returns an array of RemoteFiles denoting the files in the directory
-     * denoted by this RemoteFile.
-     * 
-     * @param recursive
-     *            If this instance represents a directory, whether or not to
-     *            recursively list all files and directories
-     * 
-     * @return An array of RemoteFiles denoting the files and directories in the
-     *         directory denoted by this RemoteFile. The array will be empty if
-     *         the directory is empty. Returns null if this abstract pathname
-     *         does not denote a directory
-     */
-    public RemoteFile[] list(boolean recursive) throws Exception {
-        final String method = "list";
-        Log.entering(c, method, recursive);
-        if (!isDirectory()) {
-            Log.finer(c, method, "This is not a directory.");
-            Log.exiting(c, method, null);
-            return null;
-        }
-
-        RemoteFile[] remoteFiles = null;
-        List<RemoteFile> remoteFilesList = new ArrayList<RemoteFile>();
-        if (host.isLocal()) {
-            File[] list = localFile.listFiles();
-            for (int i = 0; i < list.length; ++i) {
-                RemoteFile remoteFile = new RemoteFile(host, list[i]
-                                .getCanonicalPath());
-                remoteFilesList.add(remoteFile);
-
-                // If needed recurse
-                if (recursive && remoteFile.isDirectory()) {
-                    RemoteFile[] grandchildren = remoteFile.list(true);
-                    for (RemoteFile grandchild : grandchildren) {
-                        remoteFilesList.add(grandchild);
-                    }
-                }
-            }
-            remoteFiles = remoteFilesList.toArray(new RemoteFile[0]);
-        } else {
-            String[] fileList = providerList(recursive);
-            remoteFiles = new RemoteFile[fileList.length];
-            for (int i = 0; i < fileList.length; ++i) {
-                remoteFiles[i] = new RemoteFile(host, fileList[i]);
-            }
-        }
-        Log.exiting(c, method, remoteFiles);
-        return remoteFiles;
-    }
-
-    /**
-     * Creates the directory named by this RemoteFile
-     * 
-     * @return true if and only if the directory was created; false otherwise
-     */
-    public boolean mkdir() throws Exception {
-        if (host.isLocal())
-            return localFile.mkdir();
-        else
-            return providerMkdir();
-    }
-
-    /**
-     * Creates the directory named by this RemoteFile, including any necessary
-     * but nonexistent parent directories. Note that if this operation fails it
-     * may have succeeded in creating some of the necessary parent directories.
-     * 
-     * @return true if and only if the directory was created, along with all
-     *         necessary parent directories; false otherwise
-     */
-    public boolean mkdirs() throws Exception {
-        if (host.isLocal())
-            return localFile.mkdirs();
-        else
-            return providerMkdirs();
-    }
-
-    //
-
-    public boolean rename(RemoteFile newFile) throws Exception {
-        return rename(newFile, STANDARD_RETRY_INTERVAL_NS);
-    }
-
-    public boolean renameNoRetry(RemoteFile newFile) throws Exception {
-        return rename(newFile, 0L);
-    }
-
-    public boolean rename(final RemoteFile newFile, long retryNs) throws Exception {
-        Operation renameOp = new Operation() {
-            public boolean act() throws Exception {
-                return basicRename(newFile);
-            }
-        };
-        return retry(renameOp, retryNs);
-        // return retry( () -> basicRename(newFile), retryNs );
-    }
-
-    private boolean basicRename(RemoteFile newFile) throws Exception {
-        if ( host.isLocal() ) {
-            return localFile.renameTo(new File(newFile.getAbsolutePath()));
-        } else {
-            return providerRename(newFile);
-        }
-    }
-
-    //
-
-    /**
-     * Returns the name of the file or directory denoted by this RemoteFile
-     * 
-     * @return The name of the file
-     * @throws Exception
-     */
-    public String getName() throws Exception {
-        if (name == null) {
-            name = getAbsolutePath();
-            int startIndex = name.lastIndexOf("/");
-            if (startIndex != -1) {
-                name = name.substring(startIndex + 1);
-            }
-        }
-        return name;
-    }
-
-    public InputStream openForReading() throws Exception {
-        if (host.isLocal())
-            return new FileInputStream(localFile);
-        else
-            return providerOpenFileForReading();
-    }
-
-    public OutputStream openForWriting(boolean append) throws Exception {
-        if (host.isLocal())
-            return new FileOutputStream(localFile, append);
-        else
-            return providerOpenFileForWriting(append);
-    }
-
-    /**
-     * Returns a String representation of the RemoteFile
-     */
-    @Override
-    public String toString() {
-        return getAbsolutePath();
-    }
-
-    /**
-     * Copy a RemoteFile
-     * 
-     * @param srcFile
-     *            The source RemoteFile
-     * @param destFile
-     *            The destination RemoteFile
-     * @param recursive
-     *            true if this a recursive copy
-     * @param overwrite
-     *            true if files should be overwritten during the copy
-     * @return true if the copy was successful
-     * @throws Exception
-     */
-    private static boolean copy(RemoteFile srcFile, RemoteFile destFile,
-                                boolean recursive, boolean overwrite, boolean binary)
-                    throws Exception {
-        final String method = "copy";
-        Log.entering(c, method, new Object[] { srcFile, destFile, recursive, overwrite });
-
-        if (!srcFile.exists()) {
-            throw new Exception("Cannot copy a file or directory that does not exist: "
-                                + srcFile.getAbsolutePath() + ": "
-                                + srcFile.getMachine().getHostname());
-        }
-
-        boolean destExists = destFile.exists();
-        boolean destIsDir = destFile.isDirectory();
-
-        if (!overwrite && destExists && !destIsDir) {
-            throw new Exception("Destination " + destFile.getAbsolutePath()
-                                + " on machine " + destFile.getMachine().getHostname()
-                                + " already exists.");
-        }
-
-        if (srcFile.isDirectory()) {
-            Log.finer(c, method, "Source file is a directory.");
-            if (!destIsDir) {
-                Log.finer(c, method, "Converting the destination file to a directory.");
-                if (destExists) {
-                    if (!destFile.delete()) {
-                        throw new Exception("The destination directory exists as a file. Unable to delete the file and overwrite. DestDir: "
-                                            + destFile.getAbsolutePath());
-                    }
-                }
-                Log.finer(c, method, "Creating the destination directory.");
-                if (!destFile.mkdirs()) {
-                    throw new Exception("Unable to create destination directory " + destFile.getAbsolutePath());
-                }
-            }
-
-            RemoteFile[] childEntries = srcFile.list(false);
-            boolean copied = true;
-            if (childEntries != null && recursive) {
-                Log.finer(c, method, "Copying children...");
-                for (int i = 0; i < childEntries.length; ++i) {
-                    RemoteFile destChild = new RemoteFile(destFile.host, destFile, childEntries[i].getName());
-                    copied = copied && RemoteFile.copy(childEntries[i], destChild, recursive, overwrite, binary);
-                    Log.finer(c, method, "Child copied successfully: " + copied);
-                }
-            }
-
-            Log.exiting(c, method, copied);
-            return copied;
-
-        } else {
-            Log.finer(c, method, "The source file is a file. Copying the file.");
-            if ( !destFile.getParentFile().equals(null) ) {
-                RemoteFile parentFolder = new RemoteFile(destFile.getMachine(), destFile.getParent());
-                Log.finer(c, method, destFile.getParent());
-                parentFolder.mkdirs();
-            }
-
-            boolean result = providerCopy(srcFile, destFile, binary);
-            Log.exiting(c, method, result);
-            return result;
-        }
-    }
-
-    /**
-     * Get the parent path of a file
-     * 
-     * @param path
-     *            The path of the file
-     * @return The parent path of the file
-     */
-    private String getParentPath(String path) {
-        if (path.equals("/")) { // root
-            return null;
-        }
-        path = path.replace('\\', '/');
-        if (path.endsWith("/"))
-            path = path.substring(0, path.length() - 1);
-        int endIndex = path.lastIndexOf("/");
-        if (endIndex != -1) {
-            path = path.substring(0, endIndex);
-        }
-        if (path.length() == 0) {
-            path = "/";
-        }
-        return path;
-    }
-
-    private String convertPath(String path) {
-        if (path != null) {
-            path = path.replace('\\', '/');
-            if (!path.equals("/") && path.endsWith("/"))
-                path = path.substring(0, path.length() - 1);
-        }
-        return path;
-    }
-
-    private void init() {
-        if (host.isLocal())
-            localFile = new File(filePath);
-    }
-
-    /**
-     * Get the size of the file
-     * 
-     * @return the size of the file
-     */
-    public long length() {
-        if (localFile != null)
-            return localFile.length();
-        else
-            return 0;
-    }
-
-    /**
-     * Get the last modified timestamp of the file. If directory
-     * returns 0L
-     * 
-     * @return the last modified timestamp
-     */
-    public long lastModified() {
-        return localFile.lastModified();
-    }
-
-    /**
-     * Returns the encoding of the file
-     * 
-     * @return the character set the file is encoded in
-     */
-    public Charset getEncoding() {
-        return encoding;
-    }
-
     // Provider implemented operations ...
 
-    // Isolate these changes to keep the open-liberty and WS-CD-Open
-    // copies of this source as close as possible.
+    // Passive operations ...
 
-    private boolean providerDelete() throws Exception{
-        return LocalProvider.delete(this);
+    private boolean providerExists() throws Exception {
+        return LocalProvider.exists(this);
     }
-    
+
     private boolean providerIsDirectory() throws Exception {
         return LocalProvider.isDirectory(this);
     }
@@ -980,12 +1268,26 @@ public class RemoteFile {
         return LocalProvider.isFile(this);
     }
 
-    private boolean providerExists() throws Exception {
-        return LocalProvider.exists(this);
+    public long providerLastModified() {
+        return LocalProvider.lastModified(this);
     }
-    
-    private String[] providerList(boolean recursive) throws Exception {
-        return LocalProvider.list(this, recursive);
+
+    public long providerLength() {
+        return LocalProvider.length(this);
+    }
+
+    private String[] providerList() throws Exception {
+        return LocalProvider.list(this);
+    }
+
+    // Active operations ...
+
+    private InputStream providerOpenFileForReading() throws Exception {
+        return LocalProvider.openFileForReading(this);
+    }
+
+    private OutputStream providerOpenFileForWriting(boolean append) throws Exception {
+        return LocalProvider.openFileForWriting(this, append);
     }
 
     private boolean providerMkdir() throws Exception {
@@ -996,19 +1298,19 @@ public class RemoteFile {
         return LocalProvider.mkdirs(this);
     }
 
-    private boolean providerRename(RemoteFile newFile) throws Exception {
-        return LocalProvider.rename(this, newFile);
+    private boolean providerCopy(RemoteFile destFile, boolean binary) throws Exception {
+        return LocalProvider.copy(this, destFile, binary);
     }
 
-    private InputStream providerOpenFileForReading() throws Exception {
-        return LocalProvider.openFileForReading(this);
+    private boolean providerMove(RemoteFile dest) throws Exception {
+        return LocalProvider.move(this, dest);
+    }    
+
+    private boolean providerRename(RemoteFile dest) throws Exception {
+        return LocalProvider.rename(this, dest);
     }
 
-    private OutputStream providerOpenFileForWriting(boolean append) throws Exception {
-        return LocalProvider.openFileForWriting(this, append);
-    }
-
-    private static boolean providerCopy(RemoteFile srcFile, RemoteFile destFile, boolean binary) throws Exception {
-        return LocalProvider.copy(srcFile, destFile, binary);
+    private boolean providerDelete() throws Exception{
+        return LocalProvider.delete(this);
     }
 }
