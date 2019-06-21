@@ -219,7 +219,7 @@ public class FATReaperVerification{
      * 
      * @throws Exception
      */
-
+    @Test
     public void testNotWaitingWithNonEmptyQueue() throws Exception{
         String methodName = "testNotWaitingWithNonEmptyQueue";
         logInfo(methodName, "Entering: " + methodName);
@@ -235,13 +235,17 @@ public class FATReaperVerification{
         String reaperState = dumpOutput.getZipReaperThreadState();
         
         //get the value of the runner next delay
-        //String runnerDelay = dumpOutput.getZipReaperRunnerDelay();
-
-        //if the state of the zipreaperthread is waiting and the next delay is 0
-            //make sure the pending outputs are null
-
-
-
+        String runnerDelay = dumpOutput.getZipReaperRunnerDelay();
+        
+        //state must be waiting and it must be waiting indefinitly for test to be applicable
+        if(reaperState.equals("WAITING") && runnerDelay.equals("INDEFINITE")){
+            //pending and active must be empty so the value in the dump output should be null
+            Assert.assertNull("The Active and Pending queues must be empty for the Zip Reaper to be in an indefinite wait", dumpOutput.getActiveAndPendingIntrospection());
+            
+        }
+        else{
+            logInfo(methodName, "Test not applicable, reaper is not in a waiting state and waiting indefinitely");
+        }
 
         logInfo(methodName, "Exiting: " + methodName);
     }
