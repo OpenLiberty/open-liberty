@@ -38,6 +38,21 @@ import com.ibm.ws.artifact.zip.internal.FileUtils;
  * In addition to the caching provided by the zip caching service, each zip
  * file handle caches the last 16 entries which had 8K or fewer bytes.  That
  * means the zip caching service will use up to 64MB of storage.
+ * 
+ * Uses a reaper to manage actual zip file opens and closes: Open handles are cached
+ * by the reaper.  Closes are handled as close requests, with a delay between the
+ * close request and the actual close.  This enables close-in-time accesses to the
+ * same zip file to use a single open.  Zip opens read the zip central header, which
+ * is very expensive.  Avoiding redundant opens is a big speedup.
+ * 
+ * A collection of reapers is used.  This reduces the contention on the reaper, which
+ * is otherwise a choke-point for all zip open and close operations.
+ * 
+ * Reaper assignment is made using the hash of the zip file path.  Round-robin
+ * assignment doesn't work because the only way to recover the reaper assignment
+ * would be to either do a lookup across the reapers, or to have a table which
+ * records the path assignment.  Both add overhead, which is what we are trying
+ * to avoid.
  */
 public class ZipFileHandleImpl implements ZipFileHandle {
     private static final TraceComponent tc = Tr.register(ZipFileHandleImpl.class);
@@ -65,6 +80,9 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
         this.path = path;
         this.file = new File(path);
+
+        this.domain = getDomain(path);
+        this.reaper = getReaper(this.domain);
     }
 
     private final String path;
@@ -83,6 +101,21 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     @Trivial
     public long getLastModified() {
         return FileUtils.fileLastModified( getFile() );
+    }
+
+    //
+
+    private final int domain;
+    private final ZipFileReaper reaper;
+
+    @Trivial
+    public int getDomain() {
+    	return domain;
+    }
+
+    @Trivial
+    public ZipFileReaper getReaper() {
+    	return reaper;
     }
 
     //
@@ -112,21 +145,40 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private static final ZipFileReaper zipFileReaper;
+    private static final int numReapers;
+    private static final ZipFileReaper[] zipFileReapers;
+
+    private static int getDomain(String path) {
+    	if ( numReapers == 1 ) {
+    		return 0;
+    	} else {
+    		return path.hashCode() % numReapers;
+    	}
+    }
+
+    private static ZipFileReaper getReaper(int domain) {
+    	return zipFileReapers[domain];
+    }
 
     static {
         int useMaxPending = ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING;
         if ( useMaxPending == 0 ) {
-            zipFileReaper = null;
+        	numReapers = 0;
+            zipFileReapers = null;
+
         } else {
-            zipFileReaper = new ZipFileReaper(
-                "zip cache reaper",
-                ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
-                ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
-                ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
-                ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX,
-                ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN,
-                ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX);
+        	numReapers = ZipCachingProperties.ZIP_CACHE_REAPER_DOMAINS;
+        	zipFileReapers = new ZipFileReaper[numReapers];
+        	for ( int domainNo = 0; domainNo < numReapers; domainNo++ ) {
+        		zipFileReapers[domainNo] = new ZipFileReaper(
+        			"zip cache reaper (" + domainNo + ")",
+        			ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
+        			ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
+        			ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
+        			ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX,
+        			ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN,
+        			ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX);
+        	}
         }
     }
 
@@ -147,10 +199,10 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         synchronized( zipFileLock ) {
             if ( zipFile == null ) {
                 debug(methodName, "Opening");
-                if ( zipFileReaper == null ) {
+                if ( zipFileReapers == null ) {
                     zipFile = ZipFileUtils.openZipFile(file); // throws IOException
                 } else {
-                    zipFile = zipFileReaper.open(path);
+                    zipFile = getReaper().open(path);
                 }
             }
 
@@ -175,7 +227,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                 openCount = openCount - 1;
 
                 if ( openCount == 0 ) {
-                    if ( zipFileReaper == null ) {
+                    if ( zipFileReapers == null ) {
                         ZipFile useZipFile = zipFile;
                         zipFile = null;
                         try {
@@ -185,7 +237,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                         }
                     } else {
                         zipFile = null;
-                        zipFileReaper.close(path);
+                        getReaper().close(path);
                     }
                 }
 

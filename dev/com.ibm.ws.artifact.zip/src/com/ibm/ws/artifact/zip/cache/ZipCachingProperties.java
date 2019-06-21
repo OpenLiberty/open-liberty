@@ -321,6 +321,11 @@ public class ZipCachingProperties {
      * left open until a close is requested.
      */
 
+    public static final String ZIP_CACHE_REAPER_DOMAINS_PROPERTY_NAME =
+        "zip.reaper.domains";
+    public static final int ZIP_CACHE_REAPER_DOMAINS_DEFAULT_VALUE = 8;
+    public static final int ZIP_CACHE_REAPER_DOMAINS;
+
     /**
      * The maximum number of pending closes to allow.
      * Setting -1 sets no maximum; setting 0 disables the reaper.
@@ -360,6 +365,10 @@ public class ZipCachingProperties {
 
     static {
         String methodName = "<static init>";
+
+        ZIP_CACHE_REAPER_DOMAINS = getProperty(methodName,
+            ZIP_CACHE_REAPER_DOMAINS_PROPERTY_NAME,
+            ZIP_CACHE_REAPER_DOMAINS_DEFAULT_VALUE);
 
         ZIP_CACHE_REAPER_MAX_PENDING = getProperty(methodName,
             ZIP_CACHE_REAPER_MAX_PENDING_PROPERTY_NAME,
