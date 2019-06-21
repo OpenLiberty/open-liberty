@@ -283,7 +283,7 @@ public class ZipCachingIntrospectorOutput{
         return null;
     }
 
-    public Sting getZipReaperRunnerDelay(){
+    public String getZipReaperRunnerDelay(){
         String zipReaperValues = getZipReaperValues();
 
         if(zipReaperValues != null){
@@ -293,6 +293,10 @@ public class ZipCachingIntrospectorOutput{
                     //    Next Delay    [ INDEFINITE (s) ]
                     //    Next Delay    [ ######## (s) ]
                     //Pattern p = Pattern.compile("\\[ .+ \\(s\\) \\]");
+                    Pattern p = Pattern.compile("\\[ .+ \\]");
+                    if(hasAValidGroup(line, p)){
+                        return getFirstGroup(line, p, "[]()s");
+                    }
                 }
             }
         }
