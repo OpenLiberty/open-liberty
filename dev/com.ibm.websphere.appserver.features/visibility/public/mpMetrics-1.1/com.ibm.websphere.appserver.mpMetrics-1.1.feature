@@ -14,6 +14,7 @@ Subsystem-Name: MicroProfile Metrics 1.1
  com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:=1.3
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.metrics, \
+ com.ibm.ws.microprofile.metrics.common, \
  com.ibm.ws.microprofile.metrics.1.1, \
  com.ibm.ws.microprofile.metrics.private, \
  com.ibm.ws.microprofile.metrics.public

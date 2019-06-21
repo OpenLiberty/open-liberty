@@ -38,9 +38,6 @@ Export-Package: \
 	com.ibm.ws.microprofile.metrics.config;thread-context=true,\
 	com.ibm.ws.microprofile.metrics.helper
 
-Include-Resource: \
-	OSGI-INF=resources/OSGI-INF
-
 -dsannotations-inherit: true
 -dsannotations: \
 	com.ibm.ws.microprofile.metrics.MetricsConfig,\
@@ -78,5 +75,6 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.microprofile.metrics.common;version=latest
  
