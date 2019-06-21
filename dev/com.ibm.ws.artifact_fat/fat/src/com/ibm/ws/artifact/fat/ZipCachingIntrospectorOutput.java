@@ -15,16 +15,19 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class ZipCachingIntrospectorOutput{
     
-    public String introspectorDescription, entryCacheSettings, zipReaperSettings, handleIntrospection, zipEntryCache, zipReaperValues;
-    public String activeAndPendingIntrospection;
-    public String pendingQuickIntrospection;
-    public String pendingSlowIntrospection;
-    public String completedIntrospection;
+    private String introspectorDescription, entryCacheSettings, zipReaperSettings, handleIntrospection, zipEntryCache, zipReaperValues;
+    private String activeAndPendingIntrospection;
+    private String pendingQuickIntrospection;
+    private String pendingSlowIntrospection;
+    private String completedIntrospection;
 
     /*
     private PropertyIntrospection parsePropertyLine(String description, String line){
@@ -204,6 +207,118 @@ public class ZipCachingIntrospectorOutput{
         zipCachingReader.close();
     }
 
+    public String getIntrospectorDescription() {
+        return introspectorDescription;
+    }
+
+    public String getEntryCacheSettings() {
+        return entryCacheSettings;
+    }
+
+    public String getZipReaperSettings() {
+        return zipReaperSettings;
+    }
+
+    public String getHandleIntrospection() {
+        return handleIntrospection;
+    }
+
+    public String getZipEntryCache() {
+        return zipEntryCache;
+    }
+
+    public String getZipReaperValues() {
+        return zipReaperValues;
+    }
+
+    public String getActiveAndPendingIntrospection() {
+        return activeAndPendingIntrospection;
+    }
+
+    public String getPendingQuickIntrospection() {
+        return pendingQuickIntrospection;
+    }
+
+    public String getPendingSlowIntrospection() {
+        return pendingSlowIntrospection;
+    }
+
+    public String getCompletedIntrospection() {
+        return completedIntrospection;
+    }
+
+    public List<String> getZipHandleArchiveNames(){
+        if(getHandleIntrospection() == null)
+            return null;
+        else{
+            List<String> handles = new LinkedList<String>();
+            Pattern p = Pattern.compile("[/\\\\][^/:\\*\\?\\\"<>\\|\\\\]+\\.[ewj]ar,");
+            for(String line : getHandleIntrospection().split("\n")){
+                if(hasAValidGroup(line, p)){
+                    handles.add(getFirstGroup(line,p, "\\/," ));
+                }
+            }
+            return handles;
+        }
+        
+    }
+
+    public String getZipReaperThreadState(){
+        String zipReaperValues = getZipReaperValues();
+
+        //if the output doesn't have "** DISABLED **"
+        if(zipReaperValues != null){
+            String[] reaperValueLines = zipReaperValues.split("\n");
+            for(String line: reaperValueLines){
+                if(line.contains("State")){
+                    Pattern p = Pattern.compile("\\[.+\\]");
+                    if(hasAValidGroup(line, p)){
+                        return getFirstGroup(line, p, "[]");
+                        
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Sting getZipReaperRunnerDelay(){
+        String zipReaperValues = getZipReaperValues();
+
+        if(zipReaperValues != null){
+            String[] reaperValuesLines = zipReaperValues.split("\n");
+            for(String line: reaperValuesLines){
+                if(line.contains("Next Delay")){
+                    //    Next Delay    [ INDEFINITE (s) ]
+                    //    Next Delay    [ ######## (s) ]
+                    //Pattern p = Pattern.compile("\\[ .+ \\(s\\) \\]");
+                }
+            }
+        }
 
 
+        return null;
+    }
+
+    private static boolean hasAValidGroup(String introspectLine, Pattern matchPattern){
+        Matcher match = matchPattern.matcher(introspectLine);
+        return match.find();
+        
+    }
+
+    private static String getFirstGroup(String introspectLine, Pattern matchPattern, CharSequence toRemove){
+        Matcher match = matchPattern.matcher(introspectLine);
+        if(match.find()){
+            String group = match.group();
+            for(int character = 0; character < toRemove.length(); character++){
+                group = group.replace(toRemove.subSequence(character, character + 1),"");
+            }
+
+            return group.trim();
+        }
+        else{
+            return null;
+        }
+    }
 }
