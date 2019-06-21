@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Vetoed;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -433,6 +434,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
+    @FFDCIgnore({java.lang.IllegalArgumentException.class})
     private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder) {
         final Metric metric = metrics.get(metadata.getName());
         if (builder.isInstance(metric)) {
