@@ -26,12 +26,20 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.HttpUtils;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import java.io.InputStream;
+import java.beans.Transient;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+
+
 
 @RunWith(FATRunner.class)
 public class FATReaperVerification{
@@ -43,6 +51,12 @@ public class FATReaperVerification{
         "jarneeder.war",
         "testServlet1",
         "testServlet2"
+    };
+    private static final String[] archivesAddedToServer = {
+        "testServlet2.war",
+        "jarneeder.war",
+        "testServlet1.war",
+        "com.ibm.ws.messaging.utils_1.0.29.jar"
     };
     private static final int SECONDS_WAITING_FOR_DUMP = 30;
     private static final int ATTEMPTS_TO_RETRY  = 2;
@@ -91,6 +105,7 @@ public class FATReaperVerification{
         logInfo(methodName, "Exiting: " + methodName);
     }
 
+
     @BeforeClass
     public static void setUpClass() throws Exception{
         String methodName = "setUpClass";
@@ -136,41 +151,6 @@ public class FATReaperVerification{
         logInfo(methodName, "Exiting: " + methodName);
     }
 
-
-    public void setUp() throws Exception{
-        String methodName = "setUp";
-        logInfo(methodName, "Entering: " + methodName);
-
-        Assert.assertNotNull("Server reference is null in test class", server);
-
-        //iterate over servlets and add them to the server
-        for(String appName: appNames){
-            ShrinkHelper.defaultApp(server, appName, "com.ibm.ws.artifact.fat.servlet");
-        }
-
-        if(!server.isStarted()){
-            server.startServer();
-        }
-
-        logInfo(methodName, "Exiting: " + methodName);
-    }
-
-
-    public void tearDown() throws Exception{
-        String methodName = "tearDown";
-        logInfo(methodName, "Entering: " + methodName);
-
-        if(server != null && server.isStarted()){
-            server.stopServer();
-        }
-
-        if(dump != null){
-            dump.close();
-        }
-
-        logInfo(methodName, "Exiting: " + methodName);
-    }
-
     /**
      * Case: ZipCachingIntrospector.txt exists in the archived server dump
      * 
@@ -181,6 +161,7 @@ public class FATReaperVerification{
         String methodName = "testServerDumpIncludesZipReader";
         logInfo(methodName, "Entering: " + methodName);
 
+        //make sure in the dump archive the file for the zip caching introspector exists
         Assert.assertTrue(DumpArchive.ZIP_CACHING_INTROSPECTOR_FILE_NAME + " was not found in archive: " + dump.getName(), dump.doesZipCachingIntrospectorDumpExist());
 
         logInfo(methodName, "Exiting: " + methodName);
@@ -196,35 +177,73 @@ public class FATReaperVerification{
         String methodName = "testZipReaperDumpContainsAllZips";
         logInfo(methodName, "Entering: " + methodName);
 
+        //make sure in the dump archive the file for the zip caching introspector exists
         Assert.assertTrue(DumpArchive.ZIP_CACHING_INTROSPECTOR_FILE_NAME + " was not found in archive: " + dump.getName(), dump.doesZipCachingIntrospectorDumpExist());
 
+        //make an introspection output object with the stream of the Zip Caching Introspector output file
         ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream()) ;
         
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName,dumpOutput.introspectorDescription);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName,dumpOutput.entryCacheSettings);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName,dumpOutput.zipReaperSettings);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName,dumpOutput.handleIntrospection);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName,dumpOutput.zipEntryCache);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName,dumpOutput.zipReaperValues);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName,dumpOutput.activeAndPendingIntrospection);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName, dumpOutput.pendingQuickIntrospection);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName, dumpOutput.pendingSlowIntrospection);
-        logInfo(methodName,"--------------------------------------");
-        logInfo(methodName, dumpOutput.completedIntrospection);
-        logInfo(methodName,"--------------------------------------");
+        //make sure there is output for the ZipFileHandles
+        Assert.assertNotNull("Zip Reaper Introspector Output does not have ZipFileHandle section",dumpOutput.getHandleIntrospection());
 
+        //get all the file names for the ZipFileData introspections
+        List<String> archiveHandleNames = dumpOutput.getZipHandleArchiveNames();
+        List<String> lostArchives = new LinkedList<String>();
+
+        logInfo(methodName, String.format("List of archive names from zip file handles in output: %s",archiveHandleNames.toString()));
+
+        //remove all the expected filenames
+        for(String testArchiveName: archivesAddedToServer){
+            logInfo(methodName, String.format("Removing [%s]",testArchiveName));
+            //remove the expected archive name from the list of output archive names
+            if(archiveHandleNames.remove(testArchiveName) == false){
+                //if there was a failure to remove then the output is missing an expected archive
+                lostArchives.add(testArchiveName);
+            }
+        }
+
+        //assert that there aren't any missing expected archives from the output
+        String verifyNoLostArchivesMsg = String.format("Introspector output is missing archives: %s", lostArchives.toString());
+        Assert.assertTrue(verifyNoLostArchivesMsg, lostArchives.isEmpty());
+
+        //assert there aren't any unexpected ZipFileHandle introspections
+        //fail message prints out the expected and unexpected file names found in the introspection
+        String verifyAppMsg = String.format("Zip File Handle Introspection should only include %s but %s was also found", Arrays.toString(archivesAddedToServer) , archiveHandleNames.toString() );
+        Assert.assertTrue(verifyAppMsg,archiveHandleNames.isEmpty());
 
         logInfo(methodName, "Exiting: " + methodName);
     }
 
+    /**
+     * Case: Output of ZipCachingIntrospector should not be waiting if there are zip files in the pending queue
+     * 
+     * @throws Exception
+     */
+
+    public void testNotWaitingWithNonEmptyQueue() throws Exception{
+        String methodName = "testNotWaitingWithNonEmptyQueue";
+        logInfo(methodName, "Entering: " + methodName);
+
+        //make sure in the dump archive the file for the zip caching introspector exists
+        Assert.assertTrue(DumpArchive.ZIP_CACHING_INTROSPECTOR_FILE_NAME + " was not found in archive: " + dump.getName(), dump.doesZipCachingIntrospectorDumpExist());
+
+        //make an introspection output object with the stream of the Zip Caching Introspector output file
+        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream()) ;
+
+        
+        //get the value of the the ZipReaperThread
+        String reaperState = dumpOutput.getZipReaperThreadState();
+        
+        //get the value of the runner next delay
+        //String runnerDelay = dumpOutput.getZipReaperRunnerDelay();
+
+        //if the state of the zipreaperthread is waiting and the next delay is 0
+            //make sure the pending outputs are null
+
+
+
+
+        logInfo(methodName, "Exiting: " + methodName);
+    }
     
 }
