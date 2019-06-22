@@ -16,6 +16,7 @@ import java.text.MessageFormat;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.anno.jandex.internal.ClassInfo;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -44,6 +45,7 @@ public class AnnotationTargetsImpl_Streamer implements ClassSource_Streamer {
         this.targets = scanner.getAnnotationTargets();
 
         this.jandexConverter = new AnnotationTargetsImpl_JandexConverter(this.targets);
+        this.sparseJandexConverter = new AnnotationTargetsImpl_SparseJandexConverter(this.targets);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, MessageFormat.format(" [ {0} ]", this.hashText));
@@ -78,9 +80,14 @@ public class AnnotationTargetsImpl_Streamer implements ClassSource_Streamer {
     //
 
     protected final AnnotationTargetsImpl_JandexConverter jandexConverter;
+    protected final AnnotationTargetsImpl_SparseJandexConverter sparseJandexConverter;
 
     protected AnnotationTargetsImpl_JandexConverter getJandexConverter() {
         return jandexConverter;
+    }
+
+    protected AnnotationTargetsImpl_SparseJandexConverter getSparseJandexConverter() {
+        return sparseJandexConverter;
     }
 
     //
@@ -133,9 +140,16 @@ public class AnnotationTargetsImpl_Streamer implements ClassSource_Streamer {
 
         String i_classSourceName = getTargets().internClassSourceName(classSourceName);
 
-        getJandexConverter().convertClassInfo(i_classSourceName, 
+        if(jandexClassInfo instanceof org.jboss.jandex.ClassInfo) {
+            getJandexConverter().convertClassInfo(i_classSourceName, 
                                               (org.jboss.jandex.ClassInfo)jandexClassInfo, 
                                               scanPolicy);
+        }
+        else {
+            getSparseJandexConverter().convertClassInfo(i_classSourceName, (ClassInfo) jandexClassInfo, scanPolicy);
+        }
+
+        
 
         return true;
     }

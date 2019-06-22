@@ -15,9 +15,13 @@ import java.io.InputStream;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
+
+import com.ibm.ws.anno.jandex.internal.ClassInfo;
+import com.ibm.ws.anno.jandex.internal.LimitedIndex;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -563,6 +567,18 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     /**
+     * <p>Tell if a Jandex index is available.</p>
+     *
+     * @return Whether a Jandex index is available.  This implementation always
+     *     answers false.
+     */
+    protected boolean basicHasJandexIndex() {
+        return false;
+    }
+
+    // Full Jandex Index Methods ...
+
+    /**
      * Attempt to read the Jandex index.
      *
      * If Jandex is not enabled, immediately answer null.
@@ -643,21 +659,146 @@ public abstract class ClassSourceImpl implements ClassSource {
     protected Index basicGetJandexIndex() {
         return null;
     }
-
-    /**
-     * <p>Tell if a Jandex index is available.</p>
-     *
-     * @return Whether a Jandex index is available.  This implementation always
-     *     answers false.
-     */
-    protected boolean basicHasJandexIndex() {
-        return false;
-    }
     
     protected boolean processedUsingJandex = false;
     
     public boolean isProcessedUsingJandex() {
         return processedUsingJandex;
+    }
+
+    // Sparse Jandex Index Methods ...
+
+    /**
+     * Attempt to read the Jandex index.
+     *
+     * If Jandex is not enabled, immediately answer null.
+     *
+     * If no Jandex index is available, or if it cannot be read, answer null.
+     *
+     * @return The read Jandex index.
+     */
+    protected LimitedIndex getSparseJandexIndex() {
+        ///////////////////////////////////////////////
+        //modify to use sparse index
+    	String methodName = "getSparseJandexIndex";
+
+        boolean doLog = tc.isDebugEnabled();
+        boolean doJandexLog = JandexLogger.doLog();
+
+        boolean useJandex = getUseJandex();
+
+        if ( !useJandex ) {
+        	// Figuring out if there is a Jandex index is mildly expensive,
+        	// and is to be avoided when logging is disabled.
+
+        	if ( doLog || doJandexLog ) {
+        		boolean haveJandex = basicHasJandexIndex();
+
+        		String msg;
+        		if ( haveJandex ) {
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
+        				getHashText(), getJandexIndexPath());
+        		} else {
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] not found",
+        				getHashText(), getJandexIndexPath());
+
+        		}
+        		if ( doLog ) {
+        		    Tr.debug(tc, msg);
+        		}
+        		if ( doJandexLog ) {
+        		    JandexLogger.log(CLASS_NAME,  methodName, msg);
+        		}
+        	}
+
+        	return null;
+
+        } else {
+        	LimitedIndex jandexIndex = basicGetSparseJandexIndex();
+
+        	if ( doLog || doJandexLog ) {
+        		String msg;
+        		if ( jandexIndex != null ) {
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] found",
+        				getHashText(), getJandexIndexPath());
+        		} else {
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] not found",
+        				getHashText(), getJandexIndexPath());
+        		}
+        		if ( doLog ) {
+        	        Tr.debug(tc, msg);
+        		}
+        		if ( doJandexLog ) {
+        			JandexLogger.log(CLASS_NAME,  methodName, msg);
+        		}
+        	}
+
+        	return jandexIndex;
+        }
+    }
+
+    protected LimitedIndex basicGetSparseJandexIndex() {
+        return null;
+    }
+    
+    protected boolean processedUsingSparseJandex = false;
+    
+    public boolean isProcessedUsingSparseJandex() {
+        return processedUsingSparseJandex;
+    }
+
+    //
+    
+
+    public static final boolean JANDEX_ENABLE_FULL_DEFAULT_VALUE = false;
+    public static final String JANDEX_ENABLE_FULL_PROPERTY_NAME = "com.ibm.ws.jandex.enable.full";
+
+
+    private static final boolean HAS_JANDEX_ENABLE_FULL_OVERRIDE = false;
+
+    private static final boolean JANDEX_ENABLE_FULL_OVERRIDE = false;
+
+    
+
+    
+    @Trivial
+    public static boolean getHasJandexEnableFullOverride() {
+       return HAS_JANDEX_ENABLE_FULL_OVERRIDE;
+    }
+
+    @Trivial
+    public static boolean getJandexEnableFullOverride() {
+       return JANDEX_ENABLE_FULL_OVERRIDE;
+    }
+
+    protected boolean getUseFullIndex() { 
+        try{
+            if(AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_FULL_PROPERTY_NAME)) {
+                return Boolean.valueOf(AnnotationServiceImpl_Logging.getProperty(JANDEX_ENABLE_FULL_PROPERTY_NAME));
+            }
+            else{
+                if ( tc.isDebugEnabled() ) {
+                    String msg = MessageFormat.format(
+                        "AnnotationServiceImpl_Logging Does not have property [ {0} ]",
+                        JANDEX_ENABLE_FULL_PROPERTY_NAME);
+                    Tr.debug(tc, msg);
+                }
+                return false;
+            }
+        } catch(Exception e) {
+            if ( tc.isDebugEnabled() ) {
+                String msg = MessageFormat.format(
+                    "Unexpected Error Retrieving property [ {0} ]",
+                    JANDEX_ENABLE_FULL_PROPERTY_NAME);
+                Tr.debug(tc, msg);
+            }
+            return false;
+        }
+        //return getHasJandexEnableFullOverride() && getJandexEnableFullOverride();
     }
 
     /**
@@ -678,6 +819,18 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( streamer == null ) {
             return false;
         }
+        
+        if ( getUseFullIndex()) {
+            return processFromFullCache(streamer, i_seedClassNames, scanPolicy);
+        } else{
+            return processFromSparseCache(streamer, i_seedClassNames, scanPolicy);
+        }
+    }
+
+    protected boolean processFromFullCache(
+        ClassSource_Streamer streamer,
+        Set<String> i_seedClassNames,
+        ScanPolicy scanPolicy) {
 
         Index jandexIndex = getJandexIndex();
         if ( jandexIndex == null ) {
@@ -744,7 +897,77 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         return true;
     } 
+
+    protected boolean processFromSparseCache(
+        ClassSource_Streamer streamer,
+        Set<String> i_seedClassNames,
+        ScanPolicy scanPolicy) {
+            LimitedIndex jandexIndex = getSparseJandexIndex();
+
+            if ( jandexIndex == null ) {
+                return false;
+            }
+            
+            processedUsingSparseJandex = true;
     
+            String useClassSourceName = getCanonicalName();
+    
+            for (com.ibm.ws.anno.jandex.internal.ClassInfo nextJandexClassInfo : jandexIndex.getKnownClasses() ) {
+                com.ibm.ws.anno.jandex.internal.DotName nextClassDotName = nextJandexClassInfo.name();
+                String nextClassName = nextClassDotName.toString();
+    
+                markResult(ClassSource_ScanCounts.ResultField.ENTRY);
+                markResult(ClassSource_ScanCounts.ResultField.NON_CONTAINER);
+                markResult(ClassSource_ScanCounts.ResultField.CLASS);
+    
+                // Processing notes:
+                //
+                // Make sure to record the class before attempting processing.
+                //
+                // Only one version of the class is to be processed, even if processing
+                // fails on that one version.
+                //
+                // That is, if two child class sources have versions of a class, and
+                // the version from the first class source is non-valid, the version
+                // of the class in the second class source is still masked by the
+                // version in the first class source.
+    
+                String i_nextClassName = internClassName(nextClassName);
+                boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
+    
+                if ( !didAdd ) {
+                    incrementClassExclusionCount();
+                    markResult(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);
+    
+                } else {
+                    incrementClassInclusionCount();
+    
+                    boolean didProcess;
+    
+                    if ( !streamer.doProcess(i_nextClassName, scanPolicy) ) {
+                        didProcess = false;
+    
+                    } else {
+                        try {
+                            didProcess = streamer.process(useClassSourceName, nextJandexClassInfo, scanPolicy);
+                        } catch ( ClassSource_Exception e ) {
+                            didProcess = false;
+    
+                            // CWWKC0065W: An exception occurred while processing class [ {0} ].  The identifier for the class source is [ {1} ]. The exception was {2}.
+                            Tr.warning(tc, "JANDEX_SCAN_EXCEPTION", i_nextClassName, getHashText(), e);
+                        }
+                    }
+    
+                    if ( didProcess ) {
+                        markResult(ClassSource_ScanCounts.ResultField.PROCESSED_CLASS);
+                    } else {
+                        markResult(ClassSource_ScanCounts.ResultField.UNPROCESSED_CLASS);
+                    }
+                }
+            }
+    
+            return true;
+    }
 
     private static final int META_INF_LENGTH = "META-INF".length();   
     /**

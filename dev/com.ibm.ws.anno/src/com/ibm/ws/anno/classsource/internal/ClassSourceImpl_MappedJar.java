@@ -20,6 +20,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.jandex.Index;
+import com.ibm.ws.anno.jandex.internal.ClassInfo;
+import com.ibm.ws.anno.jandex.internal.DotName;
+import com.ibm.ws.anno.jandex.internal.LimitedIndex;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -345,6 +348,49 @@ public class ClassSourceImpl_MappedJar
     @Override
     protected boolean basicHasJandexIndex() {
         return ( getJarFile().getJarEntry( getJandexIndexPath() ) != null );
+    }
+
+    ///////////////////////////
+    //protected LimitedIndex basicGetSparseJandexIndex() {}
+    @Override
+    protected LimitedIndex basicGetSparseJandexIndex() {
+        String useJandexIndexPath = getJandexIndexPath();
+
+        InputStream jandexStream;
+
+        try {
+            jandexStream = openResourceStream(null, useJandexIndexPath);
+            // throws ClassSource_Exception
+        } catch ( ClassSource_Exception e ) {
+            // TODO:
+            String errorMessage =
+                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
+                " as JANDEX index: " + e.getMessage();
+            Tr.error(tc, errorMessage);
+            return null;
+        }
+
+        if ( jandexStream == null ) {
+            return null;
+        }
+
+        try {
+            LimitedIndex jandexIndex = Jandex_Utils.basicReadLimitedIndex(jandexStream); // throws IOException
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
+                         new Object[] { getHashText(), useJandexIndexPath, getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+            }
+            return jandexIndex;
+        } catch ( IOException e ) {
+            // TODO: 
+            String eMsg =
+                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
+                " as JANDEX index: " +
+                e.getMessage();
+            Tr.error(tc, eMsg);
+            return null;
+        }
     }
 
     @Override
