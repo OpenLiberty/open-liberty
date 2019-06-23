@@ -16,12 +16,29 @@ info:
 servers:
   - url: https://127.0.0.1:8020/ibm/api
 paths:
+  /config/:
+    get:
+      tags:
+      - Config
+      summary: "Shows configuration of all elements"
+      description: "Retrieves configuration detail for instances of all configuration element types."
+      parameters:
+        - $ref: "#/components/parameters/queryParams"
+      responses:
+        200:
+          description: "Configuration info retrieved"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/config.result"
   /config/{elementName}:
     get:
       tags:
       - Config
-      summary: "Config info for instances of one config element type"
-      description: "Retrieves information about configured instances of a single type of configuration element."
+      summary: "Shows configurations of the requested config element type"
+      description: "Retrieves configuration detail for instances of the requested type of configuration element."
       parameters:
         - name: elementName
           in: path
@@ -30,6 +47,7 @@ paths:
           schema:
             type: string
             example: "dataSource"
+        - $ref: "#/components/parameters/queryParams"
       responses:
         200:
           description: "Configuration info retrieved"
@@ -43,8 +61,8 @@ paths:
     get:
       tags:
       - Config
-      summary: "Config info for single element"
-      description: "Retrieves information about a single configured element."
+      summary: "Shows configuration of a single instance of the requested type"
+      description: "Retrieves configuration detail for a single configuration element, uniquely qualfied by its unique identifier."
       parameters:
         - name: elementName
           in: path
@@ -468,6 +486,15 @@ paths:
                 $ref: "#/components/schemas/validation.jms.result"
 components:
   parameters:
+    queryParams:
+      name: queryParams
+      in: query
+      description: "**Query Parameters**. Supply additional query parameters in JSON as key/value pairs. For example, the following parameters could be specified for an application-defined data source: *{ \"application\": \"MyApp\", \"jndiName\": \"java:app/env/jdbc/MyDataSource\" }*"
+      schema:
+        type: object
+        additionalProperties:
+          type: string
+        example: {} # empty because the example is also used as a default value
     X-Validation-User:
       name: X-Validation-User
       in: header
