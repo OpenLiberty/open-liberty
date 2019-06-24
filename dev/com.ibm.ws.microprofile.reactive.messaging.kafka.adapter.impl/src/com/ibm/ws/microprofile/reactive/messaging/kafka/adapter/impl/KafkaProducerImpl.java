@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl;
 
+import java.time.Duration;
 import java.util.Map;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.Callback;
@@ -35,6 +36,11 @@ public class KafkaProducerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kaf
         };
 
         getDelegate().send(delegateRecord, delegateCallback);
+    }
+
+    @Override
+    public void close(Duration timeout) {
+        getDelegate().close(timeout);
     }
 
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;
 
+import java.time.Duration;
+
 /**
  *
  */
@@ -20,5 +22,7 @@ public interface KafkaProducer<K, V> extends KafkaAdapter {
      * @param callback
      */
     void send(String topic, V value, Callback callback);
+
+    void close(Duration timeout);
 
 }
