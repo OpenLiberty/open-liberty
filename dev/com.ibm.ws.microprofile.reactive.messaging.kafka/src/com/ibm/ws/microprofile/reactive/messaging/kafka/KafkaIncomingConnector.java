@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -44,6 +47,8 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
     @Inject
     KafkaAdapterFactory kafkaAdapterFactory;
 
+    private final List<KafkaInput<?, ?>> kafkaInputs = Collections.synchronizedList(new ArrayList<>());
+
     public KafkaIncomingConnector() {
         Bundle b = FrameworkUtil.getBundle(KafkaIncomingConnector.class);
         ServiceReference<ManagedScheduledExecutorService> mgdSchedExecSvcRef = b.getBundleContext().getServiceReference(ManagedScheduledExecutorService.class);
@@ -54,6 +59,15 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
     private void validate() {
         if (this.executor == null) {
             throw new NullPointerException("no executor set");
+        }
+    }
+
+    @PreDestroy
+    private void shutdown() {
+        synchronized (kafkaInputs) {
+            for (KafkaInput<?, ?> kafkaInput : kafkaInputs) {
+                kafkaInput.shutdown();
+            }
         }
     }
 
@@ -77,6 +91,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
 
         // Create our connector around the kafkaConsumer
         KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topics, unackedLimit);
+        kafkaInputs.add(kafkaInput);
 
         return kafkaInput.getPublisher();
     }

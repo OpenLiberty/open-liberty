@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
+import java.time.Duration;
+
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
@@ -31,6 +33,10 @@ public class KafkaOutput<K, V> {
 
     public SubscriberBuilder<Message<V>, Void> getSubscriber() {
         return ReactiveStreams.<Message<V>> builder().onError(this::logError).forEach(this::sendMessage);
+    }
+
+    public void shutdown(Duration timeout) {
+        kafkaProducer.close(timeout);
     }
 
     private void logError(Throwable t) {
