@@ -241,11 +241,14 @@ public class FATReaperVerification{
         if(reaperState.equals("WAITING") && runnerDelay.equals("INDEFINITE")){
             //pending and active must be empty so the value in the dump output should be null
             Assert.assertNull("The Active and Pending queues must be empty for the Zip Reaper to be in an indefinite wait", dumpOutput.getActiveAndPendingIntrospection());
-            
+
         }
         else{
+            //The reaper isn't in a waiting state so no reason to check if the queue is empty
             logInfo(methodName, "Test not applicable, reaper is not in a waiting state and waiting indefinitely");
         }
+
+        
 
         logInfo(methodName, "Exiting: " + methodName);
     }
