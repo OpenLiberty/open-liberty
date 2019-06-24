@@ -232,7 +232,7 @@ public class TestEnableDisableFeaturesTest {
        		"vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS1\"}",
        		"vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\"}",
        		"vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_inUseTime_total{datasource=\"jdbc_exampleDS1\"}",
+       		"vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
        		"vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\"}",
        		"vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\"}",
        		"vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\"}",
@@ -241,7 +241,7 @@ public class TestEnableDisableFeaturesTest {
        		"vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS2\"}",
        		"vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\"}",
        		"vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_inUseTime_total{datasource=\"jdbc_exampleDS2\"}",
+       		"vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
        		"vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\"}",
        		"vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\"}",
        	}, new String[] {});
