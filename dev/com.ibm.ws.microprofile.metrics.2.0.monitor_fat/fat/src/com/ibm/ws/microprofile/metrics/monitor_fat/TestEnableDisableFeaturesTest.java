@@ -270,7 +270,7 @@ public class TestEnableDisableFeaturesTest {
        		"vendor_jaxws_server_runtimeFaults_total{endpoint=\"jaxws.monitor_fat.metrics.microprofile.ws.ibm.com..SimpleEchoService.SimpleEchoPort\"}",
        		"vendor_jaxws_server_responseTime_total_seconds{endpoint=\"jaxws.monitor_fat.metrics.microprofile.ws.ibm.com..SimpleEchoService.SimpleEchoPort\"}",
        		"vendor_jaxws_server_invocations_total{endpoint=\"jaxws.monitor_fat.metrics.microprofile.ws.ibm.com..SimpleEchoService.SimpleEchoPort\"}",
-       		"vendor_jaxws_server_uncheckedApplicationFaults_total{endpoint=\"jaxws.monitor_fat.metrics.microprofile.ws.ibm.com..SimpleEchoService.SimpleEchoPort\"}",
+       		"vendor_jaxws_server_uncheckedApplicationFaults_total_total{endpoint=\"jaxws.monitor_fat.metrics.microprofile.ws.ibm.com..SimpleEchoService.SimpleEchoPort\"}",
        		"vendor_jaxws_server_logicalRuntimeFaults_total{endpoint=\"jaxws.monitor_fat.metrics.microprofile.ws.ibm.com..SimpleEchoService.SimpleEchoPort\"}"	
        	}, new String[] {});
     }
