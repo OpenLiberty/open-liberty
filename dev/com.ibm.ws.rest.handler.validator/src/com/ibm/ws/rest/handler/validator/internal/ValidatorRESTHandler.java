@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.osgi.framework.BundleContext;
@@ -211,22 +212,35 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             for (String key : request.getParameterMap().keySet()) {
                 params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
             }
-            boolean headerParamsEncoded = Boolean.parseBoolean((String) params.get("headerParamsEncoded"));
+            boolean headerParamsURLEncoded = Boolean.parseBoolean((String) params.get("headerParamsURLEncoded"));
             String user = request.getHeader("X-Validation-User");
             if (user != null) {
-                if (headerParamsEncoded)
+                if (headerParamsURLEncoded)
                     user = URLDecoder.decode(user, "UTF-8");
                 params.put("user", resolvePotentialVariable(user));
             }
             String pass = request.getHeader("X-Validation-Password");
             if (pass != null) {
-                if (headerParamsEncoded)
+                if (headerParamsURLEncoded)
                     pass = URLDecoder.decode(pass, "UTF-8");
                 params.put("password", variableRegistry.resolveRawString(pass));
             }
-            String contentType = request.getContentType();
-            if ("application/json".equalsIgnoreCase(contentType)) {
-                params.put(Validator.JSON_BODY_KEY, read(request.getInputStream()));
+            String loginConfigProps = request.getHeader("X-Login-Config-Props");
+            if (loginConfigProps != null) {
+                Map<String, String> lcProps = new TreeMap<String, String>();
+                for (String entry : loginConfigProps.split(",")) {
+                    int eq = entry.indexOf("=");
+                    if (eq > 0) {
+                        String name = entry.substring(0, eq);
+                        String value = entry.substring(eq + 1);
+                        if (headerParamsURLEncoded) {
+                            name = URLDecoder.decode(name, "UTF-8");
+                            value = URLDecoder.decode(value, "UTF-8");
+                        }
+                        lcProps.put(resolvePotentialVariable(name), resolvePotentialVariable(value));
+                    } // TODO else error
+                }
+                params.put("loginConfigProps", lcProps);
             }
 
             Validator validator = getService(context, validatorRefs.iterator().next());

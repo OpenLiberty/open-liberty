@@ -24,15 +24,7 @@ import java.util.Map;
  * Validator implementations should be registered as OSGi service in the service registry.
  */
 public interface Validator {
-
     // TODO add constants for various reserved properties such as: user, password, and auth
-
-    /**
-     * Key used to obtain a String representation of the JSON request body.
-     * If present, it will added to the <code>Map&ltString,Object></code> passed into
-     * the <code>validate</code> method.
-     */
-    public static final String JSON_BODY_KEY = "json";
 
     /**
      * Validates the specified instance.
@@ -41,7 +33,7 @@ public interface Validator {
      * @param props    properties describing the validation request, as determined by the ValidatorAPIProvider.
      *                     Possible property keys include:
      *                     <code>user</code>, <code>password</code>, <code>auth</code>, <code>authAlias</code>,
-     *                     <code>loginConfig</code>, <code>com.ibm.wsspi.validator.jsonBody</code>
+     *                     <code>loginConfig</code>, <code>loginConfigProps</code>
      *                     Possible values for <code>auth</code> are: <code>application</code>, <code>container</code>.
      * @param locale   locale of the client invoking the API.
      * @return ordered name/value pairs with information about the result. If the test operation is unsuccessful,

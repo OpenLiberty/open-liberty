@@ -112,7 +112,7 @@ public class ValidateJCATest extends FATServletClient {
     public void testApplicationAuthForConnectionFactoryWithSpecifiedUser() throws Exception {
         String encodedUser = URLEncoder.encode("user\u217b1", "UTF-8");
         String encodedPwd = URLEncoder.encode("1user\u217b", "UTF-8");
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application&headerParamsEncoded=true")
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application&headerParamsURLEncoded=true")
                         .requestProp("X-Validation-User", encodedUser)
                         .requestProp("X-Validation-Password", encodedPwd);
         JsonObject json = request.method("GET").run(JsonObject.class);
@@ -259,15 +259,12 @@ public class ValidateJCATest extends FATServletClient {
     /**
      * Validate a connectionFactory for a JCA data source using container authentication with a custom login module
      * and custom login properties.
-     *
-     * TODO: Figure out a different way to pass custom login properties.
-     * Writing to the body of the request switches the request from "GET" to "POST"
      */
-    //@Test
+    @Test
     public void testCustomLoginModuleForJCADataSource() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry")
                         .method("GET")
-                        .jsonBody("{ \"loginConfigProperties\": { \"loginName\": \"lmUser\", \"loginNum\": 6 } }")
+                        .requestProp("X-Login-Config-Props", "loginName=lmUser,loginNum=6")
                         .run(JsonObject.class);
 
         String err = "Unexpected json response: " + json;
