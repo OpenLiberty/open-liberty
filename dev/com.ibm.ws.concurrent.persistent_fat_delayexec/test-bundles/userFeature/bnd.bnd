@@ -1,0 +1,16 @@
+-include= ~../../../ant_build/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: DelayExecDynamicCreate
+Bundle-SymbolicName: test.concurrent.persistent.delayexec; singleton:=true
+Bundle-Description: Delay Execution Create Test Bundle; version=${bVersion}
+
+Private-Package: test.concurrent.persistent.delayexec.internal*
+
+Include-Resource:\
+ OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
+
+-dsannotations: \
+  test.concurrent.persistent.delayexec.internal.TestServiceImpl
