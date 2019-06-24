@@ -76,12 +76,16 @@ public final class LocalConnectorActivator {
                             // Agent.agentmain(null);
                             // Properties props = VMSupport.getAgentProperties()
                             ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-                            Class<?> Agent = Class.forName("sun.management.Agent", true, systemClassLoader);
+                            Class<?> Agent = JavaInfo.majorVersion() < 9 //
+                                            ? Class.forName("sun.management.Agent", true, systemClassLoader) //
+                                            : Class.forName("jdk.internal.agent.Agent", true, systemClassLoader);
                             Agent.getMethod("agentmain", String.class).invoke(null, (Object) null);
 
                             localConnectorAddress = System.getProperty(LOCAL_CONNECTOR_ADDRESS_PROPERTY);
                             if (localConnectorAddress == null) {
-                                Class<?> VMSupport = Class.forName("sun.misc.VMSupport", true, systemClassLoader);
+                                Class<?> VMSupport = JavaInfo.majorVersion() < 9 //
+                                                ? Class.forName("sun.misc.VMSupport", true, systemClassLoader) //
+                                                : Class.forName("jdk.internal.vm.VMSupport", true, systemClassLoader);
                                 Properties props = (Properties) VMSupport.getMethod("getAgentProperties").invoke(null);
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "Attempting to retrieve the connector address from agent properties.");
