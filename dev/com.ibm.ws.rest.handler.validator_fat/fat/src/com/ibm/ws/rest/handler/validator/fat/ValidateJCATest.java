@@ -259,12 +259,14 @@ public class ValidateJCATest extends FATServletClient {
     /**
      * Validate a connectionFactory for a JCA data source using container authentication with a custom login module
      * and custom login properties.
+     * Include a unicode value in login config props.
      */
     @Test
     public void testCustomLoginModuleForJCADataSource() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry")
+        String encodedLoginNameProp = "loginName=" + URLEncoder.encode("\u2159lmUser", "UTF-8"); // \u2159 is '1/6'
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry&headerParamsURLEncoded=true")
                         .method("GET")
-                        .requestProp("X-Login-Config-Props", "loginName=lmUser,loginNum=6")
+                        .requestProp("X-Login-Config-Props", encodedLoginNameProp + ",loginNum=6")
                         .run(JsonObject.class);
 
         String err = "Unexpected json response: " + json;
@@ -279,8 +281,32 @@ public class ValidateJCATest extends FATServletClient {
         assertEquals(err, "TestValidationJDBCAdapter", json.getString("driverName"));
         assertEquals(err, "36.77.85", json.getString("driverVersion"));
         assertEquals(err, "TestValDB", json.getString("catalog"));
-        assertEquals(err, "LMUSER6", json.getString("schema"));
-        assertEquals(err, "lmUser6", json.getString("user"));
+        assertEquals(err, "\u2159LMUSER6", json.getString("schema"));
+        assertEquals(err, "\u2159lmUser6", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory for a JCA data source using container authentication with a custom login module
+     * and custom login properties.
+     * Include a unicode value in login config props.
+     */
+    @Test
+    public void testCustomLoginPropertyThatLacksProperDelimiter() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry")
+                        .method("GET")
+                        .requestProp("X-Login-Config-Props", "loginName|myName") // correct delimiter is '=', not '|'
+                        .run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "ds5", json.getString("uid"));
+        assertEquals(err, "ds5", json.getString("id"));
+        assertEquals(err, "eis/ds5", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        String message;
+        assertNotNull(err, message = json.getString("message"));
+        assertTrue(err, message.contains("=")); // message warns that the '=' delimiter is missing
     }
 
     /**

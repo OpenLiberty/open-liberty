@@ -238,7 +238,10 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
                             value = URLDecoder.decode(value, "UTF-8");
                         }
                         lcProps.put(resolvePotentialVariable(name), resolvePotentialVariable(value));
-                    } // TODO else error
+                    } else {
+                        json.put("successful", false);
+                        json.put("failure", toJSONObject("message", "Login config property lacks delimiter '=' between key and value"));
+                    }
                 }
                 params.put("loginConfigProps", lcProps);
             }
@@ -247,7 +250,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             if (validator == null) {
                 json.put("successful", false);
                 json.put("failure", toJSONObject("message", "Unable to obtain validator for " + configElementPid));
-            } else {
+            } else if (!json.containsKey("successful")) {
                 Map<String, ?> result;
                 try {
                     result = validator.validate(target, params, request.getLocale());
