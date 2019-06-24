@@ -484,7 +484,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/validation.jms.result"
+security:
+  - basicAuth: []
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   parameters:
     queryParams:
       name: queryParams
