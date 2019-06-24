@@ -23,7 +23,7 @@
 *******************************************************************************/
 package com.ibm.ws.microprofile.metrics.impl;
 
-import org.eclipse.microprofile.metrics.Counter;;
+import org.eclipse.microprofile.metrics.Counter;
 
 /**
  * An incrementing and decrementing counter metric.

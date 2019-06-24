@@ -24,6 +24,7 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Tag;
 
 import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
