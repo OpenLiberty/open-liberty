@@ -654,6 +654,8 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
             this.deploymentDBAs.clear();
             this.applicationBDAs.clear();
+            this.extensionBDAs.clear();
+            this.orderedBDAs.clear();
             this.classloader = null;
             this.extensionClassLoaders.clear();
             this.cdiEnabled = false;

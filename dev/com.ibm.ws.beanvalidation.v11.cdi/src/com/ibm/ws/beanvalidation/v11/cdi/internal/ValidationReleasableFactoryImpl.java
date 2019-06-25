@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.v11.cdi.internal;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.validation.ConstraintValidatorFactory;
@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.ValidationReleasable;
@@ -54,7 +55,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     private final AtomicServiceReference<CDIService> cdiService = new AtomicServiceReference<CDIService>(REFERENCE_CDI_SERVICE);
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>(REFERENCE_MANAGED_OBJECT_SERVICE);
-    private final Map<ComponentMetaData, BeanManager> beanManagers = new WeakHashMap<ComponentMetaData, BeanManager>();
+    private final Map<J2EEName, BeanManager> beanManagers = new HashMap<J2EEName, BeanManager>();
 
     @Override
     public <T> ManagedObject<T> createValidationReleasable(Class<T> clazz) {
@@ -86,10 +87,10 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     private BeanManager getCurrentBeanManager() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        BeanManager beanMgr = beanManagers.get(cmd);
+        BeanManager beanMgr = beanManagers.get(cmd.getModuleMetaData().getJ2EEName());
         if (beanMgr == null) {
             beanMgr = cdiService.getServiceWithException().getCurrentBeanManager();
-            beanManagers.put(cmd, beanMgr);
+            beanManagers.put(cmd.getModuleMetaData().getJ2EEName(), beanMgr);
         }
         return beanMgr;
     }
@@ -149,7 +150,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     @Override
     public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
-        BeanManager beanManager = beanManagers.remove(event.getMetaData());
+        BeanManager beanManager = beanManagers.remove(event.getMetaData().getModuleMetaData().getJ2EEName());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Removed bean manager from cache: ", beanManager);
     }

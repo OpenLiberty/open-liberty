@@ -51,30 +51,24 @@ public abstract class ValidationExtensionService {
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
 
     protected final AtomicServiceReference<BeanValidation> beanValidation = new AtomicServiceReference<BeanValidation>(REFERENCE_BEANVALIDATION_SERVICE);
-    final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR =
-                    new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
+    final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
 
     protected ValidationConfig validationConfig;
-    protected ValidatorFactory factory;
-    protected ClassLoader factoryAppClassLoader;
 
     private static volatile ValidationExtensionService svInstance = null;
-    
-    protected static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction =
-                    new PrivilegedAction<ThreadContextAccessor>() {
-                        @Override
-                        public ThreadContextAccessor run() {
-                            return ThreadContextAccessor.getThreadContextAccessor();
-                        }
-                    };
 
-    static ValidationExtensionService instance()
-    {
+    protected static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction = new PrivilegedAction<ThreadContextAccessor>() {
+        @Override
+        public ThreadContextAccessor run() {
+            return ThreadContextAccessor.getThreadContextAccessor();
+        }
+    };
+
+    static ValidationExtensionService instance() {
         return svInstance;
     }
 
-    static void setInstance(ValidationExtensionService instance)
-    {
+    static void setInstance(ValidationExtensionService instance) {
         if (svInstance != null && instance != null) {
             throw new IllegalStateException("instance already set");
         }
@@ -85,7 +79,7 @@ public abstract class ValidationExtensionService {
 
     /**
      * Called by DS to activate this service
-     * 
+     *
      * @param compcontext the context of this component
      */
     protected void activate(ComponentContext compcontext) {
@@ -99,7 +93,7 @@ public abstract class ValidationExtensionService {
 
     /**
      * Called by DS to deactivate this service
-     * 
+     *
      * @param compcontext the context of this component
      */
     protected void deactivate(ComponentContext compcontext) {
@@ -113,7 +107,7 @@ public abstract class ValidationExtensionService {
 
     /**
      * Called by DS to set the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     @Reference(name = REFERENCE_BEANVALIDATION_SERVICE, service = BeanValidation.class)
@@ -123,7 +117,7 @@ public abstract class ValidationExtensionService {
 
     /**
      * Called by DS to remove the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     protected void unsetBeanValidation(ServiceReference<BeanValidation> ref) {
@@ -132,7 +126,7 @@ public abstract class ValidationExtensionService {
 
     /**
      * Called by DS to set the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     @Reference(name = REFERENCE_CLASSLOADING_SERVICE,
@@ -143,7 +137,7 @@ public abstract class ValidationExtensionService {
 
     /**
      * Called by DS to remove the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     protected void unsetClassLoadingService(ServiceReference<ClassLoadingService> ref) {
@@ -202,9 +196,7 @@ public abstract class ValidationExtensionService {
         BValExtension bValExtension;
         try {
             classLoader = configureBvalClassloader(null);
-            ThreadContextAccessor tca = System.getSecurityManager() == null ?
-                            ThreadContextAccessor.getThreadContextAccessor() :
-                            AccessController.doPrivileged(getThreadContextAccessorAction);
+            ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
             // set the thread context class loader to be used, must be reset in finally block
             setClassLoader = new SetContextClassLoaderPrivileged(tca);
