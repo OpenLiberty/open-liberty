@@ -38,13 +38,25 @@ public class CloudantDatabaseValidator implements Validator {
     private ResourceConfigFactory resourceConfigFactory;
 
     /**
+     * Identifies whether the specified query parameter is a valid parameter for the validator.
+     * Header parameters such as the user name & password return a false value because they are not query parameters.
+     *
+     * @param name query parameter name.
+     * @return true if a valid parameter for validation. Otherwise false.
+     */
+    public boolean isParameter(String name) {
+        return Validator.AUTH.equals(name)
+               || Validator.AUTH_ALIAS.equals(name);
+    }
+
+    /**
      * @see com.ibm.wsspi.validator.Validator#validate(java.lang.Object, java.util.Map, java.util.Locale)
      */
     @Override
     @FFDCIgnore(java.lang.NoSuchMethodException.class)
     public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
-        String auth = (String) props.get("auth");
-        String authAlias = (String) props.get("authAlias");
+        String auth = (String) props.get(AUTH);
+        String authAlias = (String) props.get(AUTH_ALIAS);
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -54,7 +66,7 @@ public class CloudantDatabaseValidator implements Validator {
 
         try {
             ResourceConfig config = null;
-            int authType = "container".equals(auth) ? 0 : "application".equals(auth) ? 1 : -1;
+            int authType = AUTH_CONTAINER.equals(auth) ? 0 : AUTH_APPLICATION.equals(auth) ? 1 : -1;
             if (authType >= 0) {
                 config = resourceConfigFactory.createResourceConfig("com.cloudant.client.api.Database");
                 config.setResAuthType(authType);
@@ -97,7 +109,7 @@ public class CloudantDatabaseValidator implements Validator {
             }
 
         } catch (Throwable x) {
-            result.put("failure", x);
+            result.put(FAILURE, x);
         }
 
         if (trace && tc.isEntryEnabled())

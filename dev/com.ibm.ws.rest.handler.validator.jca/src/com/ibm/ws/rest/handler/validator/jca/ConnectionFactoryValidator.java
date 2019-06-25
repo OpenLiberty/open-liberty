@@ -115,13 +115,13 @@ public class ConnectionFactoryValidator implements Validator {
                                              @Sensitive Map<String, Object> props, // @Sensitive prevents auto-FFDC from including password value
                                              Locale locale) {
         final String methodName = "validate";
-        String user = (String) props.get("user");
-        String password = (String) props.get("password");
-        String auth = (String) props.get("auth");
-        String authAlias = (String) props.get("authAlias");
-        String loginConfig = (String) props.get("loginConfig");
+        String user = (String) props.get(USER);
+        String password = (String) props.get(PASSWORD);
+        String auth = (String) props.get(AUTH);
+        String authAlias = (String) props.get(AUTH_ALIAS);
+        String loginConfig = (String) props.get(LOGIN_CONFIG);
         @SuppressWarnings("unchecked")
-        Map<String, String> loginConfigProps = (Map<String, String>) props.get("loginConfigProps");
+        Map<String, String> loginConfigProps = (Map<String, String>) props.get(LOGIN_CONFIG_PROPS);
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -131,8 +131,8 @@ public class ConnectionFactoryValidator implements Validator {
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         try {
             ResourceConfig config = null;
-            int authType = "container".equals(auth) ? 0 //
-                            : "application".equals(auth) ? 1 //
+            int authType = AUTH_CONTAINER.equals(auth) ? 0 //
+                            : AUTH_APPLICATION.equals(auth) ? 1 //
                                             : -1;
 
             if (authType >= 0) {
@@ -174,11 +174,11 @@ public class ConnectionFactoryValidator implements Validator {
                 if (interfaces.contains("javax.jms.ConnectionFactory")) { // also covers QueueConnectionFactory and TopicConnectionFactory
                     jmsValidator = getJMSValidator();
                     if (jmsValidator == null)
-                        result.put("failure", "JMS feature is not enabled.");
+                        result.put(FAILURE, "JMS feature is not enabled.");
                     else
                         jmsValidator.validate(cf, user, password, result);
                 } else
-                    result.put("failure", "Validation is not implemented for " + cf.getClass().getName() + " which implements " + interfaces + ".");
+                    result.put(FAILURE, "Validation is not implemented for " + cf.getClass().getName() + " which implements " + interfaces + ".");
             }
         } catch (Throwable x) {
             ArrayList<String> sqlStates = new ArrayList<String>();
@@ -202,8 +202,8 @@ public class ConnectionFactoryValidator implements Validator {
                 errorCodes.add(errorCode);
             }
             result.put("sqlState", sqlStates);
-            result.put("errorCode", errorCodes);
-            result.put("failure", x);
+            result.put(FAILURE_ERROR_CODES, errorCodes);
+            result.put(FAILURE, x);
         }
 
         if (trace && tc.isEntryEnabled())
@@ -286,7 +286,7 @@ public class ConnectionFactoryValidator implements Validator {
 
                 String userName = conData.getUserName();
                 if (userName != null && userName.length() > 0)
-                    result.put("user", userName);
+                    result.put(USER, userName);
             } catch (NotSupportedException ignore) {
             } catch (UnsupportedOperationException ignore) {
             }
@@ -337,12 +337,12 @@ public class ConnectionFactoryValidator implements Validator {
 
             String userName = metadata.getUserName();
             if (userName != null && userName.length() > 0)
-                result.put("user", userName);
+                result.put(USER, userName);
 
             try {
                 boolean isValid = con.isValid(120); // TODO better ideas for timeout value?
                 if (!isValid)
-                    result.put("failure", "FALSE returned by JDBC driver's Connection.isValid operation");
+                    result.put(FAILURE, "FALSE returned by JDBC driver's Connection.isValid operation");
             } catch (SQLFeatureNotSupportedException x) {
             }
         } finally {

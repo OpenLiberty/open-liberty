@@ -72,6 +72,16 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     @Reference
     VariableRegistry variableRegistry;
 
+    private static class HttpErrorInfo {
+        private final int code;
+        private final String message;
+
+        private HttpErrorInfo(int errorCode, String message) {
+            this.code = errorCode;
+            this.message = message;
+        }
+    }
+
     @Activate
     protected void activate(ComponentContext context) {
         this.context = context;
@@ -209,21 +219,27 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         } else {
             // Build a map of params for the testable service
             Map<String, Object> params = new HashMap<String, Object>();
-            for (String key : request.getParameterMap().keySet()) {
-                params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
-            }
-            boolean headerParamsURLEncoded = Boolean.parseBoolean((String) params.get("headerParamsURLEncoded"));
+            boolean headerParamsURLEncoded = false;
+            for (String key : request.getParameterMap().keySet())
+                if ("headerParamsURLEncoded".equals(key)) {
+                    headerParamsURLEncoded = Boolean.parseBoolean(request.getParameter(key));
+                } else if (isParameter(key)) {
+                    params.put(key, resolvePotentialVariable(request.getParameter(key)));
+                } else {
+                    return new HttpErrorInfo(400, "unrecognized query parameter: " + key);
+                }
+
             String user = request.getHeader("X-Validation-User");
             if (user != null) {
                 if (headerParamsURLEncoded)
                     user = URLDecoder.decode(user, "UTF-8");
-                params.put("user", resolvePotentialVariable(user));
+                params.put(Validator.USER, resolvePotentialVariable(user));
             }
             String pass = request.getHeader("X-Validation-Password");
             if (pass != null) {
                 if (headerParamsURLEncoded)
                     pass = URLDecoder.decode(pass, "UTF-8");
-                params.put("password", variableRegistry.resolveRawString(pass));
+                params.put(Validator.PASSWORD, variableRegistry.resolveRawString(pass));
             }
             String loginConfigProps = request.getHeader("X-Login-Config-Props");
             if (loginConfigProps != null) {
@@ -243,7 +259,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
                         json.put("failure", toJSONObject("message", "Login config property lacks delimiter '=' between key and value"));
                     }
                 }
-                params.put("loginConfigProps", lcProps);
+                params.put(Validator.LOGIN_CONFIG_PROPS, lcProps);
             }
 
             Validator validator = getService(context, validatorRefs.iterator().next());
@@ -279,6 +295,19 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         return json;
     }
 
+    /**
+     * Identifies whether the specified query parameter is a valid parameter for the validator.
+     * Header parameters such as the user name & password return a false value because they are not query parameters.
+     *
+     * @param name query parameter name.
+     * @return true if a valid parameter for validation. Otherwise false.
+     */
+    public boolean isParameter(String name) {
+        return Validator.AUTH.equals(name)
+               || Validator.AUTH_ALIAS.equals(name)
+               || Validator.LOGIN_CONFIG.equals(name);
+    }
+
     @Override
     @Trivial
     public void populateResponse(RESTResponse response, Object responseInfo) throws IOException {
@@ -288,13 +317,23 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         else if (responseInfo instanceof List) {
             JSONArray ja = new JSONArray();
             for (Object info : (List<?>) responseInfo)
-                if (info instanceof JSONArtifact)
+                if (info instanceof JSONArtifact) {
                     ja.add(info);
-                else
+                } else if (info instanceof HttpErrorInfo) {
+                    HttpErrorInfo errorInfo = (HttpErrorInfo) info;
+                    response.sendError(errorInfo.code, errorInfo.message);
+                    return;
+                } else {
                     throw new IllegalArgumentException(info.toString()); // should be unreachable
+                }
             json = ja;
-        } else
+        } else if (responseInfo instanceof HttpErrorInfo) {
+            HttpErrorInfo errorInfo = (HttpErrorInfo) responseInfo;
+            response.sendError(errorInfo.code, errorInfo.message);
+            return;
+        } else {
             throw new IllegalArgumentException(responseInfo.toString()); // should be unreachable
+        }
 
         String jsonString = json.serialize(true);
 

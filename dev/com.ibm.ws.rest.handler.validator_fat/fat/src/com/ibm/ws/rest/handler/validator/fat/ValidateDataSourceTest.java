@@ -98,7 +98,7 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testVariableSubstitution() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource?user=bogus")
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource")
                         .requestProp("X-Validation-User", "${DB_USER}")
                         .requestProp("X-Validation-Password", "${DB_PASS}");
         JsonObject json = request.run(JsonObject.class);
@@ -109,7 +109,7 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testEnvVariableSubstitution() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource?user=bogus")
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource")
                         .requestProp("X-Validation-User", "${env.DB_USER_ENV}")
                         .requestProp("X-Validation-Password", "${env.DB_PASS_ENV}");
         JsonObject json = request.run(JsonObject.class);
@@ -205,6 +205,16 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertNull(err, json.get("info"));
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertTrue(err, json.getString("message").contains("feature"));
+    }
+
+    /**
+     * Supply an invalid query parameter to the validation REST endpoint and expect an error.
+     */
+    @Test
+    public void testInvalidQueryParameter() throws Exception {
+        new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource?badParam=something")
+                        .expectCode(400)
+                        .run(JsonObject.class);
     }
 
     @Test
