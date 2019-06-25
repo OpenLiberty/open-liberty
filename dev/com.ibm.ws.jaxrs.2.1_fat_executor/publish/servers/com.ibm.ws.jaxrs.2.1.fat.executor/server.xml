@@ -13,6 +13,14 @@
     <!-- temporary workaround for AccessControlException from org.apache.cxf.jaxrs.provider.ProviderCache.<clinit>(ProviderCache.java:35) -->
     <javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.jaxrs.max_provider_cache_size" actions="read"/>
 
+     <!-- Test application needs these permissions to help verify thread context -->
+     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+     <javaPermission className="java.lang.RuntimePermission" name="getContextClassLoader"/>
+     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+     <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+     <javaPermission className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+
     <managedScheduledExecutorService jndiName="concurrent/scheduledExecutor">
       <contextService>
         <classloaderContext/>

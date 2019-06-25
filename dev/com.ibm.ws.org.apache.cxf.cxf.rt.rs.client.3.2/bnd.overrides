@@ -13,6 +13,7 @@ Import-Package: \
   !org.springframework.*,\
   !javax.cache.*,\
   !org.osgi.service.blueprint.*,\
+  com.ibm.ws.concurrent.mp.*;resolution:=optional,\
   *
 
 Export-Package: com.ibm.ws.jaxrs21.clientconfig,\
