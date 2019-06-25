@@ -13,7 +13,6 @@ package com.ibm.ws.concurrent.persistent.fat.compat;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,22 +22,24 @@ import java.net.URL;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests for persistent scheduled executor with task execution disabled
  */
+@RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 7)
 public class PersistentExecutorCompatibilityTest {
     private static final LibertyServer server = FATSuite.server;
@@ -97,22 +98,16 @@ public class PersistentExecutorCompatibilityTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-    	//Create app to be tested against.
-    	WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                .addPackage("web")
-                .addPackage("ejb")
-                .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/web.xml"));
-    	
-    	//Copy contents of serialized directory to WEB-INF directory
     	String serDir = "test-applications/" + APP_NAME + "/resources/WEB-INF/serialized";
-    	app.merge(
-    			ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(serDir).as(GenericArchive.class), 
-    			"WEB-INF/serialized/");
-		            	
-        ShrinkHelper.exportToServer(server, "dropins", app);
+    	
+    	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "ejb")
+    			.merge(ShrinkWrap.create(GenericArchive.class)
+    					.as(ExplodedImporter.class)
+    					.importDirectory(serDir)
+    					.as(GenericArchive.class), "WEB-INF/serialized/");
+
         server.addInstalledAppForValidation(APP_NAME);
         server.startServer();
-        // ask the server for myExecutor's partition id
     }
 
     /**
