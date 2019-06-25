@@ -87,3 +87,4 @@ org.apache.cxf:cxf-core:3.3.3.20190529
 org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3.20190529
 org.apache.cxf:cxf-rt-rs-client:3.3.3.20190529
 org.apache.cxf:cxf-rt-rs-mp-client:3.3.3.20190529
+com.ibm.ws.org.apache.felix:org.apache.felix.scr:2.1.17.ibm20190708-1
