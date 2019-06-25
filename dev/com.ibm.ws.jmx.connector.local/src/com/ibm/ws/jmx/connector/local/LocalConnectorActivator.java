@@ -65,8 +65,11 @@ public final class LocalConnectorActivator {
                         String localConnectorAddress = null;
                         // Start the JMX agent and retrieve the local connector address.
                         if (JavaInfo.majorVersion() < 9 ||
-                            (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf") ||
-                             System.getSecurityManager() != null)) {
+                            (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf"))) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(tc, "Using old code path for self attach using JDK internal APIs",
+                                         JavaInfo.majorVersion(),
+                                         Boolean.getBoolean("jdk.attach.allowAttachSelf"));
                             // Use JDK internal APIs for Java 8 and older OR if the server was launched in a way that bypassed
                             // the wlp/bin/server script and therefore did not get the -Djdk.attach.allowAttachSelf=true prop set
                             // TODO: Also go down this path if j2sec is enabled, because the proper API path has permission issues
@@ -93,6 +96,8 @@ public final class LocalConnectorActivator {
                                 localConnectorAddress = props.getProperty(LOCAL_CONNECTOR_ADDRESS_PROPERTY);
                             }
                         } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(tc, "Using public API code path for self attach");
                             // This code path uses public Java APIs and is the preferred approach for self-attach (used for JDK 9+)
 
                             // Manually initialize the PlatformMBeanServer here where we have access to com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder.

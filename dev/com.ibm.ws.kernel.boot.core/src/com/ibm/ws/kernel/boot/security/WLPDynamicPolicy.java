@@ -23,10 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- *
- */
 public class WLPDynamicPolicy extends Policy {
+
     // The policy that this WLPDynamicPolicy is replacing
     private Policy policy;
 
@@ -113,10 +111,16 @@ public class WLPDynamicPolicy extends Policy {
     public boolean implies(ProtectionDomain domain, Permission permission) {
         if (contains(domain.getCodeSource())) {
             return true;
+        } else if (policy == null || policy.implies(domain, permission)) {
+            return true;
         } else {
-            return policy == null ? true : policy.implies(domain, permission);
+            // Special fallback case for JDK modules that have missing permissions
+            // By adding modules here, we are effectively granting AllPermissions to those JDK modules
+            String location = (domain != null && domain.getCodeSource() != null && domain.getCodeSource().getLocation() != null) //
+                            ? domain.getCodeSource().getLocation().toExternalForm() : "";
+            // Added because of https://github.com/eclipse/openj9/issues/6119
+            return location.startsWith("jrt:/jdk.attach");
         }
-
     }
 
     @Override
