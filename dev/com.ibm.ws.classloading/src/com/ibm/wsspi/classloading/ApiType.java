@@ -39,7 +39,7 @@ public enum ApiType {
 
     // OSGi APIs are marked spec:api, which is obviously not in this enum.
     // This means that OSGi application API will not be visible to EE applications.
-    private static final TraceComponent tc = Tr.register(ApiType.class);
+    private static final TraceComponent tc = Tr.register(ApiType.class,"ClassLoadingService", "com.ibm.ws.classloading.internal.resources.ClassLoadingServiceMessages");
 
     private final String attributeName;
 

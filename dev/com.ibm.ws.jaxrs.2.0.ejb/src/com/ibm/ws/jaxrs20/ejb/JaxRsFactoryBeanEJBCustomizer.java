@@ -55,7 +55,8 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 @Component(name = "com.ibm.ws.jaxrs20.ejb.JaxRsFactoryEJBBeanCustomizer", immediate = true, property = { "service.vendor=IBM" })
 public class JaxRsFactoryBeanEJBCustomizer implements JaxRsFactoryBeanCustomizer {
-    private final TraceComponent tc = Tr.register(JaxRsFactoryBeanEJBCustomizer.class);
+
+    private static final TraceComponent tc = Tr.register(JaxRsFactoryBeanEJBCustomizer.class);
 
     //private final Set<Class<ExceptionMapper<?>>> exceptionMappers = new HashSet<Class<ExceptionMapper<?>>>();
 
