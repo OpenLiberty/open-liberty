@@ -1196,7 +1196,7 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
-        if (info.VENDOR == Vendor.IBM ) {
+        if (info.VENDOR == Vendor.IBM) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
         }
@@ -2435,93 +2435,114 @@ public class LibertyServer implements LogMonitorClient {
     protected void checkLogsForErrorsAndWarnings(String... regIgnore) throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
-        // Get all warnings and errors in logs - default to an empty list
-        List<String> errorsInLogs = new ArrayList<String>();
-        try {
-            errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$");
+        if (!isCheckingDisabled(regIgnore)) {
+            // Get all warnings and errors in logs - default to an empty list
+            List<String> errorsInLogs = new ArrayList<String>();
+            try {
+                errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$");
+                if (!errorsInLogs.isEmpty()) {
+                    // There were unexpected errors in logs, print them
+                    // and set an exception to return
+                    StringBuffer sb = new StringBuffer("Errors/warnings were found in server ");
+                    sb.append(getServerName());
+                    sb.append(" logs:");
+                    for (String errorInLog : errorsInLogs) {
+                        sb.append("\n <br>");
+                        sb.append(errorInLog);
+                        Log.info(c, method, "Error/warning found in log ORIGINALLY: " + errorInLog);
+                    }
+                }
+            } catch (Exception e) {
+                Log.warning(getClass(), "While checking for log errors and warnings, findStringsInLogs caused an exception: " + e.getMessage());
+            }
+
+            // Compile set of regex's using input list and universal ignore list
+            List<Pattern> ignorePatterns = new ArrayList<Pattern>();
+            if (regIgnore != null && regIgnore.length != 0) {
+                for (String ignoreRegEx : regIgnore) {
+                    ignorePatterns.add(Pattern.compile(ignoreRegEx));
+                }
+            }
+            // Add the regexes added via the instance method
+            for (String regex : ignoredErrors) {
+                ignorePatterns.add(Pattern.compile(regex));
+            }
+            ignoredErrors.clear();
+
+            // Add the global fixed list of regexes entries.
+            if (fixedIgnoreErrorsList != null) {
+                for (String regex : fixedIgnoreErrorsList) {
+                    ignorePatterns.add(Pattern.compile(regex));
+                }
+            }
+
+            // Remove any ignored warnings or patterns
+            for (Pattern ignorePattern : ignorePatterns) {
+                Iterator<String> iter = errorsInLogs.iterator();
+                while (iter.hasNext()) {
+                    if (ignorePattern.matcher(iter.next()).find()) {
+                        // this is an ignored warning/error, remove it from list
+                        iter.remove();
+                        Log.finer(c, method, "Error being removed is " + ignorePattern);
+                    }
+                }
+            }
+
+            Exception ex = null;
+
             if (!errorsInLogs.isEmpty()) {
+                // Check which errors were j2sec related
+                Pattern j2secPattern = Pattern.compile("CWWKE09(21W|12W|13E|14W|15W|16W)");
+                List<String> j2secIssues = new ArrayList<String>();
+                for (String errorInLog : errorsInLogs)
+                    if (j2secPattern.matcher(errorInLog).find()) {
+                        j2secIssues.add(errorInLog);
+                    }
+
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
-                StringBuffer sb = new StringBuffer("Errors/warnings were found in server ");
+                StringBuilder sb = new StringBuilder("Errors/warnings were found in server ");
                 sb.append(getServerName());
                 sb.append(" logs:");
+                if (!j2secIssues.isEmpty()) {
+                    // When things go wrong with j2sec, a LOT of things tend to go wrong, so just leave a pointer
+                    // to the nicely formatted ACE report instead of putting every single issue in the exception msg
+                    sb.append("\n <br>");
+                    sb.append("Java 2 security issues were found in logs.  See autoFVT/ACE-report-*.log for details.");
+                    errorsInLogs.removeAll(j2secIssues);
+                }
                 for (String errorInLog : errorsInLogs) {
                     sb.append("\n <br>");
                     sb.append(errorInLog);
-                    Log.info(c, method, "Error/warning found in log ORIGINALLY: " + errorInLog);
+                    Log.info(c, method, "Error/warning found: " + errorInLog);
                 }
+                ex = new Exception(sb.toString());
             }
-        } catch (Exception e) {
-            Log.warning(getClass(), "While checking for log errors and warnings, findStringsInLogs caused an exception: " + e.getMessage());
+
+            if (ex == null)
+                Log.info(c, method, "No unexpected errors or warnings found in server logs.");
+            else
+                throw ex;
         }
+    }
 
-        // Compile set of regex's using input list and universal ignore list
-        List<Pattern> ignorePatterns = new ArrayList<Pattern>();
-        if (regIgnore != null && regIgnore.length != 0) {
-            for (String ignoreRegEx : regIgnore) {
-                ignorePatterns.add(Pattern.compile(ignoreRegEx));
-            }
-        }
-        // Add the regexes added via the instance method
-        for (String regex : ignoredErrors) {
-            ignorePatterns.add(Pattern.compile(regex));
-        }
-        ignoredErrors.clear();
+    /**
+     * Looks at the list of regular expressions to ignore
+     * in search of the disable checking flag.
+     *
+     * @param  String... regularExpressions to ignore
+     *
+     * @return           boolean true when disable flag found, false when disable flag not found.
+     */
+    private boolean isCheckingDisabled(String... regIgnore) {
 
-        // Add the global fixed list of regexes entries.
-        if (fixedIgnoreErrorsList != null) {
-            for (String regex : fixedIgnoreErrorsList) {
-                ignorePatterns.add(Pattern.compile(regex));
-            }
-        }
+        boolean checkingDisabled = false;
+        if (regIgnore != null && regIgnore.length > 0)
+            for (String disableString : regIgnore)
+                if (disableString.equals(LibertyServer.DISABLE_FAILURE_CHECKING))
+                    checkingDisabled = true;
+        return checkingDisabled;
 
-        // Remove any ignored warnings or patterns
-        for (Pattern ignorePattern : ignorePatterns) {
-            Iterator<String> iter = errorsInLogs.iterator();
-            while (iter.hasNext()) {
-                if (ignorePattern.matcher(iter.next()).find()) {
-                    // this is an ignored warning/error, remove it from list
-                    iter.remove();
-                    Log.finer(c, method, "Error being removed is " + ignorePattern);
-                }
-            }
-        }
-
-        Exception ex = null;
-
-        if (!errorsInLogs.isEmpty()) {
-            // Check which errors were j2sec related
-            Pattern j2secPattern = Pattern.compile("CWWKE09(21W|12W|13E|14W|15W|16W)");
-            List<String> j2secIssues = new ArrayList<String>();
-            for (String errorInLog : errorsInLogs)
-                if (j2secPattern.matcher(errorInLog).find()) {
-                    j2secIssues.add(errorInLog);
-                }
-
-            // There were unexpected errors in logs, print them
-            // and set an exception to return
-            StringBuilder sb = new StringBuilder("Errors/warnings were found in server ");
-            sb.append(getServerName());
-            sb.append(" logs:");
-            if (!j2secIssues.isEmpty()) {
-                // When things go wrong with j2sec, a LOT of things tend to go wrong, so just leave a pointer
-                // to the nicely formatted ACE report instead of putting every single issue in the exception msg
-                sb.append("\n <br>");
-                sb.append("Java 2 security issues were found in logs.  See autoFVT/ACE-report-*.log for details.");
-                errorsInLogs.removeAll(j2secIssues);
-            }
-            for (String errorInLog : errorsInLogs) {
-                sb.append("\n <br>");
-                sb.append(errorInLog);
-                Log.info(c, method, "Error/warning found: " + errorInLog);
-            }
-            ex = new Exception(sb.toString());
-        }
-
-        if (ex == null)
-            Log.info(c, method, "No unexpected errors or warnings found in server logs.");
-        else
-            throw ex;
     }
 
     protected void clearMessageCounters() {
