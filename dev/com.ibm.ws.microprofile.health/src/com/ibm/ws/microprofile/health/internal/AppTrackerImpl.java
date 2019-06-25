@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
@@ -32,15 +34,22 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
 import org.eclipse.microprofile.health.HealthCheck;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.webapp.WebAppConfigExtended;
+import com.ibm.wsspi.application.Application;
+import com.ibm.wsspi.application.ApplicationState;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
@@ -48,8 +57,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 /**
  * Retrieves the application and modules names during application deployments
  */
-@Component(service = { AppTracker.class, ServletContainerInitializer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, 
-       property = { "service.vendor=IBM" })
+@Component(service = { AppTracker.class, ServletContainerInitializer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 @HandlesTypes(HealthCheck.class)
 public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
 
@@ -58,6 +66,21 @@ public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
     private static final String BUNDLE_CONTEXT_KEY = "osgi-bundlecontext";
 
     private final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
+
+    /**
+     * Lock for accessing application/deferred task information.
+     */
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+    /**
+     * Service property indicating the application name.
+     */
+    private static final String NAME = "name";
+
+    /**
+     * Tracks the state of starting/started applications.
+     */
+    private final Map<String, ApplicationState> appStates = new HashMap<String, ApplicationState>();
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
@@ -169,6 +192,56 @@ public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
             if (modules.size() <= 0) {
                 appModules.remove(pair.appName);
             }
+        }
+    }
+
+    /**
+     * Declarative Services method for setting a started Application instance
+     *
+     * @param ref reference to the service
+     */
+    @Reference(service = Application.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, target = "(application.state=STARTED)")
+    protected void addStartedApplication(ServiceReference<Application> ref) {
+        String appName = (String) ref.getProperty(NAME);
+        lock.writeLock().lock();
+        try {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "addStartedApplication(): app added = " + appName);
+            appStates.put(appName, ApplicationState.STARTED);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    /**
+     * Declarative Services method for unsetting a started Application instance
+     *
+     * @param ref reference to the service
+     */
+    protected void removeStartedApplication(ServiceReference<Application> ref) {
+        String appName = (String) ref.getProperty(NAME);
+        lock.writeLock().lock();
+        try {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "removeStartedApplication(): app removed = " + appName);
+            appStates.remove(appName);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    /**
+     * Returns true if the application with the specified name is started, otherwise false.
+     *
+     * @return true if the application with the specified name is started, otherwise false.
+     */
+    @Override
+    public boolean isStarted(String appName) {
+        lock.readLock().lock();
+        try {
+            return appStates.get(appName) == ApplicationState.STARTED;
+        } finally {
+            lock.readLock().unlock();
         }
     }
 }

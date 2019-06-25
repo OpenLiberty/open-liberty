@@ -3108,13 +3108,17 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        //setting with 6 bytes payload
-        byte[] settingsFrameHeader = { 0, 0, (byte) 3, (byte) 4, 0, 0, 0, 0, 0 };
-        //SETTINGS_INITIAL_WINDOW_SIZE = 2147483648
-        byte[] parameter = { 0, (byte) 3, 0 };
+        // Send the whole frame at one time.  An intermittent error was occurring when the first half of the
+        // frame was sent, and before the last 3 bytes could be sent, another frame came in from the server.
+        // RTC defect 263417
 
-        h2Client.sendBytes(settingsFrameHeader);
-        h2Client.sendBytes(parameter);
+        //setting with 6 bytes payload
+        byte[] settingsFrame = { 0, 0, (byte) 3, (byte) 4, 0, 0, 0, 0, 0, 0, (byte) 3, 0 };
+        //SETTINGS_INITIAL_WINDOW_SIZE = 2147483648
+        //byte[] parameter = { 0, (byte) 3, 0 };
+
+        h2Client.sendBytes(settingsFrame);
+        //h2Client.sendBytes(parameter);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);

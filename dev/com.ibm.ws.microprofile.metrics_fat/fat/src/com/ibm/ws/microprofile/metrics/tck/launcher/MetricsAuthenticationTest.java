@@ -84,8 +84,8 @@ public class MetricsAuthenticationTest {
     }
 
     private void waitForPrerequisites(LibertyServer server) throws Exception {
-        String regex1 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default", "8010") + ".*";
-        String regex2 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default.secure", "8020") + ".*";
+        String regex1 = "CWWKO0219I.*" + server.getHttpDefaultPort() + ".*";
+        String regex2 = "CWWKO0219I.*" + server.getHttpDefaultSecurePort() + ".*";
         assertNotNull("TCP Channel defaultHttpEndpoint has not started", server.waitForStringInLog(regex1));
         assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started", server.waitForStringInLog(regex2));
         assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*"));

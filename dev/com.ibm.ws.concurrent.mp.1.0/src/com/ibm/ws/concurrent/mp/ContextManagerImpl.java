@@ -149,7 +149,7 @@ public class ContextManagerImpl implements ContextManager {
      * @param defaultValue value to use if not found in MicroProfile Config.
      * @return default value.
      */
-    <T> T getDefault(String mpConfigPropName, String oldName, T defaultValue) { // TODO remove the old name after spec change
+    <T> T getDefault(String mpConfigPropName, T defaultValue) {
         MPConfigAccessor accessor = cmProvider.mpConfigAccessor;
         if (accessor != null) {
             Object mpConfig = mpConfigRef.get();
@@ -158,7 +158,6 @@ public class ContextManagerImpl implements ContextManager {
                     mpConfig = mpConfigRef.get();
 
             if (mpConfig != null) {
-                defaultValue = accessor.get(mpConfig, oldName, defaultValue); // TODO remove this line after spec change
                 defaultValue = accessor.get(mpConfig, mpConfigPropName, defaultValue);
             }
         }

@@ -28,7 +28,7 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # Config is closed.
-config.closed.CWMCG0001E=CWMCG0001E: La configuration est ferm\u00e9e.
+config.closed.CWMCG0001E=CWMCG0001E: Config est ferm\u00e9e.
 config.closed.CWMCG0001E.explanation=Il n'est pas possible d'ex\u00e9cuter des op\u00e9rations sur une instance de configuration qui a \u00e9t\u00e9 ferm\u00e9e.
 config.closed.CWMCG0001E.useraction=Obtenez une nouvelle instance de configuration et tentez \u00e0 nouveau l'op\u00e9ration.
 
@@ -38,12 +38,12 @@ null.classloader.CWMCG0002E.explanation=Le ClassLoader utilis\u00e9 par un Confi
 null.classloader.CWMCG0002E.useraction=Affectez une valeur non Null au ClassLoader.
 
 # A Config instance already exists for the specified ClassLoader.
-config.already.exists.CWMCG0003E=CWMCG0003E: Une instance de configuration existe d\u00e9j\u00e0 pour le chargeur de classe (ClassLoader) sp\u00e9cifi\u00e9.
+config.already.exists.CWMCG0003E=CWMCG0003E: Une instance Config existe d\u00e9j\u00e0 pour le chargeur de classe (ClassLoader) sp\u00e9cifi\u00e9.
 config.already.exists.CWMCG0003E.explanation=Une instance de configuration a d\u00e9j\u00e0 \u00e9t\u00e9 fix\u00e9e pour le ClassLoader sp\u00e9cifi\u00e9.
 config.already.exists.CWMCG0003E.useraction=Utilisez la m\u00e9thode 'releaseConfig' pour retirer l'instance pr\u00e9c\u00e9dente, puis tentez un nouvel appel \u00e0 la m\u00e9thode.
 
 # Unable to close the Config instance. The exception is: {0}.
-could.not.close.CWMCG0004E=CWMCG0004E: Impossible de fermer l'instance de configuration. L'exception est : {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: Impossible de fermer l'instance de Config. L'exception est : {0}.
 could.not.close.CWMCG0004E.explanation=Une exception s'est produite lors de la tentative de fermeture d'une instance de configuration. Il se peut que ses ressources n'aient pas \u00e9t\u00e9 lib\u00e9r\u00e9es.
 could.not.close.CWMCG0004E.useraction=Consultez le journal message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
 

@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -27,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.osgi.framework.BundleContext;
@@ -179,8 +181,8 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         ServiceReference<?>[] targetRefs;
         try {
             String filter = "(|" + FilterUtils.createPropertyFilter("service.pid", (String) config.get("service.pid")) // config without super type
-                           + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
-                           + ")";
+                            + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
+                            + ")";
             targetRefs = getServiceReferences(context.getBundleContext(), (String) null, filter);
         } catch (InvalidSyntaxException x) {
             targetRefs = null; // same error handling as not found
@@ -210,15 +212,35 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             for (String key : request.getParameterMap().keySet()) {
                 params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
             }
+            boolean headerParamsURLEncoded = Boolean.parseBoolean((String) params.get("headerParamsURLEncoded"));
             String user = request.getHeader("X-Validation-User");
-            if (user != null)
+            if (user != null) {
+                if (headerParamsURLEncoded)
+                    user = URLDecoder.decode(user, "UTF-8");
                 params.put("user", resolvePotentialVariable(user));
+            }
             String pass = request.getHeader("X-Validation-Password");
-            if (pass != null)
-                params.put("password", pass == null ? null : variableRegistry.resolveRawString(pass));
-            String contentType = request.getContentType();
-            if ("application/json".equalsIgnoreCase(contentType)) {
-                params.put(Validator.JSON_BODY_KEY, read(request.getInputStream()));
+            if (pass != null) {
+                if (headerParamsURLEncoded)
+                    pass = URLDecoder.decode(pass, "UTF-8");
+                params.put("password", variableRegistry.resolveRawString(pass));
+            }
+            String loginConfigProps = request.getHeader("X-Login-Config-Props");
+            if (loginConfigProps != null) {
+                Map<String, String> lcProps = new TreeMap<String, String>();
+                for (String entry : loginConfigProps.split(",")) {
+                    int eq = entry.indexOf("=");
+                    if (eq > 0) {
+                        String name = entry.substring(0, eq);
+                        String value = entry.substring(eq + 1);
+                        if (headerParamsURLEncoded) {
+                            name = URLDecoder.decode(name, "UTF-8");
+                            value = URLDecoder.decode(value, "UTF-8");
+                        }
+                        lcProps.put(resolvePotentialVariable(name), resolvePotentialVariable(value));
+                    } // TODO else error
+                }
+                params.put("loginConfigProps", lcProps);
             }
 
             Validator validator = getService(context, validatorRefs.iterator().next());
@@ -365,6 +387,26 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             Tr.debug(tc, "Was a variable value found for " + value + "?  " + !value.equals(resolvedVariable));
         }
         return resolvedVariable;
+    }
+
+    /**
+     * Restricts use of the validation end-point to GET requests only.
+     * All other requests will respond with a 405 - method not allowed error.
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+        if (!"GET".equals(request.getMethod())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Request method was " + request.getMethod() + " but the validation endpoint is restricted to GET requests only.");
+            }
+            response.setResponseHeader("Accept", "GET");
+            response.sendError(405); // Method Not Allowed
+            return;
+        }
+
+        super.handleRequest(request, response);
     }
 
     @Override

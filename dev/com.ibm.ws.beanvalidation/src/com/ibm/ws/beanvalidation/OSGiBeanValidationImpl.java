@@ -558,11 +558,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                 }
 
                 Class<?> clazz = classLoader.loadClass("org.apache.bval.jsr.ConstraintAnnotationAttributes");
-                final Field methodByNameAndClass = clazz.getDeclaredField("METHOD_BY_NAME_AND_CLASS");
+                Field methodByNameAndClass = clazz.getDeclaredField("METHOD_BY_NAME_AND_CLASS");
 
                 priv.setAccessible(methodByNameAndClass, true);
 
                 Map<?, ?> methodMap = (Map<?, ?>) methodByNameAndClass.get(null);
+                methodMap.clear();
+
+                clazz = classLoader.loadClass("org.apache.bval.util.PropertyAccess");
+                methodByNameAndClass = clazz.getDeclaredField("PROPERTY_DESCRIPTORS");
+
+                priv.setAccessible(methodByNameAndClass, true);
+
+                methodMap = (Map<?, ?>) methodByNameAndClass.get(null);
                 methodMap.clear();
             } catch (Exception e) {
                 //ffdc

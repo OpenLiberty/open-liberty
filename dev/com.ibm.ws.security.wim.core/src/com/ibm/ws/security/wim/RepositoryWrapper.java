@@ -20,7 +20,7 @@ import com.ibm.wsspi.security.wim.exception.WIMException;
  */
 interface RepositoryWrapper {
 
-    Repository getRepository() throws WIMException;
+    Repository getRepository();
 
     void clear();
 

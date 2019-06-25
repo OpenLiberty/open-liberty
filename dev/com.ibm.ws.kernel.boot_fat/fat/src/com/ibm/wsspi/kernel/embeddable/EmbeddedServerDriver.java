@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -232,7 +232,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     /**
      * Determine if the input product extension exists in the input string.
      *
-     * @param inputString string to search.
+     * @param inputString      string to search.
      * @param productExtension product extension to search for.
      * @return true if input product extension is found in the input string.
      */
@@ -357,6 +357,35 @@ public class EmbeddedServerDriver implements ServerEventListener {
         verifyServerEvent("\"STARTING\" ServerEvent should have fired", startingEventOccurred);
         verifyServerEvent("\"STARTED\" ServerEvent should have fired", startedEventOccurred);
         stopRunningServer();
+    }
+
+    public void testForceStoppingAStartedServer() {
+        PrintStream originalSysOut = System.out;
+        try {
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(baos, true, "UTF-8"));
+
+            warmStartServer();
+            verifyServerEvent("\"STARTING\" ServerEvent should have fired", startingEventOccurred);
+            verifyServerEvent("\"STARTED\" ServerEvent should have fired", startedEventOccurred);
+            stopRunningServer("--force");
+
+            String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
+            Log.info(c, "testForceStoppingAStartedServer", "consoleOutput = " + serverConsoleOutput);
+            try {
+                Assert.assertFalse("Waiting for server to quiesce message found. Server stop with --force did not work correctly",
+                                   serverConsoleOutput.contains("CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce."));
+                Assert.assertFalse("Server completed quiesce message found. Server stop with --force did not work correctly",
+                                   serverConsoleOutput.contains("CWWKE1101I: Server quiesce complete."));
+            } catch (Throwable t) {
+                failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
+                Log.error(c, CURRENT_METHOD_NAME, t);
+            }
+        } catch (UnsupportedEncodingException ex) {
+        } finally {
+            System.setOut(originalSysOut);
+        }
     }
 
     public void testBadArgument() {
@@ -544,8 +573,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
         checkServerRunning(true); // server should be started
     }
 
-    private void stopRunningServer() {
-        Future<Result> stopFuture = server.stop();
+    private void stopRunningServer(String... arg) {
+        Future<Result> stopFuture = server.stop(arg);
         try {
             result = stopFuture.get();
             dumpResult("Stopping a started server", result);

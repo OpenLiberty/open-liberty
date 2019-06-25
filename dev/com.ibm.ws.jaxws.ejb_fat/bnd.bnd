@@ -40,17 +40,8 @@ tested.features: \
 
 -buildpath: \
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jws.1.0;version=latest,\
-	com.ibm.ws.jaxws.tools.2.2.10;version=latest,\
-	com.ibm.ws.com.sun.xml.messaging.saaj;version=latest,\
+	com.sun.xml.messaging.saaj:saaj-impl;version=1.4.0,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest
-#	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-#../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-#	com.ibm.websphere.org.osgi.core,\
-#	com.ibm.websphere.org.osgi.service.component,\
-#	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-#	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-#	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

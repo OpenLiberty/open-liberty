@@ -4877,7 +4877,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
-     * Verify toString output for our MicroProfile Concurrency ThreadContext implementation.
+     * Verify toString output for our ThreadContext implementation.
      */
     @Test
     public void testToStringThreadContext() throws Exception {

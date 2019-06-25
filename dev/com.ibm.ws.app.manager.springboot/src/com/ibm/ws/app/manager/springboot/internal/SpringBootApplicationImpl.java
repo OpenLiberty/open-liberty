@@ -693,7 +693,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
     @Override
     public ExtendedApplicationInfo createApplicationInfo(String id, Container appContainer) {
-        ExtendedApplicationInfo appInfo = appInfoFactory.createApplicationInfo(getName() + "." + id,
+        ExtendedApplicationInfo appInfo = appInfoFactory.createApplicationInfo(getName(),
                                                                                springContainerModuleInfo.moduleName + "." + id,
                                                                                appContainer,
                                                                                null,
