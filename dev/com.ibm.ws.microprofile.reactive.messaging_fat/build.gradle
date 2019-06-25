@@ -4,7 +4,7 @@ configurations {
 }
 
 dependencies {
-    kafkaClient 'org.apache.kafka:kafka-clients:2.2.0'
+    kafkaClient 'org.apache.kafka:kafka-clients:2.3.0'
     kafkaClient 'org.lz4:lz4-java:1.5.0'
     kafkaClient 'com.github.luben:zstd-jni:1.3.8-1'
     kafkaClient 'org.xerial.snappy:snappy-java:1.1.7.2'
