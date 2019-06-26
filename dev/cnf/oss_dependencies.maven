@@ -48,6 +48,7 @@ com.sun.xml.bind:jaxb-core:2.2.10
 com.sun.xml.bind:jaxb-impl:2.2.10
 com.sun.xml.bind:jaxb-jxc:2.2.10
 com.sun.xml.bind:jaxb-xjc:2.2.10
+com.sun.xml.fastinfoset:FastInfoset:1.2.16
 com.sun.xml.messaging.saaj:saaj-impl:1.4.0
 com.sun.xml.stream.buffer:streambuffer:1.5.3
 com.sun.xml.ws:jaxws-rt:2.2.10
@@ -137,6 +138,7 @@ org.apache.commons:commons-lang3:3.8
 org.apache.commons:commons-math:2.2
 org.apache.commons:commons-weaver-privilizer:1.1
 org.apache.commons:commons-weaver-processor:1.1
+org.apache.cxf:cxf-api:2.6.2
 org.apache.cxf:cxf-core:3.1.18
 org.apache.cxf:cxf-rt-frontend-jaxrs:3.1.18
 org.apache.cxf:cxf-rt-rs-client:3.1.18
