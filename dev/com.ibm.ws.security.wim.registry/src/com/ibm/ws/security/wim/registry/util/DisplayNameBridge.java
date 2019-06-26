@@ -222,15 +222,25 @@ public class DisplayNameBridge {
                         } else if (mappedProp.equals(SchemaConstants.PROP_PRINCIPAL_NAME) && foundInURBridge) {
                             String outputUserPrincipalAttr = this.propertyMap.getOutputUserPrincipal(idAndRealm.getRealm());
                             if (!this.mappingUtils.isIdentifierTypeProperty(outputUserPrincipalAttr)) {
-                                returnValue = (String) personAccount.get(outputUserPrincipalAttr);
+                                Object value = personAccount.get(outputUserPrincipalAttr);
+                                if (value instanceof List<?>) {
+                                    returnValue = String.valueOf(((List<?>) value).get(0));
+                                } else {
+                                    returnValue = String.valueOf(value);
+                                }
                             } else {
                                 returnValue = (String) personAccount.getIdentifier().get(outputUserPrincipalAttr);
                             }
                         } else {
-                            returnValue = (String) personAccount.get(mappedProp);
+                            Object value = personAccount.get(mappedProp);
+                            if (value instanceof List<?>) {
+                                returnValue = String.valueOf(((List<?>) value).get(0));
+                            } else {
+                                returnValue = String.valueOf(value);
+                            }
                         }
                     } else {
-                        returnValue = (String) personAccount.getIdentifier().get(outputAttrName);
+                        returnValue = String.valueOf(personAccount.getIdentifier().get(outputAttrName));
                     }
                 } else {
                     if (tc.isDebugEnabled()) {
@@ -354,14 +364,14 @@ public class DisplayNameBridge {
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     // get the property to return
                     Object value = group.get(outputAttrName);
-
-                    if (value instanceof String)
-                        returnValue = (String) value;
-                    else
+                    if (value instanceof List<?>) {
                         returnValue = String.valueOf(((List<?>) value).get(0));
+                    } else {
+                        returnValue = String.valueOf(value);
+                    }
                 } else {
                     // get the identifier to return
-                    returnValue = (String) group.getIdentifier().get(outputAttrName);
+                    returnValue = String.valueOf(group.getIdentifier().get(outputAttrName));
                 }
             }
         } catch (WIMException toCatch) {

@@ -202,7 +202,12 @@ public class SecurityNameBridge {
                 if (entity != null) {
                     // d115256
                     if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                        returnValue = (String) entity.get(outputAttrName);
+                        Object value = entity.get(outputAttrName);
+                        if (value instanceof List<?>) {
+                            returnValue = String.valueOf(((List<?>) value).get(0));
+                        } else {
+                            returnValue = String.valueOf(value);
+                        }
                     } else {
                         returnValue = (String) entity.getIdentifier().get(outputAttrName);
                     }
@@ -329,10 +334,11 @@ public class SecurityNameBridge {
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     Object value = group.get(outputAttrName);
 
-                    if (value instanceof String)
-                        returnValue = (String) value;
-                    else
+                    if (value instanceof List<?>) {
                         returnValue = String.valueOf(((List<?>) value).get(0));
+                    } else {
+                        returnValue = String.valueOf(value);
+                    }
 
                 } else {
                     returnValue = (String) group.getIdentifier().get(outputAttrName);
