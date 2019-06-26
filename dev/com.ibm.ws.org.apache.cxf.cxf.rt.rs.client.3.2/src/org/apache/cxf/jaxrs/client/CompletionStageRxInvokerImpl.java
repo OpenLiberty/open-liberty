@@ -37,16 +37,14 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     private ExecutorService ex;    
   //Liberty code change start  
     private boolean isManagedExecutor = false;
-    private boolean isExecutorNull = false;
-    private ExecutorService defaultManagedExecutor = null;
+    private boolean isExecutorNull = false;    
     CompletionStageRxInvokerImpl(WebClient wc, ExecutorService ex) {
         this.ex = ex;        
         if (this.ex instanceof ManagedExecutor) {            
             isManagedExecutor = true;
         }
         if (this.ex == null) {
-            isExecutorNull = true;
-            defaultManagedExecutor = ManagedExecutor.builder().propagated().build();
+            isExecutorNull = true;            
         }
         this.wc = wc;
     }
@@ -189,8 +187,9 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
   //Liberty code change start
     private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {
         if (isExecutorNull) {
-          // Run on Liberty executor thread and do not propagate the thread context
-             return ((ManagedExecutor) defaultManagedExecutor).supplyAsync(supplier);
+          // Run on Liberty executor thread and do not propagate the thread context  
+          // TODO use ManagedCompleteableFuture.supplyAsync(supplier, ex) when ready
+            return CompletableFuture.supplyAsync(supplier);
          }      
          if (isManagedExecutor) {
              return ((ManagedExecutor) ex).supplyAsync(supplier);
