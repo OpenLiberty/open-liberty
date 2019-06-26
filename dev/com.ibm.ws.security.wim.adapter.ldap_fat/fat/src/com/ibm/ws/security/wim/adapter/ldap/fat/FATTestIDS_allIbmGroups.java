@@ -185,7 +185,7 @@ public class FATTestIDS_allIbmGroups {
              * Configure group membership.
              */
             GroupProperties groupProperties = new GroupProperties();
-            groupProperties.setMemberAttribute(new MemberAttribute(null, "ibm-allmembers", "groupofnames", "all"));
+            groupProperties.getMemberAttributes().add(new MemberAttribute(null, "ibm-allmembers", "groupofnames", "all"));
             groupProperties.setMembershipAttribute(new MembershipAttribute("ibm-allgroups", "all"));
             ldap.setGroupProperties(groupProperties);
         }

@@ -12,7 +12,9 @@
 dependencies { 
   requiredLibs project(':fattest.simplicity'),
     project(':com.ibm.ws.security.registry'),
-    project(':com.ibm.ws.security.registry_test.servlet')
+    project(':com.ibm.ws.security.registry_test.servlet'),
+    'com.unboundid:unboundid-ldapsdk:4.0.9',
+    project(':com.ibm.ws.com.unboundid')
 }
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
 autoFVT.doLast {
@@ -33,7 +35,8 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.core.fat.maxSearchResult',
     'com.ibm.ws.security.wim.core.fat.searchTimeOut',
     'com.ibm.ws.security.wim.core.fat.dynamic',
-    'com.ibm.ws.security.wim.core.fat.noreg'
+    'com.ibm.ws.security.wim.core.fat.noreg',
+    'com.ibm.ws.security.wim.core.fat.WimCoreRegression'
   ]
   servers.each { server ->
     copy {
