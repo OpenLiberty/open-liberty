@@ -2,11 +2,8 @@
 symbolicName=com.ibm.websphere.appserver.concurrent.mp-1.0
 visibility=private
 singleton=true
--features=com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.appLifecycle-1.0, \
- com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
- com.ibm.websphere.appserver.concurrent.mp-0.0.0.noImpl; ibm.tolerates:=1.0, \
- com.ibm.websphere.appserver.contextService-1.0
+-features=\
+com.ibm.websphere.appserver.contextService-1.0
 -bundles=\
 <<<<<<< HEAD
   com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.0",\
