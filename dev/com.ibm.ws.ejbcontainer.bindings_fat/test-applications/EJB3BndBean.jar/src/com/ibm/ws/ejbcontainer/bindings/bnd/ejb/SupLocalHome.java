@@ -8,16 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.bindings.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package com.ibm.ws.ejbcontainer.bindings.bnd.ejb;
 
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
+import javax.ejb.CreateException;
+import javax.ejb.EJBLocalHome;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                DefaultBindingsTest.class
-})
-public class FATSuite {}
+public interface SupLocalHome extends EJBLocalHome {
+    public SupLocal create() throws CreateException;
+}
