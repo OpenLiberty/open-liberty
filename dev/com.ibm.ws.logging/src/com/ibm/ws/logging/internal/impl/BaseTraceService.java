@@ -302,7 +302,7 @@ public class BaseTraceService implements TrService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
-        convertStringtoMap(trConfig.getjsonFields());
+        applyJsonFields(trConfig.getjsonFields());
         logHeader = trConfig.getLogHeader();
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
@@ -457,43 +457,42 @@ public class BaseTraceService implements TrService {
         }
     }
 
-    public static void convertStringtoMap(String value) {
-        TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
-        FFDCData fd = new FFDCData();
-        AccessLogData ald = new AccessLogData();
-
-        boolean valueFound = false;
-
-        Map<String, String> messageMap = new HashMap<>();
-        Map<String, String> traceMap = new HashMap<>();
-        Map<String, String> ffdcMap = new HashMap<>();
-        Map<String, String> accessLogMap = new HashMap<>();
-
+    public static void applyJsonFields(String value) {
         if (value == null || value == "") {
             //if no property is set, return
             return;
         }
 
+        TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+        boolean valueFound = false;
+        Map<String, String> messageMap = new HashMap<>();
+        Map<String, String> traceMap = new HashMap<>();
+        Map<String, String> ffdcMap = new HashMap<>();
+        Map<String, String> accessLogMap = new HashMap<>();
+
+        List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES1_1);
+        List<String> FFDCList = Arrays.asList(FFDCData.NAMES1_1);
+        List<String> AccessLogList = Arrays.asList(AccessLogData.NAMES1_1);
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
+
         for (String pair : keyValuePairs) //iterate over the pairs
         {
             String[] entry = pair.split(":"); //split the pairs to get key and value
+            entry[0] = entry[0].trim();
+            entry[1] = entry[1].trim();
             if (entry.length == 2) {//if the mapped value is intended for all event types
                 //add properties to all the hashmaps and trim whitespaces
-                if (Arrays.asList(LogTraceData.NAMES1_1).contains(entry[0].trim())) {
-                    messageMap.put(entry[0].trim(), entry[1].trim());
+                if (LogTraceList.contains(entry[0])) {
+                    messageMap.put(entry[0], entry[1]);
+                    traceMap.put(entry[0], entry[1]);
                     valueFound = true;
                 }
-                if (Arrays.asList(LogTraceData.NAMES1_1).contains(entry[0].trim())) {
-                    traceMap.put(entry[0].trim(), entry[1].trim());
+                if (FFDCList.contains(entry[0])) {
+                    ffdcMap.put(entry[0], entry[1]);
                     valueFound = true;
                 }
-                if (Arrays.asList(FFDCData.NAMES1_1).contains(entry[0].trim())) {
-                    ffdcMap.put(entry[0].trim(), entry[1].trim());
-                    valueFound = true;
-                }
-                if (Arrays.asList(AccessLogData.NAMES1_1).contains(entry[0].trim())) {
-                    accessLogMap.put(entry[0].trim(), entry[1].trim());
+                if (AccessLogList.contains(entry[0])) {
+                    accessLogMap.put(entry[0], entry[1]);
                     valueFound = true;
                 }
                 if (!valueFound) {
@@ -502,15 +501,16 @@ public class BaseTraceService implements TrService {
                 }
                 valueFound = false;//reset valueFound boolean
             } else if (entry.length == 3) {
+                entry[2] = entry[2].trim();
                 //add properties to their respective hashmaps and trim whitespaces
-                if (CollectorConstants.MESSAGES_LOG_EVENT_TYPE.equals(entry[0].trim())) {
-                    messageMap.put(entry[1].trim(), entry[2].trim());
-                } else if (CollectorConstants.TRACE_LOG_EVENT_TYPE.equals(entry[0].trim())) {
-                    traceMap.put(entry[1].trim(), entry[2].trim());
-                } else if (CollectorConstants.FFDC_EVENT_TYPE.equals(entry[0].trim())) {
-                    ffdcMap.put(entry[1].trim(), entry[2].trim());
-                } else if (CollectorConstants.ACCESS_LOG_EVENT_TYPE.equals(entry[0].trim())) {
-                    accessLogMap.put(entry[1].trim(), entry[2].trim());
+                if (CollectorConstants.MESSAGES_LOG_EVENT_TYPE.equals(entry[0])) {
+                    messageMap.put(entry[1], entry[2]);
+                } else if (CollectorConstants.TRACE_LOG_EVENT_TYPE.equals(entry[0])) {
+                    traceMap.put(entry[1], entry[2]);
+                } else if (CollectorConstants.FFDC_EVENT_TYPE.equals(entry[0])) {
+                    ffdcMap.put(entry[1], entry[2]);
+                } else if (CollectorConstants.ACCESS_LOG_EVENT_TYPE.equals(entry[0])) {
+                    accessLogMap.put(entry[1], entry[2]);
                 } else {
                     Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }

@@ -100,9 +100,9 @@
             <Option value="NONE" label="NONE"/>
         </AD>
         
-        <AD name="%message.fields" description="%message.fields.desc" 
-            ibm:variable="com.ibm.ws.logging.message.fields"
-            id="messageFields" required="false" type="String" default="">
+        <AD name="%json.fields" description="%json.fields.desc" 
+            ibm:variable="com.ibm.ws.logging.json.fields"
+            id="jsonFields" required="false" type="String" default="">
         </AD>
     </OCD>
   

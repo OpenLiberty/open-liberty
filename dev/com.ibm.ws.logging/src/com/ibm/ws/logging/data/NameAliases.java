@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,14 +22,15 @@ public class NameAliases {
     }
 
     public void newAliases(Map<String, String> newAliases) {
-        aliases = originalNames.clone();
+        String[] tempAliases = originalNames.clone();
         for (Map.Entry<String, String> entry : newAliases.entrySet()) {
             for (int i = 0; i < originalNames.length; i++) {
                 if (originalNames[i].equals(entry.getKey().trim())) {
-                    aliases[i] = entry.getValue().trim();
+                    tempAliases[i] = entry.getValue().trim();
                 }
             }
         }
+        aliases = tempAliases;
     }
 
     public String getAlias(int index) {

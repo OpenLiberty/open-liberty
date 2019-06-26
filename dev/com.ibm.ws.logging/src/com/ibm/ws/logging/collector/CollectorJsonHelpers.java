@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,11 @@ import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import com.ibm.ws.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.data.Pair;
 
 /**
@@ -46,6 +49,10 @@ public class CollectorJsonHelpers {
     private static final String AUDIT_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.AUDIT_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
     private static String unchangingFieldsJson = null;
     private static String unchangingFieldsJson1_1 = null;
+    private static String unchangingFieldsJson_Message = null;
+    private static String unchangingFieldsJson_Trace = null;
+    private static String unchangingFieldsJson_AccessLog = null;
+    private static String unchangingFieldsJson_FFDC = null;
     public final static String TRUE_BOOL = "true";
     public final static String FALSE_BOOL = "false";
     public final static String INT_SUFFIX = "_int";
@@ -205,6 +212,56 @@ public class CollectorJsonHelpers {
 
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private static void addUnchangingFieldsJSON_Message(StringBuilder sb, String hostName, String wlpUserDir, String serverName, boolean isMessageEvent) {
+        LogTraceData logtracedata = new LogTraceData();
+        if (unchangingFieldsJson_Message == null) {
+            StringBuilder temp = new StringBuilder(512);
+            addToJSON(temp, logtracedata.getHostJSON(isMessageEvent), hostName, false, false, false, false);
+            addToJSON(temp, logtracedata.getUserDirJSON(isMessageEvent), wlpUserDir, false, true, false, false);
+            addToJSON(temp, logtracedata.getServerNameJSON(isMessageEvent), serverName, false, false, false, false);
+            unchangingFieldsJson_Message = temp.toString();
+        }
+        sb.append(unchangingFieldsJson_Message);
+    }
+
+    private static void addUnchangingFieldsJSON_Trace(StringBuilder sb, String hostName, String wlpUserDir, String serverName, boolean isMessageEvent) {
+        LogTraceData logtracedata = new LogTraceData();
+        if (unchangingFieldsJson_Trace == null) {
+            StringBuilder temp = new StringBuilder(512);
+            addToJSON(temp, logtracedata.getHostJSON(isMessageEvent), hostName, false, false, false, false);
+            addToJSON(temp, logtracedata.getUserDirJSON(isMessageEvent), wlpUserDir, false, true, false, false);
+            addToJSON(temp, logtracedata.getServerNameJSON(isMessageEvent), serverName, false, false, false, false);
+            unchangingFieldsJson_Trace = temp.toString();
+        }
+        sb.append(unchangingFieldsJson_Trace);
+    }
+
+    private static void addUnchangingFieldsJSON_AccessLog(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
+        AccessLogData accesslogdata = new AccessLogData();
+        if (unchangingFieldsJson_AccessLog == null) {
+            StringBuilder temp = new StringBuilder(512);
+            addToJSON(temp, accesslogdata.getHostJSON(), hostName, false, false, false, false);
+            addToJSON(temp, accesslogdata.getUserDirJSON(), wlpUserDir, false, true, false, false);
+            addToJSON(temp, accesslogdata.getServerNameJSON(), serverName, false, false, false, false);
+            unchangingFieldsJson_AccessLog = temp.toString();
+        }
+        sb.append(unchangingFieldsJson_AccessLog);
+    }
+
+    private static void addUnchangingFieldsJSON_FFDC(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
+        FFDCData ffdcdata = new FFDCData();
+        if (unchangingFieldsJson_FFDC == null) {
+            StringBuilder temp = new StringBuilder(512);
+            addToJSON(temp, ffdcdata.getHostJSON(), hostName, false, false, false, false);
+            addToJSON(temp, ffdcdata.getUserDirJSON(), wlpUserDir, false, true, false, false);
+            addToJSON(temp, ffdcdata.getServerNameJSON(), serverName, false, false, false, false);
+            unchangingFieldsJson_FFDC = temp.toString();
+        }
+        sb.append(unchangingFieldsJson_FFDC);
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected static StringBuilder startMessageJson(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
@@ -323,7 +380,8 @@ public class CollectorJsonHelpers {
         } else {
             sb.append("{");
             sb.append(MESSAGE_JSON_TYPE_FIELD);
-            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+//            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+            addUnchangingFieldsJSON_Message(sb, hostName, wlpUserDir, serverName, true);
 
             startMessageJson1_1 = sb.toString();
         }
@@ -339,7 +397,8 @@ public class CollectorJsonHelpers {
         } else {
             sb.append("{");
             sb.append(TRACE_JSON_TYPE_FIELD);
-            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+//            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+            addUnchangingFieldsJSON_Trace(sb, hostName, wlpUserDir, serverName, false);
 
             startTraceJson1_1 = sb.toString();
         }
@@ -355,7 +414,8 @@ public class CollectorJsonHelpers {
         } else {
             sb.append("{");
             sb.append(FFDC_JSON_TYPE_FIELD);
-            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+//            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+            addUnchangingFieldsJSON_FFDC(sb, hostName, wlpUserDir, serverName);
 
             startFFDCJson1_1 = sb.toString();
         }
@@ -371,7 +431,8 @@ public class CollectorJsonHelpers {
         } else {
             sb.append("{");
             sb.append(ACCESS_JSON_TYPE_FIELD);
-            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+//            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+            addUnchangingFieldsJSON_AccessLog(sb, hostName, wlpUserDir, serverName);
 
             startAccessLogJson1_1 = sb.toString();
         }

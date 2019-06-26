@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -146,7 +146,7 @@ JSON_FIELDS_FORMAT_WARNING_2.useraction=The jsonFields property should be format
 
 JSON_FIELDS_NO_MATCH=TRAS3009W: Provided field name does not match one of the known field names for the specified event(s)
 JSON_FIELDS_NO_MATCH.explanation=Provided field name does not match one of the known field names
-JSON_FIELDS_NO_MATCH.useraction=Please provide a field name that matches one of the known fields
+JSON_FIELDS_NO_MATCH.useraction=Please provide a field name that matches one of the known fields (e.g. message, ibm_datetime, ibm_sequence)
 
 JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Provided event type does not match one of the known event types
 JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=The accepted event types are: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
@@ -154,7 +154,7 @@ JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=The accepted event types are: libert
 
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: An invalid character was provided in the jsonFields property
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Only letters, numbers, and : are accepted in the jsonFields property (i.e. no spaces)
-JSON_FIELDS_INVALID_CHARACHTER.useraction= Only letters, numbers, and : are accepted in the jsonFields property (i.e. no spaces)
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Change your jsonFields property value to remove invalid characters
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

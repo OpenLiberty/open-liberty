@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,10 @@ public class FFDCData extends GenericData {
                                               LogFieldConstants.IBM_THREADID, //long
                                               LogFieldConstants.IBM_STACKTRACE,
                                               LogFieldConstants.IBM_OBJECTDETAILS,
-                                              LogFieldConstants.IBM_SEQUENCE
+                                              LogFieldConstants.IBM_SEQUENCE,
+                                              LogFieldConstants.HOST,
+                                              LogFieldConstants.IBM_USERDIR,
+                                              LogFieldConstants.IBM_SERVERNAME
     };
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
@@ -333,4 +336,15 @@ public class FFDCData extends GenericData {
         return jsonLoggingNameAliases.getAlias(12);
     }
 
+    public String getHostJSON() {
+        return jsonLoggingNameAliases.getAlias(13);
+    }
+
+    public String getUserDirJSON() {
+        return jsonLoggingNameAliases.getAlias(14);
+    }
+
+    public String getServerNameJSON() {
+        return jsonLoggingNameAliases.getAlias(15);
+    }
 }
