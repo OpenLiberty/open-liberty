@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/*==============================================================================
+ * Copyright (c) 2012,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,24 +7,9 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package com.ibm.ws.sib.msgstore.test;
-
-/* 
- * Change activity:
- *
- * Reason        Date      Origin    Description
- * ------------- --------  -------- -------------------------------------------
- *               25/04/03  drphill  Original
- * SIB0003.ms.14 18/08/05  schofiel File store - admin integration
- * 340828        24/01/06  gareth   Extend LoggingTestCase
- * 341158        13/03/06  gareth   Make better use of LoggingTestCase
- * PK30717    	 11/01/07  egglestn Add createAndStartPreviouslyUnhealthyMessageStore testcase
- * 443211        01/06/07  djvines  error has now become a static method
- * 538096        24/07/08  susana   Use getInMemorySize for spilling & persistence
- * F1332-52165   11/11/11  balgirid For Old/New DB locking Mechanism
- * ============================================================================
+ *==============================================================================
  */
+package com.ibm.ws.sib.msgstore.test;
 
 import java.util.List;
 
@@ -41,6 +26,8 @@ import com.ibm.ws.sib.msgstore.MessageStoreException;
 import com.ibm.ws.sib.msgstore.ReferenceStream;
 import com.ibm.ws.sib.msgstore.impl.MessageStoreImpl;
 import com.ibm.ws.sib.msgstore.transactions.ExternalLocalTransaction;
+
+import static java.lang.Math.max;
 
 //import com.ibm.websphere.ws.sib.unittest.ras.Trace;
 public abstract class MessageStoreTestCase extends LoggingTestCase {
@@ -212,7 +199,39 @@ public abstract class MessageStoreTestCase extends LoggingTestCase {
 
     public static void print(String message) {
         LoggingTestCase.print(message);
+    }
 
+    private static final int LINE_WIDTH = 55;
+
+    public static void printStarHead(String title) {
+        final int midPoint = title.length() / 2;
+        final String left = title.substring(0, midPoint);
+        final String right = title.substring(midPoint);
+        final int leftWidth = LINE_WIDTH / 2;
+        final int rightWidth = leftWidth + LINE_WIDTH % 2;
+        final String line = String.format("%" + leftWidth + "s%-" + rightWidth + "s", left, right);
+        // replace any spaces not next to a word boundary with asterisks
+        print(line.replaceAll("(?<!\\b) (?!\\b)", "*"));
+    }
+
+    public static void printStarLine(Object...objects) {
+        printStarLine0(" *", objects);
+    }
+
+    public static void printSuccess(Object... objects) {
+        printStarLine0(" - SUCCESS *", objects);
+    }
+
+    public static void printFailed(Object... objects) {
+        printStarLine0(" - FAILED  *", objects);
+    }
+
+    private static void printStarLine0(String right, Object... objects) {
+        final StringBuilder sb = new StringBuilder();
+        for (Object o: objects) sb.append(o);
+        final String s = sb.toString();
+        final int contentWidth = LINE_WIDTH - right.length() - 2;
+        print(String.format("* %-" + contentWidth + "s%s" , s.substring(max(0, s.length() - contentWidth)), right));
     }
 
 /*
