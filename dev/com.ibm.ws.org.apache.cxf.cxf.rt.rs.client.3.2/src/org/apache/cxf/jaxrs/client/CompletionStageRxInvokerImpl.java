@@ -21,6 +21,7 @@ package org.apache.cxf.jaxrs.client;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.CompletionStageRxInvoker; 
@@ -159,57 +160,42 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     @Override
     public <T> CompletionStage<T> method(String name, Entity<?> entity, Class<T> responseType) {
       //Liberty code change start
-        if (isExecutorNull) {
-         // Run on Liberty executor thread and do not propagate the thread context
-            return ((ManagedExecutor) defaultManagedExecutor).supplyAsync(() -> wc.sync().method(name, entity, responseType));            
-        }      
-        if (isManagedExecutor) {
-            return ((ManagedExecutor) ex).supplyAsync(() -> wc.sync().method(name, entity, responseType));
-        }
+        return supplyAsync( () -> wc.sync().method(name, entity, responseType) );
       //Liberty code change end
-        return CompletableFuture.supplyAsync(() -> wc.sync().method(name, entity, responseType), ex);
+
     }
 
     @Override
     public <T> CompletionStage<T> method(String name, Entity<?> entity, GenericType<T> responseType) {
       //Liberty code change start
-        if (isExecutorNull) {
-         // Run on Liberty executor thread and do not propagate the thread context
-            return ((ManagedExecutor) defaultManagedExecutor).supplyAsync(() -> wc.sync().method(name, entity, responseType));
-        }      
-        if (isManagedExecutor) {
-            return ((ManagedExecutor) ex).supplyAsync(() -> wc.sync().method(name, entity, responseType));            
-        }
+        return supplyAsync( () -> wc.sync().method(name, entity, responseType) );
       //Liberty code change end
-        return CompletableFuture.supplyAsync(() -> wc.sync().method(name, entity, responseType), ex);
     }
 
     @Override
     public <T> CompletionStage<T> method(String name, Class<T> responseType) {
       //Liberty code change start
-        if (isExecutorNull) {
-         // Run on Liberty executor thread and do not propagate the thread context
-            return ((ManagedExecutor) defaultManagedExecutor).supplyAsync(() -> wc.sync().method(name, responseType));
-        }      
-        if (isManagedExecutor) {            
-            return ((ManagedExecutor) ex).supplyAsync(() -> wc.sync().method(name, responseType));
-        }
+        return supplyAsync( () -> wc.sync().method(name, responseType) );
       //Liberty code change end
-        return CompletableFuture.supplyAsync(() -> wc.sync().method(name, responseType), ex);
     }
 
     @Override
     public <T> CompletionStage<T> method(String name, GenericType<T> responseType) {
       //Liberty code change start
-        if (isExecutorNull) {
-         // Run on Liberty executor thread and do not propagate the thread context
-            return ((ManagedExecutor) defaultManagedExecutor).supplyAsync(() -> wc.sync().method(name, responseType));
-        }      
-        if (isManagedExecutor) {
-            return ((ManagedExecutor) ex).supplyAsync(() -> wc.sync().method(name, responseType));
-        }
+        return supplyAsync( () -> wc.sync().method(name, responseType) );
       //Liberty code change end
-        return CompletableFuture.supplyAsync(() -> wc.sync().method(name, responseType), ex);
     }
 
+  //Liberty code change start
+    private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {
+        if (isExecutorNull) {
+          // Run on Liberty executor thread and do not propagate the thread context
+             return ((ManagedExecutor) defaultManagedExecutor).supplyAsync(supplier);
+         }      
+         if (isManagedExecutor) {
+             return ((ManagedExecutor) ex).supplyAsync(supplier);
+         }
+         return CompletableFuture.supplyAsync(supplier, ex);
+    }
+  //Liberty code change end
 }
