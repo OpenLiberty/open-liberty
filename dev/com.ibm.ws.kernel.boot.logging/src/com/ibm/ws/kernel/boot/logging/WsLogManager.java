@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2018 IBM Corporation and others.
+ * Copyright (c) 1998, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,8 +71,22 @@ public class WsLogManager extends LogManager {
     @Override
     public void readConfiguration() throws IOException, SecurityException {
     	
-    	boolean configureByServerLocal = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
-    	boolean configureByLoggingPropertiesLocal = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
+    	boolean configureByServerLocal = AccessController.doPrivileged(
+    			new PrivilegedAction<Boolean>() {
+    				
+    				@Override
+    				public Boolean run() {
+    					return Boolean.parseBoolean(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
+    				}
+    			});
+    	boolean configureByLoggingPropertiesLocal = AccessController.doPrivileged(
+    			new PrivilegedAction<Boolean>() {
+    				
+    				@Override
+    				public Boolean run() {
+    					return Boolean.parseBoolean(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
+    				}
+    			}); 
         
     	configureByServer = configureByServerLocal;
     	configureByLoggingProperties = configureByLoggingPropertiesLocal;
