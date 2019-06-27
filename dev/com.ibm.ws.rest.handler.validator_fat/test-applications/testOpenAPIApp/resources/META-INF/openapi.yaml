@@ -484,7 +484,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/validation.jms.result"
+security:
+  - basicAuth: []
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   parameters:
     queryParams:
       name: queryParams
@@ -498,13 +504,13 @@ components:
     X-Validation-User:
       name: X-Validation-User
       in: header
-      description: "**User**. Supplies a user name when not using Container-managed authentication. All non-ASCII characters must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
+      description: "**User**. Supplies a user name when not using Container-managed authentication. All non-ASCII characters and other characters not allowed in a header must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
       schema:
         type: string
     X-Validation-Password:
       name: X-Validation-Password
       in: header
-      description: "**Password**. Supplies a password when not using Container-managed authentication. All non-ASCII characters must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
+      description: "**Password**. Supplies a password when not using Container-managed authentication. All non-ASCII characters and other characters not allowed in a header must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
       schema:
         type: string
         format: password
@@ -532,7 +538,7 @@ components:
     X-Login-Config-Props:
       name: X-Login-Config-Props
       in: header
-      description: "**Login Config Properties**. Supply login config properties as name/value pairs. Each name/value pair is a list element, within which the name and value are delimited by the first `=` character. For example, *prop1=value1*. All non-ASCII characters must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
+      description: "**Login Config Properties**. Supply login config properties as name/value pairs. Each name/value pair is a list element, within which the name and value are delimited by the first `=` character. For example, *prop1=value1*. All non-ASCII characters and other characters not allowed in a header must be URL encoded, in which case be sure to specify the *headerParamsURLEncoded* parameter."
       schema:
         type: array
         items:
@@ -540,7 +546,7 @@ components:
     headerParamsURLEncoded:
       name: headerParamsURLEncoded
       in: query
-      description: "Enable this if you URL-encode values for header parameters, such as X-Validation-User, X-Validation-Password, or X-Login-Config-Props. URL encoding is necessary to supply values that include non-ASCII characters."
+      description: "Enable this if you URL-encode values for header parameters, such as X-Validation-User, X-Validation-Password, or X-Login-Config-Props. URL encoding is necessary to supply values that include non-ASCII characters and other characters that are not allowed in a header."
       schema:
         type: boolean
       example: false
