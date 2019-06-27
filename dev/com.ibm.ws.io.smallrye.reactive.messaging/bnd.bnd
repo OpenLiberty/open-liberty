@@ -26,7 +26,7 @@ Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.messaging; singleton:=true
 -includeresource: \
    META-INF=resources/META-INF
 
-WS-TraceGroup: REACTIVEMESSAGING
+WS-TraceGroup: REACTIVEMESSAGE
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
