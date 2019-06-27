@@ -23,7 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 CatalogFacilityTest.class,
                 WebServiceRefFeaturesTest.class,
                 ServerSideStubClientTest.class,
-                PureCXFTest.class,
+//                PureCXFTest.class,
                 WsBndServiceRefOverrideTest.class,
                 WsBndEndpointOverrideTest.class,
                 CXFJMXSupportTest.class,
