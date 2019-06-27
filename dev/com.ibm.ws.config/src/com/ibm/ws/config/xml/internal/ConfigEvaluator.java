@@ -465,21 +465,17 @@ class ConfigEvaluator {
                 actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
             } catch (ConfigEvaluatorException iae) {
                 // try to fall-back to default value if validation of an option fails.
-                String validOptions[] = attributeDef.getOptionValues();
-                if (validOptions == null) {
-                    // Fall back to variable registry or default value
-                    Object badValue = rawValue;
-                    rawValue = getUnconfiguredAttributeValue(context, attributeDef);
-                    if (rawValue != null && !ignoreWarnings) {
+                Object badValue = rawValue;
+                rawValue = getUnconfiguredAttributeValue(context, attributeDef);
+
+                //ignoreWarnings indicates that we are trying to get the default or variable value here and do not
+                //care about any validation failures.
+                if (rawValue != null && !ignoreWarnings) {
+                    String validOptions[] = attributeDef.getOptionValues();
+                    if (validOptions == null) {
                         Tr.warning(tc, "warn.config.validate.failed", iae.getMessage());
                         Tr.warning(tc, "warn.config.invalid.using.default.value", attributeDef.getID(), badValue, rawValue);
-                        actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
                     } else {
-                        throw iae;
-                    }
-
-                } else {
-                    if (tc.isWarningEnabled() && !ignoreWarnings) {
                         StringBuffer strBuffer = new StringBuffer();
                         // This formatter is consistent with the message in nlsprops
                         for (int i = 0; i < validOptions.length; i++) {
@@ -487,14 +483,14 @@ class ConfigEvaluator {
                             strBuffer.append(validOptions[i]);
                             strBuffer.append("]");
                         }
-                        Tr.warning(tc, "warn.config.invalid.value", attributeDef.getID(), rawValue, strBuffer.toString());
+                        Tr.warning(tc, "warn.config.invalid.value", attributeDef.getID(), badValue, strBuffer.toString(), rawValue);
                     }
-
-                    // Fall back to variable registry or default value
-                    rawValue = getUnconfiguredAttributeValue(context, attributeDef);
-                    if (rawValue != null) {
-                        actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
-                    }
+                    actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
+                } else {
+                    // Either (1) There is no default so we have to throw an exception or (2) We are trying to get
+                    // the default or variable value (ignoreWarnings == true) but it doesn't exist so we throw an
+                    // exception.
+                    throw iae;
                 }
             }
 

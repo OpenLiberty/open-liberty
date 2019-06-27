@@ -170,7 +170,7 @@ error.unique.value.conflict=CWWKG0031E: The value {1} specified for unique attri
 error.unique.value.conflict.explanation=The value for the specified attribute must be unique but it is already being used.
 error.unique.value.conflict.useraction=Change the attribute value so that it is unique.
 
-warn.config.invalid.value=CWWKG0032W: Unexpected value specified for property [{0}], value = [{1}]. Expected value(s) are: {2}.
+warn.config.invalid.value=CWWKG0032W: Unexpected value specified for property [{0}], value = [{1}]. Expected value(s) are: {2}. Default value in use: {3}. 
 warn.config.invalid.value.explanation=The specified value for the property cannot be used.
 warn.config.invalid.value.useraction=Correct the value of the property to use an expected value.
 
