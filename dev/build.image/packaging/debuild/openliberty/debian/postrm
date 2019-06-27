@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    remove|upgrade)
+        echo "Removing all leftover jar files"
+        if [ -d "/opt/ol/openliberty/lib" ]; then
+            rm -rf /opt/ol/openliberty/lib
+        fi
+        ;;
+    abort-install|abort-upgrade|purge)
+        ;;
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
+

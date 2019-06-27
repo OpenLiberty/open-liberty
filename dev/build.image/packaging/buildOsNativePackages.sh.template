@@ -1,0 +1,28 @@
+#!/bin/sh
+
+#required build dependencies
+#sudo apt-get install -y rpm devscripts build-essential fakeroot lintian debhelper
+
+# pwd = /Users/michaelzhang/Documents/libertyGit/open-liberty/dev/build.image/packaging
+driverVer=@DRIVER_VERSION@
+
+#unzip contents of openliberty-all.zip
+unzip tempPackagingDir/openliberty-*.zip -d tempPackagingDir/tempTar
+
+#setting up the server.env
+mkdir -p tempPackagingDir/tempTar/wlp/etc
+touch tempPackagingDir/tempTar/wlp/etc/server.env && echo "WLP_USER_DIR=/var/local/openliberty/usr" >> tempPackagingDir/tempTar/wlp/etc/server.env && echo "PID_DIR=/var/run/openliberty" >> tempPackagingDir/tempTar/wlp/etc/server.env
+
+#pack contents into .tar.gz
+tar -czf openliberty-$driverVer.tar.gz -C tempPackagingDir/tempTar/wlp .
+
+#copy tar.gz to the debian and rpm dir
+mv openliberty-$driverVer.tar.gz debuild
+cp debuild/openliberty-$driverVer.tar.gz debuild/openliberty_$driverVer.orig.tar.gz
+cp debuild/openliberty-$driverVer.tar.gz rpmbuild/SOURCES
+
+#building rpmbuild
+cd rpmbuild && rpmbuild -ba SPECS/openliberty.spec
+
+#building debuild
+cd ../debuild/openliberty/debian && debuild -d -b -us -uc
