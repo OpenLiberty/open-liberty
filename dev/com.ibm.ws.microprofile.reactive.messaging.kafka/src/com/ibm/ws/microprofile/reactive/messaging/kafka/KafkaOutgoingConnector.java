@@ -10,11 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -35,6 +40,8 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
     @Inject
     private KafkaAdapterFactory kafkaAdapterFactory;
 
+    private final List<KafkaOutput<?, ?>> kafkaOutputs = Collections.synchronizedList(new ArrayList<>());
+
     @Override
     public SubscriberBuilder<Message<Object>, Void> getSubscriberBuilder(Config config) {
         // Pass the config directly through to the kafkaProducer
@@ -43,8 +50,18 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
 
         KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
         KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(config.getValue("topic", String.class), kafkaProducer);
+        this.kafkaOutputs.add(kafkaOutput);
 
         return ReactiveStreams.<Message<Object>> builder().to(kafkaOutput.getSubscriber());
+    }
+
+    @PreDestroy
+    private void shutdown() {
+        synchronized (kafkaOutputs) {
+            for (KafkaOutput<?, ?> kafkaOutput : kafkaOutputs) {
+                kafkaOutput.shutdown(Duration.ZERO);
+            }
+        }
     }
 
 }
