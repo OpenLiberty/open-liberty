@@ -20,7 +20,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.ws.jaxrs20.support.JaxRsMetaDataManager;
+import com.ibm.ws.jaxrs20.metadata.JaxRsModuleMetaData;
 import com.ibm.ws.jaxrs20.utils.ReflectUtil;
 
 public class ProviderUtils {
@@ -34,7 +34,7 @@ public class ProviderUtils {
     private static final String DEFAULT_CHARSET = "UTF-8";
     static
     {
-        ClassLoader bundleCL = JaxRsMetaDataManager.class.getClassLoader();
+        ClassLoader bundleCL = JaxRsModuleMetaData.class.getClassLoader();
 
         for (String clsName : json4jClasses) {
             Class<?> c = ReflectUtil.loadClass(bundleCL, clsName);

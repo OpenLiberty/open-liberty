@@ -17,6 +17,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
@@ -34,8 +35,8 @@ public class ServerLock {
 
     /**
      * @param bootProps
-     *                      {@link BootstrapConfig} containing all established/calculated
-     *                      values for server name and directories.
+     *            {@link BootstrapConfig} containing all established/calculated
+     *            values for server name and directories.
      * @return constructed ServerLock
      */
     public static ServerLock createTestLock(BootstrapConfig bootProps) {
@@ -46,17 +47,36 @@ public class ServerLock {
         return serverLock;
     }
 
+    private static final boolean EXISTS = true;
+    private static final boolean CAN_WRITE = false;
+
+    private static class FileCheckAction implements PrivilegedExceptionAction<Boolean> {
+
+        private final File file;
+        private final boolean existsOrCanWrite;
+
+        FileCheckAction(File file, boolean existsOrCanWrite) {
+            this.file = file;
+            this.existsOrCanWrite = existsOrCanWrite;
+        }
+
+        @Override
+        public Boolean run() throws Exception {
+            return existsOrCanWrite ? file.exists() : file.canWrite();
+        }
+    }
+
     /**
      * Create a server lock and make sure server, workarea, and slock file exist
      * and are writiable.
      *
      * @param bootProps
-     *                      {@link BootstrapConfig} containing all established/calculated
-     *                      values for server name and directories.
+     *            {@link BootstrapConfig} containing all established/calculated
+     *            values for server name and directories.
      * @return constructed ServerLock
      *
      * @throws LaunchException
-     *                             exception thrown if server directories/files are not writable.
+     *             exception thrown if server directories/files are not writable.
      */
     public static ServerLock createServerLock(BootstrapConfig bootProps) {
         String serverName = bootProps.getProcessName();
@@ -72,15 +92,7 @@ public class ServerLock {
         Boolean fileExists = null;
         final File sDir = serverDir;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!sDir.exists()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            fileExists = AccessController.doPrivileged(new FileCheckAction(sDir, EXISTS));
         } catch (Exception ex) {
         }
         if (fileExists != null && !(fileExists.booleanValue())) {
@@ -91,15 +103,7 @@ public class ServerLock {
 
         final File soDir = serverOutputDir;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!soDir.exists()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            fileExists = AccessController.doPrivileged(new FileCheckAction(soDir, EXISTS));
         } catch (Exception ex) {
         }
 
@@ -110,15 +114,7 @@ public class ServerLock {
 
         Boolean canWrite = null;
         try {
-            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!soDir.canWrite()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            canWrite = AccessController.doPrivileged(new FileCheckAction(soDir, CAN_WRITE));
         } catch (Exception ex) {
         }
 
@@ -130,15 +126,7 @@ public class ServerLock {
 
         final File swArea = serverWorkArea;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!swArea.exists()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            fileExists = AccessController.doPrivileged(new FileCheckAction(swArea, EXISTS));
         } catch (Exception ex) {
         }
 
@@ -147,15 +135,7 @@ public class ServerLock {
             writable = serverWorkArea.mkdirs();
 
         try {
-            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!swArea.canWrite()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            canWrite = AccessController.doPrivileged(new FileCheckAction(swArea, CAN_WRITE));
         } catch (Exception ex) {
         }
 
@@ -169,15 +149,7 @@ public class ServerLock {
 
         final File slf = serverLock.lockFile;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!slf.exists()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            fileExists = AccessController.doPrivileged(new FileCheckAction(slf, EXISTS));
         } catch (Exception ex) {
         }
 
@@ -193,15 +165,7 @@ public class ServerLock {
         }
 
         try {
-            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!slf.canWrite()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            canWrite = AccessController.doPrivileged(new FileCheckAction(slf, CAN_WRITE));
         } catch (Exception ex) {
         }
 
@@ -257,8 +221,8 @@ public class ServerLock {
      * or multiple instances of a same server within same JVM is not supported.
      *
      * @throws LaunchException
-     *                             exception thrown if there's a problem getting the lock or
-     *                             another instance of this server is running
+     *             exception thrown if there's a problem getting the lock or
+     *             another instance of this server is running
      */
     public synchronized void obtainServerLock() {
 
@@ -288,15 +252,7 @@ public class ServerLock {
         Boolean fileExists = Boolean.FALSE;
         final File sDir = lockFile;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!sDir.exists()) {
-                        return Boolean.FALSE;
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            fileExists = AccessController.doPrivileged(new FileCheckAction(sDir, EXISTS));
         } catch (Exception ex) {
             // Oh well.
         }
@@ -380,16 +336,7 @@ public class ServerLock {
         Boolean fileExists = Boolean.FALSE;
         final File sDir = lockFile;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    if (!sDir.exists()) {
-                        return Boolean.FALSE;
-
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            fileExists = AccessController.doPrivileged(new FileCheckAction(sDir, EXISTS));
         } catch (Exception ex) {
             // Oh well.
         }

@@ -36,7 +36,7 @@ import com.ibm.ws.jaxrs20.metadata.ProviderResourceInfo.RuntimeType;
 import com.ibm.ws.jaxrs20.server.internal.JaxRsServerConstants;
 
 /**
- * JaxWsWebEndpoint for an POJO Web service endpoint
+ * JaxRsWebEndpoint for an POJO REST service endpoint
  */
 public class JaxRsWebEndpointImpl extends AbstractJaxRsWebEndpoint {
 

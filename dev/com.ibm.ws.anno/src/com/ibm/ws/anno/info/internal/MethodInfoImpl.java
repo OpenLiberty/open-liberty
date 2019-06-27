@@ -193,13 +193,13 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
         return parameterAnnotations;
     }
 
-    public void setParameterAnnotations(AnnotationInfoImpl[][] parmAnnos) {
+    public void setParameterAnnotations(List<AnnotationInfoImpl>[] parmAnnos) {
         if (parmAnnos == null) {
             parameterAnnotations = Collections.emptyList();
         } else {
             List<? extends AnnotationInfo>[] parmInfos = new List[parmAnnos.length];
             for (int i = 0; i < parmAnnos.length; ++i) {
-                parmInfos[i] = Arrays.asList(parmAnnos[i]);
+                parmInfos[i] = parmAnnos[i];
             }
             parameterAnnotations = Arrays.asList(parmInfos);
         }

@@ -40,13 +40,6 @@ public class JaxRsPublisherContext {
         this.publisherModuleInfo = publisherModuleInfo;
     }
 
-    /**
-     * @return the applicationBus
-     */
-    public Bus getServerBus() {
-        return moduleMetaData.getServerMetaData().getServerBus();
-    }
-
     public ModuleInfo getPublisherModuleInfo() {
         return publisherModuleInfo;
     }

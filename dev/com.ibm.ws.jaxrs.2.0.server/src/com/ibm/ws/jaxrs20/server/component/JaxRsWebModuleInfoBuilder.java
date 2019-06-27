@@ -21,8 +21,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -30,20 +33,15 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.api.JaxRsModuleInfoBuilder;
-import com.ibm.ws.jaxrs20.api.JaxRsModuleInfoBuilderExtension;
 import com.ibm.ws.jaxrs20.metadata.EndpointInfo;
 import com.ibm.ws.jaxrs20.metadata.JaxRsModuleInfo;
+import com.ibm.ws.jaxrs20.metadata.JaxRsModuleMetaData;
 import com.ibm.ws.jaxrs20.metadata.JaxRsModuleType;
-import com.ibm.ws.jaxrs20.metadata.builder.AbstractJaxRsModuleInfoBuilder;
-import com.ibm.ws.jaxrs20.metadata.builder.EndpointInfoBuilderContext;
-import com.ibm.ws.jaxrs20.metadata.builder.JaxRsModuleInfoBuilderContext;
 import com.ibm.ws.jaxrs20.server.internal.JaxRsServerConstants;
-import com.ibm.ws.jaxrs20.support.JaxRsMetaDataManager;
 import com.ibm.ws.jaxrs20.utils.UriEncoder;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
@@ -58,11 +56,10 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
  * are also configured as servlet
  */
 @Component(name = "com.ibm.ws.jaxrs20.module.info.builder", immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
-public class JaxRsWebModuleInfoBuilder extends AbstractJaxRsModuleInfoBuilder implements JaxRsModuleInfoBuilder {
+public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
     private final static TraceComponent tc = Tr.register(JaxRsWebModuleInfoBuilder.class);
 
     public JaxRsWebModuleInfoBuilder() {
-        super(JaxRsModuleType.WEB);
     }
 
     @Override
@@ -79,16 +76,6 @@ public class JaxRsWebModuleInfoBuilder extends AbstractJaxRsModuleInfoBuilder im
         }
 
         WebAnnotations webAnnotations = containerToAdapt.adapt(WebAnnotations.class);
-        InfoStore infoStore = webAnnotations.getInfoStore();
-
-        EndpointInfoBuilderContext endpointInfoBuilderContext = new EndpointInfoBuilderContext(infoStore, containerToAdapt);
-        JaxRsModuleInfoBuilderContext jaxRsModuleInfoBuilderContext = new JaxRsModuleInfoBuilderContext(moduleMetaData, containerToAdapt, endpointInfoBuilderContext);
-
-        // // call the extensions to extra pre build the jaxWsModuleInfo, eg:
-        // endponitInfo for EJBs in War
-        // for (JaxRsModuleInfoBuilderExtension extension : extensions) {
-        // extension.preBuild(jaxRsModuleInfoBuilderContext, jaxRsModuleInfo);
-        // }
 
         try {
             webAnnotations.openInfoStore();
@@ -182,8 +169,8 @@ public class JaxRsWebModuleInfoBuilder extends AbstractJaxRsModuleInfoBuilder im
                         Class<?> appClass = null;
                         Class<?> appBaseClass = null;
                         try {
-                            appClass = JaxRsMetaDataManager.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(appClassName);
-                            appBaseClass = JaxRsMetaDataManager.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(Application.class.getName());
+                            appClass = JaxRsModuleMetaData.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(appClassName);
+                            appBaseClass = JaxRsModuleMetaData.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(Application.class.getName());
                         } catch (ClassNotFoundException e) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "ServletName could not be loaded.  This may be expected.", e);
@@ -238,8 +225,8 @@ public class JaxRsWebModuleInfoBuilder extends AbstractJaxRsModuleInfoBuilder im
 
                             continue;
                         }
-                        Class<?> appClass = JaxRsMetaDataManager.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(appClassName);
-                        Class<?> appBaseClass = JaxRsMetaDataManager.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(Application.class.getName());
+                        Class<?> appClass = JaxRsModuleMetaData.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(appClassName);
+                        Class<?> appBaseClass = JaxRsModuleMetaData.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(Application.class.getName());
                         if (appBaseClass.isAssignableFrom(appClass)) {
 
                             try {
@@ -285,11 +272,11 @@ public class JaxRsWebModuleInfoBuilder extends AbstractJaxRsModuleInfoBuilder im
             // If ApplicationPath value conflict, throw exception.
             for (String appClassName : allAppPathClassNames) {
 
-                Class<?> appClass = JaxRsMetaDataManager.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(appClassName);
+                Class<?> appClass = JaxRsModuleMetaData.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(appClassName);
                 /**
                  * fix the issue when a class with @ApplicationPath but not extends from Application
                  */
-                Class<?> appBaseClass = JaxRsMetaDataManager.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(Application.class.getName());
+                Class<?> appBaseClass = JaxRsModuleMetaData.getJaxRsModuleMetaData(moduleMetaData).getAppContextClassLoader().loadClass(Application.class.getName());
                 if (!appBaseClass.isAssignableFrom(appClass)) {
                     continue;
                 }
@@ -338,12 +325,6 @@ public class JaxRsWebModuleInfoBuilder extends AbstractJaxRsModuleInfoBuilder im
             }
         } finally {
             webAnnotations.closeInfoStore();
-        }
-
-        // call the extensions to extra post build the jaxWsModuleInfo, eg:
-        // security settings
-        for (JaxRsModuleInfoBuilderExtension extension : extensions) {
-            extension.postBuild(jaxRsModuleInfoBuilderContext, jaxRsModuleInfo);
         }
 
         return null;
@@ -425,5 +406,19 @@ public class JaxRsWebModuleInfoBuilder extends AbstractJaxRsModuleInfoBuilder im
         }
 
         return value;
+    }
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+
+    }
+
+    @Deactivate
+    protected void deactivate(ComponentContext cc) {
+    }
+
+    @Override
+    public JaxRsModuleType getSupportType() {
+        return JaxRsModuleType.WEB;
     }
 }

@@ -132,10 +132,7 @@ public class ZipCachingServiceImpl implements ZipCachingService {
     // key/value pair may be updated.  The lambda which provides
     // the value must be "quick".
 
-    private static class ZipFileHandlesLock {
-        // EMPTY
-    }
-    private static final ZipFileHandlesLock zipFileHandlesLock = new ZipFileHandlesLock();
+    private static final Integer zipFileHandlesLock = new Integer(0);
     private static final LinkedHashMap<String, ZipFileHandle> zipFileHandles;
 
     static {

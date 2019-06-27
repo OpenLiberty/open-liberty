@@ -23,10 +23,6 @@ public class JaxRsConstants {
 
 //     */
     public static final String WEB_ENDPOINT_PUBLISHER_TYPE = "WEB";
-//
-//    public static final String ENDPOINT_INFO_BUILDER = "ENDPOINT_INFO_BUILDER";
-//
-    public static final String ENDPOINT_INFO_BUILDER_CONTEXT = "ENDPOINT_INFO_BUILDER_CONTEXT";
 
     public static final String SERVLET_NAME_CLASS_PAIRS_FOR_EJBSINWAR = "servletNameClassPairsForEJBsInWAR";
 //

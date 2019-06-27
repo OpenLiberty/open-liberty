@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jaxrs20.server;
+package com.ibm.ws.jaxrs20.ejb;
 
 import java.util.Collections;
 import java.util.List;
