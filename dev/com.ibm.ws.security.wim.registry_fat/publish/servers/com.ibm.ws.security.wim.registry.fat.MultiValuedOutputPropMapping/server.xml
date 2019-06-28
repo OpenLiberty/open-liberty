@@ -1,0 +1,9 @@
+<server description="MultiValuedOutputPropMapping">
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+        <feature>ldapRegistry-3.0</feature>
+	</featureManager>
+</server>

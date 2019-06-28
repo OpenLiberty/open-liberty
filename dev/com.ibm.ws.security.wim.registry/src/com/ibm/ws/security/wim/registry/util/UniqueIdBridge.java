@@ -34,7 +34,6 @@ import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
 import com.ibm.wsspi.security.wim.model.Control;
 import com.ibm.wsspi.security.wim.model.Entity;
-import com.ibm.wsspi.security.wim.model.LoginAccount;
 import com.ibm.wsspi.security.wim.model.Root;
 import com.ibm.wsspi.security.wim.model.SearchControl;
 
@@ -143,8 +142,14 @@ public class UniqueIdBridge {
                 resultRoot = this.mappingUtils.getEntityByIdentifier(root, inputAttrName,
                                                                      id, outputAttrName, this.mappingUtils);
             } catch (WIMException e) {
-                if (!allowDNAsPrincipalName)
-                    throw e;
+//                if (!allowDNAsPrincipalName)
+//                    throw e;
+                /*
+                 * This is OK. Let's search for it below.
+                 */
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Ignoring exception: " + e.getMessage(), e);
+                }
             }
 
             // Did you find data in URBridge
@@ -164,7 +169,7 @@ public class UniqueIdBridge {
 
             if (resultRoot != null && !resultRoot.getEntities().isEmpty() && (isDN(id) || foundInURBridge)) {
                 root = resultRoot;
-            } else {
+            } else if (!this.mappingUtils.isIdentifierTypeProperty(inputAttrName) || allowDNAsPrincipalName) {
                 if (allowDNAsPrincipalName)
                     inputAttrName = SchemaConstants.PROP_PRINCIPAL_NAME;
 
@@ -221,25 +226,18 @@ public class UniqueIdBridge {
             // the user was found
             else {
                 Entity entity = returnList.get(0);
-                if (entity instanceof LoginAccount) {
-                    // d113801
-                    LoginAccount loginAccount = (LoginAccount) entity;
+                if (entity != null) {
                     if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                        returnValue = (String) loginAccount.get(outputAttrName);
-                    } else {
-                        returnValue = (String) loginAccount.getIdentifier().get(outputAttrName);
-                    }
-                    // PM50390
-                    if (mappingUtils.returnRealmInfoInUniqueUserId && idAndRealm.isRealmDefined()
-                        || (idAndRealm.isRealmDefined() && (!this.mappingUtils.getDefaultRealmName().equals(idAndRealm.getRealm())))) {
-                        returnValue += idAndRealm.getDelimiter() + idAndRealm.getRealm();
-                    }
-                } else if (entity != null) {
-                    if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                        returnValue = (String) entity.get(outputAttrName);
+                        Object value = entity.get(outputAttrName);
+                        if (value instanceof List<?>) {
+                            returnValue = String.valueOf(((List<?>) value).get(0));
+                        } else {
+                            returnValue = String.valueOf(value);
+                        }
                     } else {
                         returnValue = (String) entity.getIdentifier().get(outputAttrName);
                     }
+                    // PM50390
                     if (mappingUtils.returnRealmInfoInUniqueUserId && idAndRealm.isRealmDefined()
                         || (idAndRealm.isRealmDefined() && (!this.mappingUtils.getDefaultRealmName().equals(idAndRealm.getRealm())))) {
                         returnValue += idAndRealm.getDelimiter() + idAndRealm.getRealm();
@@ -390,7 +388,12 @@ public class UniqueIdBridge {
                 Entity group = returnList.get(0);
                 // d113801
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                    returnValue = (String) group.get(outputAttrName);
+                    Object value = group.get(outputAttrName);
+                    if (value instanceof List<?>) {
+                        returnValue = String.valueOf(((List<?>) value).get(0));
+                    } else {
+                        returnValue = String.valueOf(value);
+                    }
                 } else {
                     returnValue = (String) group.getIdentifier().get(outputAttrName);
                 }

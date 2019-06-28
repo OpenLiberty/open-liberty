@@ -33,7 +33,8 @@ autoFVT.doLast {
   def servers = [
     'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealm',
     'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealmMultipleRepos',
-    'com.ibm.ws.security.wim.registry.fat.WIMURRegression'
+    'com.ibm.ws.security.wim.registry.fat.WIMURRegression',
+    'com.ibm.ws.security.wim.registry.fat.MultiValuedOutputPropMapping'
   ]
   servers.each { server ->
     copy { 
