@@ -131,7 +131,7 @@ public class HealthCheck20CDIBeanInvokerImpl implements HealthCheck20CDIBeanInvo
             beans = beanManager.getBeans(HealthCheck.class, hcQualifier);
             for (Bean<?> bean : beans) {
                 Tr.event(tc, "Bean Found: HealthCheck beanClass = " + bean.getBeanClass() + ", class = " + bean.getClass() + ", name = " + bean.getName());
-                healthCheckBeans.add(beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean)));
+                healthCheckBeans.add(beanManager.getReference(bean, HealthCheck.class, beanManager.createCreationalContext(bean)));
             }
         }
         return healthCheckBeans;
