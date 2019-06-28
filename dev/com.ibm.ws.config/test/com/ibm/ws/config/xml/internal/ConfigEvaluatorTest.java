@@ -395,6 +395,7 @@ public class ConfigEvaluatorTest {
         entry = serverConfig.getFactoryInstance(registryEntry.getPid(), ocd.getAlias(), "idTWO");
         assertEquals("Expected integer 2", 2, evaluator.evaluate(entry, registryEntry).getProperties().get("enum"));
 
+        outputMgr.dumpStreams();
         assertTrue("We should get a message that an option is invalid", outputMgr.checkForMessages("CWWKG0032W.*TWO"));
 
     }
@@ -1054,7 +1055,7 @@ public class ConfigEvaluatorTest {
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
 
         try {
-            EvaluationResult result = evaluator.evaluate(entry, loggingRE);
+            evaluator.evaluate(entry, loggingRE);
         } catch (ConfigEvaluatorException ex) {
             // Passed
             return;
