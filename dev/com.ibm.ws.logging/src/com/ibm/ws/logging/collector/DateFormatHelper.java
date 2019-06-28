@@ -60,11 +60,10 @@ public class DateFormatHelper {
      *         The formatted localeDatePattern
      */
     private static final String removeClockFormat(StringBuilder sb) {
-        int n = sb.length();
         int start = 0;
-        int end = n - 1;
+        int end = sb.length() - 1;
         // trim left side
-        while (start < n && sb.charAt(start) == ' ')
+        while (start <= end && sb.charAt(start) == ' ')
             start++;
         // trim right side
         while (end > start && sb.charAt(end) == ' ')
