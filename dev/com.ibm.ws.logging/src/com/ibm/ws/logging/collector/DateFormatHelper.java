@@ -41,14 +41,41 @@ public class DateFormatHelper {
             // Append milliseconds and timezone after seconds
             patternLength = pattern.length();
             endOfSecsIndex = pattern.lastIndexOf('s') + 1;
-            StringBuffer newPattern = new StringBuffer(pattern.substring(0, endOfSecsIndex) + ":SSS z");
+            StringBuilder newPattern = new StringBuilder(pattern.substring(0, endOfSecsIndex) + ":SSS z");
             if (endOfSecsIndex < patternLength)
                 newPattern.append(pattern.substring(endOfSecsIndex, patternLength));
             // 0-23 hour clock (get rid of any other clock formats and am/pm)
-            localeDatePattern = newPattern.toString().replace("h", "H").replace('k', 'H').replace('K', 'H').replace('a', ' ').trim();
+            localeDatePattern = removeClockFormat(newPattern);
         } else {
             localeDatePattern = "dd/MMM/yyyy HH:mm:ss:SSS z";
         }
+    }
+
+    /**
+     * Return the localeDatePattern without clock formats and am/pm as a trimmed String
+     *
+     * @param sb
+     *            A StringBuilder holding the pre-formatted localeDatePattern
+     * @return
+     *         The formatted localeDatePattern
+     */
+    private static final String removeClockFormat(StringBuilder sb) {
+        int n = sb.length();
+        int start = 0;
+        int end = n - 1;
+        // trim left side
+        while (start < n && sb.charAt(start) == ' ')
+            start++;
+        // trim right side
+        while (end > start && sb.charAt(end) == ' ')
+            end--;
+        // replace characters 'h', 'k', and 'K' to 'H'
+        for (int i = start; i <= end; i++) {
+            char letter = sb.charAt(i);
+            if (letter == 'h' || letter == 'k' || letter == 'K')
+                sb.setCharAt(i, 'H');
+        }
+        return sb.substring(start, end + 1);
     }
 
     /**
