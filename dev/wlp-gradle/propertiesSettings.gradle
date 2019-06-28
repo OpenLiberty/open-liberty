@@ -48,7 +48,6 @@ def setProperties = { props ->
     boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
     boolean isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
     boolean isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
-    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
 
     props.setProperty('is.automated.build',       isAutomatedBuild.toString())
     props.setProperty('is.personal',              isPersonal.toString())
@@ -56,6 +55,10 @@ def setProperties = { props ->
     props.setProperty('is.release',               isRelease.toString())
     props.setProperty('is.public.publishing',     isPublicPublishing.toString())
     props.setProperty('disable.run.runUnitTests', isUnittestsDisabled.toString())
+
+    //Set to false for now to avoid zip issues
+    //boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
+    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
     props.setProperty('build.os.native.packages', isBuildOsNativePackages.toString())
 
     gradle.rootProject { rootProject ->

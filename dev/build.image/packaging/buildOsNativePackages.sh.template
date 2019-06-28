@@ -7,7 +7,7 @@
 driverVer=@DRIVER_VERSION@
 
 #unzip contents of openliberty-all.zip
-unzip tempPackagingDir/openliberty-*.zip -d tempPackagingDir/tempTar
+unzip -qq tempPackagingDir/openliberty-*.zip -d tempPackagingDir/tempTar
 
 #setting up the server.env
 mkdir -p tempPackagingDir/tempTar/wlp/etc
