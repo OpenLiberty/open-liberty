@@ -967,6 +967,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]", j.getString("id"));
         assertEquals(err, "java:module/env/eis/cf1", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", j.getString("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
@@ -983,6 +986,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", j.getString("id"));
         assertEquals(err, "java:module/env/eis/cf1", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", j.getString("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
@@ -1017,6 +1023,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]", v.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]", v.getString("id"));
         assertEquals(err, "java:app/env/jdbc/ds1", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertNull(err, v.get("module"));
+        assertNull(err, v.get("component"));
         assertFalse(err, v.getBoolean("successful"));
         assertNull(err, v.get("info"));
         assertNotNull(err, failure = v.getJsonObject("failure"));
@@ -1050,6 +1059,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", v.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", v.getString("id"));
         assertEquals(err, "java:comp/env/jdbc/ds3", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", v.getString("module"));
+        assertNull(err, v.get("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1064,6 +1076,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", v.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", v.getString("id"));
         assertEquals(err, "java:module/env/jdbc/ds2", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", v.getString("module"));
+        assertNull(err, v.get("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1080,6 +1095,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]",
                      v.getString("id"));
         assertEquals(err, "java:comp/env/jdbc/ds3", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", v.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", v.getString("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1094,6 +1112,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "DefaultDataSource", v.getString("uid"));
         assertEquals(err, "DefaultDataSource", v.getString("id"));
         assertNull(err, v.get("jndiName"));
+        assertNull(err, v.get("application"));
+        assertNull(err, v.get("module"));
+        assertNull(err, v.get("component"));
         assertFalse(err, v.getBoolean("successful"));
         assertNull(err, v.get("info"));
         assertNotNull(err, failure = v.getJsonObject("failure"));
@@ -1103,6 +1124,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", v.getString("uid"));
         assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", v.getString("id"));
         assertEquals(err, "java:global/env/jdbc/ds4", v.getString("jndiName"));
+        assertNull(err, v.get("application"));
+        assertNull(err, v.get("module"));
+        assertNull(err, v.get("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1126,6 +1150,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", j.getString("id"));
         assertEquals(err, "java:comp/env/jms/cf", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", j.getString("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
@@ -1167,6 +1194,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", j.getString("id"));
         assertEquals(err, "java:app/env/jms/tcf", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertNull(err, j.get("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
