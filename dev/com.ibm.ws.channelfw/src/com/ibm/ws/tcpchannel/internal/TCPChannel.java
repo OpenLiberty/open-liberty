@@ -78,7 +78,8 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
     protected TCPChannelFactory channelFactory = null;
 
     private int connectionCount = 0; // inbound connection count
-    private final Object connectionCountSync = new Object() {}; // sync object for above counter
+    private final Object connectionCountSync = new Object() {
+    }; // sync object for above counter
 
     protected StatisticsLogger statLogger = null;
     protected final AtomicLong totalSyncReads = new AtomicLong(0);
@@ -246,13 +247,34 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     abstract protected TCPWriteRequestContextImpl createWriteInterface(TCPConnLink connLink);
 
-    /*
-     * @see com.ibm.wsspi.channelfw.Channel#start()
-     */
     @Override
     public void start() throws ChannelException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "start");
+            Tr.entry(tc, "doStart");
+        }
+
+        try {
+            CHFWBundle.runWhenServerStarted(new Callable<Void>() {
+                @Override
+                public Void call() throws ChannelException {
+                    doStart();
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            // TODO work out what to do here. Shouldn't be possible so maybe just ignore
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "doStart");
+        }
+    }
+
+    /*
+     * @see com.ibm.wsspi.channelfw.Channel#start()
+     */
+    public void doStart() throws ChannelException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "doStart");
         }
         if (this.stopFlag) {
             // only start once
@@ -297,7 +319,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "start");
+            Tr.exit(tc, "doStart");
         }
     }
 
@@ -575,7 +597,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
      * Sets the lastConnExceededTime.
      *
      * @param lastConnExceededTime
-     *            The lastConnExceededTime to set
+     *                                 The lastConnExceededTime to set
      */
     protected void setLastConnExceededTime(long lastConnExceededTime) {
         this.lastConnExceededTime = lastConnExceededTime;

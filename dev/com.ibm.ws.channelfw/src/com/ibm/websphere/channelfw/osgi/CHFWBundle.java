@@ -13,9 +13,12 @@ package com.ibm.websphere.channelfw.osgi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
@@ -98,8 +101,8 @@ public class CHFWBundle implements ServerQuiesceListener {
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
 
-    private static boolean serverCompletelyStarted = false;
-    private static Object syncStarted = new Object() {}; // use brackets/inner class to make lock appear in dumps using class name
+    private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
+    private static Queue<Callable<?>> serverStartedTasks = new LinkedBlockingQueue<>();
 
     private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
     private static volatile String httpVersionSetting = null;
@@ -168,7 +171,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * configuration change.
      *
      * @param cfwConfiguration
-     *            the configuration data
+     *                             the configuration data
      */
     @Modified
     protected synchronized void modified(Map<String, Object> cfwConfiguration) {
@@ -240,9 +243,18 @@ public class CHFWBundle implements ServerQuiesceListener {
             Tr.debug(this, tc, "Server Completely Started signal received");
         }
 
-        synchronized (syncStarted) {
-            serverCompletelyStarted = true;
-            syncStarted.notifyAll();
+        serverCompletelyStarted.set(true);
+
+        Callable<?> task;
+
+        while ((task = serverStartedTasks.poll()) != null) {
+            try {
+                task.call();
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, " TCPChannel run caught exception starting channels: " + e);
+                }
+            }
         }
     }
 
@@ -255,29 +267,18 @@ public class CHFWBundle implements ServerQuiesceListener {
         // server is shutting down
     }
 
-    @FFDCIgnore({ InterruptedException.class })
-    public static void waitServerCompletelyStarted() {
-        synchronized (syncStarted) {
-            if (!serverCompletelyStarted) {
-                try {
-                    syncStarted.wait();
-                } catch (InterruptedException x) {
-                    // assume we can go one then
-                }
-            }
+    public static <T> T runWhenServerStarted(Callable<T> callable) throws Exception {
+        if (serverCompletelyStarted.get()) {
+            return callable.call();
+        } else {
+            serverStartedTasks.add(callable);
+            return null;
         }
-        return;
     }
 
     @FFDCIgnore({ InterruptedException.class })
     public static boolean isServerCompletelyStarted() {
-        synchronized (syncStarted) {
-            if (serverCompletelyStarted) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        return serverCompletelyStarted.get();
     }
 
     /**
@@ -295,7 +296,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {}
+    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {
+    }
 
     /**
      * Access the event service.
@@ -327,7 +329,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetEventService(EventEngine service) {}
+    protected void unsetEventService(EventEngine service) {
+    }
 
     /**
      * Access the channel framework's {@link java.util.concurrent.ExecutorService} to
@@ -347,7 +350,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * DS method for setting the executor service reference.
      *
      * @param executorService the {@link java.util.concurrent.ExecutorService} to
-     *            queue work to.
+     *                            queue work to.
      */
     @Reference(service = ExecutorService.class,
                cardinality = ReferenceCardinality.MANDATORY)
@@ -361,7 +364,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param executorService the service instance to clear
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Access the scheduled event service.
@@ -393,7 +397,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {}
+    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {
+    }
 
     /**
      * Access the scheduled executor service.
@@ -425,7 +430,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledEventService(ScheduledEventService ref) {}
+    protected void unsetScheduledEventService(ScheduledEventService ref) {
+    }
 
     /**
      * DS method to set a factory provider.
