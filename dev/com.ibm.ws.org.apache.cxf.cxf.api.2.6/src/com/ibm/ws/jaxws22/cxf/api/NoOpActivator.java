@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxws23.cxf.api;
+package com.ibm.ws.jaxws22.cxf.api;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
