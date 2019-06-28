@@ -175,7 +175,22 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
             filter.append(FilterUtils.createPropertyFilter("config.displayId", uid));
         else if (elementName.length() > 0) {
             // If an element name was specified, ensure the filter matches the requested elementName exactly
-            filter.append("(|(config.displayId=*" + elementName + "[*)(config.displayId=*" + elementName + "))"); // TODO either check elementName for invalid chars or use something similar to createPropertyFilter, but preserving the * characters
+
+            // Escape invalid characters from filter
+            StringBuilder e = null;
+            for (int i = elementName.length() - 1; i >= 0; i--)
+                switch (elementName.charAt(i)) {
+                    case '*':
+                    case '\\':
+                    case '(':
+                    case ')':
+                        if (e == null)
+                            e = new StringBuilder(elementName);
+                        e.insert(i, '\\');
+                }
+            String en = e == null ? elementName : e.toString();
+
+            filter.append("(|(config.displayId=*").append(en).append("[*)(config.displayId=*").append(en).append("))");
             if (uid != null)
                 filter.append(FilterUtils.createPropertyFilter("id", uid));
         } else {
