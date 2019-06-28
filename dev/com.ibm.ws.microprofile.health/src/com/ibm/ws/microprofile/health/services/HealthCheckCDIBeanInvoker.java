@@ -15,5 +15,14 @@ public interface HealthCheckCDIBeanInvoker {
      *
      * @return aggregate result (any DOWN means aggregate response is DOWN)
      */
-    public Set<HealthCheckResponse> checkAllBeans() throws HealthCheckBeanCallException;
+    public Set<HealthCheckResponse> checkAllBeans(String appName, String moduleName) throws HealthCheckBeanCallException;
+
+    /**
+     * Removes references to an application module. Currently this operation removes entries from the
+     * BeanManager cache that is maintained to avoid looking it up all the time.
+     *
+     * @param appName
+     * @param moduleName
+     */
+    void removeModuleReferences(String appName, String moduleName);
 }

@@ -21,25 +21,25 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.health.services.impl;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
 
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.ws.microprofile.health.services.HealthCheckCDIBeanInvoker;
 
@@ -48,10 +48,26 @@ public class HealthCheckCDIBeanInvokerImpl implements HealthCheckCDIBeanInvoker 
 
     private final static TraceComponent tc = Tr.register(com.ibm.ws.microprofile.health.services.impl.HealthCheckCDIBeanInvokerImpl.class);
 
+    private final Map<String, BeanManager> beanManagers = new HashMap<>();
+
+    private CDIService cdiService;
+
+    @Reference(service = CDIService.class)
+    protected void setCdiService(CDIService cdiService) {
+        this.cdiService = cdiService;
+    }
+
+    protected void unsetCdiService(CDIService cdiService) {
+        if (this.cdiService == cdiService) {
+            this.cdiService = null;
+        }
+    }
+
     @Override
-    public Set<HealthCheckResponse> checkAllBeans() throws HealthCheckBeanCallException {
+    public Set<HealthCheckResponse> checkAllBeans(String appName, String moduleName) throws HealthCheckBeanCallException {
+        BeanManager beanManager = getBeanManager(appName, moduleName);
         Set<HealthCheckResponse> retVal = new HashSet<HealthCheckResponse>();
-        for (Object obj : getHealthCheckBeans()) {
+        for (Object obj : getHealthCheckBeans(beanManager)) {
             HealthCheck tempHCBean = (HealthCheck) obj;
             try {
                 retVal.add(tempHCBean.call());
@@ -65,26 +81,36 @@ public class HealthCheckCDIBeanInvokerImpl implements HealthCheckCDIBeanInvoker 
         return retVal;
     }
 
-    @FFDCIgnore(NameNotFoundException.class)
-    private Set<Object> getHealthCheckBeans() {
-        BeanManager beanManager = null;
+    private Set<Object> getHealthCheckBeans(BeanManager beanManager) {
         Set<Object> healthCheckBeans = new HashSet<Object>();
         Set<Bean<?>> beans;
-        try {
-            InitialContext context = new InitialContext();
-            beanManager = (BeanManager) context.lookup("java:comp/BeanManager");
-        } catch (NameNotFoundException e) {
-            Tr.event(tc, "Catching NameNotFoundException looking up CDI java:comp/BeanManager.  Ignoring assuming the reason is because there are zero CDI managed beans");
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
         if (beanManager != null) {
-            beans = beanManager.getBeans(HealthCheck.class, new AnnotationLiteral<Health>() {});
+            beans = beanManager.getBeans(HealthCheck.class, new AnnotationLiteral<Health>() {
+            });
             for (Bean<?> bean : beans) {
                 Tr.event(tc, "Bean Found: HealthCheck beanClass = " + bean.getBeanClass() + ", class = " + bean.getClass() + ", name = " + bean.getName());
                 healthCheckBeans.add(beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean)));
             }
         }
         return healthCheckBeans;
+    }
+
+    private BeanManager getBeanManager(String appName, String moduleName) {
+        String key = appName + "#" + moduleName;
+        BeanManager manager = beanManagers.get(key);
+        if (manager == null) {
+            if (beanManagers.containsKey(key) || cdiService == null) {
+                return null;
+            }
+            manager = cdiService.getCurrentModuleBeanManager();
+            beanManagers.put(key, manager);
+        }
+        return manager;
+    }
+
+    @Override
+    public void removeModuleReferences(String appName, String moduleName) {
+        String key = appName + "#" + moduleName;
+        beanManagers.remove(key);
     }
 }

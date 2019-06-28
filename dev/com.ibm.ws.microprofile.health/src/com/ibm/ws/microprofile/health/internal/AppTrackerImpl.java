@@ -82,6 +82,8 @@ public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
      */
     private final Map<String, ApplicationState> appStates = new HashMap<String, ApplicationState>();
 
+    private HealthCheckService healthCheckService;
+
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
         if (tc.isDebugEnabled())
@@ -193,6 +195,9 @@ public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
                 appModules.remove(pair.appName);
             }
         }
+        if (healthCheckService != null) {
+            healthCheckService.removeModuleReferences(pair.appName, pair.moduleName);
+        }
     }
 
     /**
@@ -243,5 +248,10 @@ public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    @Override
+    public void setHealthCheckService(HealthCheckService healthService) {
+        this.healthCheckService = healthService;
     }
 }
