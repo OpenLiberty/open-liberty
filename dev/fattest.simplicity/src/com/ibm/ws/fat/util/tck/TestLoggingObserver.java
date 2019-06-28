@@ -14,18 +14,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.core.spi.EventContext;
+import org.jboss.arquillian.test.spi.event.suite.After;
+import org.jboss.arquillian.test.spi.event.suite.Before;
 import org.jboss.arquillian.test.spi.event.suite.TestEvent;
 
-public class TestLoggingObserver {  
+public class TestLoggingObserver {
 
     private static final Logger LOG = Logger.getLogger(TestLoggingObserver.class.getName());
-      
-    void logTestStartStop(@Observes(precedence = 0) EventContext<TestEvent> testEventContext) {
-        String testName = testEventContext.getEvent().getTestMethod().getName();
 
-        LOG.log(Level.INFO, "Starting test: {0}", testName);
-        testEventContext.proceed();
-        LOG.log(Level.INFO, "Test complete: {0}", testName);
-    }  
-}  
+    void logTestStart(@Observes(precedence = 0) Before before) {
+        LOG.log(Level.INFO, "Starting test: {0}", getTestName(before));
+    }
+
+    void logTestEnd(@Observes(precedence = Integer.MAX_VALUE) After after) {
+        LOG.log(Level.INFO, "Test complete: {0}", getTestName(after));
+    }
+
+    private String getTestName(TestEvent event) {
+        String className = event.getTestClass().getJavaClass().getSimpleName();
+        String methodName = event.getTestMethod().getName();
+        return className + "." + methodName;
+    }
+}
