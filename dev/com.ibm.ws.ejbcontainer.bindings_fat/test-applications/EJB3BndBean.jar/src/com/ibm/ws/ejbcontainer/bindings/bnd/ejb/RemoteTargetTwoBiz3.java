@@ -8,16 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.bindings.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package com.ibm.ws.ejbcontainer.bindings.bnd.ejb;
 
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
+import javax.ejb.Remote;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                DefaultBindingsTest.class
-})
-public class FATSuite {}
+@Remote
+public interface RemoteTargetTwoBiz3 {
+    public String ping3();
+}

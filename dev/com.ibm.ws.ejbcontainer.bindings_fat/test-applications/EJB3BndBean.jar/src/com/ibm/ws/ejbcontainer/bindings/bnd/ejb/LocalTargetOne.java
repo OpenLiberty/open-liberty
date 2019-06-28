@@ -8,16 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.bindings.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package com.ibm.ws.ejbcontainer.bindings.bnd.ejb;
 
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                DefaultBindingsTest.class
-})
-public class FATSuite {}
+/**
+ * Local interface for Enterprise Bean: TargetOneBean
+ */
+public interface LocalTargetOne extends javax.ejb.EJBLocalObject {
+    public String echo(String message);
+}
