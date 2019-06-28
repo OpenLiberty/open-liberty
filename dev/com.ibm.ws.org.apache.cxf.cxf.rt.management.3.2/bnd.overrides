@@ -9,8 +9,25 @@ Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.management.NoOpActivator
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
+!com.ctc.wstx.*,\
+!org.codehaus.stax2.*,\
+!com.sun.msv.*,\
+!com.sun.xml.bind.marshaller,\
+!com.sun.xml.fastinfoset.stax.*,\
+!org.apache.log4j.*,\
+!net.sf.cglib.proxy.*,\
+!org.springframework.*,\
+!javax.validation.*, \
+!org.apache.aries.*,\
+!org.apache.cxf.transport.https,\
+!org.osgi.service.blueprint.*,\
+javax.xml.bind;version=!,\
+javax.xml.bind.annotation;version=!,\
+javax.xml.bind.annotation.adapters;version=!,\
+javax.xml.bind.attachment;version=!,\
 *
 
 Export-Package: \
-com.ibm.ws.jaxws23.cxf.rt.management
-
+com.ibm.ws.jaxws23.cxf.rt.management, \
+org.apache.cxf.management.*, \
+org.apache.cxf.tracing.*
