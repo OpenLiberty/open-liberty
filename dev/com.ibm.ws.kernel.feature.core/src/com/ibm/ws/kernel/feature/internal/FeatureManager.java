@@ -39,6 +39,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -80,7 +81,6 @@ import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.feature.ProcessType;
-import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
@@ -106,6 +106,8 @@ import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
+import com.ibm.wsspi.kernel.feature.ServerStarted;
+import com.ibm.wsspi.kernel.feature.SynchronousServerStartedListener;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -284,6 +286,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private volatile LibertyBootRuntime libertyBoot;
 
     private FrameworkWiring frameworkWiring;
+    private final AtomicBoolean started = new AtomicBoolean(false);
+    private final List<SynchronousServerStartedListener> startListeners = new ArrayList<>();
 
     /**
      * FeatureManager is instantiated by declarative services.
@@ -483,6 +487,16 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         this.runtimeUpdateManager = runtimeUpdateManager;
     }
 
+    @Reference(name = "serverstartedListener", service = SynchronousServerStartedListener.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setStartListener(SynchronousServerStartedListener listener) {
+        if (started.get()) {
+            listener.serverStarted();
+        } else {
+            this.startListeners.add(listener);
+        }
+    }
+
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setLibertyBoot(LibertyBootRuntime libertyBoot) {
         this.libertyBoot = libertyBoot;
@@ -502,6 +516,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      *
      */
     protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
+
+    protected void unsetStartListener(SynchronousServerStartedListener listener) {
+        this.startListeners.remove(listener);
     }
 
     /**
@@ -723,8 +741,17 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
                     checkBundleStatus(startStatus); // FFDC, etc.
 
+                    started.set(true);
+                    List<SynchronousServerStartedListener> notify = new ArrayList<SynchronousServerStartedListener>();
+                    notify.addAll(startListeners);
+
+                    for (SynchronousServerStartedListener listener : notify) {
+                        listener.serverStarted();
+                    }
+
+                    String[] serviceInterfaces = new String[] { "com.ibm.wsspi.kernel.feature.ServerStarted", "com.ibm.ws.kernel.feature.ServerStarted" };
                     //register a service that can be looked up for server start.
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    bundleContext.registerService(serviceInterfaces, new ServerStarted() {
                     }, new Hashtable<String, Object>());
                     break;
                 default:
