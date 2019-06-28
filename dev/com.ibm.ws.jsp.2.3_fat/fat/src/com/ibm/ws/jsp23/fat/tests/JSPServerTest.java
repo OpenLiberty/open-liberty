@@ -39,6 +39,10 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class JSPServerTest extends com.ibm.ws.fat.util.LoggingTest {
 
     //private static final Logger LOG = Logger.getLogger(JSPServerTest.class.getName());
+    private static final String JSP23_APP_NAME = "TestJSP2.3";
+    private static final String PI44611_APP_NAME = "PI44611";
+    private static final String PI59436_APP_NAME = "PI59436";
+
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
@@ -47,18 +51,21 @@ public class JSPServerTest extends com.ibm.ws.fat.util.LoggingTest {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
-                                      "TestJSP2.3.war",
+                                      JSP23_APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testjsp23.beans",
                                       "com.ibm.ws.jsp23.fat.testjsp23.interceptors",
                                       "com.ibm.ws.jsp23.fat.testjsp23.listeners",
                                       "com.ibm.ws.jsp23.fat.testjsp23.servlets",
                                       "com.ibm.ws.jsp23.fat.testjsp23.tagHandler");
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(JSP23_APP_NAME);
 
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
-                                      "PI44611.war");
+                                      PI44611_APP_NAME + ".war");
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(PI44611_APP_NAME);
 
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
-                                      "PI59436.war");
+                                      PI59436_APP_NAME + ".war");
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(PI59436_APP_NAME);
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
@@ -97,7 +104,6 @@ public class JSPServerTest extends com.ibm.ws.fat.util.LoggingTest {
     @SkipForRepeat("CDI-2.0")
     @Test
     public void testEL22Operators() throws Exception {
-        System.out.println("PAN: testEL22Operators()");
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
                                         "<b>Test 1:</b> EL 2.2 Multiplication Operator (Expected:16): 16",

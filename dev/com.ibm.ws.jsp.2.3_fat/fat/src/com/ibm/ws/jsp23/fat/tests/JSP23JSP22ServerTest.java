@@ -46,6 +46,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 public class JSP23JSP22ServerTest extends com.ibm.ws.fat.util.LoggingTest {
     private static final Logger LOG = Logger.getLogger(JSP23JSP22ServerTest.class.getName());
+    private static final String APP_NAME = "TestJspFeatureChange";
+
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
@@ -54,11 +56,12 @@ public class JSP23JSP22ServerTest extends com.ibm.ws.fat.util.LoggingTest {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
-                                      "TestJspFeatureChange.war");
+                                      APP_NAME + ".war");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
         // SHARED_SERVER.getLibertyServer().startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(APP_NAME);
         SHARED_SERVER.startIfNotStarted();
     }
 
