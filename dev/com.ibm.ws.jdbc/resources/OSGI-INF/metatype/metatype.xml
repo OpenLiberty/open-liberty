@@ -1337,9 +1337,9 @@
  </Designate>
 
  <OCD ibm:beta="true" id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
-  <AD id="databaseName"            required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="serverName"              required="false" type="String"  name="%serverName"   description="%serverName.desc"/>
-  <AD id="portNumber"              required="false" type="Integer" name="%portNumber"   description="%portNumber.desc"/>
+  <AD id="databaseName"            required="false" type="String"                      name="%databaseName" description="%databaseName.desc"/>
+  <AD id="serverName"              required="false" type="String"  default="localhost" name="%serverName"   description="%serverName.desc"/>
+  <AD id="portNumber"              required="false" type="Integer" default="5432"      name="%portNumber"   description="%portNumber.desc"/>
   <!-- Advanced properties for properties.postgresql -->
   <AD id="applicationName"               ibmui:group="Advanced" required="false" type="String"                         name="%applicationName"     description="%applicationName.desc"/>
   <AD id="cancelSignalTimeout"           ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%cancelSignalTimeout" description="%cancelSignalTimeout.desc"/>

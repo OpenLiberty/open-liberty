@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.internal;
 
+import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -271,7 +273,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
                         // Set all of the JDBC vendor properties
                         Hashtable<?, ?> p = (Hashtable<?, ?>) props.clone();
-                        for (PropertyDescriptor descriptor : Introspector.getBeanInfo(dsClass).getPropertyDescriptors()) {
+                        for (PropertyDescriptor descriptor : getArrangedProperties(dsClass)) {
                             String name = descriptor.getName();
                             Object value = p.remove(name);
 
@@ -1052,6 +1054,28 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             }
         else if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "shutdownDerbyEmbedded", false);
+    }
+    
+    private PropertyDescriptor[] getArrangedProperties(Class<?> dsClass) throws IntrospectionException {
+        PropertyDescriptor[] props = Introspector.getBeanInfo(dsClass).getPropertyDescriptors();
+        // Some JDBC drivers, such as PostgreSQL, implement setURL() in a way that calls other setXXX methods internally
+        // Make sure we arrange the URL property *last* so that setURL() gets called last and things like default 
+        // serverName or portNumber in metatype do not override a user-defined URL containing the same information
+        Arrays.sort(props, new Comparator<PropertyDescriptor>() {
+            @Override
+            public int compare(PropertyDescriptor p1, PropertyDescriptor p2) {
+                if (p1.getName().equalsIgnoreCase("url")) {
+                    if (p2.getName().equalsIgnoreCase("url"))
+                        return p1.getName().compareTo(p2.getName()); 
+                    else
+                        return 1;
+                }
+                if (p2.getName().equalsIgnoreCase("url"))
+                    return -1;
+                return 0;
+            }
+        });
+        return props;
     }
 
     /**
