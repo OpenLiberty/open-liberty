@@ -118,28 +118,4 @@ public class JMXMBeanEvent extends AuditEvent {
             }
         }
     }
-
-    public StringBuffer unravelArray(StringBuffer buf, Object param) {
-        if (param instanceof long[]) {
-            buf.append("[").append(java.util.Arrays.toString((long[]) param)).append("]");
-        } else if (param instanceof boolean[]) {
-            buf.append("[").append(java.util.Arrays.toString((boolean[]) param)).append("]");
-        } else if (param instanceof int[]) {
-            buf.append("[").append(java.util.Arrays.toString((int[]) param)).append("]");
-        } else if (param instanceof byte[]) {
-            buf.append("[").append(java.util.Arrays.toString((byte[]) param)).append("]");
-        } else if (param instanceof short[]) {
-            buf.append("[").append(java.util.Arrays.toString((short[]) param)).append("]");
-        } else if (param instanceof char[]) {
-            buf.append("[").append(java.util.Arrays.toString((char[]) param)).append("]");
-        } else if (param instanceof float[]) {
-            buf.append("[").append(java.util.Arrays.toString((float[]) param)).append("]");
-        } else if (param instanceof double[]) {
-            buf.append("[").append(java.util.Arrays.toString((double[]) param)).append("]");
-        } else if (param instanceof Object[]) {
-            buf.append("[").append(unravelArray(buf, param)).append("]");
-        }
-        return buf;
-
-    }
 }
