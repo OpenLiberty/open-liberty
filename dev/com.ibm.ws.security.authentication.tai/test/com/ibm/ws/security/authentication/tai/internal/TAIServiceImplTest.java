@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.security.authentication.tai.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -117,7 +116,6 @@ public class TAIServiceImplTest {
             taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, false);
             taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, false);
             taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, false);
-            taiProps.put(TAIConfigImpl.KEY_CONTINUE_AFTER_UNPROTECTED_URI, true);
 
             mock.checking(new Expectations() {
                 {
@@ -133,7 +131,6 @@ public class TAIServiceImplTest {
             assertFalse(taiService.isFailOverToAppAuthType());
             assertFalse(taiService.isInvokeForFormLogin());
             assertFalse(taiService.isInvokeForUnprotectedURI());
-            assertTrue(taiService.isContinueAfterUnprotectedURI());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -150,7 +147,6 @@ public class TAIServiceImplTest {
             myTAIProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, false);
             myTAIProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, false);
             myTAIProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, false);
-            myTAIProps.put(TAIConfigImpl.KEY_CONTINUE_AFTER_UNPROTECTED_URI, true);
 
             final Dictionary<String, Object> taiProps = new Hashtable<String, Object>();
             taiProps.put(KEY_TRUST_ASSOCIATION, "trustAssociation");

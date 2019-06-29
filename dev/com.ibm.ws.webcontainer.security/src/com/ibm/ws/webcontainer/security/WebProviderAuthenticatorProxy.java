@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     @Override
     public AuthenticationResult authenticate(WebRequest webRequest) {
         AuthenticationResult authResult = handleTAI(webRequest, true);
-        if ((authResult.getStatus() == AuthResult.CONTINUE) && continueAfterUnprotectedURI(webRequest)) {
+        if (authResult.getStatus() == AuthResult.CONTINUE) {
             authResult = handleSSO(webRequest, null);
             if (authResult.getStatus() == AuthResult.CONTINUE) {
                 webRequest.setCallAfterSSO(true);
@@ -85,33 +85,6 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
         return authResult;
 
-    }
-
-    /*
-     * This method returns false when unprotectedURI is not further evaluated by special TAI (SAML,OAUTH,OIDC..). Default is true.
-     *
-     * @param webRequest
-     *
-     * @return boolean
-     *
-     */
-    public boolean continueAfterUnprotectedURI(WebRequest webRequest) {
-
-        if (taiServiceRef.getService() != null) {
-            TAIService taiService = taiServiceRef.getService();
-            if (!taiService.isContinueAfterUnprotectedURI() && taiService.isInvokeForUnprotectedURI() && webRequest.isUnprotectedURI()
-                && !webRequest.isProviderSpecialUnprotectedURI()) {
-                webRequest.setContinueAfterUnprotectedURI(false);
-            } else {
-                webRequest.setContinueAfterUnprotectedURI(true);
-            }
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "continueAfterUnprotectedURI from configuration=" + taiService.isContinueAfterUnprotectedURI() +
-                             " Caclulated value: isContinueAfterUnprotectedURI= " + webRequest.isContinueAfterUnprotectedURI());
-            }
-        }
-
-        return webRequest.isContinueAfterUnprotectedURI();
     }
 
     /**
