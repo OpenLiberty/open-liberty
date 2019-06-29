@@ -42,6 +42,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 public class JSPServerHttpUnit extends com.ibm.ws.fat.util.LoggingTest {
     private static final Logger LOG = Logger.getLogger(JSPServerTest.class.getName());
+    private static final String APP_NAME = "TestJSP2.3";
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("jspServer");
@@ -49,7 +50,7 @@ public class JSPServerHttpUnit extends com.ibm.ws.fat.util.LoggingTest {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
-                                      "TestJSP2.3.war",
+                                      APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testjsp23.beans",
                                       "com.ibm.ws.jsp23.fat.testjsp23.interceptors",
                                       "com.ibm.ws.jsp23.fat.testjsp23.listeners",
@@ -59,6 +60,7 @@ public class JSPServerHttpUnit extends com.ibm.ws.fat.util.LoggingTest {
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
         // SHARED_SERVER.getLibertyServer().startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(APP_NAME);
         SHARED_SERVER.startIfNotStarted();
     }
 

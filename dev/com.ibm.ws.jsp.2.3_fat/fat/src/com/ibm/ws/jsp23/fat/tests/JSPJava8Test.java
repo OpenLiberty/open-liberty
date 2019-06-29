@@ -42,6 +42,8 @@ import componenttest.custom.junit.runner.FATRunner;
 public class JSPJava8Test extends com.ibm.ws.fat.util.LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(JSPJava8Test.class.getName());
+    private static final String APP_NAME = "TestJSPWithJava8";
+
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
@@ -50,11 +52,12 @@ public class JSPJava8Test extends com.ibm.ws.fat.util.LoggingTest {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
-                                      "TestJSPWithJava8.war");
+                                      APP_NAME + ".war");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
         // SHARED_SERVER.getLibertyServer().startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(APP_NAME);
         SHARED_SERVER.startIfNotStarted();
     }
 
