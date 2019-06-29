@@ -173,7 +173,17 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         String jndiName = (String) config.get("jndiName");
         if (jndiName != null)
             json.put("jndiName", jndiName);
-        // TODO: app-defined data sources: application/module/component
+        Object application = config.get("application");
+        if (application != null) {
+            json.put("application", application);
+            Object module = config.get("module");
+            if (module != null) {
+                json.put("module", module);
+                Object component = config.get("component");
+                if (component != null)
+                    json.put("component", component);
+            }
+        }
 
         // Locate the validator
         String configElementPid = (String) config.get("service.factoryPid");
