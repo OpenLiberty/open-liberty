@@ -61,6 +61,7 @@ import com.ibm.ws.kernel.feature.internal.FeatureManager.ProvisioningMode;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureResourceImpl;
 import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
@@ -622,7 +623,7 @@ public class FeatureManagerTest {
             });
 
             final BundleInstallStatus iStatus = new BundleInstallStatus();
-            iStatus.addMissingBundle(new FeatureResourceImpl("missing", Collections.<String, String> emptyMap(), null, null));
+            iStatus.addMissingBundle(new FeatureResourceImpl("missing", Collections.<String, String> emptyMap(), null, null, ActivationType.SEQUENTIAL));
 
             try {
                 fm.checkInstallStatus(iStatus);

@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
@@ -281,6 +282,11 @@ public class BundleList {
         public Integer getRequireJava() {
             return fr.getRequireJava();
         }
+
+        @Override
+        public ActivationType getActivationType() {
+            return fr.getActivationType();
+        }
     }
 
     private static final class CachedFeatureResource implements FeatureResource {
@@ -291,6 +297,7 @@ public class BundleList {
         private final String location;
         private final String bundleRepositoryType;
         private final int startLevel;
+        private final ActivationType activationType;
 
         public CachedFeatureResource(String key, String value) {
 
@@ -322,10 +329,18 @@ public class BundleList {
             // Check index value for backwards compatibility - bundle start level was not always cached
             if (ix3 != -1) {
                 location = value.substring(0, ix3);
-                this.startLevel = Integer.valueOf(value.substring(ix3 + 1));
+                int ix4 = value.lastIndexOf('@');
+                if (ix4 != -1) {
+                    this.startLevel = Integer.valueOf(value.substring(ix3 + 1, ix4));
+                    this.activationType = ActivationType.fromString(value.substring(ix4 + 1));
+                } else {
+                    this.startLevel = Integer.valueOf(value.substring(ix3 + 1));
+                    this.activationType = ActivationType.SEQUENTIAL;
+                }
             } else {
                 location = value;
                 this.startLevel = 0;
+                this.activationType = ActivationType.SEQUENTIAL;
             }
         }
 
@@ -427,6 +442,11 @@ public class BundleList {
         @Override
         public Integer getRequireJava() {
             return null;
+        }
+
+        @Override
+        public ActivationType getActivationType() {
+            return activationType;
         }
 
     }
@@ -559,6 +579,8 @@ public class BundleList {
                         writer.write(entry.getURLString());
                         writer.write(';');
                         writer.write(Integer.toString(entry.getStartLevel()));
+                        writer.write('@');
+                        writer.write(entry.getActivationType().toString());
                         writer.write(FeatureDefinitionUtils.NL);
                     }
                 }

@@ -21,7 +21,8 @@ src: \
 	test-bundles/test.feature.api/src, \
 	test-bundles/test.feature.provisioner/src, \
 	test-bundles/test.service.consumer/src, \
-	test-bundles/test.service.provider/src
+	test-bundles/test.service.provider/src, \
+	test-bundles/test.activation.type/src
 	
 fat.project: true
 
@@ -29,6 +30,7 @@ tested.features: featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-
 	
 
 -buildpath: \
+	org.eclipse.osgi;version=latest,\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	com.ibm.ws.junit.extensions;version=latest,\
 	org.hamcrest:hamcrest-all;version=1.3,\

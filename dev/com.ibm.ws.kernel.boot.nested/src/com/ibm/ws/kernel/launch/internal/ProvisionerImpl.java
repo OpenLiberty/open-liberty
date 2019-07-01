@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.osgi.container.Module;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -184,7 +185,7 @@ public class ProvisionerImpl implements Provisioner {
      * start level event is fired.. we don't necessarily know that it's ours..).
      *
      * @param level
-     *            StartLevel to change to
+     *                  StartLevel to change to
      * @return BundleStartStatus containing any exceptions encountered during
      *         the StartLevel change operation.
      */
@@ -209,7 +210,7 @@ public class ProvisionerImpl implements Provisioner {
      * Install framework bundles.
      *
      * @param bundleList
-     *            Properties describing the bundles to install
+     *                       Properties describing the bundles to install
      * @oaran config
      *        Bootstrap configuration containing information about
      *        initial configuration parameters and file locations
@@ -273,6 +274,11 @@ public class ProvisionerImpl implements Provisioner {
                 //an error if another bundle was found at that ID.  This restriction
                 //has been relaxed and now we just install the bundle.
                 bundle = context.installBundle(BUNDLE_LOC_KERNEL_TAG + urlString, new URL(urlString).openStream());
+
+                Module m = bundle.adapt(Module.class);
+                if (m != null) {
+                    m.setParallelActivation(true);
+                }
 
                 setStartLevel(bundle, element, installStatus);
             } catch (IllegalStateException e) {

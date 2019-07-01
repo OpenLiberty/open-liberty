@@ -43,6 +43,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
@@ -70,6 +71,7 @@ public class FeatureDefinitionUtils {
     public static final String IBM_SPI_PACKAGE = "IBM-SPI-Package";
     public static final String IBM_PROVISION_CAPABILITY = "IBM-Provision-Capability";
     public static final String IBM_PROCESS_TYPES = "IBM-Process-Types";
+    public static final String IBM_ACTIVATION_TYPE = "WLP-Activation-Type";
 
     static final String FILTER_ATTR_NAME = "filter";
     static final String FILTER_FEATURE_KEY = "osgi.identity";
@@ -105,6 +107,7 @@ public class FeatureDefinitionUtils {
         final Visibility visibility;
         final AppForceRestart appRestart;
         final EnumSet<ProcessType> processTypes;
+        final ActivationType activationType;
         final Version version;
         final boolean isAutoFeature;
         final boolean hasApiPackages;
@@ -131,7 +134,8 @@ public class FeatureDefinitionUtils {
                             boolean hasApiPackages,
                             boolean hasSpiPackages,
                             boolean isSingleton,
-                            EnumSet<ProcessType> processType) {
+                            EnumSet<ProcessType> processType,
+                            ActivationType activationType) {
 
             this.bundleRepositoryType = repoType;
             this.symbolicName = symbolicName;
@@ -141,6 +145,7 @@ public class FeatureDefinitionUtils {
             this.visibility = visibility;
             this.appRestart = appRestart;
             this.processTypes = processType;
+            this.activationType = activationType;
             this.version = version;
 
             this.isAutoFeature = isAutoFeature;
@@ -295,7 +300,18 @@ public class FeatureDefinitionUtils {
 
         EnumSet<ProcessType> processTypes = ProcessType.fromString(details.getCachedRawHeader(IBM_PROCESS_TYPES));
 
-        ImmutableAttributes iAttr = new ImmutableAttributes(emptyIfNull(repoType),
+        repoType = emptyIfNull(repoType);
+        String activationTypeHeader = details.getCachedRawHeader(IBM_ACTIVATION_TYPE);
+        ActivationType activationType;
+        if (repoType.length() > 0) {
+            // for product extensions always use sequential
+            activationType = ActivationType.SEQUENTIAL;
+        } else {
+            // for liberty core features assume sequential by default
+            activationType = activationTypeHeader == null ? ActivationType.SEQUENTIAL : ActivationType.fromString(activationTypeHeader);
+        }
+
+        ImmutableAttributes iAttr = new ImmutableAttributes(repoType,
                                                             symbolicName,
                                                             nullIfEmpty(shortName),
                                                             featureVersion,
@@ -307,7 +323,8 @@ public class FeatureDefinitionUtils {
                                                             featureFile == null ? -1 : featureFile.length(),
                                                             isAutoFeature, hasApiServices,
                                                             hasApiPackages, hasSpiPackages, isSingleton,
-                                                            processTypes);
+                                                            processTypes,
+                                                            activationType);
 
         // Link the details object and immutable attributes (used for diagnostic purposes:
         // the immutable attribute values are necessary for meaningful error messages)
@@ -621,7 +638,7 @@ public class FeatureDefinitionUtils {
 
                 result = new ArrayList<FeatureResource>(data.size());
                 for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
-                    result.add(new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName));
+                    result.add(new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
                 }
 
                 subsystemContent = result;
@@ -656,7 +673,7 @@ public class FeatureDefinitionUtils {
                 elements = new ArrayList<HeaderElementDefinition>(data.size());
                 while (listIterator.hasNext()) {
                     NameValuePair element = listIterator.next();
-                    elements.add(new FeatureResourceImpl(element.getName(), element.getAttributes(), iAttr.bundleRepositoryType, iAttr.featureName));
+                    elements.add(new FeatureResourceImpl(element.getName(), element.getAttributes(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
                 }
 
                 elements = Collections.unmodifiableCollection(elements);

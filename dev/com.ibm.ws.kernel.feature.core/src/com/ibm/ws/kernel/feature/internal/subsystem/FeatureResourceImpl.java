@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.kernel.feature.internal.ProvisionerConstants;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
@@ -36,6 +37,7 @@ public class FeatureResourceImpl implements FeatureResource {
     private final Map<String, String> _rawAttributes;
     private final String _featureName;
     private final String _bundleRepositoryType;
+    private final ActivationType _activationType;
 
     private String matchString = null;
 
@@ -48,11 +50,12 @@ public class FeatureResourceImpl implements FeatureResource {
 
     private volatile SubsystemContentType _type = null;
 
-    public FeatureResourceImpl(String key, Map<String, String> value, String bundleRepositoryType, String featureName) {
+    public FeatureResourceImpl(String key, Map<String, String> value, String bundleRepositoryType, String featureName, ActivationType activationType) {
         _symbolicName = key;
         _rawAttributes = value;
         _bundleRepositoryType = bundleRepositoryType;
         _featureName = featureName;
+        _activationType = activationType;
     }
 
     /** {@inheritDoc} */
@@ -333,5 +336,10 @@ public class FeatureResourceImpl implements FeatureResource {
         // Directive names are in the attributes map, but end with a colon
         String requireJava = _rawAttributes.get("require-java:");
         return requireJava == null ? null : Integer.valueOf(requireJava);
+    }
+
+    @Override
+    public ActivationType getActivationType() {
+        return _activationType;
     }
 }
