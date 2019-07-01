@@ -116,6 +116,9 @@ public class FrameworkConfigurator {
         // Set to -1 in bootstrap.properties results in using the number of threads == to num processors
         config.putIfAbsent("equinox.start.level.thread.count", "1");
 
+        // default module.lock.timeout value in seconds.
+        config.putIfAbsent("osgi.module.lock.timeout", "5");
+
         // The IBM shared class adapter issues a message if it's loaded on a
         // non-IBM JVM.  Since it does no harm, we'll suppress the message.
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
