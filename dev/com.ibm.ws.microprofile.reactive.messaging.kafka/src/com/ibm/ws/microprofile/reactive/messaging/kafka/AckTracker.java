@@ -273,6 +273,7 @@ public class AckTracker implements ConsumerRebalanceListener {
          * Called when we are no longer tracking acks for the partition
          */
         private void close() {
+            messageBatcher.close();
             synchronized (this.unackedMessages) {
                 for (MessageAckData ackData : this.unackedMessages) {
                     if (ackData.getCompletion() != null) {

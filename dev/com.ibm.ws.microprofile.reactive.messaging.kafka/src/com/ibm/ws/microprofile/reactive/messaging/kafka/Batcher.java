@@ -31,6 +31,8 @@ public class Batcher<T> {
     private final ProcessBatchAction<T> processBatchAction;
     private final ManagedScheduledExecutorService executor;
 
+    private boolean closed;
+
     private List<T> batchList;
     private Future<?> pendingBatchAction;
 
@@ -46,6 +48,7 @@ public class Batcher<T> {
         this.maxBatchTime = maxBatchTime;
         this.processBatchAction = processBatchAction;
         this.executor = executor;
+        this.closed = false;
 
         this.batchList = new ArrayList<>();
         this.pendingBatchAction = null;
@@ -54,6 +57,9 @@ public class Batcher<T> {
     public void addToBatch(T item) {
         List<T> completeBatch = null;
         synchronized (this) {
+            if (closed) {
+                return;
+            }
             this.batchList.add(item);
             if ((this.maxBatchSize != -1) && (this.batchList.size() >= this.maxBatchSize)) {
                 completeBatch = startNewBatch();
@@ -66,6 +72,16 @@ public class Batcher<T> {
 
         if (completeBatch != null) {
             this.processBatchAction.processBatch(completeBatch);
+        }
+    }
+
+    public void close() {
+        synchronized (this) {
+            closed = true;
+            if (pendingBatchAction != null) {
+                // If we're closing, we don't want to run any remaining actions as the app context may have gone away
+                pendingBatchAction.cancel(false);
+            }
         }
     }
 
