@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Ov\u011b\u0159te spr\u00e1vn\u00e9 ur\u010den\u00ed
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Nelze rozbalit objekt do {0}, proto\u017ee {0} nen\u00ed t\u0159\u00edda rozhran\u00ed.
+NOT_AN_INTERFACE.explanation=Metoda rozbalen\u00ed povoluje pouze rozbalen\u00ed do t\u0159\u00eddy rozhran\u00ed.
+NOT_AN_INTERFACE.useraction=Prove\u010fte rozbalen\u00ed do t\u0159\u00eddy, kter\u00e1 je rozhran\u00edm nam\u00edsto konkr\u00e9tn\u00ed t\u0159\u00eddy.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.
