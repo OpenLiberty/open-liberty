@@ -45,7 +45,6 @@ import componenttest.topology.impl.LibertyServer;
  * Tests for configuration updates to databaseStore while the server is running.
  * The persistent executor is configured to have task execution ENABLED.
  */
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class ExecEnabledDBStoreConfigUpdateTest {
 	public static final Set<String> appNames = Collections.singleton("persistcfgdbtest");

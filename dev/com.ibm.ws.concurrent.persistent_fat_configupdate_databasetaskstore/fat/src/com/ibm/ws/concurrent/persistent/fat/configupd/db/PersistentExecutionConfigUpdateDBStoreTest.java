@@ -43,7 +43,6 @@ import componenttest.topology.impl.LibertyServer;
  * Note: All servers are configured with a persistent executor that has task execution disabled.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class PersistentExecutionConfigUpdateDBStoreTest extends CommonUtils {
 
     private static final Set<String> appNames = Collections.singleton("persistcfgdbtest");
