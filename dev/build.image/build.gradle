@@ -158,11 +158,6 @@ def javaee8Features() {
     features
 }
 
-def microProfile2Features() {
-    String features = project.file('profiles/microProfile2/features.xml').readLines()
-    features
-}
-
 def microProfile3Features() {
     String features = project.file('profiles/microProfile3/features.xml').readLines()
     features
@@ -255,29 +250,6 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
     }
 }
 
-task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
-    doFirst {
-        excludedFeatures.each {
-            this.&removeFeature("${it}")
-        }
-    }
-
-    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
-    dependsOn parent.subprojects.assemble
-    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-    withFeatures this.&microProfile2Features
-    outputTo packageDir
-    doLast {
-        copy {
-            from "$packageDir/wlp/templates/servers/microProfile2/server.xml" 
-            into "$packageDir/wlp/templates/servers/defaultServer" 
-        }
-        excludedFeatures.each {
-            this.&restoreFeature("${it}")
-        }
-    }
-}
-
 task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
     doFirst {
         excludedFeatures.each {
@@ -356,19 +328,6 @@ task zipOpenLibertyJavaee8(type: Zip) {
     }
 }
 publish.dependsOn zipOpenLibertyJavaee8
-
-task zipOpenLibertyMicroProfile2(type: Zip) {
-    dependsOn packageOpenLibertyMicroProfile2
-    baseName 'openliberty-microProfile2'
-    from packageDir
-    destinationDir distsDir
-    version releaseVersion
-    doLast {
-        rootProject.userProps.setProperty('zipopenliberty.microprofile2.archivename', archivePath.toString())
-        rootProject.storeProps()
-    }
-}
-publish.dependsOn zipOpenLibertyMicroProfile2
 
 task zipOpenLibertyMicroProfile3(type: Zip) {
     dependsOn packageOpenLibertyMicroProfile3
