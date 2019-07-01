@@ -40,7 +40,6 @@ import componenttest.topology.impl.LibertyServer;
  * Tests for persistent scheduled executor with task execution disabled
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 7)
 public class PersistentExecutorCompatibilityTest {
     private static final LibertyServer server = FATSuite.server;
     
@@ -98,15 +97,7 @@ public class PersistentExecutorCompatibilityTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-    	String serDir = "test-applications/" + APP_NAME + "/resources/WEB-INF/serialized";
-    	
-    	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "ejb")
-    			.merge(ShrinkWrap.create(GenericArchive.class)
-    					.as(ExplodedImporter.class)
-    					.importDirectory(serDir)
-    					.as(GenericArchive.class), "WEB-INF/serialized/");
-
-        server.addInstalledAppForValidation(APP_NAME);
+    	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "ejb");
         server.startServer();
     }
 
