@@ -28,7 +28,7 @@ public class NoDbOpTestTask implements Runnable, Callable<Integer>, Serializable
 
 	@Override
 	public Integer call() throws Exception {
-		Integer result = new Integer(1000);
+		Integer result = Integer.valueOf(1000);
     	lbq.put(result);
 		return result;
 	}

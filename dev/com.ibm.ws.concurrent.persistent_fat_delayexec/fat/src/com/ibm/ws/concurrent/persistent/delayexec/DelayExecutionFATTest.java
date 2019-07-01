@@ -30,9 +30,9 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -112,9 +112,7 @@ public class DelayExecutionFATTest {
     @BeforeClass
     public static void setUp() throws Exception {
         originalConfig = server.getServerConfiguration();
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
-        
-        
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web"); 
     }
 
     /**

@@ -29,4 +29,3 @@ fat.project: true
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
   
 
--sub: *.bnd

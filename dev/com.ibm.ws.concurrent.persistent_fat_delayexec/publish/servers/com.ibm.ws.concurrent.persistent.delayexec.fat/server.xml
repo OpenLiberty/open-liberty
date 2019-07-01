@@ -33,10 +33,10 @@
     <properties.derby.embedded createDatabase="create" databaseName="memory:delayexec"/>
   </dataSource>
   <library id="FATJDBCLib">
-    <fileset dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
   
-  <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
   
   <transactions timeout="180"/>
 

@@ -24,14 +24,7 @@ import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- * Collection of all example tests
- */
 @RunWith(Suite.class)
-/*
- * The classes specified in the @SuiteClasses annotation
- * below should represent all of the test cases for this FAT.
- */
 @SuiteClasses({ DelayExecutionFATTest.class })
 public class FATSuite {
 
@@ -47,8 +40,8 @@ public class FATSuite {
     public static final String BUNDLE_PATH = "lib/";
     public static final String FEATURE_MF_FAT_PATH = "features/testFeature-1.0.mf";
     public static final String FEATURE_NAME = "testFeature-1.0.mf";
-    public static final String BUNDLE_JAR_FAT_PATH = "bundles/test.concurrent.persistent.delayexec_1.0.0.jar";
-    public static final String BUNDLE_JAR_NAME = "test.concurrent.persistent.delayexec_1.0.0.jar";
+    public static final String BUNDLE_JAR_FAT_PATH = "bundles/test.concurrent.persistent.delayexec.jar";
+    public static final String BUNDLE_JAR_NAME = "test.concurrent.persistent.delayexec.jar";
 
     /**
      * Pre-bucket execution setup.
@@ -80,7 +73,7 @@ public class FATSuite {
     @AfterClass
     public static void afterSuite() throws Exception {
         // Remove test feature
-        server.deleteFileFromLibertyInstallRoot("lib/features/testFeature-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("lib/test.concurrent.persistent.delayexec_1.0.0.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/" + FEATURE_MF_FAT_PATH);
+        server.deleteFileFromLibertyInstallRoot("lib/" + BUNDLE_JAR_NAME);
     }
 }
