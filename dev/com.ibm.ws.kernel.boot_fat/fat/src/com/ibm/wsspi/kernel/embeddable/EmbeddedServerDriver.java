@@ -22,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.kernel.boot.ReturnCode;
@@ -156,7 +157,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
             String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
             Log.info(c, "testStartingAStoppedServer", "consoleOutput = " + serverConsoleOutput);
             try {
-                Assert.assertTrue("No indication that application started", serverConsoleOutput.contains("CWWKZ0001I: Application simpleApp started"));
+                Pattern p = Pattern.compile(".*CWWKZ0001I:.*simpleApp.*", Pattern.DOTALL);
+                Assert.assertTrue("No indication that application started", p.matcher(serverConsoleOutput).matches());
             } catch (Throwable t) {
                 failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
                 Log.error(c, CURRENT_METHOD_NAME, t);
@@ -232,7 +234,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     /**
      * Determine if the input product extension exists in the input string.
      *
-     * @param inputString      string to search.
+     * @param inputString string to search.
      * @param productExtension product extension to search for.
      * @return true if input product extension is found in the input string.
      */
