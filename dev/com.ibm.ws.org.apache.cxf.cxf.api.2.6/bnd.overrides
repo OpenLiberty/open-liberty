@@ -30,7 +30,7 @@ Import-Package: \
  
 Export-Package: \
   !org.apache.cxf.internal, \
-  com.ibm.ws.jaxws23.cxf.api, \
+  com.ibm.ws.jaxws22.cxf.api, \
   org.apache.cxf.*
  
 Private-Package: \
