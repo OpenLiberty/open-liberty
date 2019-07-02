@@ -37,16 +37,18 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 
 
 @RunWith(FATRunner.class)
-public class FATReaperVerification{
+public class FATReaperIntrospectionTest{
 
-    @Server(FATReaperVerification.serverName)
+    @Server(FATReaperIntrospectionTest.serverName)
     public static LibertyServer server;
-    public static final String serverName = "com.ibm.ws.artifact.zipReaper";
+    public static final String serverName = "com.ibm.ws.artifact.zipDumps";
     private static final String[] appNames = {
         "jarneeder.war",
         "testServlet1",
@@ -56,14 +58,14 @@ public class FATReaperVerification{
         "testServlet2.war",
         "jarneeder.war",
         "testServlet1.war",
-        "com.ibm.ws.messaging.utils_1.0.29.jar"
+        "TestJar.jar"
     };
     private static final int SECONDS_WAITING_FOR_DUMP = 30;
     private static final int ATTEMPTS_TO_RETRY  = 2;
     private static DumpArchive dump = null;
 
     private static void logInfo(String methodName, String outputString){
-        FATLogging.info(FATReaperVerification.class, methodName, outputString);
+        FATLogging.info(FATReaperIntrospectionTest.class, methodName, outputString);
     }
 
     private static DumpArchive getRecentServerDump(LibertyServer server) throws Exception{
@@ -248,9 +250,78 @@ public class FATReaperVerification{
             logInfo(methodName, "Test not applicable, reaper is not in a waiting state and waiting indefinitely");
         }
 
-        
+        logInfo(methodName, "Exiting: " + methodName);
+    }
+
+    /**
+     * Case: Verify for each ZipFileData object the number of times opened is equal to #(Pending -> open) + #(Closed -> open)
+     * 
+     * @throws Exception
+     */
+    //@Test
+    public void testZipFileToOpenCorrect() throws Exception{
+        String methodName = "testZipFileToOpenCorrect";
+        logInfo(methodName, "Entering: " + methodName);
+
+        //make sure in the dump archive the file for the zip caching introspector exists
+        Assert.assertTrue(DumpArchive.ZIP_CACHING_INTROSPECTOR_FILE_NAME + " was not found in archive: " + dump.getName(), dump.doesZipCachingIntrospectorDumpExist());
+
+        //make an introspection output object with the stream of the Zip Caching Introspector output file
+        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream());
+
+         //store the raw output for each ZipFileData introspection
+        List<String> zipFileDataIntrospections = dumpOutput.getAllZipFileDataIntrospections();
+
+        //if there are zip file data introspections to verify
+        if(!zipFileDataIntrospections.isEmpty()){
+            //matches the value for number of times zip archive was open
+            Pattern openCount = Pattern.compile("Open:\\s+\\[\\s+\\d+\\s\\]");
+            //matches the value for the to open lines for pending and close states
+            Pattern toOpenCounts = Pattern.compile("to Open:\\s+\\[\\s\\d+\\s\\]");
+            Matcher open, toOpen;
+            //for every ZipFileData introspection
+            for(String zipFileDataIntrospection: zipFileDataIntrospections){
+                String zipFileHeader = zipFileDataIntrospection.substring(0, zipFileDataIntrospection.indexOf("\n"));
+                open = openCount.matcher(zipFileDataIntrospection);
+                toOpen = toOpenCounts.matcher(zipFileDataIntrospection);
+                int timesOpened = -1, pendingToOpen = -1, closeToOpen = -1, counter;
+                if(open.find()){
+                    String openLine = open.group();
+                    //parse the int VALUE between the square brackets of the "Open: [ VALUE ] [ TIME (s) ]" line
+                    timesOpened = Integer.parseInt(openLine.substring(openLine.indexOf("[") + 1, openLine.indexOf("]")).trim());
+                }
+                else{
+                    Assert.fail(String.format("Could not find the number of times %s was opened by introspection",zipFileHeader));
+                }
+
+                counter = 0;
+                while(toOpen.find()){
+                    //count the number of times which to Open is found per ZipFileData introspection
+                    //pending to open
+                    if(counter == 0) {
+                        String pendingToOpenLine = toOpen.group();
+                        pendingToOpen = Integer.parseInt(pendingToOpenLine.substring(pendingToOpenLine.indexOf("[") + 1,pendingToOpenLine.indexOf("]")).trim());
+                    }
+                    //closed to open
+                    else if(counter == 1) {
+                        String closeToOpenLine = toOpen.group();
+                        closeToOpen = Integer.parseInt(closeToOpenLine.substring(closeToOpenLine.indexOf("[") + 1,closeToOpenLine.indexOf("]")).trim());
+                    }
+                    else{
+                        Assert.fail(String.format("Number of matches for 'to Open: ' in ZipFile introspection should not be %d. (%s)",zipFileHeader,counter));
+                    }
+                    counter++;
+                }
+
+                Assert.assertEquals("The number of times opened doesn't match with the sum of pending to open and close to open.",timesOpened,(pendingToOpen + closeToOpen));
+            }
+
+        }
+        else{//should not get here
+            logInfo(methodName, "Test not applicible, No ZipFileData introspections were found in dump");
+        }
 
         logInfo(methodName, "Exiting: " + methodName);
     }
-    
+
 }
