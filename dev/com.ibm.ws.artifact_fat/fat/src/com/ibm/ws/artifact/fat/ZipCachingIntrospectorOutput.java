@@ -252,9 +252,12 @@ public class ZipCachingIntrospectorOutput{
             return null;
         else{
             List<String> handles = new LinkedList<String>();
+            //pattern will capture the file name at the end of the path including comma and directory seperator
+            //open-liberty/dev/build.image/wlp/usr/servers/com.ibm.ws.artifact.zipReaper/apps[/testServlet1.war,]
             Pattern p = Pattern.compile("[/\\\\][^/:\\*\\?\\\"<>\\|\\\\]+\\.[ewj]ar,");
             for(String line : getHandleIntrospection().split("\n")){
                 if(hasAValidGroup(line, p)){
+                    //match for the archive name and remove the comma and directory seperator
                     handles.add(getFirstGroup(line,p, "\\/," ));
                 }
             }
@@ -303,6 +306,47 @@ public class ZipCachingIntrospectorOutput{
 
 
         return null;
+    }
+
+    public List<String> getOpenAndActiveArchiveNames(){
+        String rawOpen = getActiveAndPendingIntrospection();
+        List<String> returnValue = new LinkedList<String>();
+        if(rawOpen == null){
+            return returnValue;
+        }
+        
+        Pattern p = Pattern.compile("[^/\\\\]+\\.[ewj]ar");
+        for(String introspection: rawOpen.split("\n")){
+            if(introspection.contains("ZipFile")){
+                Matcher m = p.matcher(introspection);
+                if(m.find()){
+                    returnValue.add(m.group());
+                }
+            }
+        }
+        return returnValue;
+    }
+
+    public List<String> getAllZipFileDataIntrospections(){
+        List<String> returnValue = new LinkedList<String>();
+
+        addZipFileDataIntrospection(returnValue, getActiveAndPendingIntrospection());
+        //pendingQuick and pendingSlow introspections are sparse so the full output will only be in active/pending and completed
+        //addZipFileDataIntrospection(returnValue, getPendingQuickIntrospection());
+        //addZipFileDataIntrospection(returnValue, getPendingSlowIntrospection());
+        addZipFileDataIntrospection(returnValue, getCompletedIntrospection());
+
+        return returnValue;
+    }
+
+    private static void addZipFileDataIntrospection(List<String> aggregateList, String rawIntrospection){
+        //if there is no raw input then do nothing
+        if(rawIntrospection != null){
+            Pattern p = Pattern.compile("\nZipFile");
+            for(String zipFile : p.split(rawIntrospection)){
+                aggregateList.add("ZipFile" + zipFile);
+            }
+        }
     }
 
     private static boolean hasAValidGroup(String introspectLine, Pattern matchPattern){
