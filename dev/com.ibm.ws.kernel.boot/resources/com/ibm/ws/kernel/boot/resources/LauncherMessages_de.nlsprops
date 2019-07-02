@@ -745,6 +745,8 @@ info.resumeFailedException=Der Server {0} konnte nicht wiederaufgenommen werden.
 info.resumingListeners.target=Die angegebenen Zielkomponenten des Servers {0} werden wiederaufgenommen.
 info.resumedListeners.target=Die angegebenen Zielkomponenten des Servers {0} wurden wiederaufgenommen.
 info.resumeFailedException.target=Die angegebenen Zielkomponenten des Servers {0} konnten nicht wiederaufgenommen werden. Suchen Sie in den Serverprotokollen nach Details.
+info.serverCommandAuthFailure=Der Befehl {0} ist fehlgeschlagen, da der Prozess die Datei {1} nicht l\u00f6schen konnte.
+info.serverCommandCommFailure=Der Befehl {0} ist aufgrund eines Kommunikationsfehlers mit dem Server fehlgeschlagen.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

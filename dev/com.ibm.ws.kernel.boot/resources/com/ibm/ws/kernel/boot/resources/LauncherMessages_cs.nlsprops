@@ -772,6 +772,8 @@ info.resumingListeners.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdc
 info.resumedListeners.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} bylo dokon\u010deno.
 info.resumeFailedException.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
 protokolech serveru.
+info.serverCommandAuthFailure=P\u0159\u00edkaz {0} se nezda\u0159il, proto\u017ee proces nem\u016f\u017ee odstranit soubor {1}.
+info.serverCommandCommFailure=P\u0159\u00edkaz {0} se nezda\u0159il kv\u016fli chyb\u011b komunikace se serverem.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

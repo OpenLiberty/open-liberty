@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=V\u00e9rifiez que l'encapsuleur et les param\u00e8t
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Impossible de d\u00e9sencapsuler l''objet dans {0} car {0} n''est pas une classe d''interface.
+NOT_AN_INTERFACE.explanation=La m\u00e9thode de d\u00e9sencapsulage permet uniquement le d\u00e9sencapsulage dans une classe d'interface.
+NOT_AN_INTERFACE.useraction=Proc\u00e9dez au d\u00e9sencapsulage dans une classe qui est une interface au lieu d'une classe concr\u00e8te.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.
