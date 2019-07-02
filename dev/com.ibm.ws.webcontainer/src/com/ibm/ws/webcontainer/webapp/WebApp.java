@@ -945,6 +945,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         ClassLoader origClassLoader = null; // NEVER INVOKED BY WEBSPHERE
         // APPLICATION SERVER (Common
         // Component Specific)
+        boolean webAppNameCollPreInvokeCalled = false;
         try {
             origClassLoader = ThreadContextHelper.getContextClassLoader(); // NEVER
             // INVOKED
@@ -996,6 +997,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             // setupWebAppAnnotations();
 
             webAppNameSpaceCollab.preInvoke(config.getMetaData().getCollaboratorComponentMetaData()); //added 661473
+            webAppNameCollPreInvokeCalled = true;
             commonInitializationFinish(extensionFactories); // NEVER INVOKED BY
             
             this.initializeServletContainerInitializers(moduleConfig);
@@ -1031,7 +1033,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             AnnotationHelperManager.verifyClassIsLoaded();
             
         } finally {
-            webAppNameSpaceCollab.postInvoke(); //added 661473            
+            // if initialization failed, this can be null.
+            if (webAppNameCollPreInvokeCalled) {
+                webAppNameSpaceCollab.postInvoke(); //added 661473            
+            }
             if (origClassLoader != null) // NEVER INVOKED BY WEBSPHERE
             // APPLICATION SERVER (Common Component
             // Specific)
