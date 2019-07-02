@@ -101,7 +101,7 @@ public class PersistentExecutorErrorPathsTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted())
-            server.stopServer(LibertyServer.DISABLE_FAILURE_CHECKING);
+            server.stopServer(".*");
     }
 
     @Test
