@@ -42,7 +42,7 @@ public class TestServlet1 extends HttpServlet {
             String methodName = "doPost";
 
             PrintWriter responseWriter = response.getWriter();
-            responseWriter.println(String.format("%s.%s: Enter",CLASS_NAME, methodName));
+            responseWriter.println(String.format("%s.%s",CLASS_NAME,methodName));
             responseWriter.flush();
             responseWriter.close();
     }
@@ -51,46 +51,11 @@ public class TestServlet1 extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         String methodName = "doGet";
-        ServletContext sc = request.getServletContext();
-        ClassLoader sccl = sc.getClassLoader();
-
-        URL testFile;
-        Class testClass;
-        InputStream in;
-        InputStream in2;
-        try{
-            testClass = sccl.loadClass("TestClass");
-            testFile = sccl.getResource("testfile.txt");
-            in = null;//sc.getResourceAsStream("WEB-INF/lib/TestJar.jar");
-            in2 = null; //testFile.openStream();
-        }catch(Exception e){
-
-            testClass = null;
-            testFile = null;
-            in = null;
-            in2 = null;
-            
-        }
         
         PrintWriter responseWriter = response.getWriter();
-        responseWriter.println(testClass);
-        responseWriter.println(testFile);
-        responseWriter.println(in);
-        responseWriter.println(in2);
-        responseWriter.println("-----------------------");
-        responseWriter.println(request.getQueryString());
-        
+        responseWriter.println(String.format("%s.%s",CLASS_NAME,methodName));
         responseWriter.flush();
         responseWriter.close();
 
-
-
-        if(in != null){
-            //in.close();
-        }
-        if(in2 != null){
-            //in2.close();
-        }
-        
     }
 }

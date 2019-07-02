@@ -29,12 +29,25 @@ public class TestServlet2 extends HttpServlet {
     }
 
     @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException{
+        
+            String methodName = "doPost";
+
+            PrintWriter responseWriter = response.getWriter();
+            responseWriter.println(String.format("%s.%s",CLASS_NAME,methodName));
+            responseWriter.flush();
+            responseWriter.close();
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         String methodName = "doGet";
 
         PrintWriter responseWriter = response.getWriter();
-        responseWriter.println(String.format("%s.$s: Enter",CLASS_NAME, methodName));
+
+        responseWriter.println(String.format("%s.%s",CLASS_NAME,methodName));
         responseWriter.flush();
         responseWriter.close();
     }

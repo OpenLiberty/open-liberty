@@ -258,7 +258,7 @@ public class FATReaperIntrospectionTest{
      * 
      * @throws Exception
      */
-    //@Test
+    @Test
     public void testZipFileToOpenCorrect() throws Exception{
         String methodName = "testZipFileToOpenCorrect";
         logInfo(methodName, "Entering: " + methodName);
