@@ -2682,11 +2682,6 @@
       <version>4.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.18.100</version>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.transformer</groupId>
       <artifactId>org.eclipse.transformer.bnd.analyzer</artifactId>
       <version>0.5.0</version>
