@@ -281,7 +281,7 @@ public class ZipFileData {
                 closeCount++;
             }
 
-            boolean isLastClose;
+            boolean consumedLastOpen;
 
             if ( closeCount == openCount ) { // OPEN -> PENDING
                 openDuration += closeAt - lastOpenAt;
@@ -295,17 +295,17 @@ public class ZipFileData {
 
                 zipFileState = ZipFileState.PENDING;
 
-                isLastClose = true;
+                consumedLastOpen = true;
 
             } else {
-                isLastClose = false;
+                consumedLastOpen = false;
             }
 
             if ( ZIP_REAPER_COLLECT_TIMINGS ) {
                 timing(" Close " + dualTiming(closeAt, initialAt) + " " + openState());
             }
 
-            return isLastClose;
+            return consumedLastOpen;
 
         } else if ( zipFileState == ZipFileState.PENDING ) {
             throw illegalTransition(ZipFileAction.CLOSE); 
