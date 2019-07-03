@@ -1,12 +1,11 @@
 package com.ibm.ws.jdbc.fat.db2;
 
+import static com.ibm.ws.jdbc.fat.db2.FATSuite.db2;
 import static junit.framework.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,27 +25,26 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.common.apiservices.Bootstrap;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class SQLJTest extends FATServletClient {
 
     @Server("com.ibm.ws.sqlj.fat")
     public static LibertyServer server;
 
     public static final String JEE_APP = "sqljapp";
-    public static final String OSGi_APP = "sqljapp_wab";
     public static final String SERVLET_NAME = "SQLJTestServlet";
 
     // Directory paths for shrinkwrap
     private static final String BASEDIR = System.getProperty("user.dir");
     private static final String CLASS_DIR = BASEDIR + "/build/classes/";
-    private static final String APP_RES = BASEDIR + "/test-applications/" + JEE_APP + "/resources/";
-    private static final String WAB_RES = BASEDIR + "/test-applications/" + OSGi_APP + "/resources/";
 
     // Event types for eventLogging
     private static final String EVENT_PS_EXEC_UPDATE = "websphere.datasource.psExecuteUpdate";
@@ -59,34 +56,27 @@ public class SQLJTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-//        FATSuite.dbCluster.addConfigTo(server);
-
+        applyDB2Env();
         setUpSQLJ();
-
         // Create a normal Java EE application and export to server
         WebArchive app = ShrinkWrap.create(WebArchive.class, JEE_APP + ".war");
         app = addGeneratedPackage(app, "web");
         ShrinkHelper.exportAppToServer(server, app);
-
-        // Create an OSGi application and export to server
-        WebArchive wabJar = ShrinkWrap.create(WebArchive.class, "sqljapp.jar")
-                        .addAsManifestResource(new File(APP_RES, "META-INF/MANIFEST.MF"));
-        wabJar = addGeneratedPackage(wabJar, "web");
-
-        EnterpriseArchive wab = ShrinkWrap.create(EnterpriseArchive.class, OSGi_APP + ".eba")
-                        .addAsModule(wabJar)
-                        .addAsResource(new File(WAB_RES, "META-INF/APPLICATION.MF"));
-        ShrinkHelper.exportAppToServer(server, wab);
-
         server.addInstalledAppForValidation(JEE_APP);
-        server.addInstalledAppForValidation(OSGi_APP);
         server.startServer(SQLJTest.class.getSimpleName() + "_before_warmstart.log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    private static void applyDB2Env() {
+        server.addEnvVar("DB2_DBNAME", db2.getDatabaseName());
+        server.addEnvVar("DB2_HOSTNAME", db2.getContainerIpAddress());
+        server.addEnvVar("DB2_PORT", String.valueOf(db2.getMappedPort(50000)));
+        server.addEnvVar("DB2_USER", db2.getUsername());
+        server.addEnvVar("DB2_PASS", db2.getPassword());
     }
 
     @Before
@@ -108,12 +98,6 @@ public class SQLJTest extends FATServletClient {
     @Test
     public void testBasicCreateRead1() throws Exception {
         runTest(JEE_APP);
-        checkForPMI(EVENT_PS_EXEC_UPDATE, EVENT_PS_EXEC_QUERY);
-    }
-
-    @Test
-    public void testBasicCreateRead2() throws Exception {
-        runTest(OSGi_APP);
         checkForPMI(EVENT_PS_EXEC_UPDATE, EVENT_PS_EXEC_QUERY);
     }
 
@@ -159,20 +143,8 @@ public class SQLJTest extends FATServletClient {
     }
 
     @Test
-    public void testBasicCreateRollback2() throws Exception {
-        runTest(OSGi_APP);
-        checkForPMI(EVENT_PS_EXEC_UPDATE, EVENT_PS_EXEC_QUERY);
-    }
-
-    @Test
     public void testBasicCreateUpdateDelete1() throws Exception {
         runTest(JEE_APP);
-        checkForPMI(EVENT_PS_EXEC_UPDATE, EVENT_PS_EXEC_QUERY);
-    }
-
-    @Test
-    public void testBasicCreateUpdateDelete2() throws Exception {
-        runTest(OSGi_APP);
         checkForPMI(EVENT_PS_EXEC_UPDATE, EVENT_PS_EXEC_QUERY);
     }
 
@@ -185,12 +157,6 @@ public class SQLJTest extends FATServletClient {
     @Test
     public void testBasicDeleteRollback1() throws Exception {
         runTest(JEE_APP);
-        checkForPMI(EVENT_PS_EXEC_UPDATE, EVENT_PS_EXEC_QUERY);
-    }
-
-    @Test
-    public void testBasicDeleteRollback2() throws Exception {
-        runTest(OSGi_APP);
         checkForPMI(EVENT_PS_EXEC_UPDATE, EVENT_PS_EXEC_QUERY);
     }
 
@@ -273,12 +239,6 @@ public class SQLJTest extends FATServletClient {
     }
 
     @Test
-    public void testIsolation_RR() throws Exception {
-        runTest(OSGi_APP);
-        checkForPMI(EVENT_PS_EXEC, EVENT_PS_EXEC_QUERY);
-    }
-
-    @Test
     public void testIsolation_SER() throws Exception {
         runTest(JEE_APP);
         checkForPMI(EVENT_PS_EXEC, EVENT_PS_EXEC_QUERY);
@@ -290,7 +250,9 @@ public class SQLJTest extends FATServletClient {
             // Because SQLJ does not allow disabling thread local context once enabled,
             // if the _threadlocal tests run before this one, we must restart the server
             // in order to clear out the thread local context
-            server.restartServer();
+            server.stopServer();
+            applyDB2Env();
+            server.startServer();
             threadLocalContextEnabled = false;
         }
         runTest(JEE_APP);
@@ -303,7 +265,9 @@ public class SQLJTest extends FATServletClient {
             // Because SQLJ does not allow disabling thread local context once enabled,
             // if the _threadlocal tests run before this one, we must restart the server
             // in order to clear out the thread local context
-            server.restartServer();
+            server.stopServer();
+            applyDB2Env();
+            server.startServer();
             threadLocalContextEnabled = false;
         }
         runTest(JEE_APP);
@@ -328,6 +292,7 @@ public class SQLJTest extends FATServletClient {
     public void testWarmStart() throws Exception {
         runTest(JEE_APP);
         server.stopServer();
+        applyDB2Env();
         server.startServer(SQLJTest.class.getSimpleName() + "_after_warmstart.log", false);
         runTest(JEE_APP);
     }
@@ -353,20 +318,17 @@ public class SQLJTest extends FATServletClient {
 
     /**
      * Perform the following steps in sequence:<br>
-     * 1 - Run sqlj.tools.Sqlj on any .sqlj files<br>
+     * 1 - Run sqlj.tools.Sqlj on any .sqlj files. Normally this is done at build time,
+     * but we've just checked in the output of this step as the Sqlj transformer is not publicly available<br>
      * 2 - Create tables on the DB using JSE JDBC<br>
      * 3 - Run com.ibm.db2.jcc.sqlj.Customizer to<br>
      * enhance the .ser files generated in step 1.
      */
     private static void setUpSQLJ() throws Exception {
-        Bootstrap b = Bootstrap.getInstance();
         String javaClassPath = System.getProperty("java.class.path");
 
         // 2 - Setup tables and stored procedures needed for the DB2 SQLJ Customizer
-        String db2url = "jdbc:db2://" + b.getValue("database.hostname") + ':' + b.getValue("database.port") + '/' + b.getValue("database.name");
-        String user = b.getValue("database.user1");
-        String pass = b.getValue("database.password1");
-        Connection conn = DriverManager.getConnection(db2url, user, pass);
+        Connection conn = FATSuite.db2.createConnection("");
         try {
             Statement st = conn.createStatement();
             try {
@@ -384,8 +346,6 @@ public class SQLJTest extends FATServletClient {
         }
 
         // 3 - Run the DB2 SQLJ Customizer to "enhance" the previously generated .ser files
-        String sqlj4 = Paths.get(BASEDIR, "lib", "sqlj4.jar").toString();
-        String db2jcc = Paths.get(BASEDIR, "lib", "db2jcc4.jar").toString();
         List<String> args = new ArrayList<String>();
         args.add("java");
         if (JavaInfo.JAVA_VERSION >= 9) {
@@ -409,11 +369,11 @@ public class SQLJTest extends FATServletClient {
         }
         args.add("com.ibm.db2.jcc.sqlj.Customizer");
         args.add("-url");
-        args.add(db2url);
+        args.add(FATSuite.db2.getJdbcUrl());
         args.add("-user");
-        args.add(user);
+        args.add(FATSuite.db2.getUsername());
         args.add("-password");
-        args.add(pass);
+        args.add(FATSuite.db2.getPassword());
         args.add("-rootPkgName");
         args.add("web");
         args.add("SQLJProcedure_SJProfile0.ser");
@@ -422,7 +382,7 @@ public class SQLJTest extends FATServletClient {
         args.add("SQLJProcedure_SJProfile3.ser");
         ProcessBuilder customize = new ProcessBuilder(args);
         char colon = File.pathSeparatorChar;
-        String cp = javaClassPath + colon + CLASS_DIR + "web" + colon + sqlj4 + colon + db2jcc;
+        String cp = javaClassPath + colon + CLASS_DIR + "web";
         customize.environment().put("CLASSPATH", cp);
 
         Log.info(SQLJTest.class, "setUpSQLJ", "Running SQLJ customizer with command: " + customize.command());

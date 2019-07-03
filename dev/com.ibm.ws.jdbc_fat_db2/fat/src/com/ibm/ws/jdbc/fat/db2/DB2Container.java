@@ -50,7 +50,6 @@ public class DB2Container<SELF extends DB2Container<SELF>> extends JdbcDatabaseC
             addEnv("LICENSE", "accept");
         if (!isPrivilegedMode())
             throw new ContainerLaunchException("The DB2 containers must be started in privileged mode in order to work properly.");
-        //setCommand("postgres");
     }
 
     @Override

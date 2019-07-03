@@ -34,3 +34,21 @@ task copyDB2(type: Copy) {
 }
 
 addRequiredLibraries.dependsOn copyDB2
+
+// This is the equivalent ant code that needs to be invoked in order to transform the SQLJProcedure.sqlj
+// file into a .java file. Since the SQLJ customizer code library is not publicly available, and the
+// SQLJProcedure.sqlj file rarely changes, we will simply check in the generated file.
+//     <target name="addRequiredFiles">
+//         <echo message="running sqlj xform with java level: ${build.with.java.level}"/>
+//         <java classname="sqlj.tools.Sqlj" classpathref="project.class.path" fork="true">
+//           <arg value="-compile=false"/> <!-- compile the generated .java files later with <wlpjavac> -->
+//           <arg value="-d=${classes.dir}"/>
+//           <arg value="-status"/>
+//           <arg value="-db2optimize"/>
+//           <arg value="${basedir}/test-applications/sqljapp/src/web/SQLJProcedure.sqlj"/>
+//         </java>
+//         <echo message="SQLJ transform complete.  Now compiling generated .java file"/>      
+//         <wlpJavac srcdir="${basedir}/test-applications/sqljapp/src/" 
+//                   destdir="${classes.dir}" 
+//                   buildWithJavaLevel="${build.with.java.level}"/>
+//     </target>

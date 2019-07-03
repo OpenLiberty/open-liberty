@@ -1,13 +1,12 @@
 package com.ibm.ws.jdbc.fat.db2;
 
+import static com.ibm.ws.jdbc.fat.db2.FATSuite.db2;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -25,13 +24,6 @@ public class DB2Test extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.db2")
     @TestServlet(servlet = DB2TestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
-
-    @ClassRule
-    public static DB2Container<?> db2 = new DB2Container<>()
-                    .acceptLicense()
-                    .withPrivilegedMode(true)
-                    .withExposedPorts(50000)
-                    .withLogConsumer(DB2Test::log);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -51,12 +43,5 @@ public class DB2Test extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(DB2Test.class, "db2", msg);
     }
 }
