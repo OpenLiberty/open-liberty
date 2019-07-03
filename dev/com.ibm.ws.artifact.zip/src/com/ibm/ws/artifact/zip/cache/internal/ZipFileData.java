@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
+import com.ibm.ws.artifact.zip.internal.SystemUtils;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 /**
@@ -359,46 +360,165 @@ public class ZipFileData {
         }
     }
 
-    // ZipFile [ C:\\dev\\repos-pub\\open-liberty-locking\\dev\\build.image\\wlp\\usr\\servers\\com.ibm.ws.artifact.dynamism\\apps\\jarneeder.war ]
-    //   State [ FULLY_CLOSED ]
-    //   Open:       [ 000003 ] [ 000000.039148 (s) ]
-    //    First:       [ 000000.001436 (s) ]
-    //    Last:        [ 000000.137198 (s) ]
-    //   Pending:    [ 000003 ] [ 000000.227502 (s) ]
-    //     to Open:    [ 000001 ] [ 000000.001700 (s) ]
-    //     to Close:   [ 000002 ] [ 000000.225801 (s) ]
-    //    First:       [ 000000.003472 (s) ]
-    //    Last:        [ 000000.173709 (s) ]
-    //   Close:      [ 000003 ]
-    //     to Open:    [ 000002 ] [ 000000.114947 (s) ]
-    //    First:       [ 000000.022250 (s) ]
-    //    Last:        [ 000000.383034 (s) ]
-
-	//    protected int openCount;
-	//    protected int closeCount;
-	//
-	//    protected int openToPendCount;
-	//    protected int pendToOpenCount;
-	//    protected int pendToFullCloseCount;
-	//    protected int fullCloseToOpenCount;
-	//
-	//    protected long firstOpenAt;
-	//    protected long lastLastOpenAt;
-	//    protected long lastOpenAt;
-	//
-	//    protected long firstPendAt;
-	//    protected long lastPendAt;
-	//    
-	//    protected long firstFullCloseAt;
-	//    protected long lastFullCloseAt;
-	//
-	//    protected long openDuration;
-	//    protected long pendToOpenDuration;
-	//    protected long pendToFullCloseDuration;
-	//    protected long fullCloseToOpenDuration;
     
-    @Trivial
+/*
+ZipFile [Path]
+    State   [state]
+    Request Counts:
+        Open Requests:  [<openCount>]
+        Close Requests: [<closeCount>]
+        Active Opens:   [<openCount> - <closeCount>]
+
+    State Durations:    [<current> - <initialAt> (s) ]
+        Pre-Open:       [<firstOpenAt> - <initialAt> (s) ]
+        Open:           [<openDuration> + <openTail> (s) ]
+        Pending:        [<pendingToOpenDuration> + <pendToFullCloseDuration> + <pendTail> (s) ]
+        Closed:         [<fullCloseToOpenDuration> + <closeTail> (s) ]
+        Post-Close:     [ 0 (s) ] //might be 0 since there is no post close unless the server is shut down
+
+    Transition Counts:
+        Open:
+            to Pending: [<openToPendCount>]  [<openDuration> (s) ]
+        Pending:
+            to Open:    [<pendToOpenCount>]  [<pendToOpenDuration> (s) ]
+            to Close:   [<pendToCloseCount>]  [<pendToCloseDuration> (s) ]
+        Close:
+            to Open:    [<closeToOpenCount>]  [<closeDuration> (s) ]
+    
+    Event Times:
+        Open:
+            First:  [<firstOpenAt> (s) ]
+            Last:   [<lastOpenAt> (s) ]
+        Pend:
+            First:  [<firstPendAt> (s) ]
+            Last:   [<lastPendAt> (s) ]
+        Close:
+            First:  [<firstCloseAt> (s) ]
+            Last:   [<lastCloseAt> (s) ]
+*/
+
+    private static void outputIntrospectLine(PrintWriter output, String line, int tabs){
+        String finalLine = "";
+        for(int i = 0 ; i < tabs; ++i){
+            finalLine += "\t";
+        }
+        finalLine += line;
+        output.println(finalLine);
+    }
+
     public void introspect(PrintWriter output) {
+        String tempOutput;
+        long openTail = -1, pendTail = -1, closeTail = -1;
+
+        //assign the addition values for each state duration time
+        if(zipFileState == ZipFileState.OPEN){
+            openTail = SystemUtils.getNanoTime() - lastOpenAt;
+            pendTail = 0;
+            closeTail = 0;
+        }
+        else if(zipFileState == ZipFileState.PENDING){
+            openTail = 0;
+            pendTail = SystemUtils.getNanoTime() - lastPendAt;
+            closeTail = 0;
+        }
+        else if(zipFileState == ZipFileState.FULLY_CLOSED){
+            openTail = 0;
+            pendTail = 0;
+            closeTail = SystemUtils.getNanoTime() - lastFullCloseAt;
+        }
+        else{
+            //should not get here, conditionals for every value in enumeration
+            throw new IllegalStateException("Cannot introspect on ZipFileData with illegal state");
+        }
+
+        tempOutput = String.format("ZipFile\t[ %s ]" , path);
+        outputIntrospectLine(output, tempOutput, 0);
+
+        tempOutput = String.format("State\t[ %s ]",zipFileState.toString());
+        outputIntrospectLine(output, tempOutput, 1);
+
+        tempOutput = "Request Counts:";
+        outputIntrospectLine(output, tempOutput, 1);
+
+        tempOutput = String.format("Open Requests:\t[ %s ]",toCount(openCount));
+        outputIntrospectLine(output, tempOutput, 2);
+
+        tempOutput = String.format("Close Requests:\t[ %s ]",toCount(closeCount));
+        outputIntrospectLine(output, tempOutput, 2);
+
+        tempOutput = String.format("Active Opens:\t[ %s ]", toCount(Math.abs(openCount - closeCount)));
+        outputIntrospectLine(output, tempOutput, 2);
+
+        output.println("");
+
+        tempOutput = String.format("State Durations:\t[ %s (s) ]", toRelSec(initialAt,SystemUtils.getNanoTime()));
+        outputIntrospectLine(output, tempOutput, 1);
+
+        tempOutput = String.format("Pre-Open:\t\t[ %s (s) ]",toRelSec(initialAt, firstOpenAt));
+        outputIntrospectLine(output, tempOutput, 2);
+
+        tempOutput = String.format("Open:\t\t\t[ %s (s) ]", toAbsSec(openDuration + openTail));
+        outputIntrospectLine(output, tempOutput, 2);
+
+        tempOutput = String.format("Pending:\t\t[ %s (s) ]", toAbsSec(pendToOpenDuration + pendToFullCloseDuration + pendTail));
+        outputIntrospectLine(output, tempOutput, 2);
+
+        tempOutput = String.format("Closed:\t\t\t[ %s (s) ]",toAbsSec(fullCloseToOpenDuration + closeTail));
+        outputIntrospectLine(output, tempOutput, 2);
+   
+        tempOutput = String.format("Post-Close:\t\t[ %s (s) ]",0.0);
+        outputIntrospectLine(output, tempOutput, 2);
+
+        output.println("");
+        outputIntrospectLine(output,"Transition Counts:",1);
+        outputIntrospectLine(output,"Open:",2);
+
+        tempOutput = String.format("to Pending:\t[ %s ]\t[ %s (s) ]",toCount(openToPendCount),toAbsSec(openDuration));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        outputIntrospectLine(output, "Pending:", 2);
+
+        tempOutput = String.format("to Open:\t[ %s ]\t[ %s (s) ]",toCount(pendToOpenCount),toAbsSec(pendToOpenDuration));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        tempOutput = String.format("to Close:\t[ %s ]\t[ %s (s) ]",toCount(pendToFullCloseCount),toAbsSec(pendToFullCloseDuration));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        outputIntrospectLine(output, "Close:", 2);
+
+        tempOutput = String.format("to Open:\t[ %s ]\t[ %s (s) ]",toCount(fullCloseToOpenCount),toAbsSec(fullCloseToOpenDuration));
+        outputIntrospectLine(output, tempOutput, 3);
+        
+        output.println("");
+        outputIntrospectLine(output, "Event Times:", 1);
+        outputIntrospectLine(output, "Open:", 2);
+
+        tempOutput = String.format("First:\t[ %s (s) ]",toRelSec(initialAt,firstOpenAt));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        tempOutput = String.format("Last:\t[ %s (s) ]", toRelSec(initialAt,lastOpenAt));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        outputIntrospectLine(output, "Pend:", 2);
+
+        tempOutput = String.format("First:\t[ %s (s) ]", toRelSec(initialAt,firstPendAt));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        tempOutput = String.format("Last:\t[ %s (s) ]",toRelSec(initialAt,lastPendAt));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        outputIntrospectLine(output, "Close:", 2);
+
+        tempOutput = String.format("First:\t[ %s (s) ]", toRelSec(initialAt,firstFullCloseAt));
+        outputIntrospectLine(output, tempOutput, 3);
+
+        tempOutput = String.format("Last:\t[ %s (s) ]",toRelSec(initialAt,lastFullCloseAt));
+        outputIntrospectLine(output, tempOutput, 3);
+
+    }
+
+    @Trivial
+    public void introspect2(PrintWriter output) {
         // See the class comment for details of the state model and the
         // statistics which are gathered.
 
