@@ -411,11 +411,10 @@ public class DatabaseHashMap extends BackedHashMap {
                     } else {
                         collectionName = getCollectionName(url);
                         tableName = collectionName + "." + tableName;
-	                }
-	            }
-	            else {
-	                tableName = collectionName + "." + tableName;
-	            }
+                    }
+                } else {
+                    tableName = collectionName + "." + tableName;
+                }
                 firstInitialize = false;
                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[INIT_DB_SETTINGS], "AS400DB2 Table Name value = ", tableName);
@@ -466,11 +465,10 @@ public class DatabaseHashMap extends BackedHashMap {
         if (usingAS400DB2 || usingDB2Connect) {
             //tbName = TABLE_NAME.toUpperCase();
             int index = tableName.indexOf(".");
-	        if (index != -1) {
-	            tbName = tableName.substring(index+1).toUpperCase();
-	        }
-            else {
-	            tbName = tableName.toUpperCase();
+            if (index != -1) {
+                tbName = tableName.substring(index + 1).toUpperCase();
+            } else {
+                tbName = tableName.toUpperCase();
             }
             if (collectionName != null)
                 qualifierName = collectionName;
