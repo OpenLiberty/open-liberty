@@ -13,19 +13,12 @@ package com.ibm.ws.microprofile.health20.internal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.microprofile.health.internal.HealthCheckService;
+
 /**
  * Microprofile Health Check Service
  */
-public interface HealthCheck20Service {
-
-    /**
-     * Performs the health check for a given http request, ie. http://hostname:port/health
-     * and returns a health response in httpResponse
-     *
-     * @param request
-     * @param httpResponse
-     */
-    void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse);
+public interface HealthCheck20Service extends HealthCheckService {
 
     /**
      * Performs the health check for a given health check procedure

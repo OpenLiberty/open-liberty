@@ -57,4 +57,10 @@ public interface AppTracker {
      */
     boolean isStarted(String appName);
 
+    /**
+     * Sets the HealthCheckService associated with this AppTracker.
+     *
+     * @param healthService
+     */
+    void setHealthCheckService(HealthCheckService healthService);
 }
