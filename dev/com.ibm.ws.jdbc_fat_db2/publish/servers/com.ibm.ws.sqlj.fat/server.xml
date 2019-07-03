@@ -1,0 +1,44 @@
+<server>
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>jndi-1.0</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>eventLogging-1.0</feature>
+      <feature>wab-1.0</feature>
+      <feature>concurrent-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <eventLogging minDuration="0" logMode="entryExit"/>
+
+    <application location="sqljapp.war" >
+        <classloader commonLibraryRef="DBLib"/>
+    </application>
+    
+    <osgiApplication name="sqljapp_wab" location="sqljapp_wab.eba"/>
+    
+    <osgiLibrary libraryRef="DBLib"/>
+    <library id="DBLib">
+    	<fileset dir="${server.config.dir}/db2"/>
+    </library>
+    
+    <dataSource id="DefaultDataSource">
+        <connectionManager maxPoolSize="2"/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    	<properties.db2.jcc serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}" databaseName="${jdbc.databaseName}" 
+    	                    user="${jdbc.user}" password="${jdbc.password}"/>
+    </dataSource>
+
+    <dataSource id="SQLJContextDS" jndiName="jdbc/SQLJContextDS" enableConnectionCasting="true">
+        <connectionManager maxPoolSize="1"/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    	<properties.db2.jcc serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}" databaseName="${jdbc.databaseName}" 
+    	                    user="${jdbc.user}" password="${jdbc.password}"/>
+    </dataSource>
+
+    <variable name="onError" value="FAIL"/>
+    
+    <javaPermission codebase="${server.config.dir}db2/db2jcc4.jar" className="java.security.AllPermission"/>
+</server>

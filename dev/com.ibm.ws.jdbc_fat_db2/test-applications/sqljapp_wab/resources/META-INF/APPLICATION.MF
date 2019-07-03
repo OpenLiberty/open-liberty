@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Application-ManifestVersion: 1.0
+Application-Name: sqljapp_wab
+Application-Version: 1.0.0
+Application-SymbolicName: sqljapp_wab
+Application-Content: 
+ sqljapp;version="1.0.0"

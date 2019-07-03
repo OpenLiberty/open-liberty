@@ -30,6 +30,7 @@ com.googlecode.json-simple:json-simple:1.1.1
 com.graphql-java:graphql-java-servlet:6.1.3
 com.graphql-java:graphql-java:11.0
 com.graphql-java:java-dataloader:2.2.1
+com.ibm.db2:jcc:11.1.4.4
 com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
 com.ibm.ws.componenttest:com.ibm.ws.topology.helper:1.0.0
 com.ibm.ws.componenttest:fat.harness:1.0.0
