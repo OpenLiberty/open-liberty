@@ -117,6 +117,9 @@ public class FrameworkConfigurator {
         config.putIfAbsent("equinox.start.level.thread.count", "0");
         config.putIfAbsent("equinox.start.level.restrict.parallel", "true");
 
+        // default module.lock.timeout value in seconds.
+        config.putIfAbsent("osgi.module.lock.timeout", "5");
+
         // The IBM shared class adapter issues a message if it's loaded on a
         // non-IBM JVM.  Since it does no harm, we'll suppress the message.
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
