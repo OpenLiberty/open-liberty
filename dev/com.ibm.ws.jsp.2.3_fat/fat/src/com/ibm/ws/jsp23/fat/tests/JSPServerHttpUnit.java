@@ -27,6 +27,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -218,7 +219,8 @@ public class JSPServerHttpUnit extends com.ibm.ws.fat.util.LoggingTest {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC({ "javax.el.ELException", "java.security.PrivilegedActionException" })
+    @ExpectedFFDC("javax.el.ELException")
+    @AllowedFFDC("java.security.PrivilegedActionException")
     @Mode(TestMode.FULL)
     public void testEL30ReservedWords() throws Exception {
         WebConversation wc = new WebConversation();
