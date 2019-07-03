@@ -405,11 +405,10 @@ public class DatabaseHashMap extends BackedHashMap {
                 //     collectionName = getCollectionName(url);
                 // tableName = collectionName + "." + tableName;
                 if (collectionName == null) { //PK78174  so we won't overwrite the collectionName set at setUserInfo
-	                int index = tableName.indexOf(".");
-	                if (index != -1) { // SessionTableName = "schema_name.table_name"
-	                    collectionName = tableName.substring(0, index);
-                    } 
-                    else {
+                    int index = tableName.indexOf(".");
+                    if (index != -1) { // SessionTableName = "schema_name.table_name"
+                        collectionName = tableName.substring(0, index);
+                    } else {
                         collectionName = getCollectionName(url);
                         tableName = collectionName + "." + tableName;
 	                }
@@ -505,7 +504,7 @@ public class DatabaseHashMap extends BackedHashMap {
         }
         
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
-	        LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_TABLE_DEFINITION], "Qualifier Name = " + qualifierName + " Table Name = " + tbName);
+            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_TABLE_DEFINITION], "Qualifier Name = " + qualifierName + " Table Name = " + tbName);
         }
 	
         ResultSet rs1 = dmd.getColumns(null, qualifierName, tbName, "%");
