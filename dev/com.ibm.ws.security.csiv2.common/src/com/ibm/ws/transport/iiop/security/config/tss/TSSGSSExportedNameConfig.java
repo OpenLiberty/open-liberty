@@ -59,11 +59,13 @@ public class TSSGSSExportedNameConfig extends TSSServiceConfigurationConfig {
 
     @Override
     @Trivial
-    void toString(String spaces, StringBuilder buf) {
-        String moreSpaces = spaces + "  ";
-        buf.append(spaces).append("TSSGSSExportedNameConfig: [\n");
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        String moreSpaces = "  ";
+        buf.append("TSSGSSExportedNameConfig: [\n");
         buf.append(moreSpaces).append("oid : ").append(oid).append("\n");
         buf.append(moreSpaces).append("name: ").append(name).append("\n");
-        buf.append(spaces).append("]\n");
+        buf.append("]\n");
+        return buf.toString();
     }
 }
