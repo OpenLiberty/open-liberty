@@ -142,8 +142,13 @@ public class AckTracker implements ConsumerRebalanceListener {
             Iterator<PartitionAckTracker> i = partitionTrackers.values().iterator();
             while (i.hasNext()) {
                 PartitionAckTracker tracker = i.next();
-                tracker.close();
                 i.remove();
+                try {
+                    tracker.close();
+                } catch (Exception e) {
+                    // Ensures we try to close all trackers
+                    // and that we get an FFDC on error
+                }
             }
         }
     }
