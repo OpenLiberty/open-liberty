@@ -10,16 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.fat.util.tck;
 
-import java.util.EnumSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.File;
 
-import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
+import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
@@ -29,8 +27,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 public class TestLoggingObserverArchiveProcessor implements ApplicationArchiveProcessor {
 
     private static final Logger LOG = Logger.getLogger(TestLoggingObserverArchiveProcessor.class.getName());
- 
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor#process(org.jboss.shrinkwrap.api.Archive, org.jboss.arquillian.test.spi.TestClass)
      */
     @Override
@@ -38,10 +38,15 @@ public class TestLoggingObserverArchiveProcessor implements ApplicationArchivePr
         if (applicationArchive instanceof WebArchive) {
             LOG.log(Level.INFO, "WLP: Adding observer for test start and finish to {0}", applicationArchive.getName());
             ((WebArchive) applicationArchive).addClass(TestLoggingObserver.class)
-            .addClass(TestLoggingObserverExtension.class)
-            .addAsServiceProvider(RemoteLoadableExtension.class, TestLoggingObserverExtension.class);
+                            .addClass(TestLoggingObserverExtension.class)
+                            .addAsServiceProvider(RemoteLoadableExtension.class, TestLoggingObserverExtension.class);
+        } else if (applicationArchive instanceof JavaArchive) {
+            LOG.log(Level.INFO, "WLP: Adding observer for test start and finish to {0}", applicationArchive.getName());
+            ((JavaArchive) applicationArchive).addClass(TestLoggingObserver.class)
+                            .addClass(TestLoggingObserverExtension.class)
+                            .addAsServiceProvider(RemoteLoadableExtension.class, TestLoggingObserverExtension.class);
         } else {
-            LOG.log(Level.INFO, "Attempted to add the test observer to jar but {0} was not a WebArchive", applicationArchive);
+            LOG.log(Level.INFO, "Attempted to add the test observer to archive {0} but it was not a WebArchive or a JavaArchive", applicationArchive);
         }
     }
 }
