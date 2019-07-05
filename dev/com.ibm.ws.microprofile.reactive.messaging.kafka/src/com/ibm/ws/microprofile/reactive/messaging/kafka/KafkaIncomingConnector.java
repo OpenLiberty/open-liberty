@@ -66,7 +66,12 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
     private void shutdown() {
         synchronized (kafkaInputs) {
             for (KafkaInput<?, ?> kafkaInput : kafkaInputs) {
-                kafkaInput.shutdown();
+                try {
+                    kafkaInput.shutdown();
+                } catch (Exception e) {
+                    // Ensures we attempt to shutdown all inputs
+                    // and also that we get an FFDC for any errors
+                }
             }
         }
     }

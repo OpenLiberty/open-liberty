@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -56,7 +57,7 @@ public class AckTracker implements ConsumerRebalanceListener {
         this.kafkaAdapterFactory = kafkaAdapterFactory;
         this.executor = executor;
         this.ackThreshold = ackThreshold;
-        this.partitionTrackers = new HashMap<>();
+        this.partitionTrackers = Collections.synchronizedMap(new HashMap<>());
         this.outstandingAcks = new AtomicInteger(0);
     }
 
@@ -129,6 +130,27 @@ public class AckTracker implements ConsumerRebalanceListener {
      */
     public CompletionStage<Void> waitForAckThreshold() {
         return this.ackThresholdStage;
+    }
+
+    /**
+     * Shutdown the ack tracker
+     * <p>
+     * This will cause all incomplete acks() to fail and ensure that we don't try to commit any more messages.
+     */
+    public void shutdown() {
+        synchronized (partitionTrackers) {
+            Iterator<PartitionAckTracker> i = partitionTrackers.values().iterator();
+            while (i.hasNext()) {
+                PartitionAckTracker tracker = i.next();
+                i.remove();
+                try {
+                    tracker.close();
+                } catch (Exception e) {
+                    // Ensures we try to close all trackers
+                    // and that we get an FFDC on error
+                }
+            }
+        }
     }
 
     private void incrementOutstandingAcks() {
