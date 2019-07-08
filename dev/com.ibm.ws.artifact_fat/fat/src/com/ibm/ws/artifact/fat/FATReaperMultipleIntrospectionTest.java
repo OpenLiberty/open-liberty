@@ -246,6 +246,7 @@ public class FATReaperMultipleIntrospectionTest{
         ZipCachingIntrospectorOutput recentOutput;
         List<String> recentActiveAndPending;
         String assertMsg;
+        int secondsToWait = 90;
 
         for(String appName : appsToAdd){
             //make and pull in the dump which should have everything closed
@@ -259,7 +260,7 @@ public class FATReaperMultipleIntrospectionTest{
             Assert.assertTrue(assertMsg,recentActiveAndPending.isEmpty());
 
             //hold the app resources open
-            Future<String> response = asyncGET(server,appName,60);
+            Future<String> response = asyncGET(server,appName,secondsToWait);
 
             //get another dump, supposed to have the current app resources open
             server.executeServerScript("dump", null);
@@ -267,7 +268,8 @@ public class FATReaperMultipleIntrospectionTest{
             //make sure the resources were help during the dump
             assertMsg = String.format("Response from the holding servlet was not a success");
             String responseMsg = response.get();
-            Assert.assertEquals(assertMsg,"Waited for 60000 ms",responseMsg);
+            String expected = "Waited for " + secondsToWait * 1000 + " ms";
+            Assert.assertEquals(assertMsg,expected,responseMsg);
 
             //pull in the dump which has the newly opened resources
             recent = DumpArchive.getMostRecentDumpArchive(server);
