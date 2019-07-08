@@ -55,7 +55,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
                 configurationPid = "com.ibm.ws.javamail.mailSession",
                 property = "creates.objectClass=javax.mail.Session")
 public class MailSessionService implements ResourceFactory {
-    private final TraceComponent tc = Tr.register(MailSessionService.class);
+    private static final TraceComponent tc = Tr.register(MailSessionService.class);
     /**
      * Service reference to this instance.
      */

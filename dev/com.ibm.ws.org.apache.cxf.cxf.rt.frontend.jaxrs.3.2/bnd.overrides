@@ -55,9 +55,7 @@ Export-Package: com.ibm.ws.jaxrs20.cache,\
   com.ibm.ws.jaxrs20.injection,\
   com.ibm.ws.jaxrs20.injection.metadata,\
   com.ibm.ws.jaxrs20.metadata,\
-  com.ibm.ws.jaxrs20.metadata.builder,\
   com.ibm.ws.jaxrs20.providers.multipart,\
-  com.ibm.ws.jaxrs20.support,\
   com.ibm.ws.jaxrs20.utils,\
   com.ibm.ws.jaxrs21.component,\
   com.ibm.ws.jaxrs21.threading

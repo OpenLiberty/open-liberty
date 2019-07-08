@@ -26,7 +26,7 @@ import com.ibm.websphere.ras.TraceComponent;
  */
 public class FileUpdateMonitor extends UpdateMonitor {
 
-    TraceComponent tc = Tr.register(FileUpdateMonitor.class);
+    static final TraceComponent tc = Tr.register(FileUpdateMonitor.class);
 
     private boolean exists = false;
     private long monitoredTime = 0;

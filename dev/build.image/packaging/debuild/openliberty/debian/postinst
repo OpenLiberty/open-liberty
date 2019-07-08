@@ -1,0 +1,47 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        echo "Adding group - openliberty"
+        if (! getent group openliberty > /dev/null 2>&1); then
+            addgroup --system --quiet openliberty
+        fi
+
+        echo "Adding user - openliberty"
+        if (! id openliberty > /dev/null 2>&1); then
+            adduser --system --home /usr/share/openliberty --no-create-home --ingroup openliberty --disabled-password --shell /bin/bash --quiet openliberty  
+        fi
+
+        if [ -x "/usr/libexec/openliberty" ] && [ -r "/lib/systemd/system/openliberty@.service" ]; then
+            systemctl daemon-reload
+            systemctl enable openliberty@defaultServer.service
+        fi
+
+        echo "Setting up defaultServer for user"
+        mkdir -p /var/local/openliberty/usr/servers
+        if [ ! -d "/var/local/openliberty/usr/servers/defaultServer" ]; then
+            unzip /usr/share/openliberty/defaultServer.zip -d /var/local/openliberty/usr/servers
+            printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/local/openliberty/usr/servers/defaultServer/server.env
+        fi
+        mkdir -p /var/run/openliberty
+        mkdir -p /var/log/openliberty
+
+        echo "Setting permissions to files/folders"
+        chown -R openliberty:openliberty /var/local/openliberty
+        chmod -R u+w /var/local/openliberty
+        chown -R openliberty:openliberty /var/run/openliberty
+        chmod -R u+w /var/run/openliberty
+        chown -R openliberty:openliberty /var/log/openliberty
+        chmod -R u+w /var/log/openliberty
+        ;;
+    abort-remove|abort-upgrade)
+        ;;
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
+

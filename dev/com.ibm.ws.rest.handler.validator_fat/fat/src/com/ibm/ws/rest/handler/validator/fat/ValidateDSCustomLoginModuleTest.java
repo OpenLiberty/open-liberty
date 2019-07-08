@@ -95,7 +95,6 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
                     "javax.resource.spi.ResourceAllocationException" })
     public void testCustomLoginModuleDirectLookupInvalid() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS")
-                        .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         String err = "unexpected response: " + json;
@@ -126,7 +125,6 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
     @Test
     public void testCustomLoginContainerAuth() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS?auth=container")
-                        .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         assertSuccessResponse(json, "customLoginDS", "customLoginDS", "jdbc/customLoginDS");
@@ -142,7 +140,6 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
     @Test
     public void testCustomLoginIBMWebBnd() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry")
-                        .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         assertSuccessResponse(json, "customLoginDSWebBnd", "customLoginDSWebBnd", "jdbc/customLoginDSWebBnd");
@@ -160,10 +157,9 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
     @Test
     public void testCustomLoginModuleProperties() throws Exception {
         String URL = "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry";
-        String propsJson = "{ \"loginConfigProperties\": { \"" + TestLoginModule.CUSTOM_PROPERTY_KEY + "\": \"foo\" } }";
         JsonObject json = new HttpsRequest(server, URL)
-                        .method("POST")
-                        .jsonBody(propsJson)
+                        .method("GET")
+                        .requestProp("X-Login-Config-Props", TestLoginModule.CUSTOM_PROPERTY_KEY + "=foo")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         assertSuccessResponse(json, "customLoginDSWebBnd", "customLoginDSWebBnd", "jdbc/customLoginDSWebBnd");
@@ -181,7 +177,6 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
                     "java.sql.SQLException" })
     public void testCustomLoginIBMWebBndWrongName() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=bogus")
-                        .method("POST")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         String err = "unexpected response: " + json;

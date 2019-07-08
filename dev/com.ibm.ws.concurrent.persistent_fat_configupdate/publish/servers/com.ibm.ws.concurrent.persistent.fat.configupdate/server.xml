@@ -15,7 +15,7 @@
     <!-- <feature>osgiConsole-1.0</feature> -->
     <feature>persistentExecutor-1.0</feature>
     <feature>servlet-3.1</feature>
-    <feature>jdbc-4.2</feature>
+    <feature>jdbc-4.1</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
@@ -44,10 +44,10 @@
     <properties.derby.embedded createDatabase="create" databaseName="memory:persistcfgdb"/>
   </dataSource>
   <library id="DerbyLib">
-    <fileset dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
 
-  <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
   
   <variable name="onError" value="FAIL"/>
 </server>

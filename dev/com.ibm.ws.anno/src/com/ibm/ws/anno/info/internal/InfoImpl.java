@@ -159,8 +159,8 @@ public abstract class InfoImpl implements Info {
         return declaredAnnotations;
     }
 
-    public void setDeclaredAnnotations(AnnotationInfoImpl[] annos) {
-        declaredAnnotations = Arrays.asList(annos);
+    public void setDeclaredAnnotations(List<AnnotationInfoImpl> annos) {
+        declaredAnnotations = annos;
     }
 
     @Override

@@ -82,9 +82,6 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
 
     private static final class ContainerAnnotationsImpl implements ContainerAnnotations {
 
-        @SuppressWarnings("unused")
-        private static final TraceComponent _tc = Tr.register(ContainerAnnotationsImpl.class);
-
         // Reference to the underlying annotation service.  That links to the
         // more detailed service entities.
         private final AnnotationService_Service annotationService;

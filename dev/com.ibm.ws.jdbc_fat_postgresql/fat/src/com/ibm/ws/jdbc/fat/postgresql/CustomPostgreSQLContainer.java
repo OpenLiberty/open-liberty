@@ -2,18 +2,39 @@ package com.ibm.ws.jdbc.fat.postgresql;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.Future;
 
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
-public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SELF>> extends PostgreSQLContainer<SELF> {
+/**
+ * This class is a replacement for the regular <code>org.testcontainers.containers.PostgreSQLContainer</code> class.
+ * This custom class is needed for 2 reasons:
+ * 1. To add a ctor that accepts a <code>Future<String></code> parameter so we can mount SSL certificates in the image
+ * 2. To fix the ordering of configure() so that we can set config options such as max_connections=200
+ */
+public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 
+    public static final String NAME = "postgresql";
+    public static final String IMAGE = "postgres";
+    public static final String DEFAULT_TAG = "9.6.8";
+
+    public static final Integer POSTGRESQL_PORT = 5432;
+    private String databaseName = "test";
+    private String username = "test";
+    private String password = "test";
     private final Map<String, String> options = new HashMap<>();
 
     public CustomPostgreSQLContainer(String img) {
         super(img);
+    }
+
+    public CustomPostgreSQLContainer(final Future<String> image) {
+        super(image);
     }
 
     /**
@@ -36,16 +57,76 @@ public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SE
 
     @Override
     protected void configure() {
-        super.configure();
+        addExposedPort(POSTGRESQL_PORT);
+        addEnv("POSTGRES_DB", databaseName);
+        addEnv("POSTGRES_USER", username);
+        addEnv("POSTGRES_PASSWORD", password);
+        if (!options.containsKey("fsync"))
+            withConfigOption("fsync", "off");
         List<String> command = new ArrayList<>();
-        command.add("postgres");
-        command.add("-c");
-        command.add("fsync=off");
         for (Entry<String, String> e : options.entrySet()) {
             command.add("-c");
             command.add(e.getKey() + '=' + e.getValue());
         }
         setCommand(command.toArray(new String[command.size()]));
+    }
+
+    @Override
+    protected Set<Integer> getLivenessCheckPorts() {
+        return new HashSet<>(getMappedPort(POSTGRESQL_PORT));
+    }
+
+    @Override
+    public String getDriverClassName() {
+        return "org.postgresql.Driver";
+    }
+
+    @Override
+    public String getJdbcUrl() {
+        return "jdbc:postgresql://" + getContainerIpAddress() + ":" + getMappedPort(POSTGRESQL_PORT) + "/" + databaseName;
+    }
+
+    @Override
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getTestQueryString() {
+        return "SELECT 1";
+    }
+
+    @Override
+    public SELF withDatabaseName(final String databaseName) {
+        this.databaseName = databaseName;
+        return self();
+    }
+
+    @Override
+    public SELF withUsername(final String username) {
+        this.username = username;
+        return self();
+    }
+
+    @Override
+    public SELF withPassword(final String password) {
+        this.password = password;
+        return self();
+    }
+
+    @Override
+    protected void waitUntilContainerStarted() {
+        getWaitStrategy().waitUntilReady(this);
     }
 
 }

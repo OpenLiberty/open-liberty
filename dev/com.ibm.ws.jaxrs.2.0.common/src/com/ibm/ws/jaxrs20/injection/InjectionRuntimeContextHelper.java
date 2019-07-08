@@ -37,7 +37,6 @@ public abstract class InjectionRuntimeContextHelper {
         protected InjectionRuntimeContext initialValue() {
 
             InjectionRuntimeContext irc = new InjectionRuntimeContext();
-            InjectionRuntimeContextHelper.setRuntimeContext(irc);
             return irc;
 
         }
@@ -127,7 +126,8 @@ public abstract class InjectionRuntimeContextHelper {
          * then the intersection is only default constructor.
          * so if ConstructorProxies!=null means there are some other invalid constructors to EJB or CDI container
          */
-        if ((!(resource instanceof ProviderInfo)) || (resource instanceof ApplicationInfo) || resource.getConstructorProxies() != null) {
+        if ((!(resource instanceof ProviderInfo)) || (resource instanceof ApplicationInfo)
+            || (resource.getConstructorProxies() != null && !(resource.getConstructorProxies().isEmpty()))) {
             return;
         }
 

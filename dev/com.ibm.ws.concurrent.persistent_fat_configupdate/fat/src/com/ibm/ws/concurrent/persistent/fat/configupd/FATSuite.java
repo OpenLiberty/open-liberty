@@ -26,11 +26,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class FATSuite {
     static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.configupdate");
 
-    /**
-     * Copies the simulated GA repository local files (saved during compilation) to the server install root.
-     *
-     * @param traceTag The tag String to be used to log info.
-     */
     @BeforeClass
     public static void beforeSuite() throws Exception {
         // Delete the Derby-only database that is used by the persistent scheduled executor

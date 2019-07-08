@@ -13,18 +13,18 @@ package com.ibm.ws.microprofile.health20.test;
 import java.util.EnumSet;
 import java.util.Set;
 
-import com.ibm.ws.fat.util.tck.AbstractArquillianLoadableExtension;
-import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
-
+import org.jboss.arquillian.container.test.impl.enricher.resource.URIResourceProvider;
 import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 
+import com.ibm.ws.fat.util.tck.AbstractArquillianLoadableExtension;
+import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
 
 public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
-        builder.service(ResourceProvider.class, URIProviderProducer.class);
+        builder.override(ResourceProvider.class, URIResourceProvider.class, URIProviderProducer.class);
     }
-    
+
     @Override
     public Set<TCKArchiveModifications> getModifications() {
         return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.HAMCREST);

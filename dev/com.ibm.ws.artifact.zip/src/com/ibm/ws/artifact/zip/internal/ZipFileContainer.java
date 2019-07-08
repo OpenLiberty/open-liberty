@@ -185,10 +185,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         EXTRACT_TIME;
     }
 
-    public static class TimingsLock {
-        // EMPTY
-    }
-    private static final TimingsLock timingsLock = ( COLLECT_TIMINGS ? new TimingsLock() : null );
+    private static final Integer timingsLock = ( COLLECT_TIMINGS ? new Integer(0) : null );
 
     private static int[] timingCounts = ( COLLECT_TIMINGS ? new int[ Timings.values().length ] : null );
     private static long[] timingTotals= ( COLLECT_TIMINGS ? new long[ Timings.values().length ] : null );
@@ -425,7 +422,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             this.zipFileNotifier = new ZipFileArtifactNotifier(this, useArchivePath);
             this.archiveName = archiveFile.getName();
         } else {
-            this.archiveFileLock = new ArchiveFileLock();
+            this.archiveFileLock = new Integer(1);
             this.zipFileNotifier = new ZipFileArtifactNotifier(this, entryInEnclosingContainer);
             this.archiveName = entryInEnclosingContainer.getName();
         }
@@ -650,11 +647,8 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     // failure is handled by issuing an error, then processing with the archive
     // being empty.
 
-    private class ArchiveFileLock {
-        // EMPTY
-    }
     // Null if the container started with an archive file.
-    private final ArchiveFileLock archiveFileLock;
+    private final Integer archiveFileLock;
 
     private boolean archiveFileFailed;
     private File archiveFile;
@@ -756,10 +750,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private class ZipFileHandleLock {
-        // Empty
-    }
-    private final ZipFileHandleLock zipFileHandleLock = new ZipFileHandleLock();
+    private final Integer zipFileHandleLock = new Integer(2);
     private boolean zipFileHandleFailed;
     private ZipFileHandle zipFileHandle;
 
@@ -870,10 +861,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private class FastModeLock {
-        // EMPTY
-    }
-    private final FastModeLock fastModeLock = new FastModeLock();
+    private final Integer fastModeLock = new Integer(3);
     private int fastModeCount;
 
     @Override
@@ -909,10 +897,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private class ZipEntryDataLock {
-        // EMPTY
-    }
-    private final ZipEntryDataLock zipEntryDataLock = new ZipEntryDataLock();
+    private final Integer zipEntryDataLock = new Integer(4);
     private volatile ZipEntryData[] zipEntryData;
     private Map<String, ZipEntryData> zipEntryDataMap;
 
@@ -1061,10 +1046,63 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
     }
 
-    private class IteratorDataLock {
-        // EMPTY
+    private boolean initializeMultiRelease() {
+        if (isMultiRelease != null)
+            return isMultiRelease;
+
+        // Multi-Release jars only apply to JDK 9+
+        if (CURRENT_JAVA_VERSION < 9) {
+            isMultiRelease = false;
+            return isMultiRelease;
+        }
+
+        // Multi-Release jars can be disabled with JDK system properties
+        if (JDK_DISABLE_MULTI_RELEASE) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "JDK system property set to globally disable multi-release jars");
+           isMultiRelease = false;
+           return isMultiRelease;
+        }
+        
+        // Only .jar files can be multi-release (not .war or .ear)
+        if (!archiveName.endsWith(".jar")) {
+            isMultiRelease = false;
+            return isMultiRelease;
+        }
+
+        synchronized (multiReleaseLock) {
+            if (isMultiRelease != null)
+                return isMultiRelease;
+
+            ZipFileEntry mfEntry = getEntry("META-INF/MANIFEST.MF");
+            if (mfEntry == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "No MANIFEST.MF found in container. Assuming not multi-release");
+                isMultiRelease = false;
+                return isMultiRelease;
+            }
+
+            // Manifest was found, check it for 'Multi-Release: true' attribute
+            boolean isMR = false;
+            if (mfEntry != null) {
+                try (InputStream mfStream = mfEntry.getInputStream()) {
+                    Manifest mf = new Manifest(mfStream);
+                    String isMultiReleaseAttr = mf.getMainAttributes().getValue("Multi-Release");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Raw value for 'Multi-Release' attribute: " + isMultiReleaseAttr);
+                    if (isMultiReleaseAttr != null) {
+                        isMR = Boolean.parseBoolean(isMultiReleaseAttr.trim());
+                    }
+                } catch (IOException e) {
+                    isMR = false;
+                }
+            }
+            isMultiRelease = isMR;
+            return isMultiRelease;
+        }
     }
-    private final IteratorDataLock iteratorDataLock = new IteratorDataLock();
+
+    private final Integer iteratorDataLock = new Integer(5);
     private volatile Map<String, ZipFileContainerUtils.IteratorData> iteratorData;
 
     @Trivial
@@ -1088,11 +1126,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private static class NestedContainerEntriesLock {
-        // EMPTY
-    }
-    private final NestedContainerEntriesLock nestedContainerEntriesLock =
-        new NestedContainerEntriesLock();
+    private final Integer nestedContainerEntriesLock = new Integer(6);
     private Map<String, ZipFileEntry> nestedContainerEntries;
 
     @Trivial
@@ -1402,10 +1436,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     // Extraction utility ...
 
-    private static class ExtractionLock {
-        // EMPTY
-    }
-    private static final ExtractionLock extractionsLock = new ExtractionLock();
+    private static final Integer extractionsLock = new Integer(7);
 
     private static final Map<String, CountDownLatch> extractionLocks =
         new HashMap<String, CountDownLatch>();

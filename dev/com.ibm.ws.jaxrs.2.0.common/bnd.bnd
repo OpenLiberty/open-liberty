@@ -32,8 +32,6 @@ Export-Package: \
 	com.ibm.ws.jaxrs20.api;provide=true,\
 	com.ibm.ws.jaxrs20.bus,\
 	com.ibm.ws.jaxrs20.metadata,\
-	com.ibm.ws.jaxrs20.metadata.builder,\
-	com.ibm.ws.jaxrs20.support,\
 	com.ibm.ws.jaxrs20.utils,\
 	com.ibm.ws.jaxrs20.endpoint,\
 	com.ibm.ws.jaxrs20.injection,\
@@ -156,7 +154,8 @@ Include-Resource: \
 
 -dependson: com.ibm.ws.org.codehaus.jackson
 
-instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
+instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
+	org/apache/cxf/common/util/UrlUtils.class
 
 -buildpath: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

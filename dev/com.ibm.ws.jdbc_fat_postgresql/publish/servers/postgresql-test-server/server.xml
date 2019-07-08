@@ -87,7 +87,7 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <!-- Needed because this sysprop is read by static init of the org.postgresql.jdbc.PgStatement class, which could be triggeredby many different 
+    <!-- Needed because this sysprop is read by static init of the org.postgresql.jdbc.PgStatement class, which could be triggered by many different 
          code paths in the Liberty code and it's not feasible to doPriv all of those paths or worth eagerly loading the PgStatement class -->
     <javaPermission codeBase="${server.config.dir}/apps/postgresqlApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
     

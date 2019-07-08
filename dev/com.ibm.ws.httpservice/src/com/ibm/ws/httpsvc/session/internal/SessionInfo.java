@@ -26,7 +26,7 @@ import com.ibm.ws.httpsvc.servlet.internal.RequestMessage;
  */
 public class SessionInfo {
     /** Debug variable */
-    private static final TraceComponent tc = Tr.register(SessionInfo.class);
+    private static final TraceComponent tc = Tr.register(SessionInfo.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP);
 
     /** Client provided session id, might be null */
     private String id = null;
@@ -50,7 +50,7 @@ public class SessionInfo {
 
     /**
      * Constructor.
-     * 
+     *
      * @param request
      */
     public SessionInfo(RequestMessage request, SessionManager mgr) {
@@ -82,7 +82,7 @@ public class SessionInfo {
     /**
      * Look for the possible session ID in the URL of the input request
      * message.
-     * 
+     *
      * @param request
      */
     private void parseIDFromURL(RequestMessage request) {
@@ -109,7 +109,7 @@ public class SessionInfo {
     /**
      * Encode session information into the provided URL. This will replace
      * any existing session in that URL.
-     * 
+     *
      * @param url
      * @param info
      * @return String
@@ -163,7 +163,7 @@ public class SessionInfo {
 
     /**
      * Strip out any session id information from the input URL.
-     * 
+     *
      * @param url
      * @param info
      * @return String
@@ -192,7 +192,7 @@ public class SessionInfo {
      * Strip out any session id information from the input URL. This method
      * is provided for the request servlet spec that uses a StringBuffer for
      * the full URL value.
-     * 
+     *
      * @param url
      * @param info
      * @return String
@@ -219,7 +219,7 @@ public class SessionInfo {
 
     /**
      * Look for a possible session id in the cookies of the request message.
-     * 
+     *
      * @param request
      */
     private void parseIDFromCookies(RequestMessage request) {
@@ -248,7 +248,7 @@ public class SessionInfo {
 
     /**
      * Create a proper Cookie for the given session object.
-     * 
+     *
      * @param info
      * @return Cookie
      */
@@ -256,9 +256,7 @@ public class SessionInfo {
         // create a cookie using the configuration information
         HttpSession session = info.getSession();
         SessionConfig config = info.getSessionConfig();
-        Cookie cookie = new Cookie(
-                        config.getIDName(),
-                        config.getSessionVersion() + session.getId());
+        Cookie cookie = new Cookie(config.getIDName(), config.getSessionVersion() + session.getId());
         cookie.setSecure(config.isCookieSecure());
         cookie.setMaxAge(config.getCookieMaxAge());
         cookie.setPath(config.getCookiePath());
@@ -270,7 +268,7 @@ public class SessionInfo {
     /**
      * Query the configuration for this session. This could be scoped at the
      * server level, the app level, or an individual module level.
-     * 
+     *
      * @return SessionConfig
      */
     public SessionConfig getSessionConfig() {
@@ -279,7 +277,7 @@ public class SessionInfo {
 
     /**
      * Query the servlet context object. This may be null.
-     * 
+     *
      * @return ServletContext
      */
     public ServletContext getContext() {
@@ -290,7 +288,7 @@ public class SessionInfo {
      * Query the session ID found in the original request message. This may
      * be null if the client did not send one, and may or may not equal the
      * current session for this connection.
-     * 
+     *
      * @return String
      */
     public String getID() {
@@ -300,7 +298,7 @@ public class SessionInfo {
     /**
      * Query whether that optional session ID found in the original request
      * came from a cookie or not.
-     * 
+     *
      * @return boolean, false if not found or found outside of cookies
      */
     public boolean isFromCookie() {
@@ -310,7 +308,7 @@ public class SessionInfo {
     /**
      * Query whether that optional session ID found in the original request
      * came from the URL or not.
-     * 
+     *
      * @return boolean, false if not found or found outside the URL
      */
     public boolean isFromURL() {
@@ -320,7 +318,7 @@ public class SessionInfo {
     /**
      * Query whether the optional session ID found in the original request
      * pointed to a valid session initially.
-     * 
+     *
      * @return boolean, false if not found or was invalid
      */
     public boolean isValid() {
@@ -330,7 +328,7 @@ public class SessionInfo {
     /**
      * Access any existing session for this connection. It will not create
      * one if no session is found.
-     * 
+     *
      * @return HttpSession
      */
     public HttpSession getSession() {
@@ -342,7 +340,7 @@ public class SessionInfo {
      * if one was not found and the create flag was false. If a cached session
      * is found but it reports as invalid, then this will look for a new
      * session if the create flag is true.
-     * 
+     *
      * @param create
      * @return HttpSession
      */

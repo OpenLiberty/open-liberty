@@ -10,14 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-                BasicReactiveMessagingTest.class
+                BasicReactiveMessagingTest.class,
+                KafkaMessagingTest.class
 })
 public class FATSuite {
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+    }
 
 }

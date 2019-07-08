@@ -54,7 +54,7 @@ public class NonDelayedClassInfo extends ClassInfoImpl {
     private final boolean isJavaClass;
 
     private final String[] interfaceNames;
-    private ClassInfoImpl[] interfaces;
+    private List<ClassInfoImpl> interfaces;
 
     private final String superClassName;
     private ClassInfoImpl superClass;
@@ -181,16 +181,15 @@ public class NonDelayedClassInfo extends ClassInfoImpl {
     @Override
     public List<ClassInfoImpl> getInterfaces() {
         if (interfaces == null) {
-            interfaces = new ClassInfoImpl[interfaceNames.length];
+            interfaces = new ArrayList<ClassInfoImpl>(interfaceNames.length);
 
-            int i = 0;
             for (String interfaceName : interfaceNames) {
                 ClassInfoImpl nextInterface = getInfoStore().getDelayableClassInfo(interfaceName);
-                interfaces[i++] = nextInterface;
+                interfaces.add(nextInterface);
             }
 
         }
-        return Arrays.asList(interfaces);
+        return new ArrayList<ClassInfoImpl>(interfaces);
     }
 
     @Override
@@ -545,22 +544,21 @@ public class NonDelayedClassInfo extends ClassInfoImpl {
         Tr.dump(logger, MessageFormat.format(" Non-Delayed Class [ {0} ]", getHashText()));
     }
 
-    public void setFields(FieldInfoImpl[] fields) {
-        declaredFields = Arrays.asList(fields);
+    public void setFields(List<FieldInfoImpl> fields) {
+        declaredFields = fields;
     }
 
-    public void setConstructors(MethodInfoImpl[] constructors) {
-        declaredConstructors = Arrays.asList(constructors);
+    public void setConstructors(List<MethodInfoImpl> constructors) {
+        declaredConstructors = constructors;
 
     }
 
-    public void setMethods(MethodInfoImpl[] methods) {
-        declaredMethods = Arrays.asList(methods);
-
+    public void setMethods(List<MethodInfoImpl> methods) {
+        declaredMethods = methods;
     }
 
     @Override
-    public void setDeclaredAnnotations(AnnotationInfoImpl[] annos) {
+    public void setDeclaredAnnotations(List<AnnotationInfoImpl> annos) {
         annotations = null;
         super.setDeclaredAnnotations(annos);
     }

@@ -57,7 +57,7 @@ public class JaxRsRouterServletContainerInitializer implements ServletContainerI
             WebApp wapp = WebApp.class.cast(sc);
             String moduleName = wapp.getModuleMetaData().getName();
 
-            //check if jaxws router module
+            //check if jaxrs router module
             if (moduleName.indexOf("-RSRouter") == -1) {
                 return;
             }

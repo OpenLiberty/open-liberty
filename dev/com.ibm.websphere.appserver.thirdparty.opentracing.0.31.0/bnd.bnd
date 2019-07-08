@@ -19,7 +19,8 @@ Bundle-Description: io.opentracing Third-Party API, version ${bVersion}
 
 Export-Package: io.opentracing;version=0.31.0, \
     io.opentracing.propagation;version=0.31.0, \
-    io.opentracing.tag;version=0.31.0
+    io.opentracing.tag;version=0.31.0, \
+    io.opentracing.log;version=0.31.0
 
 publish.wlp.jar.suffix: dev/api/third-party
 

@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -81,6 +82,7 @@ import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -106,6 +108,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private static final String REFERENCE_JPA_PROVIDER = "jpaProvider";
     private static final String REFERENCE_JPA_PROPS_PROVIDER = "jpaPropsProvider";
     private static final String REFERENCE_APP_COORD = "appCoord";
+    private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
 
     private ComponentContext context;
     private Dictionary<String, Object> props;
@@ -118,6 +121,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private final ConcurrentServiceReferenceSet<ResourceBindingListener> resourceBindingListeners = new ConcurrentServiceReferenceSet<ResourceBindingListener>(REFERENCE_RESOURCE_BINDING_LISTENERS);
     private final AtomicServiceReference<JPAProviderIntegration> providerIntegrationSR = new AtomicServiceReference<JPAProviderIntegration>(REFERENCE_JPA_PROVIDER);
     private final ConcurrentServiceReferenceSet<JPAEMFPropertyProvider> propProviderSRs = new ConcurrentServiceReferenceSet<JPAEMFPropertyProvider>(REFERENCE_JPA_PROPS_PROVIDER);
+    private ClassLoadingService classLoadingService;
 
     @Activate
     protected void activate(ComponentContext cc) {
@@ -327,10 +331,12 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) {}
+    public void applicationStarted(ApplicationInfo appInfo) {
+    }
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
@@ -618,8 +624,8 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      *
      * The ValidatorFactory is supported in WAS.
      *
-     * @param xmlSchemaVersion      the schema version of the persistence.xml
-     * @param integrationProperties the current set of integration-level properties
+     * @param xmlSchemaVersion       the schema version of the persistence.xml
+     * @param integrationProperties  the current set of integration-level properties
      * @param applicationClassLoader the application's classloader. Used to create dynamic proxies for hibernate integration.
      */
     // F743-12524
@@ -768,6 +774,40 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         jpaRuntime.unsetReference(reference);
     }
 
+    @Reference(name = REFERENCE_CLASSLOADING_SERVICE, service = ClassLoadingService.class)
+    protected void setClassLoadingService(ClassLoadingService ref) {
+        classLoadingService = ref;
+    }
+
+    protected void unsetClassLoadingService(ClassLoadingService ref) {
+        classLoadingService = null;
+    }
+
+    @Override
+    public ClassLoader createThreadContextClassLoader(final ClassLoader appClassloader) {
+        final ClassLoadingService cls = classLoadingService;
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+            @Override
+            public ClassLoader run() {
+                return cls.createThreadContextClassLoader(appClassloader);
+            }
+        });
+    }
+
+    @Override
+    public void destroyThreadContextClassLoader(final ClassLoader tcclassloader) {
+        final ClassLoadingService cls = classLoadingService;
+        AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
+            public Object run() {
+                cls.destroyThreadContextClassLoader(tcclassloader);
+                return null;
+            }
+
+        });
+    }
+
     @Override
     public boolean isServerRuntime() {
         return server;
@@ -819,9 +859,11 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Reference(name = REFERENCE_APP_COORD)
-    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
-    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
     @Override
     public void registerJPAExPcBindingContextAccessor(JPAExPcBindingContextAccessor accessor) {

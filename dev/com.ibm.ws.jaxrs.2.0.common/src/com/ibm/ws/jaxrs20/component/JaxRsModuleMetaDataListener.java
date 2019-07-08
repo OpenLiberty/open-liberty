@@ -35,10 +35,7 @@ import com.ibm.ws.jaxrs20.api.JaxRsModuleInfoBuilder;
 import com.ibm.ws.jaxrs20.metadata.JaxRsModuleInfo;
 import com.ibm.ws.jaxrs20.metadata.JaxRsModuleMetaData;
 import com.ibm.ws.jaxrs20.metadata.JaxRsModuleType;
-import com.ibm.ws.jaxrs20.support.JaxRsMetaDataManager;
 import com.ibm.ws.jaxrs20.utils.JaxRsUtils;
-import com.ibm.ws.runtime.metadata.ApplicationMetaData;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -93,7 +90,7 @@ public class JaxRsModuleMetaDataListener implements ModuleMetaDataListener, Modu
             // process any nested ModuleMetaData instances
             for (ModuleMetaData nestedMMD : moduleInfo.getNestedMetaData()) {
                 jaxRsModuleMetaData.getEnclosingModuleMetaDatas().add(nestedMMD);
-                JaxRsMetaDataManager.setJaxRsModuleMetaData(nestedMMD, jaxRsModuleMetaData);
+                JaxRsModuleMetaData.setJaxRsModuleMetaData(nestedMMD, jaxRsModuleMetaData);
             }
 
             // find the builder
@@ -128,7 +125,7 @@ public class JaxRsModuleMetaDataListener implements ModuleMetaDataListener, Modu
         } else {
             jaxRsModuleMetaData.getEnclosingModuleMetaDatas().add(mmd);
         }
-        JaxRsMetaDataManager.setJaxRsModuleMetaData(mmd, jaxRsModuleMetaData);
+        JaxRsModuleMetaData.setJaxRsModuleMetaData(mmd, jaxRsModuleMetaData);
         return jaxRsModuleMetaData;
     }
 
@@ -183,9 +180,9 @@ public class JaxRsModuleMetaDataListener implements ModuleMetaDataListener, Modu
             }
         }
 
-        JaxRsModuleMetaData moduleMetaData = JaxRsMetaDataManager.getJaxRsModuleMetaData(event.getMetaData());
+        JaxRsModuleMetaData moduleMetaData = JaxRsModuleMetaData.getJaxRsModuleMetaData(event.getMetaData());
         if (moduleMetaData != null) {
-            JaxRsMetaDataManager.setJaxRsModuleMetaData(event.getMetaData(), null);
+            JaxRsModuleMetaData.setJaxRsModuleMetaData(event.getMetaData(), null);
             //Only destroy while receiving the host module metadata event, e.g. for EJB-in-WAR, JaxRsModuleMetaData will be destroyed
             //if the current event is for the web module.
             if (moduleMetaData.getJ2EEName().equals(event.getMetaData().getJ2EEName())) {
@@ -202,22 +199,16 @@ public class JaxRsModuleMetaDataListener implements ModuleMetaDataListener, Modu
 
     @Reference(name = "metaDataSlotService", service = MetaDataSlotService.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setMetaDataSlotService(MetaDataSlotService slotService) {
-        JaxRsMetaDataManager.jaxrsApplicationSlot = slotService.reserveMetaDataSlot(ApplicationMetaData.class);
-        JaxRsMetaDataManager.jaxrsModuleSlot = slotService.reserveMetaDataSlot(ModuleMetaData.class);
-        JaxRsMetaDataManager.jaxrsComponentSlot = slotService.reserveMetaDataSlot(ComponentMetaData.class);
+        JaxRsModuleMetaData.jaxrsModuleSlot = slotService.reserveMetaDataSlot(ModuleMetaData.class);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "setMetaDataSlotService : applicationSlot=" + JaxRsMetaDataManager.jaxrsApplicationSlot);
-            Tr.debug(tc, "setMetaDataSlotService : moduleSlot=" + JaxRsMetaDataManager.jaxrsModuleSlot);
-            Tr.debug(tc, "setMetaDataSlotService : componentSlot=" + JaxRsMetaDataManager.jaxrsComponentSlot);
+            Tr.debug(tc, "setMetaDataSlotService : moduleSlot=" + JaxRsModuleMetaData.jaxrsModuleSlot);
         }
     }
 
     // declarative service
     protected void unsetMetaDataSlotService(MetaDataSlotService slotService) {
-        JaxRsMetaDataManager.jaxrsApplicationSlot = null;
-        JaxRsMetaDataManager.jaxrsModuleSlot = null;
-        JaxRsMetaDataManager.jaxrsComponentSlot = null;
+        JaxRsModuleMetaData.jaxrsModuleSlot = null;
     }
 
     @Reference(name = "jaxRsModuleInfoBuilders", service = JaxRsModuleInfoBuilder.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)

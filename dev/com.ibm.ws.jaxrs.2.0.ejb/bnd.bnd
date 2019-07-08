@@ -48,4 +48,9 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/ejb/internal/resources/*.class
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service, \
+	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.kernel.feature, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

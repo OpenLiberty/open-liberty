@@ -106,7 +106,6 @@ public class ValidationExtension extends ValidationExtensionService implements E
     private boolean validGetterMethods;
 
     private Configuration<?> config = null;
-    private Validator validator;
 
     private Set<ExecutableType> globalExecutableTypes;
     private boolean isExecutableValidationEnabled;
@@ -135,9 +134,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
         ClassLoader classLoader = null;
 
         try {
-            ThreadContextAccessor tca = System.getSecurityManager() == null ?
-                            ThreadContextAccessor.getThreadContextAccessor() :
-                            AccessController.doPrivileged(getThreadContextAccessorAction);
+            ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
             classLoader = instance().configureBvalClassloader(appCl);
 
             //Use customer classloader to handle multiple validation.xml being in the same ear.
@@ -186,13 +183,9 @@ public class ValidationExtension extends ValidationExtensionService implements E
     }
 
     // lazily to get a small luck to have CDI in place
-    private void ensureFactoryValidator(ClassLoader appCl) {
+    private ValidatorFactory ensureFactoryValidator(ClassLoader appCl) {
         config.addProperty("bval.before.cdi", "true");
-        factory = BeanValidationExtensionHelper.validatorFactoryAccessorProxy(appCl);
-        if (appCl.toString().contains("com.ibm.ws.classloading.internal.AppClassLoader@")) {
-            instance().factory = factory;
-        }
-        validator = factory.getValidator();
+        return BeanValidationExtensionHelper.validatorFactoryAccessorProxy(appCl);
     }
 
     private static Set<ExecutableType> convertToRuntimeTypes(final Set<ExecutableType> defaultValidatedExecutableTypes) {
@@ -240,9 +233,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
             ClassLoader classLoader = null;
             try {
                 classLoader = instance().configureBvalClassloader(pat.getAnnotatedType().getJavaClass().getClassLoader());
-                ThreadContextAccessor tca = System.getSecurityManager() == null ?
-                                ThreadContextAccessor.getThreadContextAccessor() :
-                                AccessController.doPrivileged(getThreadContextAccessorAction);
+                ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
                 // set the thread context class loader to be used, must be reset in finally block
                 setClassLoader = new SetContextClassLoaderPrivileged(tca);
@@ -284,18 +275,19 @@ public class ValidationExtension extends ValidationExtensionService implements E
         final Class<A> javaClass = annotatedType.getJavaClass();
         final int modifiers = javaClass.getModifiers();
         if (!javaClass.isInterface() && !Modifier.isFinal(modifiers) && !Modifier.isAbstract(modifiers)) {
+            ValidatorFactory factory = ensureFactoryValidator(pat.getAnnotatedType().getJavaClass().getClassLoader());
             try {
-                ensureFactoryValidator(pat.getAnnotatedType().getJavaClass().getClassLoader());
+                Validator validator = factory.getValidator();
                 try {
                     final BeanDescriptor classConstraints = validator.getConstraintsForClass(javaClass);
                     if (annotatedType.isAnnotationPresent(ValidateOnExecution.class)
                         || hasValidationAnnotation(annotatedType.getMethods())
                         || hasValidationAnnotation(annotatedType.getConstructors())
                         || classConstraints != null
-                        && (validBean && classConstraints.isBeanConstrained()
-                            || validConstructors && !classConstraints.getConstrainedConstructors().isEmpty()
-                            || validBusinessMethods && !classConstraints.getConstrainedMethods(MethodType.NON_GETTER).isEmpty()
-                            || validGetterMethods && !classConstraints.getConstrainedMethods(MethodType.GETTER).isEmpty())) {
+                           && (validBean && classConstraints.isBeanConstrained()
+                               || validConstructors && !classConstraints.getConstrainedConstructors().isEmpty()
+                               || validBusinessMethods && !classConstraints.getConstrainedMethods(MethodType.NON_GETTER).isEmpty()
+                               || validGetterMethods && !classConstraints.getConstrainedMethods(MethodType.GETTER).isEmpty())) {
                         final BValAnnotatedType<A> bValAnnotatedType = new BValAnnotatedType<A>(annotatedType);
                         pat.setAnnotatedType(bValAnnotatedType);
                     }
@@ -304,6 +296,8 @@ public class ValidationExtension extends ValidationExtensionService implements E
                 }
             } catch (final ValidationException ve) {
                 LOGGER.log(Level.FINEST, ve.getMessage(), ve);
+            } finally {
+                factory.close();
             }
         }
     }
@@ -338,18 +332,13 @@ public class ValidationExtension extends ValidationExtensionService implements E
 
     public void addBValBeans(final @Observes AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
         initValidationExtension(null);
-        if (factory != null) {
-            factory.close();
-        }
 
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
         ClassLoader classLoader = null;
         try {
             classLoader = instance().configureBvalClassloader(null);
-            ThreadContextAccessor tca = System.getSecurityManager() == null ?
-                            ThreadContextAccessor.getThreadContextAccessor() :
-                            AccessController.doPrivileged(getThreadContextAccessorAction);
+            ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
             // set the thread context class loader to be used, must be reset in finally block
             setClassLoader = new SetContextClassLoaderPrivileged(tca);
@@ -400,7 +389,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
 
     /**
      * Request that an instance of the specified type be provided by the container.
-     * 
+     *
      * @param clazz
      * @return the requested instance wrapped in a {@link Releasable}.
      */
@@ -432,7 +421,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
 
     /**
      * Represents an item that can be released from a {@link CreationalContext} at some point in the future.
-     * 
+     *
      * @param <T>
      */
     public static class Releasable<T> {
@@ -467,7 +456,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
      * Defines an item that can determine whether a given {@link AnnotatedType} will be processed
      * by the {@link ValidationExtension} for executable validation. May be statically applied before
      * container startup.
-     * 
+     *
      * @see ValidationExtension#setAnnotatedTypeFilter(AnnotatedTypeFilter)
      */
     public interface AnnotatedTypeFilter {

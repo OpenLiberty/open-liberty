@@ -50,6 +50,6 @@ healthcheck.application.down.CWMH0052W.explanation=The DOWN status might cause a
 healthcheck.application.down.CWMH0052W.useraction=No user action is required.  This warning is a record of the DOWN status.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
-readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: The readiness health check reported a DOWN overall status, because the following applications has not started yet: {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: The readiness health check reported a DOWN overall status because the following applications have not started yet: {0}
 readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=The specified applications have not completely started yet and are not ready to process requests, hence the readiness health check reported a DOWN status.
-readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=No user action is required, wait till the applications have started.  This warning is a record of the DOWN status.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=No user action is needed, wait until the applications start. This warning is a record of the DOWN status.

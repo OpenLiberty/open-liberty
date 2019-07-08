@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Verificare che il wrapper e i parametri dell'oggett
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Impossibile eseguire l''unwrap dell''oggetto su {0} perch\u00e9 {0} non \u00e8 una classe di interfaccia.
+NOT_AN_INTERFACE.explanation=Il metodo unwrap consente solo l'unwrap in una classe di interfaccia.
+NOT_AN_INTERFACE.useraction=Eseguire l'unwrap a una classe che sia un'interfaccia invece che una classe concreta.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.

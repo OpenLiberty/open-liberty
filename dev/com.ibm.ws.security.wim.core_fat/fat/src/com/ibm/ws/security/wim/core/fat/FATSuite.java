@@ -19,7 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ InvalidBaseEntryInRealmTest.class,
                 MaxSearchResultTest.class,
                 DynamicUpdateTest.class,
-                NoRegistryConfiguredTest.class
+                NoRegistryConfiguredTest.class,
+                WimCoreRegressionTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

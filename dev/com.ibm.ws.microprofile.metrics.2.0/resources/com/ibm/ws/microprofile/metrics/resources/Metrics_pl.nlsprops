@@ -66,7 +66,7 @@ memory.usedHeap.description=Wy\u015bwietla ilo\u015b\u0107 u\u017cywanej pami\u0
 memory.committedHeap.description=Wy\u015bwietla ilo\u015b\u0107 pami\u0119ci (w bajtach), kt\u00f3ra jest zatwierdzona do u\u017cycia przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java. Ta ilo\u015b\u0107 pami\u0119ci jest gwarantowana na potrzeby maszyny wirtualnej j\u0119zyka Java.
 
 #Memory maxHeap message
-memory.maxHeap.description=Wy\u015bwietla maksymaln\u0105 ilo\u015b\u0107 pami\u0119ci sterty (w bajtach), kt\u00f3ra mo\u017ce by\u0107 u\u017cywana przez funkcj\u0119 zarz\u0105dzania pami\u0119ci\u0105.  Ten atrybut ma warto\u015b\u0107 -1, je\u015bli maksymalna wielko\u015b\u0107 pami\u0119ci sterty nie jest zdefiniowana. Ta ilo\u015b\u0107 pami\u0119ci nie jest gwarantowana jako dost\u0119pna na potrzeby zarz\u0105dzania pami\u0119ci\u0105, je\u015bli jest ona wi\u0119ksza ni\u017c ilo\u015b\u0107 zatwierdzonej pami\u0119ci.  Przydzielenie pami\u0119ci przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java mo\u017ce zako\u0144czy\u0107 si\u0119 niepowodzeniem nawet wtedy, gdy ilo\u015b\u0107 u\u017cywanej pami\u0119ci nie przekracza tej wielko\u015bci maksymalnej.
+memory.maxHeap.description=Wy\u015bwietla maksymaln\u0105 ilo\u015b\u0107 pami\u0119ci sterty (w bajtach), kt\u00f3ra mo\u017ce by\u0107 u\u017cywana przez funkcj\u0119 zarz\u0105dzania pami\u0119ci\u0105. Ten atrybut ma warto\u015b\u0107 -1, je\u015bli maksymalna wielko\u015b\u0107 pami\u0119ci sterty nie jest zdefiniowana. Ta ilo\u015b\u0107 pami\u0119ci nie jest gwarantowana jako dost\u0119pna na potrzeby zarz\u0105dzania pami\u0119ci\u0105, je\u015bli jest ona wi\u0119ksza ni\u017c ilo\u015b\u0107 zatwierdzonej pami\u0119ci. Przydzielenie pami\u0119ci przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java mo\u017ce zako\u0144czy\u0107 si\u0119 niepowodzeniem nawet wtedy, gdy ilo\u015b\u0107 u\u017cywanej pami\u0119ci nie przekracza tej wielko\u015bci maksymalnej.
 
 #Jvm uptime message
 jvm.uptime.description=Wy\u015bwietla czas uruchomienia wirtualnej maszyny j\u0119zyka Java (w milisekundach). Ten atrybut przedstawia przybli\u017cony czas uruchomienia wirtualnej maszyny j\u0119zyka Java.
@@ -111,17 +111,20 @@ threadpool.activeThreads.description=Liczba w\u0105tk\u00f3w wykonuj\u0105cych z
 threadpool.size.description=Wielko\u015b\u0107 puli w\u0105tk\u00f3w.
 
 servlet.request.total.description=Liczba odwiedzin w tym serwlecie od momentu uruchomienia serwera.
-servlet.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tego serwletu od momentu uruchomienia serwera. 
+servlet.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tego serwletu od momentu uruchomienia serwera.
+
 connectionpool.create.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y utworzone od momentu utworzenia puli.
 connectionpool.destroy.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y zniszczone od momentu utworzenia puli.
 connectionpool.managedConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w pulach wolnych, wsp\u00f3\u0142u\u017cytkowanych i niewsp\u00f3\u0142u\u017cytkowanych.
 connectionpool.connectionHandles.description=Liczba po\u0142\u0105cze\u0144, kt\u00f3re s\u0105 w u\u017cyciu. Liczba ta mo\u017ce obejmowa\u0107 wiele po\u0142\u0105cze\u0144 wsp\u00f3\u0142u\u017cytkowanych z jednego po\u0142\u0105czenia zarz\u0105dzanego.
-connectionpool.freeConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w wolnym obszarze puli. 
+connectionpool.freeConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w wolnym obszarze puli.
+
 session.create.total.description=Liczba sesji zalogowanych od momentu w\u0142\u0105czenia tego pomiaru.
 session.liveSessions.description=Liczba u\u017cytkownik\u00f3w, kt\u00f3rzy s\u0105 obecnie zalogowani.
 session.activeSessions.description=Liczba jednocze\u015bnie aktywnych sesji. (Sesja jest aktywna, je\u015bli produkt aktualnie przetwarza \u017c\u0105danie, kt\u00f3re korzysta z tej sesji u\u017cytkownika).
 session.invalidated.total.description=Liczba sesji wylogowanych od momentu w\u0142\u0105czenia tego pomiaru.
-session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru. 
+session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

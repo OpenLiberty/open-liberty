@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class LauncherDelegateImpl implements LauncherDelegate {
     public LauncherDelegateImpl(BootstrapConfig config) {
         this.config = config;
 
-        // This simple factory bridges the actual logging API that the rest of the OSGi 
+        // This simple factory bridges the actual logging API that the rest of the OSGi
         // system can see (via exported System-Packages) to the bootstrap API that
         // is not exported. Confine logging-related API used by the framework at large to
         // classes and SPI contained within the logging bundle (i.e. do not propagate
@@ -123,18 +123,28 @@ public class LauncherDelegateImpl implements LauncherDelegate {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws InterruptedException
      */
     @Override
     public boolean shutdown() throws InterruptedException {
+        return shutdown(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws InterruptedException
+     */
+    @Override
+    public boolean shutdown(boolean force) throws InterruptedException {
         // Prevent shutdown before the server has properly started
         managerLatch.await();
 
         if (manager == null)
             return false;
 
-        manager.shutdownFramework();
+        manager.shutdownCommand(force);
         manager.waitForShutdown();
         return true;
     }
@@ -161,16 +171,16 @@ public class LauncherDelegateImpl implements LauncherDelegate {
 
     /**
      * Initialize RAS/FFDC LogProviders
-     * 
+     *
      * @param loader Classloader to use when locating the log provider impl
      * @param config BootstrapConfig containing log provider class name.
      * @return LogProvider instance
      *         initial properties containing install directory locations
      * @throws RuntimeException
-     *             If a RuntimeException is thrown during the initialization of
-     *             log providers, it is propagated to the caller unchanged.
-     *             Other Exceptions are caught and re-wrapped as
-     *             RuntimeExceptions
+     *                              If a RuntimeException is thrown during the initialization of
+     *                              log providers, it is propagated to the caller unchanged.
+     *                              Other Exceptions are caught and re-wrapped as
+     *                              RuntimeExceptions
      */
     protected LogProvider getLogProviderImpl(ClassLoader loader, BootstrapConfig config) {
         // consume/remove ras provider from the map

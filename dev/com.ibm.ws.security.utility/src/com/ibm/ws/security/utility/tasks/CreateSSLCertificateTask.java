@@ -45,7 +45,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
     static final String ARG_KEYSIZE = "--keySize";
     static final String ARG_SIGALG = "--sigAlg";
     static final String ARG_KEY_TYPE = "--keyType";
-    static final String ARG_EXT = "--ext";
+    static final String ARG_EXT = "--extInfo";
 
     static final String JKS_KEYFILE = "key.jks";
     static final String PKCS12_KEYFILE = "key.p12";

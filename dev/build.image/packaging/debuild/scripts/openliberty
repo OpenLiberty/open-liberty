@@ -1,0 +1,54 @@
+#!/bin/sh -e
+
+##OBJECTIVE - used as server service script for users ##
+
+# load configuration variables
+iD=/opt/ol
+
+#set server params
+serverName=$2
+if [ -z $serverName ]; then
+    serverName=defaultServer
+fi                                                                                                                                                                                                                                                                                                                                                                                                     
+
+#set template params
+templateOpt=$3
+if [ -z $templateOpt ]; then
+    templateOpt=javaee8
+fi
+
+usage() {
+    echo "Usage: $0 {start|stop|restart} serverName {defaultServer|javaee7|javee8|microProfile1|microProfile2|springBoot1|springBoot2|webProfile7|webProfile8}"
+}
+
+start() {
+    $iD/bin/server start $serverName
+}
+
+stop() {
+    $iD/bin/server stop $serverName
+}
+
+create() {
+    su - openliberty -c '$0/bin/server create $1 --template=$2' -- $iD $serverName $templateOpt
+    su - openliberty -c 'printf "\nLOG_DIR=/var/log/openliberty/$0" >> /var/local/openliberty/usr/servers/$0/server.env' -- $serverName
+}
+
+case "$1" in
+"start" )
+start
+;;
+"stop" )
+stop
+;;
+"restart" )
+stop
+start
+;;
+"create")
+create
+;;
+* )
+usage
+;;
+esac

@@ -53,6 +53,7 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
     @Reference(service = AppTracker.class)
     protected void setAppTracker(AppTracker service) {
         this.appTracker = service;
+        appTracker.setHealthCheckService(this);
     }
 
     protected void unsetAppTracker(AppTracker service) {
@@ -168,5 +169,12 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
         }
 
         hcHttpResponseBuilder.setHttpResponse(httpResponse);
+    }
+
+    @Override
+    public void removeModuleReferences(String appName, String moduleName) {
+        if (hcExecutor != null) {
+            hcExecutor.removeModuleReferences(appName, moduleName);
+        }
     }
 }

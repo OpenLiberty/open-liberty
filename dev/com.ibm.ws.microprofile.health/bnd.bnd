@@ -71,6 +71,7 @@ testsrc: test/src
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
         com.ibm.ws.app.manager;version=latest,\
 	    com.ibm.ws.app.manager.lifecycle;version=latest,\
+        com.ibm.ws.cdi.interfaces;version=latest,\
         com.ibm.ws.classloader.context;version=latest,\
         com.ibm.ws.classloading;version=latest,\
         com.ibm.ws.container.service.compat;version=latest,\

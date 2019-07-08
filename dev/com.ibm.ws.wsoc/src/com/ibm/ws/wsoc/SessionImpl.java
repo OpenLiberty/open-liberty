@@ -125,7 +125,7 @@ public class SessionImpl {
     public void signalAppOnOpen(WsByteBuffer remainingBuf, boolean runWithDoPriv) {
 
         // doPriv is needed if this method  is called from client/User code, since the user code on the stack will not have the right privileges.
-        // if called form server code, then all modules on the stack should have the right privileges, and no use to slow down the code with doPriv blocks        
+        // if called form server code, then all modules on the stack should have the right privileges, and no use to slow down the code with doPriv blocks
         ClassLoader originalCL = null;
 
         ComponentMetaDataAccessorImpl cmdai = null;
@@ -150,22 +150,21 @@ public class SessionImpl {
         }
 
         // setup the context class loader and Component Metadata for the app to use during onOpen
-        // also need to store and restore the current context classloader and not leak out the Component Metadata 
+        // also need to store and restore the current context classloader and not leak out the Component Metadata
         if (runWithDoPriv) {
             final Thread t = Thread.currentThread();
             originalCL = AccessController.doPrivileged(
-                            new PrivilegedAction<ClassLoader>() {
-                                @Override
-                                public ClassLoader run() {
-                                    ClassLoader cl = t.getContextClassLoader();
-                                    Thread.currentThread().setContextClassLoader(things.getTccl());
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "classloader is: " + Thread.currentThread().getContextClassLoader());
-                                    }
-                                    return cl;
-                                }
-                            }
-                            );
+                                                       new PrivilegedAction<ClassLoader>() {
+                                                           @Override
+                                                           public ClassLoader run() {
+                                                               ClassLoader cl = t.getContextClassLoader();
+                                                               Thread.currentThread().setContextClassLoader(things.getTccl());
+                                                               if (tc.isDebugEnabled()) {
+                                                                   Tr.debug(tc, "classloader is: " + Thread.currentThread().getContextClassLoader());
+                                                               }
+                                                               return cl;
+                                                           }
+                                                       });
         } else {
             originalCL = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(things.getTccl());
@@ -174,68 +173,69 @@ public class SessionImpl {
             }
         }
 
-        ComponentMetaData cmd = things.getCmd();
-        if (cmd != null) {
-            cmdai = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
-            cmdai.beginContext(cmd);
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "componentMetaData is: " + cmd);
-            Tr.debug(tc, "classloader is: " + Thread.currentThread().getContextClassLoader());
-            Tr.debug(tc, "endpoint URI is: " + things.getURI());
-        }
+        try {
+            ComponentMetaData cmd = things.getCmd();
+            if (cmd != null) {
+                cmdai = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
+                cmdai.beginContext(cmd);
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "componentMetaData is: " + cmd);
+                Tr.debug(tc, "classloader is: " + Thread.currentThread().getContextClassLoader());
+                Tr.debug(tc, "endpoint URI is: " + things.getURI());
+            }
 
-        // if CDI 1.2 is loaded, don't need to do anything here
-        ip12 = ServiceManager.getInjectionProvider12();
-        if (ip12 == null) {
-            // only try OWB CDI 1.0 if 1.2 is not loaded
-            // process possible CDI session scope injection objects
-            ip = ServiceManager.getInjectionProvider();
-            if (ip != null) {
-                HttpSession httpSession = things.getHttpSession();
+            // if CDI 1.2 is loaded, don't need to do anything here
+            ip12 = ServiceManager.getInjectionProvider12();
+            if (ip12 == null) {
+                // only try OWB CDI 1.0 if 1.2 is not loaded
+                // process possible CDI session scope injection objects
+                ip = ServiceManager.getInjectionProvider();
+                if (ip != null) {
+                    HttpSession httpSession = things.getHttpSession();
 
-                // Activate Application Scope
-                appActivateResult = ip.activateAppContext(cmd);
+                    // Activate Application Scope
+                    appActivateResult = ip.activateAppContext(cmd);
 
-                // Session Scope needs started every time because thread could have an older deactivated Session scope on it
-                if (httpSession != null) {
-                    ip.startSesContext(httpSession);
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "thread ID: " + Thread.currentThread().getId() + "Session ID: " + httpSession.getId());
+                    // Session Scope needs started every time because thread could have an older deactivated Session scope on it
+                    if (httpSession != null) {
+                        ip.startSesContext(httpSession);
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "thread ID: " + Thread.currentThread().getId() + "Session ID: " + httpSession.getId());
+                        }
+                    } else if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Attempted to use sessions scope when there was no valid HttpSession, guess the HttpSession expired?");
                     }
-                } else if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Attempted to use sessions scope when there was no valid HttpSession, guess the HttpSession expired?");
+                }
+            } else if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "InjectionProvider was null");
+            }
+
+            //now session is open, start the idle timeout for this session
+            sessionIdleTimeout.restartIdleTimeout(this.getMaxIdleTimeout());
+
+            connLink.setReadLinkStatus(READ_LINK_STATUS.ON_READ_THREAD);
+            endpoint.onOpen(sessionExt, endpointConfig);
+
+            // if CDI 1.2 is loaded, don't need to do anything here
+            if (ip12 == null) {
+                if (ip != null) {
+                    // if cdi injection is being used, then de-activate the application scopes only if our code did the activate
+                    if (appActivateResult == true) {
+                        ip.deActivateAppContext();
+                    }
+
+                    // attempt to deactivate the session scope always
+                    ip.deActivateSesContext();
                 }
             }
-        }
-        else if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "InjectionProvider was null");
-        }
-
-        //now session is open, start the idle timeout for this session
-        sessionIdleTimeout.restartIdleTimeout(this.getMaxIdleTimeout());
-
-        connLink.setReadLinkStatus(READ_LINK_STATUS.ON_READ_THREAD);
-        endpoint.onOpen(sessionExt, endpointConfig);
-
-        // if CDI 1.2 is loaded, don't need to do anything here
-        if (ip12 == null) {
-            if (ip != null) {
-                // if cdi injection is being used, then de-activate the application scopes only if our code did the activate
-                if (appActivateResult == true) {
-                    ip.deActivateAppContext();
-                }
-
-                // attempt to deactivate the session scope always
-                ip.deActivateSesContext();
+        } finally {
+            // remove access to the Component Metadata and put back the original classloader
+            if (cmdai != null) {
+                cmdai.endContext();
             }
+            Thread.currentThread().setContextClassLoader(originalCL);
         }
-
-        // remove access to the Component Metadata and put back the original classloader 
-        if (cmdai != null) {
-            cmdai.endContext();
-        }
-        Thread.currentThread().setContextClassLoader(originalCL);
 
         // Once we do this, we could return on another thread right away with read data.  So be careful about putting any session logic after
         // this start reading call.
@@ -411,8 +411,7 @@ public class SessionImpl {
                         Tr.debug(tc, "Runtime exception during application stop close.   IO status is ok so throwing exception.");
                     }
                     throw e;
-                }
-                else {
+                } else {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "Runtime exception during application stop close.   IO status is not ok so likely an exception during server shutdown, not throwing exception.");
@@ -420,8 +419,7 @@ public class SessionImpl {
                 }
 
             }
-        }
-        else {
+        } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc,
                          "Application stopped and tried to close connection, but IO status is not OK which is indicative of server shutting down, not attempting connection close.");
@@ -471,7 +469,7 @@ public class SessionImpl {
         int i = endpointURIParts.length - 1;
         int j = requestURIParts.length - 1;
         //start to compare the endpoint path and request uri path, starting from the last segment because
-        //request uri at this point of execution does not have context root of the webapp, which in this case is '/basic' 
+        //request uri at this point of execution does not have context root of the webapp, which in this case is '/basic'
         //and endpoint uri on the other hand does have the context root of the webapp at this point of execution.
         while (i > 1) { //skipping the first part because first part of split("/") for /../../.. is always an empty string
             if (endpointURIParts[i].startsWith("{") && endpointURIParts[i].endsWith("}")) {
