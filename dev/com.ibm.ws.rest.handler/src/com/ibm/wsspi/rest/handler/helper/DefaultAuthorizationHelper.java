@@ -22,6 +22,22 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 /**
  * This helper service performs the default authorization on the given user.
  *
+ * <p/>
+ * The following table shows the allowed operations for each administrative role.
+ *
+ * <table>
+ * <thead>
+ * <tr><th>Operation</th><th>Administrator Role</th><th>Reader Role</th></tr>
+ * </thead>
+ * <tbody>
+ * <tr><td>GET</td><td align="center">X</td><td align="center">X</td></tr>
+ * <tr><td>PUT</td><td align="center">X</td><td align="center"></td></tr>
+ * <tr><td>POST</td><td align="center">X</td><td align="center"></td></tr>
+ * <tr><td>DELETE</td><td align="center">X</td><td align="center"></td></tr>
+ * <tr><td>OPTIONS</td><td align="center">X</td><td align="center"></td></tr>
+ * </tbody>
+ * </table>
+ *
  * @ibm-spi
  */
 @Component(service = { DefaultAuthorizationHelper.class },
@@ -34,15 +50,15 @@ public class DefaultAuthorizationHelper {
         boolean isGetMethod = "GET".equals(request.getMethod());
 
         /*
-         * Authorize principals with the administrator role or principals with the reader role if the HTTP
-         * request method is GET.
+         * Authorize:
+         * 1) principals with the administrator role, or
+         * 2) principals with the reader role if the HTTP request method is GET.
          */
         boolean isAuthorized = request.isUserInRole(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME)
                                || (isGetMethod && request.isUserInRole(ManagementSecurityConstants.READER_ROLE_NAME));
 
         if (!isAuthorized) {
-            // Not in admin role, so built error msg
-            // TODO: Translate msg
+            // Is not authorized, so build the error message.
             response.sendError(403, "Forbidden");
         }
 
