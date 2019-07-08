@@ -18,7 +18,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
-import com.ibm.ws.fat.wc.tests.WCDummyTest;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
@@ -50,7 +49,6 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                WCDummyTest.class,
                 WCServerTest.class,
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
