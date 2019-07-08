@@ -53,17 +53,14 @@ public class FatTestConcurrentCompatible extends CommonUtils {
     @Rule
     public TestName testName = new TestName();
 
-    /**
-     * Make sure persistent data store is deleted before the test starts
-     *
-     * @param traceTag The tag String to be used to log info.
-     */
     @BeforeClass
     public static void beforeSuite() throws Exception {
+    	//TODO using ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.test.servlet")
+    	//causes time out error waiting for app to start.
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                 .addPackage("com.ibm.test.servlet");
         ShrinkHelper.exportToServer(server, "apps", app);
-        server.addInstalledAppForValidation("PersistExecComp");
+        //No need to start the server.  Each test will start the server when necessary.
     }
 
     @AfterClass
@@ -132,9 +129,10 @@ public class FatTestConcurrentCompatible extends CommonUtils {
      * start again on the server restart
      * Start task with no delay then shut the server down
      * Start the server up and see if the task restarts.
+     * NOTE:!!!Enable this test once long running tasks are supported by PE
      */
-    @Mode(TestMode.FULL)
-    @Test
+//    @Mode(TestMode.FULL)
+//    @Test
     public void testRunningTaskatServerRestart() throws Exception {
 
         // set default props
