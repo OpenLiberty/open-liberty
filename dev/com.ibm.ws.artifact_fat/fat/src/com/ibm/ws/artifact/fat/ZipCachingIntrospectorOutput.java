@@ -332,8 +332,6 @@ public class ZipCachingIntrospectorOutput{
 
         addZipFileDataIntrospection(returnValue, getActiveAndPendingIntrospection());
         //pendingQuick and pendingSlow introspections are sparse so the full output will only be in active/pending and completed
-        //addZipFileDataIntrospection(returnValue, getPendingQuickIntrospection());
-        //addZipFileDataIntrospection(returnValue, getPendingSlowIntrospection());
         addZipFileDataIntrospection(returnValue, getCompletedIntrospection());
 
         return returnValue;
@@ -341,11 +339,29 @@ public class ZipCachingIntrospectorOutput{
 
     private static void addZipFileDataIntrospection(List<String> aggregateList, String rawIntrospection){
         //if there is no raw input then do nothing
-        if(rawIntrospection != null){
-            Pattern p = Pattern.compile("\nZipFile");
-            for(String zipFile : p.split(rawIntrospection)){
-                aggregateList.add("ZipFile" + zipFile);
+        if(rawIntrospection != null){   
+            String aggregate = "";
+
+            for(String introspectLine: rawIntrospection.split("\n")){
+                //pattern for the first line of the ZipFileData.introspect() output
+                if(introspectLine.matches("ZipFile\\s\\[\\s.+\\s\\]")){
+                    if(!aggregate.equals("")){
+                        aggregateList.add(aggregate);
+                        
+                    }
+                    
+                    aggregate = introspectLine + "\n";
+                }
+                else{
+                    aggregate = aggregate.concat(introspectLine + "\n");
+                }
+
             }
+            
+            if(!aggregate.equals("")){
+                aggregateList.add(aggregate);
+            }
+            
         }
     }
 
