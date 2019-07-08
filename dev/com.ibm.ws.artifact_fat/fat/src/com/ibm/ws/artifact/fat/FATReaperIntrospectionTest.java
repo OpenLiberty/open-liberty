@@ -272,53 +272,96 @@ public class FATReaperIntrospectionTest{
          //store the raw output for each ZipFileData introspection
         List<String> zipFileDataIntrospections = dumpOutput.getAllZipFileDataIntrospections();
 
+        
+
         //if there are zip file data introspections to verify
         if(!zipFileDataIntrospections.isEmpty()){
-            //matches the value for number of times zip archive was open
-            Pattern openCount = Pattern.compile("Open:\\s+\\[\\s+\\d+\\s\\]");
-            //matches the value for the to open lines for pending and close states
-            Pattern toOpenCounts = Pattern.compile("to Open:\\s+\\[\\s\\d+\\s\\]");
-            Matcher open, toOpen;
-            //for every ZipFileData introspection
+            /////////////////////////////////////////////////////////
+            //for each of the zip file data introspections
             for(String zipFileDataIntrospection: zipFileDataIntrospections){
-                String zipFileHeader = zipFileDataIntrospection.substring(0, zipFileDataIntrospection.indexOf("\n"));
-                open = openCount.matcher(zipFileDataIntrospection);
-                toOpen = toOpenCounts.matcher(zipFileDataIntrospection);
-                int timesOpened = -1, pendingToOpen = -1, closeToOpen = -1, counter;
-                if(open.find()){
-                    String openLine = open.group();
-                    //parse the int VALUE between the square brackets of the "Open: [ VALUE ] [ TIME (s) ]" line
-                    timesOpened = Integer.parseInt(openLine.substring(openLine.indexOf("[") + 1, openLine.indexOf("]")).trim());
-                }
-                else{
-                    Assert.fail(String.format("Could not find the number of times %s was opened by introspection",zipFileHeader));
+
+                //initilalize variables to be compared for test
+                int timesOpened = -1, pendingToOpen = -1, closeToOpen = -1;
+                String failmsg = "";
+                String zipFileName = zipFileDataIntrospection.split("\n")[0].trim();
+                Pattern p = Pattern.compile("\\d+");
+
+                logInfo(methodName, "Checking: " + zipFileName);
+
+                //for each line in the ZipFileData introspection
+                for(String introspectLine : zipFileDataIntrospection.split("\n")){
+
+                    //if the line contains keyword for value then grab the value from the introspection
+                    if(introspectLine.contains("Open Requests:")){
+                        
+                        //will match the digits in the open requests line
+                        Matcher m = p.matcher(introspectLine);
+
+                        //set the value of timesOpened
+                        if(m.find()){
+                            timesOpened = Integer.parseInt(m.group().trim());
+                        }
+                        else{
+                            //case where there isn't a value for Open Requests in introspection
+                            failmsg = String.format("Could not find the value of open requets for [%s] introspection", zipFileName);
+                            Assert.fail(failmsg);
+                        }
+                        
+                    }
+
+                    //"to Open:" is for both the pending to open and the close to open, assign them in order
+                    if(introspectLine.contains("to Open:")){
+                        Matcher m = p.matcher(introspectLine);
+                        int count;
+                        if(m.find()){
+                            //m.group() will pull the count value first then the time values after
+                            //set pendingToOpen
+                            if(pendingToOpen == -1){
+                                pendingToOpen = Integer.parseInt(m.group());
+
+                            }
+                            //set closeToOpen
+                            else{
+                                closeToOpen = Integer.parseInt(m.group());
+                            }
+                        }
+                        else{
+                            //case where there isn't a value for 'to Open' in the introspection
+                            failmsg = String.format("Could not find the value of 'to open' movement for [%s] introspection", zipFileName);
+                            Assert.fail(failmsg);
+                        }
+
+                    }
+
                 }
 
-                counter = 0;
-                while(toOpen.find()){
-                    //count the number of times which to Open is found per ZipFileData introspection
-                    //pending to open
-                    if(counter == 0) {
-                        String pendingToOpenLine = toOpen.group();
-                        pendingToOpen = Integer.parseInt(pendingToOpenLine.substring(pendingToOpenLine.indexOf("[") + 1,pendingToOpenLine.indexOf("]")).trim());
-                    }
-                    //closed to open
-                    else if(counter == 1) {
-                        String closeToOpenLine = toOpen.group();
-                        closeToOpen = Integer.parseInt(closeToOpenLine.substring(closeToOpenLine.indexOf("[") + 1,closeToOpenLine.indexOf("]")).trim());
-                    }
-                    else{
-                        Assert.fail(String.format("Number of matches for 'to Open: ' in ZipFile introspection should not be %d. (%s)",zipFileHeader,counter));
-                    }
-                    counter++;
+                //if any of the values are still -1 then assume the value could not be found and throw a failure
+                if(timesOpened == -1){
+                    failmsg = String.format("Could not find the number of times [%s] has been opened",zipFileName);
+                    Assert.fail(failmsg);
                 }
 
-                Assert.assertEquals("The number of times opened doesn't match with the sum of pending to open and close to open.",timesOpened,(pendingToOpen + closeToOpen));
+                if(pendingToOpen == -1){
+                    failmsg = String.format("Could not find the number of times [%s} has been moved from pending to open", zipFileName);
+                    Assert.fail(failmsg);
+                }
+
+                if(closeToOpen == -1){
+                    failmsg = String.format("Could not find the number of time [%s] has been moved from closed to open", zipFileName);
+                    Assert.fail(failmsg);
+
+                }
+
+                //check that the number of time from pending to open and close to open are equal to the number of times it was opened
+                failmsg = String.format("Summation of (pending to open) + (close to open) did not equal (times opend) for [%s]",zipFileName);
+                Assert.assertEquals(failmsg,timesOpened,(pendingToOpen + closeToOpen));
             }
 
         }
         else{//should not get here
+            
             logInfo(methodName, "Test not applicible, No ZipFileData introspections were found in dump");
+            Assert.fail("Could not run test, no ZipFileData introspections were found in dump");
         }
 
         logInfo(methodName, "Exiting: " + methodName);
