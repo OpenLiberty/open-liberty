@@ -112,9 +112,9 @@ public class FrameworkConfigurator {
         // It is not clear that multi-threading really helps with performance of the resolver.
         config.putIfAbsent("equinox.resolver.thread.count", "1");
 
-        // By default use multiple threads for activating bundles from start-level
+        // By default do not use multiple threads for activating bundles from start-level
         // Set 0 for a thread count equal to Runtime.getRuntime().availableProcessors().
-        config.putIfAbsent("equinox.start.level.thread.count", "0");
+        config.putIfAbsent("equinox.start.level.thread.count", "1");
         config.putIfAbsent("equinox.start.level.restrict.parallel", "true");
 
         // default module.lock.timeout value in seconds.
