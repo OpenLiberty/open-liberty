@@ -88,18 +88,15 @@ public class PersistRATest {
     @BeforeClass
     public static void setUp() throws Exception {
     	//Creating application as an EAR
-    	WebArchive web = ShrinkWrap.create(WebArchive.class, WAR_NAME + ".war");
-    	web.addClass("web.PersistRAServlet");
-    	web.add(new FileAsset(new File("test-applications/" + WAR_NAME + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
-        
-    	EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP + ".ear");
-    	ear.addAsModule(web);
-    	ShrinkHelper.addDirectory(ear, "lib/LibertyFatTestFiles/" + APP);
+    	WebArchive web = ShrinkHelper.buildDefaultApp(WAR_NAME, "web");
+    	EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP + ".ear")
+    			.addAsModule(web);
+    	
     	ShrinkHelper.exportAppToServer(server, ear);
     			
     	//Creating resource adapter as a RAR
-    	ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, RAR_NAME + ".rar");
-    	rar.as(JavaArchive.class).addPackage("fat.persistra.resourceadapter");
+    	ResourceAdapterArchive rar = ShrinkHelper.buildDefaultRar(RAR_NAME, "fat.persistra.resourceadapter");
+    	
     	ShrinkHelper.exportToServer(server, "connectors", rar);
     	
     	//Start Server
