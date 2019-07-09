@@ -20,5 +20,5 @@ Subsystem-Name: MicroProfile Rest Client 1.3
  com.ibm.websphere.appserver.mpConfig-1.3
 -bundles=com.ibm.ws.require.java8, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.3; apiJar=false; location:="lib/"
-kind=beta
+kind=ga
 edition=core
