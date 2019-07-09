@@ -894,16 +894,49 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         return zipEntryDataMap.get(r_path);
     }
 
+    // 'locatePath' is modal, depending on whether 'isMultiRelease' has
+    // been initialized.
+    //
+    // Initialization of 'isMultiRelease' occurs in:
+    //   ZipFileContainer.getEntry(String, boolean)
+    //
+    // Calls to 'locatePath' occur from:
+    //   ZipFileArtifactNotifier.collectRegisteredPaths(String, List<String>)
+    //   ZipFileContainer.createEntry(String, String)
+    //   ZipFileContainer.getEntry(String, boolean)
+    //
+    // Calls to 'collectRegisteredPaths' occur only from:
+    //   ZipFileArtifactNotifier.notifyAllListeners(boolean, String)
+    //
+    // It is not clear whether calls to 'notifyAllListeners only occur
+    // after 'isMultiRelease' has been initialized.
+    //
+    // Calls to 'createEntry' occur from 'createEntry' and 'getEntry'.
+    // That collapses to the call from 'getEntry'.  The call from
+    // 'getEntry' is almost always preceeded with a call to initialize
+    // 'isMultiRelease'.  The exception is when the target location
+    // is beneath 'META-INF', which is never subject to MR lookups.
+    // Net, the call from 'getEntry' is safe.
+    //
+    // However, there is also a call from:
+    //     ZipFileContainerUtils.ZipFileEntryIterator.next()
+    // And that call does not force initialization 'isMultiRelease'.
+
     @Trivial
     public int locatePath(String r_path) {
         // If this is an MRJAR, check under /META-INF/versions/n/<r_path>
-        if (isMultiRelease != null && isMultiRelease) {
-            int mrPath = locateMultiReleasePath(r_path);
-            if (mrPath >= 0) {
-                return mrPath;
+        if ( (isMultiRelease != null) && isMultiRelease.booleanValue() ) {
+            int mrLocation = locateMultiReleasePath(r_path);
+            if ( mrLocation >= 0 ) {
+                return mrLocation;
             }
         }
-        
+
+        // The direct lookup is not an 'else' case: The multi-release
+        // location is an alternate to the direct location.  If the
+        // multi-release location is not present, fall back to the direct
+        // location.
+
         return locateDirectPath(r_path);
     }
 
@@ -1198,8 +1231,12 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             a_entryPath = null; // Maybe won't need it.
             r_entryPath = entryPath; // The path is already relative.
         }
-        
-        if (isMultiRelease == null && !entryPath.startsWith("META-INF")) {
+
+        // 'getEntry' is invoked from 'initializeMultiRelease'!
+        // The guard on the path is absolutely necessary to avoid
+        // infinite recursion.
+
+        if ( (isMultiRelease == null) && !entryPath.startsWith("META-INF") ) {
             initializeMultiRelease();
         }
 
