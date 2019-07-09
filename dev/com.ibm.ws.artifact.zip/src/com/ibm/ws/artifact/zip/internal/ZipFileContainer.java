@@ -1046,62 +1046,6 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
     }
 
-    private boolean initializeMultiRelease() {
-        if (isMultiRelease != null)
-            return isMultiRelease;
-
-        // Multi-Release jars only apply to JDK 9+
-        if (CURRENT_JAVA_VERSION < 9) {
-            isMultiRelease = false;
-            return isMultiRelease;
-        }
-
-        // Multi-Release jars can be disabled with JDK system properties
-        if (JDK_DISABLE_MULTI_RELEASE) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "JDK system property set to globally disable multi-release jars");
-           isMultiRelease = false;
-           return isMultiRelease;
-        }
-        
-        // Only .jar files can be multi-release (not .war or .ear)
-        if (!archiveName.endsWith(".jar")) {
-            isMultiRelease = false;
-            return isMultiRelease;
-        }
-
-        synchronized (multiReleaseLock) {
-            if (isMultiRelease != null)
-                return isMultiRelease;
-
-            ZipFileEntry mfEntry = getEntry("META-INF/MANIFEST.MF");
-            if (mfEntry == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "No MANIFEST.MF found in container. Assuming not multi-release");
-                isMultiRelease = false;
-                return isMultiRelease;
-            }
-
-            // Manifest was found, check it for 'Multi-Release: true' attribute
-            boolean isMR = false;
-            if (mfEntry != null) {
-                try (InputStream mfStream = mfEntry.getInputStream()) {
-                    Manifest mf = new Manifest(mfStream);
-                    String isMultiReleaseAttr = mf.getMainAttributes().getValue("Multi-Release");
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "Raw value for 'Multi-Release' attribute: " + isMultiReleaseAttr);
-                    if (isMultiReleaseAttr != null) {
-                        isMR = Boolean.parseBoolean(isMultiReleaseAttr.trim());
-                    }
-                } catch (IOException e) {
-                    isMR = false;
-                }
-            }
-            isMultiRelease = isMR;
-            return isMultiRelease;
-        }
-    }
-
     private final Integer iteratorDataLock = new Integer(5);
     private volatile Map<String, ZipFileContainerUtils.IteratorData> iteratorData;
 
