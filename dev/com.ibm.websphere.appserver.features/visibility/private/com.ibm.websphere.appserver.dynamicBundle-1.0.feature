@@ -5,3 +5,4 @@ IBM-Process-Types: server, \
 -bundles=com.ibm.ws.dynamic.bundle
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

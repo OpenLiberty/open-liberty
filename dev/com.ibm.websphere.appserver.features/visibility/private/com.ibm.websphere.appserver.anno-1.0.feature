@@ -18,3 +18,4 @@ IBM-Process-Types: server, \
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

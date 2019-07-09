@@ -6,3 +6,4 @@ IBM-Process-Types: server, \
 -bundles=com.ibm.ws.app.manager.lifecycle; start-phase:=SERVICE_EARLY
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
