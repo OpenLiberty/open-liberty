@@ -251,7 +251,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *                   from bootstrap properties
+     *            from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -297,7 +297,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *                   the OSGi managed service.
+     *            the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -473,6 +473,7 @@ public class BaseTraceService implements TrService {
         List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES1_1);
         List<String> FFDCList = Arrays.asList(FFDCData.NAMES1_1);
         List<String> AccessLogList = Arrays.asList(AccessLogData.NAMES1_1);
+
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
 
         for (String pair : keyValuePairs) //iterate over the pairs
@@ -921,10 +922,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog           the trace writer
+     * @param detailLog the trace writer
      * @param logRecord
-     * @param id                  the trace object id
-     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id the trace object id
+     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -1071,7 +1072,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *                   from bootstrap properties
+     *            from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1196,7 +1197,7 @@ public class BaseTraceService implements TrService {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s  String to escape
+     * @param s String to escape
      */
     private void jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
@@ -1575,8 +1576,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc        StreamTraceComponent associated with original stream
-     * @param txt       pre-formatted or raw message
+     * @param tc StreamTraceComponent associated with original stream
+     * @param txt pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {
