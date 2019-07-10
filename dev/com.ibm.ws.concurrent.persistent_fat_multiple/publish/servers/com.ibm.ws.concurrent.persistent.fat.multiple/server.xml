@@ -32,12 +32,12 @@
   </dataSource>
 
   <library id="FATJDBCLib">
-    <fileset dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
 
   <authData fat.modify="true" id="authx" user="userx" password="passx"/>
   
-  <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
   <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
   <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
   <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>

@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -36,6 +37,7 @@ import componenttest.topology.utils.FATServletClient;
 public class MultiplePersistentExecutorsTest extends FATServletClient {
 
     private static final String APP_NAME = "persistmultitest";
+    
     private static final Set<String> appNames = Collections.singleton(APP_NAME);
 
     private static ServerConfiguration originalConfig;
@@ -46,7 +48,7 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addInstalledAppForValidation(APP_NAME);
+    	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
         server.configureForAnyDatabase();
         originalConfig = server.getServerConfiguration();
         server.startServer();
