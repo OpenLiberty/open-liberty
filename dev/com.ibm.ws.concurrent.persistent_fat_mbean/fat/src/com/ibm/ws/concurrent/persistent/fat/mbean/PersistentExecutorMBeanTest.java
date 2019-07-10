@@ -26,19 +26,25 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests for persistent scheduled executor with task execution disabled
  */
+@RunWith(FATRunner.class)
 public class PersistentExecutorMBeanTest {
 
     private static final LibertyServer server = FATSuite.server;
 
     private static final Set<String> appNames = Collections.singleton("persistentmbeantest");
+    
+    private static final String APP_NAME = "persistentmbeantest";
 
     @Rule
     public TestName testName = new TestName();
@@ -94,8 +100,7 @@ public class PersistentExecutorMBeanTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        for (String name : appNames)
-            server.addInstalledAppForValidation(name);
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
         server.startServer();
     }
 

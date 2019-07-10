@@ -69,10 +69,10 @@
   
   
   <library id="DerbyLib">
-    <fileset dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
   
-  <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
   <!-- Increased 3x due to filesystem access on our poor build/test infrastructure taking more than the default 2 minutes -->
   <transaction totalTranLifetimeTimeout="6m"/>
