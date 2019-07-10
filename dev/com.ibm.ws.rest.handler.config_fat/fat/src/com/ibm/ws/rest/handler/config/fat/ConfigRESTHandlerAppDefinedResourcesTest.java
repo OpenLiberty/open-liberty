@@ -948,6 +948,64 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "Default.Topic.Space", props.getString("topicSpace"));
     }
 
+    /**
+     * Query the /config/ REST endpoint for a server-config-defined connection factory
+     * for a resource adapter that is embedded in the application and verify that it
+     * returns the correct output.
+     */
+    @Test
+    public void testConnectionFactoryFromEmbeddedResourceAdapter() throws Exception {
+        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory?jndiName=eis/cf3")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + cfs;
+        assertEquals(err, 1, cfs.size());
+
+        JsonObject cf;
+        assertNotNull(err, cf = cfs.getJsonObject(0));
+
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "connectionFactory[default-0]", cf.getString("uid"));
+        assertNull(err, cf.get("id"));
+        assertEquals(err, "eis/cf3", cf.getString("jndiName"));
+
+        assertNull(err, cf.get("application"));
+        assertNull(err, cf.get("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "connectionFactory[default-0]/connectionManager[default-0]", cm.getString("uid"));
+        assertNull(err, cm.get("id"));
+        assertEquals(err, 12783, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertFalse(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 3, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        JsonObject auth;
+        assertNotNull(err, auth = cf.getJsonObject("containerAuthDataRef"));
+        assertEquals(err, "cfauth1", auth.getString("uid"));
+        assertEquals(err, "cfauth1", auth.getString("id"));
+        assertEquals(err, "cfuser1", auth.getString("user"));
+        assertEquals(err, "******", auth.getString("password"));
+
+        JsonObject props;
+        assertNotNull(err, props = cf.getJsonObject("properties.AppDefResourcesApp.EmbTestAdapter.ConnectionFactory"));
+        assertTrue(err, props.getBoolean("enableBetaContent"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+        assertEquals(err, 3456, props.getInt("portNumber"));
+
+        JsonArray api;
+        assertNotNull(err, api = cf.getJsonArray("api"));
+        assertEquals(err, 1, api.size()); // increase if more REST API is added
+        assertEquals(err,
+                     "/ibm/api/validation/connectionFactory/connectionFactory%5Bdefault-0%5D",
+                     api.getString(0));
+    }
+
     /*
      * Test that a data source nested under a transaction with an atypical case can be accessed
      * by calling the config endpoint matching with the case matching server config.
@@ -1012,14 +1070,15 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     }
 
     /**
-     * Use the /ibm/api/validator REST endpoint to validate application-defined connection factories
+     * Use the /ibm/api/validator REST endpoint to validate application-defined connection factories,
+     * and also a server-defined connection factory for resource adapter that is embedded in the application.
      */
     @Test
     public void testValidateAppDefinedConnectionFactories() throws Exception {
         JsonArray array = new HttpsRequest(server, "/ibm/api/validation/connectionFactory")
                         .run(JsonArray.class);
         String err = "unexpected response: " + array;
-        assertEquals(err, 3, array.size());
+        assertEquals(err, 4, array.size());
 
         JsonObject j;
         assertNotNull(err, j = array.getJsonObject(0)); // a javax.resource.cci.ConnectionFactory
@@ -1077,6 +1136,25 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "65.72.97", j.getString("driverVersion"));
         assertEquals(err, "TestConfigDB", j.getString("catalog"));
         assertNull(err, j.get("schema"));
+        assertNull(err, j.get("user"));
+
+        assertNotNull(err, j = array.getJsonObject(3)); // javax.resource.cci.ConnectionFactory from embedded RAR (configured in server.xml)
+        assertEquals(err, "connectionFactory[default-0]", j.getString("uid"));
+        assertNull(err, j.get("id"));
+        assertEquals(err, "eis/cf3", j.getString("jndiName"));
+        assertNull(err, j.get("application"));
+        assertNull(err, j.get("module"));
+        assertNull(err, j.get("component"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "TestConfig Data Store, Enterprise Edition", j.getString("eisProductName"));
+        assertEquals(err, "48.55.72", j.getString("eisProductVersion"));
+        assertEquals(err, "TestConfigAdapter", j.getString("resourceAdapterName"));
+        assertEquals(err, "60.91.109", j.getString("resourceAdapterVersion"));
+        assertEquals(err, "OpenLiberty", j.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", j.getString("resourceAdapterDescription"));
+        assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
         assertNull(err, j.get("user"));
     }
 
