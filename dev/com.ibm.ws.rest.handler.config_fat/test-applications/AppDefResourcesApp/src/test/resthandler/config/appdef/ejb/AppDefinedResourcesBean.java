@@ -31,7 +31,16 @@ import javax.resource.ConnectionFactoryDefinitions;
                                 @ConnectionFactoryDefinition(name = "java:module/env/eis/cf1", // same JNDI name is used in WAR module, but okay because different scope
                                                              interfaceName = "javax.sql.DataSource",
                                                              resourceAdapter = "ConfigTestAdapter",
-                                                             properties = "purgePolicy=FailingConnectionOnly")
+                                                             properties = "purgePolicy=FailingConnectionOnly"),
+                                @ConnectionFactoryDefinition(name = "java:comp/env/eis/cf2",
+                                                             interfaceName = "javax.sql.DataSource",
+                                                             resourceAdapter = "AppDefResourcesApp.EmbTestAdapter",
+                                                             maxPoolSize = 2,
+                                                             properties = {
+                                                                            "escapeChar=^",
+                                                                            "userName=euser2",
+                                                                            "password=epwd2"
+                                                             })
 })
 
 @DataSourceDefinition(name = "java:comp/env/jdbc/ds3", // same JNDI name is used in WAR module, but okay because different scope

@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -56,9 +57,13 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     public static void setUp() throws Exception {
         JavaArchive ejb = ShrinkWrap.create(JavaArchive.class, "AppDefResourcesEJB.jar").addPackage("test.resthandler.config.appdef.ejb");
         WebArchive web = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage("test.resthandler.config.appdef.web");
+        ResourceAdapterArchive emb_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "EmbTestAdapter.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("org.test.config.adapter"));
         EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
                         .addAsModule(ejb)
-                        .addAsModule(web);
+                        .addAsModule(web)
+                        .addAsModule(emb_rar);
         ShrinkHelper.exportToServer(server, "apps", app);
         server.addInstalledAppForValidation(APP_NAME);
 
@@ -240,6 +245,61 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                      api.getString(0));
 
         // TODO should transactionSupport really show as an attribute of connectionFactory?
+    }
+
+    /**
+     * Use the /ibm/api/config rest endpoint to obtain configuration for an app-defined connection factory from an embedded resource adapter
+     */
+    @Test
+    public void testAppDefinedConnectionFactoryFromEmbeddedResourceAdapter() throws Exception {
+        JsonArray array = new HttpsRequest(server, "/ibm/api/config/connectionFactory?component=AppDefinedResourcesBean")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + array;
+        assertEquals(err, 1, array.size());
+
+        JsonObject ds = array.getJsonObject(0);
+        assertEquals(err, "connectionFactory", ds.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     ds.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     ds.getString("id"));
+        assertEquals(err, "java:comp/env/eis/cf2", ds.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", ds.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", ds.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", ds.getString("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = ds.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err,
+                     "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]/connectionManager",
+                     cm.getString("uid"));
+        assertEquals(err,
+                     "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]/connectionManager",
+                     cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 2, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        JsonObject props;
+        assertNotNull(err, props = ds.getJsonObject("properties.AppDefResourcesApp.EmbTestAdapter.DataSource"));
+        assertEquals(err, 4, props.size());
+        assertEquals(err, "^", props.getString("escapeChar"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+        assertEquals(err, "******", props.getString("password"));
+        assertEquals(err, "euser2", props.getString("userName"));
+
+        JsonArray api;
+        assertNotNull(err, api = ds.getJsonArray("api"));
+        assertEquals(err, 1, api.size()); // increase if more REST API is added for connectionFactory
+        assertEquals(err,
+                     "/ibm/api/validation/connectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesEJB.jar%5D%2Fcomponent%5BAppDefinedResourcesBean%5D%2FconnectionFactory%5Bjava%3Acomp%2Fenv%2Feis%2Fcf2%5D",
+                     api.getString(0));
     }
 
     /**
@@ -956,11 +1016,17 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      * Use the /ibm/api/validator REST endpoint to validate application-defined connection factories
      */
     @Test
+    @ExpectedFFDC("javax.resource.ResourceException") // TODO remove this once support is added for validating resources from embedded resource adapters
+    // javax.resource.ResourceException: J2CA8809E: Resource java:comp/env/eis/ds2 from embedded resource adapter AppDefResourcesApp.EmbTestAdapter is available only to application AppDefResourcesApp. An attempt was made to access it from application com.ibm.ws.rest.handler.
+    // at com.ibm.ws.jca.internal.Utils.checkAccessibility(Utils.java:315)
+    // at com.ibm.ws.jca.service.ConnectionFactoryService.checkAccess(ConnectionFactoryService.java:504)
+    // at com.ibm.ws.jca.cm.AbstractConnectionFactoryService.createResource(AbstractConnectionFactoryService.java:151)
+    // at com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validate(ConnectionFactoryValidator.java:157)
     public void testValidateAppDefinedConnectionFactories() throws Exception {
         JsonArray array = new HttpsRequest(server, "/ibm/api/validation/connectionFactory")
                         .run(JsonArray.class);
         String err = "unexpected response: " + array;
-        assertEquals(err, 2, array.size());
+        assertEquals(err, 3, array.size());
 
         JsonObject j;
         assertNotNull(err, j = array.getJsonObject(0)); // a javax.resource.cci.ConnectionFactory
@@ -982,7 +1048,27 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
         assertEquals(err, "cfuser1", j.getString("user"));
 
-        assertNotNull(err, j = array.getJsonObject(1)); // a javax.sql.DataSource
+        assertNotNull(err, j = array.getJsonObject(1)); // javax.sql.DataSource from embedded RAR
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     j.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     j.getString("id"));
+        assertEquals(err, "java:comp/env/eis/cf2", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", j.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", j.getString("component"));
+        // TODO assertTrue(err, j.getBoolean("successful"));
+        // assertNull(err, j.get("failure"));
+        //assertNotNull(err, j = j.getJsonObject("info"));
+        //assertEquals(err, "TestConfig Data Store, Enterprise Edition", j.getString("databaseProductName"));
+        //assertEquals(err, "48.55.72", j.getString("databaseProductVersion"));
+        //assertEquals(err, "TestConfigJDBCAdapter", j.getString("driverName"));
+        //assertEquals(err, "65.72.97", j.getString("driverVersion"));
+        //assertEquals(err, "TestConfigDB", j.getString("catalog"));
+        //assertEquals(err, "EUSER2", j.getString("schema"));
+        //assertEquals(err, "euser2", j.getString("user"));
+
+        assertNotNull(err, j = array.getJsonObject(2)); // a javax.sql.DataSource
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", j.getString("id"));
         assertEquals(err, "java:module/env/eis/cf1", j.getString("jndiName"));
