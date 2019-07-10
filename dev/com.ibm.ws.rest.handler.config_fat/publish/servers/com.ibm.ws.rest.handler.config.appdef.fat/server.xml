@@ -55,6 +55,9 @@
   
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
+  <javaPermission codebase="${server.config.dir}/apps/AppDefResourcesApp.ear"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>  <!-- for the embedded RAR -->
+
   <javaPermission codebase="${server.config.dir}/connectors/ConfigTestAdapter.rar"
                   className="java.lang.RuntimePermission" name="getClassLoader"/>
 
