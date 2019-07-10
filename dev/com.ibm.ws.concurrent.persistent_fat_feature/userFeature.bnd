@@ -17,7 +17,7 @@ Bundle-Name: UserFeatureTestBundle
 Bundle-SymbolicName: test.concurrent.persistent.feature; singleton:=true
 Bundle-Description: Bundles that tests a user feature that uses persistent executor; version=${bVersion}
 
-Export-Package: test.concurrent.persistent.feature
+Export-Package: test.concurrent.persistent.feature;version=1.0
 
 Private-Package: test.concurrent.persistent.feature.internal*
 

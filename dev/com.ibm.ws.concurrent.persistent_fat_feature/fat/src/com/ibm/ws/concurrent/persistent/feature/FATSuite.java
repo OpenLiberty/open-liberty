@@ -23,14 +23,7 @@ import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- * Collection of all example tests
- */
 @RunWith(Suite.class)
-/*
- * The classes specified in the @SuiteClasses annotation
- * below should represent all of the test cases for this FAT.
- */
 @SuiteClasses( {ConcurrentPersistentFeatureFATTest.class })
 public class FATSuite {
 	
@@ -53,8 +46,8 @@ public class FATSuite {
 	 public static final String USER_BUNDLE_PATH = "usr/extension/lib/";
 	 public static final String USER_FEATURE_MF_FAT_PATH = "features/testFeature-1.0.mf";
 	 public static final String USER_FEATURE_NAME = "testFeature-1.0.mf";
-	 public static final String USER_BUNDLE_JAR_FAT_PATH = "bundles/test.concurrent.persistent.feature_1.0.0.jar";
-	 public static final String USER_BUNDLE_JAR_NAME = "test.concurrent.persistent.feature_1.0.0.jar";
+	 public static final String USER_BUNDLE_JAR_FAT_PATH = "bundles/test.concurrent.persistent.feature.jar";
+	 public static final String USER_BUNDLE_JAR_NAME = "test.concurrent.persistent.feature.jar";
 	    
 	/**
 	 * Pre-bucket execution setup.
@@ -80,8 +73,6 @@ public class FATSuite {
         server.copyFileToLibertyInstallRoot(LIBERTY_FEATURE_PATH, LIBERTY_FEATURE_MF_TEST_PATH);
         assertTrue("Product feature: " + LIBERTY_FEATURE_MF_TEST_PATH + " should have been copied to: " + LIBERTY_FEATURE_PATH,
                    server.fileExistsInLibertyInstallRoot(LIBERTY_FEATURE_PATH + LIBERTY_FEATURE_NAME));
-
-
     }
 
 	/**

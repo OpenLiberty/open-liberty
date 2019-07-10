@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,6 +38,9 @@ public class ConcurrentPersistentFeatureFATTest {
     
     /** Liberty server reference. */
     private static final LibertyServer server = FATSuite.server;
+    
+    /** Web App Name **/
+    private static final String APP_NAME = "CPFeatureApp";
 
     /**
      * Runs a test in the servlet.
@@ -98,7 +102,7 @@ public class ConcurrentPersistentFeatureFATTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-    	// Nothing right now.
+    	ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.feature");
     }
 
     /**
