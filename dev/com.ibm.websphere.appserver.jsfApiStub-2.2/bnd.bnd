@@ -1,0 +1,22 @@
+ -include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Description: WAS JSF 2.2 API Stub, version ${bVersion}
+Bundle-Name: WAS JSF 2.2 API Stub
+Bundle-SymbolicName: com.ibm.ws.jsf.2.2
+Bundle-Version: ${bVersion}.${libertyBundleMicroVersion}.apistub
+Eclipse-ExtensibleAPI: true
+
+publish.wlp.jar.suffix: dev/api/third-party
+
+-exportcontents: \
+  com.ibm.ws.jsf.cdi, \
+  com.ibm.ws.jsf.config, \
+  com.ibm.ws.jsf.config.annotation, \
+  com.ibm.ws.jsf.config.resource, \
+  com.ibm.ws.jsf.ext, \
+  com.ibm.ws.jsf.extprocessor, \
+  com.ibm.ws.jsf.spi, \
+  com.ibm.ws.jsf.spi.impl
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore 
