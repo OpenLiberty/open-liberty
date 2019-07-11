@@ -3,7 +3,7 @@
 [![Stack Overflow](https://img.shields.io/badge/find-answers-blue.svg)](https://stackoverflow.com/questions/tagged/open-liberty)
 [![Website](https://img.shields.io/badge/website-live-purple.svg)](https://openliberty.io/)
 [![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
-[![Docker pulls](https://img.shields.io/docker/pulls/_/open-liberty.svg?color=yellow)
+[![Docker Pulls](https://img.shields.io/docker/pulls/_/open-liberty.svg?color=yellow)](https://hub.docker.com/_/open-liberty)
 [![Maven Central](https://img.shields.io/maven-central/v/io.openliberty/openliberty-runtime.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.openliberty%22%20a%3A%22openliberty-runtime%22)
 
 <!-- PROJECT LOGO -->
