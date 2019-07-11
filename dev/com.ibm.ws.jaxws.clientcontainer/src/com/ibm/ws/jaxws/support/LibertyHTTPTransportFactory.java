@@ -11,6 +11,9 @@
 package com.ibm.ws.jaxws.support;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.namespace.QName;
@@ -39,12 +42,22 @@ public class LibertyHTTPTransportFactory extends HTTPTransportFactory {
      * set the auto-redirect to true
      */
     @Override
-    public Conduit getConduit(EndpointInfo endpointInfo, EndpointReferenceType target) throws IOException {
+    public Conduit getConduit(final EndpointInfo endpointInfo, final EndpointReferenceType target) throws IOException {
         //create our LibertyHTTPConduit so that we can set the TCCL when run the handleResponseInternal asynchronously
-        LibertyHTTPConduit conduit = new LibertyHTTPConduit(bus, endpointInfo, target);
+        LibertyHTTPConduit conduit = null;
+        try {
+            conduit = AccessController.doPrivileged(new PrivilegedExceptionAction<LibertyHTTPConduit>() {
+                @Override
+                public LibertyHTTPConduit run() throws IOException {
+                    return new LibertyHTTPConduit(bus, endpointInfo, target);
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            throw (IOException) pae.getException();
+        }
 
         //following are copied from the super class.
-        //Spring configure the conduit.  
+        //Spring configure the conduit.
         String address = conduit.getAddress();
         if (address != null && address.indexOf('?') != -1) {
             address = address.substring(0, address.indexOf('?'));
@@ -78,7 +91,7 @@ public class LibertyHTTPTransportFactory extends HTTPTransportFactory {
 
     /**
      * Set the security configuration service
-     * 
+     *
      * @param securityConfigService the securityConfigService to set
      */
     public static void setSecurityConfigService(AtomicServiceReference<JaxWsSecurityConfigurationService> serviceRefer) {
