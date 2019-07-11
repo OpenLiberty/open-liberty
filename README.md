@@ -1,13 +1,5 @@
-[![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
-[![Groups.io](https://img.shields.io/badge/ask-groups.io-orange.svg)](https://groups.io/g/openliberty)
-[![Stack Overflow](https://img.shields.io/badge/find-answers-blue.svg)](https://stackoverflow.com/questions/tagged/open-liberty)
-[![Website](https://img.shields.io/badge/website-live-purple.svg)](https://openliberty.io/)
-[![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
-[![Docker Pulls](https://img.shields.io/docker/pulls/_/open-liberty.svg?color=yellow)](https://hub.docker.com/_/open-liberty)
-[![Maven Central](https://img.shields.io/maven-central/v/io.openliberty/openliberty-runtime.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.openliberty%22%20a%3A%22openliberty-runtime%22)
-
 <!-- PROJECT LOGO -->
-<br />
+
 <p align="center">
   <a href="https://openliberty.io/">
     <img src="https://openliberty.io/img/spaceship.svg" alt="Logo">
@@ -18,6 +10,16 @@
     <img src="https://github.com/OpenLiberty/open-liberty/blob/master/logos/logo_horizontal_light_navy.png" alt="title" width="400">
   </a>
 </p>
+<br />
+
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.openliberty/openliberty-runtime.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.openliberty%22%20a%3A%22openliberty-runtime%22)
+[![Docker Pulls](https://img.shields.io/docker/pulls/_/open-liberty.svg?color=yellow)](https://hub.docker.com/_/open-liberty)
+[![Website](https://img.shields.io/badge/website-live-purple.svg)](https://openliberty.io/)
+[![Stack Overflow](https://img.shields.io/badge/find-answers-blue.svg)](https://stackoverflow.com/questions/tagged/open-liberty)
+[![Groups.io](https://img.shields.io/badge/ask-groups.io-orange.svg)](https://groups.io/g/openliberty)
+[![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
+[![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
 
 <!-- TABLE OF CONTENTS -->
 
