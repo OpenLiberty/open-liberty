@@ -12,8 +12,13 @@
   <a href="https://openliberty.io/">
     <img src="https://openliberty.io/img/spaceship.svg" alt="Logo">
   </a>
-  <h1 align="center">Open Liberty</h1>
 </p>
+<p align="center">
+  <a href="https://openliberty.io/">
+    <img src="https://github.com/OpenLiberty/open-liberty/blob/master/logos/logo_horizontal_light_navy.png" alt="title" width="400">
+  </a>
+</p>
+
 <!-- TABLE OF CONTENTS -->
 
 ## Table of Contents
@@ -131,6 +136,8 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
     ```open-liberty\dev\cnf\release\dev\openliberty\<version>\openliberty-xxx.zip```
 
 ## License
+[![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
+
 Usage is provided under the [EPL 1.0 license](https://opensource.org/licenses/EPL-1.0) See LICENSE for the full details.
 
 
