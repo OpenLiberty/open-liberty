@@ -30,10 +30,12 @@ task cleanBeforeRun(type: Delete) {
 configurations {
   requiredLibs
   derby
+  derbyclient
 }
 
 dependencies {
   derby 'org.apache.derby:derby:10.11.1.1'
+  derbyclient 'org.apache.derby:derbyclient:10.11.1.1'
 }
 
 task addRequiredLibraries(type: Copy) {
@@ -47,6 +49,13 @@ task addDerby(type: Copy) {
   from configurations.derby
   into new File(autoFvtDir, 'publish/shared/resources/derby')
   rename 'derby-.*.jar', 'derby.jar'
+}
+
+task addDerbyClient(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derbyclient
+  into new File(autoFvtDir, 'publish/shared/resources/derbyclient')
+  rename 'derbyclient-.*.jar', 'derbyclient.jar'
 }
 
 task copyFeatureBundles {
