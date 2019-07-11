@@ -1,9 +1,9 @@
+[![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
 [![Groups.io](https://img.shields.io/badge/ask-groups.io-orange.svg)](https://groups.io/g/openliberty)
 [![Stack Overflow](https://img.shields.io/badge/find-answers-blue.svg)](https://stackoverflow.com/questions/tagged/open-liberty)
 [![Website](https://img.shields.io/badge/website-live-purple.svg)](https://openliberty.io/)
-[![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
 [![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Docker pulls](https://img.shields.io/docker/pulls/_/open-liberty.svg?color=yellow)
 [![Maven Central](https://img.shields.io/maven-central/v/io.openliberty/openliberty-runtime.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.openliberty%22%20a%3A%22openliberty-runtime%22)
 
 <!-- PROJECT LOGO -->
@@ -29,7 +29,7 @@
 * [Contact](#contact)
 
 # Summary
-Open Liberty is a comprehensive, flexible and secure Java EE and MicroProfile application server ready for building modern cloud-native applications and services.
+A lightweight open framework for building fast and efficient cloud-native Java microservices.
 
 * The Open Liberty modular architecture means only the features you need are loaded at runtime to help reduce image size and memory consumption. The smaller footprint means you can run more application instances per machine to help reduce production costs.
 
