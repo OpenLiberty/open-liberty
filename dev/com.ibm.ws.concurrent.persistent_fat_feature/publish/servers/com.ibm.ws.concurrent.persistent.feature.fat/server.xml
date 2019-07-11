@@ -1,0 +1,37 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <!--<feature>osgiconsole-1.0</feature>-->
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>usr:testFeature-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- User feature configurable element -->
+    <usr_persistentExecFeature jndiName="concurrent/executorService">
+      <persistentExecutor taskStoreRef="dbTaskStore1" retryLimit="1" initialPollDelay="30m"/>
+    </usr_persistentExecFeature>
+
+    <databaseStore id="dbTaskStore1">
+      <dataSource>
+        <jdbcDriver libraryRef="jdbc1Lib1"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:cpefeature"/>
+      </dataSource>
+    </databaseStore>
+    <library id="jdbc1Lib1">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+  
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

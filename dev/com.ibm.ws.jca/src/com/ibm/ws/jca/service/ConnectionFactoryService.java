@@ -497,8 +497,11 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         if (metadata != null && metadata.isEmbedded()) { // metadata is null for SIB/MQ
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String currentApp = null;
-            if (cData != null)
+            if (cData != null) {
                 currentApp = cData.getJ2EEName().getApplication();
+                if ("com.ibm.ws.rest.handler".equals(currentApp))
+                    return; // Allow access by internally implemented REST endpoints such as /ibm/api/validation/
+            }
             String adapterName = bootstrapContext.getResourceAdapterName();
             String embeddedApp = metadata.getJ2EEName().getApplication();
             Utils.checkAccessibility(jndiName, adapterName, embeddedApp, currentApp, false);

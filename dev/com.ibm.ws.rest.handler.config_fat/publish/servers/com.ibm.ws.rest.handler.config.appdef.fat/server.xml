@@ -31,6 +31,11 @@
     <classloader commonLibraryRef="Derby"/>
   </application>
 
+  <connectionFactory jndiName="eis/cf3" containerAuthDataRef="cfauth1">
+    <connectionManager maxPoolSize="3" agedTimeout="3h33m3s" enableSharingForDirectLookups="false"/>
+    <properties.AppDefResourcesApp.EmbTestAdapter.ConnectionFactory enableBetaContent="true" portNumber="3456"/>
+  </connectionFactory>
+
   <messagingEngine id="defaultME"/>
 
   <resourceAdapter location="${server.config.dir}/connectors/ConfigTestAdapter.rar"/>
@@ -54,6 +59,9 @@
   </library>
   
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+  <javaPermission codebase="${server.config.dir}/apps/AppDefResourcesApp.ear"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>  <!-- for the embedded RAR -->
 
   <javaPermission codebase="${server.config.dir}/connectors/ConfigTestAdapter.rar"
                   className="java.lang.RuntimePermission" name="getClassLoader"/>
