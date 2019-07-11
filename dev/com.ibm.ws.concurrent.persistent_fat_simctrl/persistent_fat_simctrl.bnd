@@ -8,16 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../ant_build/resources/bnd/bundle.props
-bVersion=1.0.0
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+#This file defines the main fat bundle
 
-Bundle-Name: SimulatedController
-Bundle-SymbolicName: test.concurrent.persistent.fat.simctrl; singleton:=true
-Bundle-Description: Simulates a controller for persistent executors; version=${bVersion}
-
-Private-Package: test.concurrent.persistent.fat.simctrl*
-
--dsannotations: \
-  test.concurrent.persistent.fat.simctrl.SimulatedController
+Bundle-Name: com.ibm.ws.concurrent.persistent_fat_simctrl
+Bundle-SymbolicName: com.ibm.ws.concurrent.persistent_fat_simctrl

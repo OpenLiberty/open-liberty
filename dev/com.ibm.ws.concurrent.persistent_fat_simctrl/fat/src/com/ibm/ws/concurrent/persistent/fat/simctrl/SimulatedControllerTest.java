@@ -23,19 +23,18 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.MinimumJavaLevel;
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * This test bucket attempts to simulate what a controller implementation would do to fail tasks over
@@ -45,12 +44,11 @@ import componenttest.topology.impl.LibertyServer;
  * that use declaratives services to keep track of all of the active persistent executor instances
  * on the server. We can simulate an instance going down by removing it from the configuration.
  */
-@MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class SimulatedControllerTest {
-    private static final Set<String> appNames = Collections.singleton("persistctrltest");
-
-    @ClassRule
-    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
+	private static final String APP_NAME = "persistctrltest";
+	
+    private static final Set<String> appNames = Collections.singleton(APP_NAME);
 
     private static ServerConfiguration originalConfig;
 
@@ -111,14 +109,13 @@ public class SimulatedControllerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         originalConfig = server.getServerConfiguration();
-        for (String name : appNames)
-            server.addInstalledAppForValidation(name);
+        
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         // Update the server's configuration file if the bootstrapping.properties was
         // populated with relevant database information.
         originalConfig.updateDatabaseArtifacts();
         server.updateServerConfiguration(originalConfig);
-
         server.startServer();
     }
 
@@ -228,7 +225,7 @@ public class SimulatedControllerTest {
     @Test
     public void testFailoverWithFourInstances() throws Exception {
         StringBuilder output = runInServlet(
-                                            "test=testScheduleRepeatingTask&jndiName=concurrent/executor1&taskName=FW4I-A&initialDelay=0&interval=2500&invokedBy=testFailoverWithFourInstances");
+        					  "test=testScheduleRepeatingTask&jndiName=concurrent/executor1&taskName=FW4I-A&initialDelay=0&interval=2500&invokedBy=testFailoverWithFourInstances");
         int start = output.indexOf(TASK_ID_SEARCH_TEXT);
         if (start < 0)
             throw new Exception("Task id of scheduled task not found in servlet output: " + output);

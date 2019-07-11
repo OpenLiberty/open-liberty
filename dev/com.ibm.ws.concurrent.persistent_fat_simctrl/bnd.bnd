@@ -23,4 +23,12 @@ fat.project: true
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.ws.concurrent.persistent;version=latest
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.concurrent.persistent;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	javax.enterprise.concurrent-api;version=latest,\
+	org.osgi.service.component.annotations;version=latest
+	
+-sub: *.bnd
