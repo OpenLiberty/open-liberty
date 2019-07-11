@@ -40,6 +40,9 @@ public class ActivationTypeTest {
 
         // Note that usr/product features are never parallel activated
         server.setMarkToEndOfLog();
+        // Our new server.xml is the same size as the old one, so wait a couple seconds to make
+        // sure the config runtime will recognize the change.
+        Thread.sleep(2000);
         server.changeFeatures(Arrays.asList("usr:test.activation.parallel.user-1.0"));
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
         server.waitForStringInLogUsingMark("test.activation.type.parallel.user: false");
