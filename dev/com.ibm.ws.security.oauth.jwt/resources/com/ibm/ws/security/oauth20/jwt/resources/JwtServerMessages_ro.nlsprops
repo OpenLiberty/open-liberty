@@ -1,0 +1,137 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS2200 - CWWKS2299
+
+JWT_TOKEN_TOO_MANY_TOKENS_ERR=CWWKS2202E: Cererea punct final jeton a e\u015fuat deoarece au fost g\u0103site mai multe jetoane JWT.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.explanation=Cererea punct final jeton are mai multe jetoane JWT. Nu este permis.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 doar un jeton JWT \u00een cererea punct final jeton.
+
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR=CWWKS2203E: Cererea punct final jeton a e\u015fuat deoarece a fost g\u0103sit niciun jeton JWT.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.explanation=Cererea punct final jeton nu are un jeton JWT. Nu poate fi procesat\u0103.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 cererea punct final jeton are un jeton JWT.
+
+JWT_UNEXPECTED_EXCEPTION_ERR=CWWKS2204E: \u00cen timpul proces\u0103rii cererii punct final jeton, OpenID Connect Provider prime\u015fte o excep\u0163ie nea\u015fteptat\u0103 ({0}).
+JWT_UNEXPECTED_EXCEPTION_ERR.explanation=OpenID Connect Provider prime\u015fte o excep\u0163ie nea\u015fteptat\u0103.
+JWT_UNEXPECTED_EXCEPTION_ERR.useraction=V\u0103 rug\u0103m contacta\u0163i IBM.
+
+JWT_TOKEN_BAD_NUMBER_ERR=CWWKS2205E: Cererea punct final al jetonului a e\u015fuat. ''{0}'' de revendicare [{1}] \u00een JWT Token nu este \u00een formatul corect. IT ar trebui s\u0103 fie \u00een timp UTC \u015fi trebuie s\u0103 fie un \u00eentreg.
+JWT_TOKEN_BAD_NUMBER_ERR.explanation=Revendicarea JWT nu este \u00een formatul a\u015fteptat de timp UTC \u00eentreg.
+JWT_TOKEN_BAD_NUMBER_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 revendicarea \u00een jetonul JWT este \u00een formatul corect. Timpul UTC trebuie s\u0103 fie \u00een format numeric.
+
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR=CWWKS2206E: Cererea punct final jeton a e\u015fuat deoarece nu au putut fi verificate jetoanele JWT. \u00cen timpul verific\u0103rii ''sub'' claim: [{0}], a survenit o eroare nea\u015fteptat\u0103.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.explanation=Cererea punct final al jetonului a e\u015fuat. Nu se poate verifica sub-revendicarea jetonului JWT. O excep\u0163ie nea\u015fteptat\u0103 a ap\u0103rut \u00een timpul verific\u0103rii.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 sub-revendicarea \u00een JWT Token este un utilizator valid al OpenID Connect Provider.
+
+JWT_TOKEN_BAD_AUD_ERR=CWWKS2207E: Cererea punct final jeton a e\u015fuat. JWT Token nu este valid deoarece acest OpenID Connect Provider nu este inclus \u00een revendicarea 'aud' (audien\u0163\u0103).
+JWT_TOKEN_BAD_AUD_ERR.explanation=OpenID Connect Provider trebuie s\u0103 fie \u00een lista de audien\u0163\u0103 pentru JWT Token. ID-ul OpenID Connect Provider este issuerIdentifier \u00een configura\u0163ie sau \u00een URL-ul Token Endpoint.  
+JWT_TOKEN_BAD_AUD_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 revendicarea 'aud' \u00een jetonul JWT include OpenID Connect Provider vizat. V\u0103 rug\u0103m verifica\u0163i issuerIdentifier \u00een configura\u0163ia OpenID Connect Provider sau \u00een URL-ul punct final jeton. 
+
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR=CWWKS2208E: Cererea punct final jeton a e\u015fuat deoarece nu au putut fi verificate jetoanele JWT. Jetonului JWT \u00een lipse\u015fte revendicarea {0} necesar\u0103.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.explanation=Nu se poate procesa cererea punct final jeton deoarece JWT Token lipse\u015fte din revendicarea necesar\u0103.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.useraction=Ad\u0103uga\u0163i revendicarea necesar\u0103 \u00een jetonul JWT.
+
+JWT_TOKEN_ISS_MISMATCH_ERR=CWWKS2209E: Cererea punct final jeton a e\u015fuat. JWT Token nu este valid deoarece revendicarea ''iss'' [{0}] nu se potrive\u015fte cu URI-ul de redirec\u0163ionare al clientului sau cu clientId specificat \u00een configurarea OpenID Connect Provider. 
+JWT_TOKEN_ISS_MISMATCH_ERR.explanation=Revendicarea emitent din JWT Token trebuie s\u0103 se potriveasc\u0103 cu URI-ul de redirec\u0163ionare al clientului sau cu clientId \u00eenregistrat \u00een OpenID Connect Provider.
+JWT_TOKEN_ISS_MISMATCH_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 revendicarea emitentului este un URI de redirec\u0163ionare client sau clientId.  Verifica\u0163i clientID sau URI-ul de redirec\u0163ionare \u00een configurarea OpenID Connect Provider. 
+
+JWT_TOKEN_SUB_NOT_FOUND_ERR=CWWKS2210E: Cererea punct final al jetonului a e\u015fuat. Jetonul JWT nu este valid deoarece revendicarea ''sub'' [{0}] nu se g\u0103se\u015fte pe registrul de utilizatori al OpenID Connect Provider.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.explanation=Jetonul JWT nu este valid deoarece revendicarea subiect nu se g\u0103se\u015fte pe registrul de utilizatori al OpenID Connect Provider.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 revendicarea subiect \u00een JWT Token este un utilizator din registrul de utilizatori OpenID  Connect Provider.
+
+JWT_TOKEN_EXPIRED_ERR=CWWKS2211E: Cererea punct final jeton a e\u015fuat deoarece  jetonul JWT a expirat. Timpul de expirare (''exp'') din revendicare este [{0}].
+JWT_TOKEN_EXPIRED_ERR.explanation=Jetonul JWT a expirat. Timpul de expirare este indicat de mesajul de eroare.
+JWT_TOKEN_EXPIRED_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 jetonul JWT nu a expirat, sincroniza\u0163i timpul \u00eentre sisteme sau m\u0103ri\u0163i timpul de expirare.
+
+JWT_TOKEN_FUTURE_TOKEN_ERR=CWWKS2212E: Cererea punct final jeton a e\u015fuat deoarece jetonul JWT nu este valid. Revendicarea ''iat'' este [{0}]. Timpul de lansare (''iat'') este \u00een viitor.
+JWT_TOKEN_FUTURE_TOKEN_ERR.explanation=Timpul de lansare din jetonul JWT este dup\u0103 ora curent\u0103. Nu este valid la momentul proces\u0103rii.
+JWT_TOKEN_FUTURE_TOKEN_ERR.useraction=Sincroniza\u0163i timpul \u00eentre sisteme \u015fi asigura\u0163i-v\u0103 c\u0103 timpul 'iat' este valid sau lansa\u0163i JWT Token  mai t\u00e2rziu.
+
+# do not translate tokenMaxLifetime
+JWT_TOKEN_MAX_LIFETIME_ERR=CWWKS2214E: Cererea punct final jeton a e\u015fuat. JWT Token nu este valid deoarece revendicarea ''iss'' (momentul de lansare:[{0}] dep\u0103\u015fe\u015fe timpul de via\u0163\u0103 maxim al JWT Token, care este definit ca tokenMaxLifetime \u00een configurare: [{1}] secunde.
+JWT_TOKEN_MAX_LIFETIME_ERR.explanation=JWT Token lansat dep\u0103\u015fe\u015fte timpul de via\u0163\u0103 maxim al JWT Token (valoarea tokenMaxLifetime) care este definit \u00een configurarea OpenID Connect Provider.
+JWT_TOKEN_MAX_LIFETIME_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 Token JWT este lansat \u00een timpul de via\u0163\u0103 maxim al JWT Token sau cre\u015fte\u0163i valoarea tokenMaxLifetime \u00een configura\u0163ia serverului.
+
+JWT_TOKEN_IAT_NEEDED_ERR=CWWKS2215E: Cererea punct final al jetonului a e\u015fuat. JWT Token trebuie s\u0103 ofere revendicarea 'iat' deoarece 'iatRequired' este setat la adev\u0103rat \u00een configurarea OpenID Connect Provider.
+JWT_TOKEN_IAT_NEEDED_ERR.explanation=OpenID Connect Provider a setat 'iatRequired' la adev\u0103rat. \u00cen acest caz, revendicarea 'iat' este necesar\u0103 \u00een JWT Token. Lipsa revendic\u0103rii 'iat' duce la un e\u015fec.
+JWT_TOKEN_IAT_NEEDED_ERR.useraction=Fie oferi\u0163i o revendicare 'iat' \u00een jetonul JWT token, fie seta\u0163i 'iatRequired' la fals \u00een OpenID Connect Provider.
+
+JWT_TOKEN_BEFORE_ERR=CWWKS2216E: Cererea punct final jeton a e\u015fuat deoarece  jetonul JWT a fost cerut \u00eenainte de revendicarea ''nbf'':[{0}]
+JWT_TOKEN_BEFORE_ERR.explanation=JWT Token are o revendicare nu \u00eenainte de, dar momentul cererii este \u00eenainte de momentul nbf (not-before-time). 
+JWT_TOKEN_BEFORE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 JWT Token este trimis dup\u0103 ce revendicarea not-before-time ('nbf').
+
+JWT_TOKEN_DUP_JTI_ERR=CWWKS2217E: Cererea punct final al jetonului a e\u015fuat. Alt JWT Token cu acelea\u015fi ''iss'':[{0}] \u015fi ''jti'':[{1}] a fost deja lansat.
+JWT_TOKEN_DUP_JTI_ERR.explanation=Un JWT Token, care este lansat de acela\u015fi emitent, nu poate fi lansat de dou\u0103 ori. Valoarea jti este ID-ul unic al unui jeton.
+JWT_TOKEN_DUP_JTI_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 fiecare jeton JWT care este emis de acela\u015fi emitent are un ID jti unic.
+
+#
+# Message prefix block: CWWKS2251 - CWWKS2299
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS2251E: Cererea punct final al jetonului a e\u015fuat. Jetonul JWT din cerere nu are o revendicare necesar\u0103 ''{0}''.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Jetonul JWT nu con\u0163ine toate revendic\u0103rile necesare.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Oferi\u0163i revendic\u0103rile necesare \u00een jetonul JWT. 
+
+JWT_TOKEN_NO_TOKEN_ERR=CWWKS2257E: Cererea punct final al jetonului a e\u015fuat. Cererea nu este valid\u0103 deoarece \u00eei lipse\u015fte jetonul JWT necesar.
+JWT_TOKEN_NO_TOKEN_ERR.explanation=Cererea nu este valid\u0103 deoarece \u00eei lipse\u015fte jetonul JWT necesar.
+JWT_TOKEN_NO_TOKEN_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 cererea con\u0163ine un jeton JWT.
+
+JWT_TOKEN_UNEXPECTED_EXCEPTION=CWWKS2258E: Cererea punct final al jetonului a e\u015fuat. Metoda [{0}] prime\u015fte o excep\u0163ie nea\u015fteptat\u0103 [{1}].
+JWT_TOKEN_UNEXPECTED_EXCEPTION.explanation=Serverul prime\u015fte o excep\u0163ie care nu era a\u015fteptat\u0103.
+JWT_TOKEN_UNEXPECTED_EXCEPTION.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia \u00een fi\u015fierul server.xml este corect\u0103. Dac\u0103 acest lucru se \u00eent\u00e2mpl\u0103 \u00een mod frecvent, v\u0103 rug\u0103m s\u0103 contacta\u0163i  IBM.
+
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR=CWWKS2260E: Cererea punct final jeton a e\u015fuat deoarece jetonul JWT a fost cerut \u00eenainte de revendicarea ''nbf''. Ora curent\u0103 plus decalajul orar din OpenID Connect Provider este [{0}]. Momentul ''nbf'' este [{1}].
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.explanation=Jetonul JWT nu este valid. Este prezentat \u00eenainte de revendicarea 'nbf' (not-before-time). 
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 Token JWT din cererea este dup\u0103 momentul not-before-time ('nbf'). Sincroniza\u0163i timpul \u00eentre OpenID Connect Client \u015fi Provider sau cre\u015fte\u0163i decalajul orar \u00een configurarea OpenID Connect Provider.
+
+JWT_TOKEN_IAT_FUTURE_ERR=CWWKS2262E: Cererea punct final jeton a e\u015fuat. Momentul revendic\u0103rii ''iat'' a jetonului JWT este \u00een viitor: [{0}]. Ora curent\u0103 plus decalajul orar: [{1}]. 
+JWT_TOKEN_IAT_FUTURE_ERR.explanation=Revendicarea 'iat' din jetonul JWT indic\u0103 faptul c\u0103 jetonul este lansat \u00een viitor. Nu este valid la momentul curent \u00een OpenID Connect Provider.
+JWT_TOKEN_IAT_FUTURE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 timpul \u00eentre OpenID Connect Client \u015fi Provider este sincronizat \u015fi nu lansa\u0163i un JWT Token al c\u0103rui 'iat' este \u00een viitor. 
+
+JWT_TOKEN_EXPIRE_ERR=CWWKS2263E: Cererea punct final al jetonului a e\u015fuat. Momentul jetonului JWT a transmis revendicarea ''exp'': [{0}]. Ora curent\u0103 plus decalajul orar din OpenID Connect Provider este [{1}].
+JWT_TOKEN_EXPIRE_ERR.explanation=Momentul 'exp' al jetonului a transmis ora curent\u0103 plus decalajul orar. Nu este valid. 
+JWT_TOKEN_EXPIRE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 JWT Token nu expir\u0103 sau sincroniza\u0163i ora \u00eentre OpenID Connect Client \u015fi Provider. 
+
+JWT_TOKEN_INVALID_ISS_ERR=CWWKS2265E: Cererea punct final jeton a e\u015fuat. Emitentul JWT Token [{0}] nu se potrive\u015fte cu clientId [{2}] sau cu vreun uri de redirec\u0163ionare cum ar fi : [{1}]. 
+JWT_TOKEN_INVALID_ISS_ERR.explanation=Revendicarea 'iss' \u00een jetonul JWT trebuie s\u0103 fie ID client sau orice uri de redirec\u0163ionare client.
+JWT_TOKEN_INVALID_ISS_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 revendicarea 'iss' din JWT Token este ID client sau orice uri de redirec\u0163ionare client.
+
+JWT_TOKEN_INVALID_AUD_ERR=CWWKS2266E: Cererea punct final jeton a e\u015fuat. Revendicarea audien\u0163ei [{0}] nu se potrive\u015fte cu identificatorul emitent al OpenID Connect Provider [{1}] nici cu punctul final jeton [{2}].
+JWT_TOKEN_INVALID_AUD_ERR.explanation=Revendicarea 'aud' din jetonul JWT trebuie s\u0103 fie identificator emitent sau punct final jeton al OpenID Connect Provider.
+JWT_TOKEN_INVALID_AUD_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 revendicarea 'aud' din  JWT Token este identificatorul emitent sau punctul final jeton al OpenID Connect Provider.
+
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR=CWWKS2267E: Cererea punct final jeton a e\u015fuat. Revendicarea audien\u0163ei este [{0}] care nu se potrive\u015fte cu identificatorul emitent al furnizorului [{1}], care este definit ca issuerIdentifier al openidConnectProvider \u00een configura\u0163ie.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.explanation=Revendicarea 'aud' din jetonul JWT trebuie s\u0103 fie identificatorul emitent care este specificat explicit \u00een configura\u0163ie.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 revendicarea 'aud' din  JWT Token se potrive\u015fte cu identificatorul emitent definit \u00een configura\u0163ie.
+
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR=CWWKS2268E: Cererea punct final jeton a e\u015fuat. \u00cen timpul verific\u0103rii revendic\u0103rii sub [{0}], acesta ob\u0163ine o excep\u0163ie de registru [{1}]
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.explanation=\u00cen timpul verific\u0103rii revendic\u0103rii 'sub' \u00een registrul de utilizatori al OpenID Connect Provider. O excep\u0163ie nea\u015fteptat\u0103 a ap\u0103rut.
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 registrul de utilizatori din OpenID Connect Provider func\u0163ioneaz\u0103 corespunz\u0103tor \u015fi sub(utilizatorul) este un utilizator valid din registru.
+
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR=CWWKS2269E: Cererea punct final jeton a e\u015fuat. Nu se poate ob\u0163ine un depozit de \u00eencredere pentru verificarea JWT Token din cauza unei Excep\u0163ii [{0}]. Valorile de configurare din jwtGrantType sunt signatureAlgorithm: [{1}] trustStoreRef: [{2}] \u015fi Nume alias este: [{3}]
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.explanation=Algoritmul de semn\u0103tur\u0103 indicat pentru JWT Token are nevoie de o cheie public\u0103 pentru verificarea JWT Token de intrare dar a e\u015fuat s\u0103 ob\u0163in\u0103 una.  
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 este setat\u0103 corespunz\u0103tor configura\u0163ia jwtGrantType \u015fi keyStore, \u015fi de asemenea asigura\u0163i-v\u0103 c\u0103 loca\u0163ia trustStore \u015fi parola sunt corecte. 
+
+JWT_TOKEN_NO_PUBLIC_KEY_ERR=CWWKS2270E: Cererea punct final jeton a e\u015fuat. Nu se poate ob\u0163ine un depozit de \u00eencredere pentru verificarea JWT Token. Algoritmul de semn\u0103tur\u0103 pentru verificarea din furnizorul OpenID Connect este [{0}]. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.explanation=Furnizorul OpenID Connect nu poate ob\u0163ine un depozit de \u00eencredere pentru a verifica jetonul JWT.  Configura\u0163ia openidConnectProvider trebuie s\u0103 fie setat corespunz\u0103tor. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 este setat\u0103 corespunz\u0103tor configura\u0163ia jwtGrantType \u015fi trustStoreRef din openidConnectProvider, \u015fi de asemenea asigura\u0163i-v\u0103 c\u0103 loca\u0163ia trustStore \u015fi parola sunt corecte.
+
+JWT_UNEXPECTED_ERR=CWWKS2271E: \u00cen timpul proces\u0103rii cererii de punct final de jeton, OpenID Connect Provider a e\u015fuat s\u0103 proceseze din cauza [{0}].
+JWT_UNEXPECTED_ERR.explanation=OpenID Connect Provider ob\u0163ine o eroare nea\u015fteptat\u0103.
+JWT_UNEXPECTED_ERR.useraction=Asigur\u0163i-v\u0103 c\u0103 este setat\u0103 corect configura\u0163ia. Dac\u0103 problema persist\u0103, v\u0103 rug\u0103m s\u0103 contacta\u0163i IBM.
+
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR=CWWKS2272E: Cererea de punct final de jeton OAuth a e\u015fuat. Jetonul JWT este semnat cu RS256. Este suportat doar cu punctul final de jeton OpenID Connect.
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.explanation=Jetonul JWT semnat cu algoritmul de semn\u0103tur\u0103 RS256 nu este suportat \u00een punctul final de jeton OAuth. 
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.useraction=Pentru a utiliza jetonul JWT cu algoritmul de semn\u0103tur\u0103 RS256, v\u0103 rug\u0103m  s\u0103 seta\u0163i o configura\u0163ie openidConnectProvider corespunz\u0103toare \u015fi de asemenea s\u0103 trimite\u0163i cererea prin punctul final de jeton OpenID Connect.

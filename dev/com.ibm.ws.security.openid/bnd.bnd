@@ -1,0 +1,114 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security OpenID 2.0
+Bundle-SymbolicName: com.ibm.ws.security.openid.2.0
+Bundle-Description: WAS Security OpenID 2.0, version=${bVersion}
+
+WS-TraceGroup: \
+  OPENID
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+ 
+ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+ 
+Export-Package: \
+        com.ibm.ws.security.openid20;provide:=true
+
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Private-Package: \
+        com.ibm.ws.security.openid20.internal.*, \
+        com.ibm.ws.security.openid20.consumer.*, \
+        com.ibm.ws.security.openid20.tai.*
+
+Service-Component: \
+  com.ibm.ws.security.openid20; \
+    implementation:=com.ibm.ws.security.openid20.internal.OpenidClientServiceImpl; \
+    provide:=com.ibm.ws.webcontainer.security.openid20.OpenidClientService; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modify; \
+    deactivate:=deactivate; \
+    configuration-policy:=ignore; \
+    openidClientConfig=com.ibm.ws.security.openid20.OpenidClientConfig; \
+    sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
+    sslConfig=com.ibm.wsspi.ssl.SSLConfiguration; \
+    dynamic:='openidClientConfig,sslSupport,sslConfig'; \
+    optional:='sslSupport,sslConfig'; \
+    multiple:='sslConfig';\
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.openid20.openidClientConfig; \
+    implementation:=com.ibm.ws.security.openid20.internal.OpenidClientConfigImpl; \
+    provide:=com.ibm.ws.security.openid20.OpenidClientConfig; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modify; \
+    deactivate:=deactivate; \
+    configuration-policy:=require; \
+    configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
+    dynamic:='configurationAdmin'; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.openid20.tai; \
+    implementation:=com.ibm.ws.security.openid20.tai.OpenidTAI; \
+    provide:=com.ibm.wsspi.security.tai.TrustAssociationInterceptor; \
+    configuration-policy:=ignore; \
+	activate:='activate'; \
+	deactivate:='deactivate'; \
+    immediate:=true; \
+    openidClientConfig=com.ibm.ws.security.openid20.OpenidClientConfig; \
+    openidClientService=com.ibm.ws.webcontainer.security.openid20.OpenidClientService; \
+    authenticationFilter='com.ibm.ws.security.authentication.filter.AuthenticationFilter(id=*)'; \
+    securityService=com.ibm.ws.security.SecurityService; \
+    optional:='authenticationFilter'; \
+	dynamic:='openidClientConfig,authenticationFilter'; \
+	greedy:='authenticationFilter'; \
+	multiple:='authenticationFilter'; \
+	properties:="service.vendor=IBM,TAIName=OpenidTAI,id=com.ibm.ws.security.openid20.tai,invokeAfterSSO:Boolean=true"
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.com.google.guice.2.0;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	com.ibm.ws.org.openid4java.0.9.7;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.security.authentication.filter;version=latest,\
+	com.ibm.ws.security.authentication.tai;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.webcontainer.security.provider;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+
+instrument.classesExcludes: com/ibm/ws/security/openid20/internal/resources/OpenIDMessages*.class

@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1600 - CWWKS1649
+OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Konfiguracja dostawcy OpenID Connect {0} zosta\u0142a pomy\u015blnie przetworzona.
+OIDC_SERVER_CONFIG_PROCESSED.explanation=Konfiguracja dostawcy OpenID Connect zosta\u0142a pomy\u015blnie przetworzona.
+OIDC_SERVER_CONFIG_PROCESSED.useraction=Brak
+
+OIDC_SERVER_CONFIG_MODIFIED=CWWKS1601I: Konfiguracja dostawcy OpenID Connect {0} zosta\u0142a pomy\u015blnie zmodyfikowana.
+OIDC_SERVER_CONFIG_MODIFIED.explanation=Konfiguracja dostawcy OpenID Connect zosta\u0142a pomy\u015blnie zmodyfikowana.
+OIDC_SERVER_CONFIG_MODIFIED.useraction=Brak.
+
+OIDC_SERVER_CONFIG_EXECTED_ONE=CWWKS1602I: Konfiguracja dostawcy OpenID Connect zawiera wi\u0119cej ni\u017c jedn\u0105 warto\u015b\u0107 skonfigurowan\u0105 dla w\u0142a\u015bciwo\u015bci dostawcy: {0}.
+OIDC_SERVER_CONFIG_EXECTED_ONE.explanation=Dla \u017c\u0105danej w\u0142a\u015bciwo\u015bci dostawcy OpenID Connect jest oczekiwana jedna warto\u015b\u0107, a zwr\u00f3cono wi\u0119cej. 
+OIDC_SERVER_CONFIG_EXECTED_ONE.useraction=Sprawd\u017a w pliku server.xml, czy skonfigurowano tylko jedn\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci dostawcy OpenID Connect.
+
+OIDC_SERVER_CONFIG_REQUIRES_ONE=CWWKS1603I: W konfiguracji dostawcy OpenID Connect nie ma warto\u015bci skonfigurowanej dla w\u0142a\u015bciwo\u015bci dostawcy: {0}.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.explanation=Dla \u017c\u0105danej w\u0142a\u015bciwo\u015bci dostawcy OpenID Connect jest oczekiwana co najmniej jedna warto\u015b\u0107, a nie zwr\u00f3cono \u017cadnej.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.useraction=Sprawd\u017a w pliku server.xml, czy skonfigurowano co najmniej jedn\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci dostawcy OpenID Connect.
+
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN=CWWKS1604I: W konfiguracji dostawcy OpenID Connect nie ma warto\u015bci w\u0142a\u015bciwo\u015bci boolowskiej skonfigurowanej dla: {0}.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.explanation=Dla \u017c\u0105danej w\u0142a\u015bciwo\u015bci dostawcy OpenID Connect jest oczekiwana warto\u015b\u0107 boolowska true lub false.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.useraction=Sprawd\u017a w pliku server.xml, czy skonfigurowano warto\u015b\u0107 boolowsk\u0105 true lub false dla w\u0142a\u015bciwo\u015bci dostawcy OpenID Connect.
+
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR=CWWKS1605E: Podano niepoprawny typ nadania {0}. Poprawne typy nadania: {1}.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.explanation=Podany typ nadania jest niepoprawny.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.useraction=Podaj jeden z dost\u0119pnych typ\u00f3w nadania.
+
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR=CWWKS1606E: Podany typ nadania {0} jest niedozwolony. Dozwolone typy nadania: {1}.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.explanation=Podany typ nadania jest poprawny, ale dostawca OpenID Connect nie mo\u017ce go obs\u0142u\u017cy\u0107.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.useraction=Podaj jeden z dozwolonych typ\u00f3w nadania.
+
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR=CWWKS1607E: \u017b\u0105danie autoryzacji ma niepoprawny typ odpowiedzi {0}. Poprawne typy odpowiedzi: {1}.
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.explanation=Podany typ odpowiedzi jest niepoprawny. 
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.useraction=\u017b\u0105danie autoryzacji nale\u017cy zmodyfikowa\u0107 tak, aby uwzgl\u0119dnia\u0142o jeden z poprawnych typ\u00f3w odpowiedzi.
+
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR=CWWKS1608E: \u017b\u0105danie autoryzacji nie mo\u017ce mie\u0107 jednocze\u015bnie typ\u00f3w odpowiedzi {0} i {1}.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.explanation=\u017b\u0105danie autoryzacji mo\u017ce mie\u0107 tylko jeden typ odpowiedzi.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.useraction=\u017b\u0105danie autoryzacji nale\u017cy zmodyfikowa\u0107 tak, aby uwzgl\u0119dnia\u0142o tylko jeden typ odpowiedzi.
+
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR=CWWKS1609E: Brak zasi\u0119gu openid w \u017c\u0105daniu OpenID Connect.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.explanation=\u017b\u0105danie OpenID Connect z typem odpowiedzi id_token wymaga zasi\u0119gu openid na swojej li\u015bcie zasi\u0119g\u00f3w.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.useraction=Upewnij si\u0119, \u017ce zasi\u0119g openid jest uwzgl\u0119dniony w \u017c\u0105daniu.
+
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR=CWWKS1610E: Brak wymaganego atrybutu Nonce w \u017c\u0105daniu OpenID Connect.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.explanation=Warto\u015b\u0107 Nonce jest wymagana w \u017c\u0105daniach OpenID Connect u\u017cywaj\u0105cych niejawnego przep\u0142ywu.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.useraction=Podaj warto\u015b\u0107 Nonce w niejawnych \u017c\u0105daniach OpenID Connect.
+
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR=CWWKS1611E: Brak niekt\u00f3rych wymaganych \u017c\u0105da\u0144 ({0}) w \u017c\u0105daj\u0105cym znaczniku JWT.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.explanation=\u0141adunek znacznika JWT nie zawiera wszystkich wymaganych \u017c\u0105da\u0144.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.useraction=Podaj wymagane \u017c\u0105dania w \u0142adunku znacznika JWT.
+
+OIDC_SERVER_REQUIRED_CLAIM_ERR=CWWKS1612E: Wymagane \u017c\u0105danie {0} w \u0142adunku znacznika JWT jest niepoprawne: {1}.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.explanation=Wymagane \u017c\u0105danie w \u0142adunku znacznika JWT jest niepoprawne.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.useraction=Podaj poprawne \u017c\u0105danie w \u0142adunku znacznika JWT.
+
+OIDC_SERVER_CLAIM_ERR=CWWKS1613E: \u017b\u0105danie {0} w \u0142adunku znacznika JWT jest niepoprawne: {1}.
+OIDC_SERVER_CLAIM_ERR.explanation=\u017b\u0105danie w \u0142adunku znacznika JWT jest niepoprawne.
+OIDC_SERVER_CLAIM_ERR.useraction=Podaj poprawne \u017c\u0105danie w \u0142adunku znacznika JWT.
+
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR=CWWKS1614E: Znacznik JWT musi udost\u0119pnia\u0107 \u017c\u0105danie iat, poniewa\u017c w konfiguracji dostawcy znacznik\u00f3w JWT zdefiniowana jest w\u0142a\u015bciwo\u015b\u0107 maxJwtLifetimeMinutesAllowed.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.explanation=W konfiguracji dostawcy znacznik\u00f3w JWT zdefiniowana jest w\u0142a\u015bciwo\u015b\u0107 maxJwtLifetimeMinutesAllowed. Wymagane jest, aby przychodz\u0105cy znacznik JWT udost\u0119pnia\u0142 \u017c\u0105danie iat.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 maxJwtLifetimeMinutesAllowed z konfiguracji lub udost\u0119pnij \u017c\u0105danie iat w \u0142adunku znacznika JWT.
+
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR=CWWKS1615E: Zosta\u0142 ju\u017c wprowadzony inny znacznik JWT o tym samym \u017c\u0105daniu wystawcy: {0} i \u017c\u0105daniu jti: {1}.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.explanation=Zosta\u0142 ju\u017c za\u017c\u0105dany znacznik JWT o tym samym \u017c\u0105daniu iss i \u017c\u0105daniu jti. Wskazuje to mo\u017cliwo\u015b\u0107 wyst\u0105pienia ataku metod\u0105 powt\u00f3rzenia.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.useraction=Upewnij si\u0119, \u017ce wystawca znacznika JWT udost\u0119pnia ka\u017cdy znacznik JWT z unikalnym \u017c\u0105daniem jti.
+
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN=CWWKS1616E: Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku bez znacznika dost\u0119pu. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.explanation=Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku bez znacznika dost\u0119pu. Znacznik dost\u0119pu jest wymagany.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.useraction=Udost\u0119pnij znacznik dost\u0119pu przy u\u017cyciu parametru \u017c\u0105dania access_token lub nag\u0142\u00f3wka autoryzacji.
+
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN=CWWKS1617E: Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu, kt\u00f3ry nie zosta\u0142 rozpoznany. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.explanation=Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu, kt\u00f3ry nie zosta\u0142 rozpoznany. Wymagany jest poprawny znacznik dost\u0119pu.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.useraction=Udost\u0119pnij poprawny znacznik dost\u0119pu przy u\u017cyciu parametru \u017c\u0105dania access_token lub nag\u0142\u00f3wka autoryzacji.
+
+OIDC_SERVER_USERINFO_INVALID_REQUEST=CWWKS1618E: Identyfikator URI \u017c\u0105dania informacji o u\u017cytkowniku nie jest poprawny. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.explanation=Identyfikator URI \u017c\u0105dania informacji o u\u017cytkowniku nie jest poprawny. Wymagany jest poprawny identyfikator URI.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.useraction=Podaj poprawny identyfikator URI \u017c\u0105dania informacji o u\u017cytkowniku.
+
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN=CWWKS1619E: Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu, kt\u00f3ry nie mia\u0142 zasi\u0119gu openid. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.explanation=Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu, kt\u00f3ry nie mia\u0142 zasi\u0119gu openid. 
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.useraction=Podaj znacznik dost\u0119pu, kt\u00f3ry zosta\u0142 utworzony z zasi\u0119giem openid.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas przetwarzania \u017c\u0105dania informacji o u\u017cytkowniku. B\u0142\u0105d: {0}. Identyfikator URI \u017c\u0105dania: {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas przetwarzania \u017c\u0105dania informacji o u\u017cytkowniku. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS=CWWKS1621E: Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu w parametrze \u017c\u0105dania access_token i r\u00f3wnie\u017c w nag\u0142\u00f3wku autoryzacji. Dozwolony jest tylko jeden znacznik dost\u0119pu. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.explanation=Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu w parametrze \u017c\u0105dania access_token i r\u00f3wnie\u017c w nag\u0142\u00f3wku autoryzacji. Dozwolony jest tylko jeden znacznik dost\u0119pu.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.useraction=Udost\u0119pnij znacznik dost\u0119pu przy u\u017cyciu parametru \u017c\u0105dania access_token lub nag\u0142\u00f3wka autoryzacji, ale nie przy u\u017cyciu obu tych element\u00f3w jednocze\u015bnie.
+
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE=CWWKS1622E: Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem, kt\u00f3ry nie by\u0142 znacznikiem dost\u0119pu. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.explanation=Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem, kt\u00f3ry nie by\u0142 znacznikiem dost\u0119pu. Wymagany jest poprawny znacznik dost\u0119pu.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.useraction=Udost\u0119pnij poprawny znacznik dost\u0119pu przy u\u017cyciu parametru \u017c\u0105dania access_token lub nag\u0142\u00f3wka autoryzacji. 
+
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN=CWWKS1623E: Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu, kt\u00f3ry utraci\u0142 wa\u017cno\u015b\u0107. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.explanation=Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku ze znacznikiem dost\u0119pu, kt\u00f3ry utraci\u0142 wa\u017cno\u015b\u0107. Wymagany jest poprawny znacznik dost\u0119pu.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.useraction=Udost\u0119pnij poprawny znacznik dost\u0119pu przy u\u017cyciu parametru \u017c\u0105dania access_token lub nag\u0142\u00f3wka autoryzacji.
+
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND=CWWKS1624E: Identyfikator URI \u017c\u0105dania informacji o u\u017cytkowniku nie jest poprawny. Nie znaleziono dostawcy {0}. Identyfikator URI \u017c\u0105dania: {1}.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.explanation=Identyfikator URI \u017c\u0105dania informacji o u\u017cytkowniku nie jest poprawny. Nie znaleziono dostawcy zawartego w identyfikatorze URI. Wymagany jest poprawny identyfikator URI.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.useraction=Podaj poprawny identyfikator URI \u017c\u0105dania informacji o u\u017cytkowniku, kt\u00f3ry zawiera poprawn\u0105 nazw\u0119 dostawcy.
+
+OIDC_SERVER_IDTOKEN_VERIFY_ERR=CWWKS1625E: Sprawdzanie poprawno\u015bci znacznika identyfikatora przez dostawc\u0119 OpenID Connect nie powiod\u0142o si\u0119. Przyczyna: [{0}].
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.explanation=Dostawca OpenID Connect nie mo\u017ce sprawdzi\u0107 poprawno\u015bci znacznika identyfikatora. Mo\u017ce to by\u0107 spowodowane niesp\u00f3jno\u015bci\u0105 kluczy podpisuj\u0105cych tw\u00f3rcy znacznika identyfikatora i tego dostawcy.
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.useraction=Upewnij si\u0119, \u017ce klient OpenID Connect (strona zale\u017cna) wysy\u0142a znacznik identyfikatora, kt\u00f3ry zosta\u0142 wygenerowany przez tego dostawc\u0119. Zapoznaj si\u0119 r\u00f3wnie\u017c z czynno\u015bci\u0105 u\u017cytkownika dla b\u0142\u0119du, kt\u00f3ry zostanie wy\u015bwietlony po tym b\u0142\u0119dzie.
+
+OIDC_SERVER_USERNAME_MISMATCH_ERR=CWWKS1626E: Nazwa u\u017cytkownika u\u017cywana do logowania [{0}] nie jest zgodna z podmiotem znacznika identyfikatora [{1}].
+OIDC_SERVER_USERNAME_MISMATCH_ERR.explanation=Dostawca OpenID Connect wykry\u0142, \u017ce bie\u017c\u0105ca to\u017csamo\u015b\u0107 u\u017cytkownika loguj\u0105cego si\u0119 nie jest sp\u00f3jna z informacj\u0105 o u\u017cytkowniku w znaczniku identyfikatora. Mo\u017ce to by\u0107 spowodowane prze\u0142\u0105czaniem u\u017cytkownik\u00f3w loguj\u0105cych si\u0119 przez u\u017cytkownika ko\u0144cowego.
+OIDC_SERVER_USERNAME_MISMATCH_ERR.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ko\u0144cowy nie prze\u0142\u0105cza to\u017csamo\u015bci u\u017cytkownika dostawcy OpenID Connect.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM=CWWKS1627E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas przetwarzania \u017c\u0105dania informacji o u\u017cytkowniku. Us\u0142uga repozytorium stowarzyszonego by\u0142a niedost\u0119pna. Identyfikator URI \u017c\u0105dania: {0}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas przetwarzania \u017c\u0105dania informacji o u\u017cytkowniku. Us\u0142uga repozytorium stowarzyszonego by\u0142a niedost\u0119pna.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.useraction=Skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1628E: Wyst\u0105pi\u0142 b\u0142\u0105d konfiguracji. Brak dost\u0119pnej us\u0142ugi punktu ko\u0144cowego OpenID Connect. Upewnij si\u0119, \u017ce skonfigurowano sk\u0142adnik openidConnectServer-1.0. 
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.explanation=\u017badna us\u0142uga punktu ko\u0144cowego OpenID Connect nie jest dost\u0119pna z poziomu rejestru us\u0142ug OSGi.
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Uwzgl\u0119dnij sk\u0142adnik openidConnectServer-1.0 w konfiguracji serwera.
+
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS1629E: Us\u0142uga konfiguracji OpenID Connect jest niedost\u0119pna dla dostawcy {0}.
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Us\u0142uga konfiguracji OpenID Connect jest niedost\u0119pna dla dostawcy. 
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Sprawd\u017a w\u0142a\u015bciwo\u015b\u0107 dostawcy OpenID Connect w pliku server.xml, aby upewni\u0107 si\u0119, czy okre\u015blono co najmniej jednego dostawc\u0119.
+
+OIDC_OAUTH_PROVIDER_OBJECT_NULL=CWWKS1630E: Obiekt OAuth20Provider ma warto\u015b\u0107 NULL dla dostawcy OpenID Connect {0}.
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.explanation=Dla dostawcy OpenID Connect nie okre\u015blono obiektu OAuthProvider
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.useraction=Sprawd\u017a w\u0142a\u015bciwo\u015b\u0107 dostawcy OpenID Connect w pliku server.xml, aby upewni\u0107 si\u0119, czy okre\u015blono co najmniej jednego dostawc\u0119 OAuth.
+
+OIDC_ENDPOINT_SERVICE_ACTIVATED=CWWKS1631I: Us\u0142uga punktu ko\u0144cowego OpenID Connect zosta\u0142a aktywowana.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.explanation=Us\u0142uga punktu ko\u0144cowego OpenID Connect zosta\u0142a aktywowana.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.useraction=Brak
+
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND=CWWKS1632E: Nie znaleziono nazwy dostawcy OAuth przywo\u0142ywanej przez dostawc\u0119 po\u0142\u0105cze\u0144 OpenID {0}.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.explanation=Dostawca po\u0142\u0105cze\u0144 OpenID nie ma nazwy dostawcy OAuth lub dostawca OAuth o podanej nazwie nie istnieje.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.useraction=Podaj poprawn\u0105 nazw\u0119 dostawcy OAuth dla dostawcy OpenID Connect.
+
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER=CWWKS1633E: Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku z nieobs\u0142ugiwanym parametrem {0}. Identyfikator URI \u017c\u0105dania: {1}.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.explanation=Zg\u0142oszono \u017c\u0105danie informacji o u\u017cytkowniku z nieobs\u0142ugiwanym parametrem.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.useraction=Wywo\u0142aj punkt ko\u0144cowy informacji o u\u017cytkowniku bez nieobs\u0142ugiwanego parametru.
+
+OIDC_REQUEST_ATTRIBUTE_MISSING=CWWKS1634E: Punkt ko\u0144cowy \u017c\u0105dania {0} nie zawiera atrybutu {1}.
+OIDC_REQUEST_ATTRIBUTE_MISSING.explanation=Brak atrybutu w \u017c\u0105daniu
+OIDC_REQUEST_ATTRIBUTE_MISSING.useraction=Sprawd\u017a punkt ko\u0144cowy \u017c\u0105dania w pliku server.xml, aby upewni\u0107 si\u0119, \u017ce dostawca jest w\u0142a\u015bciwy
+
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS=CWWKS1635W: Je\u015bli w\u0142a\u015bciwo\u015b\u0107 httpsRequired jest ustawiona na warto\u015b\u0107 true, atrybut dostawcy po\u0142\u0105cze\u0144 OpenID issuerIdentifier={0} musi u\u017cywa\u0107 schematu HTTPS. Przywracanie warto\u015bci domy\u015blnej.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.explanation=W\u0142a\u015bciwo\u015b\u0107 issuerIdentifier jest ustawiona niepoprawnie.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.useraction=Zmodyfikuj atrybut dostawcy po\u0142\u0105cze\u0144 OpenID issuerIdentifier tak, aby u\u017cywa\u0142 schematu HTTPS.
+
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH=CWWKS1636E: Parametr post_logout_redirect_uri: {0} jest niezgodny z warto\u015bci\u0105 atrybutu dostawcy OpenID Connect; postLogoutRedirectUris={1} w kliencie o identyfikatorze: {2}.
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.explanation=Parametr post_logout_redirect_uri wysy\u0142any przez klient OpenID Connect (RP) nie znajduje si\u0119 na li\u015bcie identyfikator\u00f3w URI okre\u015blonej przez atrybut postLogoutRedirectUris lub warto\u015b\u0107 atrybutu postLogoutRedirectUris nie jest ustawiona. 
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 parametru post_logout_redirect_uri znajduje si\u0119 na li\u015bcie atrybutu postLogoutRedirectUris, kt\u00f3ry istnieje w zarejestrowanym kliencie. Je\u015bli za\u015b identyfikator klienta ma warto\u015b\u0107 NULL lub parametr id_token_hint jest niepoprawny lub nieustawiony, w\u00f3wczas do zidentyfikowania identyfikatora klienta wymagany jest parametr id_token_hint.
+
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR=CWWKS1637E: Informacje o u\u017cytkowniku {0} zwr\u00f3cone przez sk\u0142adnik {1} u\u017cytkownika serwera Liberty maj\u0105 warto\u015b\u0107 NULL.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.explanation=Dostawca UserinfoProvider zainstalowany na serwerze Liberty zwraca warto\u015b\u0107 NULL dla danego u\u017cytkownika.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.useraction=Upewnij si\u0119, \u017ce dostawca UserinfoProvider zwraca poprawny obiekt JSONObject.
+
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED=CWWKS1638I: Istnieje wiele skonfigurowanych dostawc\u00f3w UserinfoProvider.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.explanation=W pliku server.xml jest skonfigurowany wi\u0119cej ni\u017c jeden dostawca UserinfoProvider.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.useraction=Brak
+
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT=CWWKS1639E: Informacje o u\u017cytkowniku {0} zwr\u00f3cone przez sk\u0142adnik {1} u\u017cytkownika serwera Liberty s\u0105 niepoprawne.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.explanation=Dostawca UserinfoProvider zainstalowany na serwerze Liberty zwraca niepoprawny obiekt JSONObject dla danego u\u017cytkownika.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.useraction=Upewnij si\u0119, \u017ce dostawca UserinfoProvider zwraca poprawny obiekt JSONObject.
+
+OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania \u0142a\u0144cucha JSON JWK. Atrybut keyStoreRef lub keyAliasName dostawcy OpenID Connect mo\u017ce by\u0107 niepoprawny lub atrybut signatureAlgorithm mo\u017ce nie by\u0107 ustawiony na warto\u015b\u0107 RS256. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Utworzenie \u0142a\u0144cucha JSON JWK wymaga, aby atrybut signatureAlgorithm dostawcy OpenID Connect by\u0142 ustawiony na warto\u015b\u0107 RS256. Je\u015bli zosta\u0142y podane atrybuty KeyStoreRef i keyAliasName, musz\u0105 one by\u0107 poprawne. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Popraw atrybuty konfiguracji dostawcy OpenID Connect.
+
+
+IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Wersja \u015brodowiska Java u\u017cywana przez to \u015brodowisko wykonawcze [{0}] nie jest obs\u0142ugiwana przez t\u0119 funkcj\u0119 SPI mediatora znacznika ID. Obs\u0142ugiwane jest \u015brodowisko Java w wersji 1.7 lub nowsze.
+IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Wersja \u015brodowiska Java podana w komunikacie nie mo\u017ce obs\u0142u\u017cy\u0107 funkcji SPI mediatora znacznika ID. 
+IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Zainstaluj \u015brodowisko Java w wersji 1.7 lub nowsze.
+

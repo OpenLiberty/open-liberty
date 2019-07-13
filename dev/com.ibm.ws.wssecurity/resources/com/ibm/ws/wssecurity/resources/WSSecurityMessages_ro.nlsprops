@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: WS-Security nu poate fi aplicat\u0103 pentru orice serviciu web.  A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de \u00eenregistrare a \u00eenc\u0103rc\u0103torului politicii WS-Security cu cadrul de lucru CXF: [{0}]
+error.policy.notloaded.explanation=\u00cenc\u0103rc\u0103torul politicii WS-Security nu a putut fi \u00eenregistrat cu cadrul de lucru CXF \u00een timpul pornirii server-ului.  Din cauza erorii, runtime-ul WS-Security nu va fi invocat pentru nici un mesaj SOAP \u015fi constr\u00e2ngerile WS-Security nu vor fi ad\u0103ugate.
+error.policy.notloaded.useraction=Adresa\u0163i eroarea descris\u0103 \u00een mesaj.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security nu poate fi aplicat\u0103 oric\u0103rui aplica\u0163ii clisnt de serviciu web.  Elementul de configurare client WS-Security, wsSecurityClient, nu exist\u0103 \u00een server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=Caracteristica wsSecurity-1.1 este activat\u0103, dar componenta WS-Security nu poate g\u0103si elementul wsSecurityClient \u00een server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Dac\u0103 sunt necesare constr\u00e2ngeri de WS-Security pentru o aplica\u0163ie de serviciu web client, ad\u0103uga\u0163i elementul de configura\u0163ie wsSecurityClient necesar \u00een server.xml.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: WS-Security nu poate fi aplicat pentru orice aplica\u0163ie furnizor de serviciu web. Elementul de configura\u0163ie furnizor WS-Security, wsSecurityProvider, nu exist\u0103 \u00een server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=Caracteristica wsSecurity-1.1 este activat\u0103 dar componentaWS-Security nu poate g\u0103si elementul wsSecurityProvider \u00een server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Dac\u0103 sunt necesare constr\u00e2ngeri WS-Security pentru o aplica\u0163ie de serviciu web furnizor, ad\u0103uga\u0163i elementul de configura\u0163ie wsSecurityProvider necesar \u00een server.xml.
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: O configura\u0163ie token apelant nu poate fi aplicat\u0103 unei aplica\u0163ii furnizor de serviciu web.  Numele, [{0}], specificat pentru elementul callerToken din configura\u0163ia wsSecurityProvider din server.xml nu este valid. Valorile valide sunt: [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=Numele specificat pentru elementul callerToken din configura\u0163ia wsSecurityProvider din server.xml nu este valid.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=Verifica\u0163i fi\u015fierul server.xml pentru a v\u0103 asigura c\u0103 este specificat\u0103 o valoare suportat\u0103 pentru elementul callerToken. Valorile valide sunt afi\u015fate \u00een mesajul de eroare.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: Un subiect de securitate nu poate fi creat pentru un serviciu web.  callerToken nu poate fi identificat \u00een mesajul de intrare deoarece exist\u0103 mai mult de un UsernameToken \u00een antetul de Securitate SOAP.
+multiple_unt_exist_err.explanation=callerToken din server.xml este setat la UsernameToken \u015fi antetul Securitate din mesajul SOAP de intrare con\u0163ine mai mult de un UsernameToken.  Din aceast\u0103 cauz\u0103 WS-Security runtime nu poate determina ce UsernameToken s\u0103 utilizeze pentru token-ul de apelant.
+multiple_unt_exist_err.useraction=Face\u0163i una dintre urm\u0103toarele: 1) Modifica\u0163i configura\u0163ia de client pentru a trimite numai unUsernameToken 2) \u00cenl\u0103tura\u0163i configura\u0163ia callerToken din server.xml
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E: Un subiect de securitate nu poate fi creat pentru serviciul web.  Un {0} callerToken este configurat, dar nu exist\u0103 un token {0} \u00een antetul de Securitate SOAP de intrare.  Un token de apelant nu poate fi selectat.
+no_caller_exist_err.explanation=callerToken configurat \u00een server.xml nu este prezent \u00een antetul Securitate SOAP. 
+no_caller_exist_err.useraction=Face\u0163i una din urm\u0103toarele: 1) Modifica\u0163i configura\u0163ia clientului pentru a trimite tokenul de apelant corect 2) \u00cenl\u0103tura\u0163i configura\u0163ia callerToken din server.xml
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: Un subiect de securitate nu poate fi creat pentru serviciul web datorit\u0103 [{0}].
+error_authenticate.explanation=Un subiect de securitate pentru token-ul de apelant extras din antetul de Securitate SOAP nu a putut fi creat.  Motivul pentru eroare este descris \u00een mesaj.
+error_authenticate.useraction=Adresa\u0163i eroarea descris\u0103 \u00een mesaj.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: Un subiect de securitate nu poate fi creat pentru un serviciu web.  Token-ul de apelant nu poate fi identificat \u00een mesajul de intrare.  callerToken din server.xml este setat la X509Token, endorsingSupportingToken este setat la adev\u0103rat (valoarea implicit\u0103) \u015fi exist\u0103 mai mult de un EndorsingSupportingTokens \u00een antetul Securitate SOAP de intrare.
+multiple_endorsing_token_err.explanation=callerToken din server.xml este setat la X509Token, endorsingSupportingToken este setat la adev\u0103rat (valoarea implicit\u0103) \u015fi exist\u0103 mai mult de un EndorsingSupportingTokens \u00een antetul Securitate SOAP de intrare.  Din moment ce un singur token de apelant trebuie s\u0103 existe \u00een mesaj pentru ca token-ul de apelant s\u0103 fie selectat cu succes, nu este permis\u0103 de\u0163inerea mai multor EndorsingSupportingTokens.                                   
+multiple_endorsing_token_err.useraction=Face\u0163i una din urm\u0103toarele: 1) Modifica\u0163i politica astfel \u00eenc\u00e2t numai un endorsingSupportingToken s\u0103 fie inclus \u00een mesaj, 2) \u00cenl\u0103tura\u0163i configura\u0163ia callerToken din server.xml, 3) Seta\u0163i endorsingSupportingToken la fals \u00een configura\u0163ia callerToken din server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: Un subiect de securitate nu poate fi creat pentru serviciul web.  Token-ul de apelant nu poate fi identificat \u00een mesajul de intrare.  callerToken din server.xml este setat la X509Token, endorsingSupportingToken este setat la fals \u015fi exist\u0103 mai mult de un token de semn\u0103tur\u0103 asimetric\u0103 \u00een antetul Securitate SOAP de intrare.
+multiple_asymmetric_token_err.explanation=callerToken din server.xml este setat la X509Token, endorsingSupportingToken este setat la fals \u015fi exist\u0103 mai mult de un token de semn\u0103tur\u0103 asimetric\u0103 \u00een antetul Securitate SOAP de intrare.  Din momentu ce trebuie s\u0103 existe un singur token de apelant \u00een mesaj pentru ca un token de apelant s\u0103 fie selectat cu succes, nu este permis\u0103 de\u0163inerea mai multor token-uri se semn\u0103tur\u0103 asimetrice.                                   
+multiple_asymmetric_token_err.useraction=Face\u0163i una din urm\u0103toarele: 1) Modifica\u0163i politica astfel \u00eenc\u00e2t numai un token de semn\u0103tur\u0103 asimetric\u0103 s\u0103 fie inclus \u00een mesaj, 2) \u00cenl\u0103tura\u0163i configura\u0163ia callerToken din server.xml
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: Aser\u0163iunea NotBefore [{0}] din tokenul SAML este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 de ceas desincronizat este de [{2}] secunde.
+saml_token_not_yet_valid.explanation=Aser\u0163iunea NotBefore din tokenul SAML specific\u0103 ora la care tokenul devine valid; tokenul nu poate fi folosit \u00eenainte de aceast\u0103 or\u0103. Pentru a folosi acest token SAML, valoarea aser\u0163iunii NotBefore trebuie s\u0103 fie un moment din trecut. Un posibil motiv al erorii este nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii.
+saml_token_not_yet_valid.useraction=Asigura\u0163i-v\u0103 c\u0103 data \u015fi ora de pe IdP sunt sincronizate cu acest furnizor de servicii SAML Web Single Sign-On (SSO) sau cre\u015fte\u0163i desincronizarea ceasului.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: Aser\u0163iunea NotOnOrAfter [{0}] din tokenul SAML este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 de ceas desincronizat este de [{2}] secunde.
+saml_token_expired.explanation=Aser\u0163iunea NotOnOrAfter din tokenul SAML specific\u0103 ora la care expir\u0103 tokenul. Tokenul trebuie folosit \u00eenainte de aceast\u0103 or\u0103. Un posibil motiv al erorii este nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii.
+saml_token_expired.useraction=Asigura\u0163i-v\u0103 c\u0103 data \u015fi ora de pe IdP sunt sincronizate cu acest furnizor de servicii SAML Web Single Sign-On (SSO) sau cre\u015fte\u0163i desincronizarea ceasului.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: IssueInstant [{0}] din tokenul SAML este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 de ceas desincronizat este de [{2}] secunde.
+saml_token_issued_too_long_ago.explanation=Aser\u0163iunea IssueInstant din tokenul SAML era prea mult \u00een trecut pentru ca acest token s\u0103 fie folosit. Un token SAML trebuie folosit \u00eentr-un timp configurat de la emitere. Un posibil motiv al erorii este nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii.
+saml_token_issued_too_long_ago.useraction=Asigura\u0163i-v\u0103 c\u0103 data \u015fi ora de pe IdP sunt sincronizate cu acest furnizor de servicii SAML Web Single Sign-On (SSO) sau cre\u015fte\u0163i desincronizarea ceasului.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: IssueInstant [{0}] din tokenul SAML este \u00een viitor \u015fi, prin urmare, \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 de ceas desincronizat este de [{2}] secunde.
+saml_token_issue_instant_in_future.explanation=Aser\u0163iunea IssueInstant din tokenul SAML a fost setat\u0103 la o or\u0103 din viitor \u015fi, prin urmare, nu este considerat\u0103 \u00eenc\u0103 valid\u0103. Valoarea IssueInstant trebuie s\u0103 fie \u00een trecut pentru ca tokenul SAML s\u0103 fie valid. Un posibil motiv al erorii este nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii.
+saml_token_issue_instant_in_future.useraction=Asigura\u0163i-v\u0103 c\u0103 data \u015fi ora de pe IdP sunt sincronizate cu acest furnizor de servicii SAML Web Single Sign-On (SSO) sau cre\u015fte\u0163i desincronizarea ceasului.
+
+failed_to_extract_saml_element=CWWKW0218W: A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca extragerea elementului SAML din tokenul SAML furnizat. Excep\u0163ia a fost: [{0}]
+failed_to_extract_saml_element.explanation=A ap\u0103rut o excep\u0163ie la parsarea tokenului SAML. Tokenul s-ar putea s\u0103 fie formatat gre\u015fit sau este o eroare intern\u0103 c\u00e2nd se \u00eencerca parsarea \u015firului tokenului.
+failed_to_extract_saml_element.useraction=Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre eroare.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: A ap\u0103rut o excep\u0163ie c\u00e2nd se \u00eencerca extragerea tokenului SAML din subiect. Excep\u0163ia a fost: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=A ap\u0103rut o excep\u0163ie la extragerea tokenului SAML din subiect.
+failed_to_extract_saml_token_from_subject.useraction=Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre eroare.
+
+failed_to_obtain_subject_info=CWWKW0220E: Autentificarea a e\u015fuat din cauza unei excep\u0163ii la ob\u0163inerea informa\u0163iilor de subiect de la aser\u0163iunea SAML. Excep\u0163ia a fost: [{0}]
+failed_to_obtain_subject_info.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca ob\u0163inerea informa\u0163iilor despre subiect de la tokenul SAML furnizat.
+failed_to_obtain_subject_info.useraction=Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre eroare.
+
+failed_to_authenticate=CWWKW0221E: Autentificarea a e\u015fuat din cauza unei excep\u0163ii nea\u015fteptate. Excep\u0163ia a fost: [{0}].
+failed_to_authenticate.explanation=Cel mai probabil a fost o problem\u0103 la ob\u0163inerea informa\u0163iilor de subiect sau identitate la interac\u0163iunea cu registrul de utilizatori.
+failed_to_authenticate.useraction=Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre eroare. Asigura\u0163i-v\u0103 c\u0103 informa\u0163iile subiectului din tokenul SAML se mapeaz\u0103 la valorile a\u015fteptate \u00een registrul de utilizatori configurat.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: Validarea tokenului a e\u015fuat pentru c\u0103 tipul de parol\u0103 UsernameToken primit [{0}] nu se potrive\u015fte cu tipul de parol\u0103 cerut [{0}].
+password_type_mismatch.explanation=Tipul parolei din UsernameToken nu s-a potrivit cu tipul de parol\u0103 cerut, a\u015fa cum s-a definit \u00een politica WS-Security. Aceste tipuri trebuie s\u0103 fie identice; clientul de servicii web trebuie s\u0103 precizeze acela\u015fi tip de parol\u0103 care este definit \u00een politica WS-Security pentru ca validarea s\u0103 reu\u015feasc\u0103.
+password_type_mismatch.useraction=Asigura\u0163i-v\u0103 c\u0103 clientul de servicii web precizeaz\u0103 acela\u015fi tip de parol\u0103 care este definit \u00een politica WS-Security.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: Validarea tokenului a e\u015fuat pentru c\u0103 s-a detectat un tip de parol\u0103 personalizat, dar datele de configurare furnizate \u00een cerere specific\u0103 faptul c\u0103 tipurile de parole personalizate nu sunt suportate.
+cannot_handle_custom_password_types.explanation=Parola din UsernameToken nu a fost nici hash, nici text simplu \u015fi, prin urmare, a fost considerat\u0103 tip de parol\u0103 personalizat\u0103. Configura\u0163ia din datele cererii specific\u0103 faptul c\u0103 tipurile de parole personalizate nu sunt suportate.
+cannot_handle_custom_password_types.useraction=Asigura\u0163i-v\u0103 c\u0103 clientul de servicii web folose\u015fte un tip de parol\u0103 a\u015fa cum se define\u015fte \u00een profilul UsernameToken, sau configura\u0163i furnizorul de servicii web s\u0103 accepte tipuri de parole personalizate.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: Numele de utilizator sau parola specificate \u00een UsernameToken au fost goale. Verifica\u0163i UsernameToken pentru a v\u0103 asigura c\u0103 se furnizeaz\u0103 un nume de utilizator \u015fi o parol\u0103 negoale \u00een token.
+empty_user_or_password.explanation=Intr\u0103rile de nume de utilizator sau parol\u0103 din UsernameToken fie lipsesc, fie sunt goale.
+empty_user_or_password.useraction=Verifica\u0163i c\u0103 sunt furnizate un nume de utilizator \u015fi o parol\u0103 \u00een token. Dac\u0103 nu se furnizeaz\u0103 un nume de utilizator \u015fi o parol\u0103, ob\u0163ine\u0163i un nou UsernameToken.
+
+registry_exception_checking_password=CWWKW0225E: A ap\u0103rut o excep\u0163ie la accesarea registrului de utilizatori sau la verificarea parolei pentru utilizatorul [{0}]. Excep\u0163ia a fost: [{1}]
+registry_exception_checking_password.explanation=A fost o eroare la ob\u0163inerea unei referin\u0163e la registrul de utilizatori din serviciul registrului de utilizatori, sau a ap\u0103rut o excep\u0163ie la verificarea parolei pentru utilizatorul dat.
+registry_exception_checking_password.useraction=Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre excep\u0163ie. Asigura\u0163i-v\u0103 c\u0103 numele de utilizator \u015fi parola furnizate sunt corecte \u015fi corespund unei intr\u0103ri din magazia de utilizatori configurat\u0103.
+
+check_password_failed=CWWKW0226E: Utilizatorul [{0}] nu a putut fi validat. Verifica\u0163i c\u0103 acredit\u0103rile de nume de utilizator \u015fi parol\u0103 care au fost furnizate sunt corecte.
+check_password_failed.explanation=Utilizatorul specificat nu a putut fi validat fa\u0163\u0103 de registrul de utilizatori configurat. Asta este cel mai probabil din cauza unei nepotriviri de nume de utilizator \u015fi parol\u0103.
+check_password_failed.useraction=Verifica\u0163i acredit\u0103rile furnizate pentru a v\u0103 asigura c\u0103 numele de utilizator \u015fi parola se potrivesc unei intr\u0103ri din registrul de utilizatori configurat.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: S-a returnat o parol\u0103 nul\u0103 din handlerul de retroapel de parol\u0103.
+no_password_returned_by_callback.explanation=Handlerul de retroapel de parol\u0103 trebuie s\u0103 returneze o parol\u0103 nenul\u0103 pentru parolele de tipul PasswordDigest \u00eentr-un UsernameToken.
+no_password_returned_by_callback.useraction=Asigura\u0163i-v\u0103 c\u0103 handlerul de retroapel de parol\u0103 returneaz\u0103 o parol\u0103 nenul\u0103 \u015fi negoal\u0103 pentru un utilizator valid.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: Aser\u0163iunea SAML nu con\u0163ine un atribut [{0}].  Un atribut [{0}] este necesar \u00eentruc\u00e2t configura\u0163ia apelantului l-a specificat ca identificator [{1}]. 
+SAML20_ATTRIBUTE_ERR.explanation=Aser\u0163iunii SAML fie \u00eei lipse\u015fte atributul, fie configura\u0163ia apelantului a specificat o valoare gre\u015fit\u0103 pentru identificatorul men\u0163ionat.
+SAML20_ATTRIBUTE_ERR.useraction=Face\u0163i una din urm\u0103toarele: 1)Asigura\u0163i-v\u0103 c\u0103 atributul exist\u0103 \u00een aser\u0163iunea SAML. 2) Configura\u0163i callerToken pentru a specifica un alt atribut ca identificator.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: Revendicarea SAML nu con\u0163ine un element [{0}].  Un element [{0}] este necesar.  
+SAML20_ELEMENT_ERR.explanation=Aser\u0163iunii SAML \u00eei lipse\u015fte un element necesar pentru ca runtime-ul WS-Security s\u0103 finalizeze procesarea tokenului de apelant.
+SAML20_ELEMENT_ERR.useraction=Face\u0163i una din urm\u0103toarele: 1)Asigura\u0163i-v\u0103 c\u0103 elementul necesar exist\u0103 \u00een aser\u0163iunea SAML. 2) Configura\u0163i callerToken pentru a defini o valoare pentru element.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: UserCredentialResolver nu rezolv\u0103 revendicarea SAML \u015fi arunc\u0103 o UserIdentityException cu mesajul [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Serviciul UserCredentialResolver oferit de caracteristica utilizatorului nu poate mapa corespunz\u0103tor revendicarea SAML \u015fi atunc\u0103 o excep\u0163ie UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Asigura\u0163i-v\u0103 c\u0103 serviciul UserCredentialResolver este setat corespunz\u0103tor dac\u0103 UserIdentityException nu este a\u015fteptat\u0103.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: Un subiect de securitate nu poate fi creat pentru serviciul web.  callerToken nu poate fi identificat \u00een mesajul de intrare pentru c\u0103 exist\u0103 mai mult de o Aser\u0163iune Saml \u00een antetul de securitate SOAP.
+multiple_saml_exist_err.explanation=callerToken din server.xml este setat la SamlToken \u015fi antetul Securitate din mesajul SOAP de intrare con\u0163ine mai mult de o Aser\u0163iune Saml.  Din acest motiv, runtime-ul WS-Security nu poate determina ce Aser\u0163iune Saml s\u0103 se foloseasc\u0103 pentru tokenul de apelant.
+multiple_saml_exist_err.useraction=Face\u0163i una din urm\u0103toarele: 1) Modifica\u0163i configura\u0163ia clientului s\u0103 se trimit\u0103 numai o Aser\u0163iune Saml 2) \u00cenl\u0103tura\u0163i configura\u0163ia callerToken din server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: Nu poate fi creat un subiect de securitate pentru serviciul web utiliz\u00e2nd ID-ul de utilizator [{0}].
+error_authenticate_maptouser.explanation=Un subiect de securitate pentru token-ul de apelant extras din antetul de Securitate SOAP nu a putut fi creat. Asigura\u0163i-v\u0103 c\u0103 utilizatorul specificat \u00een mesaj exist\u0103 \u00een registrul de utilizatori.
+error_authenticate_maptouser.useraction=Face\u0163i una din urm\u0103toarele ac\u0163iuni: 1) Asigura\u0163i-v\u0103 c\u0103 utilizatorul exist\u0103 \u00een registrul de utilizatori \u00een server.xml. 2) Nu seta\u0163i atributul mapToUserRegistry \u00een configura\u0163ia callerToken.
+
+no_callbacks_provided=CWWKW0233E: Nu a fost furnizat\u0103 nicio apelare invers\u0103 pentru a trata cererea.
+no_callbacks_provided.explanation=Trebuie transmis\u0103 cel pu\u0163in o apelare invers\u0103 la handler-ul de apel invers pentru a procesa \u015fi returna un jeton SAML.
+no_callbacks_provided.useraction=Nu exist\u0103 nicio ac\u0163iune de utilizator disponibil\u0103 pentru acest caz.
+
+no_saml_found_in_subject=CWWKW0234E: Jetonul SAML necesar lipse\u015fte din subiect.
+no_saml_found_in_subject.explanation=A existat o eroare la extragere jetonului SAML din subiect sau nu a fost g\u0103sit un element SAML \u00een subiectul curent.
+no_saml_found_in_subject.useraction=Dac\u0103 crea\u0163i subiectul rulare-ca, asigura\u0163i-v\u0103 c\u0103 jetonul SAML este ad\u0103ugat la subiect. Altfel, asigura\u0163i-v\u0103 c\u0103 configura\u0163ia dumneavoastr\u0103 de server suport\u0103 ad\u0103ugarea jetonului SAML la subiect verific\u00e2nd atributul includeTokenInSubject \u00een configura\u0163ia dumneavoastr\u0103 SAML.

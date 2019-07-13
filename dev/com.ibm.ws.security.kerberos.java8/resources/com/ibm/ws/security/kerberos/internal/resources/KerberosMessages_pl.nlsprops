@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: Z powodu wyj\u0105tku {2} nie mo\u017cna imitowa\u0107 u\u017cytkownika {0} w celu pobrania dla siebie obiektu GSSCredential, gdy jest u\u017cywana nazwa u\u017cytkownika us\u0142ugi {1} na potrzeby delegowania.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=Nie mo\u017cna imitowa\u0107 u\u017cytkownika z powodu wyst\u0105pienia nieoczekiwanego wyj\u0105tku.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=W\u0142\u0105cz nazw\u0119 u\u017cytkownika us\u0142ugi (service principal name \u2013 SPN) na potrzeby delegowania i przejrzyj dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: Z powodu wyj\u0105tku {2} nie mo\u017cna imitowa\u0107 u\u017cytkownika {0} w celu pobrania obiektu GSSCredential dla us\u0142ugi zaplecza, gdy jest u\u017cywana nazwa u\u017cytkownika us\u0142ugi {1} na potrzeby delegowania.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=Nie mo\u017cna imitowa\u0107 u\u017cytkownika z powodu wyst\u0105pienia nieoczekiwanego wyj\u0105tku.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=W konfiguracji elementu SPNEGO ustaw atrybut S4U2proxy na warto\u015b\u0107 true, w centrum dystrybucji kluczy (Key Distribution Center \u2013 KDC) w\u0142\u0105cz nazw\u0119 u\u017cytkownika us\u0142ugi na potrzeby delegowania, ustaw warto\u015b\u0107 true w przypadku flagi forwardable (przekazywalne) biletu us\u0142ugi klienckiej i ustaw warto\u015b\u0107 true w przypadku flagi forwardable (przekazywalne) bilet\u00f3w us\u0142ugi na potrzeby delegowania. Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: Nie mo\u017cna przetworzy\u0107 metody {0}, poniewa\u017c nie jest w\u0142\u0105czony interfejs S4U2self ograniczonego delegowania.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=Nie mo\u017cna przetworzy\u0107 metody, poniewa\u017c nie jest w\u0142\u0105czony interfejs S4U2self ograniczonego delegowania.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=W\u0142\u0105cz sk\u0142adnik Ograniczone delegowanie i w konfiguracji ograniczonego delegowania w pliku server.xml ustaw warto\u015b\u0107 true w przypadku atrybutu S4U2self. Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: Nie mo\u017cna przetworzy\u0107 metody {0}, poniewa\u017c nie jest w\u0142\u0105czony interfejs S4U2proxy ograniczonego delegowania.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=Nie mo\u017cna przetworzy\u0107 metody, poniewa\u017c nie jest w\u0142\u0105czony interfejs S4U2proxy ograniczonego delegowania.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=W\u0142\u0105cz sk\u0142adnik Ograniczone delegowanie i w konfiguracji ograniczonego delegowania w pliku server.xml ustaw warto\u015b\u0107 true w przypadku atrybutu S4U2proxy. Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: Funkcja ograniczonego delegowania protoko\u0142u Kerberos nie jest obs\u0142ugiwana w przypadku dostawcy {0} i wersji {1} \u015brodowiska Java.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Nie mo\u017cna w\u0142\u0105czy\u0107 funkcji ograniczonego delegowania protoko\u0142u Kerberos w przypadku tych warto\u015bci dostawcy i wersji \u015brodowiska Java.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=U\u017cyj dostawcy i wersji \u015brodowiska Java obs\u0142ugiwanych przez funkcj\u0119 ograniczonego delegowania protoko\u0142u Kerberos.
+
+
+
+
+
+
+
+
+
+
+
+

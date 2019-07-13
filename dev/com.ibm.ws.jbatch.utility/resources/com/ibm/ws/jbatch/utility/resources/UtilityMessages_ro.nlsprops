@@ -1,0 +1,138 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Eroare: {0}
+error.inputConsoleNotAvailable=Consola de intrare nu este disponibil\u0103.
+error.missingIO=Eroare, dispozitiv I/E lips\u0103: {0}.
+
+usage=Utilizare:  {0}
+task.unknown=Task necunoscut: {0}
+for.task.usage=Pentru utiliare \u015fi descriere task: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Argument necesar lips\u0103: {0}.
+argument.unrecognized=Argument nerecunoscut: {0}.
+argument.unrecognized.expected=Argument nerecunoscut: {0}. Poate a\u0163i inten\u0163ionat: {1}.
+argument.invalid.value=Valoare \
+inacceptabil\u0103 pentru argumentul: {0}={1}. Valori acceptabile: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: Jobul {0} cu ID-ul de instan\u0163\u0103 {1} a fost lansat.
+job.submitted.explanation=Acest mesaj este doar \u00een scop informativ.
+job.submitted.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.restarted=CWWKY0102I: O cerere de repornire a fost lanst\u0103 pentru jobul {0} cu ID-ul de instan\u0163\u0103 {1}.
+job.restarted.explanation=Acest mesaj este doar \u00een scop informativ.
+job.restarted.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.stopped=CWWKY0103I: Jobul {0} cu ID-ul de instan\u0163\u0103 {1} s-a oprit. Stare batch: {2}. Stare ie\u015fire: {3}
+job.stopped.explanation=Acest mesaj este doar \u00een scop informativ.
+job.stopped.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.stop.submitted=CWWKY0104I: O cerere de oprire a fost lanst\u0103 pentru jobul {0} cu ID-ul de instan\u0163\u0103 {1}.
+job.stop.submitted.explanation=Acest mesaj este doar \u00een scop informativ.
+job.stop.submitted.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.finished=CWWKY0105I: Jobul {0} cu ID-ul de instan\u0163\u0103 {1} s-a oprit. Stare batch: {2}. Stare ie\u015fire: {3}
+job.finished.explanation=Acest mesaj este doar \u00een scop informativ.
+job.finished.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.instance.record=CWWKY0106I: JobInstance:{0}
+job.instance.record.explanation=Acest mesaj este doar \u00een scop informativ.
+job.instance.record.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.execution.record=CWWKY0107I: JobExecution:{0}
+job.execution.record.explanation=Acest mesaj este doar \u00een scop informativ.
+job.execution.record.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+waiting.for.termination=CWWKY0108I: A\u015fteptare pentru oprire JobExecution:{0}
+waiting.for.termination.explanation=Acest mesaj este doar \u00een scop informativ.
+waiting.for.termination.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+waiting.for.latest.job.execution=CWWKY0109I: A\u015fteptare pentru ultima executare de job pentru jobul cu ID-ul de instan\u0163\u0103 {0}
+waiting.for.latest.job.execution.explanation=Acest mesaj este doar \u00een scop informativ.
+waiting.for.latest.job.execution.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+waiting.for.next.job.execution=CWWKY0110I: A\u015fteptare pentru urm\u0103toarea execu\u0163ie de job dup\u0103 JobExecution : {0}
+waiting.for.next.job.execution.explanation=Acest mesaj este doar \u00een scop informativ.
+waiting.for.next.job.execution.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+joblog.to.file=CWWKY0111I: Istoricul jobului a \
+fost scris \u00een fi\u015fierul {0}
+joblog.to.file.explanation=Acest mesaj este doar \u00een scop informativ.
+joblog.to.file.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+failover.to.next.target=CWWKY0112I: A e\u015fuat o cerere pentru managerul de batch-uri la {0}. Cererea este \u00eenaintat\u0103 c\u0103tre managerul de batch-uri la {1}. E\u015fecul a fost: {2}
+failover.to.next.target.explanation=Acest mesaj este doar \u00een scop informativ.
+failover.to.next.target.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+joblog.location=CWWKY0113I: Istoricul de job pentru jobul {0} cu ID-ul de instan\u0163\u0103 {1} va fi desc\u0103rcat la finalizarea jobului. \
+\u00centre timp, pute\u0163i vizualiza istoricul de job utiliz\u00e2nd leg\u0103turile aici: {2}
+joblog.location.explanation=Acest mesaj este doar \u00een scop informativ.
+joblog.location.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+joblog.download=CWWKY0114I: Istoricul de job pentru jobul {0} cu ID-ul de instan\u0163\u0103 {1} este desc\u0103rcat prin {2}.
+joblog.download.explanation=Acest mesaj este doar \u00een scop informativ.
+joblog.download.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.purged=CWWKY0115I: Jobul {0} cu ID-ul de instan\u0163\u0103 {1} a fost epurat cu succes.
+job.purged.explanation=Acest mesaj este doar \u00een scop informativ.
+job.purged.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+shutdown.hook=CWWKY0116I: Utilitarul de client a fost oprit \u00een timp ce a\u015ftepta pentru jobul {0} cu ID-ul instan\u0163\u0103 {1} la Sf\u00e2r\u015fit.
+shutdown.hook.explanation=Acest mesaj este emis c\u00e2nd utilitarul de linia de comand\u0103 este oprit for\u0163at \u00een timp ce a\u015ftepta finalizarea unui job. \
+Ca r\u0103spuns, utilitarul \u00eencearc\u0103 s\u0103 opreasc\u0103 jobul prin lansarea unei cereri de oprire.
+shutdown.hook.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.purged.multi=CWWKY0117I: \u00cencercarea de a s\u0103 epura jobul cu ID-ul de instan\u0163\u0103 {0} a returnat status-ul: {1}. Mesaj: {2} RedirectUrl: {3}
+job.purged.multi.explanation=Acest mesaj este doar \u00een scop informativ.
+job.purged.multi.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.parms.vals=CWWKY0118I: Setul final de parametri de job este {0}
+job.parms.vals.explanation=Acest mesaj este doar \u00een scop informativ.
+job.parms.vals.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+control.props.vals=CWWKY0119I: Setul final de propriet\u0103\u0163i de control este {0}
+control.props.vals.explanation=Acest mesaj este doar \u00een scop informativ.
+control.props.vals.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+control.props.file.warning=CWWKY0120W: Proprietatea {0} nu poate fi utilizat\u0103 \u00een fi\u015fierul de propriet\u0103\u0163i de control \u015fi va fi ignorat\u0103. Proprietatea {0} poate fi utilizat\u0103 doar pe linia de comand\u0103.
+control.props.file.warning.explanation=Acest mesaj este doar \u00een scop informativ.
+control.props.file.warning.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+

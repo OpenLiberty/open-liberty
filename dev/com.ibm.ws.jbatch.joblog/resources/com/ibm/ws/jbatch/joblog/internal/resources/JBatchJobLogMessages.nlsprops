@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: Batch job logging did not start for job {0}, job instance {1}, job execution {2}, due to exception.\n{3}
+job.logging.create.new.explanation=Batch job logging did not create log file. The Batch logging failed due to exception.
+job.logging.create.new.useraction=Review the exception, check the file system status, and take corrective action. Batch execution continues without job logging.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: Batch job logging did not create additional log part files due to exception.\n{0}\nBatch job logging will attempt to continue with current file. 
+job.logging.create.next.explanation=Batch job logging did not create additional log part files. The Batch logging new file create failed due to exception.\n Batch job logging will attempt to continue with current file.
+job.logging.create.next.useraction=Review the exception, check the file system status, and take corrective action. Batch job logging will attempt to continue with current file.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: Batch job logging did not read the log part file due to exception.\n{0}
+job.logging.read.log.explanation=Batch job logging did not read the log part file. The Batch logging read part file failed due to an exception.\nBatch job logging will continue without publishing the job log event.
+job.logging.read.log.useraction=Review the exception, check the file system status, and take corrective action.\nBatch job logging will continue without publishing the job log event.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: Batch job logging did not delete the following log part file or directory: {0}. 
+job.logging.delete.log.explanation=Batch job logging did not delete the log part file or directory.\nBatch job logging will continue without deleting the file or directory.
+job.logging.delete.log.useraction=Review the exception, check the file system status, and take corrective action.\nBatch job logging will continue without deleting the file or directory.

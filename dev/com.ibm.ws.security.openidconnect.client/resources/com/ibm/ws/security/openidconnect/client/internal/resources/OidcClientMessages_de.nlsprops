@@ -1,0 +1,277 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
+
+# BEWARE: Due to code refactoring, some of these messages are also used in the clients.common bundle. Check there too before using or
+# altering any of these messages.
+
+#used_by_client_project
+OIDC_CLIENT_CONFIG_PROCESSED=CWWKS1700I: Die OpenID Connect-Clientkonfiguration {0} wurde erfolgreich verarbeitet.
+OIDC_CLIENT_CONFIG_PROCESSED.explanation=Die Konfiguration des OpenID Connect-Clients (Relying Party oder Ressourenserver) wurde erfolgreich verarbeitet.
+OIDC_CLIENT_CONFIG_PROCESSED.useraction=Keine.
+
+#used_by_client_project
+OIDC_CLIENT_CONFIG_MODIFIED=CWWKS1701I: Die \u00c4nderung der OpenID Connect-Clientkonfiguration {0} wurde erfolgreich verarbeitet.
+OIDC_CLIENT_CONFIG_MODIFIED.explanation=Die Konfiguration des OpenID Connect-Clients (Relying Party oder Ressourenserver) wurde erfolgreich ge\u00e4ndert.
+OIDC_CLIENT_CONFIG_MODIFIED.useraction=Keine.
+
+#1702 is used by clients.common bundle, do not use.
+
+# used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Der OpenID Connect-Client setzt SSL (HTTPS) voraus, aber die OpenID Connect-Provider-URL verwendet HTTP: [{0}]. Aktualisieren Sie die Konfiguration so, dass das Attribut [enforceHTTPS] dem Schema der Ziel-URL entspricht. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) setzt SSL (HTTPS) voraus, aber das in der OpenID Connect-Clientkonfiguration angegebene URL-Protokoll des OpenID Connect-Providers (OP) ist nicht HTTPS.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Stellen Sie sicher, dass der OpenID Connect-Provider SSL unterst\u00fctzt. 2) Wenn der OpenID Connector-Provider SSL nicht unterst\u00fctzt, setzen Sie enforceHTTPS in der OpenID Connect-Clientkonfiguration auf false.
+
+# unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Der aktuelle Status [{0}] f\u00fcr den OpenID Connect-Client [{2}] und der Statusparameter [{1}] in der Antwort des OpenID Connect-Providers stimmen nicht \u00fcberein. Diese Bedingung ist nicht zul\u00e4ssig.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Der OpenID Connect-Client (Relying Party, RP) hat eine Anforderung an einen OpenID Connect-Provider (OP) gesendet und der OP hat eine Antwort mit einem Statusparameter zur\u00fcckgesendet, der nicht mit dem Status der RP zu dem Zeitpunkt \u00fcbereinstimmt, zu dem die Anforderung gesendet wurde. Der OP muss in der Antwort denselben Status zur\u00fccksenden, der gesendet wurde. Der Status wird auf diese Weise verwendet, um Cross-Site Request Forgery zu verhindern. 
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Stellen Sie sicher, dass Ihre OP-URL korrekt ist. \u00dcberpr\u00fcfen Sie die Protokolle in Ihrem OP, um sicherzustellen, dass er die Anforderung empfangen hat.
+
+# This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: Der OpenID Connect-Client [{0}] konnte das ID-Token nicht authentifizieren, weil keine Subjekt-ID in das Token eingeschlossen wurde. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Zum Authentifizieren eines ID-Tokens muss der OpenID Connect-Client (Relying Party, RP) eine Subjekt-ID haben. Das in der Antwort des OpenID Connect-Providers (OP) empfangene ID-Token enth\u00e4lt keine Subjekt-ID und deshalb ist die Authentifizierung fehlgeschlagen. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider (OP) ein ID-Token zur\u00fcckgibt, das eine Subjekt-ID enth\u00e4lt.
+
+#used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: Der OpenID Connect-Client [{1}] konnte das ID-Token aus dem folgenden Grund nicht validieren: [{0}].
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Der OpenID Connect-Client (Relying Party, RP) konnte das ID-Token nicht validieren. Dies kann auf einen Fehler bei der Validierung der erforderlichen Anspr\u00fcche zur\u00fcckzuf\u00fchren sein. Zu den f\u00fcr das ID-Token erforderlichen Anspr\u00fcchen geh\u00f6ren der Aussteller, die Zielgruppe und die Ausstellungszeit. 
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Stellen Sie sicher, dass die Systemuhr des OpenID Connect-Clients mit der Systemuhr des OpenID Connect-Providers (OP) synchronisiert ist (falls sich Client und Provider auf zwei verschiedenen Systemen befinden). Sehen Sie sich auch die empfohlene Benutzeraktion zu dem Fehler an, der hinter dieser Fehlernachricht angezeigt wird.
+
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Der OpenID Connect-Client [{1}] konnte aus dem folgenden Grund keinen SSL-Kontext erstellen: [{0}]. Stellen Sie sicher, dass Ihr SSL-Feature ordnungsgem\u00e4\u00df konfiguriert ist.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) ist f\u00fcr die Verwendung des HTTPS-Schemas konfiguriert, aber es konnte keine HTTPS-Verbindung aufgebaut werden. Das SSL-Feature ist m\u00f6glicherweise nicht aktiviert. M\u00f6glicherweise fehlt das Element keyStore oder es ist falsch angegeben. 
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Stellen Sie sicher, dass die richtigen Informationen in der Datei server.xml enthalten sind. Sehen Sie sich die empfohlene Benutzeraktion zu dem Fehler an, der vor dieser Nachricht angezeigt wird.
+
+#1708 is used in clients.common bundle. don't use it.
+
+#used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Die OpenID Connect-Anforderung wurde vom Benutzer abgelehnt, oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
+OAUTH_REQUEST_ACCESS_DENIED.explanation=Der Benutzer hat die OpenID Connect-Anforderung durch Abbrechen der Anforderung im Formular f\u00fcr die Geltungsbereichsgenehmigung abgelehnt oder es ist ein anderer Fehler aufgetreten, der den Zugriff auf die OpenID Connect-Anforderung verhindert.
+OAUTH_REQUEST_ACCESS_DENIED.useraction=Der Benutzer muss dem OpenID Connect-Provider erlauben, die Geltungsbereiche gemeinsam zu nutzen, die der Client erfordert, damit die OpenID Connect-Anforderung erfolgreich verarbeitet werden kann. Wenn der Benutzer die Anforderung genehmigt hat, \u00fcberpr\u00fcfen Sie die Protokolle im OP nach weiteren Fehlern.
+
+#used_by_client_project
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: Die Anforderung wurde vom Benutzer abgelehnt, oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=Der Benutzer hat die OpenID Connect-Anforderung durch Abbrechen der Anforderung im Formular f\u00fcr die Geltungsbereichsgenehmigung abgelehnt oder es ist ein anderer Fehler aufgetreten, der den Zugriff auf die OpenID Connect-Anforderung verhindert.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=Der Benutzer muss dem OpenID Connect-Provider erlauben, die Geltungsbereiche gemeinsam zu nutzen, die der Client erfordert, damit die OpenID Connect-Anforderung erfolgreich verarbeitet werden kann. Wenn der Benutzer die Anforderung genehmigt hat, \u00fcberpr\u00fcfen Sie die Protokolle im OP nach weiteren Fehlern.
+
+# 1712,13,14 are used in the clients.common bundle. Do not use here.
+
+#used_by_client_project
+OSGI_SERVICE_ERROR=CWWKS1715E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Der angegebene OSGi-Service ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option "clean" erneut.
+
+#used_by_client_project
+PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung abgelaufen ist. Die Verfallszeit ("exp") ist [{0}] und die aktuelle Zeit ist [{1}].
+PROPAGATION_TOKEN_EXPIRED_ERR.explanation=Das Zugriffstoken ist abgelaufen und die Laufzeitumgebung kann nicht mit der Weitergabe des Zugriffstokens fortfahren.
+PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Stellen Sie sicher, dass Sie ein g\u00fcltiges Zugriffstoken bereitstellen und die Zeiten der Systeme synchronisieren.
+
+#used_by_client_project
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung nicht g\u00fcltig ist. Die iat-Zeit (Issue at Time) [{0}] liegt nach der aktuellen Zeit [{1}] und diese Bedingung ist nicht zul\u00e4ssig.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.explanation=Die iat-Zeit (Issue at Claim Time, Ausstellung bei Anspruch) im Zugriffstoken liegt nach der aktuellen Zeit. Dies ist nicht zul\u00e4ssig.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.useraction=Stellen Sie sicher, dass die Ausstellungszeit des Zugriffstokens nicht in der Zukunft liegt, und synchronisieren Sie die Zeiten der Systeme.
+
+#used_by_client_project
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung den Anspruch [{0}] nicht enth\u00e4lt. Die erforderlichen Anspr\u00fcche sind [{1}].
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Das Zugriffstoken enth\u00e4lt nicht alle erforderlichen Anspr\u00fcche. 
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Stellen Sie sicher, dass das bereitgestellte Zugriffstoken den erforderlichen Anspruch enth\u00e4lt.
+
+#used_by_client_project
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung nicht verwendet werden kann. Die nbf-Zeit (Not Before Time) [{0}] liegt nach der aktuellen Zeit [{1}] und diese Bedingung ist nicht zul\u00e4ssig.
+PROPAGATION_TOKEN_NBF_ERR.explanation=Die nbf-Zeit (Not Before Claim Time, Nicht vor Anspruch) im Zugriffstoken liegt nach der aktuellen Zeit und die Laufzeitumgebung kann das Zugriffstoken momentan nicht verwenden.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Stellen Sie sicher, dass der nbf-Anspruch im Zugriffstoken nicht auf eine k\u00fcnftige Zeit gesetzt ist, und/oder synchronisieren Sie die Zeiten der Systeme oder \u00fcbergeben Sie die Anforderung zu einem sp\u00e4teren Zeitpunkt erneut.
+
+#used_by_client_project
+PROPAGATION_TOKEN_NOT_ACTIVE=CWWKS1720E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung nicht aktiv ist. Die Validierungsmethode ist [{0}] und die URL des Validierungsendpunkts ist [{1}].
+PROPAGATION_TOKEN_NOT_ACTIVE.explanation=Das bereitgestellte Zugriffstoken ist nicht aktiv und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen.
+PROPAGATION_TOKEN_NOT_ACTIVE.useraction=Stellen Sie sicher, dass das bereitgestellte Zugriffstoken g\u00fcltig ist, und suchen Sie, sofern m\u00f6glich, in den Protokollen des OpenID Connector-Providers (OP) nach weiteren Details. Vergewissern Sie sich auch, dass die angegebene Validierungsmethode und die angegebene Endpunkt-URL in der OpenID Connect-Clientkonfiguration korrekt sind.
+
+#used_by_client_project
+OIDC_PROPAGATION_FAIL=CWWKS1721E: Der Ressourcenserver hat einen Fehler [{0}] empfangen, als er versucht hat, das Zugriffstoken zu validieren. Das Token ist entweder abgelaufen oder es wird vom Validierungsendpunkt [{1}] nicht erkannt.
+OIDC_PROPAGATION_FAIL.explanation=Das bereitgestellte Zugriffstoken kann wegen der Fehlerantwort vom OpenID Connect-Provider nicht validiert werden.
+OIDC_PROPAGATION_FAIL.useraction=Stellen Sie sicher, dass das Weitergabetoken g\u00fcltig ist, und suchen Sie, sofern m\u00f6glich, in den Protokollen des OpenID Connect-Providers nach weiteren Einzelheiten zu dem Fehler.
+
+# 1722 is used in clients.common bundle, do not use here.
+
+#used_by_client_project
+PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: Es ist ein Fehler des Typs invalid_client aufgetreten, als der Ressourcenserver versucht hat, das Zugriffstoken mit der Client-ID [{0}] und der Validierungs-URL [{1}] zu validieren.
+PROPAGATION_TOKEN_INVALID_CLIENTID.explanation=Das bereitgestellte Zugriffstoken kann nicht verifiziert werden, weil der OpenID Connect-Provider einen Fehler des Typs invalid_client ausgegeben hat und die Laufzeitumgebung den Authentifizierungsprozess nicht fortsetzen kann.
+PROPAGATION_TOKEN_INVALID_CLIENTID.useraction=Vergewissern Sie sich, dass in der OpenID Connect-Clientkonfiguration die Client-ID angegeben ist, die mit der Client-ID in der OpenID Connect-Providerkonfiguration \u00fcbereinstimmt, oder suchen Sie in den Protokollen des OpenID Connect-Providers nach weiteren Informationen.
+
+#used_by_client_project
+PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil der issuerIdentifier-Wert [{0}] in der Konfiguration nicht den "iss"-Anspruch [{1}] im Zugriffstoken enth\u00e4lt.
+PROPAGATION_TOKEN_ISS_ERROR.explanation=Das bereitgestellte Zugriffstoken kann nicht verifiziert werden, weil der "iss"-Anspruch im Zugriffstoken nicht mit dem Konfigurationsattribut issuerIdentifier \u00fcbereinstimmt und die Laufzeitumgebung den Authentifizierungsprozess nicht fortsetzen kann.
+PROPAGATION_TOKEN_ISS_ERROR.useraction=Vergewissern Sie sich, dass die OpenID Connect-Clientkonfiguration den issuerIdentifier-Wert enth\u00e4lt, der den "iss"-Anspruch im Zugriffstoken enth\u00e4lt. 
+
+#used_by_client_project
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: Der Ressourcenserver konnte das Zugriffstoken nicht validieren, weil der validationEndpointUrl-Wert [{0}] keine g\u00fcltige URL ist oder weil die Validierung nicht durchgef\u00fchrt werden konnte.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL.explanation=Das bereitgestellte Zugriffstoken kann nicht validiert werden, weil der in der OpenID Connect-Clientkonfiguration angegebene validationEndpointUrl-Wert ung\u00fcltig ist und die Laufzeitumgebung den Authentifizierungsprozess nicht fortsetzen kann.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Wert f\u00fcr das Attribut validationEndpointUrl in der OpenID Connect-Clientkonfiguration angegeben wird.
+
+#used_by_client_project
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil die Anforderung ein erforderliches Weitergabetoken nicht enth\u00e4lt, z. B. ein Zugriffstoken oder ein jwt-Token.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=Die Anforderung muss ein erforderliches Weitergabetoken, wie z. B. ein Zugriffstoken oder ein jwt-Token, enthalten, damit der Ressourcenserver die Authentifizierung und Weitergabe des Tokens durchf\u00fchren kann.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Stellen Sie sicher, dass die Anforderung ein g\u00fcltiges Weitergabetoken enth\u00e4lt.
+
+# USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht ausf\u00fchren, weil er das Zugriffstoken wegen eines Fehlers [{0}] nicht validieren konnte. Die Validierungsmethode ist [{1}] und die URL des Validierungsendpunkts ist [{2}].
+PROPAGATION_TOKEN_INTERNAL_ERR.explanation=Das bereitgestellte Zugriffstoken konnte wegen eines internen Fehlers nicht validiert werden und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen. 
+PROPAGATION_TOKEN_INTERNAL_ERR.useraction=\u00dcberpr\u00fcfen Sie die Protokolle des Ressourcenservers, um festzustellen, ob vor diesem Fehler andere Fehler protokolliert wurden.
+
+
+# USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR=CWWKS1728E: The resource server failed the authentication request because the issuerIdentifier [{0}] in the configuration does not match the "iss" claim [{1}] in the UserInfo.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR.explanation=The provided access token cannot be verified because the "iss" claim in the UserInfo does not match the issuerIdentifier configuration attribute, and the runtime cannot continue with the authentication process.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
+
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht ausf\u00fchren, weil die Validierungsmethode [{0}] f\u00fcr die Validierungsendpunkt-URL [{1}] nicht g\u00fcltig ist.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Der in der OpenID Connect-Clientkonfiguration angegebene validationEndpointUrl-Wert ist nicht der richtige Endpunkt f\u00fcr den angegebenen validationMethod-Wert.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aktualisieren Sie die OpenID Connect-Clientkonfiguration, indem Sie den validationMethod-Wert oder den validationEndpointUrl-Wert \u00e4ndern.
+ 
+# 1730 used in clients.common, don't use here.
+
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken den Anspruch [{0}], der mit dem Attribut [{1}] angegeben wurde, nicht enth\u00e4lt.
+PROPAGATION_TOKEN_MISSING_REALM.explanation=Das bereitgestellte Zugriffstoken enth\u00e4lt den angegebenen Anspruch f\u00fcr die Identifizierung des Realms nicht und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen.
+PROPAGATION_TOKEN_MISSING_REALM.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Vergewissern Sie sich, dass in der OpenID Connect-Clientkonfiguration das Attribut realmName angegeben ist. 2) Vergewissern Sie sich, dass der OpenID Connect-Provider (OP) das Zugriffstoken mit dem angegebenen Anspruch ausstellt. 3) Vergewissern Sie sich, dass der OpenID Connect-Provider das Zugriffstoken mit dem Anspruch "iss" ausstellen kann. 
+
+# do not translate the quoted "required"
+#used_by_client_project
+BAD_INBOUND_PRPAGATION_REQUIRED=CWWKS1732E: Die Konfiguration des OpenID Connect-Clients [{0}] ist inaktiviert, weil der validationEndpointUrl-Wert [{1}] nicht g\u00fcltig ist und inboundPropagation den Wert "required" hat.
+BAD_INBOUND_PRPAGATION_REQUIRED.explanation=Im angegebenen OpenID Connect-Client ist inboundPropagation auf "required" gesetzt, aber der konfigurierte validationEndpointUrl-Wert ist nicht g\u00fcltig. validationEndpointUrl muss auf einen g\u00fcltigen URI mit dem URI-Schema http oder https gesetzt werden. Der als Ressourcenserver agierende OpenID Connect-Client kann keine Anforderungen verarbeiten.
+BAD_INBOUND_PRPAGATION_REQUIRED.useraction=Stellen Sie sicher, dass in der Konfiguration des OpenID Connect-Clients ein nicht leerer validationEndpointUrl-Wert angegeben wird, der das URI-Schema http oder https verwendet.
+
+# do not translate the quoted "supported" and "none"
+#used_by_client_project
+BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: Der validationEndpointUrl-Wert [{0}] ist nicht g\u00fcltig, aber das Attribut inboundPropagation ist auf "supported" gesetzt. F\u00fcr die Unterst\u00fctzung der eingehenden Weitergabe muss ein g\u00fcltiger validationEndpointUrl-Wert angegeben werden, sodass sich der OpenID Connect-Client [{1}] wie bei Angabe des Werts "none" f\u00fcr inboundPropagation verh\u00e4lt.
+BAD_INBOUND_PRPAGATION_SUPPORTED.explanation=Der in der angegebenen OpenID Connect-Clientkonfiguration angegebene validationEndpointUrl-Wert ist nicht g\u00fcltig. F\u00fcr die Unterst\u00fctzung der eingehenden Weitergabe ist ein g\u00fcltiger validationEndpointUrl-Wert erforderlich. Der validationEndpointUrl-Wert muss ein nicht leerer Wert sein, der das URI-Schema http oder https verwendet. Der OpenID Connect-Client verh\u00e4lt sich wie bei Angabe des Werts "none" f\u00fcr inboundPropagation.
+BAD_INBOUND_PRPAGATION_SUPPORTED.useraction=Stellen Sie sicher, dass in der Konfiguration des OpenID Connect-Clients ein nicht leerer validationEndpointUrl-Wert angegeben wird, der das URI-Schema http oder https verwendet.
+
+
+#1734 used by clients.common bundle, don't use here. 
+
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil die Antwort des Validierungsendpunkts [{0}] den Anspruch [{1}] hat, aber das Attribut [{2}] auf true gesetzt ist.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Da in der OpenID Connect-Clientkonfiguration "disableIssChecking" angegeben ist, erwartet der Ressourcenserver, dass die JSON-Antwort des Validierungsendpunkts keinen "iss"-Anspruch enth\u00e4lt. 
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Aktualisieren Sie die OpenID Connect-Clientkonfiguration und setzen Sie "disableIssChecking" auf "false". 2) Sorgen Sie daf\u00fcr, dass der Validierungsendpunkt nicht den Anspruch "iss" ausgibt.
+
+# Do not translate "JSON Web Token"
+#0=Java runtime level, 1=Minimum Java level required by JWT library
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_JWT_JDK7=CWWKS1736E: Die von dieser Laufzeitumgebung [{0}] verwendete Java-Version wird von der JSON-Web-Token-Bibliothek nicht unterst\u00fctzt. Die unterst\u00fctzte Java-Version ist [{1}] oder h\u00f6her.
+OIDC_CLIENT_JWT_JDK7.explanation=Die Open-Source-Bibliotheken f\u00fcr die Verarbeitung von JSON-Web-Token unterst\u00fctzt die Java-Version, die der Liberty-Server momentan verwendet, nicht.
+OIDC_CLIENT_JWT_JDK7.useraction=Installieren Sie eine Java-Version, die gr\u00f6\u00dfer-gleich der in der Nachricht angezeigten Java-Version ist.
+
+#1737 used in clients.common bundle, do not use here.
+#1738 is unused.
+
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+#0=signatureAlgorithm, 1=exception or error message if any
+#used_by_client_project and clients project
+OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Der vom Signaturalgorithmus [{0}] geforderte Signierschl\u00fcssel ist nicht verf\u00fcgbar. {1}
+OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Es wurde kein Signierschl\u00fcssel gefunden oder es wurde kein Schl\u00fcssel gefunden, der den konfigurierten Signaturalgorithmus verwendet. Dies k\u00f6nnte auf fehlende, falsch formatierte oder fehlerhafte Informationen in der Clientkonfiguration oder im Token zur\u00fcckzuf\u00fchren sein.
+OIDC_CLIENT_NO_VERIFYING_KEY.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Wenn Sie JWK f\u00fcr das Signieren und Validieren von Token verwenden, stellen Sie sicher, dass das Token jwkEndpointUrl ordnungsgem\u00e4\u00df konfiguriert ist und dass die JWT- und JWK-Anspr\u00fcche korrekt sind. 2) Wenn Sie X.509-Zertifikate f\u00fcr das Signieren und Validieren von Token verwenden, stellen Sie sicher, dass die Attribute signatureAlgorithm, trustStoreRef und trustStoreAlias ordnungsgem\u00e4\u00df konfiguriert sind. 3) Wenn Sie gemeinsam genutzte Schl\u00fcssel f\u00fcr das Signieren und Validieren von Token verwenden, stellen Sie sicher, dass die Attribute clientId und clientSecret ordnungsgem\u00e4\u00df konfiguriert sind.
+
+#0=More specific error message, 1=clientId
+#used_by_client_project
+OIDC_CLIENT_BAD_RS_TOKEN=CWWKS1740W: Die Weitergabe eingehender Token f\u00fcr den Client [{1}] ist nicht g\u00fcltig. Ursache: [{0}]. Die Anforderung wird mit OpenID Connect authentifiziert.
+OIDC_CLIENT_BAD_RS_TOKEN.explanation=Das Token f\u00fcr die Anforderung zur Tokenweitergabe kann nicht verifiziert werden. Dieser Client versucht, die Authentifizierung mit OpenID Connect durchzuf\u00fchren.
+OIDC_CLIENT_BAD_RS_TOKEN.useraction=Wenn der Fehler erwartet wurde, ist keine Aktion erforderlich. Sollte der Fehler unerwartet sein, stellen Sie sicher, dass die Umgebung f\u00fcr eingehende Weitergabe ordnungsgem\u00e4\u00df eingerichtet ist.
+
+# Do not translate "signatureAlgorithm"
+#0=OIDC client ID, 1="none"
+#used_by_client_project
+OIDC_CLIENT_NONE_ALG=CWWKS1741W: Das Attribut signatureAlgorithm des OpenID Connect-Clients [{0}] ist auf [{1}] gesetzt.
+OIDC_CLIENT_NONE_ALG.explanation=Da das Attribut signatureAlgorithm auf "none" gesetzt ist, wird ein nicht signiertes Token erwartet, was nicht g\u00e4ngig ist.
+OIDC_CLIENT_NONE_ALG.useraction=Wenn eingehende Token nicht signiert sein m\u00fcssen, ist keine Aktion erforderlich. Andernfalls m\u00fcssen Sie einen unterst\u00fctzten signatureAlgorithm-Wert wie RS256 oder HS256 ausw\u00e4hlen.
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# CWWKS1742E
+#JWK_RETRIVE_FAILED=CWWKS1742E: Cannot get the Json Web Key(JWK) from the URL [{0}]. Response status [{1}]. Message:[{2}] 
+
+
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# do not translate WASOidcCode
+# 0: the content of WASOidcCode, 1: client ID
+#used_by_client_project and clients project
+OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: Das WASOidcCode-Cookie [{0}] in der Anforderung an den OpenID Connect-Client [{1}] ist nicht g\u00fcltig. Der zugeh\u00f6rige Wert wurde m\u00f6glicherweise ge\u00e4ndert.
+OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=Der OpenID Connect-Client (Relying Party, RP) hat ein WASOidcCode-Cookie empfangen, das nicht g\u00fcltig ist. Der zugeh\u00f6rige Wert wurde m\u00f6glicherweise ge\u00e4ndert.
+OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=\u00dcberpr\u00fcfen Sie, dass das Cookie nicht ge\u00e4ndert wurde und dass der decodierte Inhalt des Cookies mit einem ordnungsgem\u00e4\u00df formatierten JSON-Objekt beginnt.
+
+#1746, 1747  used in clients.common, do not use here. 
+
+# do not translate GET
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: Eine GET-Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Es wurde der Antwortcode 500 zur\u00fcckgegeben.
+OIDC_CLIENT_BAD_GET_REQUEST.explanation=Es wurde eine Anforderung empfangen, die keinem erwarteten URL entspricht oder nicht die erforderlichen Parameter enth\u00e4lt.
+OIDC_CLIENT_BAD_GET_REQUEST.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration. Diese Nachricht kann auch auf einen Snooping-Angriff mit einem Browser zur\u00fcckzuf\u00fchren sein.
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: Eine Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Der erforderliche Statusparameter fehlt. Es wurde der Antwortcode 500 zur\u00fcckgegeben.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=Es wurde eine Anforderung empfangen, die den erforderlichen Statusparameter nicht enth\u00e4lt.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration. Diese Nachricht kann auch auf einen Snooping-Angriff mit einem Browser zur\u00fcckzuf\u00fchren sein.
+
+# STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
+
+# do not translate hostname 
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Eine Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Ein erforderliches Cookie, dessen Name mit WASReqURLOidc beginnt, fehlt. Der f\u00fcr den Zugriff auf den Client verwendete Hostname stimmt m\u00f6glicherweise nicht mit dem Namen \u00fcberein, der beim Provider registriert ist. Es wurde der Antwortcode 500 zur\u00fcckgegeben.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Es wurde eine Anforderung empfangen, die ein erforderliches Cookie nicht enth\u00e4lt.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration und die OpenID Connect-Clientkonfiguration. Das Cookie kann fehlen, weil mit einem Hostnamen auf den Client zugegriffen wurde, der von dem Hostnamen der beim Provider registrierten Umleitung abweicht.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: In der OpenID Connect-Clientkonfiguration (Relying Party, RP) [{2}] sind die Erkennungsendpunkt-URL [{0}] und die anderen Endpunkte angegeben. RP verwendet die Informationen aus der Erkennungsanforderung und ignoriert die anderen konfigurierten Endpunkte [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Der OpenID Connect-Client verwendet den Erkennungsendpunkt, um den Provider zu kontaktieren und verwendet die Informationen aus der Erkennungsanforderung, um die anderen Endpunkte, wie z. B. Berechtigungs-, Token- und Benutzerinfoendpunkte, zu kontaktieren.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Konfiguriern Sie entweder den Erkennungsendpunkt oder die anderen Endpunkte, wie z. B. Berechtigungs-, Token- und Benutzerinfoendpunkte, nicht jedoch beide.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: In der OpenID Connect-Clientkonfiguration (Relying Party, RP) [{2}] sind die Erkennungsendpunkt-URL [{0}] und die Aussteller-ID [{1}] angegeben. Die RP verwendet die Informationen aus der Erkennungsanforderung und ignoriert die konfigurierte Aussteller-ID.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=Der OpenID Connect-Client verwendet den Erkennungsendpunkt, um den Provider zu kontaktieren und verwendet die Informationen aus der Erkennungsanforderung.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Konfigurieren Sie entweder den Erkennungsendpunkt oder die Aussteller-ID, aber nicht beides.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: In der OpenID Connect-Clientkonfiguration (Relying Party, RP) [{3}] ist [{0}], ein Standardwert f\u00fcr [{1}] angegeben, und das Ergebnis dieser Erkennung wird in [{2}] ge\u00e4ndert.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Wenn der OpenID Connect-Provider RP-Standardwerte nicht unterst\u00fctzt, k\u00f6nnen die Standardwerte, je nach RP-Kapazit\u00e4t an die Werte angepasst werden, was der OP unterst\u00fctzt.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: Der OpenID Connect-Client [{0}] konnte die OpenID Connect-Providerendpunktinformationen \u00fcber die Erkennungsendpunkt-URL [{1}] nicht abrufen. Aktualisieren Sie die Konfiguration f\u00fcr den OpenID Connect-Client mit der richtigen HTTPS-Erkennungsendpunkt-URL. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Der OpenID Connect-Client ist f\u00fcr die Erkennung der OpenID Connect-Providerendpunkte \u00fcber die Erkennungs-URL konfiguriert, der Erkennungsprozess ist jedoch fehlgeschlagen. Der OpenID Connect-Client kann die Authentifizierungsanforderungen erst verarbeiten, wenn die Konfiguration der Erkennungsendpunkt-URL korrigiert wurde oder die Erkennung erfolgreich war.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Korrigieren Sie die OpenID Connect-Clientkonfiguration, um sicherzustellen, dass 1) die Erkennungsendpunkt-URL sich auf den richtigen OpenID Connect-Provider bezieht, 2) die Erkennungsendpunkt-URL HTTPS verwendet und 3) das SSL-Feature und die Keystoreelemente ordnungsgem\u00e4\u00df konfiguriert wurden, um eine Vertrauensbeziehung zum OpenID Connect-Provider herzustellen. Stellen Sie sicher, dass der OpenID Connect-Providererkennungsendpunkt funktioniert.
+
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Es wurde keine erfolgreiche Antwort von der URL [{0}] zur\u00fcckgegeben. Es ist der [{1}]-Antwortstatus und der [{2}]-Fehler aus der Erkennungsanforderung.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=Der OpenID Connect-Client konnte nicht auf den OpenID Connect-Providererkennungsendpunkt zugreifen und die Nachricht enth\u00e4lt m\u00f6glicherweise weitere Informationen zum Fehler.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider verf\u00fcgbar und der angegebene Erkennungsendpunkt richtig ist.
+
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: Die OpenID Connect-Clientkonfiguration [{0}] wurde mit den Informationen aus der Erkennungsendpunkt-URL [{1}] erstellt. Diese Informationen erm\u00f6glichen dem Client mit dem OpenID Connect-Provider zu interagieren, um Anforderungen, wie z. B. Berechtigungs- und Tokenanforderungen, zu verarbeiten.
+OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=Der OpenID Connect-Client kontaktiert den Erkennungsendpunkt des OpenID Connect-Providers, um Informationen, wie z. B. Berechtigungsendpunkt-URL, Tokenendpunkt-URL, Endpunkt-URL f\u00fcr Benutzerinformationen, JWK-Endpunkt-URL, abzurufen. Diese Informationen erm\u00f6glichen dem OpenID Connect-Client mit dem OpenID Connect-Provider zu interagieren, um Berechtigungs-, Token-, JWK- und Benutzerinformationsanforderungen zu senden.
+OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS1527I: Die OpenID Connect-Clientkonfiguration [{0}] wurde mit neuen Informationen aus der Erkennungsendpunkt-URL [{1}] aktualisiert.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=Der OpenID Connect-Client kontaktiert den Erkennungsendpunkt des OpenID Connect-Providers, 1) wenn es ein Problem beim Kontaktieren der Berechtigungs- bzw. Tokenendpunkte des OpenID Connect-Providers gibt, 2) wenn die aktuelle Uhrzeit nach der n\u00e4chsten Erkennungszeit liegt. Die n\u00e4chste Erkennungszeit wird berechnet, indem der discoveryPollingRate-Wert der aktuellen Zeit nach jedem Erkennungsaufruf hinzugef\u00fcgt wird.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: Die OpenID Connect-Clientkonfiguration [{0}] stimmt mit der Information aus der Erkennungsendpunkt-URL [{1}] \u00fcberein, sodass keine Konfigurationsaktualisierungen erforderlich sind.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Der OpenID Connect-Client kontaktiert den Erkennungsendpunkt des OpenID Connect-Providers, 1) wenn es ein Problem beim Kontaktieren der Berechtigungs- bzw. Tokenendpunkte des OpenID Connect-Providers gibt, 2) wenn die aktuelle Uhrzeit nach der n\u00e4chsten Erkennungszeit liegt. Die n\u00e4chste Erkennungszeit wird berechnet, indem der discoveryPollingRate-Wert der aktuellen Zeit nach jedem Erkennungsaufruf hinzugef\u00fcgt wird. Wenn die aktuellsten Erkennungsinformationen mit den vorherigen \u00fcbereinstimmen, findet keine Konfigurationsaktualisierung statt.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Das erforderliche Konfigurationsattribut [{0}] fehlt oder ist leer und es wurde kein Standardwert angegeben. Wenn das Attribut konfiguriert ist oder vom Provider erkannt wurde, vergewissern Sie sich, dass es nicht leer ist und dass es nicht ausschlie\u00dflich aus Leerzeichen besteht.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Das angegebene Konfigurationsattribut fehlt in der Serverkonfiguration. Wenn ein Wert angegeben ist, werden Leerzeichen am Anfang und am Ende des Werts entfernt, wenn der Wert verarbeitet wird, sodass der Wert in der Konfiguration leer sein oder ausschlie\u00dflich aus Leerzeichen bestehen kann. Wenn der Erkennungsendpunkt angegeben wurde, um diesen Attributwert vom Provider abzurufen, tritt bei der Erkennung m\u00f6glicherweise ein Problem auf.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Stellen Sie sicher, dass das angegebene Konfigurationsattribut konfiguriert ist, dass es nicht leer ist und dass es nicht ausschlie\u00dflich aus Leerzeichen besteht. Wenn der Erkennungsendpunkt zum Abrufen dieser Informationen konfiguriert ist, vergewissern Sie sich, dass bei der Erkennungsanforderung keine Fehler auftreten.
+ 
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

@@ -1,0 +1,276 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
+
+# BEWARE: Due to code refactoring, some of these messages are also used in the clients.common bundle. Check there too before using or
+# altering any of these messages.
+
+#used_by_client_project
+OIDC_CLIENT_CONFIG_PROCESSED=CWWKS1700I: A configura\u00e7\u00e3o do cliente do OpenID Connect {0} foi processada com sucesso.
+OIDC_CLIENT_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o do cliente OpenID Connect (parte dependente ou servidor de recurso) foi processada com sucesso.
+OIDC_CLIENT_CONFIG_PROCESSED.useraction=Nenhum
+
+#used_by_client_project
+OIDC_CLIENT_CONFIG_MODIFIED=CWWKS1701I: A altera\u00e7\u00e3o da configura\u00e7\u00e3o do cliente OpenID Connect {0} foi processada com sucesso.
+OIDC_CLIENT_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o do cliente OpenID Connect (parte dependente ou servidor de recurso) foi modificada com sucesso.
+OIDC_CLIENT_CONFIG_MODIFIED.useraction=Nenhuma.
+
+#1702 is used by clients.common bundle, do not use.
+
+# used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: O cliente OpenID Connect requer SSL (HTTPS), mas a URL do provedor OpenID Connect \u00e9 HTTP: [{0}].  Atualize a configura\u00e7\u00e3o para que o atributo [enforceHTTPS] corresponda ao esquema da URL de destino. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=O cliente OpenID Connect (parte dependente ou servidor de recurso) requer SSL (HTTPS), mas o protocolo de URL do provedor do OpenID Connect (OP) especificado na configura\u00e7\u00e3o do cliente OpenID Connect n\u00e3o \u00e9 HTTPS.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Execute um dos procedimentos a seguir: 1) Assegure-se de que o provedor OpenID Connect suporte SSL. 2) Se o provedor do OpenID Connector n\u00e3o suportar SSL, defina enforceHTTPS na configura\u00e7\u00e3o do cliente OpenID Connect como false.
+
+# unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: O estado atual [{0}] do cliente OpenID Connect [{2}] e o par\u00e2metro de estado [{1}] na resposta do provedor OpenID Connect n\u00e3o correspondem.  Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=O cliente OpenID Connect (relying party ou RP) enviou uma solicita\u00e7\u00e3o para um provedor OpenID Connect (OP) e o OP retornou uma resposta com um par\u00e2metro de estado que n\u00e3o corresponde ao estado do RP no momento em que foi enviada. O OP deve incluir na resposta o mesmo estado em que foi enviado.  O estado \u00e9 usado dessa maneira para evitar falsifica\u00e7\u00e3o na solicita\u00e7\u00e3o de sites cruzados. 
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Assegure-se de que a URL do OP esteja correta. Verifique os logs no OP para assegurar-se de que ele tenha recebido a solicita\u00e7\u00e3o.
+
+# This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: O cliente OpenID Connect [{0}] falhou ao autenticar o token de ID porque um assunto identificador n\u00e3o foi inclu\u00eddo no token. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Para autenticar um token de ID, o cliente OpenID Connect (relying party ou RP) deve ter um assunto identificador. O token de ID recebido na resposta do provedor OpenID Connect (OP) n\u00e3o continha um assunto identificador, portanto, a autentica\u00e7\u00e3o falhou. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Assegure-se de que o provedor OpenID Connect (OP) retorne um token de ID que inclua um assunto identificador.
+
+#used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: O cliente OpenID Connect [{1}] falhou ao validar o token de ID devido a [{0}].
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=O cliente OpenID Connect (relying party ou RP) n\u00e3o pode validar o token de ID com \u00eaxito. Isso pode ter sido causado por uma falha no processo de valida\u00e7\u00e3o de solicita\u00e7\u00f5es necess\u00e1rias. Algumas das solicita\u00e7\u00f5es necess\u00e1rias do token de ID incluem emissor, p\u00fablico, hor\u00e1rio de emiss\u00e3o. 
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Assegure-se de que o rel\u00f3gio do sistema do cliente OpenID Connect (RP) esteja em sincroniza\u00e7\u00e3o com o rel\u00f3gio do sistema do provedor OpenID Connect (OP) (no caso de estarem em dois sistemas diferentes). Al\u00e9m disso, consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro que aparece depois desse erro.
+
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: O cliente OpenID Connect [{1}] n\u00e3o conseguiu criar um contexto de SSL devido a [{0}]. Assegure-se de que o recurso SSL esteja configurado corretamente.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=A configura\u00e7\u00e3o do cliente OpenID Connect (parte dependente ou servidor de recurso) foi definida para usar o esquema HTTPS, mas uma conex\u00e3o HTTPS n\u00e3o p\u00f4de ser estabelecida. O recurso SSL n\u00e3o pode ser ativado. O elemento keyStore pode estar ausente ou especificado incorretamente.  
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Assegure-se de que voc\u00ea tenha as informa\u00e7\u00f5es corretas de SSL no server.xml. Consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro que aparece antes dessa mensagem.
+
+#1708 is used in clients.common bundle. don't use it.
+
+#used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: A solicita\u00e7\u00e3o do OpenID Connect foi negada pelo usu\u00e1rio ou ocorreu outro erro que resultou na nega\u00e7\u00e3o da solicita\u00e7\u00e3o.
+OAUTH_REQUEST_ACCESS_DENIED.explanation=O usu\u00e1rio negou a solicita\u00e7\u00e3o do OpenID Connect cancelando a solicita\u00e7\u00e3o no formul\u00e1rio de consentimento de escopo ou ocorreu algum outro erro que negou acesso \u00e0 solicita\u00e7\u00e3o do OpenID Connect.
+OAUTH_REQUEST_ACCESS_DENIED.useraction=O usu\u00e1rio deve permitir o provedor do OpenID Connect a compartilhar os escopos que o cliente solicita no pedido para a solicita\u00e7\u00e3o do OpenID Connect ter \u00eaxito. Se o usu\u00e1rio aprovou a solicita\u00e7\u00e3o, verifique os logs na OP para qualquer erro adicional.
+
+#used_by_client_project
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: A solicita\u00e7\u00e3o foi negada pelo usu\u00e1rio ou ocorreu outro erro que resultou na nega\u00e7\u00e3o da solicita\u00e7\u00e3o.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=O usu\u00e1rio negou a solicita\u00e7\u00e3o do OpenID Connect cancelando a solicita\u00e7\u00e3o no formul\u00e1rio de consentimento de escopo ou ocorreu algum outro erro que negou acesso \u00e0 solicita\u00e7\u00e3o do OpenID Connect.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=O usu\u00e1rio deve permitir o provedor do OpenID Connect a compartilhar os escopos que o cliente solicita no pedido para a solicita\u00e7\u00e3o do OpenID Connect ter \u00eaxito. Se o usu\u00e1rio aprovou a solicita\u00e7\u00e3o, verifique os logs na OP para qualquer erro adicional.
+
+# 1712,13,14 are used in the clients.common bundle. Do not use here.
+
+#used_by_client_project
+OSGI_SERVICE_ERROR=CWWKS1715E: O servi\u00e7o OSGi {0} n\u00e3o est\u00e1 dispon\u00edvel.
+OSGI_SERVICE_ERROR.explanation=O servi\u00e7o OSGi especificado n\u00e3o est\u00e1 dispon\u00edvel.
+OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o "clean".
+
+#used_by_client_project
+PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token de acesso que est\u00e1 na solicita\u00e7\u00e3o expirou. O hor\u00e1rio de expira\u00e7\u00e3o ("exp") \u00e9 [{0}] e o hor\u00e1rio atual \u00e9 [{1}].
+PROPAGATION_TOKEN_EXPIRED_ERR.explanation=O token de acesso expirou e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com a propaga\u00e7\u00e3o do token de acesso.
+PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Certifique-se de fornecer um token de acesso v\u00e1lido e tamb\u00e9m de sincronizar o tempo entre os sistemas.
+
+#used_by_client_project
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token de acesso que est\u00e1 na solicita\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido. O hor\u00e1rio de emiss\u00e3o ("iat") [{0}] \u00e9 posterior ao hor\u00e1rio atual [{1}] e essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.explanation=O hor\u00e1rio de emiss\u00e3o na solicita\u00e7\u00e3o no token de acesso \u00e9 posterior ao hor\u00e1rio atual. Isso n\u00e3o \u00e9 permitido.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.useraction=Certifique-se de que o token de acesso n\u00e3o seja emitido em um hor\u00e1rio futuro e/ou sincronize o hor\u00e1rio entre os sistemas.
+
+#used_by_client_project
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token de acesso que est\u00e1 na solicita\u00e7\u00e3o n\u00e3o possui a solicita\u00e7\u00e3o [{0}]. As solicita\u00e7\u00f5es necess\u00e1rias s\u00e3o [{1}].
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=O token de acesso n\u00e3o possui todas as solicita\u00e7\u00f5es necess\u00e1rias. 
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Certifique-se de que o token de acesso fornecido tenha a solicita\u00e7\u00e3o necess\u00e1ria.
+
+#used_by_client_project
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token de acesso que est\u00e1 na solicita\u00e7\u00e3o n\u00e3o pode ser usado. O hor\u00e1rio n\u00e3o anterior ("nbf") [{0}] \u00e9 posterior ao hor\u00e1rio atual [{1}] e essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+PROPAGATION_TOKEN_NBF_ERR.explanation=A solicita\u00e7\u00e3o de hor\u00e1rio n\u00e3o anterior no token de acesso \u00e9 posterior ao hor\u00e1rio atual e o tempo de execu\u00e7\u00e3o n\u00e3o pode usar o token de acesso nesse momento.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Certifique-se de que o token de acesso n\u00e3o tenha uma solicita\u00e7\u00e3o "nbf" configurada em um hor\u00e1rio futuro e/ou sincronize o hor\u00e1rio entre os sistemas ou reenvie a solicita\u00e7\u00e3o posteriormente.
+
+#used_by_client_project
+PROPAGATION_TOKEN_NOT_ACTIVE=CWWKS1720E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token de acesso que est\u00e1 na solicita\u00e7\u00e3o n\u00e3o est\u00e1 ativo. O m\u00e9todo de valida\u00e7\u00e3o \u00e9 [{0}] e a URL de terminal de valida\u00e7\u00e3o \u00e9 [{1}].
+PROPAGATION_TOKEN_NOT_ACTIVE.explanation=O token de acesso fornecido n\u00e3o est\u00e1 ativo e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com o processo de autentica\u00e7\u00e3o.
+PROPAGATION_TOKEN_NOT_ACTIVE.useraction=Certifique-se de que o token de acesso fornecido seja v\u00e1lido e, se poss\u00edvel, verifique os logs do provedor do OpenID Connector (OP) para obter mais detalhes. Al\u00e9m disso, certifique-se de que o m\u00e9todo de valida\u00e7\u00e3o especificado e a URL de terminal na configura\u00e7\u00e3o do cliente OpenID Connect estejam corretos.
+
+#used_by_client_project
+OIDC_PROPAGATION_FAIL=CWWKS1721E: O servidor de recurso recebeu um erro [{0}] enquanto estava tentando validar o token de acesso. Ele expirou ou n\u00e3o pode ser reconhecido pelo terminal de valida\u00e7\u00e3o [{1}].
+OIDC_PROPAGATION_FAIL.explanation=O token de acesso fornecido n\u00e3o pode ser validado devido \u00e0 resposta de erro do provedor OpenID Connect. 
+OIDC_PROPAGATION_FAIL.useraction=Certifique-se de que o token de propaga\u00e7\u00e3o seja v\u00e1lido e, se poss\u00edvel, verifique os logs no provedor OpenID Connect para obter mais detalhes sobre o erro.
+
+# 1722 is used in clients.common bundle, do not use here.
+
+#used_by_client_project
+PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: Ocorreu um erro invalid_client enquanto o servidor de recurso estava tentando validar o token de acesso usando o ID do cliente [{0}] e a URL de valida\u00e7\u00e3o [{1}].
+PROPAGATION_TOKEN_INVALID_CLIENTID.explanation=O token de acesso fornecido n\u00e3o pode ser verificado devido ao erro invalid_client do provedor do OpenID Connect e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com o processo de autentica\u00e7\u00e3o.
+PROPAGATION_TOKEN_INVALID_CLIENTID.useraction=Verifique se a configura\u00e7\u00e3o do cliente OpenID Connect tem o identificador de cliente que corresponde ao identificador de cliente na configura\u00e7\u00e3o do provedor do OpenID Connect e, se poss\u00edvel, verifique os logs no provedor do OpenID Connect para obter mais informa\u00e7\u00f5es.
+
+#used_by_client_project
+PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o issuerIdentifier [{0}] na configura\u00e7\u00e3o n\u00e3o cont\u00e9m a solicita\u00e7\u00e3o "iss" [{1}] no token de acesso.
+PROPAGATION_TOKEN_ISS_ERROR.explanation=O token de acesso fornecido n\u00e3o pode ser verificado porque a solicita\u00e7\u00e3o "iss" no token de acesso n\u00e3o corresponde ao atributo de configura\u00e7\u00e3o issuerIdentifier e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com o processo de autentica\u00e7\u00e3o.
+PROPAGATION_TOKEN_ISS_ERROR.useraction=Verifique se a configura\u00e7\u00e3o do cliente OpenID Connect tem o issuerIdentifier que cont\u00e9m a solicita\u00e7\u00e3o "iss" no token de acesso. 
+
+#used_by_client_project
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: O servidor de recurso falhou ao validar o token de acesso porque validationEndpointUrl [{0}] n\u00e3o era uma URL v\u00e1lida ou n\u00e3o p\u00f4de executar a valida\u00e7\u00e3o.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL.explanation=O token de acesso fornecido n\u00e3o pode ser validado porque o validationEndpointUrl especificado na configura\u00e7\u00e3o do cliente OpenID Connect \u00e9 inv\u00e1lido e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com o processo de autentica\u00e7\u00e3o.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Certifique-se de especificar um valor v\u00e1lido para o atributo validationEndpointUrl na configura\u00e7\u00e3o do cliente OpenID Connect.
+
+#used_by_client_project
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: O servidor de recurso reprovou a solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque a solicita\u00e7\u00e3o n\u00e3o tem um token de propaga\u00e7\u00e3o necess\u00e1rio, como por exemplo, um token de acesso ou um token jwt.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=A solicita\u00e7\u00e3o deve conter um token de propaga\u00e7\u00e3o necess\u00e1rio, como por exemplo, um token de acesso ou um token jwt, para que o servidor de recurso possa processar a autentica\u00e7\u00e3o e a propaga\u00e7\u00e3o do token.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Certifique-se de que a solicita\u00e7\u00e3o tenha um token de propaga\u00e7\u00e3o v\u00e1lido.
+
+# USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token de acesso n\u00e3o pode ser validado devido a um erro [{0}]. O m\u00e9todo de valida\u00e7\u00e3o \u00e9 [{1}] e a URL de terminal de valida\u00e7\u00e3o \u00e9 [{2}].
+PROPAGATION_TOKEN_INTERNAL_ERR.explanation=O token de acesso fornecido n\u00e3o pode ser validado devido a um erro interno e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com o processo de autentica\u00e7\u00e3o. 
+PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Verifique se h\u00e1 outros erros registrados nos logs do servidor de recurso antes desse.
+
+
+# USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR=CWWKS1728E: The resource server failed the authentication request because the issuerIdentifier [{0}] in the configuration does not match the "iss" claim [{1}] in the UserInfo.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR.explanation=The provided access token cannot be verified because the "iss" claim in the UserInfo does not match the issuerIdentifier configuration attribute, and the runtime cannot continue with the authentication process.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
+
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o m\u00e9todo de valida\u00e7\u00e3o [{0}] n\u00e3o era apropriado para a URL do terminal de valida\u00e7\u00e3o [{1}].
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=O validationEndpointUrl especificado na configura\u00e7\u00e3o do cliente OpenID Connect n\u00e3o \u00e9 o terminal apropriado para o validationMethod especificado.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Atualize a configura\u00e7\u00e3o do cliente OpenID Connect mudando o validationMethod ou o validationEndpointUrl.
+ 
+# 1730 used in clients.common, don't use here.
+
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token de acesso n\u00e3o cont\u00e9m a solicita\u00e7\u00e3o [{0}] especificada pelo atributo [{1}].
+PROPAGATION_TOKEN_MISSING_REALM.explanation=O token de acesso fornecido n\u00e3o cont\u00e9m a solicita\u00e7\u00e3o especificada para identificar a regi\u00e3o e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com o processo de autentica\u00e7\u00e3o.
+PROPAGATION_TOKEN_MISSING_REALM.useraction=Execute um dos seguintes procedimentos. 1) Verifique se a configura\u00e7\u00e3o do cliente OpenID Connect especifica o atributo realmName 2) Verifique se o provedor do OpenID Connect (OP) emite o token de acesso com a solicita\u00e7\u00e3o especificada 3) Verifique se o OP pode emitir o token de acesso com a solicita\u00e7\u00e3o "iss". 
+
+# do not translate the quoted "required"
+#used_by_client_project
+BAD_INBOUND_PRPAGATION_REQUIRED=CWWKS1732E: A configura\u00e7\u00e3o do cliente OpenID Connect [{0}] est\u00e1 desativada porque o valor de validationEndpointUrl [{1}] n\u00e3o \u00e9 v\u00e1lido e inboundPropagation \u00e9 "required".
+BAD_INBOUND_PRPAGATION_REQUIRED.explanation=O cliente OpenID Connect indicado configurou inboundPropagation como "required", mas o validationEndpointUrl configurado n\u00e3o era v\u00e1lido. O validationEndpointUrl deve ser configurado para um URI v\u00e1lido usando o esquema de URI http ou https. O cliente OpenID Connect que age como um servidor de recurso n\u00e3o ser\u00e1 capaz de processar quaisquer solicita\u00e7\u00f5es.
+BAD_INBOUND_PRPAGATION_REQUIRED.useraction=Certifique-se de que a configura\u00e7\u00e3o do cliente OpenID Connect tenha especificado um validationEndpointUrl n\u00e3o vazio que usa o esquema de URI http ou https.
+
+# do not translate the quoted "supported" and "none"
+#used_by_client_project
+BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: O validationEndpointUrl [{0}] n\u00e3o \u00e9 v\u00e1lido, mas o atributo inboundPropagation est\u00e1 configurado como "supported". Para suportar a propaga\u00e7\u00e3o de entrada, um validationEndpointUrl v\u00e1lido deve ser especificado, portanto, o cliente OpenID Connect [{1}] se comportar\u00e1 como se seu valor de inboundPropagation fosse "none".
+BAD_INBOUND_PRPAGATION_SUPPORTED.explanation=O validationEndpointUrl especificado na configura\u00e7\u00e3o do cliente OpenID Connect indicado n\u00e3o era v\u00e1lido. Um validationEndpointUrl adequado \u00e9 necess\u00e1rio para suportar a propaga\u00e7\u00e3o de entrada. O valor de validationEndpointUrl deve ser n\u00e3o vazio e deve usar o esquema de URI http ou https. O cliente OpenID Connect se comportar\u00e1 como se seu inboundPropagation fosse "none".
+BAD_INBOUND_PRPAGATION_SUPPORTED.useraction=Certifique-se de que a configura\u00e7\u00e3o do cliente OpenID Connect tenha especificado um validationEndpointUrl n\u00e3o vazio que usa o esquema de URI http ou https. 
+
+#1734 used by clients.common bundle, don't use here. 
+
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: O servidor de recurso reprovou a solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque a resposta do terminal de valida\u00e7\u00e3o [{0}] tem a solicita\u00e7\u00e3o de [{1}], mas o atributo [{2}] est\u00e1 configurado como true.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Como a configura\u00e7\u00e3o do cliente do OpenID Connect especifica "disableIssChecking", o servidor de recurso espera a resposta do JSON a partir do terminal de valida\u00e7\u00e3o para n\u00e3o precisar da solicita\u00e7\u00e3o de "iss".  
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Execute um dos seguintes procedimentos. 1)Atualize a configura\u00e7\u00e3o do cliente do OpenID Connect e configure o "disableIssChecking" como "false" 2) Fa\u00e7a com que o terminal de valida\u00e7\u00e3o n\u00e3o emita a solicita\u00e7\u00e3o de "iss".
+
+# Do not translate "JSON Web Token"
+#0=Java runtime level, 1=Minimum Java level required by JWT library
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_JWT_JDK7=CWWKS1736E: A vers\u00e3o de Java usada por esse tempo de execu\u00e7\u00e3o [{0}] n\u00e3o \u00e9 suportada pela biblioteca JSON Web Token. A vers\u00e3o de Java suportada \u00e9 [{1}] ou superior.
+OIDC_CLIENT_JWT_JDK7.explanation=As bibliotecas de software livre para processar JSON Web Tokens n\u00e3o suportam a vers\u00e3o de Java que o servidor Liberty est\u00e1 usando atualmente.
+OIDC_CLIENT_JWT_JDK7.useraction=Instale uma vers\u00e3o de Java que esteja no mesmo ou em um n\u00edvel de Java superior ao mostrado na mensagem.
+
+#1737 used in clients.common bundle, do not use here.
+#1738 is unused.
+
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+#0=signatureAlgorithm, 1=exception or error message if any
+#used_by_client_project and clients project
+OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Uma chave de assinatura requerida pelo algoritmo de assinatura [{0}] n\u00e3o estava dispon\u00edvel. {1}
+OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Uma chave de assinatura n\u00e3o p\u00f4de ser localizada, ou uma chave que usa o algoritmo de assinatura configurado n\u00e3o p\u00f4de ser localizada. Isso pode ter ocorrido devido a informa\u00e7\u00f5es ausentes, malformadas ou imprecisas na configura\u00e7\u00e3o do cliente ou no token.
+OIDC_CLIENT_NO_VERIFYING_KEY.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Se estiver usando o JWK para assinar e validar tokens, certifique-se de que o atributo jwkEndpointUrl esteja configurado corretamente e as solicita\u00e7\u00f5es de JWT e JWK estejam corretas. 2) Se estiver usando certificados X.509 para assinar e validar tokens, certifique-se de que os atributos signatureAlgorithm, trustStoreRef e trustStoreAlias estejam configurados corretamente. 3) Se estiver usando chaves compartilhadas para assinar e validar tokens, certifique-se de que os atributos clientId e clientSecret estejam configurados corretamente.
+
+#0=More specific error message, 1=clientId
+#used_by_client_project
+OIDC_CLIENT_BAD_RS_TOKEN=CWWKS1740W: O token de propaga\u00e7\u00e3o de entrada para o cliente [{1}] n\u00e3o \u00e9 v\u00e1lido devido a [{0}]. A solicita\u00e7\u00e3o ser\u00e1 autenticada usando o OpenID Connect.
+OIDC_CLIENT_BAD_RS_TOKEN.explanation=O token n\u00e3o pode ser verificado para a solicita\u00e7\u00e3o de propaga\u00e7\u00e3o de entrada. Este cliente continuar\u00e1 tentando a autentica\u00e7\u00e3o usando o OpenID Connect.
+OIDC_CLIENT_BAD_RS_TOKEN.useraction=Se a falha for esperada, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Caso contr\u00e1rio, certifique-se de que o ambiente de propaga\u00e7\u00e3o de entrada seja configurado corretamente.
+
+# Do not translate "signatureAlgorithm"
+#0=OIDC client ID, 1="none"
+#used_by_client_project
+OIDC_CLIENT_NONE_ALG=CWWKS1741W: O signatureAlgorithm do cliente OpenID Connect [{0}] est\u00e1 configurado como [{1}].
+OIDC_CLIENT_NONE_ALG.explanation=Como o signatureAlgorithm est\u00e1 configurado como "none", \u00e9 esperado um token n\u00e3o assinado, o que n\u00e3o \u00e9 um caso de uso comum.
+OIDC_CLIENT_NONE_ALG.useraction=Se n\u00e3o for esperado que os tokens de entrada sejam assinados, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Caso contr\u00e1rio, selecione um signatureAlgorithm suportado, como RS256 ou HS256.
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# CWWKS1742E
+#JWK_RETRIVE_FAILED=CWWKS1742E: Cannot get the Json Web Key(JWK) from the URL [{0}]. Response status [{1}]. Message:[{2}] 
+
+
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# do not translate WASOidcCode
+# 0: the content of WASOidcCode, 1: client ID
+#used_by_client_project and clients project
+OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: O cookie WASOidcCode [{0}] na solicita\u00e7\u00e3o para o cliente OpenID Connect [{1}] n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
+OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=O cliente OpenID Connect (relying party ou RP) recebeu um cookie WASOidcCode que n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
+OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Verifique se o cookie n\u00e3o foi modificado e se o conte\u00fado decodificado do cookie come\u00e7a com um objeto JSON formatado corretamente.
+
+#1746, 1747  used in clients.common, do not use here. 
+
+# do not translate GET
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: Uma solicita\u00e7\u00e3o GET para [{0}] n\u00e3o \u00e9 v\u00e1lida. Um c\u00f3digo de resposta 500 ser\u00e1 retornado.
+OIDC_CLIENT_BAD_GET_REQUEST.explanation=Foi recebida uma solicita\u00e7\u00e3o que n\u00e3o correspondeu a uma URL esperada ou n\u00e3o continha os par\u00e2metros necess\u00e1rios.
+OIDC_CLIENT_BAD_GET_REQUEST.useraction=Verifique a configura\u00e7\u00e3o do provedor OpenID Connect. Esta mensagem tamb\u00e9m pode ser causada pela espionagem com um navegador. 
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: Uma solicita\u00e7\u00e3o para [{0}] n\u00e3o \u00e9 v\u00e1lida. O par\u00e2metro de estado necess\u00e1rio est\u00e1 ausente. Um c\u00f3digo de resposta 500 ser\u00e1 retornado.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=Foi recebida uma solicita\u00e7\u00e3o que n\u00e3o incluiu um par\u00e2metro de estado necess\u00e1rio.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifique a configura\u00e7\u00e3o do provedor OpenID Connect. Esta mensagem tamb\u00e9m pode ser causada pela espionagem com um navegador. 
+
+# STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
+
+# do not translate hostname 
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Uma solicita\u00e7\u00e3o para [{0}] n\u00e3o \u00e9 v\u00e1lida. Um cookie necess\u00e1rio cujo nome come\u00e7a com WASReqURLOidc est\u00e1 ausente. O nome do host usado para acessar o cliente pode n\u00e3o corresponder ao nome registrado no provedor. Um c\u00f3digo de resposta 500 ser\u00e1 retornado.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Foi recebida uma solicita\u00e7\u00e3o que n\u00e3o incluiu um cookie necess\u00e1rio.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifique as configura\u00e7\u00f5es de provedor e de cliente do OpenID Connect. A aus\u00eancia do cookie pode ser causada por acessar o cliente com um nome de host que difere do nome do host do redirecionamento que est\u00e1 registrado com o provedor.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: A configura\u00e7\u00e3o [{2}] do cliente do OpenId Connect (parte respons\u00e1vel ou RP) especifica a URL do endpoint de descoberta [{0}] e os outros terminais. O RP usar\u00e1 as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta e ignorar\u00e1 os outros terminais configurados [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=O cliente do OpenId Connect usa o terminal de descoberta para entrar em contato com o provedor e usa as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta para entrar em contato com os outros terminais, como autoriza\u00e7\u00e3o, token e userinfo.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configure o terminal de descoberta ou os outros terminais, como autoriza\u00e7\u00e3o, token e userinfo, mas n\u00e3o configure ambos.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: A configura\u00e7\u00e3o [{2}] do cliente do OpenId Connect (parte respons\u00e1vel ou RP) especifica a URL do endpoint de descoberta [{0}] e o identificador do emissor [{1}]. O RP usar\u00e1 as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta e ignorar\u00e1 o identificador do emissor configurado.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=O cliente do OpenId Connect usa o terminal de descoberta para entrar com contato com o provedor e usa as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configure o terminal de descoberta ou o identificador de emissor, mas n\u00e3o configure ambos.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: A configura\u00e7\u00e3o [{3}] do cliente do OpenId Connect (parte respons\u00e1vel ou RP) especifica [{0}], um valor padr\u00e3o para [{1}], que \u00e9 alterado para [{2}] como resultado da descoberta.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Se o provedor OpenID Connect n\u00e3o suportar os padr\u00f5es RP, dependendo da capacidade do RP, os padr\u00f5es podem ser ajustados ao que o OP suporta.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: O cliente [{0}] do OpenID Connect falhou ao obter informa\u00e7\u00f5es do terminal do provedor OpenID Connect por meio da URL [{1}] do endpoint de descoberta. Atualize a configura\u00e7\u00e3o do cliente do OpenID Connect com a URL correta do endpoint de descoberta HTTPS. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=O cliente do OpenID Connect est\u00e1 configurado para descobrir os terminais do provedor OpenID Connect por meio da URL de descoberta, mas o processo de descoberta falhou. O cliente do OpenID Connect n\u00e3o poder\u00e1 processar as solicita\u00e7\u00f5es de autentica\u00e7\u00e3o at\u00e9 que a configura\u00e7\u00e3o do discoveryEndpointURL seja corrigida ou a descoberta seja bem-sucedida.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrija a configura\u00e7\u00e3o do cliente do OpenID Connect para garantir que 1) a URL do terminal de descoberta se refira ao provedor correto do OpenID Connect; 2) a URL do terminal de descoberta seja HTTPS e 3) os elementos SSL de recurso e de keystore estejam configurados corretamente com confian\u00e7a para o provedor OpenID Connect. Certifique-se de que o terminal de descoberta do provedor OpenID Connect esteja funcionando.
+
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Uma resposta bem-sucedida n\u00e3o foi retornada da URL [{0}]. Esse \u00e9 o status da resposta [{1}] e o erro [{2}] da solicita\u00e7\u00e3o de descoberta.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=O cliente do OpenID Connect falhou ao acessar o terminal de descoberta do provedor OpenID Connect e a mensagem pode conter mais informa\u00e7\u00f5es sobre o erro.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Certifique-se de que o provedor OpenID Connect esteja dispon\u00edvel e de que o terminal de descoberta especificado esteja correto.
+
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: A configura\u00e7\u00e3o do cliente OpenID Connect [{0}] foi estabelecida com as informa\u00e7\u00f5es da URL do endpoint de descoberta [{1}]. Essas informa\u00e7\u00f5es permitem que o cliente interaja com o provedor OpenID Connect para processar as solicita\u00e7\u00f5es como autoriza\u00e7\u00e3o e token.
+OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=O cliente do OpenID Connect entra em contato com o endpoint de descoberta do provedor OpenID Connect para obter as informa\u00e7\u00f5es, como authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl e jwkEndpointUrl. Essas informa\u00e7\u00f5es permitem que o cliente OpenID Connect interaja com o provedor do OpenID Connect para enviar solicita\u00e7\u00f5es de autoriza\u00e7\u00e3o, token, jwk, informa\u00e7\u00f5es do usu\u00e1rio.
+OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS1527I: A configura\u00e7\u00e3o do cliente OpenID Connect [{0}] foi atualizada com as novas informa\u00e7\u00f5es recebidas da URL do endpoint de descoberta [{1}].
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=O cliente do OpenID Connect entra em contato com o terminal de descoberta do provedor OpenID Connect, 1) se houver um problema ao entrar em contato com os terminais de autoriza\u00e7\u00e3o ou de token do provedor OpenID Connect 2) se o hor\u00e1rio atual for posterior ao pr\u00f3ximo hor\u00e1rio de descoberta. O pr\u00f3ximo tempo de descoberta \u00e9 calculado incluindo o valor discoveryPollingRate no hor\u00e1rio atual ap\u00f3s cada chamada de descoberta.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: A configura\u00e7\u00e3o do cliente OpenID Connect [{0}] \u00e9 consistente com as informa\u00e7\u00f5es da URL do endpoint de descoberta [{1}], portanto, nenhuma atualiza\u00e7\u00e3o de configura\u00e7\u00e3o \u00e9 necess\u00e1ria.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=O cliente do OpenID Connect entra em contato com o terminal de descoberta do provedor OpenID Connect, 1) se houver um problema ao entrar em contato com os terminais de autoriza\u00e7\u00e3o ou de token do provedor OpenID Connect 2) se o hor\u00e1rio atual for posterior ao pr\u00f3ximo hor\u00e1rio de descoberta. O pr\u00f3ximo tempo de descoberta \u00e9 calculado incluindo o valor discoveryPollingRate no hor\u00e1rio atual ap\u00f3s cada chamada de descoberta. Se as informa\u00e7\u00f5es de descoberta mais recentes corresponderem \u00e0s anteriores, nenhuma atualiza\u00e7\u00e3o de configura\u00e7\u00e3o ocorrer\u00e1.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: O atributo de configura\u00e7\u00e3o [{0}] necess\u00e1rio est\u00e1 ausente ou vazio e um valor padr\u00e3o n\u00e3o foi fornecido. Verifique se o atributo est\u00e1 configurado ou descoberto a partir do provedor, se ele n\u00e3o est\u00e1 vazio e se ele n\u00e3o consiste somente em caracteres de espa\u00e7o em branco.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=O atributo de configura\u00e7\u00e3o especificado pode estar ausente da configura\u00e7\u00e3o do servidor. Se um valor for especificado, o espa\u00e7o em branco no in\u00edcio e no t\u00e9rmino do valor ser\u00e1 removido quando o valor for processado, portanto o valor na configura\u00e7\u00e3o poder\u00e1 estar vazio ou consistir somente em caracteres de espa\u00e7o em branco. Se o endpoint de descoberta for especificado para obter esse valor de atributo a partir do provedor, a descoberta poder\u00e1 ter um problema.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Assegure-se de que o atributo de configura\u00e7\u00e3o especificado esteja configurado, que ele n\u00e3o esteja vazio e que ele n\u00e3o consista somente em caracteres de espa\u00e7o em branco. Se o endpoint de descoberta foi configurado para obter essas informa\u00e7\u00f5es, certifique-se de que n\u00e3o haja erros com a solicita\u00e7\u00e3o de descoberta.
+ 
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

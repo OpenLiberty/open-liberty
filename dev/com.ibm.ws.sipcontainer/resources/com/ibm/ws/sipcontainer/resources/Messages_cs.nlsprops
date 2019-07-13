@@ -1,0 +1,928 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
+#COMPONENTPREFIX CWSCT
+#COMPONENTNAMEFOR CWSCT WebSphere SIP Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+
+info.container.initialized=CWSCT0001I: Inicializace kontejneru SIP byla dokon\u010dena.
+info.container.initialized.explanation=Kontejner SIP com.ibm.ws.sip.container je funk\u010dn\u00ed a p\u0159ipraven na p\u0159\u00edjem zpr\u00e1v ze s\u00edt\u011b.
+info.container.initialized.useraction=Tato zpr\u00e1va je informa\u010dn\u00ed. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+info.container.version=CWSCT0002I: Kontejner SIP {0}
+info.container.version.explanation=\u010d\u00edslo verze komponenty kontejneru SIP.
+info.container.version.useraction=Tato zpr\u00e1va je informa\u010dn\u00ed. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+warning.mean.disabled=CWSCT0003W: Objekt MBean kontejneru SIP nelze spustit.
+warning.mean.disabled.explanation=Objekt MBean kontejneru SIP nelze spustit. Operace JMX nebudou pro kontejner SIP k dispozici.
+warning.mean.disabled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception=CWSCT0004E: Do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce:
+error.exception.explanation=V kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka.
+error.exception.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.failover.started=CWSCT0006I: P\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed bylo zah\u00e1jeno. Po\u010det p\u0159ijat\u00fdch objekt\u016f {0} pro logick\u00fd n\u00e1zev {1}.
+info.failover.started.explanation=Jeden ze server\u016f v klastru byl ukon\u010den a n\u011bkter\u00e9 z jeho logick\u00fdch n\u00e1zv\u016f byly p\u0159eneseny na tento server. Objekty relace p\u0159idru\u017een\u00e9 k t\u011bmto logick\u00fdm n\u00e1zv\u016fm se nyn\u00ed na tomto serveru aktivuj\u00ed.
+info.failover.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.failover.ended=CWSCT0008I: P\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed pro logick\u00fd n\u00e1zev {0} skon\u010dilo.
+info.failover.ended.explanation=Byla dokon\u010dena aktivace objekt\u016f relac\u00ed, kter\u00e9 jsou p\u0159idru\u017eeny k logick\u00e9mu n\u00e1zvu. Ve zpr\u00e1v\u011b \u201eP\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed bylo zah\u00e1jeno\u201c naleznete logick\u00fd n\u00e1zev a po\u010det objekt\u016f.
+info.failover.ended.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.parser.configuration=CWSCT0010E: Chyba p\u0159i konfiguraci analyz\u00e1toru sip.xml
+error.parser.configuration.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o inicializaci analyz\u00e1toru XML. To neindikuje chybu v dokumentu sip.xml.
+error.parser.configuration.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.parser.not.available=CWSCT0011E: Analyz\u00e1tor nen\u00ed k dispozici; nelze na\u010d\u00edst konfiguraci aplikace.
+error.parser.not.available.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee na\u010d\u00edst aplikaci ze souboru sip.xml, proto\u017ee neexistuje \u017e\u00e1dn\u00fd analyz\u00e1tor XML.
+error.parser.not.available.useraction=Vyhledejte v protokolu d\u0159\u00edv\u011bj\u0161\u00ed chybovou zpr\u00e1vu s ozna\u010den\u00edm \u201eChyba p\u0159i konfiguraci analyz\u00e1toru sip.xml\u201c.
+
+error.parse.exception=CWSCT0012E: V\u00fdjimka p\u0159i anal\u00fdze; nezda\u0159ila se anal\u00fdza souboru sip.xml {0}.
+error.parse.exception.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee na\u010d\u00edst aplikaci ze souboru sip.xml kv\u016fli chyb\u011b v dokumentu sip.xml.
+error.parse.exception.useraction=Vyhledejte chyby v souboru sip.xml. Informace o standardn\u00edm form\u00e1tu sip.xml lze naj\u00edt v kapitol\u00e1ch 11 (Mapov\u00e1n\u00ed po\u017eadavk\u016f k servlet\u016fm) a 15 (Deskriptor implementace) t\u00fdkaj\u00edc\u00edch se prost\u0159ed\u00ed JSR 116 (rozhran\u00ed API servletu SIP).
+
+error.listener.not.found=CWSCT0013E: T\u0159\u00edda modulu listener {0} nebyla pro aplikaci {1} nalezena.
+error.listener.not.found.explanation=Zavad\u011b\u010d t\u0159\u00edd nenalezl t\u0159\u00eddu modulu listener.
+error.listener.not.found.useraction=Zkontrolujte soubor sip.xml a ov\u011b\u0159te spr\u00e1vnost n\u00e1zvu t\u0159\u00eddy modulu listener. Ov\u011b\u0159te, \u017ee je t\u0159\u00edda modulu listener uvedena v seznamu cest ke t\u0159\u00edd\u00e1m.
+
+error.init.listener.failed=CWSCT0014E: T\u0159\u00eddu modulu listener {0} pro aplikaci {1} se nezda\u0159ilo vytvo\u0159it.
+error.init.listener.failed.explanation=Kontejner SIP com.ibm.ws.sip.container nemohl vytvo\u0159it instanci t\u0159\u00eddy modulu listener.
+error.init.listener.failed.useraction=Zkontrolujte soubor sip.xml a ov\u011b\u0159te spr\u00e1vnost n\u00e1zvu t\u0159\u00eddy modulu listener. Zajist\u011bte, aby t\u0159\u00edda modulu listener obsahovala ve\u0159ejn\u00fd konstruktor neo\u010dek\u00e1vaj\u00edc\u00ed \u017e\u00e1dn\u00e9 argumenty.
+
+error.too.many.timer.listeners=CWSCT0015E: Neplatn\u00fd soubor XML - k aplikaci {0} byl p\u0159i\u0159azen v\u00edce ne\u017e jeden modul listener \u010dasova\u010de.
+error.too.many.timer.listeners.explanation=Dokument sip.xml definuje pro stejnou aplikaci v\u00edce ne\u017e jeden modul TimerListener.
+error.too.many.timer.listeners.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby pro aplikaci existovala pouze jedna t\u0159\u00edda modulu TimerListener.
+
+error.parsing.session.ttl=CWSCT0016E: Chyba p\u0159i anal\u00fdze hodnoty TTL relace u aplikace SIP: {0}.
+error.parsing.session.ttl.explanation=Dokument sip.xml neobsahuje platnou hodnotu \u010dasov\u00e9ho limitu relace aplikace.
+error.parsing.session.ttl.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby nastaven\u00ed \u010dasov\u00e9ho limitu relace bylo vyj\u00e1d\u0159eno cel\u00fdm \u010d\u00edslem p\u0159edstavuj\u00edc\u00edm po\u010det minut.
+
+error.mapping.to.nonexisting.siplet=CWSCT0017E: Mapov\u00e1n\u00ed pro neexistuj\u00edc\u00ed siplet: {0}, aplikace: {1}.
+error.mapping.to.nonexisting.siplet.explanation=Dokument sip.xml obsahuje mapov\u00e1n\u00ed servletu pro nedefinovan\u00fd servlet.
+error.mapping.to.nonexisting.siplet.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby v\u0161echny zna\u010dky n\u00e1zvu servletu v r\u00e1mci mapov\u00e1n\u00ed servletu odpov\u00eddaly existuj\u00edc\u00edmu servletu a aby pro mapov\u00e1n\u00ed servletu existovala definice vzoru.
+
+error.invalid.condition.type=CWSCT0018E: Neplatn\u00fd typ podm\u00ednky v souboru sip.xml: {0}.
+error.invalid.condition.type.explanation=Dokument sip.xml neobsahuje platn\u00fd typ podm\u00ednky v\u00fdb\u011bru servletu.
+error.invalid.condition.type.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby pravidla pro p\u0159i\u0159azen\u00ed byla v souladu s kapitolou 11.3 (Podm\u00ednky) t\u00fdkaj\u00edc\u00ed se prost\u0159ed\u00ed JSR 116 (rozhran\u00ed API servletu SIP).
+
+error.parsing.condition=CWSCT0019E: Chyba p\u0159i anal\u00fdze podm\u00ednky {0}, prom\u011bnn\u00e1: {1}\t, hodnota: {2}.
+error.parsing.condition.explanation=Dokument sip.xml neobsahuje platn\u00e9 pravidlo v\u00fdb\u011bru servletu.
+error.parsing.condition.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby pravidla pro p\u0159i\u0159azen\u00ed byla v souladu s kapitolou 11 (Mapov\u00e1n\u00ed po\u017eadavk\u016f k servlet\u016fm) t\u00fdkaj\u00edc\u00ed se prost\u0159ed\u00ed JSR 116 (rozhran\u00ed API servletu SIP).
+
+error.parsing.and.condition=CWSCT0020E: Chyba p\u0159i anal\u00fdze podm\u00ednky AND; d\u00edl\u010d\u00ed prvky nebyly nalezeny.
+error.parsing.and.condition.explanation=Dokument sip.xml obsahuje podm\u00ednku AND bez d\u00edl\u010d\u00edch prvk\u016f.
+error.parsing.and.condition.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby se pod zna\u010dkou AND vyskytovala pravidla pro p\u0159i\u0159azen\u00ed.
+
+error.parsing.sip.app=CWSCT0021E: Chyba v definici XML pro sekci sip-app.
+error.parsing.sip.app.explanation=Dokument sip.xml neobsahuje \u017e\u00e1dnou sekci sip-app nebo v\u00edce t\u011bchto sekc\u00ed. M\u016f\u017ee existovat jen jedna.
+error.parsing.sip.app.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby existovala pr\u00e1v\u011b jedna sekce sip-app.
+
+error.local.sip.dtd.not.found=CWSCT0022E: Chyba - lok\u00e1ln\u00ed dokument DTD aplikace SIP nebyl nalezen.
+error.local.sip.dtd.not.found.explanation=Neexistuje lok\u00e1ln\u00ed definice /javax/servlet/sip/sip-app_1_0.dtd.
+error.local.sip.dtd.not.found.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.server.overload.cleared=CWSCT0023I: Server ji\u017e nen\u00ed p\u0159et\u00ed\u017een. Faktor z\u00e1t\u011b\u017ee byl sn\u00ed\u017een na {0}.
+info.server.overload.cleared.explanation=Kontejner SIP com.ibm.ws.sip.container ji\u017e nen\u00ed pova\u017eov\u00e1n za p\u0159et\u00ed\u017een\u00fd a je nyn\u00ed p\u0159ipraven ke zpracov\u00e1n\u00ed nov\u00fdch relac\u00ed.
+info.server.overload.cleared.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.create.stack=CWSCT0025E: Nezda\u0159ilo se vytvo\u0159it z\u00e1sobn\u00edk SIP.
+error.failed.create.stack.explanation=Intern\u00ed z\u00e1sobn\u00edk SIP se nezda\u0159ilo inicializovat.
+error.failed.create.stack.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sip.stack.exception=CWSCT0026E: V\u00fdjimka v z\u00e1sobn\u00edku SIP.
+error.sip.stack.exception.explanation=Ve vrstv\u011b z\u00e1sobn\u00edku SIP byla zachycena v\u00fdjimka. Z\u00e1sobn\u00edk se pokus\u00ed pokra\u010dovat v norm\u00e1ln\u00edm b\u011bhu.
+error.sip.stack.exception.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.listening.point=CWSCT0028I: Bod naslouch\u00e1n\u00ed kontejneru SIP {0}:{1}/{2}
+info.listening.point.explanation=Jedn\u00e1 se o informa\u010dn\u00ed zpr\u00e1vu vyti\u0161t\u011bnou pro ka\u017edou adresu hostitele, \u010d\u00edslo portu a p\u0159enosov\u00fd protokol, kter\u00e9mu kontejner SIP com.ibm.ws.sip.container naslouch\u00e1, pro p\u0159\u00edchoz\u00ed p\u0159enos SIP.
+info.listening.point.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.forward.response=CWSCT0029E: U kontejneru SIP se nezda\u0159ilo p\u0159ed\u00e1n\u00ed; po\u017eadavek na odpov\u011b\u010f je {0}.
+error.forward.response.explanation=Kontejneru SIP com.ibm.ws.sip.container ne nezda\u0159ilo p\u0159edat zpr\u00e1vu SIP.
+error.forward.response.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.proxying.to.branch=CWSCT0030E: Kontejneru SIP se nezda\u0159ilo \u00fa\u010dinkovat jako z\u00e1stupce ve v\u011btvi; identifik\u00e1tor URI je {0}.
+error.proxying.to.branch.explanation=Kontejneru SIP com.ibm.ws.sip.container v roli z\u00e1stupce se nezda\u0159ilo p\u0159edat po\u017eadavek do jednoho z m\u00edst ur\u010den\u00ed.
+error.proxying.to.branch.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.create.record.route.uri=CWSCT0031E: Kontejneru SIP se nezda\u0159ilo vytvo\u0159it trasu z\u00e1znamu {0}.
+error.create.record.route.uri.explanation=Kontejneru SIP com.ibm.ws.sip.container v roli z\u00e1stupce se nezda\u0159ilo vytvo\u0159it z\u00e1hlav\u00ed trasy z\u00e1znamu.
+error.create.record.route.uri.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.proxy.set.parallel.illegal.state=CWSCT0032E: Kontejner SIP nem\u016f\u017ee zm\u011bnit z\u00e1stupce na paraleln\u00edho po vol\u00e1n\u00ed proxyTo.
+error.proxy.set.parallel.illegal.state.explanation=K\u00f3d servletu SIP volal funkci Proxy.setParallel() po vol\u00e1n\u00ed funkce Proxy.proxyTo().
+error.proxy.set.parallel.illegal.state.useraction=Zm\u011b\u0148te k\u00f3d aplikace tak, aby funkce Proxy.setParallel() nebyla vol\u00e1na po funkci Proxy.proxyTo().
+
+error.proxy.set.recourse.illegal.state=CWSCT0033E: Kontejner SIP nem\u016f\u017ee prov\u00e9st rekurzi u bezstavov\u00e9ho z\u00e1stupce.
+error.proxy.set.recourse.illegal.state.explanation=K\u00f3d servletu SIP volal funkci Proxy.setRecurse() u bezstavov\u00e9ho z\u00e1stupce.
+error.proxy.set.recourse.illegal.state.useraction=Zm\u011b\u0148te k\u00f3d aplikace tak, aby nevolal funkci Proxy.setRecurse() u bezstavov\u00e9ho z\u00e1stupce.
+
+error.proxy.set.stateful.illegal.state=CWSCT0034E: Kontejner SIP nem\u016f\u017ee zm\u011bnit z\u00e1stupce na stavov\u00e9ho po vol\u00e1n\u00ed proxyTo.
+error.proxy.set.stateful.illegal.state.explanation=K\u00f3d servletu SIP volal funkci Proxy.setStateful() po vol\u00e1n\u00ed funkce Proxy.proxyTo().
+error.proxy.set.stateful.illegal.state.useraction=Zm\u011b\u0148te k\u00f3d aplikace tak, aby funkce Proxy.setStateful() nebyla vol\u00e1na po funkci Proxy.proxyTo().
+
+error.proxy.cancel.request=CWSCT0035E: U kontejneru SIP se nezda\u0159il v z\u00e1stupci po\u017eadavek na zru\u0161en\u00ed; po\u017eadavek na zru\u0161en\u00ed: {0}.
+error.proxy.cancel.request.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odeslat po\u017eadavek CANCEL.
+error.proxy.cancel.request.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sending.response.upstream=CWSCT0036E: Kontejneru SIP se nezda\u0159ilo odeslat odpov\u011b\u010f opa\u010dn\u00fdm sm\u011brem; odpov\u011b\u010f: {0}.
+error.sending.response.upstream.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odeslat odpov\u011b\u010f opa\u010dn\u00fdm sm\u011brem (opa\u010dn\u00fdm sm\u011brem se rozum\u00ed sm\u011br, ve kter\u00e9m odpov\u011bd\u00ed sm\u011bruj\u00ed z bodu UAS zp\u011bt do bodu UAC).
+error.sending.response.upstream.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.proxy.set.recordroute.illegal.state=CWSCT0037E: Kontejner SIP nem\u016f\u017ee nastavit trasu z\u00e1znamu po vol\u00e1n\u00ed proxyTo.
+error.proxy.set.recordroute.illegal.state.explanation=K\u00f3d servletu SIP volal funkci Proxy.setRecordRoute() po vol\u00e1n\u00ed funkce Proxy.proxyTo().
+error.proxy.set.recordroute.illegal.state.useraction=Zm\u011b\u0148te k\u00f3d aplikace tak, aby funkce Proxy.setRecordRoute() nebyla vol\u00e1na po funkci Proxy.proxyTo().
+
+error.create.request=CWSCT0040E: Kontejneru SIP se nezda\u0159ilo vytvo\u0159it po\u017eadavek; po\u017eadavek: {0}.
+error.create.request.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo vytvo\u0159it zpr\u00e1vu po\u017eadavku SIP.
+error.create.request.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.parse.route.header=CWSCT0041E: Nezda\u0159ilo se z\u00edskat z\u00e1hlav\u00ed trasy.
+error.failed.parse.route.header.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed trasy v po\u017eadavku.
+error.failed.parse.route.header.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.resolving.inet.address=CWSCT0042E: P\u0159eklad internetov\u00e9 adresy  se nezda\u0159il.
+error.resolving.inet.address.explanation=Internetovou adresu se nezda\u0159ilo p\u0159elo\u017eit z n\u00e1zvu hostitele na adresu IP.
+error.resolving.inet.address.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.proxy.set.recordroute.non.dialog.method=CWSCT0043E: Nelze nastavit trasu z\u00e1znamu pro po\u017eadavek bez dialogov\u00e9ho okna: {0}.
+error.proxy.set.recordroute.non.dialog.method.explanation=K\u00f3d servletu SIP volal funkci Proxy.setRecordRoute() u po\u017eadavku, kter\u00fd nevytv\u00e1\u0159\u00ed dialogov\u00e1 okna.
+error.proxy.set.recordroute.non.dialog.method.useraction=Zm\u011b\u0148te k\u00f3d aplikace tak, aby nevolal funkci Proxy.setRecordRoute() u po\u017eadavk\u016f, kter\u00e9 nevytv\u00e1\u0159ej\u00ed dialogov\u00e1 okna. P\u0159\u00edklady po\u017eadavk\u016f, kter\u00e9 nevytv\u00e1\u0159ej\u00ed dialogov\u00e1 okna, jsou INVITE, REFER a SUBSCRIBE.
+
+error.call.should.be.invoked=CWSCT0044E: Z\u00e1stupce dos\u00e1hl vol\u00e1n\u00ed neo\u010dek\u00e1van\u00e9 funkce.
+error.call.should.be.invoked.explanation=Kontejner SIP com.ibm.ws.sip.container obdr\u017eel zpr\u00e1vu tam, kde ji neo\u010dek\u00e1val.
+error.call.should.be.invoked.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.route.header.unavailable=CWSCT0045E: V roli z\u00e1stupce nelze zpracovat n\u00e1sledn\u00e9 po\u017eadavky bez z\u00e1hlav\u00ed trasy: {0}.
+error.route.header.unavailable.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee v roli z\u00e1stupce zpracovat n\u00e1sledn\u00e9 po\u017eadavky v dialogov\u00e9m okn\u011b, proto\u017ee p\u0159\u00edchoz\u00ed po\u017eadavek neobsahuje z\u00e1hlav\u00ed trasy.
+error.route.header.unavailable.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+
+error.unkown.uri.type=CWSCT0046E: Nezn\u00e1m\u00fd typ identifik\u00e1toru URI; nelze z\u00edskat p\u0159\u00edstup k parametr\u016fm ze z\u00e1hlav\u00ed: {0}.
+error.unkown.uri.type.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee zpracovat zpr\u00e1vu, proto\u017ee identifik\u00e1tor URI nen\u00ed typu sip nebo sips.
+error.unkown.uri.type.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.processing.strict.routing=CWSCT0048E: Chyba p\u0159i zpracov\u00e1n\u00ed striktn\u00edho sm\u011brov\u00e1n\u00ed; identifik\u00e1tor URI po\u017eadavku neobsahuje ID relace. {0}
+error.processing.strict.routing.explanation=Kontejner SIP com.ibm.ws.sip.container obdr\u017eel ze striktn\u00edho sm\u011brova\u010de po\u017eadavek v dialogov\u00e9m okn\u011b, ale v identifik\u00e1toru URI po\u017eadavku chyb\u011bl parametr ID relace nebo m\u011bl chybnou hodnotu.
+error.processing.strict.routing.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sending.response=CWSCT0049E: Chyba p\u0159i odes\u00edl\u00e1n\u00ed odpov\u011bdi
+error.sending.response.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odeslat odpov\u011b\u010f.
+error.sending.response.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.default.invoke.siplet.not.found=CWSCT0051E: Nelze naj\u00edt siplet k vyvol\u00e1n\u00ed; v\u00fdchoz\u00ed obslu\u017en\u00e1 rutina nen\u00ed k dispozici.
+error.default.invoke.siplet.not.found.explanation=Neexistuje odpov\u00eddaj\u00edc\u00ed servlet SIP pro manipulaci s po\u017eadavkem.
+error.default.invoke.siplet.not.found.useraction=Zkontrolujte odpov\u00eddaj\u00edc\u00ed pravidla u nainstalovan\u00fdch aplikac\u00ed SIP a ov\u011b\u0159te, zda lze k po\u017eadavku p\u0159i\u0159adit alespo\u0148 jedno z nich.
+
+error.handling.request=CWSCT0052E: Nelze naj\u00edt dialogov\u00e9 okno pro p\u0159ijat\u00fd po\u017eadavek BYE. ID vol\u00e1n\u00ed je {0}.
+error.handling.request.explanation=Kontejner SIP com.ibm.ws.sip.container obdr\u017eel po\u017eadavek BYE, kter\u00fd nen\u00ed p\u0159i\u0159azen k \u017e\u00e1dn\u00e9mu existuj\u00edc\u00edmu dialogov\u00e9mu oknu.
+error.handling.request.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.invalid.operator.var=CWSCT0053E: Neplatn\u00e1 prom\u011bnn\u00e1 v oper\u00e1toru; prom\u011bnn\u00e1: {0}
+error.invalid.operator.var.explanation=Dokument sip.xml neobsahuje platnou prom\u011bnnou.
+error.invalid.operator.var.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby prom\u011bnn\u00e1 byla platn\u00e1 v souladu s kapitolou 11.2 (Model objektu po\u017eadavku SIP) t\u00fdkaj\u00edc\u00ed se prost\u0159ed\u00ed JSR 116 (rozhran\u00ed API servletu SIP).
+
+error.missing.sub.elements=CWSCT0054E: Nezda\u0159ilo se vyhodnotit oper\u00e1tor {0}; nejsou k dispozici d\u00edl\u010d\u00ed prvky.
+error.missing.sub.elements.explanation=Dokument sip.xml obsahuje podm\u00ednku bez d\u00edl\u010d\u00edch prvk\u016f.
+error.missing.sub.elements.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby vzorov\u00e9 p\u0159i\u0159azen\u00ed bylo platn\u00e9 v souladu s kapitolou 11.3 (Podm\u00ednky) t\u00fdkaj\u00edc\u00ed se prost\u0159ed\u00ed JSR 116 (rozhran\u00ed API servletu SIP).
+
+error.ip.parse=CWSCT0055E: Ov\u011b\u0159ovateli IPAuthenticator se nezda\u0159ilo analyzovat konfiguraci.
+error.ip.parse.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo analyzovat seznam d\u016fv\u011bryhodn\u00fdch adres IP z konfigurace.
+error.ip.parse.useraction=Zkontrolujte konfigura\u010dn\u00ed vlastnost com.ibm.ws.sip.security.trusted.iplist.
+
+error.ip.host=CWSCT0056E: Ov\u011b\u0159ovatel IPAuthenticator skon\u010dil nezdarem; nezn\u00e1m\u00fd hostitel.
+error.ip.host.explanation=Seznam d\u016fv\u011bryhodn\u00fdch adres IP pro ov\u011b\u0159ov\u00e1n\u00ed SIP obsahuje n\u00e1zev hostitele, kter\u00fd nelze rozpoznat.
+error.ip.host.useraction=Zkontrolujte seznam d\u016fv\u011bryhodn\u00fdch adres IP v konfigura\u010dn\u00ed vlastnosti com.ibm.ws.sip.security.trusted.iplist.
+
+error.ip.header.parse=CWSCT0057E: Ov\u011b\u0159ovateli IPAuthenticator se nezda\u0159ilo analyzovat z\u00e1hlav\u00ed.
+error.ip.header.parse.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo analyzovat z\u00e1hlav\u00ed VIA pro ov\u011b\u0159ov\u00e1n\u00ed SIP com.ibm.ws.sip.container.
+error.ip.header.parse.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.ip.header.exception=CWSCT0058E: Probl\u00e9m se z\u00e1hlav\u00edm u ov\u011b\u0159ovatele IPAuthenticator.
+error.ip.header.exception.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo naj\u00edt z\u00e1hlav\u00ed VIA ve zpr\u00e1v\u011b pro ov\u011b\u0159ov\u00e1n\u00ed SIP com.ibm.ws.sip.container.
+error.ip.header.exception.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.expires=CWSCT0059E: Kontejneru SIP se nezda\u0159ilo z\u00edskat konce platnosti; nespr\u00e1vn\u011b form\u00e1tov\u00e1no: {0}.
+error.get.expires.explanation=Vol\u00e1n\u00ed aplikace do funkce Address.setExpires() se nezda\u0159ilo, proto\u017ee z\u00e1hlav\u00ed adresy zpr\u00e1vy obsahuje chybn\u011b form\u00e1tovanou hodnotu parametru Vypr\u0161en\u00ed platnosti.
+error.get.expires.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.display.name=CWSCT0060E: Kontejneru SIP se nezda\u0159ilo nastavit zobrazovan\u00fd n\u00e1zev; n\u00e1zev: {0}.
+error.set.display.name.explanation=Vol\u00e1n\u00ed aplikace do funkce Address.setDisplayName() se nezda\u0159ilo.
+error.set.display.name.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby zobrazovan\u00fd n\u00e1zev byl platn\u00fd a nem\u011bl hodnotu Null.
+
+error.set.expires=CWSCT0061E: Kontejneru SIP se nezda\u0159ilo nastavit konce platnosti; sekundy: {0}.
+error.set.expires.explanation=Vol\u00e1n\u00ed aplikace do funkce Address.setExpires() se nezda\u0159ilo.
+error.set.expires.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.parameter=CWSCT0062E: Kontejneru SIP se nezda\u0159ilo nastavit parametry; n\u00e1zev: {0}, hodnota: {1}
+error.set.parameter.explanation=Vol\u00e1n\u00ed aplikace do funkce Address.setParameter() nebo SipURI.setParameter() se nezda\u0159ilo.
+error.set.parameter.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby n\u00e1zev a hodnota parametru byly platn\u00e9.
+
+error.set.q=CWSCT0063E: Kontejneru SIP se nezda\u0159ilo nastavit hodnotu q; hodnota: {0}.
+error.set.q.explanation=Vol\u00e1n\u00ed aplikace do funkce Address.setQ() se nezda\u0159ilo.
+error.set.q.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby hodnota priority byla platn\u00e1.
+
+error.get.method=CWSCT0064E: Kontejneru SIP se nezda\u0159ilo z\u00edskat metodu z odeslan\u00e9ho po\u017eadavku: {0}.
+error.get.method.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getMethod() se nezda\u0159ilo.
+error.get.method.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.request.uri=CWSCT0065E: Kontejneru SIP se nezda\u0159ilo z\u00edskat identifik\u00e1tor URI po\u017eadavku z odeslan\u00e9ho po\u017eadavku: {0}.
+error.get.request.uri.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletRequest.getRequestURI() se nezda\u0159ilo.
+error.get.request.uri.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.create.response=CWSCT0066E: Kontejneru SIP se nezda\u0159ilo vytvo\u0159it odpov\u011b\u010f na po\u017eadavek: {0}
+error.create.response.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo vytvo\u0159it odpov\u011b\u010f na po\u017eadavek.
+error.create.response.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.send.request=CWSCT0067E: Kontejneru SIP se nezda\u0159ilo odeslat po\u017eadavek pomoc\u00ed aplikace JAIN; identifik\u00e1tor URI: {0}.
+error.send.request.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odeslat po\u017eadavek.
+error.send.request.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.add.header=CWSCT0069E: Kontejneru SIP se nezda\u0159ilo p\u0159idat z\u00e1hlav\u00ed; n\u00e1zev: {0}, hodnota: {1}.
+error.add.header.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo p\u0159idat do zpr\u00e1vy z\u00e1hlav\u00ed.
+error.add.header.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.send.response=CWSCT0070E: Kontejneru SIP se nezda\u0159ilo odeslat odpov\u011b\u010f; {0}.
+error.send.response.explanation=Do\u0161lo k chyb\u011b b\u011bhem pokusu kontejneru SIP com.ibm.ws.sip.container o odesl\u00e1n\u00ed odpov\u011bdi.
+error.send.response.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.header=CWSCT0071E: Kontejneru SIP se nezda\u0159ilo nastavit z\u00e1hlav\u00ed; n\u00e1zev: {0}, hodnota: {1}
+error.set.header.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo ve zpr\u00e1v\u011b nastavit hodnotu z\u00e1hlav\u00ed.
+error.set.header.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.host=CWSCT0072E: Kontejneru SIP se nezda\u0159ilo nastavit hostitele; hostitel: {0}.
+error.set.host.explanation=Vol\u00e1n\u00ed aplikace do funkce SipURI.setHost() se nezda\u0159ilo.
+error.set.host.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby n\u00e1zev hostitele byl platn\u00fd a nem\u011bl hodnotu Null.
+
+error.set.port=CWSCT0073E: Kontejneru SIP se nezda\u0159ilo nastavit port; port: {0}.
+error.set.port.explanation=Vol\u00e1n\u00ed aplikace do funkce SipURI.setPort() se nezda\u0159ilo.
+error.set.port.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.secure=CWSCT0074E: Kontejneru SIP se nezda\u0159ilo nastavit zabezpe\u010den\u00ed; hodnota: {0}.
+error.set.secure.explanation=Vol\u00e1n\u00ed aplikace do funkce SipURI.setSecure() se nezda\u0159ilo.
+error.set.secure.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.user=CWSCT0075E: Kontejneru SIP se nezda\u0159ilo nastavit u\u017eivatele; u\u017eivatel: {0}.
+error.set.user.explanation=Vol\u00e1n\u00ed aplikace do funkce SipURI.setUser() se nezda\u0159ilo.
+error.set.user.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby jm\u00e9no u\u017eivatele bylo platn\u00e9 a nem\u011blo hodnotu Null.
+
+error.set.user.password=CWSCT0076E: Kontejneru SIP se nezda\u0159ilo nastavit heslo u\u017eivatele; heslo: {0}.
+error.set.user.password.explanation=Vol\u00e1n\u00ed aplikace do funkce SipURI.setUserPassword() se nezda\u0159ilo.
+error.set.user.password.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby heslo u\u017eivatele bylo platn\u00e9 a nem\u011blo hodnotu Null.
+
+error.get.accept.language=CWSCT0077E: Kontejneru SIP se nezda\u0159ilo z\u00edskat p\u0159ij\u00edman\u00fd jazyk; {0}.
+error.get.accept.language.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getAcceptLanguage() se nezda\u0159ilo.
+error.get.accept.language.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.accept.languages=CWSCT0078E: Kontejneru SIP se nezda\u0159ilo z\u00edskat p\u0159ij\u00edman\u00e9 jazyky; {0}.
+error.get.accept.languages.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getAcceptLanguages() se nezda\u0159ilo.
+error.get.accept.languages.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.address.header=CWSCT0079E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed adresy; n\u00e1zev: {0}.
+error.get.address.header.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getAddressHeader() se nezda\u0159ilo.
+error.get.address.header.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.address.headers=CWSCT0080E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed adres; n\u00e1zev: {0}.
+error.get.address.headers.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getAddressHeaders() se nezda\u0159ilo.
+error.get.address.headers.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.character.encoding=CWSCT0081E: Kontejneru SIP se nezda\u0159ilo z\u00edskat znakov\u00e9 k\u00f3dov\u00e1n\u00ed {0}.
+error.get.character.encoding.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getCharacterEncoding() se nezda\u0159ilo.
+error.get.character.encoding.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.content.length=CWSCT0082E: Kontejneru SIP se nezda\u0159ilo z\u00edskat d\u00e9lku obsahu {0}.
+error.get.content.length.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getContentLength() se nezda\u0159ilo.
+error.get.content.length.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.content.type=CWSCT0083E: Kontejneru SIP se nezda\u0159ilo z\u00edskat typ obsahu {0}.
+error.get.content.type.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getContentType() se nezda\u0159ilo.
+error.get.content.type.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.header=CWSCT0084E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed; n\u00e1zev: {0}.
+error.get.header.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getHeader() se nezda\u0159ilo.
+error.get.header.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.header.names=CWSCT0085E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed; n\u00e1zvy: {0}.
+error.get.header.names.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getHeaderNames() se nezda\u0159ilo.
+error.get.header.names.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.headers=CWSCT0086E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed; n\u00e1zev: {0}.
+error.get.headers.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getHeaders() se nezda\u0159ilo.
+error.get.headers.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.content=CWSCT0087E: Kontejneru SIP se nezda\u0159ilo nastavit obsah; obsah: {0}, typ obsahu: {1}
+error.set.content.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.setContent() se nezda\u0159ilo.
+error.set.content.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby obsah zpr\u00e1vy byl platn\u00fd a nem\u011bl hodnotu Null.
+
+error.get.via.headers=CWSCT0088E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed VIA {0}.
+error.get.via.headers.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getViaHeaders() se nezda\u0159ilo.
+error.get.via.headers.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.contact.header=CWSCT0089E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed {0}.
+error.get.contact.header.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.getContactHeader() se nezda\u0159ilo.
+error.get.contact.header.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.jain.sip.headers=CWSCT0090E: Kontejneru SIP se nezda\u0159ilo z\u00edskat z\u00e1hlav\u00ed SIP JAIN {0}.
+error.get.jain.sip.headers.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo z\u00edskat jedno nebo v\u00edce z\u00e1hlav\u00ed z intern\u00edho objektu zpr\u00e1vy JAIN.
+error.get.jain.sip.headers.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.max.forwards=CWSCT0091E: Kontejneru SIP se nezda\u0159ilo z\u00edskat maxim\u00e1ln\u00ed po\u010det p\u0159ed\u00e1n\u00ed {0}.
+error.get.max.forwards.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletRequest.getMaxForwards() se nezda\u0159ilo.
+error.get.max.forwards.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.reason.phrase=CWSCT0092E: Kontejneru SIP se nezda\u0159ilo z\u00edskat fr\u00e1zi p\u0159\u00ed\u010diny {0}.
+error.get.reason.phrase.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletResponse.getReasonPhrase() se nezda\u0159ilo.
+error.get.reason.phrase.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.get.status=CWSCT0093E: Kontejneru SIP se nezda\u0159ilo z\u00edskat stav {0}.
+error.get.status.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletResponse.getStatus() se nezda\u0159ilo.
+error.get.status.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.status=CWSCT0094E: Kontejneru SIP se nezda\u0159ilo nastavit stav; stav: {0}, fr\u00e1ze p\u0159\u00ed\u010diny: {1}.
+error.set.status.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletResponse.setStatus() se nezda\u0159ilo.
+error.set.status.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby k\u00f3d stavu byl platn\u00fd. Pokud jste rovn\u011b\u017e zadali fr\u00e1zi p\u0159\u00ed\u010diny, zajist\u011bte, aby nem\u011bla hodnotu Null a nebyla pr\u00e1zdn\u00e1.
+
+error.create.address=CWSCT0095E: Kontejneru SIP se nezda\u0159ilo vytvo\u0159it adresu; identifik\u00e1tor URI: {0}, zobrazovan\u00fd n\u00e1zev: {1}.
+error.create.address.explanation=Vol\u00e1n\u00ed aplikace do funkce SipFactory.createAddress() se nezda\u0159ilo.
+error.create.address.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby identifik\u00e1tor URI a zobrazovan\u00fd n\u00e1zev byly platn\u00e9.
+
+error.create.sip.uri=CWSCT0097E: Kontejneru SIP se nezda\u0159ilo vytvo\u0159it identifik\u00e1tor URI SIP; u\u017eivatel: {0}, hostitel: {1}.
+error.create.sip.uri.explanation=Vol\u00e1n\u00ed aplikace do funkce SipFactory.createSipURI() se nezda\u0159ilo.
+error.create.sip.uri.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby parametry U\u017eivatel a Hostitel byly platn\u00e9 a nem\u011bly hodnotu Null.
+
+error.create.uri=CWSCT0098E: Kontejneru SIP se nezda\u0159ilo vytvo\u0159it identifik\u00e1tor URI; identifik\u00e1tor URI: {0}.
+error.create.uri.explanation=Vol\u00e1n\u00ed aplikace do funkce SipFactory.createURI() se nezda\u0159ilo.
+error.create.uri.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby \u0159et\u011bzec identifik\u00e1toru URI p\u0159edstavoval platn\u00fd identifik\u00e1tor URI.
+
+error.push.route=CWSCT0099E: Nezda\u0159ilo se p\u0159edat trasu; identifik\u00e1tor URI: {0}.
+error.push.route.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletRequest.pushRoute() nebo SipServletRequest.pushRecordRoute() se nezda\u0159ilo.
+error.push.route.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby hodnota SipURI byla platn\u00e1.
+
+error.set.uri=CWSCT0100E: Kontejneru SIP se nezda\u0159ilo nastavit identifik\u00e1tor URI; identifik\u00e1tor URI: {0}.
+error.set.uri.explanation=Vol\u00e1n\u00ed aplikace do funkce Address.setURI() se nezda\u0159ilo.
+error.set.uri.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby identifik\u00e1tor URI byl platn\u00fd.
+
+error.sending.ack=CWSCT0101E: Odesl\u00e1n\u00ed po\u017eadavku ACK se nezda\u0159ilo.
+error.sending.ack.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odeslat po\u017eadavek ACK.
+error.sending.ack.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sending.cancel=CWSCT0102E: Odesl\u00e1n\u00ed po\u017eadavku CANCEL se nezda\u0159ilo.
+error.sending.cancel.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odeslat po\u017eadavek CANCEL.
+error.sending.cancel.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.create.timeout.response=CWSCT0103E: Nezda\u0159ilo se vygenerovat odpov\u011b\u010f t\u00fdkaj\u00edc\u00ed se \u010dasov\u00e9ho limitu.
+error.failed.create.timeout.response.explanation=Na po\u017eadavek odeslan\u00fd z kontejneru SIP com.ibm.ws.sip.container nebyla odesl\u00e1na odpov\u011b\u010f b\u011bhem 32 sekund a kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo vygenerovat pro aplikaci odpov\u011b\u010f t\u00fdkaj\u00edc\u00ed se \u010dasov\u00e9ho limitu.
+error.failed.create.timeout.response.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.cloning.address=CWSCT0104E: Nezda\u0159ilo se klonovat adresu.
+error.cloning.address.explanation=V kontejneru SIP com.ibm.ws.sip.container do\u0161lo p\u0159i klonov\u00e1n\u00ed objektu Adresa k intern\u00ed chyb\u011b.
+error.cloning.address.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.invalid.tel.url=CWSCT0105E: Neplatn\u00e1 adresa URL pro telefonii: {0}
+error.invalid.tel.url.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo vytvo\u0159it adresu URL pro telefonii.
+error.invalid.tel.url.useraction=Ov\u011b\u0159te, zda z\u00e1kladn\u00ed \u0159et\u011bzec adresy URL m\u00e1 d\u00e9lku alespo\u0148 4 bajty (3 pro sch\u00e9ma plus 1 pro dvojte\u010dku).
+
+error.sending.487.response=CWSCT0106E: Chyba p\u0159i odes\u00edl\u00e1n\u00ed odpov\u011bdi 487 {0}
+error.sending.487.response.explanation=P\u0159i zru\u0161en\u00ed po\u017eadavku se kontejneru SIP com.ibm.ws.sip.container nezda\u0159ilo do p\u016fvodn\u00edho po\u017eadavku odeslat odpov\u011b\u010f 487 (o ukon\u010den\u00ed po\u017eadavku).
+error.sending.487.response.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.set.character.encoding=CWSCT0108E: Chyba p\u0159i nastaven\u00ed znakov\u00e9ho k\u00f3dov\u00e1n\u00ed: {0}
+error.set.character.encoding.explanation=Vol\u00e1n\u00ed aplikace do funkce SipServletMessage.setCharacterEncoding() se nezda\u0159ilo.
+error.set.character.encoding.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby parametr k\u00f3dov\u00e1n\u00ed byl platn\u00fd a nem\u011bl hodnotu Null.
+
+error.setting.tag=CWSCT0109E: Chyba p\u0159i nastaven\u00ed hodnoty zna\u010dky: {0}
+error.setting.tag.explanation=Vol\u00e1n\u00ed aplikace do funkce Address.setTag() se nezda\u0159ilo.
+error.setting.tag.useraction=Zkontrolujte k\u00f3d aplikace a zajist\u011bte, aby parametr zna\u010dky byl platn\u00fd.
+
+info.sequence.logger.enabled=CWSCT0113I: Je povolen modul protokolov\u00e1n\u00ed posloupnosti relac\u00ed SIP; \u00farove\u0148: {0}.
+info.sequence.logger.enabled.explanation=Je povolen modul protokolov\u00e1n\u00ed posloupnosti relac\u00ed SIP \u010di dialogov\u00fdch oken.
+info.sequence.logger.enabled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.unexpected.uri.in.route=CWSCT0115E: Byl o\u010dek\u00e1v\u00e1n identifik\u00e1tor URI SIP, av\u0161ak byla p\u0159ijata hodnota: {0}.
+error.unexpected.uri.in.route.explanation=
+error.unexpected.uri.in.route.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.standalone.started=CWSCT0116I: Kontejner SIP pou\u017e\u00edv\u00e1 samostatnou konfiguraci.
+info.standalone.started.explanation=Kontejner SIP com.ibm.ws.sip.container nen\u00ed spu\u0161t\u011bn jako slu\u017eba WebSphere.
+info.standalone.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.init.siplet=CWSCT0117E: Nezda\u0159ilo se inicializovat siplet {0}.
+error.init.siplet.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo na\u010dten\u00ed nebo vytvo\u0159en\u00ed instance t\u0159\u00eddy servletu SIP.
+error.init.siplet.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby n\u00e1zev t\u0159\u00eddy byl spr\u00e1vn\u00fd a obsahoval ve\u0159ejn\u00fd konstruktor neo\u010dek\u00e1vaj\u00edc\u00ed \u017e\u00e1dn\u00e9 argumenty.
+
+error.invoke.servlet=CWSCT0118E: Siplet slu\u017eby se nezda\u0159il: {0}.
+error.invoke.servlet.explanation=V\u00fdjimka byla vytvo\u0159ena v k\u00f3du servletu SIP.
+error.invoke.servlet.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.servlet.unavailable=CWSCT0119E: Vyvol\u00e1n\u00ed sipletu se nezda\u0159ilo; servlet nen\u00ed k dispozici: {0}, {1}.
+error.servlet.unavailable.explanation=Servlet SIP neexistuje.
+error.servlet.unavailable.useraction=Zkontrolujte soubor sip.xml a zajist\u011bte, aby n\u00e1zev t\u0159\u00eddy servletu byl spr\u00e1vn\u00fd.
+
+error.initialize.sip.container=CWSCT0120E: Chyba p\u0159i inicializaci kontejneru SIP com.ibm.ws.sip.container
+error.initialize.sip.container.explanation=Chyba p\u0159i inicializaci kontejneru SIP com.ibm.ws.sip.container; dal\u0161\u00ed podrobnosti naleznete v souboru trasov\u00e1n\u00ed.
+error.initialize.sip.container.useraction=Povolte u kontejneru SIP com.ibm.ws.sip.container diagnostick\u00e9 trasov\u00e1n\u00ed, restartujte server s c\u00edlem reprodukovat probl\u00e9m a potom ode\u0161lete protokol trasov\u00e1n\u00ed.
+
+warning.timer.listener.unavailable=CWSCT0122W: Chyba p\u0159i odbaven\u00ed ud\u00e1losti \u010dasova\u010de; modul listener \u010dasova\u010de nen\u00ed k dispozici pro: {0}.
+warning.timer.listener.unavailable.explanation=\u010casova\u010d servletu SIP byl spu\u0161t\u011bn, av\u0161ak nen\u00ed k n\u011bmu p\u0159idru\u017een \u017e\u00e1dn\u00fd modul listener.
+warning.timer.listener.unavailable.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warning.timer.unavailable=CWSCT0124W: Nastaven\u00ed TimerServiceImpl nen\u00ed k dispozici
+warning.timer.unavailable.explanation=V\u0161echny \u010dasova\u010de v kontejneru SIP com.ibm.ws.sip.container jsou zak\u00e1z\u00e1ny.
+warning.timer.unavailable.useraction=Zkontrolujte konfiguraci kontejneru SIP com.ibm.ws.sip.container a odeberte vlastnost enable.timers nebo nastavte jej\u00ed hodnotu na true.
+
+error.transaction.id.alreay.set=CWSCT0125E: ID transakce je ji\u017e pro transakci nastaveno; aktu\u00e1ln\u00ed: {0}, nov\u00e9: {1}.
+error.transaction.id.alreay.set.explanation=Transakce SIP je ji\u017e s ur\u010dit\u00fdm ID inicializov\u00e1na a nelze ji zm\u011bnit.
+error.transaction.id.alreay.set.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.cannot.lookup.host=CWSCT0336E: VirtualHostAlias.init: Nelze vyhledat hostitele {0}.
+error.cannot.lookup.host.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo p\u0159elo\u017eit n\u00e1zev hostitele u aliasu virtu\u00e1ln\u00edho hostitele na adresu IP.
+error.cannot.lookup.host.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.invoking.request=CWSCT0139E: Kontejneru SIP se nezda\u0159ilo vyvolat po\u017eadavek; zpr\u00e1va: {0}.
+error.invoking.request.explanation=Byla generov\u00e1na v\u00fdjimka, kdy\u017e se kontejner SIP com.ibm.ws.sip.container pokusil o vyvol\u00e1n\u00ed po\u017eadavku.
+error.invoking.request.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sending.response.from.prepare.for.write=CWSCT0140E: Kontejneru SIP se nezda\u0159ilo odeslat odpov\u011b\u010f na p\u0159\u00edpravu na z\u00e1pis.
+error.sending.response.from.prepare.for.write.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odeslat odpov\u011b\u010f z vol\u00e1n\u00ed do funkce prepareHeadersForWrite().
+error.sending.response.from.prepare.for.write.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.message.dispatcher.invalid.state=CWSCT0142E: Chyba - dispe\u010der nedokon\u010dil odbaven\u00ed p\u0159edchoz\u00ed zpr\u00e1vy.
+error.message.dispatcher.invalid.state.explanation=Kontejner SIP com.ibm.ws.sip.container nemohl odbavit zpr\u00e1vu, proto\u017ee odbaven\u00ed p\u0159edchoz\u00ed zpr\u00e1vy nebylo dosud dokon\u010deno.
+error.message.dispatcher.invalid.state.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.non.http.request=CWSCT0145E: Byl p\u0159ijat po\u017eadavek {0}, a\u010dkoli byl o\u010dek\u00e1v\u00e1n po\u017eadavek javax.servlet.http.HttpServletRequest.
+error.non.http.request.explanation=Kontejner SIP com.ibm.ws.sip.container obdr\u017eel z webov\u00e9ho kontejneru com.ibm.ws.sip.container jin\u00fd po\u017eadavek ne\u017e javax.servlet.http.HttpServletRequest.
+error.non.http.request.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.to.register.collaborator=CWSCT0146E: Nezda\u0159ilo se zaregistrovat kolabor\u00e1tor {0}.
+error.failed.to.register.collaborator.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo zaregistrovat sebe sama jako modul listener pro slu\u017ebu WebSphere.
+error.failed.to.register.collaborator.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.cnf=CWSCT0188E: Chyba - v\u00fdjimka \u201eT\u0159\u00edda nebyla nalezena\u201c; nelze zru\u0161it serializaci.
+error.exception.cnf.explanation=Kontejner SIP com.ibm.ws.sip.container zachytil b\u011bhem serializace objektu v\u00fdjimku typu ClassNotFoundException.
+error.exception.cnf.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.io.serialize.deserialize=CWSCT0189E: Chyba - vstupn\u011b/v\u00fdstupn\u00ed v\u00fdjimka; nelze serializovat/zru\u0161it serializaci.
+error.exception.io.serialize.deserialize.explanation=Kontejner SIP com.ibm.ws.sip.container zachytil b\u011bhem serializace objektu v\u00fdjimku typu IOException.
+error.exception.io.serialize.deserialize.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.cache.alg=CWSCT0185E: Chyba - algoritmus mezipam\u011bti neexistuje.
+error.exception.cache.alg.explanation=Algoritmus mezipam\u011bti po\u017eadovan\u00fd spr\u00e1vcem relac\u00ed kontejneru SIP com.ibm.ws.sip.container neexistuje.
+error.exception.cache.alg.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.replicator=CWSCT0186E: Chyba - v\u00fdjimka replik\u00e1toru
+error.exception.replicator.explanation=V\u00fdjimka replik\u00e1toru zachycen\u00e1 spr\u00e1vcem relac\u00ed kontejneru SIP com.ibm.ws.sip.container.
+error.exception.replicator.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sipha.version=CWSCT0187I: SIP - vysok\u00e1 dostupnost: {0}
+info.sipha.version.explanation=Komponenta vysok\u00e9 dostupnosti kontejneru SIP com.ibm.ws.sip.container byla inicializov\u00e1na.
+info.sipha.version.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.drs=CWSCT0219E: Chyba - v\u00fdjimka DRS
+error.exception.drs.explanation=V kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka b\u011bhem replikace DRS.
+error.exception.drs.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.admin=CWSCT0220E: Chyba - v\u00fdjimka administrativn\u00edch roz\u0161\u00ed\u0159en\u00ed JMX
+error.exception.admin.explanation=V kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka p\u0159i aktivaci objektu MBean pro spr\u00e1vce relac\u00ed.
+error.exception.admin.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.drs.broker=CWSCT0222E: Chyba - v\u00fdjimka v\u00edcen\u00e1sobn\u00e9ho zprost\u0159edkovatele DRS
+error.drs.broker.explanation=V kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka p\u0159i pou\u017eit\u00ed v\u00edcen\u00e1sobn\u00e9ho zprost\u0159edkovatele DRS.
+error.drs.broker.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.drs.setting.mode=CWSCT0224E: Chyba - re\u017eim DRS nem\u00e1 hodnotu BOTH_CLIENT_SERVER (peer-to-peer).
+error.drs.setting.mode.explanation=Re\u017eim DRS nen\u00ed vhodn\u00fd pro replikaci dat v kontejneru SIP com.ibm.ws.sip.container.
+error.drs.setting.mode.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.drs.setting.missing=CWSCT0225E: Informace - modul DRS nen\u00ed nastaven.
+info.drs.setting.missing.explanation=Replikace v kontejneru SIP com.ibm.ws.sip.container je zak\u00e1z\u00e1na, proto\u017ee nen\u00ed nastaven modul DRS.
+info.drs.setting.missing.useraction=Zajist\u011bte, aby spr\u00e1vce relac\u00ed webov\u00e9ho kontejneru byl konfigurov\u00e1n na replikaci z pam\u011bti do pam\u011bti.
+
+info.drs.enablefailover.disabled=CWSCT0226I: Informace - p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed u kontejneru SIP com.ibm.ws.sip.container je zak\u00e1z\u00e1no.
+info.drs.enablefailover.disabled.explanation=P\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed u kontejneru SIP com.ibm.ws.sip.container je zak\u00e1z\u00e1no.
+info.drs.enablefailover.disabled.useraction=Povolte je pomoc\u00ed p\u0159izp\u016fsoben\u00e9 vlastnosti enable.replication (u kontejneru SIP com.ibm.ws.sip.container).
+
+info.drs.enablefailover.enabled=CWSCT0227I: Informace - komponenta vysok\u00e9 dostupnosti u kontejneru SIP com.ibm.ws.sip.container je povolena.
+info.drs.enablefailover.enabled.explanation=U komponenty vysok\u00e9 dostupnosti u kontejneru SIP com.ibm.ws.sip.container je povoleno vyrovn\u00e1v\u00e1n\u00ed z\u00e1t\u011b\u017ee a p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed.
+info.drs.enablefailover.enabled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ha.groupleft=CWSCT0228E: Chyba - v\u00fdjimka HAGroupLeftException
+error.exception.ha.groupleft.explanation=Kontejner SIP com.ibm.ws.sip.container zachytil v\u00fdjimku typu HAGroupLeftException b\u011bhem sv\u00e9 aktivace jako \u010dlena skupiny.
+error.exception.ha.groupleft.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ha.param.reject=CWSCT0229E: Chyba - v\u00fdjimka HAParameterRejectedException
+error.exception.ha.param.reject.explanation=Kontejner SIP com.ibm.ws.sip.container zachytil v\u00fdjimku typu HAParameterRejectedException b\u011bhem sv\u00e9 aktivace jako \u010dlena skupiny.
+error.exception.ha.param.reject.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.io.deserialize=CWSCT0231E: Chyba - vstupn\u011b/v\u00fdstupn\u00ed v\u00fdjimka; nelze zru\u0161it serializaci.
+error.exception.io.deserialize.explanation=V kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ila serializace dat.
+error.exception.io.deserialize.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ha=CWSCT0232E: Chyba - v\u00fdjimka u vysok\u00e9 dostupnosti
+error.exception.ha.explanation=V komponent\u011b vysok\u00e9 dostupnosti kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka.
+error.exception.ha.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ds=CWSCT0233E: Chyba - v\u00fdjimka datov\u00e9ho z\u00e1sobn\u00edku
+error.exception.ds.explanation=V komponent\u011b vysok\u00e9 dostupnosti kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka DataStackException.
+error.exception.ds.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.io=CWSCT0237E: Chyba - vstupn\u011b/v\u00fdstupn\u00ed v\u00fdjimka
+error.exception.io.explanation=V kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka IOException.
+error.exception.io.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ucf.no_cluster_define=CWSCT0238E: Chyba - v\u00fdjimka r\u00e1mce UCF; nen\u00ed definov\u00e1n \u017e\u00e1dn\u00fd klastr.
+error.exception.ucf.no_cluster_define.explanation=Kontejner SIP com.ibm.ws.sip.container se nem\u016f\u017ee p\u0159ipojit ke klastru nebo se od n\u011bj odpojit, proto\u017ee nen\u00ed definov\u00e1n \u017e\u00e1dn\u00fd klastr.
+error.exception.ucf.no_cluster_define.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ucf.noclusterservice=CWSCT0240E: Chyba - \u017e\u00e1dn\u00e1 slu\u017eba \u010dlena klastru
+error.exception.ucf.noclusterservice.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee spustit nebo zastavit komponentu vysok\u00e9 dostupnosti, proto\u017ee do\u0161lo k v\u00fdjimce p\u0159i pokusu o p\u0159\u00edstup ke slu\u017eb\u011b klastru.
+error.exception.ucf.noclusterservice.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ucf.no.member.available=CWSCT0241E: Chyba - v\u00fdjimka r\u00e1mce UCF - nen\u00ed k dispozici \u017e\u00e1dn\u00fd \u010dlen.
+error.exception.ucf.no.member.available.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo z r\u00e1mce UCF z\u00edskat informace o koncov\u00e9m bodu z\u00e1stupce SIP.
+error.exception.ucf.no.member.available.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.class.not.found=CWSCT0243E: Chyba - v\u00fdjimka \u201eT\u0159\u00edda nebyla nalezena\u201c
+error.exception.class.not.found.explanation=V kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka ClassNotFoundException.
+error.exception.class.not.found.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.orb=CWSCT0244E: Chyba - nelze z\u00edskat objekt ORB.
+error.orb.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee publikovat sv\u00e9 logick\u00e9 n\u00e1zvy kv\u016fli chyb\u011b p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed objektu ORB.
+error.orb.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.orb.cc=CWSCT0245E: Chyba - v\u00fdjimka p\u0159etypov\u00e1n\u00ed t\u0159\u00eddy ORB
+error.orb.cc.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee publikovat sv\u00e9 logick\u00e9 n\u00e1zvy kv\u016fli v\u00fdjimce ClassCastException.
+error.orb.cc.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.orb.in=CWSCT0246E: Chyba - neplatn\u00fd po\u017eadavek na n\u00e1zev ORB
+error.orb.in.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee publikovat sv\u00e9 logick\u00e9 n\u00e1zvy kv\u016fli v\u00fdjimce InvalidName.
+error.orb.in.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.classnotfound=CWSCT0259E: Chyba - t\u0159\u00edda nebyla nalezena.
+error.exception.classnotfound.explanation=Inicializace modulu TAI kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ila kv\u016fli v\u00fdjimce ClassNotFoundException.
+error.exception.classnotfound.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.instantiate=CWSCT0260E: Chyba - v\u00fdjimka vytvo\u0159en\u00ed instance
+error.exception.instantiate.explanation=Inicializace modulu TAI kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ila kv\u016fli v\u00fdjimce InstantiationException.
+error.exception.instantiate.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.illegalaccess=CWSCT0261E: Chyba - v\u00fdjimka z p\u0159\u00ed\u010diny neopr\u00e1vn\u011bn\u00e9ho p\u0159\u00edstupu.
+error.exception.illegalaccess.explanation=Inicializace modulu TAI kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ila kv\u016fli v\u00fdjimce IllegalAccessException.
+error.exception.illegalaccess.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.filenotfound=CWSCT0262E: Chyba - soubor nebyl nalezen.
+error.exception.filenotfound.explanation=Zabezpe\u010den\u00ed kontejneru SIP com.ibm.ws.sip.container nem\u016f\u017ee otev\u0159\u00edt soubor hesel.
+error.exception.filenotfound.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.login=CWSCT0264E: Chyba - kontext p\u0159ihl\u00e1\u0161en\u00ed - nezdar
+error.exception.login.explanation=V modulu TAI kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka LoginException b\u011bhem z\u00edsk\u00e1v\u00e1n\u00ed p\u0159edm\u011btu u\u017eivatele.
+error.exception.login.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.naming=CWSCT0266E: Chyba - v\u00fdjimka pojmenov\u00e1v\u00e1n\u00ed
+error.exception.naming.explanation=V zabezpe\u010den\u00ed kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka NamingException.
+error.exception.naming.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.parse=CWSCT0267E: Chyba - v\u00fdjimka anal\u00fdzy.
+error.exception.parse.explanation=V modulu TAI (Trust Association Interceptor) kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka anal\u00fdzy.
+error.exception.parse.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.stack=CWSCT0315E: V\u00fdjimka v z\u00e1sobn\u00edku SIP.
+error.exception.stack.explanation= P\u0159i inicializaci z\u00e1sobn\u00edku SIP byla zachycena v\u00fdjimka.
+error.exception.stack.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sipstack.version=CWSCT0316I: Z\u00e1sobn\u00edk SIP {0}
+info.sipstack.version.explanation=Z\u00e1sobn\u00edk SIP se inicializuje.
+info.sipstack.version.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.unknown.host.exception=CWSCT0317E: V\u00fdjimka z p\u0159\u00ed\u010diny nezn\u00e1m\u00e9ho hostitele; nelze rozpoznat n\u00e1zev hostitele.
+error.unknown.host.exception.explanation=V z\u00e1sobn\u00edku SIP byla zachycena v\u00fdjimka UnknownHostException p\u0159i pokusu o p\u0159eklad n\u00e1zvu hostitele na adresu IP.
+error.unknown.host.exception.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.base64parser.exception=CWSCT0318E: V\u00fdjimka analyz\u00e1toru; z\u00e1pis do v\u00fdstupn\u00edho proudu se nezda\u0159il.
+error.base64parser.exception.explanation=U z\u00e1sobn\u00edku SIP se nezda\u0159il z\u00e1pis do v\u00fdstupn\u00edho proudu.
+error.base64parser.exception.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.same.to.tag=CWSCT0319E: Stejn\u00e1 zna\u010dka Na (To) ve dvou nebo v\u00edce odezv\u00e1ch z v\u00edce v\u011btv\u00ed serveru proxy
+error.same.to.tag.explanation=Stejn\u00e9 zna\u010dky Na byly p\u0159ijaty ve dvou nebo v\u00edce odezv\u00e1ch z r\u016fzn\u00fdch v\u011btv\u00ed serveru proxy. Tato akce nen\u00ed podle specifikace RFC 3261 platn\u00e1.
+error.same.to.tag.useraction=Ujist\u011bte se, \u017ee odpov\u00eddaj\u00edc\u00ed instance UAS (user agent server) generuj\u00ed pro ka\u017ed\u00e9 dialogov\u00e9 okno jedine\u010dn\u00e9 zna\u010dky Na (To) dle specifikac\u00ed RFC 3261. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1=CWSCT0321I: Konfigurace z\u00e1sobn\u00edku SIP inicializov\u00e1na
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.explanation=Konfigurace z\u00e1sobn\u00edku SIP je inicializov\u00e1na.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2=CWSCT0322I: P\u0159enos z\u00e1sobn\u00edku SIP inicializov\u00e1n.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.explanation=P\u0159enos z\u00e1sobn\u00edku SIP je inicializov\u00e1n.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3=CWSCT0323I: Inicializace z\u00e1sobn\u00edku SIP dokon\u010dena.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.explanation=Inicializace z\u00e1sobn\u00edku SIP je dokon\u010dena.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.stack.timer.b=CWSCT0324I: Z\u00e1sobn\u00edk SIP, \u010dasova\u010d B nastaven na {0} ms.
+info.stack.timer.b.explanation=\u010casova\u010d B z\u00e1sobn\u00edku SIP je nastaven. Dal\u0161\u00ed informace o \u010dasova\u010di B naleznete v \u010d\u00e1sti RFC 3261.
+info.stack.timer.b.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints=CWSCT0328I: Z\u00e1sobn\u00edk SIP zahajuje naslouch\u00e1n\u00ed v bod\u011b {0}.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.explanation=Z\u00e1sobn\u00edk SIP zahajuje naslouch\u00e1n\u00ed v ur\u010den\u00e9m bod\u011b naslouch\u00e1n\u00ed.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sip.container.launched.but.not.loaded=CWSCT0332I: Kontejner SIP byl \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bn, bude v\u0161ak inicializov\u00e1n a\u017e p\u0159i na\u010dten\u00ed prvn\u00ed aplikace SIP.
+info.sip.container.launched.but.not.loaded.explanation=Kontejner SIP bude inicializov\u00e1n p\u0159i na\u010dten\u00ed prvn\u00ed aplikace SIP.
+info.sip.container.launched.but.not.loaded.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.replication.failed=CWSCT0333E: Replikace se nezda\u0159ila.
+error.replication.failed.explanation=V kontejneru SIP com.ibm.ws.sip.container do\u0161lo k v\u00fdjimce b\u011bhem replikace.
+error.replication.failed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.to.deserialize.replication=CWSCT0334E: Zru\u0161en\u00ed serializace objektu se nezda\u0159ilo.
+error.failed.to.deserialize.replication.explanation=P\u0159i replikaci kontejneru SIP com.ibm.ws.sip.container do\u0161lo k v\u00fdjimce b\u011bhem zru\u0161en\u00ed serializace objektu.
+error.failed.to.deserialize.replication.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.to.reactivate.objects.after.failover=CWSCT0335E: Op\u011btn\u00e1 aktivace objekt\u016f po p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed se nezda\u0159ila.
+error.failed.to.reactivate.objects.after.failover.explanation=V kontejneru SIP com.ibm.ws.sip.container do\u0161lo po p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed k v\u00fdjimce b\u011bhem aktivace relace.
+error.failed.to.reactivate.objects.after.failover.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warning.display.name.different=CWSCT0337W: Zobrazovan\u00fd n\u00e1zev v souboru sip.xml ({0}) se li\u0161\u00ed od zobrazovan\u00e9ho n\u00e1zvu v souboru web.xml ({1}).
+warning.display.name.different.explanation=Zobrazovan\u00fd n\u00e1zev aplikace v souboru sip.xml se li\u0161\u00ed od zobrazovan\u00e9ho n\u00e1zvu v souboru web.xml. To nen\u00ed v souladu s informacemi v \u010d\u00e1sti 15.2 t\u00fdkaj\u00edc\u00edmi se prost\u0159ed\u00ed JSR-116.
+warning.display.name.different.useraction=Zm\u011b\u0148te deskriptory implementace tak, aby odpov\u00eddaly zobrazovan\u00e9mu n\u00e1zvu aplikace.
+
+warning.dispatch.failed=CWSCT0338W: Nezda\u0159ilo se odbavit zpr\u00e1vu SIP do fondu podproces\u016f. Zpr\u00e1va= {0}, ID vol\u00e1n\u00ed= {1}, k\u00f3d chyby= {2}.
+warning.dispatch.failed.explanation=Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo odbavit zpr\u00e1vu do fondu podproces\u016f.
+warning.dispatch.failed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.cannot.identify.object.type=CWSCT0339E: Zru\u0161en\u00ed serializace: Nelze identifikovat typ objektu.
+error.cannot.identify.object.type.explanation=Kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee identifikovat typ objektu pro zru\u0161en\u00ed serializace.
+error.cannot.identify.object.type.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.security.password.retrieve=CWSCT0340E: Chyba - nelze na\u010d\u00edst atribut hesla.
+error.security.password.retrieve.explanation=Ov\u011b\u0159ov\u00e1n\u00ed se nezda\u0159ilo, proto\u017ee kontejner SIP com.ibm.ws.sip.container nem\u016f\u017ee z polo\u017eky osoby v adres\u00e1\u0159i na\u010d\u00edst atribut userPassword.
+error.security.password.retrieve.useraction=Zm\u011b\u0148te nastaven\u00ed konfigurace slu\u017eby LDAP tak, aby m\u011bl server p\u0159\u00edstup k atributu userPassword v adres\u00e1\u0159i.
+
+warn.server.overloaded=CWSCT0341W: Server je p\u0159et\u00ed\u017een.
+warn.server.overloaded.explanation=Server SIP (Session Initiation Protocol) nem\u016f\u017ee p\u0159ij\u00edmat dal\u0161\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy, dokud je p\u0159et\u00ed\u017een.
+warn.server.overloaded.useraction=Sni\u017ete po\u010det p\u0159\u00edchoz\u00edch zpr\u00e1v nebo omezte jin\u00e9 mo\u017en\u00e9 zdroje zahlcen\u00ed po\u010d\u00edta\u010de serveru.
+
+warn.server.overloaded.too.many.sessions=CWSCT0342W: Server je p\u0159et\u00ed\u017een, proto\u017ee existuje p\u0159\u00edli\u0161 mnoho aplika\u010dn\u00edch relac\u00ed. 
+warn.server.overloaded.too.many.sessions.explanation=Server SIP nem\u016f\u017ee p\u0159ij\u00edmat dal\u0161\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy, dokud je p\u0159et\u00ed\u017een. P\u0159\u00edli\u0161 mnoho aplika\u010dn\u00edch relac\u00ed je aktivn\u00edch.
+warn.server.overloaded.too.many.sessions.useraction=Sni\u017ete po\u010det vytvo\u0159en\u00fdch aplika\u010dn\u00edch relac\u00ed nebo nastavte vy\u0161\u0161\u00ed hodnotu maxim\u00e1ln\u00edho po\u010dtu aplika\u010dn\u00edch relac\u00ed v kontejneru SIP (Session Initiation Protocol) com.ibm.ws.sip.container.
+
+warn.server.overloaded.too.many.messages=CWSCT0343W: Server je p\u0159et\u00ed\u017een, proto\u017ee b\u011bhem \u010dasov\u00e9ho intervalu pr\u016fm\u011brov\u00e1n\u00ed bylo p\u0159ijato p\u0159\u00edli\u0161 mnoho zpr\u00e1v. 
+warn.server.overloaded.too.many.messages.explanation=Server SIP nem\u016f\u017ee p\u0159ij\u00edmat dal\u0161\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy, dokud je p\u0159et\u00ed\u017een. Provoz zpr\u00e1v je p\u0159\u00edli\u0161 vysok\u00fd.
+warn.server.overloaded.too.many.messages.useraction=Sni\u017ete zat\u00ed\u017een\u00ed zpr\u00e1vami nebo nastavte vy\u0161\u0161\u00ed hodnotu maxim\u00e1ln\u00edho po\u010dtu zpr\u00e1v za \u010dasov\u00fd interval pr\u016fm\u011brov\u00e1n\u00ed v kontejneru SIP (Session Initiation Protocol) com.ibm.ws.sip.container.
+
+warn.server.overloaded.slow.response=CWSCT0344W: Server je p\u0159et\u00ed\u017een, proto\u017ee doba odezvy serveru je p\u0159\u00edli\u0161 dlouh\u00e1.
+warn.server.overloaded.slow.response.explanation=Server SIP nem\u016f\u017ee p\u0159ij\u00edmat dal\u0161\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy, dokud je p\u0159et\u00ed\u017een.
+warn.server.overloaded.slow.response.useraction=Sni\u017ete po\u010det p\u0159\u00edchoz\u00edch zpr\u00e1v nebo omezte jin\u00e9 mo\u017en\u00e9 zdroje zahlcen\u00ed po\u010d\u00edta\u010de serveru. Je-li v kontejneru SIP (Session Initiation Protocol) com.ibm.ws.sip.container povolena a nastavena hodnota maxim\u00e1ln\u00ed doby odezvy, zva\u017ete mo\u017enost upravit ji na vy\u0161\u0161\u00ed hodnotu.
+
+warn.dispatch.queue.overloaded=CWSCT0345W: Byla p\u0159ekro\u010dena maxim\u00e1ln\u00ed velikost odbavovac\u00ed fronty {0}. Nov\u00e9 zpr\u00e1vy budou zahazov\u00e1ny.
+warn.dispatch.queue.overloaded.explanation=Server SIP nem\u016f\u017ee p\u0159ij\u00edmat dal\u0161\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy, dokud je odbavovac\u00ed fronta p\u0159et\u00ed\u017eena.
+warn.dispatch.queue.overloaded.useraction=Sni\u017ete zat\u00ed\u017een\u00ed zpr\u00e1vami nebo nastavte vy\u0161\u0161\u00ed hodnotu maxim\u00e1ln\u00ed velikosti odbavovac\u00ed fronty v kontejneru SIP (Session Initiation Protocol) com.ibm.ws.sip.container.
+
+error.container.queue.overloaded=CWSCT0346E: Odbavovac\u00ed fronta je p\u0159et\u00ed\u017eena. N\u00e1sleduj\u00edc\u00ed zpr\u00e1va byla odm\u00edtnuta: {0}
+error.container.queue.overloaded.explanation=Podprocesy kontejneru SIP com.ibm.ws.sip.container nemohou zpracovat aktu\u00e1ln\u00ed zat\u00ed\u017een\u00ed \u00falohami.
+error.container.queue.overloaded.useraction=Omezte mo\u017en\u00e9 zdroje zahlcen\u00ed po\u010d\u00edta\u010de serveru, p\u0159edev\u0161\u00edm provoz zpr\u00e1v protokolu SIP. D\u00e1le zkontrolujte mno\u017estv\u00ed prost\u0159edk\u016f, kter\u00e9 jsou pou\u017e\u00edv\u00e1ny k\u00f3dem aplikac\u00ed SIP.
+
+info.bootstrap.started=CWSCT0347I: Byla zah\u00e1jena samozav\u00e1d\u011bc\u00ed replikace.
+info.bootstrap.started.explanation=Kontejner SIP (Session Initiation Protocol) com.ibm.ws.sip.container replikuje data sv\u00fdch relac\u00ed na nov\u00e9 p\u0159ipojen\u00fd rovnocenn\u00fd uzel.
+info.bootstrap.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+info.bootstrap.finished=CWSCT0348I: Byla dokon\u010dena samozav\u00e1d\u011bc\u00ed replikace. 
+info.bootstrap.finished.explanation=Kontejner SIP (Session Initiation Protocol) com.ibm.ws.sip.container dokon\u010dil replikaci dat sv\u00fdch relac\u00ed na nov\u00e9 p\u0159ipojen\u00fd rovnocenn\u00fd uzel.
+info.bootstrap.finished.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sip.stack.timer=CWSCT0349I: Hodnota \u010dasova\u010de z\u00e1sobn\u00edku SIP [{0}] je nastavena na [{1}]
+info.sip.stack.timer.explanation=Hodnota \u010dasova\u010de je v konfiguraci upravena.
+info.sip.stack.timer.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sip.container.quiesce.on=CWSCT0350I: P\u0159echod do re\u017eimu klidov\u00e9ho stavu
+info.sip.container.quiesce.on.explanation=Objekt MBean kontejneru SIP com.ibm.ws.sip.container obdr\u017eel administra\u010dn\u00ed p\u0159\u00edkaz pro p\u0159echod do klidov\u00e9ho stavu. V tomto re\u017eimu nejsou nov\u00e1 vol\u00e1n\u00ed pro tuto instanci kontejneru com.ibm.ws.sip.container obsluhov\u00e1na.
+info.sip.container.quiesce.on.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sip.container.quiesce.off=CWSCT0351I: Ukon\u010den\u00ed re\u017eimu klidov\u00e9ho stavu
+info.sip.container.quiesce.off.explanation=Objekt MBean kontejneru SIP com.ibm.ws.sip.container obdr\u017eel administra\u010dn\u00ed p\u0159\u00edkaz pro p\u0159echod z klidov\u00e9ho stavu.
+info.sip.container.quiesce.off.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sip.get.server.type=CWSCT0352E: Nezda\u0159ilo se z\u00edskat typ serveru.   Chyba: {0}.
+error.sip.get.server.type.explanation=Do\u0161lo k v\u00fdjimce p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed typu serveru.
+error.sip.get.server.type.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sip.get.configuration=CWSCT0353E: Nezda\u0159ilo se z\u00edskat konfiguraci p\u0159i spu\u0161t\u011bn\u00ed.   Chyba: {0}.
+error.sip.get.configuration.explanation=Do\u0161lo k v\u00fdjimce p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed konfigurace.
+error.sip.get.configuration.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sip.container.running.stanalone=CWSCT0354I: Spu\u0161t\u011bno na samostatn\u00e9m serveru
+info.sip.container.running.stanalone.explanation=Kontejner SIP com.ibm.ws.sip.container je spu\u0161t\u011bn v prost\u0159ed\u00ed samostatn\u00e9ho serveru. Spr\u00e1vce vysok\u00e9 dostupnosti nen\u00ed povolen.
+info.sip.container.running.stanalone.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sip.cannot.run.on.server=CWSCT0355E: Nelze spustit na tomto typu serveru: {0}.
+error.sip.cannot.run.on.server.explanation=Kontejner SIP nelze spustit na tomto typu serveru.
+error.sip.cannot.run.on.server.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.parse.auth.challange=CWSCT0356E: Nezda\u0159ilo se analyzovat ov\u011b\u0159ovac\u00ed z\u00e1hlav\u00ed.
+error.parse.auth.challange.explanation=Vol\u00e1n\u00ed funkce SipServletResponse.getChallangeRealm() z aplikace se nezda\u0159ilo.
+error.parse.auth.challange.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.exception.ioeinbody=CWSCT0357E: Chyba - nebylo mo\u017en\u00e9 na\u010d\u00edst t\u011blo zpr\u00e1vy.
+error.exception.ioeinbody.explanation=V k\u00f3du zabezpe\u010den\u00ed kontejneru SIP com.ibm.ws.sip.container byla zachycena v\u00fdjimka IOException.
+error.exception.ioeinbody.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warn.unsupported.realm=CWSCT0358W: Nezn\u00e1m\u00e1 sf\u00e9ra ov\u011b\u0159en\u00ed {0}
+warn.unsupported.realm.explanation=Byla p\u0159ijata \u017e\u00e1dost SIP pro nezn\u00e1mou sf\u00e9ru ov\u011b\u0159en\u00ed. 
+warn.unsupported.realm.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.unhashed.creds=CWSCT0359I: Nebyly nalezeny atributy ha\u0161ovan\u00fdch pov\u011b\u0159en\u00ed.
+info.unhashed.creds.explanation=Nebyly nalezeny atributy nutn\u00e9 pro pou\u017eit\u00ed ha\u0161ovan\u00fdch pov\u011b\u0159en\u00ed. Pro ov\u011b\u0159en\u00ed je pou\u017eito vyhled\u00e1n\u00ed neha\u0161ovan\u00e9ho hesla u\u017eivatele.
+info.unhashed.creds.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sip.container.quiesce.ended=CWSCT0360I: Uveden\u00ed serveru do klidov\u00e9ho stavu bylo \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+info.sip.container.quiesce.ended.explanation=Operace uveden\u00ed kontejneru SIP com.ibm.ws.sip.container do klidov\u00e9ho stavu byla \u00fasp\u011b\u0161n\u011b dokon\u010dena, platnost v\u0161ech relac\u00ed aplikace byla zru\u0161ena.
+info.sip.container.quiesce.ended.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.sip.heartbeat.new.proxy=CWSCT0361I: Synchroniza\u010dn\u00ed sign\u00e1l s\u00edt\u011b z nov\u00e9ho serveru proxy {0}, \u010dasov\u00fd limit {1}, mezn\u00ed hodnota {2}.
+info.sip.heartbeat.new.proxy.explanation=Kontejner SIP com.ibm.ws.sip.container zjistil nov\u00fd server proxy SIP v klastru a je povoleno zji\u0161t\u011bn\u00ed nefunk\u010dnosti s\u00edt\u011b protokolu SIP.
+info.sip.heartbeat.new.proxy.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warn.sip.heartbeat.limit.exceeded=CWSCT0362I: Byl p\u0159ekro\u010den \u010dasov\u00fd limit synchronizace s\u00edt\u011b se serverem proxy SIP {0}. Bylo vynech\u00e1no {1} synchroniza\u010dn\u00edch sign\u00e1l\u016f.
+warn.sip.heartbeat.limit.exceeded.explanation=Kontejner SIP com.ibm.ws.sip.container neobdr\u017eel synchroniza\u010dn\u00ed zpr\u00e1vy ze serveru proxy typu front-end v konfigurovan\u00e9m \u010dasov\u00e9m limitu.
+warn.sip.heartbeat.limit.exceeded.useraction=Ov\u011b\u0159te, \u017ee je server proxy protokolu SIP st\u00e1le spu\u0161t\u011bn a \u017ee je s\u00ed\u0165ov\u00fd spoj protokolu SIP mezi serverem proxy a kontejnerem com.ibm.ws.sip.container v po\u0159\u00e1dku.
+
+error.sip.heartbeat.server.restart=CWSCT0363I: Kontejner SIP com.ibm.ws.sip.container zjistil v\u00fdpadek s\u00edt\u011b a bude se restartovat.
+error.sip.heartbeat.server.restart.explanation=Kontejner SIP com.ibm.ws.sip.container ztratil spojen\u00ed se v\u0161emi servery proxy typu front-end v klastru. Nyn\u00ed prov\u00e1d\u00ed restartov\u00e1n\u00ed sebe sama. Aktivn\u00ed relace budou migrov\u00e1ny do z\u00e1lo\u017en\u00edho kontejneru com.ibm.ws.sip.container, pokud v replika\u010dn\u00ed dom\u00e9n\u011b existuje.
+error.sip.heartbeat.server.restart.useraction=Ur\u010dete p\u0159\u00ed\u010dinu nefunk\u010dnosti s\u00edt\u011b protokolu SIP. V\u011bnujte pozornost s\u00ed\u0165ov\u00e9mu spoji mezi serverem proxy a aplika\u010dn\u00edm serverem. Pomoc\u00ed programu pro zachyt\u00e1v\u00e1n\u00ed provozu v s\u00edti m\u016f\u017eete trasovat zpr\u00e1vy KEEPALIVE protokolu SIP mezi serverem proxy a kontejnerem com.ibm.ws.sip.container.
+
+error.sip.heartbeat.restart.failure=CWSCT0364I: Kontejneru SIP com.ibm.ws.sip.container se nezda\u0159ilo restartovat
+error.sip.heartbeat.restart.failure.explanation=Kontejner SIP com.ibm.ws.sip.container se pokusil o restartov\u00e1n\u00ed sebe sama v d\u016fsledku nefunk\u010dnosti s\u00edt\u011b, tato akce se v\u0161ak nezda\u0159ila. Kontejner com.ibm.ws.sip.container se vypne bez pokusu o restartov\u00e1n\u00ed.
+error.sip.heartbeat.restart.failure.useraction=Restartujte aplika\u010dn\u00ed server ru\u010dn\u011b.
+
+error.replication.b2blinkage.failed=CWSCT0365E: Nezda\u0159ilo se naj\u00edt relaci SIP pro sestaven\u00ed B2B {0} po p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed
+error.replication.b2blinkage.failed.explanation=V kontejneru SIP com.ibm.ws.sip.container do\u0161lo k chyb\u011b b\u011bhem replikace.
+error.replication.b2blinkage.failed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.dar.init.2=CWSCT0401I: V\u00fdchoz\u00ed sm\u011brova\u010d aplikac\u00ed byl inicializov\u00e1n.
+info.dar.init.2.explanation=V\u00fdchoz\u00ed sm\u011brova\u010d aplikac\u00ed vol\u00ed aplikaci podle po\u0159ad\u00ed spu\u0161t\u011bn\u00ed.
+info.dar.init.2.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+info.dar.init.3=CWSCT0403I: Byl na\u010dten extern\u00ed sm\u011brova\u010d aplikac\u00ed v souladu s definovanou p\u0159izp\u016fsobenou vlastnost\u00ed javax.servlet.sip.ar.spi.SipApplicationRouterProvider. N\u00e1zev t\u0159\u00eddy: {0}.
+info.dar.init.3.explanation=Extern\u00ed sm\u011brova\u010d aplikac\u00ed je sm\u011brova\u010d aplikac\u00ed implementovan\u00fd a na\u010dten\u00fd jako modul jin\u00e9ho dodavatele.
+info.dar.init.3.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+info.dar.init.4=CWSCT0404I: Byl na\u010dten soubor vlastnost\u00ed v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed (DAR). N\u00e1zev souboru: {0}.
+info.dar.init.4.explanation=V\u00fdchoz\u00ed sm\u011brova\u010d aplikac\u00ed (DAR) ur\u010den\u00fd u\u017eivatelem byl nalezen a na\u010dten.
+info.dar.init.4.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+info.dar.init.5=CWSCT0405I: Sm\u011brova\u010d aplikac\u00ed je konfigurov\u00e1n pro v\u00fdb\u011br aplikac\u00ed podle spu\u0161t\u011bn\u00ed.
+info.dar.init.5.explanation=V\u00fdchoz\u00ed sm\u011brova\u010d aplikac\u00ed vol\u00ed aplikaci podle po\u0159ad\u00ed spu\u0161t\u011bn\u00ed.
+info.dar.init.5.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+error.dar.repository.create.1=CWSCT0406E: Chyba p\u0159i vytv\u00e1\u0159en\u00ed \u00falo\u017ei\u0161t\u011b v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed: {0}.
+error.dar.repository.create.1.explanation=Intern\u00ed chyba.
+error.dar.repository.create.1.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+error.dar.selector.1=CWSCT0407E: \u017d\u00e1dn\u00fd stav pro v\u00fdchoz\u00ed sm\u011brova\u010d aplikac\u00ed.
+error.dar.selector.1.explanation=Jestli\u017ee sm\u011brova\u010d aplikac\u00ed obdr\u017e\u00ed po\u017eadavek s direktivou jinou ne\u017e NEW, m\u011bl by tento po\u017eadavek obsahovat index stavu v \u0159et\u011bzu aplikace. 
+error.dar.selector.1.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+error.dar.property.parser.1=CWSCT0408E: V\u00fdchoz\u00ed sm\u011brova\u010d aplikac\u00ed - strategie vlastnost\u00ed - nezda\u0159ilo se na\u010d\u00edst soubor vlastnost\u00ed.
+error.dar.property.parser.1.explanation=Soubor vlastnost\u00ed sm\u011brova\u010de aplikac\u00ed m\u00e1 chybn\u00fd form\u00e1t.
+error.dar.property.parser.1.useraction=Ov\u011b\u0159te, zda m\u00e1 soubor vlastnost\u00ed sm\u011brova\u010de aplikac\u00ed spr\u00e1vn\u00fd form\u00e1t.
+
+warn.sip.proxy.outboundif.invalid=CWSCT0409W: Servery proxy jsou konfigurov\u00e1ny s r\u016fzn\u00fdmi odchoz\u00edmi rozhran\u00edmi.
+warn.sip.proxy.outboundif.invalid.explanation=V\u0161echny servery proxy mus\u00ed b\u00fdt konfigurov\u00e1ny se stejnou virtu\u00e1ln\u00ed adresou IP.
+warn.sip.proxy.outboundif.invalid.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.create.500.response=CWSCT0410E: Nezda\u0159ilo se vygenerovat odpov\u011b\u010f sm\u011brova\u010de aplikac\u00ed.
+error.failed.create.500.response.explanation=Sm\u011brova\u010d aplikac\u00ed zp\u016fsobil neo\u010dek\u00e1vanou v\u00fdjimku p\u0159i pokusu kontejneru com.ibm.ws.sip.container vygenerovat 500 odpov\u011bd\u00ed a skon\u010dil nezdarem.
+error.failed.create.500.response.useraction=Obra\u0165te se na vlastn\u00edka sm\u011brova\u010de aplikac\u00ed.
+
+warn.sip.custom.property.deprecated=CWSCT0411W: P\u0159izp\u016fsoben\u00e1 vlastnost [{0}] pat\u0159\u00ed mezi zam\u00edtnut\u00e9.
+warn.sip.custom.property.deprecated.explanation=Tato vlastnost st\u00e1le plat\u00ed a jej\u00ed hodnota je pou\u017eita, je-li definov\u00e1na v konfiguraci, s vy\u0161\u0161\u00ed prioritu ne\u017e atribut - z d\u016fvod\u016f zp\u011btn\u00e9 kompatibility.
+warn.sip.custom.property.deprecated.useraction=Nastavte tuto hodnotu prost\u0159ednictv\u00edm u\u017eivatelsk\u00e9ho rozhran\u00ed nastaven\u00ed konfigurace kontejneru SIP.
+
+warn.sip.queue.hung=CWSCT0412W: Zd\u00e1 se, \u017ee \u00faloha SIP vztahuj\u00edc\u00ed se k {0} neodpov\u00edd\u00e1. Tato \u00faloha bude ignorov\u00e1na.
+warn.sip.queue.hung.explanation= \u00daloha p\u0159ekro\u010dila konfigura\u010dn\u00ed dobu pro odhalen\u00ed podprocesu, kter\u00fd neodpov\u00edd\u00e1. N\u00e1sleduj\u00edc\u00ed zpr\u00e1vy SIP v t\u00e9to relaci mohou selhat.
+warn.sip.queue.hung.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warn.server.overloaded.message.queue.overloaded=CWSCT0413W: Server je p\u0159et\u00ed\u017een, proto\u017ee fronty podproces\u016f kontejneru com.ibm.ws.sip.container dos\u00e1hly maxim\u00e1ln\u00ed kapacitu.
+warn.server.overloaded.message.queue.overloaded.explanation=Server SIP nem\u016f\u017ee p\u0159ij\u00edmat dal\u0161\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy, dokud je p\u0159et\u00ed\u017een.
+warn.server.overloaded.message.queue.overloaded.useraction=Sni\u017ete mno\u017estv\u00ed p\u0159\u00edchoz\u00edch zpr\u00e1v nebo nastavte vy\u0161\u0161\u00ed hodnotu pro maxim\u00e1ln\u00ed velikost fronty kontejneru SIP (Session Initiation Protocol) com.ibm.ws.sip.container.
+
+info.sip.replication.mode=CWSCT0414I: Re\u017eim replikace SIP je: {0} 
+info.sip.replication.mode.explanation=Frekvence replikace relac\u00ed SIP p\u0159es replika\u010dn\u00ed dom\u00e9nu (pokud existuje).
+info.sip.replication.mode.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.dar.weight=CWSCT0415I: Prob\u00edh\u00e1 na\u010d\u00edt\u00e1n\u00ed v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed, strategie v\u00e1hy.
+info.dar.weight.explanation=Nebyl ur\u010den konfigura\u010dn\u00ed soubor vlastn\u00edho sm\u011brova\u010de aplikac\u00ed nebo v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed (DAR). Kontejner SIP com.ibm.ws.sip.container pou\u017eije v\u00fdchoz\u00ed chov\u00e1n\u00ed, p\u0159i kter\u00e9m jsou aplikace \u0159azeny podle v\u00e1hy.
+info.dar.weight.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.dar.no.config=CWSCT0416E: Konfigura\u010dn\u00ed soubor v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed (DAR) nebyl nalezen v ur\u010den\u00e9 cest\u011b {0}.
+error.dar.no.config.explanation=Konfigura\u010dn\u00ed soubor v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed (DAR) ur\u010den\u00fd u\u017eivatelem nebyl nalezen.
+error.dar.no.config.useraction=Ov\u011b\u0159te, \u017ee cesta ur\u010den\u00e1 v r\u00e1mci vlastnost\u00ed kontejneru SIP com.ibm.ws.sip.container "javax.servlet.sip.ar.dar.configuration" je spr\u00e1vn\u00e1.
+
+error.sip.descriptor.wrong.class=CWSCT0417E: N\u00e1zev t\u0159\u00eddy sipletu definovan\u00fd v souboru sip.xml nebyl nalezen. N\u00e1zev t\u0159\u00eddy: {0}. 
+error.sip.descriptor.wrong.class.explanation=Dokument sip.xml definuje n\u00e1zev t\u0159\u00eddy sipletu, kter\u00fd nelze na\u010d\u00edst.
+error.sip.descriptor.wrong.class.useraction=Zkontrolujte soubor sip.xml a ov\u011b\u0159te spr\u00e1vn\u00e9 zad\u00e1n\u00ed n\u00e1zvu t\u0159\u00eddy.
+
+info.sip.outbound.initialized=CWSCT0418I: P\u0159\u00edpona protokolu SIP "outbound" bylo inicializov\u00e1no \u00fasp\u011b\u0161n\u011b.
+info.sip.outbound.initialized.explanation=Kontejner com.ibm.ws.sip.container servlet\u016f SIP je p\u0159ipraven znovu pou\u017e\u00edt p\u0159ipojen\u00ed inicializovan\u00e9 klientem na z\u00e1klad\u011b p\u0159\u00edpona protokolu "outbound".
+info.sip.outbound.initialized.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Dal\u0161\u00ed informace o p\u0159\u00edpon\u011b protokolu "outbound" naleznete v Informa\u010dn\u00edm centru serveru WebSphere Application Server v t\u00e9matu "Op\u011btovn\u00e9 pou\u017eit\u00ed p\u0159ipojen\u00ed SIP inicializovan\u00e9ho klientem".
+
+warn.sip.outbound.no.key.set=CWSCT0419W: Nebyla ur\u010dena \u017e\u00e1dn\u00e1 sada kl\u00ed\u010d\u016f pro p\u0159\u00edpona protokolu SIP "outbound".
+warn.sip.outbound.no.key.set.explanation=Kontejner com.ibm.ws.sip.container servlet\u016f SIP spravuje p\u0159ipojen\u00ed inicializovan\u00e9 klientem na z\u00e1klad\u011b p\u0159\u00edpona protokolu SIP "outbound", ale zabezpe\u010den\u00ed je zak\u00e1z\u00e1no. V t\u00e9to situaci jsou tokeny toku ohro\u017eeny, nebo\u0165 je mohou \u00fato\u010dn\u00edci zm\u011bnit.
+warn.sip.outbound.no.key.set.useraction=Chcete-li povolit zabezpe\u010den\u00ed p\u0159ipojen\u00ed inicializovan\u00e9ho klientem, postupujte podle informac\u00ed uveden\u00fdch v Informa\u010dn\u00edm centru serveru WebSphere Application Server v t\u00e9matu "Op\u011btovn\u00e9 pou\u017eit\u00ed p\u0159ipojen\u00ed SIP inicializovan\u00e9ho klientem".
+
+info.sip.outbound.key.set.updated=CWSCT0420I: Sada kl\u00ed\u010d\u016f pou\u017eit\u00e1 pro p\u0159\u00edpona protokolu SIP "outbound" byla aktualizov\u00e1na.
+info.sip.outbound.key.set.updated.explanation=V sad\u011b kl\u00ed\u010d\u016f byl vygenerov\u00e1n nov\u00fd kl\u00ed\u010d.
+info.sip.outbound.key.set.updated.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.sip.outbound.failure=CWSCT0421E: P\u0159\u00edpona protokolu SIP "outbound" se nezda\u0159ilo inicializovat se sadou kl\u00ed\u010d\u016f {0}.
+error.sip.outbound.failure.explanation=Kontejner servlet\u016f SIP servlet\u016f SIP nem\u016f\u017ee zpracovat p\u0159\u00edpona protokolu "outbound", jeliko\u017e do\u0161lo k chyb\u011b p\u0159i pokusu o inicializaci ur\u010den\u00e9 sady kl\u00ed\u010d\u016f.
+error.sip.outbound.failure.useraction=Ujist\u011bte se, \u017ee ur\u010den\u00e1 sada kl\u00ed\u010d\u016f v konfiguraci sady kl\u00ed\u010d\u016f existuje. Dal\u0161\u00ed informace naleznete v Informa\u010dn\u00edm centru serveru WebSphere Application Server v t\u00e9matu "Op\u011btovn\u00e9 pou\u017eit\u00ed p\u0159ipojen\u00ed SIP inicializovan\u00e9ho klientem".
+
+warn.sip.invalid.comma.separated.headers=CWSCT0422W: Neplatn\u00e1 syntaxe v p\u0159izp\u016fsoben\u00e9 vlastnosti "comma.separated.headers".
+warn.sip.invalid.comma.separated.headers.explanation=P\u0159izp\u016fsoben\u00e1 vlastnost "comma.separated.headers" kontejneru SIP com.ibm.ws.sip.container obsahuje neplatn\u00e9 nastaven\u00ed.
+warn.sip.invalid.comma.separated.headers.useraction=Zadejte bu\u010f platnou hodnotu pro p\u0159izp\u016fsobenou vlastnost "comma.separated.headers", nebo odeberte tuto p\u0159izp\u016fsobenou vlastnost z nastaven\u00ed konfigurace kontejneru SIP com.ibm.ws.sip.container. P\u0159izp\u016fsoben\u00e9 vlastnosti kontejneru SIP com.ibm.ws.sip.container jsou pops\u00e1ny v Informa\u010dn\u00edm centru aplika\u010dn\u00edho serveru Websphere Application Server, v t\u00e9matu "P\u0159izp\u016fsoben\u00e9 vlastnosti kontejneru SIP com.ibm.ws.sip.container".
+
+sip.app.deployment.failed=CWSCT0423E: Nezda\u0159ilo se implementovat aplikaci {0}, p\u0159\u00ed\u010dina {1}.
+sip.app.deployment.failed.explanation=Implementace se nezda\u0159ila v d\u016fsledku neplatn\u00e9ho deskriptoru implementace.
+sip.app.deployment.failed.useraction=Zkontrolujte, zda nejsou deskriptory implementace sip.xml nebo anotace v konfliktu a zda jsou platn\u00e9 dle specifikace.
+
+info.dar.start.order=CWSCT0424I: Prob\u00edh\u00e1 na\u010d\u00edt\u00e1n\u00ed v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed, strategie po\u0159ad\u00ed spu\u0161t\u011bn\u00ed.
+info.dar.start.order.explanation=Nebyl ur\u010den konfigura\u010dn\u00ed soubor vlastn\u00edho sm\u011brova\u010de aplikac\u00ed nebo v\u00fdchoz\u00edho sm\u011brova\u010de aplikac\u00ed (DAR). Kontejner SIP com.ibm.ws.sip.container pou\u017eije v\u00fdchoz\u00ed chov\u00e1n\u00ed, p\u0159i kter\u00e9m jsou aplikace \u0159azeny podle po\u0159ad\u00ed spu\u0161t\u011bn\u00ed.
+info.dar.start.order.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warn.change.in.endpoints=CWSCT0425W: Konfigurace kan\u00e1lu SIP byla zm\u011bn\u011bna. Zm\u011bny v koncov\u00fdch bodech SIP p\u0159i spu\u0161t\u011bn\u00e9m serveru mohou zp\u016fsobit nezdar u pr\u016fb\u011b\u017en\u00fdch dialogov\u00fdch oken.
+warn.change.in.endpoints.explanation=Spolehlivost stavu dialogov\u00fdch oken SIP je z\u00e1visl\u00e1 na trvalosti konfigurace rozhran\u00ed SIP.
+warn.change.in.endpoints.useraction=Jestli\u017ee jsou pou\u017e\u00edv\u00e1na existuj\u00edc\u00ed dialogov\u00e1 okna, doporu\u010duje se restart serveru.
+
+warn.dar.file.modification=CWSCT0426W: Nedo\u0161lo ke zm\u011bn\u011b um\u00edst\u011bn\u00ed nebo obsahu souboru SIP DAR (Default SIP Application Router).
+warn.dar.file.modification.explanation=Um\u00edst\u011bn\u00ed souboru DAR nebo obsah nelze p\u0159i spu\u0161t\u011bn\u00e9m serveru zm\u011bnit.
+warn.dar.file.modification.useraction=Chcete-li uplatnit zm\u011bny, restartujte server.
+
+error.no.main.serv=CWSCT0427E: Aplikace definovala hlavn\u00ed servlet, kter\u00fd neexistuje: {0}.
+error.no.main.serv.explanation=Hlavn\u00ed servlet neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu z existuj\u00edc\u00edch servlet\u016f.
+error.no.main.serv.useraction=Ujist\u011bte se, \u017ee je hlavn\u00ed servlet spr\u00e1vn\u011b definov\u00e1n v deskriptoru implementace nebo anotac\u00ed a odkazuje na t\u0159\u00eddu typu SipServlet.
+
+cant.both.main.serv.mapping=CWSCT0428E: Aplikace definuje hlavn\u00ed servlet {0} i pravidla mapov\u00e1n\u00ed servletu, co\u017e nen\u00ed p\u0159\u00edpustn\u00e9.
+cant.both.main.serv.mapping.explanation=Aplikace nem\u016f\u017ee definovat sou\u010dasn\u011b hlavn\u00ed servlet a pravidla mapov\u00e1n\u00ed servletu.
+cant.both.main.serv.mapping.useraction=Ujist\u011bte se, \u017ee aplikace definuje bu\u010f hlavn\u00ed servlet, nebo pravidla mapov\u00e1n\u00ed servletu, nikoli oboj\u00ed. Hlavn\u00ed servlet m\u016f\u017eete definovat v deskriptoru implementace nebo anotac\u00ed.
+
+must.define.main.serv=CWSCT0429E: Aplikace nedefinuje hlavn\u00ed servlet, ale p\u0159itom m\u00e1 v\u00edce ne\u017e jeden siplet.
+must.define.main.serv.explanation=M\u00e1-li aplikace v\u00edce siplet\u016f, mus\u00ed rovn\u011b\u017e definovat hlavn\u00ed servlet.
+must.define.main.serv.useraction=Ujist\u011bte se, \u017ee je hlavn\u00ed servlet spr\u00e1vn\u011b definov\u00e1n v deskriptoru implementace nebo anotac\u00ed. Definice hlavn\u00edho servletu mus\u00ed odkazovat na t\u0159\u00eddu typu SipServlet.
+
+start.sipChain.error=CWSCT0430E: Nezda\u0159ilo se spustit \u0159et\u011bzec SIP.
+start.sipChain.error.explanation=Pokud se nezda\u0159ilo spustit \u0159et\u011bzec SIP, m\u016f\u017ee j\u00edt o probl\u00e9my s definicemi koncov\u00fdch bod\u016f SIP.
+start.sipChain.error.useraction=Ov\u011b\u0159te, zda jsou koncov\u00e9 body SIP definov\u00e1ny spr\u00e1vn\u011b.
+
+config.sipChain.error=CWSCT0431E: Nezda\u0159ilo se inicializovat \u0159et\u011bzec SIP.
+config.sipChain.error.explanation=Pokud se nezda\u0159\u00ed inicializovat \u0159et\u011bzec SIP, nen\u00ed vytvo\u0159en nebo inicializov\u00e1n kan\u00e1l v tomto \u0159et\u011bzci, nebo se \u0159et\u011bzec nezda\u0159ilo vytvo\u0159it. Sem pat\u0159\u00ed i nezda\u0159en\u00e9 pokusy o sv\u00e1z\u00e1n\u00ed port\u016f.
+config.sipChain.error.useraction=Ov\u011b\u0159te, zda jsou koncov\u00e9 body SIP definov\u00e1ny spr\u00e1vn\u011b.
+
+error.asynchwork.host.unknown=CWSCT0432E: Asynchronn\u00ed pr\u00e1ci se nezda\u0159ilo odeslat, proto\u017ee je hostitel nezn\u00e1m\u00fd.
+error.asynchwork.host.unknown.explanation=Kontejner SIP se pokou\u0161el odeslat asynchronn\u00ed pr\u00e1ci, ale nezda\u0159ilo se mu to kv\u016fli nezn\u00e1m\u00e9mu hostiteli.
+error.asynchwork.host.unknown.useraction=P\u0159ed odesl\u00e1n\u00edm asynchronn\u00ed pr\u00e1ce zkontrolujte konfiguraci hostitele.
+
+info.sip.queue.stats=CWSCT0433I: Re\u017eim tisku statistik front kontejneru SIP = {0}. 1 = pouze p\u0159i p\u0159et\u00ed\u017een\u00ed, 2 = v\u017edy. ka\u017ed\u00fdch {1} ms.
+info.sip.queue.stats.explanation=Re\u017eim tisku front kontejneru SIP.
+info.sip.queue.stats.useraction=Tato zpr\u00e1va je informa\u010dn\u00ed. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+error.init.loadonstartup.app=CWSCT0435E: Serveru SIP se nezda\u0159ilo inicializovat aplikaci s atributem servletu loadOnStartup: {0}
+error.init.loadonstartup.app.explanation=Do\u0161lo k chyb\u011b p\u0159i inicializaci aplikace SIP s uveden\u00fdm atributem servletu loadOnStartup.
+error.init.loadonstartup.app.useraction=Zkontrolujte soubor trasov\u00e1n\u00ed serveru SIP, kter\u00fd najdete v adres\u00e1\u0159i logs ve slo\u017ece SERVER_DIR, a z\u00edsk\u00e1te tak podrobn\u011bj\u0161\u00ed informace o t\u00e9to chyb\u011b.
+
+warn.sip.resolver.failed.connection=CWSCT0436W: P\u0159ipojen\u00ed p\u0159evad\u011b\u010de SIP se nezda\u0159ilo. Vzd\u00e1len\u00e1 adresa: {0}.
+warn.sip.resolver.failed.connection.explanation=P\u0159evad\u011b\u010d protokolu SIP (Session Initiation Protocol) se nedok\u00e1zal p\u0159ipojit ke vzd\u00e1len\u00e9mu uzlu.
+warn.sip.resolver.failed.connection.useraction=Pravd\u011bpodobn\u011b nen\u00ed dostupn\u00fd vzd\u00e1len\u00fd server n\u00e1zv\u016f. Zkontrolujte konfiguraci serveru n\u00e1zv\u016f.
+
+warn.sip.resolver.server.not.responding=CWSCT0437W: Server n\u00e1zv\u016f neodpov\u00edd\u00e1 na vyhled\u00e1v\u00e1n\u00ed SIP. Vzd\u00e1len\u00e1 adresa: {0}.
+warn.sip.resolver.server.not.responding.explanation=Vzd\u00e1len\u00fd server n\u00e1zv\u016f neodpov\u00edd\u00e1 na posledn\u00ed po\u017eadavek p\u0159evad\u011b\u010de protokolu SIP (Session Initiation Protocol).
+warn.sip.resolver.server.not.responding.useraction=Server n\u00e1zv\u016f nemus\u00ed b\u00fdt funk\u010dn\u00ed. Zkontrolujte dostupnost serveru n\u00e1zv\u016f.
+
+info.sip.resolver.established.connection=CWSCT0438I: P\u0159evad\u011b\u010d SIP se p\u0159ipojil k serveru {0}.
+info.sip.resolver.established.connection.explanation=P\u0159evad\u011b\u010d protokolu SIP (Session Initiation Protocol) se pomoc\u00ed protokolu TCP p\u0159ipojil ke vzd\u00e1len\u00e9mu serveru n\u00e1zv\u016f.
+info.sip.resolver.established.connection.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+info.sip.resolver.initialized=CWSCT0439I: Slu\u017eba p\u0159evad\u011b\u010de SIP provedla inicializaci se serverem n\u00e1zv\u016f {0}.
+info.sip.resolver.initialized.explanation=Slu\u017eba p\u0159evad\u011b\u010de protokolu SIP (Session Initiation Protocol) byla inicializov\u00e1na.
+info.sip.resolver.initialized.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+info.sip.resolver.not.initialized=CWSCT0440I: Slu\u017eba p\u0159evad\u011b\u010de SIP nebyla inicializov\u00e1na.
+info.sip.resolver.not.initialized.explanation=Slu\u017eba p\u0159evad\u011b\u010de SIP (Session Initiation Protocol) nezkonfigurovala server n\u00e1zv\u016f.
+info.sip.resolver.not.initialized.useraction=P\u0159ekonfigurujte slu\u017ebu p\u0159evad\u011b\u010de SIP se serverem n\u00e1zv\u016f.
+
+warning.traditional.enabled=CWSCT0441W: Kontejner SIP nepodporuje tradi\u010dn\u00ed PMI.
+warning.traditional.enabled.explanation=Atribut enableTraditionalPMI je nastaven na true v souboru server.xml. Kontejner SIP nepodporuje tradi\u010dn\u00ed PMI v syst\u00e9mu Liberty.
+warning.traditional.enabled.useraction=Odeberte vlastnost enableTraditionalPMI ze souboru server.xml.

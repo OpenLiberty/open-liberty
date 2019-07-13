@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.openid20.openidClientConfig.metatype" ibm:alias="openId"
+         name="%openId" description="%openId.desc">
+		
+		<AD id="useClientIdentity" name="%useClientIdentity" description="%useClientIdentity.desc"
+            required="false" type="Boolean" default="false"/>
+            
+		<AD id="mapIdentityToRegistryUser" name="%mapIdentityToRegistryUser" description="%mapIdentityToRegistryUser.desc"
+            required="false" type="Boolean" default="false"/>
+	
+	    <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+	
+		<AD id="httpsRequired" name="%httpsRequired" description="%httpsRequired.desc"
+            required="false" type="Boolean" default="true"/>
+		        
+        <AD id="hashAlgorithm" required="false" type="String" name="%hashAlgorithm" description="%hashAlgorithm.desc"
+            default="SHA256">
+            <Option label="%hashAlgorithm.SHA1" value="SHA1" />
+            <Option label="%hashAlgorithm.SHA256" value="SHA256" />
+        </AD>
+        
+		<!-- first one in the list will be used for mapping to the WAS user registr 
+             max value for unlimited --> 
+        <AD id="userInfoRef" name="%userInfoRef" description="%userInfoRef.desc"
+            required="false" type="String" cardinality="2147483647" default="email"
+            ibm:type="pid"
+       	    ibm:reference="com.ibm.ws.security.openid20.openidClientConfig.userInfo"/>
+
+       <AD id="authenticationMode" required="false" type="String" name="%authenticationMode" description="%authenticationMode.desc"
+        	default="checkid_setup"> 
+        	<Option label="%authenticationMode.checkid_setup" value="checkid_setup" />
+        	<Option label="%authenticationMode.checkid_immediate" value="checkid_immediate" />
+        </AD>
+
+        <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc"
+            required="false" type="Boolean" default="true"/>
+
+         <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc"
+            required="false" type="String" />
+            
+	     <AD id="sharedKeyEncryptionEnabled" name="internal" description="internal use only"
+            required="false" type="Boolean" default="true"/>
+		
+		 <AD id="nonceValidTime" name="internal" description="internal use only"
+            required="false" type="String" default="300s" ibm:type="duration" />
+  
+ 		<AD id="maxAssociationAttempts" name="internal" description="internal use only"
+            required="false" type="Integer" default="4" min="0"/>
+        
+        <AD id="allowStateless" name="internal" description="internal use only"
+            required="false" type="Boolean" default="true" />
+
+		<AD id="searchNumberOfUserInfoToMap" name="internal" description="internal use only"
+            required="false" type="Integer" default="1" min="0"/>  
+            
+        <AD id="maxDiscoveryCacheSize" name="internal" description="internal use only" required="false" type="Integer" min="0"
+            default="10000" />             
+            
+ 		<AD id="failedAssocExpire" name="internal" description="internal use only"
+            required="false" type="String"  min="0" default="60s" ibm:type="duration" />
+
+ 		<AD id="connectTimeout" name="internal" description="internal use only"
+            required="false" type="String"  min="0" default="60s" ibm:type="duration" />
+            
+        <AD id="socketTimeout" name="internal" description="internal use only"
+            required="false" type="String"  min="0" default="60s" ibm:type="duration" />
+        
+        <AD id="maxDiscoverRetry" name="internal" description="internal use only"
+            required="false" type="Integer" default="2" min="1"/>
+            
+         <AD id="groupIdentifier" name="internal" description="internal use only"
+            required="false" type="String" default="groupIds"/>
+
+         <AD id="characterEncoding" name="internal" description="internal use only"
+            required="false" type="String" default="UTF-8"/>
+
+         <AD id="includeUserInfoInSubject" name="internal" description="internal use only"
+            required="false" type="Boolean" default="true"/>
+            
+         <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only"  
+            required="false" type="Boolean" default="true"/>
+
+         <AD id="providerIdentifier" name="%providerIdentifier" description="%providerIdentifier.desc"
+            required="false" type="String" />
+            
+         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" 
+             ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter"
+             required="false" type="String"  />   
+           
+         <AD id="allowBasicAuthentication" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/>
+            
+         <AD id="tryOpenIDIfBasicAuthFails" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/>
+                        
+    </OCD>
+    
+    <Designate pid="com.ibm.ws.security.openid20.openidClientConfig">
+        <Object ocdref="com.ibm.ws.security.openid20.openidClientConfig.metatype" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.security.openid20.openidClientConfig.userInfo.metatype" name="%userInfo" description="%userInfo.desc"
+         ibm:alias="userInfo">
+        <AD id="alias" name="%alias" description="%alias.desc" required="true" type="String" default="email" />
+        <AD id="uriType" name="%uriType" description="%uriType.desc" required="true" type="String" default="http://axschema.org/contact/email" />
+        <AD id="count" name="%count" description="%count.desc" required="false" type="Integer" default="1" min="1" />
+        <AD id="required" name="%required" description="%required.desc" required="false" type="Boolean" default="true" />  
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.openid20.openidClientConfig.userInfo">
+        <Object ocdref="com.ibm.ws.security.openid20.openidClientConfig.userInfo.metatype" />
+    </Designate>
+
+</metatype:MetaData>

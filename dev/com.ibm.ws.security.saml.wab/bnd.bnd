@@ -1,0 +1,67 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security SAML Web SSO 2.0 WAB
+Bundle-SymbolicName: com.ibm.ws.security.saml.wab.2.0
+Bundle-Description: WAS Security SAML WebSso 2.0, version=${bVersion}
+
+Web-ContextPath: /ibm/saml20
+
+
+WS-TraceGroup: SAML20
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+Import-Package: com.ibm.ws.security.saml, \
+        com.ibm.ws.security.saml.error, \
+        com.ibm.ws.security.saml.impl, \
+        *
+
+Private-Package: \
+        com.ibm.ws.security.saml.sso20.web, \
+        com.ibm.ws.security.saml.sso20.internal.resources.*
+        
+Include-Resource:   \
+    WEB-INF=resources/WEB-INF, \
+    OSGI-INF=resources/OSGI-INF, \
+    resources/errorMsg.jsp
+        
+Service-Component: \
+  com.ibm.ws.security.saml.sso20.web.EndpointServices; \
+    implementation:=com.ibm.ws.security.saml.sso20.web.EndpointServices; \
+    provide:=com.ibm.ws.security.saml.sso20.web.EndpointServices; \
+    configuration-policy:=ignore; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    securityService=com.ibm.ws.security.SecurityService; \
+    samlService=com.ibm.ws.security.saml.SsoSamlService; \
+    dynamic:='securityService'; \
+    greedy:='securityService,samlService'; \
+    optional:='samlService'; \
+    multiple:='samlService'; \
+    properties:="service.vendor=IBM"
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.saml.sso.2.0;version=latest
+
+instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlWab20Messages*.class

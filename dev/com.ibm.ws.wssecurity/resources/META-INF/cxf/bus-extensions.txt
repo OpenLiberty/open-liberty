@@ -1,0 +1,1 @@
+com.ibm.ws.wssecurity.WSSecurityPolicyLoader::true:true

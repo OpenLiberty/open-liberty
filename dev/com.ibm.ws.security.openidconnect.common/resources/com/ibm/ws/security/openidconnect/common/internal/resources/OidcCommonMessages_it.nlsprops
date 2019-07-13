@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: La richiesta dell''endpoint di token ha avuto esito negativo. Impossibile convalidare il token JWT richiesto da [{0}] a causa di una firma mancante dal token JWT. Il provider OpenID Connect ha specificato l''algoritmo [{1}] e si aspetta che il token JWT sia firmato.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Impossibile verificare il token JWT poich\u00e9 il token non \u00e8 firmato. Il provider OpenID Connect si aspetta che il token sia firmato.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Controllare la configurazione del client OpenID Connect per assicurarsi che firmi il token JWT.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: La richiesta dell''endpoint di token ha avuto esito negativo. Impossibile convalidare il token JWT richiesto da  [{0}] a causa di una mancata corrispondenza tra gli algoritmi di firma tra il provider OpenID Connect  [{1}] e il client OpenID Connect  [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Impossibile verificare il token JWT poich\u00e9 il provider OpenID Connect e il client stanno utilizzando algoritmi di firma differenti per firmare/verificare il token.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Controllare la configurazione del client OpenID Connect per specificare l'algoritmo di firma che corrisponde al provider OpenID Connect.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: La richiesta dell''endpoint di token ha avuto esito negativo. Un token JWT firmato deve avere 3 segmenti separati da ''.'', ma questo token JWT ha [{0}] segmenti.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Un token JWT firmato deve avere esattamente 3 segmenti separati da '.'. Questo token JWT ha un numero di segmenti non corretto.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Accertarsi che il token JWT sia valido e che disponga di 3 segmenti.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: La richiesta dell''endpoint di token ha avuto esito negativo. La convalida del token JWT richiesta da [{0}] non \u00e8 riuscita. \u00c8 stato emesso l''errore InvalidJwtException con messaggio:[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Un token JWT non pu\u00f2 essere convalidato a causa di un errore InvalidJwtException che viene indicato nel messaggio.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Correggere l'errore indicato nel messaggio.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: La richiesta dell'endpoint di token ha avuto esito negativo. Un token JWT richiesto non \u00e8 stato trovato nella richiesta.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=La richiesta deve fornire un token JWT ma il token JWT non \u00e8 stato trovato nella richiesta dell'endpoint di token.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Fornire un token JWT valido nella richiesta dell'endpoint di token.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Si \u00e8 verificata un''eccezione durante il tentativo di ottenere RunAsSubject. L''eccezione era: [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Si \u00e8 verificata un'eccezione durante il richiamo di RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Assicurarsi che il server sia configurato e avviato correttamente.
+
