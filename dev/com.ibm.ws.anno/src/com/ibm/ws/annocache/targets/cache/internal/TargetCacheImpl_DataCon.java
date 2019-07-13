@@ -256,6 +256,11 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     }
 
     @Trivial
+    public boolean getReadJandexFull() {
+        return getCacheOptions().getReadJandexFull();
+    }
+
+    @Trivial
     public boolean getAlwaysValid() {
         return getCacheOptions().getAlwaysValid();
     }
@@ -314,25 +319,31 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
      */
     public void basicWriteData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         if ( !shouldWrite("Full data") ) {
+            // System.out.println("Write [ " + targetData.getName() + " ] [ Disabled write ]");
             return;
         }
 
-        if ( (getWriteLimit() > targetData.getClassNames().size()) ||
-             (getOmitJandexWrite() && targetData.getUsedJandex()) ) {
+        if ( getWriteLimit() > targetData.getClassNames().size() ) {
+            // System.out.println("Write [ " + targetData.getName() + " ] [ Too few classes]");
+        } else if ( getOmitJandexWrite() && targetData.getUsedJandex() ) {
+            // System.out.println("Write [ " + targetData.getName() + " ] [ Omit Jandex ]");
             return;
         }
 
         if ( getUseJandexFormat() ) {
             basicWriteStamp( modData, targetData.getStampTable() );
             basicWriteJandex( modData, targetData.consumeJandexIndex() );
+            // System.out.println("Write [ " + targetData.getName() + " ] [ Write Stamp and Jandex ]");
 
         } else if ( getUseSeparateCaches() ) {
             basicWriteStamp( modData, targetData.getStampTable() );
             basicWriteClasses( modData, targetData.getClassTable() );
             basicWriteTargets( modData, targetData.getAnnotationTable() );
+            // System.out.println("Write [ " + targetData.getName() + " ] [ Write Stamp and Classes and Targets ]");
 
         } else {
             basicWriteDataCombined(modData, targetData);
+            // System.out.println("Write [ " + targetData.getName() + " ] [ Write combined ]");
         }
     }
 
@@ -379,6 +390,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Stamp");
+
+        // System.out.println("Stamp read [ " + getName() + " ] [ " + readDuration + " ]");
 
         return didRead;
     }
@@ -498,6 +511,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Targets");
 
+        // System.out.println("Read targets [ " + getName() + " ] [ " + readDuration + " ]");
+        
         return didRead;
     }
 
@@ -577,6 +592,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Classes");
+
+        // System.out.println("Read classes [ " + getName() + " ] [ " + readDuration + " ]");
 
         return didRead;
     }
@@ -668,6 +685,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Together");
 
+        // System.out.println("Read combined [ " + getName() + " ] [ " + readDuration + " ]");
+
         return didRead;
     }
 
@@ -758,8 +777,13 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         try {
             TargetCacheImpl_Reader reader = createReader(useJandexFile); // throws IOException
             try {
-                SparseIndex sparseIndex = reader.readSparseIndex(); // throws IOException
-                targetData.transfer(sparseIndex);
+                if ( getReadJandexFull() ) {
+                    Index index = reader.readIndex(); // throws IOException
+                    targetData.transfer(index);
+                } else {
+                    SparseIndex sparseIndex = reader.readSparseIndex(); // throws IOException
+                    targetData.transfer(sparseIndex);
+                }
             } finally {
                 reader.close(); // throws IOException
             }
@@ -772,6 +796,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Jandex");
+
+        // System.out.println("Sparse jandex cache read [ " + getName() + " ] [ " + readDuration + " ]");
 
         return didRead;
     }
@@ -935,15 +961,18 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         if ( currentStamp.equals(ClassSource.UNRECORDED_STAMP) ||
              currentStamp.equals(ClassSource.UNAVAILABLE_STAMP) ) {
             if ( !useAlwaysValid ) {
+                // System.out.println("DataCon.isValid [ Stamp unavailable ]");
                 return "Stamp unavailable";
             }
         }
 
         TargetsTableImpl useTargets = getTargetsTable();
         if ( useTargets != null ) {
-            if ( useAlwaysValid || useTargets.getStamp().equals(currentStamp) ) { 
+            if ( useAlwaysValid || useTargets.getStamp().equals(currentStamp) ) {
+                // System.out.println("DataCon.isValid [ Valid ]");
                 return null; // Same stamp
             } else {
+                // System.out.println("DataCon.isValid [ Stamp difference ]");
                 return "Stamp difference";
             }
         }
@@ -959,19 +988,24 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         if ( useJandex || getUseSeparateCaches() ) {
             TargetsTableTimeStampImpl useStampTable = useTargetsTable.getStampTable();
             if ( !basicReadStamp(useStampTable) ) {
+                // System.out.println("DataCon.isValid [ Stamp read failure ]");
                 return "Stamp read failure";
             } else if ( !useAlwaysValid && !useStampTable.getStamp().equals(currentStamp) ) {
+                // System.out.println("DataCon.isValid [ Stamp change ]");
                 return "Stamp change";
             }
 
             if ( useJandex ) {
                 if ( !basicReadJandex(useTargetsTable) ) {
+                    // System.out.println("DataCon.isValid [ Jandex read failure ]");
                     return "Jandex read failure";
                 }
             } else {
                 if ( !basicReadClasses( useTargetsTable.getClassTable() ) ) {
+                    // System.out.println("DataCon.isValid [ Class table read failure ]");
                     return "Class table read failure";
                 } else if ( !basicReadTargets( useTargetsTable.getAnnotationTable() ) ) {
+                    // System.out.println("DataCon.isValid [ Annotation table read failure ]");
                     return "Annotation table read failure";
                 }
             }
@@ -979,11 +1013,14 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         } else {
             String isValidReason = basicIsValidCombined(useTargetsTable, currentStamp);
             if ( isValidReason != null ) {
+                // System.out.println("DataCon.isValid [ " + isValidReason + " ]");
                 return isValidReason;
             }
         }
 
         setTargetsTable(useTargetsTable);
+
+        // System.out.println("DataCon.isValid [ IsValid ]");
         return null;
     }
 
@@ -1016,6 +1053,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Together");
+
+        // System.out.println("Combined read [ " + getName() + " ] [ " + readDuration + " ]");
 
         return readReason;
     }

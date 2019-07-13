@@ -48,67 +48,80 @@ public class BigAppTest extends AnnoCachingTest {
         }
     }
 
-    public static final boolean CACHE_DISABLED = false;
-    public static final boolean CACHE_ENABLED = true;
+    public static enum CacheSetting {
+        PRE_BETA,
+        POST_BETA_DISABLED,
+        POST_BETA_ENABLED
+    }
 
     public static enum StartCase {
-        DISABLED_SCRUBBED(CACHE_DISABLED, ServerStartType.SCRUBBED, "Disabled Scrubbing"),
-        DISABLED(CACHE_DISABLED, "Disabled"),
+        DISABLED_PRE_BETA_SCRUBBING(
+            CacheSetting.PRE_BETA,
+            ServerStartType.DO_SCRUB,
+            "Pre-Cache Scrubbing"),
+        DISABLED_PRE_BETA(CacheSetting.PRE_BETA, "Pre-Cache"),
+
+        DISABLED_SCRUBBING(
+            CacheSetting.POST_BETA_DISABLED,
+            ServerStartType.DO_SCRUB,
+            "Disabled Scrubbing"),
+        DISABLED(CacheSetting.POST_BETA_DISABLED, "Disabled"),
 
         // The remaining starts are unscrubbed.
         // The remaining starts are unpopulated unless indicated otherwise.
 
-        ENABLED(CACHE_ENABLED, "Enabled"),
-        ENABLED_BINARY(CACHE_ENABLED, "Enabled Binary Format"),
-        ENABLED_JANDEX(CACHE_ENABLED, "Enabled Using Jandex Format"),
+        ENABLED(CacheSetting.POST_BETA_ENABLED, "Enabled"),
+        ENABLED_BINARY(CacheSetting.POST_BETA_ENABLED, "Enabled Binary Format"),
+        ENABLED_JANDEX(CacheSetting.POST_BETA_ENABLED, "Enabled Using Jandex Format"),
 
-        ENABLED_POPULATED(CACHE_ENABLED, "Enabled Populated"),
-        ENABLED_POPULATED_BINARY(CACHE_ENABLED, "Enabled Populated Binary Format"),
-        ENABLED_POPULATED_JANDEX(CACHE_ENABLED, "Enabled Populated Using Jandex Format"),
-        ENABLED_POPULATED_BINARY_JANDEX(CACHE_ENABLED, "Enabled Populated Binary and Jandex Format"),
+        ENABLED_POPULATED(CacheSetting.POST_BETA_ENABLED, "Enabled Populated"),
+        ENABLED_POPULATED_BINARY(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary Format"),
+        ENABLED_POPULATED_JANDEX(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Using Jandex Format"),
+        ENABLED_POPULATED_BINARY_JANDEX(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary and Jandex Format"),
+        ENABLED_POPULATED_BINARY_JANDEX_FULL(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary and Jandex Full Format"),        
         
-        ENABLED_POPULATED_VALID(CACHE_ENABLED, "Enabled Populated Assumed Valid"),
-        ENABLED_POPULATED_BINARY_VALID(CACHE_ENABLED, "Enabled Populated Binary Format Assumed Valid"),
-        ENABLED_POPULATED_BINARY_JANDEX_VALID(CACHE_ENABLED, "Enabled Populated Binary and Jandex Format Assumed Valid"),
+        ENABLED_POPULATED_VALID(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Assumed Valid"),
+        ENABLED_POPULATED_BINARY_VALID(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary Format Assumed Valid"),
+        ENABLED_POPULATED_BINARY_JANDEX_VALID(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary and Jandex Format Assumed Valid"),
 
         //
 
-        DISABLED_MULTI_SCAN(CACHE_DISABLED, "Disabled Multiple Scan Threads"),
-        DISABLED_UNLIMITED_SCAN(CACHE_DISABLED, "Disabled Unlimited Scan Threads"),
+        DISABLED_MULTI_SCAN(CacheSetting.POST_BETA_DISABLED, "Disabled Multiple Scan Threads"),
+        DISABLED_UNLIMITED_SCAN(CacheSetting.POST_BETA_DISABLED, "Disabled Unlimited Scan Threads"),
 
-        ENABLED_MULTI_SCAN(CACHE_DISABLED, "Enabled Multiple Scan Threads"),
-        ENABLED_UNLIMITED_SCAN(CACHE_DISABLED, "Enabled Unlimited Scan Threads"),
+        ENABLED_MULTI_SCAN(CacheSetting.POST_BETA_DISABLED, "Enabled Multiple Scan Threads"),
+        ENABLED_UNLIMITED_SCAN(CacheSetting.POST_BETA_DISABLED, "Enabled Unlimited Scan Threads"),
 
-        ENABLED_MULTI_WRITE(CACHE_ENABLED, "Enabled Multiple Write Thread"),
-        ENABLED_UNLIMITED_WRITE(CACHE_ENABLED, "Enabled Unlimited Write Threads"),
+        ENABLED_MULTI_WRITE(CacheSetting.POST_BETA_ENABLED, "Enabled Multiple Write Thread"),
+        ENABLED_UNLIMITED_WRITE(CacheSetting.POST_BETA_ENABLED, "Enabled Unlimited Write Threads"),
 
         //
 
-        DISABLED_UPDATE(CACHE_DISABLED, "Disabled Application Update"),
-        ENABLED_UPDATE(CACHE_ENABLED, "Enabled Application Update"),
-        ENABLED_UPDATE_BINARY(CACHE_ENABLED, "Enabled Application Update Binary Format"),
-        ENABLED_UPDATE_JANDEX(CACHE_ENABLED, "Enabled Application Update Jandex Format");
+        DISABLED_UPDATE(CacheSetting.POST_BETA_DISABLED, "Disabled Application Update"),
+        ENABLED_UPDATE(CacheSetting.POST_BETA_ENABLED, "Enabled Application Update"),
+        ENABLED_UPDATE_BINARY(CacheSetting.POST_BETA_ENABLED, "Enabled Application Update Binary Format"),
+        ENABLED_UPDATE_JANDEX(CacheSetting.POST_BETA_ENABLED, "Enabled Application Update Jandex Format");
 
-        private StartCase(boolean enabled, String description) {
-        	this(enabled, ServerStartType.UNSCRUBBED, description);
+        private StartCase(CacheSetting cacheSetting, String description) {
+            this(cacheSetting, ServerStartType.DO_NOT_SCRUB, description);
         }
 
-        private StartCase(boolean enabled, ServerStartType startType, String description) {
-            this.enabled = enabled;
+        private StartCase(CacheSetting cacheSetting, ServerStartType startType, String description) {
+            this.cacheSetting = cacheSetting;
             this.startType = startType;
             this.description = description;
         }
 
-        public final boolean enabled;
+        public final CacheSetting cacheSetting;
 
-        public boolean getEnabled() {
-            return enabled;
+        public CacheSetting getCacheSetting() {
+            return cacheSetting;
         }
 
         public final ServerStartType startType;
         
         public ServerStartType getStartType() {
-        	return startType;
+            return startType;
         }
 
         public final String description;
@@ -157,10 +170,6 @@ public class BigAppTest extends AnnoCachingTest {
         info("  " + format(pct)        + " (%)");
     }
 
-    public enum ServerStartType { 
-        NONE, SCRUBBED, UNSCRUBBED; 
-    }
-
     /**
      * Collect timing data for server starts.  The server is not
      * cleared between starts.
@@ -191,7 +200,7 @@ public class BigAppTest extends AnnoCachingTest {
         info("Collect: " + startCase + ": with: " + jvmOptions + ": iterations: " + Integer.toString(ITERATIONS));
 
         for ( int startNo = 0; startNo < ITERATIONS; startNo++ ) {
-            scrubServer();
+            scrubServer(startCase);
 
             installJvmOptions(jvmOptions);
             long time = cycleServer(startCase);
@@ -275,7 +284,11 @@ public class BigAppTest extends AnnoCachingTest {
         info("Differences:");
 
         info(THIN_BANNER);
-        logDifference(StartCase.DISABLED_SCRUBBED, StartCase.DISABLED);
+        logDifference(StartCase.DISABLED_PRE_BETA_SCRUBBING, StartCase.DISABLED_SCRUBBING);
+        logDifference(StartCase.DISABLED_PRE_BETA, StartCase.DISABLED_SCRUBBING); 
+        
+        info(THIN_BANNER);
+        logDifference(StartCase.DISABLED_SCRUBBING, StartCase.DISABLED);
         logDifference(StartCase.DISABLED, StartCase.ENABLED);
         logDifference(StartCase.ENABLED, StartCase.ENABLED_BINARY);
         logDifference(StartCase.ENABLED, StartCase.ENABLED_JANDEX);
@@ -285,6 +298,7 @@ public class BigAppTest extends AnnoCachingTest {
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_BINARY);
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_JANDEX);
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_BINARY_JANDEX);
+        logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_BINARY_JANDEX_FULL);
 
         info(THIN_BANNER);
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_VALID);
@@ -319,7 +333,7 @@ public class BigAppTest extends AnnoCachingTest {
 
         long lStartTime = System.nanoTime();
 
-        if ( startCase.startType == ServerStartType.SCRUBBED ) {
+        if ( startCase.startType == ServerStartType.DO_SCRUB ) {
             startServerScrub();
         } else {
             startServer();
@@ -336,27 +350,32 @@ public class BigAppTest extends AnnoCachingTest {
         return elapsed;
     }
 
-    private static void scrubServer() throws Exception {
-        installJvmOptions("JvmOptions_Disabled.txt");
+    private static void scrubServer(StartCase startCase) throws Exception {
+        if ( startCase.getCacheSetting() == CacheSetting.PRE_BETA ) {
+            installJvmOptions("JvmOptions_PreBeta.txt");
+        } else {
+            installJvmOptions("JvmOptions_Disabled.txt");
+        }
+
         startServerScrub();
         stopServer();
     }
 
     public static enum PopulateCase {
-    	TEXT("JvmOptions_Enabled.txt"),
-    	BINARY("JvmOptions_Enabled_Binary.txt"),
-    	JANDEX("JvmOptions_Enabled_Jandex.txt"),
-    	BINARY_JANDEX("JvmOptions_Enabled_Binary_Jandex.txt");
+        TEXT("JvmOptions_Enabled.txt"),
+        BINARY("JvmOptions_Enabled_Binary.txt"),
+        JANDEX("JvmOptions_Enabled_Jandex.txt"),
+        BINARY_JANDEX("JvmOptions_Enabled_Binary_Jandex.txt");
 
-    	private PopulateCase(String jvmOptions) {
-    		this.jvmOptions = jvmOptions;
-    	}
+        private PopulateCase(String jvmOptions) {
+            this.jvmOptions = jvmOptions;
+        }
 
-    	private final String jvmOptions;
+        private final String jvmOptions;
 
-    	public String getJvmOptions() {
-    		return jvmOptions;
-    	}
+        public String getJvmOptions() {
+            return jvmOptions;
+        }
     }
 
     private static void populateServer(PopulateCase populateCase) throws Exception {
@@ -368,19 +387,34 @@ public class BigAppTest extends AnnoCachingTest {
     //
 
     @Test
-    public void bigApp_testDisabledScrubbed() throws Exception {
-        scrubServer();
+    public void bigApp_testPreBetaScrubbing() throws Exception {
+        StartCase startCase = StartCase.DISABLED_PRE_BETA_SCRUBBING;
+        scrubServer(startCase);
+        collect(startCase);
+    }
 
+    
+    @Test
+    public void bigApp_testPreBeta() throws Exception {
+        StartCase startCase = StartCase.DISABLED_PRE_BETA;
+        scrubServer(startCase);
+        collect(startCase);
+    }
+
+    @Test
+    public void bigApp_testDisabledScrubbing() throws Exception {
+        StartCase startCase = StartCase.DISABLED_SCRUBBING;
+        scrubServer(startCase);
         installJvmOptions("JvmOptions_Disabled.txt");
-        collect(StartCase.DISABLED_SCRUBBED);
+        collect(startCase);
     }
 
     @Test
     public void bigApp_testDisabled() throws Exception {
-        scrubServer();
-
+        StartCase startCase = StartCase.DISABLED;
+        scrubServer(startCase);
         installJvmOptions("JvmOptions_Disabled.txt");
-        collect(StartCase.DISABLED);
+        collect(startCase);
     }
 
     //
@@ -391,19 +425,19 @@ public class BigAppTest extends AnnoCachingTest {
     }
 
     @Test
-    public void bigApp_testEnabledBinary() throws Exception { 
-        scrubServer();
-
+    public void bigApp_testEnabledBinary() throws Exception {
+        StartCase startCase = StartCase.ENABLED_BINARY;
+        scrubServer(startCase);
         installJvmOptions("JvmOptions_Enabled_Binary.txt");
-        collect(StartCase.ENABLED_BINARY);
+        collect(startCase);
     }
 
     @Test
-    public void bigApp_testEnabledJandex() throws Exception { 
-        scrubServer();
-
+    public void bigApp_testEnabledJandex() throws Exception {
+        StartCase startCase = StartCase.ENABLED_JANDEX;
+        scrubServer(startCase);
         installJvmOptions("JvmOptions_Enabled_Jandex.txt");
-        collect(StartCase.ENABLED_JANDEX);
+        collect(startCase);
     }
 
     @Test
@@ -431,6 +465,15 @@ public class BigAppTest extends AnnoCachingTest {
     }
 
     @Test
+    public void bigApp_testEnabledPopulatedBinaryJandexFull() throws Exception {
+        populateServer(PopulateCase.BINARY_JANDEX);
+        installJvmOptions("JvmOptions_Enabled_Binary_Jandex_Full.txt");
+        collect(StartCase.ENABLED_POPULATED_BINARY_JANDEX_FULL);
+    }
+
+    //
+
+    @Test
     public void bigApp_testEnabledPopulatedValid() throws Exception {
         populateServer(PopulateCase.TEXT);
         installJvmOptions("JvmOptions_Enabled_AlwaysValid.txt");
@@ -448,10 +491,11 @@ public class BigAppTest extends AnnoCachingTest {
 
     // @Test
     public void bigApp_testDisabledMultiScanThread() throws Exception {
-        scrubServer();
+        StartCase startCase = StartCase.DISABLED_MULTI_SCAN;
 
+        scrubServer(startCase);
         installJvmOptions("JvmOptions_Disabled_ScanMulti.txt");
-        collect(StartCase.DISABLED_MULTI_SCAN);
+        collect(startCase);
     }
 
     // @Test
@@ -461,10 +505,11 @@ public class BigAppTest extends AnnoCachingTest {
 
     // @Test
     public void bigApp_testDisabledUnlimitedScanThreads() throws Exception {
-        scrubServer();
+        StartCase startCase = StartCase.DISABLED_UNLIMITED_SCAN;
 
+        scrubServer(startCase);
         installJvmOptions("JvmOptions_Disabled_ScanUnlimited.txt");
-        collect(StartCase.DISABLED_UNLIMITED_SCAN);
+        collect(startCase);
     }
 
     // @Test

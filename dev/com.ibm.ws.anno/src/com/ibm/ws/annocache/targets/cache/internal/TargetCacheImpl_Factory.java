@@ -97,6 +97,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
         boolean omitJandexWrite    = getSystemProperty(TargetCache_Options.OMIT_JANDEX_WRITE_PROPERTY_NAME, TargetCache_Options.OMIT_JANDEX_WRITE_DEFAULT);
         boolean separateContainers = getSystemProperty(TargetCache_Options.SEPARATE_CONTAINERS_PROPERTY_NAME, TargetCache_Options.SEPARATE_CONTAINERS_DEFAULT);
         boolean useJandexFormat    = getSystemProperty(TargetCache_Options.USE_JANDEX_FORMAT_PROPERTY_NAME, TargetCache_Options.USE_JANDEX_FORMAT_DEFAULT);
+        boolean readJandexFull     = getSystemProperty(TargetCache_Options.READ_JANDEX_FULL_PROPERTY_NAME, TargetCache_Options.READ_JANDEX_FULL_DEFAULT);
         boolean useBinaryFormat    = getSystemProperty(TargetCache_Options.USE_BINARY_FORMAT_PROPERTY_NAME, TargetCache_Options.USE_BINARY_FORMAT_DEFAULT);
 
         boolean logQueries = getSystemProperty(TargetCache_Options.LOG_QUERIES_PROPERTY_NAME, TargetCache_Options.LOG_QUERIES_DEFAULT);
@@ -108,7 +109,8 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
             // validate,
             writeThreads, writeLimit,
             omitJandexWrite, separateContainers,
-            useJandexFormat, useBinaryFormat,
+            useJandexFormat, readJandexFull,
+            useBinaryFormat,
             logQueries);
     }
 
@@ -125,6 +127,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
              TargetCache_Options.OMIT_JANDEX_WRITE_DEFAULT,
              TargetCache_Options.SEPARATE_CONTAINERS_DEFAULT,
              TargetCache_Options.USE_JANDEX_FORMAT_DEFAULT,
+             TargetCache_Options.READ_JANDEX_FULL_DEFAULT,
              TargetCache_Options.USE_BINARY_FORMAT_DEFAULT,
              TargetCache_Options.LOG_QUERIES_DEFAULT );
     }
@@ -174,6 +177,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
                 finer(methodName, "  Omit Jandex Write   [ {0} ]", Boolean.valueOf(options.getOmitJandexWrite()));
                 finer(methodName, "  Separate Containers [ {0} ]", Boolean.valueOf(options.getSeparateContainers()));
                 finer(methodName, "  Use Jandex Format   [ {0} ]", Boolean.valueOf(options.getUseJandexFormat()));
+                finer(methodName, "  Read Jandex Full    [ {0} ]", Boolean.valueOf(options.getReadJandexFull()));
                 finer(methodName, "  Use Binary Format   [ {0} ]", Boolean.valueOf(options.getUseBinaryFormat()));
             }
         }

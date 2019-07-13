@@ -36,6 +36,9 @@ public class TestOptions_Cache {
     public static final boolean DO_USE_JANDEX_FORMAT = true;
     public static final boolean DO_NOT_USE_JANDEX_FORMAT = false;
 
+    public static final boolean DO_READ_JANDEX_FULL = true;
+    public static final boolean DO_NOT_READ_JANDEX_FULL = false;
+
     public TestOptions_Cache(
         String storageSuffix,
         boolean cleanStorage,
@@ -48,6 +51,7 @@ public class TestOptions_Cache {
         boolean omitJandexWrite,
         boolean separateContainers,
         boolean useJandexFormat,
+        boolean readJandexFull,
         boolean useBinaryFormat) {
 
         this.storageSuffix = storageSuffix;
@@ -61,6 +65,7 @@ public class TestOptions_Cache {
         this.omitJandexWrite = omitJandexWrite;
         this.separateContainers = separateContainers;
         this.useJandexFormat = useJandexFormat;
+        this.readJandexFull = readJandexFull;
         this.useBinaryFormat = useBinaryFormat;
     }
 
@@ -75,5 +80,6 @@ public class TestOptions_Cache {
     public final boolean omitJandexWrite;
     public final boolean separateContainers;
     public final boolean useJandexFormat;
+    public final boolean readJandexFull;
     public final boolean useBinaryFormat;
 }

@@ -60,7 +60,7 @@ public abstract class AnnoCachingTest extends LoggingTest {
     }
 
     protected static String formatNs(long ns) {
-    	return format( nsToMs(ns) );
+        return format( nsToMs(ns) );
     }
 
     protected static String format(long value) {
@@ -204,14 +204,16 @@ public abstract class AnnoCachingTest extends LoggingTest {
         }
     }
 
-    public static final boolean DO_SCRUB = true;
-    public static final boolean DO_NOT_SCRUB = false;
 
-    protected static void startServer(boolean doScrub) throws Exception {
-        LOG.info("startServer: ENTER: clean: " + Boolean.toString(doScrub));
+    public enum ServerStartType { 
+        DO_SCRUB, DO_NOT_SCRUB;
+    }
+
+    protected static void startServer(ServerStartType startType) throws Exception {
+        LOG.info("startServer: ENTER: " + startType);
 
         getServer().startIfNotStarted(false,   // Don't preScrub 
-                                      doScrub,
+                                      (startType == ServerStartType.DO_SCRUB),
                                       false);  // Don't validate apps have started
 
         LOG.info("startServer: RETURN");

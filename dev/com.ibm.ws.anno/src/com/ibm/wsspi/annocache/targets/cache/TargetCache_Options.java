@@ -164,6 +164,12 @@ public interface TargetCache_Options {
     boolean getUseJandexFormat();
     void setUseJandexFormat(boolean useJandexFormat);
 
+    boolean READ_JANDEX_FULL_DEFAULT = false;
+    String READ_JANDEX_FULL_PROPERTY_NAME = "anno.cache.readjandexFull";
+
+    boolean getReadJandexFull();
+    void setReadJandexFull(boolean useReadJandexFull);
+
     //
 
     boolean USE_BINARY_FORMAT_DEFAULT = false;

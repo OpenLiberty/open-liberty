@@ -201,6 +201,7 @@ public final class UtilImpl_WriteBuffer {
      * @throws IOException Thrown if the write failed.  Usually
      *     because the write to the backing file failed.
      */
+    @Trivial
     public void writeLargeInt(byte fieldByte, int value) throws IOException {
         write(fieldByte);
         writeLargeInt(value);

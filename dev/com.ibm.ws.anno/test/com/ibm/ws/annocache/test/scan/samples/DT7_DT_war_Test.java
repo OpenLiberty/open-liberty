@@ -163,6 +163,11 @@ public class DT7_DT_war_Test extends Test_Base {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_FORMAT); // 'runSuiteTest' throws Exception
     }
 
+    // @Test
+    public void testDT7_DT_war_SINGLE_READ_JANDEX_FULL_FORMAT() throws Exception {
+        runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_FULL_FORMAT); // 'runSuiteTest' throws Exception
+    }
+
     @Test
     public void testDT7_DT_war_SINGLE_WRITE_BINARY_FORMAT() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_BINARY_FORMAT); // 'runSuiteTest' throws Exception

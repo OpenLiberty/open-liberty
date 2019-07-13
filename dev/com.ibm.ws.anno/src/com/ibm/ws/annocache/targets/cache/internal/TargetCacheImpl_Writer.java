@@ -51,6 +51,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         return UtilImpl_Utils.getDateAndTime();
     }
 
+    @Trivial
     protected static String policiesText(int policies) {
         // Empty policies is unexpected, but handle it anyways.
         if ( policies == 0 ) {
@@ -206,6 +207,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeTrailer();
     }
 
+    @Trivial
     public void writeResolvedRefs(Collection<String> resolvedClassNames) throws IOException {
         writeHeader(RESOLVED_REFS_TAG, RESOLVED_REFS_VERSION);
 
@@ -219,6 +221,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeTrailer();
     }
 
+    @Trivial
     public void writeUnresolvedRefs(Collection<String> unresolvedClassNames) throws IOException {
         writeHeader(UNRESOLVED_REFS_TAG, UNRESOLVED_REFS_VERSION);
 
@@ -315,25 +318,29 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         ACC_ANNOTATION(Opcodes.ACC_ANNOTATION, "annotation"),
         ACC_ENUM(Opcodes.ACC_ENUM, "enum"),
         ACC_DEPRECATED(Opcodes.ACC_DEPRECATED, "deprecated");
-        
+
+        @Trivial
         private OpcodeTag(int opcode, String tag) {
             this.opcode = opcode;
             this.tag = tag;
         }
-        
+
         private final int opcode;
         private final String tag;
-        
+
+        @Trivial
         public int getOpcode() {
             return opcode;
         }
-        
+
+        @Trivial
         public String getTag() {
             return tag;
         }
 
         //
 
+        @Trivial
         public static String asText(int modifiers) {
             if ( modifiers == 0 ) {
                 return null;
@@ -905,11 +912,13 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
 
     //
 
+    @Trivial
     protected static void logLine(StringBuilder builder, String outputLine) {
         builder.append(outputLine);
         builder.append("/n");
     }
 
+    @Trivial
     protected static void logComment(StringBuilder builder, String commentText) {
         String commentLine =
             COMMENT_TAG + SPACE_TAG +
@@ -918,6 +927,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         logLine(builder, commentLine);
     }
 
+    @Trivial
     protected static void logComment(
         StringBuilder builder,
         String commentName, String commentValue) {
@@ -929,6 +939,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         logComment(builder, commentText);
     }
 
+    @Trivial
     protected static void logValue(StringBuilder builder, String name, String value) {
         String valueText =
             name + COLON_TAG + SPACE_TAG +
@@ -937,6 +948,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         logLine(builder, valueText);
     }
 
+    @Trivial
     protected static void logSubValue(StringBuilder builder, String name, String value) {
         String valueText =
             SPACE_TAG + SPACE_TAG +
@@ -963,6 +975,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     // Annotation: <annotation class>
     // Result: <result class>
 
+    @Trivial
     public static void logQuery(
         StringBuilder builder,
         String title,
@@ -975,6 +988,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
             policies, type, specificClasses, annotationClass, resultClasses);
     }
 
+    @Trivial
     public static void logQuery(
         StringBuilder builder,
         String title, String timeStamp,
@@ -1001,6 +1015,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         }
     }
 
+    @Trivial
     public static void logQuery(
         StringBuilder builder,
         String title,
@@ -1015,6 +1030,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
             resultClasses);
     }
 
+    @Trivial
     public static void logQuery(
         StringBuilder builder,
         String title, String timeStamp,
@@ -1043,6 +1059,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         }
     }
 
+    @Trivial
     public static void logQuery(
         StringBuilder builder,
         String title,
@@ -1057,6 +1074,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
             resultClasses);
     }
 
+    @Trivial
     public static void logQuery(
         StringBuilder builder,
         String title, String timeStamp,

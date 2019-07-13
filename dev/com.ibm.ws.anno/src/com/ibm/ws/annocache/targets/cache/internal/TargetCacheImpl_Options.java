@@ -21,7 +21,8 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         boolean readOnly, boolean alwaysValid, // boolean validate,
         int writeThreads, int writeLimit,
         boolean omitJandexWrite, boolean separateContainers,
-        boolean useJandexFormat, boolean useBinaryFormat,
+        boolean useJandexFormat, boolean readJandexFull,
+        boolean useBinaryFormat,
         boolean logQueries) {
 
         this.disabled = disabled;
@@ -37,6 +38,7 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         this.omitJandexWrite = omitJandexWrite;
         this.separateContainers = separateContainers;
         this.useJandexFormat = useJandexFormat;
+        this.readJandexFull = readJandexFull;
         this.useBinaryFormat = useBinaryFormat;
 
         this.logQueries = logQueries;
@@ -58,6 +60,7 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
                 " OmitJandexWrite " + Boolean.toString(omitJandexWrite) + "," +
                 " SeparateContainers " + Boolean.toString(separateContainers) +
                 " UseJandexFormat " + Boolean.toString(useJandexFormat) +
+                " ReadJandexFull " + Boolean.toString(readJandexFull) +
                 " UseBinaryFormat " + Boolean.toString(useBinaryFormat) +
                 " LogQueries " + Boolean.toString(logQueries) +
             ")";
@@ -212,6 +215,21 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
     @Trivial
     public boolean getUseJandexFormat() {
         return useJandexFormat;
+    }
+
+    //
+
+    private boolean readJandexFull;
+
+    @Override
+    public void setReadJandexFull(boolean readJandexFull) {
+        this.readJandexFull = readJandexFull;
+    }
+
+    @Override
+    @Trivial
+    public boolean getReadJandexFull() {
+        return readJandexFull;
     }
 
     //

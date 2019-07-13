@@ -76,6 +76,9 @@ public class AnnotationCacheServiceImpl_Service implements AnnotationCacheServic
                 "Use Jandex Format For Containers [ {0} ]",
                 Boolean.valueOf(useCacheOptions.getUseJandexFormat()));
             logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "Read Jandex Full [ {0} ]",
+                    Boolean.valueOf(useCacheOptions.getReadJandexFull()));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "Use Binary Format [ {0} ]",
                 Boolean.valueOf(useCacheOptions.getUseBinaryFormat()));
             

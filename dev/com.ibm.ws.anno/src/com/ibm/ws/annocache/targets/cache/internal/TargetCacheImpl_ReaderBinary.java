@@ -100,6 +100,7 @@ public class TargetCacheImpl_ReaderBinary implements TargetCache_BinaryConstants
 
     protected final UtilImpl_ReadBuffer bufInput;
 
+    @Trivial
     public UtilImpl_ReadBuffer getInput() {
         return bufInput;
     }

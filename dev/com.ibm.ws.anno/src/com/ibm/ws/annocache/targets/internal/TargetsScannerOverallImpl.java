@@ -138,6 +138,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     @SuppressWarnings("hiding")
     public static final String CLASS_NAME = TargetsScannerOverallImpl.class.getSimpleName();
 
+    static {
+        // System.out.println("Static init[ " + CLASS_NAME + " ]");
+    }
+
     @Trivial
     private String printString(Set<String> values) {
         if ( values.isEmpty() ) {

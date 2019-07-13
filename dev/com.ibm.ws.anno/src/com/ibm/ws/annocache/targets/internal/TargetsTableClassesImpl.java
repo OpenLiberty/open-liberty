@@ -216,14 +216,17 @@ public class TargetsTableClassesImpl
     }
 
     @Override
+    @Trivial
     public String internClassName(String className) {
         return classNameInternMap.intern(className);
     }
 
+    @Trivial
     public String internClassName(String className, boolean doForce) {
         return classNameInternMap.intern(className, doForce);
     }
 
+    @Trivial
     public String lookupClassName(String className) {
         return classNameInternMap.intern(className, Util_InternMap.DO_NOT_FORCE);
     }

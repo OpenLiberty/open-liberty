@@ -407,6 +407,7 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
 
     //
 
+    @Trivial
     public void writeResolvedRefsEntire(Collection<String> resolvedClassNames) throws IOException {
         // The current compaction algorithm has no use on
         // the resolved class names, since they are distinct.
@@ -416,6 +417,7 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
         writeEnd();
     }
 
+    @Trivial
     public void writeResolvedRefsFragment(Collection<String> resolvedClassNames) throws IOException {
         writeHeader(RESOLVED_REFS_NAME, RESOLVED_REFS_VERSION);
 
@@ -428,6 +430,7 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
 
     //
 
+    @Trivial
     public void writeUnresolvedRefsEntire(Collection<String> unresolvedClassNames) throws IOException {
         // The current compaction algorithm has no use on
         // the unresolved class names, since they are distinct.
@@ -437,6 +440,7 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
         writeEnd();
     }
 
+    @Trivial
     public void writeUnresolvedRefsFragment(Collection<String> unresolvedClassNames) throws IOException {
         writeHeader(UNRESOLVED_REFS_NAME, UNRESOLVED_REFS_VERSION);
 

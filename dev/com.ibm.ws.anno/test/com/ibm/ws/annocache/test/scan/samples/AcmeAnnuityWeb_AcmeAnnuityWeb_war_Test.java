@@ -167,7 +167,11 @@ public class AcmeAnnuityWeb_AcmeAnnuityWeb_war_Test extends Test_Base {
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_READ_JANDEX_FORMAT() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_FORMAT); // 'runSuiteTest' throws Exception
     }
-    
+
+    @Test
+    public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_READ_JANDEX_FULL_FORMAT() throws Exception {
+        runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_FULL_FORMAT); // 'runSuiteTest' throws Exception
+    }
 
     @Test
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_WRITE_BINARY_FORMAT() throws Exception {

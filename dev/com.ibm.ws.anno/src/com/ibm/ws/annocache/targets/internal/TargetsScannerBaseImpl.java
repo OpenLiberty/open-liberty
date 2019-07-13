@@ -380,6 +380,7 @@ public class TargetsScannerBaseImpl {
             int nextClassCount = nextClassSource.getProcessCount();
             classCount += nextClassCount;
 
+            @SuppressWarnings("unused")
             String scanType;
 
             if ( nextClassSource.isProcessedUsingJandex() ) {

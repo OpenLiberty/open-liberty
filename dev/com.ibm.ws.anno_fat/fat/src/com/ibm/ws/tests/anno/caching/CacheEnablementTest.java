@@ -145,7 +145,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");
         installJvmOptions("JvmOptions_Disabled.txt");
 
-        startServer(DO_SCRUB);
+        startServer(ServerStartType.DO_SCRUB);
         verifyResponse(TEST_URL_1, "Hello World");
 
         File annoCacheDir = getAnnoCacheRoot();
@@ -170,7 +170,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");
         installJvmOptions("JvmOptions_Enabled.txt");
 
-        startServer(DO_SCRUB);
+        startServer(ServerStartType.DO_SCRUB);
         verifyResponse(TEST_URL_1, "Hello World");
         stopServer();
         verifyAnnoCacheExists();
@@ -204,7 +204,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
 
         Utils.logFile("Targets (post-update, pre-start-1)", targetsFile);
 
-        startServer(DO_NOT_SCRUB);
+        startServer(ServerStartType.DO_NOT_SCRUB);
         verifyBadUrl(TEST_URL_1); // Should no longer be available.
         stopServer("CWWKZ0014W", "SRVE0190E"); // Extra parameters are to check for a bad URL message.
 
@@ -218,7 +218,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
 
         Utils.logFile("Targets (post-restore, pre-start-2)", targetsFile);
 
-        startServer(DO_NOT_SCRUB);
+        startServer(ServerStartType.DO_NOT_SCRUB);
         verifyResponse(TEST_URL_1, "Hello World"); // Should be there again.
         stopServer();
 
@@ -316,7 +316,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");
         installJvmOptions("JvmOptions_Enabled.txt");
 
-        startServer(DO_SCRUB);
+        startServer(ServerStartType.DO_SCRUB);
         verifyResponse(TEST_URL_1, "Hello World"); // Make sure the servlet is available.
         stopServer();
 
@@ -340,7 +340,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");
         installJvmOptions("JvmOptions_Enabled_ReadOnly.txt");
 
-        startServer(DO_NOT_SCRUB);
+        startServer(ServerStartType.DO_NOT_SCRUB);
         verifyResponse(TEST_URL_2, "Hello World");
         stopServer();
 

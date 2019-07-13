@@ -354,6 +354,8 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( jandexIndex != null ) {
             setProcessTime(readTime);
             setProcessCount(jandexIndex.getKnownClasses().size());
+
+            // System.out.println("Sparse jandex read [ " + readTime + " ]");
         }
 
         boolean doLog = logger.isLoggable(Level.FINER);
@@ -758,6 +760,8 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( jandexIndex != null ) {
             setProcessTime(readTime);
             setProcessCount(jandexIndex.getKnownClasses().size());
+
+            // System.out.println("Jandex read [ " + readTime + " ]");
         }
 
         boolean doLog = logger.isLoggable(Level.FINER);

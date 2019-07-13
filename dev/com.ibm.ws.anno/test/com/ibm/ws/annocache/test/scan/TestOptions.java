@@ -34,7 +34,8 @@ public class TestOptions {
         boolean useJandex, boolean useJandexFull, int scanThreads,
         String storageSuffix, boolean cleanStorage, int writeThreads,
         boolean omitJandexWrite, boolean separateContainers,
-        boolean useJandexFormat, boolean useBinaryFormat,
+        boolean useJandexFormat, boolean readJandexFull,
+        boolean useBinaryFormat,
         boolean ignoreMissingPackages, boolean ignoreMissingInterfaces,
         boolean readOnly, boolean alwaysValid) {
 
@@ -48,7 +49,8 @@ public class TestOptions {
             readOnly, alwaysValid,
             writeThreads,
             omitJandexWrite, separateContainers,
-            useJandexFormat, useBinaryFormat);
+            useJandexFormat, readJandexFull,
+            useBinaryFormat);
 
         this.ignoreMissingPackages = ignoreMissingPackages;
         this.ignoreMissingInterfaces = ignoreMissingInterfaces;
@@ -60,7 +62,8 @@ public class TestOptions {
         String storageSuffix, boolean cleanStorage,
         boolean readOnly, boolean alwaysValid, int writeThreads,
         boolean omitJandexWrite, boolean separateContainers,
-        boolean useJandexFormat, boolean useBinaryFormat,
+        boolean useJandexFormat, boolean readJandexFull, 
+        boolean useBinaryFormat,
         boolean ignoreMissingPackages, boolean ignoreMissingInterfaces) {
 
         this.title = title;
@@ -72,7 +75,8 @@ public class TestOptions {
            storageSuffix, cleanStorage,
            readOnly, alwaysValid, writeThreads,
            omitJandexWrite, separateContainers,
-           useJandexFormat, useBinaryFormat);
+           useJandexFormat, readJandexFull,
+           useBinaryFormat);
 
         this.ignoreMissingPackages = ignoreMissingPackages;
         this.ignoreMissingInterfaces = ignoreMissingInterfaces;

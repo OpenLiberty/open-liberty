@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jboss.jandex.Index;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.jandex.internal.Jandex_Utils;
 import com.ibm.ws.annocache.jandex.internal.SparseIndex;
@@ -610,21 +612,25 @@ public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_I
         protected final TargetsTableClasses classTable;
 
         @Override
+        @Trivial
         protected String internPackageName(String packageName) {
             return classTable.internClassName(packageName);
         }
 
         @Override
+        @Trivial
         protected String internClassName(String className) {
             return classTable.internClassName(className);
         }
 
         @Override
+        @Trivial
         protected String internFieldName(String fieldName) {
             throw new UnsupportedOperationException();
         }
 
         @Override
+        @Trivial
         protected String internMethodSignature(String methodSignature) {
             throw new UnsupportedOperationException();
         }
@@ -754,21 +760,25 @@ public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_I
         protected final TargetsTableClassesMulti classTable;
 
         @Override
+        @Trivial
         protected String internPackageName(String packageName) {
             return classTable.internClassName(packageName);
         }
 
         @Override
+        @Trivial
         protected String internClassName(String className) {
             return classTable.internClassName(className);
         }
 
         @Override
+        @Trivial
         protected String internFieldName(String fieldName) {
             throw new UnsupportedOperationException();
         }
 
         @Override
+        @Trivial
         protected String internMethodSignature(String methodSignature) {
             throw new UnsupportedOperationException();
         }
@@ -906,21 +916,25 @@ public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_I
         protected final TargetsTableAnnotations targetTable;
 
         @Override
+        @Trivial
         protected String internPackageName(String packageName) {
             return targetTable.internClassName(packageName);
         }
 
         @Override
+        @Trivial
         protected String internClassName(String className) {
             return targetTable.internClassName(className);
         }
 
         @Override
+        @Trivial
         protected String internFieldName(String fieldName) {
             throw new UnsupportedOperationException();
         }
 
         @Override
+        @Trivial
         protected String internMethodSignature(String methodSignature) {
             throw new UnsupportedOperationException();
         }
@@ -1028,21 +1042,25 @@ public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_I
         protected final TargetsTableDetails detailTable;
 
         @Override
+        @Trivial
         protected String internPackageName(String packageName) {
             return detailTable.getParentData().internClassName(packageName);
         }
 
         @Override
+        @Trivial
         protected String internClassName(String className) {
             return detailTable.getParentData().internClassName(className);
         }
 
         @Override
+        @Trivial
         protected String internFieldName(String fieldName) {
             return detailTable.getParentData().internFieldName(fieldName);
         }
 
         @Override
+        @Trivial
         protected String internMethodSignature(String methodSignature) {
             return detailTable.getParentData().internMethodSignature(methodSignature);
         }
@@ -1217,17 +1235,13 @@ public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_I
 
     //
 
-    /**
-     * Read a jandex index from the bound stream.
-     * 
-     * Ignore the reader: This is a binary read.
-     *
-     * @return e jandex index which was read..
-     *
-     * @throws IOException Thrown if the read fails.
-     */
     public SparseIndex readSparseIndex() throws IOException {
         return Jandex_Utils.basicReadSparseIndex( getStream() );
         // 'basicReadIndex' throws IOException
     }
+
+    public Index readIndex() throws IOException {
+        return Jandex_Utils.basicReadIndex( getStream() );
+        // 'basicReadIndex' throws IOException
+    }    
 }
