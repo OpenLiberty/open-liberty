@@ -1,0 +1,63 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.opensaml.openws
+Bundle-Description: org.opensaml openws; version=1.5.6
+Bundle-SymbolicName: com.ibm.ws.org.opensaml.openws.1.5.6
+
+WS-TraceGroup: SAML20
+
+Export-Package: \
+  org.opensaml.util;version="1.0.16", \
+  org.opensaml.util.resource;version="1.0.16", \
+  org.opensaml.util.storage;version="1.0.16", \
+  org.opensaml.ws.message;version="1.0.16", \
+  org.opensaml.ws.message.decoder;version="1.0.16", \
+  org.opensaml.ws.message.encoder;version="1.0.16", \
+  org.opensaml.ws.message.handler;version="1.0.16", \
+  org.opensaml.ws.security;version="1.0.16", \
+  org.opensaml.ws.security.provider;version="1.0.16", \
+  org.opensaml.ws.soap.client.http;version="1.0.16", \
+  org.opensaml.ws.soap.common;version="1.0.16", \
+  org.opensaml.ws.soap.soap11.*;version="1.0.16", \
+  org.opensaml.ws.wsfed.*;version="1.0.16", \
+  org.opensaml.ws.wsaddressing.*;version="1.0.16", \
+  org.opensaml.ws.wssecurity.*;version="1.0.16", \
+  org.opensaml.ws.transport;version="1.0.16", \
+  org.opensaml.ws.transport.http;version="1.0.16"
+
+Private-Package: \
+  schema,\
+  org.opensaml.ws.soap.soap12,\
+  org.opensaml.ws.wspolicy.impl,\
+  org.opensaml.ws.wspolicy,\
+  org.opensaml.ws.wstrust.impl,\
+  org.opensaml.ws.soap.util,\
+  org.opensaml.ws,org.opensaml.ws.wstrust,\
+  org.opensaml.ws.soap.client
+
+Import-Package: \
+ !net.jcip.annotations,\
+ !org.apache.commons.httpclient.*,\
+ org.joda.time;version="[1.6,2)", \
+ org.joda.time.chrono;version="[1.6,2)", \
+ org.joda.time.format;version="[1.6,2)", \
+ *
+
+Include-Resource: \
+  @${repo;org.opensaml:openws;1.5.6}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Main-Class:

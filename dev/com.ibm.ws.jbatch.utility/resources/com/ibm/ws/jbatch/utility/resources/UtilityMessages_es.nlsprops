@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Error: {0}
+error.inputConsoleNotAvailable=La consola de entrada no est\u00e1 disponible.
+error.missingIO=Error; falta el dispositivo E/S: {0}.
+
+usage=Uso: {0}
+task.unknown=Tarea desconocida: {0}
+for.task.usage=Para la descripci\u00f3n y el uso de la tarea: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Falta argumento necesario : {0}.
+argument.unrecognized=Argumento no reconocido: {0}.
+argument.unrecognized.expected=Argumento no reconocido: {0}. Quiz\u00e1 quer\u00eda decir: {1}.
+argument.invalid.value=Valor no aceptable para el argumento: {0}={1}. Valores aceptables: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: Se ha enviado el trabajo {0} con ID de instancia {1}.
+job.submitted.explanation=Este mensaje es meramente informativo.
+job.submitted.useraction=No se requiere ninguna acci\u00f3n.
+
+job.restarted=CWWKY0102I: Se ha enviado una solicitud de reinicio para el trabajo {0} con el ID de instancia {1}.
+job.restarted.explanation=Este mensaje es meramente informativo.
+job.restarted.useraction=No se requiere ninguna acci\u00f3n.
+
+job.stopped=CWWKY0103I: Se ha detenido el trabajo {0} con ID de instancia {1}. Estado de proceso por lotes: {2}. Estado de salida: {3}
+job.stopped.explanation=Este mensaje es meramente informativo.
+job.stopped.useraction=No se requiere ninguna acci\u00f3n.
+
+job.stop.submitted=CWWKY0104I: Se ha enviado una solicitud de parada para el trabajo {0} con ID de instancia {1}.
+job.stop.submitted.explanation=Este mensaje es meramente informativo.
+job.stop.submitted.useraction=No se requiere ninguna acci\u00f3n.
+
+job.finished=CWWKY0105I: Ha finalizado el trabajo {0} con ID de instancia {1}. Estado de proceso por lotes: {2}. Estado de salida: {3}
+job.finished.explanation=Este mensaje es meramente informativo.
+job.finished.useraction=No se requiere ninguna acci\u00f3n.
+
+job.instance.record=CWWKY0106I: JobInstance:{0}
+job.instance.record.explanation=Este mensaje es meramente informativo.
+job.instance.record.useraction=No se requiere ninguna acci\u00f3n.
+
+job.execution.record=CWWKY0107I: JobExecution:{0}
+job.execution.record.explanation=Este mensaje es meramente informativo.
+job.execution.record.useraction=No se requiere ninguna acci\u00f3n.
+
+waiting.for.termination=CWWKY0108I: En espera de terminaci\u00f3n de JobExecution:{0}
+waiting.for.termination.explanation=Este mensaje es meramente informativo.
+waiting.for.termination.useraction=No se requiere ninguna acci\u00f3n.
+
+waiting.for.latest.job.execution=CWWKY0109I: En espera de la ejecuci\u00f3n del \u00faltimo trabajo para el trabajo con ID de instancia {0}
+waiting.for.latest.job.execution.explanation=Este mensaje es meramente informativo.
+waiting.for.latest.job.execution.useraction=No se requiere ninguna acci\u00f3n.
+
+waiting.for.next.job.execution=CWWKY0110I: En espera de la siguiente ejecuci\u00f3n de trabajos despu\u00e9s de JobExecution:{0}
+waiting.for.next.job.execution.explanation=Este mensaje es meramente informativo.
+waiting.for.next.job.execution.useraction=No se requiere ninguna acci\u00f3n.
+
+joblog.to.file=CWWKY0111I: El registro de trabajo se ha grabado en el archivo {0}.
+joblog.to.file.explanation=Este mensaje es meramente informativo.
+joblog.to.file.useraction=No se requiere ninguna acci\u00f3n.
+
+failover.to.next.target=CWWKY0112I: Ha fallado una petici\u00f3n al gestor de procesos por lotes en {0}. Se reenv\u00eda la petici\u00f3n al gestor de procesos por lotes en {1}. El error ha sido: {2}
+failover.to.next.target.explanation=Este mensaje es meramente informativo.
+failover.to.next.target.useraction=No se requiere ninguna acci\u00f3n.
+
+joblog.location=CWWKY0113I: El registro de trabajo del trabajo {0} con ID de instancia {1} se descargar\u00e1 cuando finalice el trabajo. \
+Mientras, puede consultar el registro de trabajo a trav\u00e9s de estos enlaces: {2}
+joblog.location.explanation=Este mensaje es meramente informativo.
+joblog.location.useraction=No se requiere ninguna acci\u00f3n.
+
+joblog.download=CWWKY0114I: El registro de trabajo {0} con ID de instancia {1} se est\u00e1 descargando v\u00eda {2}.
+joblog.download.explanation=Este mensaje es meramente informativo.
+joblog.download.useraction=No se requiere ninguna acci\u00f3n.
+
+job.purged=CWWKY0115I: Se ha depurado satisfactoriamente el trabajo {0} con ID de instancia {1}.
+job.purged.explanation=Este mensaje es meramente informativo.
+job.purged.useraction=No se requiere ninguna acci\u00f3n.
+
+shutdown.hook=CWWKY0116I: El programa de utilidad de cliente se ha cerrado mientras se esperaba la finalizaci\u00f3n del trabajo {0} con el ID de instancia {1}.
+shutdown.hook.explanation=Este mensaje se emite cuando el programa de utilidad de l\u00ednea de mandatos se cierra de forma forzada mientras se esperaba la finalizaci\u00f3n de un trabajo. \
+En respuesta, el programa de utilidad intenta detener el trabajo enviando una solicitud de detenci\u00f3n.
+shutdown.hook.useraction=No se requiere ninguna acci\u00f3n.
+
+job.purged.multi=CWWKY0117I: El intento de depuraci\u00f3n del trabajo con el ID de instancia {0} ha devuelto el estado: {1}. Mensaje: {2} URL redirecci\u00f3n: {3}
+job.purged.multi.explanation=Este mensaje es meramente informativo.
+job.purged.multi.useraction=No se requiere ninguna acci\u00f3n.
+
+job.parms.vals=CWWKY0118I: El conjunto final de par\u00e1metros de trabajo son {0}
+job.parms.vals.explanation=Este mensaje es meramente informativo.
+job.parms.vals.useraction=No se requiere ninguna acci\u00f3n.
+
+control.props.vals=CWWKY0119I: El conjunto final de propiedades de control son {0}
+control.props.vals.explanation=Este mensaje es meramente informativo.
+control.props.vals.useraction=No se requiere ninguna acci\u00f3n.
+
+control.props.file.warning=CWWKY0120W: La propiedad {0} no puede utilizarse en un archivo de propiedades de control y se ignorar\u00e1. La propiedad {0} solamente puede utilizarse en la l\u00ednea de mandatos.
+control.props.file.warning.explanation=Este mensaje es meramente informativo.
+control.props.file.warning.useraction=No se requiere ninguna acci\u00f3n.
+
+

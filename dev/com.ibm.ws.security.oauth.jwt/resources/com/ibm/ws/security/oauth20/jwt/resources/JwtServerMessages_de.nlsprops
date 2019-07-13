@@ -1,0 +1,137 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS2200 - CWWKS2299
+
+JWT_TOKEN_TOO_MANY_TOKENS_ERR=CWWKS2202E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil mehrere JWT-Token gefunden wurden.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.explanation=Die Tokenendpunktanforderung ist fehlgeschlagen, weil mehrere JWT-Token gefunden wurden. Dies ist nicht zul\u00e4ssig.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.useraction=Stellen Sie sicher, dass nur ein einziges JWT-Token in der Tokenendpunktanforderung enthalten ist.
+
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR=CWWKS2203E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil kein JWT-Token gefunden wurde.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.explanation=Die Tokenendpunktanforderung ist enth\u00e4lt kein JWT-Token. Die Anforderung kann nicht verarbeitet werden.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.useraction=Stellen Sie sicher, dass die Tokenendpunktanforderung ein JWT-Token enth\u00e4lt.
+
+JWT_UNEXPECTED_EXCEPTION_ERR=CWWKS2204E: W\u00e4hrend der Verarbeitung der Tokenendpunktanforderung hat der OpenID Connect-Provider eine unerwartete Ausnahme ({0}) empfangen.
+JWT_UNEXPECTED_EXCEPTION_ERR.explanation=Der OpenID Connect-Provider hat eine unerwartete Ausnahme empfangen.
+JWT_UNEXPECTED_EXCEPTION_ERR.useraction=Wenden Sie sich an IBM.
+
+JWT_TOKEN_BAD_NUMBER_ERR=CWWKS2205E: Die Tokenendpunktanforderung ist fehlgeschlagen. Der Claim ''{0}'' [{1}] im JWT-Token hat nicht das richtige Format. Der Claim muss in UTC-Zeit angegeben werden und eine ganze Zahl sein.
+JWT_TOKEN_BAD_NUMBER_ERR.explanation=Der JWT-Claim hat nicht das erwartete Format (UTC-Zeit und ganze Zahl).
+JWT_TOKEN_BAD_NUMBER_ERR.useraction=Stellen Sie sicher, dass der Claim im JWT-Token das richtige Format hat. Das korrekte Format f\u00fcr die UTC-Zeit ist numerisch.
+
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR=CWWKS2206E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil das JWT-Token nicht verifiziert werden kann. W\u00e4hrend der Verifizierung des ''sub''-Claims [{0}] ist eine unerwartete Ausnahme eingetreten.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.explanation=Die Tokenendpunktanforderung ist fehlgeschlagen. Der 'sub'-Claim des JWT-Tokens kann nicht verifiziert werden. W\u00e4hrend der Verifizierung ist eine unerwartete Ausnahme eingetreten.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.useraction=Stellen Sie sicher, dass der 'sub'-Claim im JWT-Token ein g\u00fcltiger Benutzer des OpenID Connect-Providers ist.
+
+JWT_TOKEN_BAD_AUD_ERR=CWWKS2207E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token ist nicht g\u00fcltig, weil dieser OpenID Connect-Provider nicht im 'aud'-Claim (Audience, Zielgruppe) enthalten ist.
+JWT_TOKEN_BAD_AUD_ERR.explanation=Der OpenID Connect-Provider muss in der Zielgruppenliste des JWT-Tokens enthalten sein. Die ID des OpenID Connect-Providers ist issuerIdentifier in der Konfiguration oder in der zugeh\u00f6rigen Tokenendpunkt-URL.  
+JWT_TOKEN_BAD_AUD_ERR.useraction=Stellen Sie sicher, dass der 'aud'-Claim im JWT-Token den gew\u00fcnschten OpenID-Connect-Provider enth\u00e4lt. \u00dcberpr\u00fcfen Sie den issuerIdentifier-Wert in der OpenID Connect-Providerkonfiguration oder in der zugeh\u00f6rigen Tokenendpunkt-URL. 
+
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR=CWWKS2208E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil das JWT-Token nicht verifiziert werden kann. Im JWT-Token fehlt der erforderliche ''{0}''-Claim.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.explanation=Die Tokenendpunktanforderung kann nicht verarbeitet werden, weil im JWT-Token ein erforderlicher Claim fehlt.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.useraction=F\u00fcgen Sie dem JWT-Token den erforderlichen Claim hinzu.
+
+JWT_TOKEN_ISS_MISMATCH_ERR=CWWKS2209E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token ist nicht g\u00fcltig, weil der ''iss''-Claim [{0}] nicht mit der URL f\u00fcr Clientumleitung oder dem clientId-Wert in der Konfiguration des OpenID Connect-Providers \u00fcbereinstimmt. 
+JWT_TOKEN_ISS_MISMATCH_ERR.explanation=Der 'iss'-Claim (issuer, Aussteller) im JWT-Token muss mit der URI f\u00fcr Clientumleitung oder dem clientId-Wert \u00fcbereinstimmen, der im OpenID Connect-Provider registriert ist.
+JWT_TOKEN_ISS_MISMATCH_ERR.useraction=Stellen Sie sicher, dass der 'iss'-Claim der URI f\u00fcr Clientumleitung oder dem clientId-Wert entspricht. \u00dcberpr\u00fcfen Sie den clientId-Wert bzw. die URI f\u00fcr Clientumleitung in der Konfiguration des OpenID Connect-Providers. 
+
+JWT_TOKEN_SUB_NOT_FOUND_ERR=CWWKS2210E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token ist nicht g\u00fcltig, weil der ''sub''-Claim [{0}] nicht in der Benutzerregistry des OpenID Connect-Providers gefunden wurde.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.explanation=Das JWT-Token ist nicht g\u00fcltig, weil der 'sub'-Claim (subject, Subjekt) nicht in der Benutzerregistry des OpenID Connect-Providers gefunden wurde.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.useraction=Stellen Sie sicher, dass der 'sub'-Claim im JWT-Token ein Benutzer in der Benutzerregistry des OpenID Connect-Providers ist.
+
+JWT_TOKEN_EXPIRED_ERR=CWWKS2211E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil das JWT-Token abgelaufen ist. Die Ablaufzeit (''exp'') im Claim ist [{0}].
+JWT_TOKEN_EXPIRED_ERR.explanation=Das JWT-Token ist abgelaufen. Die Ablaufzeit ist in der Fehlernachricht angegeben.
+JWT_TOKEN_EXPIRED_ERR.useraction=Stellen Sie sicher, dass das JWT-Token nicht abgelaufen ist, synchronisieren Sie die Systemzeiten oder erh\u00f6hen Sie die Ablaufzeit.
+
+JWT_TOKEN_FUTURE_TOKEN_ERR=CWWKS2212E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil das JWT-Token nicht g\u00fcltig ist. Der ''iat''-Claim (issued-at-time, Ausstellzeit) ist [{0}]. Die Ausstellzeit (''iat'') liegt in der Zukunft.
+JWT_TOKEN_FUTURE_TOKEN_ERR.explanation=Die Ausstellzeit im JWT-Token liegt nach der aktuellen Zeit. Dies ist zum Zeitpunkt der Verarbeitung nicht g\u00fcltig.
+JWT_TOKEN_FUTURE_TOKEN_ERR.useraction=Synchronisieren Sie die Uhrzeiten der Systeme und stellen Sie sicher, dass die Ausstellzeit ('iat') g\u00fcltig ist, oder \u00fcbergeben Sie das JWT-Token zu einem sp\u00e4teren Zeitpunkt.
+
+# do not translate tokenMaxLifetime
+JWT_TOKEN_MAX_LIFETIME_ERR=CWWKS2214E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token ist nicht g\u00fcltig, weil der ''iss''-Claim (issue-at-time, Ausstellzeit) [{0}] die maximal zul\u00e4ssige Lebensdauer f\u00fcr JWT-Token \u00fcberschreitet, die mit tokenMaxLifetime in der Konfiguration definiert wurde. Der definierte Wert sind [{1}] Sekunden.
+JWT_TOKEN_MAX_LIFETIME_ERR.explanation=Das ausgestellte JWT-Token \u00fcberschreitet die maximale Lebensdauer f\u00fcr JWT-Token (tokenMaxLifetime-Wert), die in der Konfiguration des OpenID Connect-Providers definiert ist.
+JWT_TOKEN_MAX_LIFETIME_ERR.useraction=Stellen Sie sicher, dass das JWT-Token innerhalb der maximal zul\u00e4ssigen Lebensdauer f\u00fcr JWT-Token ausgestellt wird oder erh\u00f6hen Sie den tokenMaxLifetime-Wert in der Konfiguration des Servers.
+
+JWT_TOKEN_IAT_NEEDED_ERR=CWWKS2215E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token muss den 'iat'-Claim enthalten, weil 'iatRequired' in der Konfiguration des OpenID Connect-Providers auf true gesetzt ist.
+JWT_TOKEN_IAT_NEEDED_ERR.explanation=Im OpenID Connect-Provider wurde 'iatRequired' auf true gesetzt. In diesem Fall ist der 'iat'-Claim im JWT-Token erforderlich. Der fehlende 'iat'-Claim f\u00fchrt zu einem Fehler.
+JWT_TOKEN_IAT_NEEDED_ERR.useraction=Geben Sie einen 'iat'-Claim im JWT-Token an oder setzen Sie 'iatRequired' im OpenID Connect-Provider auf false.
+
+JWT_TOKEN_BEFORE_ERR=CWWKS2216E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil das JWT-Token vor dem ''nbf''-Claim [{0}] angefordert wurde.
+JWT_TOKEN_BEFORE_ERR.explanation=Das JWT-Token enth\u00e4lt einen 'nbf'-Claim (not-before, nicht vor), aber die Anforderungszeit liegt vor der nbf-Zeit. 
+JWT_TOKEN_BEFORE_ERR.useraction=Stellen Sie sicher, dass ein JWT-Token nach seinem 'nbf'-Claim \u00fcbergeben wird.
+
+JWT_TOKEN_DUP_JTI_ERR=CWWKS2217E: Die Tokenendpunktanforderung ist fehlgeschlagen. Es wurde bereits ein anderes JWT-Token mit denselben ''iss''- [{0}] und ''jti''-Claims [{1}] \u00fcbergeben.
+JWT_TOKEN_DUP_JTI_ERR.explanation=Ein von demselben Aussteller ausgestelltes JWT-Token kann nicht zweimal \u00fcbergeben werden. Der jti-Wert ist die eindeutige ID eines Tokens.
+JWT_TOKEN_DUP_JTI_ERR.useraction=Stellen Sie sicher, dass jedes JWT-Token, das von demselben Aussteller ausgestellt wird, eine eindeutige jti-ID hat.
+
+#
+# Message prefix block: CWWKS2251 - CWWKS2299
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS2251E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token in der Anforderung enth\u00e4lt den erforderlichen Claim ''{0}'' nicht.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Das JWT-Token enth\u00e4lt nicht alle erforderlichen Claims.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Geben Sie die erforderlichen Claims im JWT-Token an. 
+
+JWT_TOKEN_NO_TOKEN_ERR=CWWKS2257E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Anforderung ist nicht g\u00fcltig, weil sie das erforderliche JWT-Token nicht enth\u00e4lt.
+JWT_TOKEN_NO_TOKEN_ERR.explanation=Die Anforderung ist nicht g\u00fcltig, weil sie das erforderliche JWT-Token nicht enth\u00e4lt.
+JWT_TOKEN_NO_TOKEN_ERR.useraction=Stellen Sie sicher, dass die Anforderung nur ein einziges Token enth\u00e4lt.
+
+JWT_TOKEN_UNEXPECTED_EXCEPTION=CWWKS2258E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Methode [{0}] hat eine unerwartete Ausnahme [{1}] empfangen.
+JWT_TOKEN_UNEXPECTED_EXCEPTION.explanation=Der Server hat eine Ausnahme empfangen, die nicht erwartet wurde.
+JWT_TOKEN_UNEXPECTED_EXCEPTION.useraction=Stellen Sie sicher, dass die Konfiguration in der Datei server.xml korrekt ist. Wenn dieser Fall immer wieder eintritt, wenden Sie sich an IBM.
+
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR=CWWKS2260E: Die Tokenendpunktanforderung ist fehlgeschlagen, weil das JWT-Token vor dem ''nbf''-Claim angefordert wurde. Die aktuelle Uhrzeit plus Zeitabweichung im OpenID Connect-Provider ist [{0}]. Die ''nbf''-Zeit ist [{1}].
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.explanation=Das JWT-Token ist nicht g\u00fcltig. Es wird vor seinem 'nbf'-Claim (not-before-time, Nicht-vor-Zeit) bereitgestellt. 
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.useraction=Stellen Sie sicher, dass JWT-Token in der Anforderung nach der 'nbf'-Zeit (not-before-time, Nicht-vor-Zeit) liegt. Synchronisieren Sie die Uhrzeiten von OpenID Connect-Client und OpenID Connect-Provider oder erh\u00f6hen Sie die Zeitabweichung in der Konfiguration des OpenID Connect-Providers.
+
+JWT_TOKEN_IAT_FUTURE_ERR=CWWKS2262E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Zeit des ''iat''-Claims des JWT-Tokens liegt in der Zukunft: [{0}]. Die aktuelle Uhrzeit plus Zeitabweichung ist [{1}]. 
+JWT_TOKEN_IAT_FUTURE_ERR.explanation=Der 'iat'-Claim im JWT-Token zeigt an, dass das Token in der Zukunft ausgestellt wird. Dies ist zum aktuellen Zeitpunkt im OpenID Connect-Provider nicht g\u00fcltig.
+JWT_TOKEN_IAT_FUTURE_ERR.useraction=Stellen Sie sicher, dass die Uhrzeiten von OpenID Connect-Client und OpenID Connect-Provider synchronisiert sind und \u00fcbergeben Sie kein JWT-Token, dessen 'iat'-Claim in der Zukunft liegt. 
+
+JWT_TOKEN_EXPIRE_ERR=CWWKS2263E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token \u00fcberschreitet seinen ''exp''-Claim [{0}]. Die aktuelle Uhrzeit plus Zeitabweichung im OpenID Connect-Provider ist [{1}].
+JWT_TOKEN_EXPIRE_ERR.explanation=Die 'exp'-Zeit des JWT-Token hat die aktuelle Uhrzeit plus Zeitabweichung \u00fcberschritten. Dies ist nicht g\u00fcltig. 
+JWT_TOKEN_EXPIRE_ERR.useraction=Stellen Sie sicher, dass das JWT-Token nicht abl\u00e4uft, oder synchronisieren Sie die Uhrzeiten von OpenID Connect-Client und OpenID Connect-Provider.
+
+JWT_TOKEN_INVALID_ISS_ERR=CWWKS2265E: Die Tokenendpunktanforderung ist fehlgeschlagen. Der Aussteller des JWT-Tokens [{0}] stimmt weder mit dem clientId-Wert [{2}] noch mit einer URI f\u00fcr Umleitung wie [{1}] \u00fcberein. 
+JWT_TOKEN_INVALID_ISS_ERR.explanation=Der 'iss'-Claim im JWT-Token muss entweder der Client-ID oder einer URI f\u00fcr Clientumleitung entsprechen.
+JWT_TOKEN_INVALID_ISS_ERR.useraction=Stellen Sie sicher, dass der 'iss'-Claim im JWT-Token der Client-ID oder einer URI f\u00fcr Clientumleitung entspricht.
+
+JWT_TOKEN_INVALID_AUD_ERR=CWWKS2266E: Die Tokenendpunktanforderung ist fehlgeschlagen. Der ''aud''-Claim (Audience, Zielgruppe) [{0}] stimmt weder mit der Aussteller-ID des OpenID Connect-Providers [{1}] noch mit dem Tokenendpunkt [{2}] \u00fcberein.
+JWT_TOKEN_INVALID_AUD_ERR.explanation=Der 'aud'-Claim im JWT-Token muss die Aussteller-ID oder der Tokenendpunkt des OpenID Connect-Providers sein.
+JWT_TOKEN_INVALID_AUD_ERR.useraction=Stellen Sie sicher, dass der 'aud'-Claim im JWT-Token mit der Aussteller-ID oder dem Tokenendpunkt des OpenID Connect-Providers \u00fcbereinstimmt.
+
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR=CWWKS2267E: Die Tokenendpunktanforderung ist fehlgeschlagen. Der ''aud''-Claim (audience, Zielgruppe) [{0}] stimmt nicht mit der Aussteller-ID des Providers [{1}] \u00fcberein, die mit issuerIdentifier in der Konfiguration des OpenID Connect-Providers definiert wurde.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.explanation=Der 'aud'-Claim im JWT-Token muss mit der Aussteller-ID \u00fcbereinstimmen, die explizit in der Konfiguration angegeben wurde.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.useraction=Stellen Sie sicher, dass der 'aud'-Claim im JWT-Token mit der Aussteller-ID \u00fcbereinstimmt, die in der Konfiguration definiert ist.
+
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR=CWWKS2268E: Die Tokenendpunktanforderung ist fehlgeschlagen. W\u00e4hrend der Verifizierung des ''sub''-Claims [{0}] ist eine unerwartete Registry-Ausnahme [{1}] eingetreten.
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.explanation=W\u00e4hrend der Verifizierung des 'sub'-Claims in der Benutzerregistry des OpenID Connect-Providers ist eine unerwartete Ausnahme eingetreten.
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.useraction=Stellen Sie sicher, dass die Benutzerregistry im OpenID Connect-Provider ordnungsgem\u00e4\u00df funktioniert und dass der 'sub'-Benutzer ein g\u00fcltiger Benutzer in der Registry ist.
+
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR=CWWKS2269E: Die Tokenendpunktanforderung ist fehlgeschlagen. Der Truststore zum Verifizieren des JWT-Tokens kann wegen einer Ausnahme [{0}] nicht abgerufen werden. Die Konfigurationswerte in jwtGrantType sind signatureAlgorithm [{1}] und trustStoreRef [{2}], und der Aliasname ist [{3}].
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.explanation=Der angegebene Signaturalgorithmus f\u00fcr das JWT-Token ben\u00f6tigt einen \u00f6ffentlichen Schl\u00fcssel, um das eingehende JWT-Token zu verifizieren, konnte aber keinen abrufen. 
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.useraction=Stellen Sie sicher, dass jwtGrantType und keyStore ordnungsgem\u00e4\u00df konfiguriert und dass die Position und das Kennwort des Truststores korrekt sind. 
+
+JWT_TOKEN_NO_PUBLIC_KEY_ERR=CWWKS2270E: Die Tokenendpunktanforderung ist fehlgeschlagen. Der Truststore zum Verifizieren des JWT-Tokens kann nicht abgerufen werden. Der Signaturalgorithmus f\u00fcr die Verifizierung im OpenID Connect-Provider ist [{0}]. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.explanation=Der OpenID Connect-Provider konnte den Truststore zum Verifizieren des JWT-Tokens nicht abrufen. Der OpenID Connect-Provider muss ordnungsgem\u00e4\u00df konfiguriert werden. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.useraction=Stellen Sie sicher, dass jwtGrantType und trustStoreRef ordnungsgem\u00e4\u00df konfiguriert und dass die Position und das Kennwort des Truststores korrekt sind.
+
+JWT_UNEXPECTED_ERR=CWWKS2271E: W\u00e4hrend der Verarbeitung der Tokenendpunktanforderung konnte der OpenID Connect-Provider wegen [{0}] nicht verarbeitet werden.
+JWT_UNEXPECTED_ERR.explanation=Der OpenID Connect-Provider hat einen unerwarteten Fehler empfangen.
+JWT_UNEXPECTED_ERR.useraction=Stellen Sie sicher, dass die Konfiguration korrekt ist. Wenn das Problem bestehen bleibt, wenden Sie sich an IBM.
+
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR=CWWKS2272E: Die OAuth-Tokenendpunktanforderung ist fehlgeschlagen. Das JWT-Token ist mit RS256 signiert. RS256 wird nur f\u00fcr den OpenID Connect-Tokenendpunkt unterst\u00fctzt.
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.explanation=Das mit dem Signaturalgorithmus RS256 signierte JWT-Token wird vom OAuth-Tokenendpunkt nicht unterst\u00fctzt. 
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.useraction=Wenn Sie das JWT-Token mit dem Signaturalgorithmus RS256 verwenden m\u00f6chten, konfigurieren Sie den OpenID Connect-Provider ordnungsgem\u00e4\u00df und senden Sie die Anforderung auch \u00fcber den OpenID Connect-Tokenendpunkt.

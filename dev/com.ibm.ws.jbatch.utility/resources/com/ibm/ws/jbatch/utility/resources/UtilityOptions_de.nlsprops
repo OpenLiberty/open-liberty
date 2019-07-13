@@ -1,0 +1,404 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Beschreibung:
+global.actions=Aktionen:
+global.options=Optionen:
+global.required=Erforderlich:
+global.usage=Syntax:
+global.usage.options=\t{0} {1} [Optionen]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\tVerwenden Sie help [Aktion], um detaillierte Informationen zu den Optionen f\u00fcr jede Aktion anzuzeigen.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\tGibt die Hilfeinformationen zur angegebenen Aktion aus.
+
+help.usage.options=\t{0} {1} [Aktionsname]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\ \ \ \ --batchManager=[Host]:[Port],[Host2]:[Port2],...
+connect.required-desc.--batchManager=\tDer Host und der Port der REST-API des Stapelmanagers. Zur Unterst\u00fctzung\n\
+\tder Hochverf\u00fcgbarkeit und des Failovers k\u00f6nnen Sie mehrere Ziele angeben. Ziele werden durch Kommas \n\
+\t',' voneinander getrennt. 
+
+connect.required-key.--user=\ \ \ \ --user=[Benutzername]
+connect.required-desc.--user=\tDer Benutzername f\u00fcr die Anmeldung am Stapelmanager.
+
+connect.required-key.--password=\ \ \ \ --password[=Kennwort]
+connect.required-desc.--password=\tDas Kennwort f\u00fcr die Anmeldung am Stapelmanager. Wenn kein Wert\n\
+\tdefiniert ist, werden Sie aufgefordert, einen einzugeben.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\ \ \ \ --controlPropertiesFile=[Datei_mit_Steuereigenschaften]
+connect.optional-desc.--controlPropertiesFile=\tEine Eigenschaftendatei, die Steuerparameter, wie z. B. den\n\
+\tHost und den Port f\u00fcr die Verbindungsherstellung, enth\u00e4lt. Diese Parameter werden von Parametern \u00fcberschrieben,\n\
+\tdie direkt in der Befehlszeile angegeben werden. 
+connect.optional-key.--httpTimeout_s=\ \ \ \ --httpTimeout_s=[HTTP-Zeitlimit in Sekunden]
+connect.optional-desc.--httpTimeout_s=\tDas Zeitlimit in Sekunden, das auf HTTP-Anforderungen des Dienstprogramms\n\
+\tan die REST-API des Stapelmanagers angewendet wird. Derselbe Zeitlimitwert wird auf Verbindungs- und Leseoperationen\n\
+\tangewendet. Wenn Sie keinen Wert angeben, wird der Standardwert (30 Sekunden)\n\
+\tverwendet.
+
+connect.optional-key.--trustSslCertificates=\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\tGibt an, dass das Dienstprogramm alle SSL-Zertifikate anerkennen soll. Das \n\
+\tDienstprogramm kommuniziert mit der REST-API des Stapelmanagers \u00fcber HTTPS. \n\
+\tDie API verifiziert standardm\u00e4\u00dfig das SSL-Zertifikat des Stapelmanagers, sofern diese Option\n\
+\tnicht angegeben ist. Wenn diese Option angegeben ist, erkennt die API das SSL-Zertifikat an\n\
+\tund f\u00fchrt keine Verifizierung durch.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\ \ \ \ --wait
+wait.optional-desc.--wait=\tWenn diese Option angegeben ist, wartet das Programm den\n\
+\tAbschluss des Jobs ab, bevor es beendet wird. Der Exit-Code ist entsprechend dem Stapelstatus\n\
+\tdes Jobs definiert (es sei denn, --returnExitStatus ist angegeben).\n\
+\tExit-Code f\u00fcr Stapelstatus:\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\ \ \ \ --pollingInterval_s=[Abfrageintervall in Sekunden]
+wait.optional-desc.--pollingInterval_s=\tDas Intervall, in dem der Jobstatus abgefragt werden soll. \n\
+\tDie Standardeinstellung sind 30 Sekunden.
+
+wait.optional-key.--verbose=\ \ \ \ --verbose
+wait.optional-desc.--verbose=\tWenn diese Option angegeben ist, protokolliert das Programm bei jeder\n\
+\tAbfrage eines Jobstatus eine Nachricht.
+
+wait.optional-key.--getJobLog=\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\tWenn diese Option angegeben ist, l\u00e4dt das Programm das Jobprotokoll herunter\n\
+\tund gibt es nach Jobabschluss in der Standardausgabe (STDOUT) aus. Diese Option muss mit --wait kombiniert werden.
+
+wait.optional-key.--returnExitStatus=\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\tVerwendet den Exitstatus des Jobs als Exit-Code dieses Programms. Diese Option \n\
+\tmuss mit --wait kombiniert werden. Wenn der Exitstatus mit einem \n\
+\tStapelstatusnamen, z. B. "COMPLETED", \u00fcbereinstimmt, wird der Exit-Code \n\
+\tentsprechend der \u00fcber die Option --wait angegebenen Zuordnung definiert. Andernfalls\n\
+\twird der Exit-Code aus dem Anfang der Exitstatuszeichenfolge geparst. \n\
+\tBeispiel:\n\
+\t\texitStatus="0", exit code: 0\n\
+\t\texitStatus="8:failure message can go here", exit code: 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\t\u00dcbergibt einen neuen Stapeljob. 
+
+submit.optional-key.--applicationName=\ \ \ \ --applicationName=[Anwendungsname]
+submit.optional-desc.--applicationName=\tDer Name der Stapelanwendung.\n\
+\tAnmerkung: Sie m\u00fcssen entweder --applicationName oder --moduleName angegeben.\n\
+\tWenn --applicationName nicht angegeben wurde, wird standardm\u00e4\u00dfig der Wert [Modulname] \n\
+\tohne die Erweiterung ".war" oder ".jar" angenommen.
+
+submit.optional-key.--moduleName=\ \ \ \ --moduleName=[Modulname]
+submit.optional-desc.--moduleName=\tGibt ein WAR- oder EJB-Modul in der Stapelanwendung an. \n\
+\tDer Job wird im Komponentenkontext des Moduls \u00fcbergeben. \n\
+\tAnmerkung: Sie m\u00fcssen entweder --applicationName oder --moduleName angegeben.\n\
+\tWenn --moduleName nicht angegeben wurde, wird standardm\u00e4\u00dfig der Wert "[Anwendungsname].war" angenommen.
+
+submit.optional-key.--componentName=\ \ \ \ --componentName=[Komponentenname]
+submit.optional-desc.--componentName=\tGibt eine EJB-Komponente im EJB-Modul der Stapelanwendung an.\n\
+\tDer Job wird im Komponentenkontext der EJB \u00fcbergeben.
+
+submit.optional-key.--jobXMLName=\ \ \ \ --jobXMLName=[Name_der_Job-XML]
+submit.optional-desc.--jobXMLName=\tDer Name der Job-XML, die den Job beschreibt. Die Datei\n\
+\twird aus dem Verzeichnis batch-jobs im Anwendungsmodul gelesen. \n\
+\tAnmerkung: Sie m\u00fcssen --jobXMLName oder --jobXMLFile angeben.
+
+submit.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[Jobeigenschaftendatei]
+submit.optional-desc.--jobPropertiesFile=\tEine Eigenschaftendatei, die Jobparameter enth\u00e4lt.\n\
+\tDiese Option ist der Alias der Option --jobParametersFile.
+
+submit.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[Jobparameterdatei]
+submit.optional-desc.--jobParametersFile=\tEine Eigenschaftendatei, die Jobparameter enth\u00e4lt.\n\
+\tDiese Option ist der Alias der Option --jobPropertiesFile.
+
+submit.optional-key.--jobParameter=\ \ \ \ --jobParameter=[Schl\u00fcssel]=[Wert]
+submit.optional-desc.--jobParameter=\tGeben Sie einen Jobparameter an. Die Option --jobParameter kann\n\
+\tmehrfach angegeben werden. Die Option --jobParameter \u00fcberschreibt Eigenschaften mit \u00e4hnlichen\n\
+\tNamen in --jobParametersFile.
+
+submit.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\tDiese Option kann zusammen mit --wait verwendet werden. Sie registriert einen\n\
+\tShutdown-Hook mit der JVM, die die Steuerung \u00fcbernimmt, wenn das Programm batchManager\n\
+\tnicht normal beendet wurde. Der Shutdown-Hook versucht, den Job zu stoppen, auf den er wartet, \n\
+\tindem er eine Stoppanforderung an den Server sendet. \n\
+\tAnmerkung: JVM-Shutdown-Hooks k\u00f6nnen nur die Steuerung \u00fcbernehmen, wenn die JVM auf eine bestimmte\n\
+\tWeise beendet wird. Weitere Informationen finden Sie in der Java-Dokumentation zu \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+submit.optional-key.--jobXMLFile=\ \ \ \ --jobXMLFile=[XML-Jobdatei]
+submit.optional-desc.--jobXMLFile=\tDer Name der Datei, die die JSL f\u00fcr den Job enth\u00e4lt. Die\n\
+\tDatei wird vom Dienstprogramm batchManager gelesen und inline mit der Anforderung \n\
+\t\u00fcbergeben und nicht aus dem Verzeichnis batch-jobs im Anwendungsmodul\n\
+\tgelesen. \n\
+\tAnmerkung: Sie m\u00fcssen --jobXMLName oder --jobXMLFile angeben.
+
+submit.optional-key.--restartTokenFile=\ \ \ \ --restartTokenFile=[Tokendatei_f\u00fcr_Neustart]
+submit.optional-desc.--restartTokenFile=\tDer Name einer Datei, die die Instanz-ID des erneut zu startenden\n\
+\tJobs enth\u00e4lt. Die Datei wird vom Dienstprogramm batchManager gelesen \n\
+\tund beschrieben. Wenn die Datei eine Instanz-ID enth\u00e4lt, wird der\n\
+\tJob erneut gestartet. Enth\u00e4lt die Datei keine Instanz-ID, wird ein\n\
+\tneuer Job \u00fcbergeben und die entsprechende Instanz-ID wird in der\n\
+\tDatei gespeichert.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\tStartet einen Stapeljob erneut.
+
+restart.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[Jobinstanz-ID]
+restart.optional-desc.--jobInstanceId=\tDie erneut zu startende Jobinstanz.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+restart.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[Jobausf\u00fchrungs-ID]
+restart.optional-desc.--jobExecutionId=\tDie erneut zu startende Jobausf\u00fchrung.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+restart.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[Jobeigenschaftendatei]
+restart.optional-desc.--jobPropertiesFile=\tEine Eigenschaftendatei, die Jobparameter enth\u00e4lt.\n\
+\tDiese Option ist der Alias der Option --jobParametersFile.
+
+restart.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[Jobparameterdatei]
+restart.optional-desc.--jobParametersFile=\tEine Eigenschaftendatei, die Jobparameter enth\u00e4lt.\n\
+\tDiese Option ist der Alias der Option --jobPropertiesFile.
+
+restart.optional-key.--jobParameter=\ \ \ \ --jobParameter=[Schl\u00fcssel]=[Wert]
+restart.optional-desc.--jobParameter=\tGeben Sie einen Jobparameter an. Die Option --jobParameter kann mehrfach\n\
+\tangegeben werden. Die Option --jobParameter \u00fcberschreibt Eigenschaften \n\
+\tmit \u00e4hnlichen Namen in --jobParametersFile.
+
+restart.optional-key.--reusePreviousParams=\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\tWenn diese Option angegeben ist, werden die Parameter des vorherigen Jobs\n\
+f\u00fcr diesen Job wiederverwendet.
+
+restart.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\tDiese Option kann zusammen mit --wait verwendet werden. Sie registriert einen\n\
+\tShutdown-Hook mit der JVM, die die Steuerung \u00fcbernimmt, wenn das Programm batchManager\n\
+\tnicht normal beendet wurde. Der Shutdown-Hook versucht, den Job zu stoppen, auf den er wartet, \n\
+\tindem er eine Stoppanforderung an den Server sendet. \n\
+\tAnmerkung: JVM-Shutdown-Hooks k\u00f6nnen nur die Steuerung \u00fcbernehmen, wenn die JVM auf eine bestimmte\n\
+\tWeise beendet wird. Weitere Informationen finden Sie in der Java-Dokumentation zu \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\tStoppt einen Stapeljob.
+
+stop.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[Jobinstanz-ID]
+stop.optional-desc.--jobInstanceId=\tDie zu stoppende Jobinstanz.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+stop.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[Jobausf\u00fchrungs-ID]
+stop.optional-desc.--jobExecutionId=\tDie zu stoppende Jobausf\u00fchrung.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\tZeigt den Status eines Jobs an.
+
+status.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[Jobinstanz-ID]
+status.optional-desc.--jobInstanceId=\tDie anzuzeigende Jobinstanz.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+status.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[Jobausf\u00fchrungs-ID]
+status.optional-desc.--jobExecutionId=\tDie anzuzeigende Jobausf\u00fchrung.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\tL\u00e4dt das Jobprotokoll f\u00fcr einen Stapeljob herunter.
+
+getJobLog.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[Jobinstanz-ID]
+getJobLog.optional-desc.--jobInstanceId=\tL\u00e4dt das Jobprotokoll f\u00fcr die angegebene Jobinstanz herunter.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+getJobLog.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[Jobausf\u00fchrungs-ID]
+getJobLog.optional-desc.--jobExecutionId=\tL\u00e4dt das Jobprotokoll f\u00fcr die angegebene Jobausf\u00fchrung herunter.\n\
+\tAnmerkung: Sie m\u00fcssen --jobInstanceId oder --jobExecutionId angeben.
+
+getJobLog.optional-key.--outputFile=\ \ \ \ --outputFile=[Ausgabedatei]
+getJobLog.optional-desc.--outputFile=\tDer Pfad zu einer lokalen Datei.  Das Jobprotokoll wird in diese Datei geschrieben.\n\
+\tWenn Sie keinen Pfad angeben, richtet sich die Standardausgabeposition nach --type.\n\
+\tWenn Sie --type=text angeben, wird das Jobprotokoll in die Standardausgabe (STDOUT) geschrieben.\n\
+\tWenn Sie --type=zip angeben, wird das Jobprotokoll in die vom Header 'Content-Disposition' \n\
+\tin der HTTP-Antwort vorgeschlagene Datei geschrieben.
+
+getJobLog.optional-key.--type=\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\tL\u00e4dt das Jobprotokoll als einfache Textdatei oder als ZIP-Datei herunter.\n\
+\tWenn Sie keinen Wert angeben, wird eine Textdatei verwendet.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\tListet Jobinstanzen auf. 
+
+listJobs.optional-key.--page=\ \ \ \ --page=[Seite]
+listJobs.optional-desc.--page=\tDie Seite mit den zur\u00fcckzugebenden Jobinstanzdatens\u00e4tzen. Seitenzahlen beginnen mit 0.\n\
+\tBeispiel:\n\
+\t\t--page=0 --pageSize=10 gibt die ersten 10 Datens\u00e4tze zur\u00fcck.\n\
+\t\t--page=2 --pageSize=10 gibt die Datens\u00e4tze 20 bis 29 zur\u00fcck.\n\
+\tWenn Sie keinen Wert angeben, ist der Standardwert 0.
+
+listJobs.optional-key.--pageSize=\ \ \ \ --pageSize=[Seitengr\u00f6\u00dfe]
+listJobs.optional-desc.--pageSize=\tDie Gr\u00f6\u00dfe der Seite mit den zur\u00fcckzugebenden Jobinstanzdatens\u00e4tzen.\n\
+\tBeispiel:\n\
+\t\t--page=0 --pageSize=10 gibt die ersten 10 Datens\u00e4tze zur\u00fcck.\n\
+\t\t--page=1 --pageSize=20 gibt die Datens\u00e4tze 20 bis 39 zur\u00fcck.\n\
+\tWenn Sie keinen Wert angeben, ist der Standardwert 50.
+
+listJobs.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[Jobinstanz-ID]
+listJobs.optional-desc.--jobInstanceId=\tDer Jobinstanz-ID-Filter, der auf die Jobinstanzdatens\u00e4tze angewendet wird.\n\
+\tBeispiel:\n\
+\t\t--jobInstanceId=10:20 gibt 10 bis 20 Datens\u00e4tze zur\u00fcck.\n\
+\t\t--jobInstanceId=">10" gibt 10 Datens\u00e4tze oder mehr zur\u00fcck.\n\
+\t\t--jobInstanceId="<10" gibt 10 Datens\u00e4tze oder weniger zur\u00fcck.\n\
+\t\t--jobInstanceId=10,12,15 gibt 10, 12 und 15 Datens\u00e4tze zur\u00fcck.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze zur\u00fcckgegeben.
+
+listJobs.optional-key.--createTime=\ \ \ \ --createTime=[Erstellungszeit]
+listJobs.optional-desc.--createTime=\tDer Filter f\u00fcr die Erstellungszeit, der auf die Jobinstanzdatens\u00e4tze angewendet wird.\n\
+\tBeispiel:\n\
+\t\t--createTime=2015-09-10:2015-09-27 gibt Datens\u00e4tze zur\u00fcck, die zwischen dem\n\
+\t\t\t10. September 2015 und dem 27. September 2015 einschlie\u00dflich erstellt wurden.\n\
+\t\t--createTime=">3d" gibt Datens\u00e4tze zur\u00fcck, die mindestens 3 Tage alt (in UTC-Zeit)\n\
+\t\t\tsind (das Erstellungsdatum liegt mindestens 3 Tage zur\u00fcck.)\n\
+\t\t--createTime="<3d" gibt Datens\u00e4tze zur\u00fcck, die maximal 3 Tage alt (in UTC-Zeit)\n\
+\t\t\tsind (das Erstellungsdatum liegt maximal 3 Tage zur\u00fcck.)\n\
+\t\t--createTime=2015-09-15 gibt alle Datens\u00e4tze zur\u00fcck, die am 15. September 2015 erstellt wurden.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze zur\u00fcckgegeben. \
+Bei Angabe von createTime=>Xd oder \n\
+\t\tcreateTime<Xd wird das Datum auf dem Dispatcher-Server\n\
+\t\tin UTC-Zeit berechnet.
+
+listJobs.optional-key.--instanceState=\ \ \ \ --instanceState=[Instanzstatus]
+listJobs.optional-desc.--instanceState=\tDer Instanzstatusfilter, der auf die Jobinstanzdatens\u00e4tze angewendet wird.\n\
+\tBeispiel:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED gibt Datens\u00e4tze mit den\n\
+\t\tStatus COMPLETED, FAILED und STOPPED zur\u00fcck.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze zur\u00fcckgegeben.
+
+listJobs.optional-key.--exitStatus=\ \ \ \ --exitStatus=[Exitstatus]
+listJobs.optional-desc.--exitStatus=\tDer Exitstatusfilter, der auf die Jobausf\u00fchrungsdatens\u00e4tze angewendet\n\
+\twird, die den Jobinstanzdatens\u00e4tzen zugeordnet sind.\n\
+\tBeispiel:\n\
+\t\t--exitStatus=*JOB* gibt Jobinstanzdatens\u00e4tze zur\u00fcck, die Ausf\u00fchrungsdatens\u00e4tze\n\
+\t\thaben, die das Wort JOB im Exitstatus enthalten.\n\
+\t\tAnmerkung: Bei den Filterkriterien kann das Platzhalterzeichen (*)\n\
+\t\tauf beiden Seiten verwendet werden.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze zur\u00fcckgegeben.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\tL\u00f6scht alle Datens\u00e4tze und Protokolle f\u00fcr eine Jobinstanz oder l\u00f6scht eine Liste von\n\
+\tJobinstanzdatens\u00e4tzen.
+
+purge.optional-key.--page=\ \ \ \ --page=[Seite]
+purge.optional-desc.--page=\tDie Seite mit den zur\u00fcckzugebenden Jobinstanzdatens\u00e4tzen. Seitenzahlen beginnen mit 0.\n\
+\tBeispiel:\n\
+\t\t--page=0 --pageSize=10 gibt die ersten 10 Datens\u00e4tze zur\u00fcck.\n\
+\t\t--page=2 --pageSize=10 gibt die Datens\u00e4tze 20 bis 29 zur\u00fcck.\n\
+\tWenn Sie keinen Wert angeben, ist der Standardwert 0.
+
+purge.optional-key.--pageSize=\ \ \ \ --pageSize=[Seitengr\u00f6\u00dfe]
+purge.optional-desc.--pageSize=\tDie Gr\u00f6\u00dfe der Seite mit den zur\u00fcckzugebenden Jobinstanzdatens\u00e4tzen.\n\
+\tBeispiel:\n\
+\t\t--page=0 --pageSize=10 gibt die ersten 10 Datens\u00e4tze zur\u00fcck.\n\
+\t\t--page=1 --pageSize=20 gibt die Datens\u00e4tze 20 bis 39 zur\u00fcck.\n\
+\tWenn Sie keinen Wert angeben, ist der Standardwert 50.
+
+purge.optional-key.--purgeJobStoreOnly=\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\tGibt an, dass die L\u00f6schoperation nur Eintr\u00e4ge aus der \n\
+\tJobspeicherdatenbank l\u00f6schen soll. Es wird nicht versucht, die Jobprotokolle aus\n\
+\tdem Dateisystem zu l\u00f6schen.
+
+purge.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[Jobinstanz-ID]
+purge.optional-desc.--jobInstanceId=\tDer Jobinstanz-ID-Filter, der zum L\u00f6schen von Jobinstanzdatens\u00e4tzen angewendet wird.\n\
+\tBeispiel:\n\
+\t\t--jobInstanceId=10:20 l\u00f6scht 10 bis 20 Datens\u00e4tze.\n\
+\t\t--jobInstanceId=">10" l\u00f6scht 10 Datens\u00e4tze oder mehr.\n\
+\t\t--jobInstanceId="<10" l\u00f6scht 10 Datens\u00e4tze oder weniger.\n\
+\t\t--jobInstanceId=10,12,15 l\u00f6scht 10, 12 und 15 Datens\u00e4tze.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze gel\u00f6scht.
+
+purge.optional-key.--createTime=\ \ \ \ --createTime=[Erstellungszeit]
+purge.optional-desc.--createTime=\tDer Filter f\u00fcr die Erstellungszeit, der zum L\u00f6schen von Jobinstanzdatens\u00e4tzen angewendet wird.\n\
+\tBeispiel:\n\
+\t\t--createTime=2015-09-10:2015-09-27 l\u00f6scht Datens\u00e4tze, die zwischen dem\n\
+\t\t\t10. September 2015 und dem 27. September 2015 einschlie\u00dflich erstellt wurden.\n\
+\t\t--createTime=">3d" l\u00f6scht Datens\u00e4tze, die mindestens 3 Tage alt (in UTC-Zeit)\n\
+\t\t\tsind (das Erstellungsdatum liegt mindestens 3 Tage zur\u00fcck.)\n\
+\t\t--createTime="<3d" l\u00f6scht Datens\u00e4tze, die maximal 3 Tage alt (in UTC-Zeit)\n\
+\t\t\tsind (das Erstellungsdatum liegt maximal 3 Tage zur\u00fcck.)\n\
+\t\t--createTime=2015-09-15 l\u00f6scht alle Datens\u00e4tze, die am 15. September 2015 erstellt wurden.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze gel\u00f6scht. \
+Bei Angabe von createTime=>Xd oder \n\
+\t\tcreateTime<Xd wird das Datum auf dem Dispatcher-Server\n\
+\t\tin UTC-Zeit berechnet.
+
+purge.optional-key.--instanceState=\ \ \ \ --instanceState=[Instanzstatus]
+purge.optional-desc.--instanceState=\tDer Instanzstatusfilter, der zum L\u00f6schen von Jobinstanzdatens\u00e4tzen angewendet wird.\n\
+\tBeispiel:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED l\u00f6scht Datens\u00e4tze mit den\n\
+\t\tStatus COMPLETED, FAILED und STOPPED.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze gel\u00f6scht.
+
+purge.optional-key.--exitStatus=\ \ \ \ --exitStatus=[Exitstatus]
+purge.optional-desc.--exitStatus=\tDer Exitstatusfilter, der auf die Jobausf\u00fchrungsdatens\u00e4tze angewendet\n\
+\twird, die dem L\u00f6schen der Jobinstanzdatens\u00e4tze zugeordnet sind.\n\
+\tBeispiel:\n\
+\t\t--exitStatus=*JOB* l\u00f6scht Jobinstanzdatens\u00e4tze, die Ausf\u00fchrungsdatens\u00e4tze\n\
+\t\thaben, die das Wort JOB im Exitstatus enthalten.\n\
+\t\tAnmerkung: Bei den Filterkriterien kann das Platzhalterzeichen (*)\n\
+\t\tauf beiden Seiten verwendet werden.\n\
+\t\tOhne Angabe von --page und --pageSize werden standardm\u00e4\u00dfig \n\
+\t\tmaximal 50 Datens\u00e4tze gel\u00f6scht.

@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: No se puede suplantar al usuario {0} para obtener la GSSCredential de usuario para s\u00ed mismo cuando se utiliza el nombre principal de servicio delegado {1} debido a la excepci\u00f3n {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=No se puede suplantar al usuario debido a la excepci\u00f3n inesperada.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Aseg\u00farese de que el nombre principal de servicio delegado (SPN) est\u00e9 habilitado para la delegaci\u00f3n y revise los registros para obtener m\u00e1s informaci\u00f1on.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: No se puede suplantar al usuario {0} para obtener la GSSCredential para el servicio de fondo cuando se utiliza el nombre principal de servicio delegado {1} debido a la excepci\u00f3n {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=No se puede suplantar al usuario debido a la excepci\u00f3n inesperada.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Aseg\u00farese de que el atributo S4U2proxy est\u00e9 establecido en true en la configuraci\u00f3n del elemento SPNEGO, que el SPN de servicio delegado est\u00e9 habilitado para la delegaci\u00f3n en el centro de distribuci\u00f3n de claves (KDC), que la incidencia de servicio de cliente tenga un distintivo de reenv\u00edo establecido en true y que las incidencias de servicio delegado tengan tambi\u00e9n un distintivo de reenv\u00edo establecido en true. Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: No se puede procesar el m\u00e9todo {0} porque la delegaci\u00f3n restringida S4U2self no est\u00e1 habilitada.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=No se puede procesar el m\u00e9todo porque la delegaci\u00f3n restringida S4U2self no est\u00e1 habilitada.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Aseg\u00farese de que la caracter\u00edstica de delegaci\u00f3n restringida est\u00e9 habilitada y que el atributo S4U2self est\u00e9 establecido en true en la configuraci\u00f3n de la delegaci\u00f3n restringida en el archivo server.xml. Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: No se puede procesar el m\u00e9todo {0} porque la delegaci\u00f3n restringida S4U2proxy no est\u00e1 habilitada.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=No se puede procesar el m\u00e9todo porque la delegaci\u00f3n restringida S4U2proxy no est\u00e1 habilitada.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Aseg\u00farese de que la caracter\u00edstica de delegaci\u00f3n restringida est\u00e9 habilitada y que el atributo S4U2proxy est\u00e9 establecido en true en la configuraci\u00f3n de la delegaci\u00f3n restringida en el archivo server.xml. Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: La caracter\u00edstica de delegaci\u00f3n restringida de Kerberos no est\u00e1 soportada con el proveedor de Java {0} y la versi\u00f3n {1}.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=La caracter\u00edstica de delegaci\u00f3n restringida de Kerberos no puede habilitarse debido al proveedor y a la versi\u00f3n del tiempo de ejecuci\u00f3n Java.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utilice el proveedor y la versi\u00f3n de Java soportados por la caracter\u00edstica de delegaci\u00f3n restringida de Kerberos.
+
+
+
+
+
+
+
+
+
+
+
+

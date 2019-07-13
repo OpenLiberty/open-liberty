@@ -1,0 +1,42 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+    openid4java
+}
+
+dependencies {
+    openid4java 'org.openid4java:openid4java:0.9.7-ibm-s20130624-1827'
+}
+
+task extractJarSelective(type: Copy) {
+    from(zipTree(configurations.openid4java[0]))
+    exclude "org/openid4java/consumer/EhcacheNonceVerifier.class"
+    into(compileJava.destinationDir)
+}
+
+task instrumentClass {
+  dependsOn extractJarSelective
+  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
+    inputs.files { rasInstrumentationInputFiles() }
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
+    doLast {
+      if (instrument.isEmpty())
+        return
+      rasInstrumentationTaskdef(ant)
+      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
+          fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
+      }
+    }
+  }
+}
+
+jar.dependsOn instrumentClass

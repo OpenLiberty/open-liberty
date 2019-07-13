@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.rest/resources/com/ibm/ws/jbatch/rest/resources/RestMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains:
+# 0151 - 0199: com.ibm.ws.jbatch.rest
+# 
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.instance.not.found=CWWKY0151E: Nie znaleziono instancji zadania dla ID instancji {0}.
+job.instance.not.found.explanation=Ten komunikat o b\u0142\u0119dzie jest wysy\u0142any, gdy w \u017c\u0105daniu REST jest u\u017cywany niepoprawny identyfikator instancji.
+job.instance.not.found.useraction=Sprawd\u017a wys\u0142ane \u017c\u0105danie REST, aby sprawdzi\u0107, czy wys\u0142any identyfikator instancji jest poprawny.
+
+in.memory.search.not.supported=CWWKY0152E: Adres URL wywo\u0142ania interfejsu REST API zarz\u0105dzania zadaniami wsadowymi nie jest obs\u0142ugiwany w przypadku trwa\u0142o\u015bci zada\u0144 wsadowych w pami\u0119ci.
+in.memory.search.not.supported.explanation=Interfejs REST API zarz\u0105dzania zadaniami wsadowymi zosta\u0142 wywo\u0142any z kombinacj\u0105 parametr\u00f3w \u015bcie\u017cki i zapytania, kt\u00f3ra zosta\u0142a rozpoznana przez serwer, jednak nie jest obs\u0142ugiwana w przypadku korzystania z trwa\u0142o\u015bci zada\u0144 wsadowych w pami\u0119ci. Ten adres URL mo\u017ce by\u0107 obs\u0142ugiwany, gdy do trwa\u0142o\u015bci zada\u0144 wsadowych jest u\u017cywana opcja bazy danych.
+in.memory.search.not.supported.useraction=U\u017cyj wersji 1 interfejsu REST API zada\u0144 wsadowych z obs\u0142ug\u0105 trwa\u0142o\u015bci zada\u0144 wsadowych w pami\u0119ci.
+
+db.tables.not.created.for.jobparm.search=CWWKY0153E: Baza danych repozytorium zada\u0144 nie obs\u0142uguje wyszukiwania lub usuwania wed\u0142ug parametr\u00f3w zadania, poniewa\u017c w bazie danych nie istnieje tabela JOBPARAMETER.
+db.tables.not.created.for.jobparm.search.explanation=Interfejs REST API zarz\u0105dzania zadaniami wsadowymi zosta\u0142 wywo\u0142any z parametrami zapytania wyszukuj\u0105cymi instancje zada\u0144 na podstawie wzorca parametru zadania przy u\u017cyciu operacji wyszukiwania (GET) lub czyszczenia (DELETE). Jednak ten konkretny parametr wyszukiwania jest obs\u0142ugiwany tylko w\u00f3wczas, gdy repozytorium zada\u0144 zawiera tabel\u0119 JOBPARAMETER, kt\u00f3ra zosta\u0142a dodana w pakietach poprawek poziomu 16.0.0.4 lub nowszych. Je\u015bli magazyn bazy danych u\u017cywany przez trwa\u0142o\u015b\u0107 zada\u0144 wsadowych zosta\u0142 skonfigurowany z warto\u015bci\u0105 domy\u015bln\u0105 createTables=true, ta tabela powinna zosta\u0107 utworzona automatycznie w momencie uruchamiania komponentu wsadowego w ramach serwera z pakietem poprawek poziomu 16.0.0.4 lub nowszym. Je\u015bli jednak magazyn bazy danych zosta\u0142 skonfigurowany z opcj\u0105 createTables=false, administrator WebSphere lub administrator DBA b\u0119dzie musia\u0142 osobno utworzy\u0107 now\u0105 tabel\u0119 przed wykonaniem parametru wyszukiwania wed\u0142ug zadania.
+db.tables.not.created.for.jobparm.search.useraction=Instrukcje dotycz\u0105ce migrowania bazy danych u\u017cywanej przez trwa\u0142o\u015b\u0107 zada\u0144 wsadowych zawiera dokumentacja pakietu poprawek.
+
+ssl.connection.unavailable=CWWKY0154I: Wyst\u0105pi\u0142 b\u0142\u0105d uzgadniania SSL podczas nawi\u0105zywnia po\u0142\u0105czenia z punktem ko\u0144cowym Batch w {0}. To \u017c\u0105danie i przysz\u0142e \u017c\u0105dania podejm\u0105 pr\u00f3b\u0119 u\u017cycia przekierowania HTTP, aby skierowa\u0107 dane do poprawnego punktu ko\u0144cowego.
+ssl.connection.unavailable.explanation=Okre\u015blone dzia\u0142ania dost\u0119pne przy u\u017cyciu interfejsu REST API Batch musz\u0105 by\u0107 wykonywane na tym samym serwerze, na kt\u00f3rym zosta\u0142o uruchomione odpowiadaj\u0105ce im zadanie. Je\u015bli to dzia\u0142anie jest inicjowane na innym serwerze, ten serwer mo\u017ce podj\u0105\u0107 pr\u00f3b\u0119 utworzenia nowego po\u0142\u0105czenia w celu przekazania \u017c\u0105dania do wymaganego miejsca docelowego. Ten serwer nie m\u00f3g\u0142 uko\u0144czy\u0107 uzgadniania SSL z serwerem docelowym. Zatem to i przysz\u0142e \u017c\u0105dania podejm\u0105 pr\u00f3b\u0119 u\u017cycia przekierowa\u0144 \u017c\u0105da\u0144 zamiast nowych po\u0142\u0105cze\u0144.
+ssl.connection.unavailable.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+http.options.received=CWWKY0155W: \u017b\u0105danie HTTP OPTIONS z serwera Liberty w {0} zosta\u0142o odebrane w interfejsie REST API Batch. Jest to wynik pr\u00f3by nawi\u0105zania po\u0142\u0105czenia przez inny serwer Liberty, na kt\u00f3rym dzia\u0142a Centrum administracyjne. Skonfiguruj mechanizm CORS na tym serwerze, aby akceptowa\u0107 \u017c\u0105dania z serwera, na kt\u00f3rym dzia\u0142a Centrum administracyjne, aby rozwi\u0105za\u0107 ten problem.
+http.options.received.explanation=Okre\u015blone dzia\u0142ania dost\u0119pne przy u\u017cyciu interfejsu REST API Batch musz\u0105 by\u0107 wykonywane na tym samym serwerze, na kt\u00f3rym zosta\u0142o uruchomione odpowiadaj\u0105ce im zadanie. Je\u015bli to dzia\u0142anie jest inicjowane na innym serwerze, ten serwer mo\u017ce podj\u0105\u0107 pr\u00f3b\u0119 utworzenia nowego po\u0142\u0105czenia w celu przekazania \u017c\u0105dania do wymaganego miejsca docelowego. Mechanizm wsp\u00f3\u0142u\u017cytkowania zasob\u00f3w z r\u00f3\u017cnych \u017ar\u00f3de\u0142 (CORS) nie zosta\u0142 skonfigurowany pod k\u0105tem zezwalania na takie po\u0142\u0105czenia mi\u0119dzy serwerami. Zatem nie mo\u017cna wykona\u0107 tego \u017c\u0105dania.
+http.options.received.useraction=Skonfiguruj mechanizm CORS, aby zezwoli\u0107 na po\u0142\u0105czenia interfejsu REST API Batch mi\u0119dzy serwerem, na kt\u00f3rym dzia\u0142a Centrum administracyjne, a tym serwerem.

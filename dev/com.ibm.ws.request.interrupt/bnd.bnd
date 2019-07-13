@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Request Interrupt
+Bundle-SymbolicName: com.ibm.ws.request.interrupt
+Bundle-Description: RequestInterrupt: Request Interrupt; version=${bVersion}
+
+WS-TraceGroup: requestInterrupt
+
+Export-Package: com.ibm.ws.request.interrupt,com.ibm.ws.request.interrupt.status
+
+Private-Package: com.ibm.ws.request.interrupt.internal.*
+
+Service-Component:\
+    com.ibm.ws.request.interrupt.internal.InterruptibleThreadInfrastructureImpl; \
+        implementation:=com.ibm.ws.request.interrupt.internal.InterruptibleThreadInfrastructureImpl; \
+        provide:='\
+          com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent,\
+          com.ibm.wsspi.resource.ResourceFactory,\
+          com.ibm.wsspi.logging.Introspector,\
+          com.ibm.websphere.interrupt.InterruptibleThreadInfrastructure,\
+          com.ibm.ws.request.interrupt.InterruptibleRequestLifecycle,\
+          com.ibm.ws.request.interrupt.internal.InterruptibleThreadInfrastructureImpl';\
+        appRecycleCoordinator=com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;\
+        scheduledExecutor=java.util.concurrent.ScheduledExecutorService; \
+        properties:="service.vendor=IBM,creates.objectClass=com.ibm.websphere.interrupt.InterruptibleThreadInfrastructure,jndiName=interrupt/iti"; \
+        immediate:='true'
+              
+#Include-Resource: \
+#    OSGI-INF=resources/OSGI-INF
+
+-dsannotations: \
+    com.ibm.ws.request.interrupt.status.InterruptibleThreadStatusImpl    
+
+-buildpath: \
+	com.ibm.websphere.interrupt;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

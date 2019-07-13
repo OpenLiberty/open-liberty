@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openid20/internal/resources/OpenIDMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1500 - CWWKS1519
+OPENID_RP_SERVICE_ACTIVATE=CWWKS1500I: El servicio de parte dependiente de OpenID est\u00e1 activado. 
+OPENID_RP_SERVICE_ACTIVATE.explanation=El servicio de parte dependiente de OpenID est\u00e1 activado.
+OPENID_RP_SERVICE_ACTIVATE.useraction=Ninguna.
+
+OPENID_RP_SERVICE_DEACTIVATE=CWWKS1501I: El servicio de parte dependiente de OpenID est\u00e1 desactivado. 
+OPENID_RP_SERVICE_DEACTIVATE.explanation=El servicio de parte dependiente de OpenID est\u00e1 desactivado.
+OPENID_RP_SERVICE_DEACTIVATE.useraction=Ninguna.
+
+OPENID_RP_CONFIG_PROCESSED=CWWKS1502I: La configuraci\u00f3n de la parte dependiente de OpenID se ha procesado satisfactoriamente.
+OPENID_RP_CONFIG_PROCESSED.explanation=La configuraci\u00f3n de la parte dependiente de OpenID se ha procesado satisfactoriamente.
+OPENID_RP_CONFIG_PROCESSED.useraction=Ninguna.
+
+OPENID_RP_CONFIG_MODIFIED=CWWKS1503I: La configuraci\u00f3n de la parte dependiente de OpenID se ha modificado satisfactoriamente.
+OPENID_RP_CONFIG_MODIFIED.explanation=La configuraci\u00f3n de la parte dependiente de OpenID se ha modificado satisfactoriamente.
+OPENID_RP_CONFIG_MODIFIED.useraction=Ninguna.
+
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID=CWWKS1504W: La configuraci\u00f3n de la parte dependiente de OpenID no es v\u00e1lida si maxAssociationAttempts est\u00e1 establecido en cero y allowStateless est\u00e1 establecido en false. Restablezca maxAssociationAttempts en el valor predeterminado.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.explanation=No se puede establecer maxAssociationAttempts en cero y allowStateless en false.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.useraction=Especifique una configuraci\u00f3n de parte dependiente de OpenID v\u00e1lida para los atributos maxAssociationAttempts y allowStateless.
+
+OPENID_VERSION_NOT_TEST=CWWKS1505W: La versi\u00f3n del proveedor de OpenID {0} no se ha probado, por lo que es posible que no funcione correctamente.
+OPENID_VERSION_NOT_TEST.explanation=Esta versi\u00f3n del proveedor de OpenID no se ha probado. Sus funciones pueden no funcionar correctamente. Puede ejecutarla bajo su responsabilidad. 
+OPENID_VERSION_NOT_TEST.useraction=Ninguna. Puede ejecutarla bajo su responsabilidad. 
+
+OPENID_RP_NO_RESULT_ERR=CWWKS1506E: OpenID no puede obtener un resultado v\u00e1lido para el identificador de reclamaci\u00f3n {0}. 
+OPENID_RP_NO_RESULT_ERR.explanation=El proveedor de OpenID no devuelve un resultado v\u00e1lido. Las causas pueden ser que el usuario no ha podido autenticarse o que ha rechazado la autorizaci\u00f3n.
+OPENID_RP_NO_RESULT_ERR.useraction=Ninguna.
+
+OPENID_RP_CONFIG_INVALID_SSLREF=CWWKS1507E: La configuraci\u00f3n de OpenID requiere SSL, pero sslRef {0} no existe o est\u00e1 en blanco.
+OPENID_RP_CONFIG_INVALID_SSLREF.explanation=El atributo enforceHttps de la configuraci\u00f3n de OpenID est\u00e1 establecido en true, pero sslRef no existe.
+OPENID_RP_CONFIG_INVALID_SSLREF.useraction=Aseg\u00farese de que sslRef hace referencia a una configuraci\u00f3n SSL v\u00e1lida.
+
+OPENID_HTTPS_WITHOUT_SSL_SERVICE=CWWKS1508E: La configuraci\u00f3n de OpenID requiere SSL, pero el servicio SSL no est\u00e1 disponible. 
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.explanation=El atributo enforceHttps de la configuraci\u00f3n de OpenID est\u00e1 establecido en true.  Sin embargo, el servicio SSL no est\u00e1 disponible.
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.useraction=Aseg\u00farese de que la informaci\u00f3n de SSL contenida en server.xml sea correcta. 
+
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1509E: La configuraci\u00f3n de OpenID requiere SSL, pero SSL no est\u00e1 configurado correctamente. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.explanation=El atributo enforceHttps de la configuraci\u00f3n de OpenID est\u00e1 establecido en true.  El elemento keyStore est\u00e1 ausente o especificado incorrectamente.  La caracter\u00edstica SSL no se puede habilitar. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Aseg\u00farese de que la informaci\u00f3n de SSL contenida en server.xml sea correcta. 
+
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS=CWWKS1510E: La parte dependiente requiere SSL, pero el protocolo de URL del proveedor de openID es {0}.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.explanation=La parte dependiente requiere SSL, pero el protocolo de URL del proveedor openID no es HTTPS.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.useraction=Aseg\u00farese de que el proveedor de openID da soporte a SSL. Si el proveedor de openID no admite HTTPS, establezca enforceHttps en false.
+
+OPENID_RP_CAN_NOT_ACCESS_OP=CWWKS1511E: No se puede acceder al proveedor de OpenID {0}.
+OPENID_RP_CAN_NOT_ACCESS_OP.explanation=No se puede acceder al proveedor de OpenID.
+OPENID_RP_CAN_NOT_ACCESS_OP.useraction=Especifique un proveedor de OpenID v\u00e1lido.
+
+OPENID_RP_REQUEST_IDENTIFIER_NULL=CWWKS1512E: El identificador de solicitud de parte dependiente de OpenID es nulo.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.explanation=El identificador de solicitud de parte dependiente de OpenID es nulo.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.useraction=Ninguna.
+
+OPENID_AUTHENTICATE_FAILED=CWWKS1513E: La autenticaci\u00f3n de OpenID ha fallado para el identificador {0}.
+OPENID_AUTHENTICATE_FAILED.explanation=La autenticaci\u00f3n de OpenID ha fallado para el identificador.
+OPENID_AUTHENTICATE_FAILED.useraction=Aseg\u00farese de que el identificador es v\u00e1lido.
+
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY=CWWKS1514E: No se ha encontrado ninguna entrada de memoria cach\u00e9 para clave exclusiva {0}.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.explanation= No se ha encontrado ninguna entrada de memoria cach\u00e9 para clave exclusiva.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.useraction=Aseg\u00farese de que el maxSize de la memoria cach\u00e9 de la informaci\u00f3n de descubrimiento es lo bastante grande para almacenar en memoria cach\u00e9 todas las solicitudes en cualquier momento dado. 
+
+OPENID_VERIFY_RESPONSE_FAILED=CWWKS1515E: OpenID no puede verificar la respuesta de OP para el identificador reclamado {0}.
+OPENID_VERIFY_RESPONSE_FAILED.explanation=  OpenID no puede verificar la respuesta OP para el identificador reclamado.
+OPENID_VERIFY_RESPONSE_FAILED.useraction=Aseg\u00farese de que la parte dependiente de openID puede comunicarse con el proveedor de openID. 

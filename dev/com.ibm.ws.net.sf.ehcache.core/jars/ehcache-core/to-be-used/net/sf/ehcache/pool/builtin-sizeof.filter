@@ -1,0 +1,26 @@
+# Hibernate 3.x Second Level Entity/Collection Caching
+org.hibernate.cache.CacheKey.type
+org.hibernate.cache.CacheKey.entityOrRoleName
+org.hibernate.cache.CacheKey.entityMode
+
+# Hibernate 3.x Second Level Query Caching
+org.hibernate.cache.QueryKey.positionalParameterTypes
+org.hibernate.cache.QueryKey.entityMode
+#org.hibernate.cache.QueryKey.filterKeys
+org.hibernate.engine.TypedValue.type
+org.hibernate.engine.TypedValue.entityMode
+
+# Hibernate 4.x Second Level Entity/Collection Caching
+org.hibernate.cache.spi.CacheKey.type
+org.hibernate.cache.spi.CacheKey.entityOrRoleName
+org.hibernate.cache.spi.CacheKey.tenantId
+
+# Hibernate 4.x Second Level Query Caching
+org.hibernate.cache.spi.QueryKey.positionalParameterTypes
+org.hibernate.cache.spi.QueryKey.tenantIdentifier
+#org.hibernate.cache.spi.QueryKey.filterKeys
+org.hibernate.engine.spi.TypedValue.type
+org.hibernate.engine.spi.TypedValue.entityMode
+
+# This TC internal field is shared amongst all clustered entries
+org.terracotta.cache.serialization.SerializedEntry.tcClazz

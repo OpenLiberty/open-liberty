@@ -1,0 +1,138 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security SAML Web SSO 2.0
+Bundle-SymbolicName: com.ibm.ws.security.saml.sso.2.0
+Bundle-Description: WAS Security SAML WebSso 2.0, version=${bVersion}
+
+WS-TraceGroup: SAML20
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: com.ibm.ws.security.saml, \
+        com.ibm.ws.security.saml.error, \
+        com.ibm.ws.security.saml.impl
+
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+        
+# nlsmessages locates under com.ibm.ws.security.saml.sso20.internal.resources        
+Private-Package: \
+        com.ibm.ws.security.saml.sso20.*
+
+Include-Resource:   \
+    OSGI-INF=resources/OSGI-INF
+    
+Bundle-Activator: com.ibm.ws.security.saml.impl.Activator
+    
+Service-Component: \
+  com.ibm.ws.security.saml.sso20; \
+    implementation:=com.ibm.ws.security.saml.sso20.internal.SsoServiceImpl; \
+    provide:='com.ibm.ws.security.saml.SsoSamlService'; \
+    configuration-policy:=require; \
+    modified:='modified'; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
+    securityService=com.ibm.ws.security.SecurityService; \
+    keyStoreService=com.ibm.ws.ssl.KeyStoreService; \
+    sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
+    optional:='keyStoreService,sslSupport'; \
+    dynamic:='configurationAdmin,securityService,keyStoreService,sslSupport'; \
+    properties:="service.vendor=IBM,type=samlSso", \
+  com.ibm.ws.security.saml.sso20.request.tai; \
+    implementation:=com.ibm.ws.security.saml.sso20.internal.SAMLRequestTAI; \
+    provide:='com.ibm.wsspi.security.tai.TrustAssociationInterceptor,\
+              com.ibm.ws.webcontainer.security.UnprotectedResourceService'; \
+    configuration-policy:=ignore; \
+    modified:='modified'; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    authFilter='com.ibm.ws.security.authentication.filter.AuthenticationFilter(id=*)'; \
+    ssoSamlService='com.ibm.ws.security.saml.SsoSamlService'; \
+    userResolver='com.ibm.wsspi.security.saml2.UserCredentialResolver'; \
+    securityService=com.ibm.ws.security.SecurityService; \
+    locationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
+    authCacheService=com.ibm.ws.security.authentication.cache.AuthCacheService; \
+    optional:='authFilter,ssoSamlService,userResolver,securityService'; \
+    dynamic:='securityService'; \
+    greedy:='authFilter,ssoSamlService'; \
+    multiple:='authFilter,ssoSamlService,userResolver'; \
+    properties:="service.vendor=IBM,id=SAML20RequestTAI,TAIName=SAMLRequestTAI,invokeAfterSSO:Boolean=true", \
+  com.ibm.ws.security.saml.sso20.response.tai; \
+    implementation:=com.ibm.ws.security.saml.sso20.internal.SAMLResponseTAI; \
+    provide:='com.ibm.wsspi.security.tai.TrustAssociationInterceptor'; \
+    configuration-policy:=ignore; \
+    modified:='modified'; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    properties:="service.vendor=IBM,id=SAML20ResponseTAI,TAIName=SAMLResponseTAI,invokeAfterSSO:Boolean=false", \
+  com.ibm.ws.security.saml.impl.Saml20SsoServiceImpl; \
+    implementation:=com.ibm.ws.security.saml.impl.Saml20SsoServiceImpl; \
+    provide:=com.ibm.ws.security.sso.common.SsoService; \
+    configuration-policy:=ignore; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    ssoService=com.ibm.ws.security.sso.common.SsoService; \
+    optional:='ssoService'; \
+    greedy:='ssoService'; \
+    dynamic:='ssoService'; \
+    multiple:="ssoService"; \
+    properties:="service.vendor=IBM,type=saml20", \
+  com.ibm.ws.security.saml.sso20.rs.SamlInboundService; \
+    implementation:=com.ibm.ws.security.saml.sso20.rs.SamlInboundService;\
+    provide:='com.ibm.ws.security.saml.sso20.rs.SamlInboundService'; \
+    configuration-policy:=ignore; \
+    modified:='modified'; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    properties:="service.vendor=IBM"
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.common;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.org.joda.time.1.6.2;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
+	com.ibm.ws.security.authentication.filter;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.common.encoder;version=latest, \
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.security.authentication.tai;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest,\
+	com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest,\
+	com.ibm.ws.org.opensaml.openws.1.5.6;version=latest,\
+	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+	com.ibm.websphere.appserver.api.saml20;version=latest,\
+	com.ibm.ws.security.sso.common;version=latest,\
+	com.ibm.websphere.appserver.spi.saml20;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages*.class

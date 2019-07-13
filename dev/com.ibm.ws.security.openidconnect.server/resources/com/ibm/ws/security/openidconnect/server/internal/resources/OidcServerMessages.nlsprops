@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1600 - CWWKS1649
+OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: The OpenID Connect provider {0} configuration has been successfully processed.
+OIDC_SERVER_CONFIG_PROCESSED.explanation=The OpenID Connect provider configuration has been successfully processed.
+OIDC_SERVER_CONFIG_PROCESSED.useraction=None
+
+OIDC_SERVER_CONFIG_MODIFIED=CWWKS1601I: The OpenID Connect provider {0} configuration has been successfully modified.
+OIDC_SERVER_CONFIG_MODIFIED.explanation=The OpenID Connect provider configuration has been successfully modified.
+OIDC_SERVER_CONFIG_MODIFIED.useraction=None.
+
+OIDC_SERVER_CONFIG_EXECTED_ONE=CWWKS1602I: The OpenID Connect provider configuration has more than one value configured for provider property: {0}.
+OIDC_SERVER_CONFIG_EXECTED_ONE.explanation=The OpenID Connect provider property value being requested expected one value, but returned more. 
+OIDC_SERVER_CONFIG_EXECTED_ONE.useraction=Inspect the OpenID Connect provider property in the server.xml file to ensure only one value is configured.
+
+OIDC_SERVER_CONFIG_REQUIRES_ONE=CWWKS1603I: The OpenID Connect provider configuration has no value configured for provider property: {0}.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.explanation=The OpenID Connect provider property value being requested expected at least one value, but returned none.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.useraction=Inspect the OpenID Connect provider property in the server.xml file to ensure at least one value is configured.
+
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN=CWWKS1604I: The OpenID Connect provider configuration does not have a boolean property value configured for: {0}.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.explanation=The OpenID Connect provider property value being requested expected a boolean value of 'true' or 'false'.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.useraction=Inspect the OpenID Connect provider property in the server.xml file to ensure a boolean value of 'true' or 'false' is configured.
+
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR=CWWKS1605E: Invalid grant type {0} is specified. Valid grant types are {1}.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.explanation=Specified grant type is not valid.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.useraction=Specify one of the available grant types.
+
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR=CWWKS1606E: Specified grant type {0} is not allowed. Allowed grant types are {1}.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.explanation=Specified grant type is valid but the OpenID Connect provider cannot handle it.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.useraction=Specify one of the allowed grant types.
+
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR=CWWKS1607E: The Authorization request has an invalid response type {0}, valid response types are {1}.
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.explanation=Specified response type is not valid. 
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.useraction=The Authorization request should be modified to include one of the valid response types.
+
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR=CWWKS1608E: The Authorization request cannot have both {0} and {1} as response types.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.explanation=The Authorization request should have only one response type.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.useraction=The Authorization request should be modified to include one response type only.
+
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR=CWWKS1609E: The OpenID Connect request is missing openid scope.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.explanation=The OpenID Connect request with response type id_token requires openid in its scopes list.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.useraction=Make sure that the openid scope is included in the request.
+
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR=CWWKS1610E: The OpenID Connect request is missing the required attribute Nonce.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.explanation=The Nonce value is required for OpenID Connect requests using the implicit flow.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.useraction=Supply the Nonce value with implicit OpenID Connect requests.
+
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR=CWWKS1611E: Requesting JWT token is missing some required claims {0}.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.explanation=The JWT token does not have all the required claims in the Payload.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.useraction=Supply the required claims in the Payload of JWT token.
+
+OIDC_SERVER_REQUIRED_CLAIM_ERR=CWWKS1612E: The required claim {0} in the payload of JWT token is invalid {1}.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.explanation=The required claim in the payload of JWT token is not valid.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.useraction=Supply a good claim in the payload of JWT token.
+
+OIDC_SERVER_CLAIM_ERR=CWWKS1613E: The claim {0} in the payload of JWT token is invalid {1}.
+OIDC_SERVER_CLAIM_ERR.explanation=The claim in the payload of JWT token is not valid.
+OIDC_SERVER_CLAIM_ERR.useraction=Supply a good claim in the payload of JWT token.
+
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR=CWWKS1614E: JWT token has to provide the 'iat' claim because the JWT token provider configuration has defined 'maxJwtLifetimeMinutesAllowed'.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.explanation=The JWT token provider configuration has defined 'maxJwtLifetimeMinutesAllowed', the incoming jwt token is required to provide 'iat' claim.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.useraction=Remove 'maxJwtLifetimeMinutesAllowed' from configuration or supply the 'iat' claim in the Payload of JWT token.
+
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR=CWWKS1615E: Another JWT token with the same issuer:{0} and jti:{1} claims has be submitted already.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.explanation=A JWT token with the same 'iss' and 'jti' claims had been requested already. It indicates a potential replay attack.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.useraction=Make sure the JWT Token issuer providing each JWT Token with an unique 'jti' claim.
+
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN=CWWKS1616E: A userinfo request was made with no access token. The request URI was {0}.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.explanation=A userinfo request was made with no access token, an access token is required.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.useraction=Provide an access token with either the access_token request parameter or the authorization header.
+
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN=CWWKS1617E: A userinfo request was made with an access token that was not recognized. The request URI was {0}.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.explanation=A userinfo request was made with an access token that was not recognized. A valid access token is required.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.useraction=Provide a valid access token with either the access_token request parameter or the authorization header.
+
+OIDC_SERVER_USERINFO_INVALID_REQUEST=CWWKS1618E: A userinfo request URI was not valid. The request URI was {0}.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.explanation=A userinfo request URI was not valid, a valid URI is required.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.useraction=Provide a valid userinfo request URI.
+
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN=CWWKS1619E: A userinfo request was made with an access token that did not have the ''openid'' scope. The request URI was {0}.
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.explanation=A userinfo request was made with an access token that did not have the 'openid' scope. 
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.useraction=Provide an access token that was created with the 'openid' scope.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: An internal server error occurred while processing a userinfo request. The error was {0}. The request URI was {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=An internal server error occurred while processing a userinfo request. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Contact IBM support.
+
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS=CWWKS1621E: A userinfo request was made with an access token in the access_token request parameter and also the authorization header. Only one access token is allowed. The request URI was {0}.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.explanation=A userinfo request was made with an access token in the access_token request parameter and also the authorization header. Only one access token is allowed.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.useraction=Provide an access token with either the access_token request parameter or the authorization header, but not both.
+
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE=CWWKS1622E: A userinfo request was made with a token that was not an access token. The request URI was {0}.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.explanation=A userinfo request was made with a token that was not an access token. A valid access token is required.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.useraction=Provide a valid access token with either the access_token request parameter or the authorization header. 
+
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN=CWWKS1623E: A userinfo request was made with an expired access token. The request URI was {0}.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.explanation=A userinfo request was made with an expired access token. A valid access token is required.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.useraction=Provide a valid access token with either the access_token request parameter or the authorization header.
+
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND=CWWKS1624E: A userinfo request URI was not valid. The provider {0} was not found. The request URI was {1}.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.explanation=A userinfo request URI was not valid. The provider contained in the URI was not found. A valid URI is required.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.useraction=Provide a valid userinfo request URI that contains a valid provider name.
+
+OIDC_SERVER_IDTOKEN_VERIFY_ERR=CWWKS1625E: The OpenID Connect provider failed to validate the ID token due to [{0}].
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.explanation=The OpenID Connect provider cannot validate the ID token. This might have been caused by an inconsistency in signing keys between the creator of the ID token and this provider.
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.useraction=Ensure that the OpenID Connect client (RP) sends the ID token which was generated by this provider. Also see the user action for the error that appears after this error.
+
+OIDC_SERVER_USERNAME_MISMATCH_ERR=CWWKS1626E: The login user name [{0}] does not match with the subject of the ID token [{1}].
+OIDC_SERVER_USERNAME_MISMATCH_ERR.explanation=The OpenID Connect provider detects that the current login user identity is not consistent with the user information in the ID token. This might have been caused by an end user switching login users.
+OIDC_SERVER_USERNAME_MISMATCH_ERR.useraction=Ensure that the end user does not switch the user identity of the OpenID Connect provider.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM=CWWKS1627E: An internal server error occurred while processing a userinfo request. The federated repository service was not available. The request URI was {0}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.explanation=An internal server error occurred while processing a userinfo request. The federated repository service was not available.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.useraction=Contact IBM support.
+
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1628E: A configuration error has occurred. No OpenID Connect endpoint service is available. Ensure that you have the openidConnectServer-1.0 feature configured. 
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.explanation=No OpenID Connect endpoint service is available through the OSGi service registry.
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Include the openidConnectServer-1.0 feature in your server configuration.
+
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS1629E: The OpenID Connect configuration service is not available for provider {0}.
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.explanation=The OpenID Connect configuration service is not available for the provider. 
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Inspect the OpenID Connect provider property in the server.xml file to ensure at least one provider is specified.
+
+OIDC_OAUTH_PROVIDER_OBJECT_NULL=CWWKS1630E: OAuth20Provider object is null for the OpenID Connect provider {0}.
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.explanation=The OpenID Connect provider has no OAuthProvider
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.useraction=Inspect the OpenID Connect provider property in the server.xml file to ensure at least one OAuth provider is specified.
+
+OIDC_ENDPOINT_SERVICE_ACTIVATED=CWWKS1631I: The OpenID Connect endpoint service is activated.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.explanation=The OpenID Connect endpoint service is activated.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.useraction=None
+
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND=CWWKS1632E: The OAuth provider name referenced by the OpenID Connect provider {0} was not found.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.explanation=The OpenID Connect provider does not have an OAuth provider name, or an OAuth provider with the given name does not exist.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.useraction=Specify a valid OAuth provider name for the OpenID Connect provider.
+
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER=CWWKS1633E: A userinfo request was made with unsupported parameter {0}. The request URI was {1}.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.explanation=A userinfo request was made with an unsupported parameter.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.useraction=Invoke the userinfo endpoint without the unsupported parameter.
+
+OIDC_REQUEST_ATTRIBUTE_MISSING=CWWKS1634E: The request endpoint {0} does not have attribute {1}.
+OIDC_REQUEST_ATTRIBUTE_MISSING.explanation=The  attribute is missing from the request
+OIDC_REQUEST_ATTRIBUTE_MISSING.useraction=Inspect the request endpoint in  the server.xml file to ensure you have the right provider
+
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS=CWWKS1635W: The OpenID Connect provider attribute, issuerIdentifier={0}, has to use the https scheme if httpsRequired is set to true. Resetting to default.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.explanation=The issuerIdentifier is set incorrectly.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.useraction=Modify the OpenIDConnect provider attribute, issuerIdentifier, to use the https scheme.
+
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH=CWWKS1636E: The post_logout_redirect_uri parameter: {0} does not match the value of the OpenID Connect provider attribute, postLogoutRedirectUris={1} in the client ID: {2}.
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.explanation=The post_logout_redirect_uri parameter which the OpenID Connect client (RP) sends is not on the list of URIs which is specified by postLogoutRedirectUris attribute, or the value of postLogoutRedirectUris is not set. 
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.useraction=Make sure that the value of the post_logout_redirect_uri parameter is in the list of the postLogoutRedirectUris attribute that exists in the registered client. Also, if the client ID is null, or the id_token_hint parameter is not valid or not set, then the id_token_hint parameter is required in order to identify the client ID.
+
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR=CWWKS1637E: The userinfo for {0} returned by Liberty user feature {1} is null.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.explanation=The UserinfoProvider installed in Liberty is returning null for the given user.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.useraction=Make sure the UserinfoProvider returns a valid JSONObject.
+
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED=CWWKS1638I: There are multiple UserinfoProvider configured.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.explanation=There are more than one UserinfoProvider configured in the server.xml file.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.useraction=None
+
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT=CWWKS1639E: The userinfo for {0} returned by Liberty user feature {1} is invalid.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.explanation=The UserinfoProvider installed in Liberty is returning an invalid JSONObject for the given user.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.useraction=Make sure the UserinfoProvider returns a valid JSONObject.
+
+OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: A request for a JWK JSON string could not be processed. The OpenID Connect provider attributes keyStoreRef or keyAliasName might be incorrect, or the signatureAlgorithm attribute might not be set to RS256. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Producing a JWK JSON string requires the OpenID Connect provider signatureAlgorithm attribute to be set to RS256. Attributes KeyStoreRef and keyAliasName must be valid if specified. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Correct the OpenID Connect provider configuration attributes.
+
+
+IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: The Java version used by this run time [{0}] is not supported by the ID token Mediator SPI. The supported Java version is 1.7 or higher.
+IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=The Java version in the message can not support the ID token Mediator SPI function. 
+IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Install Java version 1.7 or higher.
+
