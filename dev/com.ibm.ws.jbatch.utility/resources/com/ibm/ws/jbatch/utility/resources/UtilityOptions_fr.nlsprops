@@ -1,0 +1,402 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Description :
+global.actions=Actions :
+global.options=Options :
+global.required=Obligatoire :
+global.usage=Syntaxe :
+global.usage.options=\t{0} {1} [options]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\tUtilisez la commande help [action] pour obtenir \
+des  informations d\u00e9taill\u00e9es sur les options pour chaque action.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\tImprime des informations d'aide pour l'action sp\u00e9cifi\u00e9e.
+
+help.usage.options=\t{0} {1} [nom_action]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\ \ \ \ --batchManager=[h\u00f4te]:[port],[h\u00f4te2]:[port2],...
+connect.required-desc.--batchManager=\tH\u00f4te et port de l'API REST du gestionnaire de lots. Vous pouvez sp\u00e9cifier plusieurs \n\
+\tcibles pour haute disponibilit\u00e9 et reprise en ligne. Les cibles sont \n\
+\td\u00e9limit\u00e9es par une virgule ','. 
+
+connect.required-key.--user=\ \ \ \ --user=[nom_utilisateur]
+connect.required-desc.--user=\tNom d'utilisateur pour connexion au gestionnaire de lots.
+
+connect.required-key.--password=\ \ \ \ --password[=mot_de_passe]
+connect.required-desc.--password=\tMot de passe pour connexion au gestionnaire de lots. Si aucune valeur n'a \u00e9t\u00e9 \n\
+\td\u00e9finie, vous serez invit\u00e9 \u00e0 les fournir.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\ \ \ \ --controlPropertiesFile=[fichier_propri\u00e9t\u00e9s_contr\u00f4le]
+connect.optional-desc.--controlPropertiesFile=\tFichier de propri\u00e9t\u00e9s contenant des param\u00e8tres de contr\u00f4le, comme l'h\u00f4te et \n\
+\tle port auxquels se connecter. Ces param\u00e8tres sont supplant\u00e9s par les param\u00e8tres \n\
+\tsp\u00e9cifi\u00e9s directement sur la ligne de commande.
+
+connect.optional-key.--httpTimeout_s=\ \ \ \ --httpTimeout_s=[http timeout in seconds]
+connect.optional-desc.--httpTimeout_s=\tD\u00e9lai en secondes appliqu\u00e9 aux demandes HTTP effectu\u00e9es depuis l'utilitaire\n\
+\tvers l'API REST de gestionnaire par lots. La m\u00eame valeur de d\u00e9lai est appliqu\u00e9e aux \n\
+\top\u00e9rations de connexion et de lecture. Si non indiqu\u00e9e, la valeur par d\u00e9faut\n\
+\test de 30 secondes.
+
+connect.optional-key.--trustSslCertificates=\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\tIndique que l'utilitaire doit faire confiance \u00e0 tous les certificats SSL. L'utilitaire \n\
+\tcommunique avec l'API REST de gestionnaire de lots via HTTPS. \n\
+\tPar d\u00e9faut, il v\u00e9rifie le certificat SSL du gestionnaire de lots, sauf si\n\
+\tcette option est sp\u00e9cifi\u00e9e. Dans ce cas, il fait confiance au certificat SSL\n\
+\tet n'effectue aucune v\u00e9rification.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\ \ \ \ --wait
+wait.optional-desc.--wait=\tSi cette option est sp\u00e9cifi\u00e9e, la programme attendra l'ach\u00e8vement du travail\n\
+\tavant son arr\u00eat. Le code de sortie est d\u00e9fini en fonction de l'\u00e9tat\n \tpar lots du travail (sauf si --returnExitStatus est sp\u00e9cifi\u00e9).\n\
+\tCodes de sortie des \u00e9tats par lots :\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\ \ \ \ --pollingInterval_s=[intervalle d'interrogation en secondes]
+wait.optional-desc.--pollingInterval_s=\tIntervalle d'interrogation de l'\u00e9tat du travail. \n\
+\tLa valeur par d\u00e9faut est de 30 secondes.
+
+wait.optional-key.--verbose=\ \ \ \ --verbose
+wait.optional-desc.--verbose=\tSi cette option est sp\u00e9cifi\u00e9e, le programme consigne un message chaque fois qu'il s'enquiert\n\
+\tdu statut du travail.
+
+wait.optional-key.--getJobLog=\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\tSi cette option est sp\u00e9cifi\u00e9e, le programme t\u00e9l\u00e9charge le journal du travail et le consigne dans le fichier \n\
+\tSTDOUT \u00e0 l'ach\u00e8vement du travail. Cette option doit \u00eatre combin\u00e9e avec --wait.
+
+wait.optional-key.--returnExitStatus=\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\tUtilisez l'\u00e9tat de sortie du travail comme code de sortie de ce programme. Cette option \n\
+\tdoit \u00eatre combin\u00e9e avec --wait. Si l'\u00e9tat de sortie est un \n\
+\tnom BatchStatus (par ex, "COMPLETED"), le code de sortie est \n\
+\td\u00e9fini en fonction du mappage d\u00e9crit par l'option --wait. Sinon, \n\
+\tle code de sortie est analys\u00e9 depuis le d\u00e9but de la cha\u00eene d'\u00e9tat de sortie.\n\
+\tExemple :\n\
+\t\texitStatus="0", code de sortie : 0\n\
+\t\texitStatus="8:failure message can go here", code de sortie : 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\tSoumission d'un nouveau travail par lots. 
+
+submit.optional-key.--applicationName=\ \ \ \ --applicationName=[nom_application]
+submit.optional-desc.--applicationName=\tNom de l'application Batch. \n\
+\tRemarque : --applicationName ou --moduleName doit \u00eatre sp\u00e9cifi\u00e9. \n\
+\tSi --applicationName n'est pas sp\u00e9cifi\u00e9, [moduleName] est \n\
+\tutilis\u00e9 par d\u00e9faut sans l'extension ".war" ou ".jar".
+
+submit.optional-key.--moduleName=\ \ \ \ --moduleName=[moduleName]
+submit.optional-desc.--moduleName=\tIdentifie un module WAR ou EJB au sein de l'application Batch. \n\
+\tLe travail est soumis sous le contexte du composant de module. \n\
+\tRemarque : --applicationName ou --moduleName doit \u00eatee sp\u00e9cifi\u00e9. \n\
+\tSi --moduleName n'est pas sp\u00e9cifi\u00e9, "[applicationName].war" est utilis\u00e9 par d\u00e9faut.
+
+submit.optional-key.--componentName=\ \ \ \ --componentName=[componentName]
+submit.optional-desc.--componentName=\tIdentifie un composant EJB au sein du module EJB de l'application Batch.\n\
+\tLe travail est soumis sous le contexte du composant d'EJB.
+
+submit.optional-key.--jobXMLName=\ \ \ \ --jobXMLName=[nom_XML_travail]
+submit.optional-desc.--jobXMLName=\tNom du XML d\u00e9crivant le travail. Le fichier est lu \n\
+\tdepuis le r\u00e9pertoire batch-jobs dans le module d'application. \n\
+\tRemarque : --jobXMLName ou --jobXMLFile doit \u00eatre sp\u00e9cifi\u00e9.
+
+submit.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[fichier_propri\u00e9t\u00e9s_travail]
+submit.optional-desc.--jobPropertiesFile=\tFichier de propri\u00e9t\u00e9s contenant les param\u00e8tre de travail.\n\
+\tIl s'agit d'un alias de l'option --jobParametersFile.
+
+submit.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[fichier_param\u00e8tres_travail]
+submit.optional-desc.--jobParametersFile=\tFichier de propri\u00e9t\u00e9s contenant les param\u00e8tre de travail.\n\
+\tIl s'agit d'un alias de l'option --jobPropertiesFile.
+
+submit.optional-key.--jobParameter=\ \ \ \ --jobParameter=[key]=[value]
+submit.optional-desc.--jobParameter=\tIndiquer un param\u00e8tre de travail. Plusieurs options --jobParameter\n\
+\tpeuvent \u00eatre sp\u00e9cifi\u00e9s. L'option --jobParameter remplace de m\u00eame les \n\
+\tpropri\u00e9t\u00e9s nomm\u00e9es dans --jobParametersFile.
+
+submit.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\tCette option peut \u00eatre utilis\u00e9e avec --wait. Elle enregistres une\n\
+\tunit\u00e9 d'ex\u00e9cution de fermeture aupr\u00e8s de la machine virtuelle Java qui prend le contr\u00f4le lorsque le programme batchManager \n\
+\tse termine de fa\u00e7on anormale.  L'unit\u00e9 d'ex\u00e9cution de fermeture essaie d'arr\u00eater le travail \n\
+\tqu'elle attend en envoyant une demande d'arr\u00eat au serveur. \n\
+\tRemarque : Les unit\u00e9s d'ex\u00e9cution de fermeture de la machine virtuelle Java prennent le contr\u00f4le \n\
+\tuniquement lorsque la machine virtuelle Java est arr\u00eat\u00e9e d'une certaine mani\u00e8re. Pour plus de d\u00e9tails,  \n\
+\tvoir la documentation relative \u00e0 java.lang.Runtime.addShutdownHook.
+
+submit.optional-key.--jobXMLFile=\ \ \ \ --jobXMLFile=[jobXMLFile]
+submit.optional-desc.--jobXMLFile=\tNom du fichier contenant l'\u00e9l\u00e9ment JSL du travail. Le fichier est \n\
+\tlu par l'utilitaire batchManager et soumis en ligne avec la demande, \n\
+\tet non lu depuis le r\u00e9pertoire batch-jobs \n\
+\tdans le module d'application. \n\
+\tRemarque : --jobXMLName ou --jobXMLFile doit \u00eatre sp\u00e9cifi\u00e9.
+
+submit.optional-key.--restartTokenFile=\ \ \ \ --restartTokenFile=[restart-token-file]
+submit.optional-desc.--restartTokenFile=\tNom du fichier qui comporte l'ID instance du travail \n\
+\t\u00e0 red\u00e9marrer.  Le fichier est lu et \u00e9crit par l'utilitaire  \n\
+\tbatchManager.  Si le fichier contient un ID instance, le travail est red\u00e9marr\u00e9.  Dans \n\
+\tle cas contraire, un nouveau travail est soumis et l'ID instance qui en r\u00e9sulte est \n\
+\tstock\u00e9 dans le fichier.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\tRed\u00e9marrage d'un travail par lots.
+
+restart.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instance_travail]
+restart.optional-desc.--jobInstanceId=\tInstance de travail \u00e0 red\u00e9marrer.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+restart.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ex\u00e9cution_travail]
+restart.optional-desc.--jobExecutionId=\tEx\u00e9cution de travail \u00e0 arr\u00eater.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+restart.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[fichier_propri\u00e9t\u00e9s_travail]
+restart.optional-desc.--jobPropertiesFile=\tFichier de propri\u00e9t\u00e9s contenant les param\u00e8tre de travail.\n\
+\tIl s'agit d'un alias de l'option --jobParametersFile.
+
+restart.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[fichier_param\u00e8tres_travail]
+restart.optional-desc.--jobParametersFile=\tFichier de propri\u00e9t\u00e9s contenant les param\u00e8tre de travail.\n\
+\tIl s'agit d'un alias de l'option --jobPropertiesFile.
+
+restart.optional-key.--jobParameter=\ \ \ \ --jobParameter=[key]=[value]
+restart.optional-desc.--jobParameter=\tIndiquer un param\u00e8tre de travail. Plusieurs options --jobParameter\n\
+\tpeuvent \u00eatre sp\u00e9cifi\u00e9s. L'option --jobParameter remplace de m\u00eame les \n\
+\tpropri\u00e9t\u00e9s nomm\u00e9es dans --jobParametersFile.
+
+restart.optional-key.--reusePreviousParams=\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\tSi cette option est sp\u00e9cifi\u00e9e, le travail utilise \u00e0 nouveau \
+les pr\u00e9c\u00e9dents param\u00e8tres de travail.
+
+restart.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\tCette option peut \u00eatre utilis\u00e9e avec --wait. Elle enregistres une\n\
+\tunit\u00e9 d'ex\u00e9cution de fermeture aupr\u00e8s de la machine virtuelle Java qui prend le contr\u00f4le lorsque le programme batchManager \n\
+\tse termine de fa\u00e7on anormale.  L'unit\u00e9 d'ex\u00e9cution de fermeture essaie d'arr\u00eater le travail \n\
+\tqu'elle attend en envoyant une demande d'arr\u00eat au serveur. \n\
+\tRemarque : Les unit\u00e9s d'ex\u00e9cution de fermeture de la machine virtuelle Java prennent le contr\u00f4le \n\
+\tuniquement lorsque la machine virtuelle Java est arr\u00eat\u00e9e d'une certaine mani\u00e8re. Pour plus de d\u00e9tails,  \n\
+\tvoir la documentation relative \u00e0 java.lang.Runtime.addShutdownHook.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\tArr\u00eat d'un travail par lots.
+
+stop.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instance_travail]
+stop.optional-desc.--jobInstanceId=\tInstance de travail \u00e0 arr\u00eater.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+stop.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ex\u00e9cution_travail]
+stop.optional-desc.--jobExecutionId=\tEx\u00e9cution de travail \u00e0 arr\u00eater.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\tAffichage de l'\u00e9tat d'un travail.
+
+status.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instance_travail]
+status.optional-desc.--jobInstanceId=\tInstance de travail \u00e0 afficher.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+status.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ex\u00e9cution_travail]
+status.optional-desc.--jobExecutionId=\tEx\u00e9cution de travail \u00e0 afficher.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\tT\u00e9l\u00e9chargement du journal de travail pour un travail par lots.
+
+getJobLog.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instance_travail]
+getJobLog.optional-desc.--jobInstanceId=\tT\u00e9l\u00e9chargement du journal de travail pour l'instance de travail donn\u00e9e.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+getJobLog.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ex\u00e9cution_travail]
+getJobLog.optional-desc.--jobExecutionId=\tT\u00e9l\u00e9chargement du journal de travail pour l'ex\u00e9cution de travail donn\u00e9e.\n\
+\tRemarque : soit --jobInstanceId, soit --jobExecutionId, doit \u00eatre sp\u00e9cifi\u00e9.
+
+getJobLog.optional-key.--outputFile=\ \ \ \ --outputFile=[outputFile]
+getJobLog.optional-desc.--outputFile=\tChemin d'acc\u00e8s \u00e0 un fichier local.  Le journal de travail est \u00e9crit dans le fichier .\n\
+\tSi non indiqu\u00e9e, l'emplacement de sortie par d\u00e9faut d\u00e9pend de --type.\n\
+\tSi --type=text, le journal de travail est \u00e9crit dans STDOUT.\n\
+\tSi --type=zip, le journal de travail est \u00e9crit dans le nom de fichier sugg\u00e9r\u00e9 par l'en-t\u00eate \n\
+\t'Content-Disposition' dans la r\u00e9ponse HTTP.
+
+getJobLog.optional-key.--type=\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\tT\u00e9l\u00e9chargement du journal de travail sous forme de texte en clair ou de fichier zip.\n\
+\tSi non indiqu\u00e9e, la valeur par d\u00e9faut est text.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\tListe des instances de travail. 
+
+listJobs.optional-key.--page=\ \ \ \ --page=[page]
+listJobs.optional-desc.--page=\tPage des enregistrements d'instance de travail \u00e0 renvoyer. Les num\u00e9ros de page d\u00e9marrent \u00e0 0.\n\
+\tExemple :\n\
+\t\t--page=0 --pageSize=10 renvoie les 10 premiers enregistrements.\n\
+\t\t--page=2 --pageSize=10 renvoie les enregistrements 20 \u00e0 29.\n\
+\tSi aucune valeur n'est sp\u00e9cifi\u00e9e, la valeur par d\u00e9faut est 0.
+
+listJobs.optional-key.--pageSize=\ \ \ \ --pageSize=[pageSize]
+listJobs.optional-desc.--pageSize=\tTaille des enregistrements d'instance de travail \u00e0 renvoyer.\n\
+\tExemple :\n\
+\t\t--page=0 --pageSize=10 renvoie les 10 premiers enregistrements.\n\
+\t\t--page=1 --pageSize=20 renvoie les enregistrements 20 \u00e0 39.\n\
+\tSi aucune valeur n'est sp\u00e9cifi\u00e9e, la valeur par d\u00e9faut est 50.
+
+listJobs.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instance_travail]
+listJobs.optional-desc.--jobInstanceId=\tFiltre d'ID instance de travail appliqu\u00e9 aux enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--jobInstanceId=10:20 renvoie les enregistrements 10 \u00e0 20.\n\
+\t\t--jobInstanceId=">10" renvoie les enregistrements sup\u00e9rieurs ou \u00e9gaux \u00e0 10.\n\
+\t\t--jobInstanceId="<10" renvoie les enregistrements inf\u00e9rieurs ou \u00e9gaux \u00e0 10.\n\
+\t\t--jobInstanceId=10,12,15 renvoie les enregistrements 10, 12, et 15.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est retourn\u00e9.
+
+listJobs.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+listJobs.optional-desc.--createTime=\tFiltre d'heure de cr\u00e9ation appliqu\u00e9 aux enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--createTime=2015-09-10:2015-09-27 renvoie les enregistrements cr\u00e9\u00e9s\n\
+\t\t\tentre le 10 et le 27 septembre 2015 inclus.\n\
+\t\t--createTime=">3d" renvoie les enregistrements cr\u00e9\u00e9s 3 jours avant UTC ou\n\
+\t\t\tapr\u00e8s (date de cr\u00e9ation post\u00e9rieure ou \u00e9gale \u00e0 la date il y a 3 jours).\n\
+\t\t--createTime="<3d" renvoie les enregistrements cr\u00e9\u00e9s 3 jours avant UTC ou\n\
+\t\t\tavant (date de cr\u00e9ation ant\u00e9rieure ou \u00e9gale \u00e0 la date il y a 3 jours).\n\
+\t\t--createTime=2015-09-15 renvoie tous les enregistrements cr\u00e9\u00e9s le 15-09-2015.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est retourn\u00e9.  Chaque fois que createTime=>Xd \n\
+\t\tou createTime<Xd est sp\u00e9cifi\u00e9, la date est calcul\u00e9e sur le serveur de r\u00e9partition\n\
+\t\ten temps UTC. 
+
+listJobs.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+listJobs.optional-desc.--instanceState=\tFiltre d'\u00e9tat d'instance appliqu\u00e9 aux enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED renvoie les enregistrements\n\
+\t\t\u00e0 l'\u00e9tat COMPLETED, FAILED et STOPPED.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est retourn\u00e9.
+
+listJobs.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+listJobs.optional-desc.--exitStatus=\tFiltre d'\u00e9tat de sortie appliqu\u00e9 aux enregistrements de l'ex\u00e9cution de travail qui sont\n\
+\tassoci\u00e9s aux enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--exitStatus=*JOB* renvoie les enregistrements d'instance de travail dont les \n\
+\t\tenregistrements d'ex\u00e9cution contiennent le mot JOB dans leur statut d'exit.\n\
+\t\tRemarque : Les crit\u00e8res peuvent utiliser l'op\u00e9rateur g\u00e9n\u00e9rique (*) \n\
+\t\ten d\u00e9but ou en fin.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est retourn\u00e9.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\tPurger tous les enregistrements et les journaux d'une instance de travail ou purger \n\
+\tune liste d'enregistrements d'instance de travail.
+
+purge.optional-key.--page=\ \ \ \ --page=[page]
+purge.optional-desc.--page=\tPage des enregistrements d'instance de travail \u00e0 renvoyer. Les num\u00e9ros de page d\u00e9marrent \u00e0 0.\n\
+\tExemple :\n\
+\t\t--page=0 --pageSize=10 renvoie les 10 premiers enregistrements.\n\
+\t\t--page=2 --pageSize=10 renvoie les enregistrements 20 \u00e0 29.\n\
+\tSi aucune valeur n'est sp\u00e9cifi\u00e9e, la valeur par d\u00e9faut est 0.
+
+purge.optional-key.--pageSize=\ \ \ \ --pageSize=[pageSize]
+purge.optional-desc.--pageSize=\tTaille des enregistrements d'instance de travail \u00e0 renvoyer.\n\
+\tExemple :\n\
+\t\t--page=0 --pageSize=10 renvoie les 10 premiers enregistrements.\n\
+\t\t--page=1 --pageSize=20 renvoie les enregistrements 20 \u00e0 39.\n\
+\tSi aucune valeur n'est sp\u00e9cifi\u00e9e, la valeur par d\u00e9faut est 50.
+
+purge.optional-key.--purgeJobStoreOnly=\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\tIndique que l'op\u00e9ration de purge doit uniquement supprimer les entr\u00e9es de \n\
+\tla base de donn\u00e9es de magasin de travaux. Aucune tentative de suppression de fichiers journaux n'aura lieu dans \n\
+\tle syst\u00e8me de fichiers.
+
+purge.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instance_travail]
+purge.optional-desc.--jobInstanceId=\tFiltre d'ID instance de travail appliqu\u00e9 \u00e0 la purge des enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--jobInstanceId=10:20 purge les enregistrements 10 \u00e0 20.\n\
+\t\t--jobInstanceId=">10" purge les enregistrements sup\u00e9rieurs ou \u00e9gaux \u00e0 10.\n\
+\t\t--jobInstanceId="<10" purge les enregistrements inf\u00e9rieurs ou \u00e9gaux \u00e0 10.\n\
+\t\t--jobInstanceId=10,12,15 purge les enregistrements 10, 12, et 15.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est purg\u00e9.
+
+purge.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+purge.optional-desc.--createTime=\tFiltre d'heure de cr\u00e9ation appliqu\u00e9 \u00e0 la purge des enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--createTime=2015-09-10:2015-09-27 purge les enregistrements cr\u00e9\u00e9s\n\
+\t\t\tentre le 10 et le 27 septembre 2015 inclus.\n\
+\t\t--createTime=">3d" purge les enregistrements cr\u00e9\u00e9s 3 jours avant UTC ou\n\
+\t\t\tapr\u00e8s (date de cr\u00e9ation post\u00e9rieure ou \u00e9gale \u00e0 la date il y a 3 jours).\n\
+\t\t--createTime="<3d" purge les enregistrements cr\u00e9\u00e9s 3 jours avant UTC ou\n\
+\t\t\tavant (date de cr\u00e9ation ant\u00e9rieure ou \u00e9gale \u00e0 la date il y a 3 jours).\n\
+\t\t--createTime=2015-09-15 purge tous les enregistrements cr\u00e9\u00e9s le 15-09-2015.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est purg\u00e9. Chaque fois que createTime=>Xd \n\
+\t\tou createTime<Xd est sp\u00e9cifi\u00e9, la date est calcul\u00e9e sur le serveur de r\u00e9partition\n\
+\t\ten temps UTC. 
+
+purge.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+purge.optional-desc.--instanceState=\tFiltre d'\u00e9tat d'instance appliqu\u00e9 \u00e0 la purge des enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED purge les enregistrements\n\
+\t\t\u00e0 l'\u00e9tat COMPLETED, FAILED et STOPPED.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est purg\u00e9.
+
+purge.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+purge.optional-desc.--exitStatus=\tFiltre d'\u00e9tat de sortie appliqu\u00e9 aux enregistrements de l'ex\u00e9cution de travail qui sont\n\
+\tassoci\u00e9s \u00e0 la purge des enregistrements de l'instance de travail.\n\
+\tPar exemple :\n\
+\t\t--exitStatus=*JOB* purge les enregistrements d'instance de travail dont les \n\
+\t\tenregistrements d'ex\u00e9cution contiennent le mot JOB dans leur statut d'exit.\n\
+\t\tRemarque : Les crit\u00e8res peuvent utiliser l'op\u00e9rateur g\u00e9n\u00e9rique (*) \n\
+\t\ten d\u00e9but ou en fin.\n\
+\t\tSi --page et --pageSize ne sont pas sp\u00e9cifi\u00e9s, un nombre de 50 \n\
+\t\tenregistrements max par d\u00e9faut est purg\u00e9.

@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1600 - CWWKS1649
+OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: A(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja sikeresen feldolgozva.
+OIDC_SERVER_CONFIG_PROCESSED.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja sikeresen feldolgozva.
+OIDC_SERVER_CONFIG_PROCESSED.useraction=Nincs
+
+OIDC_SERVER_CONFIG_MODIFIED=CWWKS1601I: A(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja sikeresen m\u00f3dos\u00edt\u00e1sra ker\u00fclt.
+OIDC_SERVER_CONFIG_MODIFIED.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja sikeresen m\u00f3dos\u00edt\u00e1sra ker\u00fclt.
+OIDC_SERVER_CONFIG_MODIFIED.useraction=Nincs.
+
+OIDC_SERVER_CONFIG_EXECTED_ONE=CWWKS1602I: Az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ban t\u00f6bb \u00e9rt\u00e9k van be\u00e1ll\u00edtva a k\u00f6vetkez\u0151 szolg\u00e1ltat\u00f3i tulajdons\u00e1g sz\u00e1m\u00e1ra: {0}.
+OIDC_SERVER_CONFIG_EXECTED_ONE.explanation=A k\u00e9rt OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g egy \u00e9rt\u00e9ket v\u00e1rt, de t\u00f6bbet adott vissza. 
+OIDC_SERVER_CONFIG_EXECTED_ONE.useraction=A server.xml f\u00e1jlban az OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g vizsg\u00e1lat\u00e1val biztos\u00edtsa, hogy csak egy \u00e9rt\u00e9k legyen be\u00e1ll\u00edtva.
+
+OIDC_SERVER_CONFIG_REQUIRES_ONE=CWWKS1603I: Az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ban nincs be\u00e1ll\u00edtva \u00e9rt\u00e9k a k\u00f6vetkez\u0151 szolg\u00e1ltat\u00f3i tulajdons\u00e1g sz\u00e1m\u00e1ra: {0}.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.explanation=A k\u00e9rt OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g legal\u00e1bb egy \u00e9rt\u00e9ket v\u00e1rt, de egyet sem adott vissza.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.useraction=A server.xml f\u00e1jlban az OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g vizsg\u00e1lat\u00e1val biztos\u00edtsa, hogy legal\u00e1bb egy \u00e9rt\u00e9k be legyen \u00e1ll\u00edtva.
+
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN=CWWKS1604I: Az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban nincs megadva logikai \u00e9rt\u00e9k a k\u00f6vetkez\u0151 tulajdons\u00e1g sz\u00e1m\u00e1ra: {0}.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.explanation=A k\u00e9rt OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g "true" vagy "false" logikai \u00e9rt\u00e9ket v\u00e1rt.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.useraction=A server.xml f\u00e1jlban az OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g vizsg\u00e1lat\u00e1val biztos\u00edtsa, hogy 'true' vagy 'false' logikai \u00e9rt\u00e9k legyen megadva.
+
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR=CWWKS1605E: {0} \u00e9rv\u00e9nytelen feljogos\u00edt\u00e1si t\u00edpus van megadva. Az \u00e9rv\u00e9nyes feljogos\u00edt\u00e1si t\u00edpusok {1}.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.explanation=A megadott feljogos\u00edt\u00e1si t\u00edpus \u00e9rv\u00e9nytelen.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.useraction=Adja meg a rendelkez\u00e9sre \u00e1ll\u00f3 feljogos\u00edt\u00e1si t\u00edpusok egyik\u00e9t.
+
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR=CWWKS1606E: A megadott {0} feljogos\u00edt\u00e1si t\u00edpus nem enged\u00e9lyezett. Az enged\u00e9lyezett feljogos\u00edt\u00e1si t\u00edpusok: {1}.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.explanation=A megadott feljogos\u00edt\u00e1si t\u00edpus \u00e9rv\u00e9nyes, de az OpenID Connect szolg\u00e1ltat\u00f3 nem tudja kezelni.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.useraction=Adja meg az enged\u00e9lyezett feljogos\u00edt\u00e1si t\u00edpusok egyik\u00e9t.
+
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR=CWWKS1607E: A jogosults\u00e1gk\u00e9r\u00e9s {0} v\u00e1laszt\u00edpusa \u00e9rv\u00e9nytelen, az \u00e9rv\u00e9nyes v\u00e1laszt\u00edpusok: {1}.
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.explanation=A megadott v\u00e1laszt\u00edpus \u00e9rv\u00e9nytelen. 
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.useraction=A jogosults\u00e1gk\u00e9r\u00e9st m\u00f3dos\u00edtani kell, hogy az \u00e9rv\u00e9nyes v\u00e1laszt\u00edpusok egyik\u00e9t tartalmazza.
+
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR=CWWKS1608E: A jogosults\u00e1gk\u00e9r\u00e9s v\u00e1laszt\u00edpusa nem rendelkezhet egyidej\u0171leg {0} \u00e9s {1} v\u00e1laszt\u00edpussal.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.explanation=A jogosults\u00e1gk\u00e9r\u00e9s csak egy v\u00e1laszt\u00edpussal rendelkezhet.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.useraction=A jogosults\u00e1gk\u00e9r\u00e9st m\u00f3dos\u00edtani kell, hogy csak az egyik v\u00e1laszt\u00edpust tartalmazza.
+
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR=CWWKS1609E: Az OpenID Connect k\u00e9r\u00e9sb\u0151l hi\u00e1nyzik az openid hat\u00f3k\u00f6r.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.explanation=Az id_token v\u00e1laszt\u00edpussal rendelkez\u0151 OpenID Connect k\u00e9r\u00e9s hat\u00f3k\u00f6reinek list\u00e1j\u00e1nak tartalmaznia kell az openid hat\u00f3k\u00f6rt.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00e9r\u00e9s tartalmazza az openid hat\u00f3k\u00f6rt.
+
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR=CWWKS1610E: Az OpenID Connect k\u00e9r\u00e9sb\u0151l hi\u00e1nyzik a sz\u00fcks\u00e9ges Nonce attrib\u00fatum.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.explanation=Az implicit folyamot haszn\u00e1l\u00f3 OpenID Connect k\u00e9r\u00e9sek eset\u00e9ben k\u00f6telez\u0151 a Nonce \u00e9rt\u00e9k.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.useraction=Az implicit OpenID Connect k\u00e9r\u00e9sekhez adja meg a Nonce \u00e9rt\u00e9ket.
+
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR=CWWKS1611E: A k\u00e9r\u00e9s JWT tokenb\u0151l hi\u00e1nyzik n\u00e9h\u00e1ny sz\u00fcks\u00e9ges ig\u00e9ny: {0}.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.explanation=A JWT token nem rendelkezik n\u00e9h\u00e1ny sz\u00fcks\u00e9ges ig\u00e9nnyel a hasznos tartalomban.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.useraction=Adja meg a sz\u00fcks\u00e9ges ig\u00e9nyeket a JWT token hasznos tartalm\u00e1ban.
+
+OIDC_SERVER_REQUIRED_CLAIM_ERR=CWWKS1612E: A JWT token hasznos tartalm\u00e1ban a k\u00e9rt {0} ig\u00e9ny \u00e9rv\u00e9nytelen {1}.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.explanation=A k\u00e9rt ig\u00e9ny a JWT token hasznos tartalm\u00e1ban \u00e9rv\u00e9nytelen.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.useraction=Adjon meg helyes ig\u00e9nyt a JWT token hasznos tartalm\u00e1ban.
+
+OIDC_SERVER_CLAIM_ERR=CWWKS1613E: A JWT token hasznos tartalm\u00e1ban a(z) {0} ig\u00e9ny \u00e9rv\u00e9nytelen {1}.
+OIDC_SERVER_CLAIM_ERR.explanation=Az ig\u00e9ny a JWT token hasznos tartalm\u00e1ban \u00e9rv\u00e9nytelen.
+OIDC_SERVER_CLAIM_ERR.useraction=Adjon meg helyes ig\u00e9nyt a JWT token hasznos tartalm\u00e1ban.
+
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR=CWWKS1614E: A JWT tokennek 'iat' ig\u00e9nyt kell biztos\u00edtania, mert a JWT token szolg\u00e1ltat\u00f3 'maxJwtLifetimeMinutesAllowed' v\u00e1ltoz\u00f3t adott meg.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.explanation=A JWT tokenszolg\u00e1ltat\u00f3 'maxJwtLifetimeMinutesAllowed' v\u00e1ltoz\u00f3t adott meg, a be\u00e9rkez\u0151 JWT tokennek 'iat' ig\u00e9nyt kell megadnia.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.useraction=T\u00e1vol\u00edtsa el a 'maxJwtLifetimeMinutesAllowed' v\u00e1ltoz\u00f3t a konfigur\u00e1ci\u00f3b\u00f3l, vagy adja meg az 'iat' ig\u00e9nyt a JWT token hasznos tartalm\u00e1ban.
+
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR=CWWKS1615E: Egy m\u00e1sik JWT token ugyanazzal a kibocs\u00e1t\u00f3val:{0} \u00e9s jti:{1} ig\u00e9nyekkel m\u00e1r be lett k\u00fcldve.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.explanation=M\u00e1r be lett k\u00fcldve JWT token ugyanazzal az 'iss' \u00e9rt\u00e9kkel \u00e9s 'jti' ig\u00e9nyekkel. Ez lehets\u00e9ges v\u00e1laszt\u00e1mad\u00e1st jelenthet.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy aJWT token kibocs\u00e1t\u00f3 minden egyes JWT tokent egyedi 'jti' ig\u00e9nnyel biztos\u00edt.
+
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN=CWWKS1616E: Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre hozz\u00e1f\u00e9r\u00e9si token n\u00e9lk\u00fcl. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.explanation=Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre hozz\u00e1f\u00e9r\u00e9si token n\u00e9lk\u00fcl, azonban egy hozz\u00e1f\u00e9r\u00e9si token megad\u00e1sa k\u00f6telez\u0151.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.useraction=Adjon meg egy hozz\u00e1f\u00e9r\u00e9si tokent vagy az access_token k\u00e9r\u00e9sparam\u00e9terrel vagy a jogosults\u00e1gi fejl\u00e9ccel.
+
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN=CWWKS1617E: Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy olyan hozz\u00e1f\u00e9r\u00e9si tokennel, melyet a rendszer nem ismert fel. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.explanation=Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy olyan hozz\u00e1f\u00e9r\u00e9si tokennel, melyet a rendszer nem ismert fel. \u00c9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si token megad\u00e1sa k\u00f6telez\u0151.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.useraction=Adjon meg egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent vagy az access_token k\u00e9r\u00e9sparam\u00e9terrel vagy a jogosults\u00e1gi fejl\u00e9ccel.
+
+OIDC_SERVER_USERINFO_INVALID_REQUEST=CWWKS1618E: Egy userinfo k\u00e9r\u00e9s URI \u00e9rv\u00e9nytelen volt. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.explanation=Egy userinfo k\u00e9r\u00e9s URI \u00e9rv\u00e9nytelen volt, azonban egy \u00e9rv\u00e9nyes URI megad\u00e1sa k\u00f6telez\u0151.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.useraction=Adjon meg egy \u00e9rv\u00e9nyes userinfo k\u00e9r\u00e9s URI-t.
+
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN=CWWKS1619E: Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy olyan hozz\u00e1f\u00e9r\u00e9si tokennel, amely nem rendelkezett az ''openid'' hat\u00e1sk\u00f6rrel. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.explanation=Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy olyan hozz\u00e1f\u00e9r\u00e9si tokennel, amely nem rendelkezett az 'openid' hat\u00e1sk\u00f6rrel. 
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.useraction=Adjon meg egy olyan hozz\u00e1f\u00e9r\u00e9si tokent, amely az 'openid' hat\u00e1sk\u00f6rrel ker\u00fclt l\u00e9trehoz\u00e1sra.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt egy userinfo k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. A hiba: {0}. A k\u00e9r\u00e9s URI: {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt egy userinfo k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Keresse meg az IBM term\u00e9kt\u00e1mogat\u00e1st.
+
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS=CWWKS1621E: Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy hozz\u00e1f\u00e9r\u00e9si tokennel az access_token k\u00e9r\u00e9si param\u00e9terben is, \u00e9s a jogosults\u00e1gi fejl\u00e9cben is. Csak egy hozz\u00e1f\u00e9r\u00e9si token enged\u00e9lyezett. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.explanation=Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy hozz\u00e1f\u00e9r\u00e9si tokennel az access_token k\u00e9r\u00e9si param\u00e9terben is, \u00e9s a jogosults\u00e1gi fejl\u00e9cben is. Csak egy hozz\u00e1f\u00e9r\u00e9si token enged\u00e9lyezett.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.useraction=Adjon meg egy hozz\u00e1f\u00e9r\u00e9si tokent vagy az access_token k\u00e9r\u00e9sparam\u00e9terrel vagy a jogosults\u00e1gi fejl\u00e9ccel, de ne mindkett\u0151vel.
+
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE=CWWKS1622E: Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy olyan tokennel, amely nem hozz\u00e1f\u00e9r\u00e9si token volt. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.explanation=Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy olyan tokennel, amely nem hozz\u00e1f\u00e9r\u00e9si token volt. \u00c9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si token megad\u00e1sa k\u00f6telez\u0151.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.useraction=Adjon meg egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent vagy az access_token k\u00e9r\u00e9sparam\u00e9terrel vagy a jogosults\u00e1gi fejl\u00e9ccel. 
+
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN=CWWKS1623E: Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre lej\u00e1rt hozz\u00e1f\u00e9r\u00e9si tokennel. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.explanation=Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre lej\u00e1rt hozz\u00e1f\u00e9r\u00e9si tokennel. \u00c9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si token megad\u00e1sa k\u00f6telez\u0151.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.useraction=Adjon meg egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent vagy az access_token k\u00e9r\u00e9sparam\u00e9terrel vagy a jogosults\u00e1gi fejl\u00e9ccel.
+
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND=CWWKS1624E: Egy userinfo k\u00e9r\u00e9s URI \u00e9rv\u00e9nytelen volt. A(z) {0} szolg\u00e1ltat\u00f3 nem tal\u00e1lhat\u00f3. A k\u00e9r\u00e9s URI: {1}.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.explanation=Egy userinfo k\u00e9r\u00e9s URI \u00e9rv\u00e9nytelen volt. Az URI \u00e1ltal tartalmazott szolg\u00e1ltat\u00f3 nem tal\u00e1lhat\u00f3. \u00c9rv\u00e9nyes URI megad\u00e1sa k\u00f6telez\u0151.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.useraction=Adjon meg egy \u00e9rv\u00e9nyes userinfo k\u00e9r\u00e9s URI-t, amely tartalmaz egy \u00e9rv\u00e9nyes szolg\u00e1ltat\u00f3nevet.
+
+OIDC_SERVER_IDTOKEN_VERIFY_ERR=CWWKS1625E: Az OpenID Connect szolg\u00e1ltat\u00f3 nem tudta \u00e9rv\u00e9nyes\u00edteni az azonos\u00edt\u00f3 tokent [{0}] miatt.
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 nem tudja \u00e9rv\u00e9nyes\u00edteni az azonos\u00edt\u00f3 tokent. Ezt az azonos\u00edt\u00f3 token l\u00e9trehoz\u00f3ja \u00e9s ezen szolg\u00e1ltat\u00f3 \u00e1ltal haszn\u00e1lt al\u00e1\u00edr\u00f3 kulcsok k\u00f6z\u00f6tti k\u00f6vetkezetlens\u00e9g okozhatta.
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9l (RP) azt az azonos\u00edt\u00f3 tokent k\u00fcldi el, amelyet ez a szolg\u00e1ltat\u00f3 \u00e1ll\u00edtott el\u0151. Tekintse meg a hiba ut\u00e1n megjelen\u0151 \u00fczenet felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9s\u00e9t is.
+
+OIDC_SERVER_USERNAME_MISMATCH_ERR=CWWKS1626E: A(z) [{0}] bejelentkez\u00e9si felhaszn\u00e1l\u00f3n\u00e9v nem egyezik meg a(z) [{1}] azonos\u00edt\u00f3 token t\u00e1rgy\u00e1val.
+OIDC_SERVER_USERNAME_MISMATCH_ERR.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 meg\u00e1llap\u00edt\u00e1sa szerint az aktu\u00e1lis bejelentkez\u00e9si felhaszn\u00e1l\u00f3i azonoss\u00e1g nem konzisztens az azonos\u00edt\u00f3 tokenben l\u00e9v\u0151 felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3kkal. Ezt okozhatta az, hogy egy v\u00e9gfelhaszn\u00e1l\u00f3 bejelentkez\u00e9si felhaszn\u00e1l\u00f3t v\u00e1ltott.
+OIDC_SERVER_USERNAME_MISMATCH_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy egy v\u00e9gfelhaszn\u00e1l\u00f3 nem v\u00e1ltja \u00e1t az OpenID Connect szolg\u00e1ltat\u00f3 felhaszn\u00e1l\u00f3i azonoss\u00e1g\u00e1t.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM=CWWKS1627E: Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt egy userinfo k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. Az egyes\u00edtett t\u00e1r szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151. A k\u00e9r\u00e9s URI: {0}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt egy userinfo k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. Az egyes\u00edtett t\u00e1r szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.useraction=Keresse meg az IBM term\u00e9kt\u00e1mogat\u00e1st.
+
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1628E: Konfigur\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt. Nincs el\u00e9rhet\u0151 OpenID Connect v\u00e9gponti szolg\u00e1ltat\u00e1s. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik konfigur\u00e1lt openidConnectServer-1.0 szolg\u00e1ltat\u00e1ssal. 
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Nem \u00e9rhet\u0151 el OpenID Connect v\u00e9gponti szolg\u00e1ltat\u00e1s az OSGi szolg\u00e1ltat\u00e1snyilv\u00e1ntart\u00e1son kereszt\u00fcl.
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Foglalja bele az openidConnectServer-1.0 szolg\u00e1ltat\u00e1st a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ba.
+
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS1629E: A OpenID Connect konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem el\u00e9rhet\u0151 a(z) {0} szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra.
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.explanation=A OpenID Connect konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem el\u00e9rhet\u0151 a szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra. 
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.useraction=A server.xml f\u00e1jlban az OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g vizsg\u00e1lat\u00e1val biztos\u00edtsa, hogy legal\u00e1bb egy szolg\u00e1ltat\u00f3 meg legyen adva.
+
+OIDC_OAUTH_PROVIDER_OBJECT_NULL=CWWKS1630E: Az OAuth20Provider objektum nem be\u00e1ll\u00edtott \u00e9rt\u00e9k a(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 eset\u00e9ben.
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 nem rendelkezik OAuthProvider \u00e9rt\u00e9kkel
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.useraction=A server.xml f\u00e1jlban az OpenID Connect szolg\u00e1ltat\u00f3 tulajdons\u00e1g vizsg\u00e1lat\u00e1val biztos\u00edtsa, hogy legal\u00e1bb egy OAuth szolg\u00e1ltat\u00f3 meg legyen adva.
+
+OIDC_ENDPOINT_SERVICE_ACTIVATED=CWWKS1631I: Az OpenID Connect v\u00e9gponti szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.explanation=Az OpenID Connect v\u00e9gponti szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.useraction=Nincs
+
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND=CWWKS1632E: A(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 \u00e1ltal hivatkozott OAuth szolg\u00e1ltat\u00f3n\u00e9v nem tal\u00e1lhat\u00f3.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 nem rendelkezik OAuth szolg\u00e1ltat\u00f3n\u00e9vvel, vagy a megadott nev\u0171 OAuth szolg\u00e1ltat\u00f3 nem l\u00e9tezik.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.useraction=Adjon meg egy \u00e9rv\u00e9nyes OAuth szolg\u00e1ltat\u00f3nevet az OpenID Connect szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra.
+
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER=CWWKS1633E: Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre nem t\u00e1mogatott {0} param\u00e9terrel. A k\u00e9r\u00e9s URI: {1}.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.explanation=Egy userinfo k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre egy nem t\u00e1mogatott param\u00e9terrel.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.useraction=H\u00edvja meg a userinfo v\u00e9gpontot a nem t\u00e1mogatott param\u00e9ter n\u00e9lk\u00fcl.
+
+OIDC_REQUEST_ATTRIBUTE_MISSING=CWWKS1634E: A(z) {0} k\u00e9r\u00e9s v\u00e9gpont nem rendelkezik {1} attrib\u00fatummal.
+OIDC_REQUEST_ATTRIBUTE_MISSING.explanation=Az attrib\u00fatum hi\u00e1nyzik a k\u00e9r\u00e9sb\u0151l
+OIDC_REQUEST_ATTRIBUTE_MISSING.useraction=Vizsg\u00e1lja meg a k\u00e9r\u00e9s v\u00e9gpontj\u00e1t a server.xml f\u00e1jlban, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megfelel\u0151 szolg\u00e1ltat\u00f3val rendelkezik
+
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS=CWWKS1635W: Az issuerIdentifier={0} OpenID Connect szolg\u00e1ltat\u00f3 attrib\u00fatumnak a https s\u00e9m\u00e1t kell haszn\u00e1lnia, ha a httpsRequired tulajdons\u00e1g true \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. Alap\u00e9rtelmez\u00e9s vissza\u00e1ll\u00edt\u00e1sa.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.explanation=Az issuerIdentifier helytelen\u00fcl van be\u00e1ll\u00edtva.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.useraction=M\u00f3dos\u00edtsa az issuerIdentifier OpenIDConnect szolg\u00e1ltat\u00f3 attrib\u00fatumot, hogy a https s\u00e9m\u00e1t haszn\u00e1lja.
+
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH=CWWKS1636E: A(z) {0} post_logout_redirect_uri param\u00e9ter nem felel meg a postLogoutRedirectUris={1} OpenID Connect szolg\u00e1ltat\u00f3i attrib\u00fatum \u00e9rt\u00e9k\u00e9nek a k\u00f6vetkez\u0151 \u00fcgyf\u00e9lazonos\u00edt\u00f3n: {2}.
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.explanation=Az OpenID Connect \u00fcgyf\u00e9l (RP) \u00e1ltal k\u00fcld\u00f6tt post_logout_redirect_uri param\u00e9ter nem szerepel a postLogoutRedirectUris attrib\u00fatum \u00e1ltal megadott URI list\u00e1n, vagy a postLogoutRedirectUris \u00e9rt\u00e9ke nincs be\u00e1ll\u00edtva. 
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a post_logout_redirect_uri param\u00e9ter szerepeljen a regisztr\u00e1lt \u00fcgyf\u00e9len megl\u00e9v\u0151 postLogoutRedirectUris attrib\u00fatum list\u00e1j\u00e1ban. Tov\u00e1bb\u00e1 ha az \u00fcgyf\u00e9lazonos\u00edt\u00f3 null\u00e9rt\u00e9k\u0171, vagy az id_token_hint param\u00e9ter \u00e9rv\u00e9nytelen vagy nincs be\u00e1ll\u00edtva, akkor az id_token_hint param\u00e9ter k\u00f6telez\u0151 az \u00fcgyf\u00e9lazonos\u00edt\u00f3 azonos\u00edt\u00e1s\u00e1hoz.
+
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR=CWWKS1637E: A(z) {1} Liberty felhaszn\u00e1l\u00f3 szolg\u00e1ltat\u00e1s \u00e1ltal visszaadott felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3 a(z) {0} felhaszn\u00e1l\u00f3 eset\u00e9n null.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.explanation=A Liberty rendszerben telep\u00edtett UserinfoProvider null\u00e9rt\u00e9ket ad vissza az adott felhaszn\u00e1l\u00f3 eset\u00e9n.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a UserinfoProvider \u00e9rv\u00e9nyes JSON objektumot ad vissza.
+
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED=CWWKS1638I: T\u00f6bb UserinfoProvider van konfigur\u00e1lva.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.explanation=Egyn\u00e9l t\u00f6bb UserinfoProvider van konfigur\u00e1lva a server.xml f\u00e1jlban.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.useraction=Nincs
+
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT=CWWKS1639E: A(z) {1} Liberty felhaszn\u00e1l\u00f3 szolg\u00e1ltat\u00e1s \u00e1ltal visszaadott felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3 a(z) {0} felhaszn\u00e1l\u00f3 eset\u00e9n \u00e9rv\u00e9nytelen.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.explanation=A Liberty rendszerben telep\u00edtett UserinfoProvider \u00e9rv\u00e9nytelen JSON objektumot ad vissza az adott felhaszn\u00e1l\u00f3 eset\u00e9n.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a UserinfoProvider \u00e9rv\u00e9nyes JSON objektumot ad vissza.
+
+OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Egy JWK JSON karaktersorozatra vonatkoz\u00f3 k\u00e9r\u00e9st nem lehetett feldolgozni. Az OpenID Connect szolg\u00e1ltat\u00f3 keyStoreRef vagy keyAliasName attrib\u00fatuma helytelen lehet, vagy elk\u00e9pzelhet\u0151, hogy a signatureAlgorithm attrib\u00fatum nem RS256 \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=A JWK JSON karaktersorozat el\u0151\u00e1ll\u00edt\u00e1sa megk\u00f6veteli, hogy az OpenID Connect szolg\u00e1ltat\u00f3 signatureAlgorithm attrib\u00fatuma RS256 \u00e9rt\u00e9kre legyen be\u00e1ll\u00edtva. Ha meg vannak adva, akkor a KeyStoreRef \u00e9s keyAliasName attrib\u00fatumoknak \u00e9rv\u00e9nyeseknek kell lenni\u00fck. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Jav\u00edtsa az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3s attrib\u00fatumait.
+
+
+IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: A fut\u00e1si k\u00f6rnyezet \u00e1ltal haszn\u00e1lt Java v\u00e1ltozatot [{0}] az ID token Mediator SPI nem t\u00e1mogatja. A t\u00e1mogatott Java v\u00e1ltozat 1.7 vagy \u00fajabb.
+IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Az \u00fczenetben l\u00e1that\u00f3 Java v\u00e1ltozat nem t\u00e1mogatja a ID token Mediator SPI funkci\u00f3t. 
+IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Telep\u00edtsen Java 1.7 vagy \u00fajabb v\u00e1ltozatot.
+

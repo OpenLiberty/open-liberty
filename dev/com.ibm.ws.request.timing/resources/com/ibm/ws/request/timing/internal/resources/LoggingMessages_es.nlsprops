@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: La solicitud {0} se ha ejecutando en la hebra {1} durante {2}ms como m\u00ednimo. El seguimiento de pila siguiente muestra lo que esta hebra est\u00e1 ejecutando actualmente.\n\n {3}\nLa tabla siguiente muestra los sucesos que se han ejecutado durante esta solicitud.\n{4} 
+REQUEST_TIMER_WARNING.explanation=La solicitud se ha estado ejecutando durante m\u00e1s tiempo que la duraci\u00f3n de solicitud lenta configurada. La informaci\u00f3n de la tabla muestra qu\u00e9 sucesos ya se han ejecutado como parte de la solicitud. Los sucesos que siguen en ejecuci\u00f3n se indican con un + junto a la duraci\u00f3n. El valor predeterminado para duraci\u00f3n de solicitud lenta es de 10 segundos, compruebe el archivo server.xml para el valor actual.
+REQUEST_TIMER_WARNING.useraction=Utilice la informaci\u00f3n de la tabla para determinar qu\u00e9 parte de la solicitud es m\u00e1s lenta de lo esperado.  Si se proporcionan muchos avisos para distintas solicitudes en casi el mismo tiempo, puede indicar que algo ha ralentizado todo el proceso de servidor, como por ejemplo si otro proceso del mismo sistema consume una gran cantidad de recursos de proceso.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: La solicitud {0} se ha ejecutando en la hebra {1} durante {2}ms como m\u00ednimo. La tabla siguiente muestra los sucesos que se han ejecutado durante esta solicitud.\n{3}
+HUNG_REQUEST_WARNING.explanation=La solicitud se ha estado ejecutando durante m\u00e1s tiempo que la duraci\u00f3n de solicitud bloqueada configurada. La informaci\u00f3n de la tabla muestra qu\u00e9 sucesos ya se han ejecutado como parte de la solicitud. Los n\u00facleos de Java se activar\u00e1n autom\u00e1ticamente para recopilar informaci\u00f3n adicional sobre qu\u00e9 puede estar causando el bloqueo de la solicitud. El valor predeterminado para duraci\u00f3n de solicitud bloqueada es de 10 minutos, compruebe el archivo server.xml para el valor actual.
+HUNG_REQUEST_WARNING.useraction=Utilice la informaci\u00f3n de la tabla para determinar qu\u00e9 parte de la solicitud est\u00e1 bloqueada o en bucle. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: La solicitud {0} de la hebra {1}, que se detect\u00f3 anteriormente como bloqueada, se ha completado al cabo de {2}ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=La tarea de solicitud bloqueada informar\u00e1 al usuario cuando se complete cualquier solicitud bloqueada.
+HUNG_REQUEST_COMPLETED_INFO.useraction=No se requiere ninguna acci\u00f3n.    
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: La configuraci\u00f3n de temporizaci\u00f3n asociada a PID {0} no se puede leer en la configuraci\u00f3n.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=El servicio de temporizaci\u00f3n de solicitud ha intentado leer una configuraci\u00f3n de temporizaci\u00f3n incorporada en el archivo server.xml. El PID asociado al elemento de temporizaci\u00f3n est\u00e1 en el mensaje.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Consulte messages.log para ver otros mensajes de error, como CWWKG0058E, si desea detalles sobre el problema de configuraci\u00f3n. Corrija la configuraci\u00f3n para resolver el error.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Ya existe una configuraci\u00f3n de temporizaci\u00f3n del tipo {0} y patr\u00f3n de informaci\u00f3n de contexto {1}. La configuraci\u00f3n de temporizaci\u00f3n asociada al PID {2} sustituye la configuraci\u00f3n de temporizaci\u00f3n anterior.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=Se ha encontrado una configuraci\u00f3n de temporizaci\u00f3n en el archivo server.xml. La combinaci\u00f3n del tipo y el patr\u00f3n de informaci\u00f3n de contexto ya estaba definida.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Consulte el archivo server.xml y elimine las configuraciones de temporizaci\u00f3n duplicadas.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: La configuraci\u00f3n de temporizaci\u00f3n del PID {0} proporciona un patr\u00f3n de informaci\u00f3n de contexto, pero la configuraci\u00f3n de temporizaci\u00f3n de la solicitud establece el atributo includeContextInfo en false. La configuraci\u00f3n de temporizaci\u00f3n se ignorar\u00e1.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=El servicio de temporizaci\u00f3n de solicitud ha le\u00eddo una configuraci\u00f3n de temporizaci\u00f3n incorporada en el archivo server.xml. La configuraci\u00f3n de temporizaci\u00f3n ha especificado un patr\u00f3n de informaci\u00f3n de contexto con el que debe coincidir. El servicio de temporizaci\u00f3n de solicitud est\u00e1 configurado para inhabilitar la informaci\u00f3n de contexto para todas las solicitudes y no puede correlacionar solicitudes con esta configuraci\u00f3n de temporizaci\u00f3n.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Inspeccione el archivo server.xml y resuelva el conflicto de configuraci\u00f3n. Para ello, cambie el valor de includeContextInfo a true en la configuraci\u00f3n de temporizaci\u00f3n de solicitud, o elimine el patr\u00f3n de informaci\u00f3n de contexto de la configuraci\u00f3n de temporizaci\u00f3n.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: La configuraci\u00f3n de temporizaci\u00f3n asociada con el PID {0} proporciona un patr\u00f3n de informaci\u00f3n de contexto que contiene un comod\u00edn en una ubicaci\u00f3n no soportada. El comod\u00edn se tratar\u00e1 como un asterisco. El patr\u00f3n de informaci\u00f3n de contexto es {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=El servicio de temporizaci\u00f3n de solicitud ha le\u00eddo una configuraci\u00f3n de temporizaci\u00f3n incorporada en el archivo server.xml. En el patr\u00f3n de informaci\u00f3n de contexto, un car\u00e1cter de asterisco se trata como un comod\u00edn a menos que se escape con un car\u00e1cter de barra inclinada invertida. Un comod\u00edn solo se permite como \u00faltimo car\u00e1cter en el patr\u00f3n de informaci\u00f3n de contexto.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Para interpretar el car\u00e1cter comod\u00edn como un asterisco, esc\u00e1pelo con un car\u00e1cter de barra inclinada invertida.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nLa tabla se ha truncado porque el n\u00famero de sucesos para la solicitud ha excedido el l\u00edmite permitido.

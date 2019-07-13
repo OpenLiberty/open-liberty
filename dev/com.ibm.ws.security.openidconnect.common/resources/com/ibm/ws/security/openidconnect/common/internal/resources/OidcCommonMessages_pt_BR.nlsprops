@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: A solicita\u00e7\u00e3o de terminal de token falhou. N\u00e3o \u00e9 poss\u00edvel validar o token JWT solicitado pelo [{0}] devido a uma assinatura ausente no token JWT. O provedor OpenID Connect especificou o algoritmo [{1}] e espera que o token JWT seja assinado.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel verificar o Token JWT porque o token n\u00e3o est\u00e1 assinado. O provedor OpenID Connect est\u00e1 esperando que o token seja assinado.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Verifique a configura\u00e7\u00e3o do cliente OpenID Connect para certificar-se de que ela assine o Token JWT.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: A solicita\u00e7\u00e3o de terminal de token falhou. N\u00e3o \u00e9 poss\u00edvel validar o token JWT solicitado pelo [{0}] devido a uma incompatibilidade de algoritmos de assinatura entre o provedor OpenID Connect [{1}] e o cliente OpenID Connect [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=N\u00e3o \u00e9 poss\u00edvel verificar o token JWT porque o provedor e cliente OpenID Connect est\u00e3o usando algoritmos de assinatura diferentes para assinar/verificar o token.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Verifique a configura\u00e7\u00e3o do cliente OpenID Connect para especificar um algoritmo de assinatura que corresponda ao provedor OpenID Connect.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: A solicita\u00e7\u00e3o de terminal de token falhou. Um token JWT assinado precisa ter 3 segmentos separados por ''.'', mas esse token JWT possui [{0}] segmentos.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Um token JWT assinado precisa ter exatamente 3 segmentos separados por '.'. Esse token JWT possui um n\u00famero do segmento inv\u00e1lido.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Certifique-se de que o token JWT \u00e9 v\u00e1lido e possui 3 segmentos.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: A solicita\u00e7\u00e3o de terminal de token falhou. A valida\u00e7\u00e3o do token JWT solicitada pelo [{0}] falhou. Ele recebeu uma InvalidJwtException com a mensagem: [{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Um token JWT n\u00e3o pode ser validado por causa de uma InvalidJwtException que est\u00e1 indicada na mensagem.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrija o erro que \u00e9 indicado na mensagem.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: A solicita\u00e7\u00e3o de terminal de token falhou. Um token JWT requerido n\u00e3o foi localizado na solicita\u00e7\u00e3o.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=A solicita\u00e7\u00e3o precisa fornecer um token JWT, mas n\u00e3o pode localizar o token JWT na solicita\u00e7\u00e3o de terminal de token.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Forne\u00e7a um token JWT v\u00e1lido na solicita\u00e7\u00e3o de terminal de token.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Ocorreu uma exce\u00e7\u00e3o ao tentar obter o RunAsSubject. A exce\u00e7\u00e3o era: [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Ocorreu uma exce\u00e7\u00e3o ao obter o RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Certifique-se de que o servidor tenha sido configurado e iniciado corretamente.
+

@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: Nu a pornit jurnalizarea joburilor de batch pentru jobul {0}, pentru instan\u0163a de joburi {1}, pentru execu\u0163ia joburilor {2}, din cauza unei excep\u0163ii.\n{3}
+job.logging.create.new.explanation=Jurnalizarea joburilor de batch nu a creat fi\u015fierul istoric. Jurnalizarea de Batch a e\u015fuat din cauza unei excep\u0163ii.
+job.logging.create.new.useraction=Examina\u0163i excep\u0163ia, verifica\u0163i starea sistemului de fi\u015fiere \u015fi face\u0163i ac\u0163iuni corective. Executarea batch-ului continu\u0103 f\u0103r\u0103 jurnalizare.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: Jurnalizarea joburilor de batch nu a creat fi\u015fiere suplimentare componente de istoric din cauza unei excep\u0163ii.\n{0}\nJurnalizarea joburilor de batch va \u00eencerca s\u0103 continue cu fi\u015fierul curent. 
+job.logging.create.next.explanation=Jurnalizarea joburilor de batch nu a creat fi\u015fiere suplimentare componente de istoric. Crearea noului fi\u015fier de jurnalizare a e\u015fuat cauza unei excep\u0163ii.\n Jurnalizarea joburilor de batch va \u00eencerca s\u0103 continue cu fi\u015fierul curent.
+job.logging.create.next.useraction=Examina\u0163i excep\u0163ia, verifica\u0163i starea sistemului de fi\u015fiere \u015fi face\u0163i ac\u0163iuni corective. Jurnalizarea joburilor de batch va \u00eencerca s\u0103 continue cu fi\u015fierul curent.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: Jurnalizarea joburilor de batch nu a citit fi\u015fierul p\u0103r\u0163ilor componente de \u00eenregistrare \u00een istoric din cauza unei excep\u0163ii.\n''{0}''
+job.logging.read.log.explanation=Jurnalizarea joburilor de batch nu a citit fi\u015fierul p\u0103r\u0163ilor componente de \u00eenregistrare \u00een istoric. Fi\u015fierul Batch a p\u0103r\u0163ilor componente de citire \u00eenregistrare \u00een istoric a e\u015fuat din cauza unei excep\u0163ii.\n\u00cenregistrarea \u00een istoric a joburilor de batch va continua f\u0103r\u0103 publicarea evenimentului de \u00eenregistrare \u00een istoric a joburilor.
+job.logging.read.log.useraction=Examina\u0163i excep\u0163ia, verifica\u0163i starea sistemului de fi\u015fiere \u015fi face\u0163i ac\u0163iuni corective.\n\u00cenregistrarea \u00een istoric a joburilor de batch va continua f\u0103r\u0103 publicarea evenimentului de \u00eenregistrare \u00een istoric a joburilor.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: Jurnalizarea joburilor de batch nu a \u015fters urm\u0103torul fi\u015fier sau director de p\u0103r\u0163i componente de jurnalizare: {0}. 
+job.logging.delete.log.explanation=Jurnalizarea joburilor de batch nu a \u015fters fi\u015fierul sau directorul p\u0103r\u0163ilor componente de \u00eenregistrare \u00een istoric.\nJurnalizarea joburilor de batch va continua f\u0103r\u0103 \u015ftergerea fi\u015fierului sau directorului.
+job.logging.delete.log.useraction=Examina\u0163i excep\u0163ia, verifica\u0163i starea sistemului de fi\u015fiere \u015fi face\u0163i ac\u0163iuni corective.\nJurnalizarea joburilor de batch va continua f\u0103r\u0103 \u015ftergerea fi\u015fierului sau directorului.

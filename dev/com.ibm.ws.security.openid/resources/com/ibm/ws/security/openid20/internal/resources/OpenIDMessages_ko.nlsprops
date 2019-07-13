@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openid20/internal/resources/OpenIDMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1500 - CWWKS1519
+OPENID_RP_SERVICE_ACTIVATE=CWWKS1500I: OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uc11c\ube44\uc2a4\uac00 \ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+OPENID_RP_SERVICE_ACTIVATE.explanation=OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uc11c\ube44\uc2a4\uac00 \ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OPENID_RP_SERVICE_ACTIVATE.useraction=\uc5c6\uc74c 
+
+OPENID_RP_SERVICE_DEACTIVATE=CWWKS1501I: OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uc11c\ube44\uc2a4\uac00 \ube44\ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+OPENID_RP_SERVICE_DEACTIVATE.explanation=OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uc11c\ube44\uc2a4\uac00 \ube44\ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OPENID_RP_SERVICE_DEACTIVATE.useraction=\uc5c6\uc74c 
+
+OPENID_RP_CONFIG_PROCESSED=CWWKS1502I: OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CONFIG_PROCESSED.explanation=OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CONFIG_PROCESSED.useraction=\uc5c6\uc74c 
+
+OPENID_RP_CONFIG_MODIFIED=CWWKS1503I: OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uad6c\uc131\uc774 \uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CONFIG_MODIFIED.explanation=OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uad6c\uc131\uc774 \uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CONFIG_MODIFIED.useraction=\uc5c6\uc74c 
+
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID=CWWKS1504W: maxAssociationAttempts\ub97c 0\uc73c\ub85c \uc124\uc815\ud558\uace0 allowStateless\ub97c false\ub85c \uc124\uc815\ud55c \uacbd\uc6b0 OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uad6c\uc131\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. maxAssociationAttempts\ub97c \uae30\ubcf8\uac12\uc73c\ub85c \uc7ac\uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.explanation=maxAssociationAttempts\ub97c 0\uc73c\ub85c \uc124\uc815\ud558\uace0 allowStateless\ub97c false\ub85c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.useraction=maxAssociationAttempts \ubc0f allowStateless \uc18d\uc131\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uad6c\uc131\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_VERSION_NOT_TEST=CWWKS1505W: OpenID \uc81c\uacf5\uc790 \ubc84\uc804 {0}\uc774(\uac00) \ud14c\uc2a4\ud2b8\ub418\uc9c0 \uc54a\uc558\uae30 \ub54c\ubb38\uc5d0 \uc81c\ub300\ub85c \uc791\ub3d9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+OPENID_VERSION_NOT_TEST.explanation=\uc774 \ubc84\uc804\uc758 OpenID \uc81c\uacf5\uc790\ub294 \ud14c\uc2a4\ud2b8\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uae30\ub2a5\uc774 \uc81c\ub300\ub85c \uc791\ub3d9\ud558\uc9c0 \uc54a\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc704\ud5d8\uc744 \uac10\uc218\ud558\uace0 \uc2e4\ud589\ud558\uc2ed\uc2dc\uc624. 
+OPENID_VERSION_NOT_TEST.useraction=\uc5c6\uc74c. \uc704\ud5d8\uc744 \uac10\uc218\ud558\uace0 \uc2e4\ud589\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_RP_NO_RESULT_ERR=CWWKS1506E: OpenID\uac00 \uccad\uad6c ID {0}\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 \uacb0\uacfc\ub97c \uac00\uc838\uc62c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+OPENID_RP_NO_RESULT_ERR.explanation=OpenID \uc81c\uacf5\uc790\uac00 \uc62c\ubc14\ub978 \uacb0\uacfc\ub97c \ub9ac\ud134\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc0ac\uc6a9\uc790\uac00 \uc778\uc99d\uc5d0 \uc2e4\ud328\ud588\uac70\ub098 \uc778\uc99d\uc744 \uac70\ubd80\ud588\uae30 \ub54c\ubb38\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+OPENID_RP_NO_RESULT_ERR.useraction=\uc5c6\uc74c 
+
+OPENID_RP_CONFIG_INVALID_SSLREF=CWWKS1507E: OpenID \uad6c\uc131\uc5d0 SSL\uc774 \ud544\uc694\ud558\uc9c0\ub9cc sslRef {0}\uc774(\uac00) \uc874\uc7ac\ud558\uc9c0 \uc54a\uac70\ub098 \uacf5\ubc31\uc785\ub2c8\ub2e4.
+OPENID_RP_CONFIG_INVALID_SSLREF.explanation=OpenID \uad6c\uc131\uc758 enforceHttps \uc18d\uc131\uc774 true\ub85c \uc124\uc815\ub418\uc9c0\ub9cc sslRef\uac00 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CONFIG_INVALID_SSLREF.useraction=\uc62c\ubc14\ub978 SSL \uad6c\uc131\uc5d0 \ub300\ud55c sslRef \ucc38\uc870\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_HTTPS_WITHOUT_SSL_SERVICE=CWWKS1508E: OpenID \uad6c\uc131\uc5d0 SSL\uc774 \ud544\uc694\ud558\uc9c0\ub9cc SSL \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.explanation=OpenID \uad6c\uc131\uc758 enforceHttps \uc18d\uc131\uc774 true\ub85c \uc124\uc815\ub429\ub2c8\ub2e4. \uadf8\ub7ec\ub098 SSL \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.useraction=server.xml\uc5d0 \uc62c\ubc14\ub978 SSL \uc815\ubcf4\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1509E: OpenID \uad6c\uc131\uc5d0 SSL\uc774 \ud544\uc694\ud558\uc9c0\ub9cc SSL\uc774 \uc81c\ub300\ub85c \uad6c\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.explanation=OpenID \uad6c\uc131\uc758 enforceHttps \uc18d\uc131\uc774 true\ub85c \uc124\uc815\ub429\ub2c8\ub2e4. keyStore \uc694\uc18c\uac00 \ub204\ub77d\ub418\uc5c8\uac70\ub098 \uc798\ubabb \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. SSL \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.useraction=server.xml\uc5d0 \uc62c\ubc14\ub978 SSL \uc815\ubcf4\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS=CWWKS1510E: \uc9c0\uc6d0 \uc0ac\uc774\ud2b8\uc5d0 SSL\uc774 \ud544\uc694\ud558\uc9c0\ub9cc openID \uc81c\uacf5\uc790 URL \ud504\ub85c\ud1a0\ucf5c\uc774 {0}\uc785\ub2c8\ub2e4.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.explanation=\uc9c0\uc6d0 \uc0ac\uc774\ud2b8\uc5d0 SSL\uc774 \ud544\uc694\ud558\uc9c0\ub9cc openID \uc81c\uacf5\uc790 URL \ud504\ub85c\ud1a0\ucf5c\uc774 HTTPs\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.useraction=openID \uc81c\uacf5\uc790\uac00 SSL\uc744 \uc9c0\uc6d0\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. openID \uc81c\uacf5\uc790\uac00 HTTPs\ub97c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \uacbd\uc6b0 enforceHttps\ub97c false\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_RP_CAN_NOT_ACCESS_OP=CWWKS1511E: OpenID \uc81c\uacf5\uc790 {0}\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CAN_NOT_ACCESS_OP.explanation=OpenID \uc81c\uacf5\uc790\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_RP_CAN_NOT_ACCESS_OP.useraction=\uc62c\ubc14\ub978 OpenID \uc81c\uacf5\uc790\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_RP_REQUEST_IDENTIFIER_NULL=CWWKS1512E: OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uc694\uccad ID\uac00 \ub110\uc785\ub2c8\ub2e4.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.explanation=OpenID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8 \uc694\uccad ID\uac00 \ub110\uc785\ub2c8\ub2e4.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.useraction=\uc5c6\uc74c 
+
+OPENID_AUTHENTICATE_FAILED=CWWKS1513E: ID {0}\uc5d0 \ub300\ud55c OpenID \uc778\uc99d\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+OPENID_AUTHENTICATE_FAILED.explanation=ID\uc5d0 \ub300\ud55c OpenID \uc778\uc99d\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+OPENID_AUTHENTICATE_FAILED.useraction=ID\uac00 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY=CWWKS1514E: \uace0\uc720 \ud0a4 {0}\uc5d0 \ub300\ud55c \uce90\uc2dc \ud56d\ubaa9\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.explanation= \uace0\uc720 \ud0a4\uc5d0 \ub300\ud55c \uce90\uc2dc \ud56d\ubaa9\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.useraction=\ubc1c\uacac \uc815\ubcf4 \uce90\uc2dc\uc758 \ucd5c\ub300 \ud06c\uae30\uac00 \uc9c0\uc815\ub41c \uc2dc\uac04\uc5d0 \ubaa8\ub4e0 \uc694\uccad\uc744 \uce90\uc2dc\ud560 \uc815\ub3c4\ub85c \ucda9\ubd84\ud788 \ud070\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OPENID_VERIFY_RESPONSE_FAILED=CWWKS1515E: OpenID\ub294 \uccad\uad6c\ub41c ID {0}\uc5d0 \ub300\ud55c OP \uc751\ub2f5\uc744 \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_VERIFY_RESPONSE_FAILED.explanation=  OpenID\ub294 \uccad\uad6c\ub41c ID\uc5d0 \ub300\ud55c OP \uc751\ub2f5\uc744 \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENID_VERIFY_RESPONSE_FAILED.useraction=openID \uc9c0\uc6d0 \uc0ac\uc774\ud2b8\uac00 openID \uc81c\uacf5\uc790\uc640 \ud1b5\uc2e0\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: A(z) {0} k\u00e9r\u00e9s a(z) {1} sz\u00e1lon legal\u00e1bb {2} ezredm\u00e1sodpercig futott. A k\u00f6vetkez\u0151 verem nyomk\u00f6vet\u00e9s megmutatja, hogy ez a sz\u00e1l jelenleg fut-e. \n\n {3}\nAz al\u00e1bbi t\u00e1bl\u00e1zat megjelen\u00edti a k\u00e9r\u00e9s sor\u00e1n futott esem\u00e9nyeket. \n{4} 
+REQUEST_TIMER_WARNING.explanation=A k\u00e9r\u00e9s hosszabb ideig futott, mint a lass\u00fa k\u00e9r\u00e9sek konfigur\u00e1lt id\u0151tartama. A t\u00e1bl\u00e1zatban l\u00e1that\u00f3 inform\u00e1ci\u00f3k megmutatj\u00e1k, hogy mely esem\u00e9nyek futottak m\u00e1r le a k\u00e9r\u00e9s r\u00e9szek\u00e9nt. A m\u00e9g fut\u00f3 esem\u00e9nyeket az id\u0151tartam melletti + jel jelzi. A lass\u00fa k\u00e9r\u00e9sek id\u0151tartam\u00e1nak alap\u00e9rtelmezett \u00e9rt\u00e9ke 10 mp, ellen\u0151rizze a server.xml f\u00e1jlban az aktu\u00e1lis \u00e9rt\u00e9ket.
+REQUEST_TIMER_WARNING.useraction=A t\u00e1bl\u00e1zatban l\u00e9v\u0151 inform\u00e1ci\u00f3k seg\u00edts\u00e9g\u00e9vel \u00e1llap\u00edtsa meg, hogy a k\u00e9r\u00e9s mely r\u00e9sze lass\u00fabb az elv\u00e1rtn\u00e1l.  Ha k\u00fcl\u00f6nb\u00f6z\u0151 k\u00e9r\u00e9sekhez k\u00f6zel azonos id\u0151pontban sok figyelmeztet\u00e9s jelenik meg, akkor ez azt jelezheti hogy valami a teljes kiszolg\u00e1l\u00f3 folyamatot lelass\u00edtotta, mint p\u00e9ld\u00e1ul egy azonos rendszeren fut\u00f3 m\u00e1sik folyamat, amely nagy mennyis\u00e9g\u0171 feldolgoz\u00f3 er\u0151forr\u00e1st ig\u00e9nyel.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: A(z) {0} k\u00e9r\u00e9s a(z) {1} sz\u00e1lon legal\u00e1bb {2} ezredm\u00e1sodpercig futott. Az al\u00e1bbi t\u00e1bl\u00e1zat megjelen\u00edti a k\u00e9r\u00e9s sor\u00e1n futott esem\u00e9nyeket. \n{3}
+HUNG_REQUEST_WARNING.explanation=A k\u00e9r\u00e9s hosszabb ideig futott, mint a lefagyott k\u00e9r\u00e9sek konfigur\u00e1lt id\u0151tartama. A t\u00e1bl\u00e1zatban l\u00e1that\u00f3 inform\u00e1ci\u00f3k megmutatj\u00e1k, hogy mely esem\u00e9nyek futottak m\u00e1r le a k\u00e9r\u00e9s r\u00e9szek\u00e9nt. A Java t\u00f6rzs folyamatok automatikusan aktiv\u00e1lva lesznek, hogy tov\u00e1bbi inform\u00e1ci\u00f3kat gy\u0171jtsenek arr\u00f3l, hogy mi okozhatja a k\u00e9r\u00e9s lefagy\u00e1s\u00e1t. A lefagyott k\u00e9r\u00e9sek id\u0151tartam\u00e1nak alap\u00e9rtelmezett \u00e9rt\u00e9ke 10 perc, ellen\u0151rizze a server.xml f\u00e1jlban az aktu\u00e1lis \u00e9rt\u00e9ket.
+HUNG_REQUEST_WARNING.useraction=A t\u00e1bl\u00e1zatban l\u00e9v\u0151 inform\u00e1ci\u00f3k seg\u00edts\u00e9g\u00e9vel \u00e1llap\u00edtsa meg, hogy a k\u00e9r\u00e9s mely r\u00e9sze fagyott le vagy ker\u00fclt v\u00e9gtelen ciklusba. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: A(z) {0} k\u00e9r\u00e9s a(z) {1} sz\u00e1lon, amelyet a rendszer kor\u00e1bban lefagyottk\u00e9nt \u00e9szlelt, {2} ezredm\u00e1sodperc ut\u00e1n befejez\u0151d\u00f6tt.
+HUNG_REQUEST_COMPLETED_INFO.explanation=A lefagyott k\u00e9r\u00e9s feladat \u00e9rtes\u00edteni fogja a felhaszn\u00e1l\u00f3t, amikor a lefagyott k\u00e9r\u00e9s befejez\u0151d\u00f6tt.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Semmit sem kell tennie.    
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: A(z) {0} folyamatazonos\u00edt\u00f3hoz tartoz\u00f3 id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3t nem lehet kiolvasni a konfigur\u00e1ci\u00f3b\u00f3l.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=A k\u00e9r\u00e9sid\u0151z\u00edt\u00e9si szolg\u00e1ltat\u00e1s megpr\u00f3b\u00e1lt beolvasni egy be\u00e1gyazott id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3t a server.xml f\u00e1jlb\u00f3l. Az id\u0151z\u00edt\u00e9si elemhez tartoz\u00f3 PID szerepel az \u00fczenetben.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Tekintse meg a messages.log f\u00e1jlt tov\u00e1bbi hiba\u00fczenetek\u00e9rt, p\u00e9ld\u00e1ul a CWWKG0058EA konfigur\u00e1ci\u00f3s probl\u00e9ma r\u00e9szletei\u00e9rt. A hiba elh\u00e1r\u00edt\u00e1s\u00e1hoz jav\u00edtsa ki a konfigur\u00e1ci\u00f3t.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: A(z) {0} id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3 \u00e9s {1} kontextusinform\u00e1ci\u00f3s minta m\u00e1r l\u00e9tezik. A(z) {2} folyamatazonos\u00edt\u00f3hoz tartoz\u00f3 id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3 felv\u00e1ltja a kor\u00e1bbi id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3t.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=T\u00f6bbsz\u00f6r szerepl\u0151 id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3 tal\u00e1lhat\u00f3 a server.xml f\u00e1jlban. A t\u00edpus \u00e9s a kontextusinform\u00e1ci\u00f3s minta kombin\u00e1ci\u00f3ja m\u00e1r meghat\u00e1roz\u00e1sra ker\u00fclt.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Vizsg\u00e1lja meg a server.xml f\u00e1jlt, \u00e9s t\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3kat.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: A(z) {0} folyamatazonos\u00edt\u00f3 (PID) id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3ja biztos\u00edt egy kontextusinform\u00e1ci\u00f3 mint\u00e1t, de a k\u00e9r\u00e9s id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3ja false \u00e9rt\u00e9kre \u00e1ll\u00edtja az includeContextInfo attrib\u00fatumot. Az id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3 figyelmen k\u00edv\u00fcl marad.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=A k\u00e9r\u00e9sid\u0151z\u00edt\u00e9si szolg\u00e1ltat\u00e1s beolvas egy be\u00e1gyazott id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3t a server.xml f\u00e1jlb\u00f3l. Az id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3 megadott egy kontextusinform\u00e1ci\u00f3s mint\u00e1t, amelynek meg kell felelni. A k\u00e9r\u00e9sid\u0151z\u00edt\u00e9si szolg\u00e1ltat\u00e1s \u00fagy van be\u00e1ll\u00edtva, hogy az \u00f6ssze k\u00e9r\u00e9s kontextusinform\u00e1ci\u00f3it letiltsa, \u00e9s nem tudja a k\u00e9r\u00e9seket ennek az id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3nak megfeleltetni.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Vizsg\u00e1lja meg a server.xml f\u00e1jlt, \u00e9s oldja fel a be\u00e1ll\u00edt\u00e1si konfliktust az includeContextInfo attrib\u00fatum true \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1val a k\u00e9r\u00e9s id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3j\u00e1ban vagy a kontextusinform\u00e1ci\u00f3s minta elt\u00e1vol\u00edt\u00e1s\u00e1val az id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3b\u00f3l.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: A(z) {0} folyamatazonos\u00edt\u00f3hoz (PID) kapcsol\u00f3d\u00f3 id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3 olyan kontextusinform\u00e1ci\u00f3s mint\u00e1t biztos\u00edt, amely nem t\u00e1mogatott helyen tartalmaz helyettes\u00edt\u0151 karaktert. A helyettes\u00edt\u0151 karakter csillagk\u00e9nt lesz kezelve. A kontextusinform\u00e1ci\u00f3s minta: {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=A k\u00e9r\u00e9sid\u0151z\u00edt\u00e9si szolg\u00e1ltat\u00e1s beolvas egy be\u00e1gyazott id\u0151z\u00edt\u00e9si konfigur\u00e1ci\u00f3t a server.xml f\u00e1jlb\u00f3l. A kontextusinform\u00e1ci\u00f3s mint\u00e1ban a csillag karakter helyettes\u00edt\u0151 karakterk\u00e9nt szolg\u00e1l, kiv\u00e9ve, ha ford\u00edtott t\u00f6rtvonal oldja fel. Helyettes\u00edt\u0151 karakter csak a kontextusinform\u00e1ci\u00f3s minta utols\u00f3 karakterek\u00e9nt elfogadott.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=A helyettes\u00edt\u0151 karakter csillagk\u00e9nt t\u00f6rt\u00e9n\u0151 \u00e9rtelmez\u00e9s\u00e9hez, oldja fel egy ford\u00edtott t\u00f6rtvonallal.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nA t\u00e1bl\u00e1zat csonkol\u00e1sra ker\u00fclt, mivel a k\u00e9r\u00e9s esem\u00e9nyeinek sz\u00e1ma meghaladta az enged\u00e9lyezett korl\u00e1tot.

@@ -1,0 +1,42 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.2
+
+Bundle-Name: WebSphere OAuth 2.0 web single sign-on API
+Bundle-Description: WebSphere OAuth 2.0 web single sign-on API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.oauth
+
+Import-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,com.ibm.oauth.core.api.error,com.ibm.oauth.core.api.error.oauth20,com.ibm.oauth.core.api.oauth20.mediator,com.ibm.websphere.security.oauth20,com.ibm.websphere.security.oauth20.store,com.ibm.websphere.security.openidconnect.token,com.ibm.wsspi.security.oauth20.token,com.ibm.ws.security.oauth20.resources,*
+
+Export-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,com.ibm.oauth.core.api.error,com.ibm.oauth.core.api.error.oauth20,com.ibm.oauth.core.api.oauth20.mediator,com.ibm.websphere.security.oauth20,com.ibm.websphere.security.oauth20.store,com.ibm.websphere.security.openidconnect.token,com.ibm.wsspi.security.oauth20.token
+
+-includeresource: \
+    {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.oauth/pom.xml=com.ibm.websphere.appserver.api.oauth.pom}, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_cs.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_cs.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_de.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_de.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_es.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_es.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_fr.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_fr.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_hu.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_hu.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_it.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_it.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_ja.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ja.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_ko.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ko.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_pl.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_pl.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_pt_BR.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_pt_BR.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_ro.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ro.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_ru.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ru.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh_TW.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh_TW.properties, \
+    com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh.properties
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+	com.ibm.ws.security.oauth.2.0

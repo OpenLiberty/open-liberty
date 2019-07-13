@@ -1,0 +1,510 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Description:
+global.actions=Actions:
+global.options=Options:
+global.required=Required:
+global.usage=Usage:
+global.usage.options=\
+\t{0} {1} [options]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\
+\tUse help [action] for detailed option information of each action.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\
+\tPrint help information for the specified action.
+
+help.usage.options=\
+\t{0} {1} [actionName]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\
+\ \ \ \ --batchManager=[host]:[port],[host2]:[port2],...
+connect.required-desc.--batchManager=\
+\tThe host and port of the batch manager REST API. You can specify \n\
+\tmultiple targets for high availability and fail-over. Targets are \n\
+\tdelimited by a comma ','. 
+
+connect.required-key.--user=\
+\ \ \ \ --user=[username]
+connect.required-desc.--user=\
+\tThe username for logging in to the batch manager.
+
+connect.required-key.--password=\
+\ \ \ \ --password[=pwd]
+connect.required-desc.--password=\
+\tThe password for logging in to the batch manager. If no value is \n\
+\tdefined you will be prompted.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\
+\ \ \ \ --controlPropertiesFile=[control-properties-file]
+connect.optional-desc.--controlPropertiesFile=\
+\tA properties file containing control parameters, such as the host and\n\
+\tport to connect to. These parameters are overridden by parameters \n\
+\tspecified directly on the command line.
+
+connect.optional-key.--httpTimeout_s=\
+\ \ \ \ --httpTimeout_s=[http timeout in seconds]
+connect.optional-desc.--httpTimeout_s=\
+\tThe timeout in seconds applied to HTTP requests made from the utility\n\
+\tto the batch manager REST API. The same timeout value is applied to\n\
+\tboth the connect and read operations. If not specified, the default\n\
+\tis 30 seconds.
+
+connect.optional-key.--trustSslCertificates=\
+\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\
+\tIndicates that the utility should trust all SSL certificates. The \n\
+\tutility communicates with the batch manager REST API over HTTPS. \n\
+\tBy default it verifies the batch manager's SSL certificate, unless\n\
+\tthis option is specified, in which case it trusts the SSL certificate\n\
+\tand performs no verification.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\
+\ \ \ \ --wait
+wait.optional-desc.--wait=\
+\tIf specified, the program will wait for the job to complete\n\
+\tbefore exiting. The exit code is set according to the job's \n\
+\tbatch status (unless --returnExitStatus is specified).\n\
+\tBatch status exit codes:\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\
+\ \ \ \ --pollingInterval_s=[polling interval in seconds]
+wait.optional-desc.--pollingInterval_s=\
+\tThe interval of time at which to poll for job status. \n\
+\tThe default is 30 seconds.
+
+wait.optional-key.--verbose=\
+\ \ \ \ --verbose
+wait.optional-desc.--verbose=\
+\tIf specified, the program will log a message every time it polls\n\
+\tfor job status.
+
+wait.optional-key.--getJobLog=\
+\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\
+\tIf specified, the program will download the joblog and print it to\n\
+\tSTDOUT after the job finishes. This option must be combined with --wait.
+
+wait.optional-key.--returnExitStatus=\
+\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\
+\tUse the job's exit status as this program's exit code. This option \n\
+\tmust be combined with --wait. If the exit status matches a \n\
+\tBatchStatus name (e.g. "COMPLETED"), then the exit code is set \n\
+\taccording to the mapping described by option --wait. Otherwise the\n\
+\texit code is parsed from the beginning of the exit status string.\n\
+\tFor example:\n\
+\t\texitStatus="0", exit code: 0\n\
+\t\texitStatus="8:failure message can go here", exit code: 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\
+\tSubmit a new batch job. 
+
+submit.optional-key.--applicationName=\
+\ \ \ \ --applicationName=[applicationName]
+submit.optional-desc.--applicationName=\
+\tThe name of the batch application. \n\
+\tNote: Either --applicationName or --moduleName must be specified. \n\
+\tIf --applicationName is not specified it defaults to [moduleName] \n\
+\twithout the ".war" or ".jar" extension.
+
+submit.optional-key.--moduleName=\
+\ \ \ \ --moduleName=[moduleName]
+submit.optional-desc.--moduleName=\
+\tIdentifies a WAR or EJB module within the batch application. \n\
+\tThe job is submitted under the module's component context. \n\
+\tNote: Either --applicationName or --moduleName must be specified. \n\
+\tIf --moduleName is not specified it defaults to "[applicationName].war".
+
+submit.optional-key.--componentName=\
+\ \ \ \ --componentName=[componentName]
+submit.optional-desc.--componentName=\
+\tIdentifies an EJB component within the batch application EJB module.\n\
+\tThe job is submitted under the EJB's component context.
+
+submit.optional-key.--jobXMLName=\
+\ \ \ \ --jobXMLName=[jobXMLName]
+submit.optional-desc.--jobXMLName=\
+\tThe name of the job XML describing the job. The file is read \n\
+\tfrom the batch-jobs directory in the application module. \n\
+\tNote: Either --jobXMLName or --jobXMLFile must be specified.
+
+submit.optional-key.--jobPropertiesFile=\
+\ \ \ \ --jobPropertiesFile=[job-properties-file]
+submit.optional-desc.--jobPropertiesFile=\
+\tA properties file containing job parameters.\n\
+\tThis is an alias of the option --jobParametersFile.
+
+submit.optional-key.--jobParametersFile=\
+\ \ \ \ --jobParametersFile=[job-parameters-file]
+submit.optional-desc.--jobParametersFile=\
+\tA properties file containing job parameters.\n\
+\tThis is an alias of the option --jobPropertiesFile.
+
+submit.optional-key.--jobParameter=\
+\ \ \ \ --jobParameter=[key]=[value]
+submit.optional-desc.--jobParameter=\
+\tSpecify a job parameter. More than one --jobParameter option\n\
+\tcan be specified. The --jobParameter option overrides similarly\n\
+\tnamed properties in --jobParametersFile.
+
+submit.optional-key.--stopOnShutdown=\
+\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\
+\tThis option can be used together with --wait. It registers a shutdown\n\
+\thook with the JVM that gets control when the batchManager program is \n\
+\tabnormally terminated.  The shutdown hook attempts to stop the job \n\
+\tit is waiting on by sending a stop request to the server. \n\
+\tNote: JVM shutdown hooks get control only when the JVM is terminated \n\
+\tin certain ways. For more information, see the Java documentation for \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+submit.optional-key.--jobXMLFile=\
+\ \ \ \ --jobXMLFile=[jobXMLFile]
+submit.optional-desc.--jobXMLFile=\
+\tThe name of a file containing the JSL for the job. The file is \n\
+\tread by the batchManager utility and submitted in-line with the \n\
+\trequest, rather than being read from the batch-jobs directory \n\
+\tin the application module. \n\
+\tNote: Either --jobXMLName or --jobXMLFile must be specified.
+
+submit.optional-key.--restartTokenFile=\
+\ \ \ \ --restartTokenFile=[restart-token-file]
+submit.optional-desc.--restartTokenFile=\
+\tThe name of a file which holds the instance id of the job \n\
+\tto be restarted.  The file is read and written to by the batchManager \n\
+\tutility.  If the file contains an instance id, the job is restarted.  If not, \n\
+\ta new job is submitted and the resulting instance id is stored in \n\
+\tthe file.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\
+\tRestart a batch job.
+
+restart.optional-key.--jobInstanceId=\
+\ \ \ \ --jobInstanceId=[jobInstanceId]
+restart.optional-desc.--jobInstanceId=\
+\tThe job instance to restart.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+restart.optional-key.--jobExecutionId=\
+\ \ \ \ --jobExecutionId=[jobExecutionId]
+restart.optional-desc.--jobExecutionId=\
+\tThe job execution to restart.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+restart.optional-key.--jobPropertiesFile=\
+\ \ \ \ --jobPropertiesFile=[job-properties-file]
+restart.optional-desc.--jobPropertiesFile=\
+\tA properties file containing job parameters.\n\
+\tThis is an alias of the option --jobParametersFile.
+
+restart.optional-key.--jobParametersFile=\
+\ \ \ \ --jobParametersFile=[job-parameters-file]
+restart.optional-desc.--jobParametersFile=\
+\tA properties file containing job parameters.\n\
+\tThis is an alias of the option --jobPropertiesFile.
+
+restart.optional-key.--jobParameter=\
+\ \ \ \ --jobParameter=[key]=[value]
+restart.optional-desc.--jobParameter=\
+\tSpecify a job parameter. More than one --jobParameter option\n\
+\tcan be specified. The --jobParameter option overrides similarly\n\
+\tnamed properties in --jobParametersFile.
+
+restart.optional-key.--reusePreviousParams=\
+\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\
+\tIf specified the job will reuse the previous job parameters.
+
+restart.optional-key.--stopOnShutdown=\
+\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\
+\tThis option can be used together with --wait. It registers a shutdown\n\
+\thook with the JVM that gets control when the batchManager program is \n\
+\tabnormally terminated.  The shutdown hook attempts to stop the job \n\
+\tit is waiting on by sending a stop request to the server. \n\
+\tNote: JVM shutdown hooks get control only when the JVM is terminated \n\
+\tin certain ways. For more information, see the Java documentation for \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\
+\tStop a batch job.
+
+stop.optional-key.--jobInstanceId=\
+\ \ \ \ --jobInstanceId=[jobInstanceId]
+stop.optional-desc.--jobInstanceId=\
+\tThe job instance to stop.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+stop.optional-key.--jobExecutionId=\
+\ \ \ \ --jobExecutionId=[jobExecutionId]
+stop.optional-desc.--jobExecutionId=\
+\tThe job execution to stop.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\
+\tView the status of a job.
+
+status.optional-key.--jobInstanceId=\
+\ \ \ \ --jobInstanceId=[jobInstanceId]
+status.optional-desc.--jobInstanceId=\
+\tThe job instance to view.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+status.optional-key.--jobExecutionId=\
+\ \ \ \ --jobExecutionId=[jobExecutionId]
+status.optional-desc.--jobExecutionId=\
+\tThe job execution to view.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\
+\tDownload the joblog for a batch job.
+
+getJobLog.optional-key.--jobInstanceId=\
+\ \ \ \ --jobInstanceId=[jobInstanceId]
+getJobLog.optional-desc.--jobInstanceId=\
+\tDownload the joblog for the given job instance.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+getJobLog.optional-key.--jobExecutionId=\
+\ \ \ \ --jobExecutionId=[jobExecutionId]
+getJobLog.optional-desc.--jobExecutionId=\
+\tDownload the joblog for the given job execution.\n\
+\tNote: Either --jobInstanceId or --jobExecutionId must be specified.
+
+getJobLog.optional-key.--outputFile=\
+\ \ \ \ --outputFile=[outputFile]
+getJobLog.optional-desc.--outputFile=\
+\tPath to a local file.  The joblog is written to this file.\n\
+\tIf not specified, the default output location depends on --type.\n\
+\tIf --type=text, the joblog is written to STDOUT.\n\
+\tIf --type=zip, the joblog is written to the filename suggested by the\n\
+\t'Content-Disposition' header in the HTTP response.
+
+getJobLog.optional-key.--type=\
+\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\
+\tDownload the joblog as either plain text or as a zip file.\n\
+\tIf not specified, the default is text.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\
+\tList job instances. 
+
+listJobs.optional-key.--page=\
+\ \ \ \ --page=[page]
+listJobs.optional-desc.--page=\
+\tThe page of job instance records to return. Page numbers start at 0.\n\
+\tFor example:\n\
+\t\t--page=0 --pageSize=10 returns the first 10 records.\n\
+\t\t--page=2 --pageSize=10 returns records 20 through 29.\n\
+\tIf not specified, the default is 0.
+
+listJobs.optional-key.--pageSize=\
+\ \ \ \ --pageSize=[pageSize]
+listJobs.optional-desc.--pageSize=\
+\tThe size of the page of job instance records to return.\n\
+\tFor example:\n\
+\t\t--page=0 --pageSize=10 returns the first 10 records.\n\
+\t\t--page=1 --pageSize=20 returns records 20 through 39.\n\
+\tIf not specified, the default is 50.
+
+listJobs.optional-key.--jobInstanceId=\
+\ \ \ \ --jobInstanceId=[jobInstanceId]
+listJobs.optional-desc.--jobInstanceId=\
+\tThe job instance id filter applied to the job instance records.\n\
+\tFor example:\n\
+\t\t--jobInstanceId=10:20 returns records 10 to 20.\n\
+\t\t--jobInstanceId=">10" returns records greater than or equal to 10.\n\
+\t\t--jobInstanceId="<10" returns records less than or equal to 10.\n\
+\t\t--jobInstanceId=10,12,15 returns records 10, 12, and 15.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are returned.
+
+listJobs.optional-key.--createTime=\
+\ \ \ \ --createTime=[createTime]
+listJobs.optional-desc.--createTime=\
+\tThe create time filter applied to the job instance records.\n\
+\tFor example:\n\
+\t\t--createTime=2015-09-10:2015-09-27 returns records that were created\n\
+\t\t\tbetween 2015-09-10 and 2015-09-27, inclusive.\n\
+\t\t--createTime=">3d" returns records that were created 3 days ago UTC or\n\
+\t\t\tlater (the creation date is greater than or equal to the date 3 days ago).\n\
+\t\t--createTime="<3d" returns records that were created 3 days ago UTC or\n\
+\t\t\tearlier (the creation date is less than or equal to the date 3 days ago).\n\
+\t\t--createTime=2015-09-15 returns all records that were created on 2015-09-15.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are returned.  Whenever specifiying createTime=>Xd or\n\
+\t\tcreateTime<Xd the date will be calculated on the dispatcher server\n\
+\t\tin UTC time. 
+
+listJobs.optional-key.--instanceState=\
+\ \ \ \ --instanceState=[instanceState]
+listJobs.optional-desc.--instanceState=\
+\tThe instance state filter applied to the job instance records.\n\
+\tFor example:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED returns records in the\n\
+\t\tCOMPLETED, FAILED, and STOPPED states.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are returned.
+
+listJobs.optional-key.--exitStatus=\
+\ \ \ \ --exitStatus=[exitStatus]
+listJobs.optional-desc.--exitStatus=\
+\tThe exit status filter applied to the job execution records that are\n\
+\tassociated with job instance records.\n\
+\tFor example:\n\
+\t\t--exitStatus=*JOB* returns job instance records having execution \n\
+\t\trecords containing the word JOB in their exit status.\n\
+\t\tNote: The criteria may utilize the wildcard (*) operator on\n\
+\t\teither end.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are returned.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\
+\tPurge all records and logs for a job instance or purge a list of \n\
+\tjob instance records.
+
+purge.optional-key.--page=\
+\ \ \ \ --page=[page]
+purge.optional-desc.--page=\
+\tThe page of job instance records to return. Page numbers start at 0.\n\
+\tFor example:\n\
+\t\t--page=0 --pageSize=10 returns the first 10 records.\n\
+\t\t--page=2 --pageSize=10 returns records 20 through 29.\n\
+\tIf not specified, the default is 0.
+
+purge.optional-key.--pageSize=\
+\ \ \ \ --pageSize=[pageSize]
+purge.optional-desc.--pageSize=\
+\tThe size of the page of job instance records to return.\n\
+\tFor example:\n\
+\t\t--page=0 --pageSize=10 returns the first 10 records.\n\
+\t\t--page=1 --pageSize=20 returns records 20 through 39.\n\
+\tIf not specified, the default is 50.
+
+purge.optional-key.--purgeJobStoreOnly=\
+\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\
+\tIndicates that the purge operation should only delete entries from \n\
+\tthe job store database. No attempt will be made to delete the job logs from \n\
+\tthe file system.
+
+purge.optional-key.--jobInstanceId=\
+\ \ \ \ --jobInstanceId=[jobInstanceId]
+purge.optional-desc.--jobInstanceId=\
+\tThe job instance id filter applied to the purge of job instance records.\n\
+\tFor example:\n\
+\t\t--jobInstanceId=10:20 purges records 10 to 20.\n\
+\t\t--jobInstanceId=">10" purges records greater than or equal to 10.\n\
+\t\t--jobInstanceId="<10" purges records less than or equal to 10.\n\
+\t\t--jobInstanceId=10,12,15 purges records 10, 12, and 15.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are purged.
+
+purge.optional-key.--createTime=\
+\ \ \ \ --createTime=[createTime]
+purge.optional-desc.--createTime=\
+\tThe create time filter applied to the purge of job instance records.\n\
+\tFor example:\n\
+\t\t--createTime=2015-09-10:2015-09-27 purges records that were created\n\
+\t\t\tbetween 2015-09-10 and 2015-09-27, inclusive.\n\
+\t\t--createTime=">3d" purges records that were created 3 days ago UTC or\n\
+\t\t\tlater (the creation date is greater than or equal to the date 3 days ago).\n\
+\t\t--createTime="<3d" purges records that were created 3 days ago UTC or\n\
+\t\t\tearlier (the creation date is less than or equal to the date 3 days ago).\n\
+\t\t--createTime=2015-09-15 purges all records that were created on 2015-09-15.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are purged. Whenever specifiying createTime=>Xd or\n\
+\t\tcreateTime<Xd the date will be calculated on the dispatcher server\n\
+\t\tin UTC time. 
+
+purge.optional-key.--instanceState=\
+\ \ \ \ --instanceState=[instanceState]
+purge.optional-desc.--instanceState=\
+\tThe instance state filter applied to the purge of job instance records.\n\
+\tFor example:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED purges records in the\n\
+\t\tCOMPLETED, FAILED, and STOPPED states.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are purged.
+
+purge.optional-key.--exitStatus=\
+\ \ \ \ --exitStatus=[exitStatus]
+purge.optional-desc.--exitStatus=\
+\tThe exit status filter applied to the job execution records that are \n\
+\tassociated with the purge of job instance records.\n\
+\tFor example:\n\
+\t\t--exitStatus=*JOB* purges job instance records having execution\n\
+\t\trecords containing the word JOB in their exit status.\n\
+\t\tNote: The criteria may utilize the wildcard (*) operator on\n\
+\t\teither end.\n\
+\t\tIf --page and --pageSize not specified, a default of 50 max\n\
+\t\trecords are purged.

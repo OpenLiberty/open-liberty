@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Fehler: {0}
+error.inputConsoleNotAvailable=Die Eingabekonsole ist nicht verf\u00fcgbar.
+error.missingIO=Fehler. E/A-Einheit fehlt: {0}
+
+usage=Syntax: {0}
+task.unknown=Unbekannte Task: {0}
+for.task.usage=F\u00fcr Taskbeschreibung und -syntax: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Das erforderliche Argument {0} fehlt.
+argument.unrecognized=Das Argument {0} wurde nicht erkannt.
+argument.unrecognized.expected=Das Argument {0} wurde nicht erkannt. M\u00f6glicherweise meinten Sie {1}.
+argument.invalid.value=Unzul\u00e4ssiger Argumentwert: {0}={1}. Zul\u00e4ssige Werte: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: Der Job {0} mit der Instanz-ID {1} wurde \u00fcbergeben.
+job.submitted.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.submitted.useraction=Es ist keine Aktion erforderlich.
+
+job.restarted=CWWKY0102I: Es wurde eine Neustartanforderung f\u00fcr den Job {0} mit der Instanz-ID {1} \u00fcbergeben.
+job.restarted.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.restarted.useraction=Es ist keine Aktion erforderlich.
+
+job.stopped=CWWKY0103I: Der Job {0} mit der Instanz-ID {1} wurde gestoppt. Stapelstatus: {2}. Exit-Status: {3}
+job.stopped.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.stopped.useraction=Es ist keine Aktion erforderlich.
+
+job.stop.submitted=CWWKY0104I: Es wurde eine Stoppanforderung f\u00fcr den Job {0} mit der Instanz-ID {1} \u00fcbergeben.
+job.stop.submitted.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.stop.submitted.useraction=Es ist keine Aktion erforderlich.
+
+job.finished=CWWKY0105I: Der Job {0} mit der Instanz-ID {1} ist beendet. Stapelstatus: {2}. Exit-Status: {3}
+job.finished.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.finished.useraction=Es ist keine Aktion erforderlich.
+
+job.instance.record=CWWKY0106I: Jobinstanz: {0}
+job.instance.record.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.instance.record.useraction=Es ist keine Aktion erforderlich.
+
+job.execution.record=CWWKY0107I: Jobausf\u00fchrung: {0}
+job.execution.record.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.execution.record.useraction=Es ist keine Aktion erforderlich.
+
+waiting.for.termination=CWWKY0108I: Warten auf Beendigung der Jobausf\u00fchrung: {0}
+waiting.for.termination.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+waiting.for.termination.useraction=Es ist keine Aktion erforderlich.
+
+waiting.for.latest.job.execution=CWWKY0109I: Warten auf die letzte Jobausf\u00fchrung f\u00fcr den Job mit der Instanz-ID {0}
+waiting.for.latest.job.execution.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+waiting.for.latest.job.execution.useraction=Es ist keine Aktion erforderlich.
+
+waiting.for.next.job.execution=CWWKY0110I: Warten auf die n\u00e4chste Jobausf\u00fchrung nach Jobausf\u00fchrung {0}
+waiting.for.next.job.execution.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+waiting.for.next.job.execution.useraction=Es ist keine Aktion erforderlich.
+
+joblog.to.file=CWWKY0111I: Das Jobprotokoll wurde in die Datei {0} geschrieben.
+joblog.to.file.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+joblog.to.file.useraction=Es ist keine Aktion erforderlich.
+
+failover.to.next.target=CWWKY0112I: Eine Anforderung f\u00fcr den Stapelmanager unter {0} ist fehlgeschlagen. Die Anforderung wird an den Stapelmanager unter {1} weitergeleitet. Fehler: {2}
+failover.to.next.target.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+failover.to.next.target.useraction=Es ist keine Aktion erforderlich.
+
+joblog.location=CWWKY0113I: Das Jobprotokoll f\u00fcr den Job {0} mit der Instanz-ID {1} wird bei Jobabschluss heruntergeladen. \
+In der Zwischenzeit k\u00f6nnen Sie das Jobprotokoll \u00fcber die folgenden Links hier anzeigen: {2}
+joblog.location.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+joblog.location.useraction=Es ist keine Aktion erforderlich.
+
+joblog.download=CWWKY0114I: Das Jobprotokoll f\u00fcr den Job {0} mit der Instanz-ID {1} wird gerade \u00fcber {2} heruntergeladen.
+joblog.download.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+joblog.download.useraction=Es ist keine Aktion erforderlich.
+
+job.purged=CWWKY0115I: Der Job {0} mit der Instanz-ID {1} wurde erfolgreich gel\u00f6scht.
+job.purged.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.purged.useraction=Es ist keine Aktion erforderlich.
+
+shutdown.hook=CWWKY0116I: Das Clientdienstprogramm wurde beendet, w\u00e4hrend auf die Fertigstellung des Jobs {0} mit der Instanz-ID {1} gewartet wurde.
+shutdown.hook.explanation=Diese Nachricht wurde ausgegeben, weil das Beenden des Befehlszeilendienstprogramms erzwungen wurde, w\u00e4hrend auf die Fertigstellung des Jobs gewartet wurde. \
+Das Dienstprogramm versucht daher, den Job durch \u00dcbergeben einer Stoppanforderung zu stoppen.
+shutdown.hook.useraction=Es ist keine Aktion erforderlich.
+
+job.purged.multi=CWWKY0117I: Es wurde versucht, den Job mit der Instanz-ID {0} zu l\u00f6schen. R\u00fcckgabestatus: {1}. Nachricht: {2} Umleitungs-URL: {3}
+job.purged.multi.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.purged.multi.useraction=Es ist keine Aktion erforderlich.
+
+job.parms.vals=CWWKY0118I: Der endg\u00fcltige Jobparametersatz ist {0}.
+job.parms.vals.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+job.parms.vals.useraction=Es ist keine Aktion erforderlich.
+
+control.props.vals=CWWKY0119I: Der endg\u00fcltige Satz von Steuerungseigenschaften ist {0}.
+control.props.vals.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+control.props.vals.useraction=Es ist keine Aktion erforderlich.
+
+control.props.file.warning=CWWKY0120W: Die Eigenschaft {0} kann nicht in einer Steuereigenschaftendatei verwendet werden und wird ignoriert. Die Eigenschaft {0} kann nur in der Befehlszeile verwendet werden.
+control.props.file.warning.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+control.props.file.warning.useraction=Es ist keine Aktion erforderlich.
+
+
