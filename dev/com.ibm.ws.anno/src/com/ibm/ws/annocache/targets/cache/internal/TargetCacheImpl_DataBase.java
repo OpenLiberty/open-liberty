@@ -438,9 +438,13 @@ public abstract class TargetCacheImpl_DataBase {
 
         String inputPath = inputFile.getName();
 
-        RandomAccessFile randomInputFile = openRandomInputFile(inputFile); // throws IOException
+        // TODO: Should this be tuned to the size of the input file?
 
-        return createBinaryReader(inputPath, randomInputFile, readStrings); // throws IOException
+        // RandomAccessFile randomInputFile = openRandomInputFile(inputFile); // throws IOException
+        //
+        // return createBinaryReader(inputPath, randomInputFile, readStrings); // throws IOException
+
+        return createBinaryReader(inputPath, readStrings); // throws IOException
     }
 
     @Trivial
@@ -449,6 +453,14 @@ public abstract class TargetCacheImpl_DataBase {
         boolean readStrings) throws IOException {
 
         return getFactory().createBinaryReader(inputPath, inputFile, readStrings);
+        // 'createBinaryReader' throws IOException
+    }
+
+    @Trivial
+    public TargetCacheImpl_ReaderBinary createBinaryReader(
+        String inputPath, boolean readStrings) throws IOException {
+
+        return getFactory().createBinaryReader(inputPath, readStrings);
         // 'createBinaryReader' throws IOException
     }
 

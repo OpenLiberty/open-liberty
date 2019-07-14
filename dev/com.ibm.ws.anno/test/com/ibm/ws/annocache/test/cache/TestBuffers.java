@@ -17,7 +17,7 @@ import java.io.RandomAccessFile;
 
 import org.junit.Test;
 
-import com.ibm.ws.annocache.util.internal.UtilImpl_ReadBuffer;
+import com.ibm.ws.annocache.util.internal.UtilImpl_ReadBufferPartial;
 import com.ibm.ws.annocache.util.internal.UtilImpl_WriteBuffer;
 
 import junit.framework.Assert;
@@ -104,7 +104,7 @@ public class TestBuffers {
         }
 
         public void verifyPayload(
-            UtilImpl_ReadBuffer readBuffer,
+            UtilImpl_ReadBufferPartial readBuffer,
             int payloadNo, byte[] bytes) throws IOException {
 
             int actualPayloadNo = readBuffer.readSmallInt();
@@ -243,8 +243,8 @@ public class TestBuffers {
     private void verify(TestProfile profile, File testFile) throws IOException {
         RandomAccessFile randomTestFile = new RandomAccessFile(testFile, "r");
 
-        UtilImpl_ReadBuffer readBuffer =
-            new UtilImpl_ReadBuffer( testFile.getAbsolutePath(), randomTestFile,
+        UtilImpl_ReadBufferPartial readBuffer =
+            new UtilImpl_ReadBufferPartial( testFile.getAbsolutePath(), randomTestFile,
                                      profile.readBufferSize);
 
         try {
@@ -312,7 +312,7 @@ public class TestBuffers {
             for ( int intValue = 0; intValue < 1024; intValue++ ) {
                 int initialInt = scramble * intValue;
                 UtilImpl_WriteBuffer.convertLargeInt(initialInt, largeIntBytes);
-                int finalInt = UtilImpl_ReadBuffer.convertLargeInt(largeIntBytes);
+                int finalInt = UtilImpl_ReadBufferPartial.convertLargeInt(largeIntBytes);
 
                 if ( initialInt != finalInt ) {
                     Assert.assertTrue(
@@ -427,8 +427,8 @@ public class TestBuffers {
     private void verifyStrings(File testFile) throws IOException {
         RandomAccessFile randomTestFile = new RandomAccessFile(testFile, "r");
 
-        UtilImpl_ReadBuffer readBuffer =
-            new UtilImpl_ReadBuffer(
+        UtilImpl_ReadBufferPartial readBuffer =
+            new UtilImpl_ReadBufferPartial(
                 testFile.getAbsolutePath(), randomTestFile, STRINGS_READ_BUFFER_SIZE);
 
         try {

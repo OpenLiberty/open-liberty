@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion {
+public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion {
     // Handled range of index versions.
 
     public static final int MIN_VERSION = 6;
@@ -43,28 +43,31 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
     // Annotation target type tags:
 
     protected enum AnnoTarget {
-        NULL((byte) 0),
-        FIELD((byte) 1),
-        METHOD((byte) 2),
-        METHOD_PARAMATER((byte) 3),
-        CLASS((byte) 4),
-        EMPTY_TYPE((byte) 5),
-        CLASS_EXTENDS_TYPE((byte) 6),
-        TYPE_PARAMETER((byte) 7),
-        TYPE_PARAMETER_BOUND((byte) 8),
-        METHOD_PARAMETER_TYPE((byte) 9),
-        THROWS_TYPE((byte) 10);
+        NULL((byte) 0, (byte) 0),
+        FIELD((byte) 1, (byte) 0),
+        METHOD((byte) 2, (byte) 0),
+        METHOD_PARAMATER((byte) 3, (byte) 1),
+        CLASS((byte) 4, (byte) 0),
+        EMPTY_TYPE((byte) 5, (byte) 2),
+        CLASS_EXTENDS_TYPE((byte) 6, (byte) 2),
+        TYPE_PARAMETER((byte) 7, (byte) 2),
+        TYPE_PARAMETER_BOUND((byte) 8, (byte) 3),
+        METHOD_PARAMETER_TYPE((byte) 9, (byte) 2),
+        THROWS_TYPE((byte) 10, (byte) 2);
 
-        private AnnoTarget(byte tag) {
+        private AnnoTarget(byte tag, byte seekCount) {
             this.tag = tag;
+            this.seekCount = seekCount;
         }
 
         public final byte tag;
 
+        public final byte seekCount;
+        
         public byte getTag() {
             return tag;
         }
-        
+
         public static AnnoTarget select(byte tag) {
             for ( AnnoTarget target : AnnoTarget.values() ) {
                 if ( target.tag == tag ) {
@@ -78,40 +81,58 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
     // Annotation value tags.
 
     protected enum AnnoValue {
-        BYTE(1),
-        SHORT(2),
-        INT(3),
-        CHAR(4),
-        FLOAT(5),
-        DOUBLE(6),
-        LONG(7),
-        BOOLEAN(8),
-        STRING(9),
-        CLASS(10),
-        ENUM(11),
-        ARRAY(12),
-        NESTED(13);
+        UNUSED((byte) 0, 0, 0), // Dummy: Zero base the values array.
+        BYTE((byte) 1, 1, 0),
+        SHORT((byte) 2, 0, 1),
+        INT((byte) 3, 0, 1),
+        CHAR((byte) 4, 0, 1),
+        FLOAT((byte) 5, 4, 0),
+        DOUBLE((byte) 6, 8, 0),
+        LONG((byte) 7, 8, 0),
+        BOOLEAN((byte) 8, 1, 0),
+        STRING((byte) 9, 0, 1),
+        CLASS((byte) 10, 0, 1),
+        ENUM((byte) 11, 0, 2),
+        ARRAY((byte) 12, 0, 0),
+        NESTED((byte) 13, 0, 0);
 
-        private AnnoValue(int tag) {
+        private AnnoValue(byte tag, int skipCount, int readCount) {
             this.tag = tag;
+            this.skipCount = skipCount;
+            this.readCount = readCount;
         }
 
-        public final int tag;
+        public final byte tag;
 
-        public int getTag() {
+        public byte getTag() {
             return tag;
+        }
+
+        public final int skipCount;
+
+        public int getSkipCount() {
+            return skipCount;
+        }
+
+        public final int readCount;
+
+        public int getReadCount() {
+            return readCount;
         }
 
         public static AnnoValue select(int tag) {
             for ( AnnoValue value : AnnoValue.values() ) {
+                if ( value.tag == 0 ) {
+                    continue; // Skip the dummy!
+                }
                 if ( value.tag == tag ) {
                     return value;
                 }
             }
             return null;
-        }        
+        }
     }
-    
+
     private static final int HAS_ENCLOSING_METHOD = 1;
 
     //
@@ -446,31 +467,7 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         byte tag = input.readByte();
         // System.out.println("Anno Target Tag [ " + tag + " ]");
 
-        int seekCount;
-        if ( tag == AnnoTarget.NULL.tag ) {
-            seekCount = 0;
-        } else if ( (tag == AnnoTarget.CLASS.tag) || 
-                    (tag == AnnoTarget.FIELD.tag) ||
-                    (tag == AnnoTarget.METHOD.tag) ) {
-            seekCount = 0;
-        } else if ( tag == AnnoTarget.METHOD_PARAMATER.tag ) {
-            seekCount = 1;
-        } else if ( tag == AnnoTarget.EMPTY_TYPE.tag ) {
-            seekCount = 2;
-        } else if ( tag == AnnoTarget.CLASS_EXTENDS_TYPE.tag ) {
-            seekCount = 2;
-        } else if ( tag == AnnoTarget.TYPE_PARAMETER.tag ) {
-            seekCount = 2;
-        } else if ( tag == AnnoTarget.TYPE_PARAMETER_BOUND.tag ) {
-            seekCount = 3;
-        } else if ( tag == AnnoTarget.METHOD_PARAMETER_TYPE.tag ) {
-            seekCount = 2;
-        } else if ( tag == AnnoTarget.THROWS_TYPE.tag ) {
-            seekCount = 2;
-        } else {
-            // throw new IllegalStateException("Invalid tag: " + tag + " prior tag " + lastTag);
-            throw new IllegalStateException("Invalid tag: " + tag);
-        }
+        int seekCount = AnnoTarget.values()[tag].seekCount;
 
         if ( seekCount == 3 ) {
             input.seekPackedU32();
@@ -495,43 +492,28 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         for ( int valueNo = 0; valueNo < numValues; valueNo++ ) {
             input.seekPackedU32();
 
-            int valueType = input.readByte();
+            byte valueType = input.readByte();
 
-            if (valueType == AnnoValue.BYTE.tag) {
-                input.skipBytes(1);
-                // input.readByte();
-            } else if (valueType == AnnoValue.SHORT.tag) {
-                input.seekPackedU32();
-            } else if (valueType == AnnoValue.INT.tag) {
-                input.seekPackedU32();
-            } else if (valueType == AnnoValue.CHAR.tag) {
-                input.seekPackedU32();
-            } else if (valueType == AnnoValue.FLOAT.tag) {
-                input.skipBytes(4);
-                // input.readFloat();
-            } else if (valueType == AnnoValue.DOUBLE.tag) {
-                input.skipBytes(8);
-                // input.readDouble();
-            } else if (valueType == AnnoValue.LONG.tag) {
-                input.skipBytes(8);
-                // input.readLong();
-            } else if (valueType == AnnoValue.BOOLEAN.tag) {
-                input.skipBytes(1);
-                // input.readBoolean();
-            } else if (valueType == AnnoValue.STRING.tag) {
-                input.seekPackedU32();
-            } else if (valueType == AnnoValue.CLASS.tag) {
-                input.seekPackedU32();
-            } else if (valueType == AnnoValue.ENUM.tag) {
-                input.seekPackedU32();
-                input.seekPackedU32();
-            } else if (valueType == AnnoValue.ARRAY.tag) {
+            if ( valueType == AnnoValue.ARRAY.tag ) {
                 movePastAnnotationValues();
-            } else if (valueType == AnnoValue.NESTED.tag) {
+
+            } else if ( valueType == AnnoValue.NESTED.tag ) {
                 @SuppressWarnings("unused")
                 int annoOffset = readAnnotation();
+
             } else {
-                throw new IllegalStateException("Invalid annotation value tag:" + valueType);
+                AnnoValue annoValue = AnnoValue.values()[valueType];
+
+                int skipCount = annoValue.skipCount;
+                if ( skipCount != 0 ) {
+                    input.skipBytes(skipCount);
+                } else {
+                    int readCount = annoValue.readCount;
+                    input.seekPackedU32();
+                    if ( readCount == 2 ) {
+                        input.seekPackedU32();
+                    }
+                }
             }
 
             // System.out.println("Value [ " + AnnoValue.select(valueType) + " ]");

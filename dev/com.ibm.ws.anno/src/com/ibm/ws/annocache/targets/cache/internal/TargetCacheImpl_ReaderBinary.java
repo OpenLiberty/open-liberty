@@ -28,6 +28,8 @@ import com.ibm.ws.annocache.targets.internal.TargetsTableContainersImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableTimeStampImpl;
 import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_ReadBuffer;
+import com.ibm.ws.annocache.util.internal.UtilImpl_ReadBufferFull;
+import com.ibm.ws.annocache.util.internal.UtilImpl_ReadBufferPartial;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_BinaryConstants;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_ExternalConstants;
@@ -49,6 +51,25 @@ public class TargetCacheImpl_ReaderBinary implements TargetCache_BinaryConstants
     public static final boolean DO_NOT_READ_STRINGS = false;
 
     //
+
+    public TargetCacheImpl_ReaderBinary(
+        TargetCacheImpl_Factory factory,
+        String path, String encoding, boolean readStrings) throws IOException {
+
+        this.factory = factory;
+        this.bufInput = new UtilImpl_ReadBufferFull(path, encoding);
+        // The input starts at offset 0.
+
+        if ( readStrings ) {
+            this.strings = readStrings();
+            // 'readStrings' finishes by seeking to offset 0.
+        } else {
+            this.strings = null;
+        }
+
+        // Make sure the file is a cache storage file.
+        requireBegin();
+    }
 
     /**
      * Create a cache reader on a specified file.
@@ -73,7 +94,7 @@ public class TargetCacheImpl_ReaderBinary implements TargetCache_BinaryConstants
         boolean readStrings) throws IOException {
 
         this.factory = factory;
-        this.bufInput = new UtilImpl_ReadBuffer(path, file, READ_BUFFER_SIZE, encoding);
+        this.bufInput = new UtilImpl_ReadBufferPartial(path, file, READ_BUFFER_SIZE, encoding);
         // The input starts at offset 0.
 
         if ( readStrings ) {

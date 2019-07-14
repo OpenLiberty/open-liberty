@@ -286,6 +286,16 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
         }
     }
 
+
+    protected TargetCacheImpl_ReaderBinary createBinaryReader(
+    	String path, boolean readStrings) throws IOException {
+
+    	return new TargetCacheImpl_ReaderBinary(this,
+    		path,
+    		TargetCache_InternalConstants.SERIALIZATION_ENCODING,
+    		readStrings); // throws IOException
+    }
+
     protected TargetCacheImpl_ReaderBinary createBinaryReader(
     	String path, RandomAccessFile inputFile,
     	boolean readStrings) throws IOException {

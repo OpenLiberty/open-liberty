@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SparseIndexReaderVersionImpl_V1 implements SparseIndexReaderVersion {
+public final class SparseIndexReaderVersionImpl_V1 implements SparseIndexReaderVersion {
 
     // Handled range of index versions.
 
