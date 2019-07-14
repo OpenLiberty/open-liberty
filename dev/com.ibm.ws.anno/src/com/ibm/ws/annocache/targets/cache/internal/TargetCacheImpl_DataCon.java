@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.jboss.jandex.Index;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.annocache.jandex.internal.Jandex_Utils;
 import com.ibm.ws.annocache.jandex.internal.SparseIndex;
 import com.ibm.ws.annocache.targets.internal.TargetsScannerOverallImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableAnnotationsImpl;
@@ -771,21 +772,17 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         }
 
         File useJandexFile = getJandexFile();
-
+        String useJandexPath = useJandexFile.getPath();
+  
         boolean didRead;
 
         try {
-            TargetCacheImpl_Reader reader = createReader(useJandexFile); // throws IOException
-            try {
-                if ( getReadJandexFull() ) {
-                    Index index = reader.readIndex(); // throws IOException
-                    targetData.transfer(index);
-                } else {
-                    SparseIndex sparseIndex = reader.readSparseIndex(); // throws IOException
-                    targetData.transfer(sparseIndex);
-                }
-            } finally {
-                reader.close(); // throws IOException
+            if ( getReadJandexFull() ) {
+                Index index = Jandex_Utils.basicReadIndex(useJandexPath);
+                targetData.transfer(index);
+            } else {
+                SparseIndex sparseIndex = Jandex_Utils.basicReadSparseIndex(useJandexPath);
+                targetData.transfer(sparseIndex);
             }
             didRead = true;
 

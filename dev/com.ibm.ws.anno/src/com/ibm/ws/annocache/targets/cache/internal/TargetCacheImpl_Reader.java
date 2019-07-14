@@ -1232,16 +1232,4 @@ public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_I
         DetailTableReader detailReader = new DetailTableReader(detailTable);
         return parse(detailReader); // throws IOException
     }
-
-    //
-
-    public SparseIndex readSparseIndex() throws IOException {
-        return Jandex_Utils.basicReadSparseIndex( getStream() );
-        // 'basicReadIndex' throws IOException
-    }
-
-    public Index readIndex() throws IOException {
-        return Jandex_Utils.basicReadIndex( getStream() );
-        // 'basicReadIndex' throws IOException
-    }    
 }

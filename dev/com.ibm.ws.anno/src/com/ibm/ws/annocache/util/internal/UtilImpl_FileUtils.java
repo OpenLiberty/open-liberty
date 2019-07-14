@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -27,6 +28,8 @@ import java.security.PrivilegedExceptionAction;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 // TODO: Are there global utilities to use instead of these?
 
@@ -435,5 +438,36 @@ public class UtilImpl_FileUtils {
         }
 
         return failedRemovals;
+    }
+
+    //
+
+    @Trivial
+    public static byte[] readFully(File file) throws IOException {
+        long rawFileLength = file.length();
+        if ( rawFileLength > Integer.MAX_VALUE ) {
+            throw new IOException(
+                "File length [ " + rawFileLength + " ]" +
+                " greater than [ " + Integer.MAX_VALUE + " ]" +
+                " for [ " + file.getAbsolutePath() + " ]");
+        }
+        
+        int bufferFill = (int) rawFileLength; 
+        byte[] buffer = new byte[ bufferFill ];
+
+        InputStream inputStream = new FileInputStream(file);
+        try {
+            int bytesRead = inputStream.read(buffer);
+            if ( bytesRead != bufferFill ) {
+                throw new IOException(
+                    "Incomplete read [ " + file.getAbsolutePath() + " ]" +
+                    " expected [ " + bufferFill + " ]" +
+                    " but read [ " + bytesRead + " ]");
+            }
+        } finally {
+            inputStream.close();
+        }
+
+        return buffer;
     }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.annocache.jandex.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,6 +25,8 @@ import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexReader;
 import org.jboss.jandex.IndexWriter;
 import org.jboss.jandex.Indexer;
+
+import com.ibm.ws.annocache.util.internal.UtilImpl_FileUtils;
 
 /**
  * Jandex utility function.
@@ -50,22 +53,13 @@ public class Jandex_Utils {
 
     //
 
-    public static Index readIndex(String indexPath) {
-        try {
-            return basicReadIndex(indexPath); // throws IOException
-        } catch ( IOException e ) {
-            throw new RuntimeException("Failed to read index [ " + indexPath + " ]", e);
-        }
-    }
-
     public static Index basicReadIndex(String indexPath) throws IOException {
-        FileInputStream indexInputStream =
-            new FileInputStream(indexPath); // throws FileNotFoundException
-        try {
-            return Jandex_Utils.basicReadIndex(indexInputStream); // throws IOException
-        } finally {
-            indexInputStream.close(); // throws IOException
-        }
+        File indexFile = new File(indexPath);
+
+        byte[] indexBytes = UtilImpl_FileUtils.readFully(indexFile);
+        ByteArrayInputStream indexInput = new ByteArrayInputStream(indexBytes);
+
+        return Jandex_Utils.basicReadIndex(indexInput); // throws IOException
     }
 
     public static Index basicReadIndex(InputStream indexInputStream) throws IOException {
@@ -75,22 +69,13 @@ public class Jandex_Utils {
 
     //
 
-    public static SparseIndex readSparseIndex(String indexPath) {
-        try {
-            return basicReadSparseIndex(indexPath); // throws IOException
-        } catch ( IOException e ) {
-            throw new RuntimeException("Failed to read index [ " + indexPath + " ]", e);
-        }
-    }
-
     public static SparseIndex basicReadSparseIndex(String indexPath) throws IOException {
-        FileInputStream indexInputStream =
-            new FileInputStream(indexPath); // throws FileNotFoundException
-        try {
-            return Jandex_Utils.basicReadSparseIndex(indexInputStream); // throws IOException
-        } finally {
-            indexInputStream.close(); // throws IOException
-        }
+        File indexFile = new File(indexPath);
+
+        byte[] indexBytes = UtilImpl_FileUtils.readFully(indexFile);
+        ByteArrayInputStream indexInput = new ByteArrayInputStream(indexBytes);
+
+        return Jandex_Utils.basicReadSparseIndex(indexInput); // throws IOException
     }
 
     public static SparseIndex basicReadSparseIndex(InputStream indexInputStream) throws IOException{

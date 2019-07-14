@@ -11,6 +11,7 @@
 
 package com.ibm.ws.annocache.classsource.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +54,7 @@ public class ClassSourceImpl_MappedDirectory
     }
 
     @SuppressWarnings("unused")
-	public ClassSourceImpl_MappedDirectory(
+    public ClassSourceImpl_MappedDirectory(
         ClassSourceImpl_Factory factory,
         Util_InternMap internMap,
         String name,
@@ -272,26 +273,13 @@ public class ClassSourceImpl_MappedDirectory
         String useJandexPath = outconvert( getJandexIndexPath() );
         String fullJandexPath = getRootPath(useJandexPath); // Does NOT use the prefix.
 
-        InputStream jandexIndexStream;
-        try {
-            jandexIndexStream = openResourceStream(NO_CLASS_NAME, useJandexPath, fullJandexPath, DO_NOT_ADD_PREFIX);
-        } catch ( ClassSource_Exception e ) {
-            // ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W:
-            // [ {0} ] Open of Jandex index file [{1}] failed.  Error message: {2}
-
-            logger.logp(Level.SEVERE, CLASS_NAME, methodName,
-                "ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION",
-                new Object[] { getHashText(), getAbsolutePath(fullJandexPath), e });
-
-            return null;
-        }
-
-        if ( jandexIndexStream == null ) {
+        File jandexFile = new File(fullJandexPath);
+        if ( !UtilImpl_FileUtils.exists(jandexFile) ) {
             return null;
         }
 
         try {
-            Index jandexIndex = Jandex_Utils.basicReadIndex(jandexIndexStream); // throws IOException
+            Index jandexIndex = Jandex_Utils.basicReadIndex(fullJandexPath); // throws IOException
             if ( logger.isLoggable(Level.FINER) ) {
                 String message = MessageFormat.format(
                     "[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes [ {3} ]", 
@@ -309,9 +297,6 @@ public class ClassSourceImpl_MappedDirectory
                 new Object[] { getHashText(), getAbsolutePath(fullJandexPath), e });
 
             return null;
-
-        } finally {
-            closeResourceStream(NO_CLASS_NAME, useJandexPath, fullJandexPath, DO_NOT_ADD_PREFIX, jandexIndexStream);
         }
     }
 
@@ -322,27 +307,13 @@ public class ClassSourceImpl_MappedDirectory
         String useJandexPath = outconvert( getJandexIndexPath() );
         String fullJandexPath = getRootPath(useJandexPath); // Does NOT use the prefix.
 
-        InputStream jandexStream;
-
-        try {
-            jandexStream = openResourceStream(NO_CLASS_NAME, useJandexPath, fullJandexPath, DO_NOT_ADD_PREFIX);
-        } catch ( ClassSource_Exception e ) {
-            // ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W:
-            // [ {0} ] Open of Jandex index file [{1}] failed.  Error message: {2}
-
-            logger.logp(Level.SEVERE, CLASS_NAME, methodName,
-                "ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION",
-                new Object[] { getHashText(), getAbsolutePath(fullJandexPath), e });
-
-            return null;
-        }
-
-        if ( jandexStream == null ) {
+        File jandexFile = new File(fullJandexPath);
+        if ( !UtilImpl_FileUtils.exists(jandexFile) ) {
             return null;
         }
 
         try {
-            SparseIndex jandexIndex = Jandex_Utils.basicReadSparseIndex(jandexStream); // throws IOException
+            SparseIndex jandexIndex = Jandex_Utils.basicReadSparseIndex(fullJandexPath); // throws IOException
             if ( logger.isLoggable(Level.FINER) ) {
                 String message = MessageFormat.format(
                     "[ {0} ] Read sparse JANDEX index [ {1} ] from [ {2} ] Classes [ {3} ]", 
@@ -360,9 +331,6 @@ public class ClassSourceImpl_MappedDirectory
                 new Object[] { getHashText(), getAbsolutePath(fullJandexPath), e });
 
             return null;
-
-        } finally {
-            closeResourceStream(NO_CLASS_NAME, useJandexPath, getAbsolutePath(fullJandexPath), DO_NOT_ADD_PREFIX, jandexStream);
         }
     }
 
@@ -376,6 +344,16 @@ public class ClassSourceImpl_MappedDirectory
         // throws ClassSource_Exception
     }
 
+    protected byte[] readFully(String jandexPath) throws IOException {
+        File file = new File(jandexPath);
+
+        if ( !UtilImpl_FileUtils.exists(file) ) {
+            return null;
+        }
+
+        return UtilImpl_FileUtils.readFully(file);
+    }
+
     protected static final boolean DO_ADD_PREFIX = true;
     protected static final boolean DO_NOT_ADD_PREFIX = false;
 
@@ -387,7 +365,7 @@ public class ClassSourceImpl_MappedDirectory
 
         String basePath;
         String filePath;
-        if ( DO_ADD_PREFIX ) {
+        if ( addPrefix ) {
             basePath = getPath();
             filePath = getPath(resourcePath);
         } else {

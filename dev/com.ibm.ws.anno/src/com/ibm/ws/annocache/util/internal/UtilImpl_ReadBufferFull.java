@@ -59,28 +59,9 @@ public final class UtilImpl_ReadBufferFull implements UtilImpl_ReadBuffer {
         throws IOException {
 
         this.file = new File(path);
-        long rawFileLength = this.file.length();
-        if ( rawFileLength > Integer.MAX_VALUE ) {
-            throw new IOException(
-                "File length [ " + rawFileLength + " ]" +
-                " greater than [ " + Integer.MAX_VALUE + " ]" +
-                " for [ " + path + " ]");
-        }
-        this.bufferFill = (int) rawFileLength; 
-        this.buffer = new byte[ this.bufferFill ];
 
-        InputStream inputStream = new FileInputStream(this.file);
-        try {
-            int bytesRead = inputStream.read(buffer);
-            if ( bytesRead != this.bufferFill ) {
-                throw new IOException(
-                    "Incomplete read [ " + path + " ]" +
-                    " expected [ " + this.bufferFill + " ]" +
-                    " but read [ " + bytesRead + " ]");
-            }
-        } finally {
-            inputStream.close();
-        }
+        this.buffer = UtilImpl_FileUtils.readFully(this.file);
+        this.bufferFill = this.buffer.length;
 
         this.encoding = encoding;
         this.charset = Charset.forName(encoding);
