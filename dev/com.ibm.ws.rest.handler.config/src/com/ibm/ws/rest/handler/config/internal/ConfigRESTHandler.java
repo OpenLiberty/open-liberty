@@ -502,26 +502,6 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
         response.getOutputStream().write(jsonString.getBytes("UTF-8"));
     }
 
-    /**
-     * Restricts use of the config end-point to GET requests only.
-     * All other requests will respond with a 405 - method not allowed error.
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
-        if (!"GET".equals(request.getMethod())) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Request method was " + request.getMethod() + " but the config endpoint is restricted to GET requests only.");
-            }
-            response.setResponseHeader("Accept", "GET");
-            response.sendError(405); // Method Not Allowed
-            return;
-        }
-
-        super.handleRequest(request, response);
-    }
-
     @Override
     public boolean requireAdministratorRole() {
         return false;
