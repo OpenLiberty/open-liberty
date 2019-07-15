@@ -222,8 +222,9 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
 
         Object target = validatorRefs.isEmpty() || targetRef == null ? null : getService(context, targetRef);
         if (target == null) {
-            json.put("successful", false);
-            json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1551_CANNOT_VALIDATE")));
+            // json.put("successful", false);
+            // json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1551_CANNOT_VALIDATE")));
+            return null;
         } else {
             // Build a map of params for the testable service
             Map<String, Object> params = new HashMap<String, Object>();

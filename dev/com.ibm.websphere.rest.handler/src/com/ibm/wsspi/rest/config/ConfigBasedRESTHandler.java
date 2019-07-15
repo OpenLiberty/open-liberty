@@ -294,8 +294,17 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                     String uniqueId = configDisplayId.endsWith("]") ? getUID(configDisplayId, (String) configProps.get("id")) : null;
                     String id = (String) configProps.get("id");
                     Object r = handleSingleInstance(request, uniqueId, id == null || isGenerated(id) ? null : id, configProps);
-                    if (r != null)
+                    if (r != null) {
                         results.add(r);
+                    } else if ("".equals(elementName)) {
+                        // Skip displaying error messages to user for generic ibm/api/validation endpoint.
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "One or more dependencies not satisfied, or feature that enables the "
+                                               + "resource is not enabled, or it is not possible to validate this type of resource");
+                    } else {
+                        results.add(handleError(request, uniqueId, "One or more dependencies not satisfied, or feature that enables the "
+                                                                   + "resource is not enabled, or it is not possible to validate this type of resource"));
+                    }
                 }
             }
             result = results;
@@ -311,6 +320,12 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 result = handleSingleInstance(request, uid, id == null || isGenerated(id) ? null : id, entry.getValue());
             } else
                 result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1501_INVALID_IDENTIFIER", uid, uniqueId));
+                // if (result == null) {
+                    // result = handleError(request, uniqueId, "One or more dependencies not satisfied, or feature that enables the "
+                   //                                          + "resource is not enabled, or it is not possible to validate this type of resource");
+                // }
+            // } else // TODO need correct error message
+                // result = handleError(request, null, "Unique identifier " + uid + " is not valid. Expected: " + uniqueId);
         } else {
             result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1502_MULTIPLE_FOUND", uid));
         }
