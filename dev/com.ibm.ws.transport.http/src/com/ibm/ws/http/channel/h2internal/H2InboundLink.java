@@ -283,15 +283,15 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     /**
-     * Handle a connection initiated via ALPN "h2"
+     * Handle a connection initiated via ALPN "h2", or directly via h2-with-prior-knowledge
      *
      * @param link the initial inbound link
      * @return true if the upgrade was sucessful
      */
-    public boolean handleHTTP2AlpnConnect(HttpInboundLink link) {
+    public boolean handleHTTP2DirectConnect(HttpInboundLink link) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "handleHTTP2AlpnConnect entry");
+            Tr.debug(tc, "handleHTTP2DirectConnect entry");
         }
 
         initialHttpInboundLink = link;
@@ -309,7 +309,7 @@ public class H2InboundLink extends HttpInboundLink {
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
         this.setDeviceLink((ConnectionLink) myTSC);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "handleHTTP2AlpnConnect, exit");
+            Tr.debug(tc, "handleHTTP2DirectConnect, exit");
         }
         return true;
     }

@@ -291,15 +291,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     /**
-     * Handle a new HTTP/2 link initialized via SSL
+     * Handle a new HTTP/2 link initialized via ALPN or directly via h2-with-prior-knowledge
      */
-    public void alpnHttp2Ready() {
+    public void directHttp2Ready() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "handleHttp2 entry: " + this);
+            Tr.entry(tc, "directHttp2Ready entry: " + this);
         }
         H2InboundLink h2link = new H2InboundLink(getHttpInboundLink2().getChannel(), vc, getTCPConnectionContext());
         h2link.reinit(this.getTCPConnectionContext(), vc, h2link);
-        h2link.handleHTTP2AlpnConnect(h2link);
+        h2link.handleHTTP2DirectConnect(h2link);
         this.setDeviceLink(h2link);
         h2link.processRead(vc, this.getTCPConnectionContext().getReadInterface());
     }
@@ -319,8 +319,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
 
         // if this is an http/2 link, process via that ready
-        if (this.getHttpInboundLink2().isAlpnHttp2Link(inVC)) {
-            alpnHttp2Ready();
+        if (this.getHttpInboundLink2().isDirectHttp2Link(inVC)) {
+            directHttp2Ready();
             return;
         }
 
