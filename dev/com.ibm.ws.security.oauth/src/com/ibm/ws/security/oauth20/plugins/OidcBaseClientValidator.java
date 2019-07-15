@@ -24,6 +24,7 @@ import com.google.gson.JsonElement;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.AbstractOidcEndpointServices;
@@ -35,7 +36,7 @@ public class OidcBaseClientValidator {
     protected static final String MESSAGE_BUNDLE = "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages";
     private static final String[] illegalChars = new String[] { "<", ">" };
 
-    private OidcBaseClient client; // Defensive copy of OidcBaseClient reference used in constructor
+    private final OidcBaseClient client; // Defensive copy of OidcBaseClient reference used in constructor
 
     private OidcBaseClientValidator(OidcBaseClient client) {
         this.client = client.getDeepCopy();
@@ -57,7 +58,7 @@ public class OidcBaseClientValidator {
     /**
      * Method will perform pre-condition checking of Client Registration parameter
      * values meant for creation or update of client.
-     * 
+     *
      * @return copy of approved client, with some fields normalized
      * @throws OidcServerException
      */
@@ -98,18 +99,18 @@ public class OidcBaseClientValidator {
      * check for disallowed characters that could allow javascript to be fed back to ui.
      */
     private void detectIllegalChars() throws OidcServerException {
-        dic(client.getClientId());
-        dic(client.getClientSecret());
-        dic(client.getRedirectUris());
-        dic(client.getClientName());
-        dic(client.getPostLogoutRedirectUris());
-        dic(client.getPreAuthorizedScope());
-        dic(client.getFunctionalUserId());
-        dic(client.getFunctionalUserGroupIds());
+        detectCh(client.getClientId());
+        detectCh(client.getClientSecret());
+        detectCh(client.getRedirectUris());
+        detectCh(client.getClientName());
+        detectCh(client.getPostLogoutRedirectUris());
+        detectCh(client.getPreAuthorizedScope());
+        detectCh(client.getFunctionalUserId());
+        detectCh(client.getFunctionalUserGroupIds());
     }
 
     // detect illegal chars
-    private void dic(String s) throws OidcServerException {
+    private void detectCh(@Sensitive String s) throws OidcServerException {
         if (s == null || s.length() == 0) {
             return;
         }
@@ -125,8 +126,8 @@ public class OidcBaseClientValidator {
     }
 
     // detect illegal chars
-    private void dic(JsonArray a) throws OidcServerException {
-        dic(a.toString());
+    private void detectCh(@Sensitive JsonArray a) throws OidcServerException {
+        detectCh(a.toString());
     }
 
     /**
@@ -158,16 +159,16 @@ public class OidcBaseClientValidator {
     public OidcBaseClient validate() throws OidcServerException {
         return validateCommons(false);
     }
-
+    
     public OidcBaseClient validateAndSetDefaultsOnErrors() {
         try {
             return validateCommons(true);
         } catch (OidcServerException e) {
-        } //This will not occur 
-
+        } //This will not occur
+    
         return null; //This will not occur
     }
-
+    
     private OidcBaseClient validateCommons(boolean setDefaultsOnError) throws OidcServerException {
         //application_type - defaults to web if omitted
         try {
@@ -179,7 +180,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             validateResponseTypes();
         } catch (OidcServerException e) {
@@ -190,7 +191,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         Set<String> grantTypes = new HashSet<String>();
         try {
             grantTypes = validateGrantTypes();
@@ -202,7 +203,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             //response_types and grant_types need to match
             validateResponseAndGrantMatch(grantTypes);
@@ -215,7 +216,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             validateRedirectUris();
         } catch (OidcServerException e) {
@@ -226,7 +227,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             //scope (space separated, if omitted can register default scope)
             validateScopes();
@@ -238,7 +239,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             validateSujectType();
         } catch (OidcServerException e) {
@@ -249,9 +250,9 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
-            //token_endpoint_auth_method - if omitted, defaults to client_secret_basic 
+            //token_endpoint_auth_method - if omitted, defaults to client_secret_basic
             validateTokenEndpointAuthMethod();
         } catch (OidcServerException e) {
             if (setDefaultsOnError) {
@@ -261,7 +262,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             validatePostLogoutRedirectUris();
         } catch (OidcServerException e) {
@@ -272,7 +273,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             validatePreAuthorizedScopes();
         } catch (OidcServerException e) {
@@ -283,7 +284,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             validateTrustedUriPrefixes();
         } catch (OidcServerException e) {
@@ -294,7 +295,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-
+    
         try {
             validateOutputParameters();
         } catch (OidcServerException e) {
@@ -306,20 +307,19 @@ public class OidcBaseClientValidator {
                 if (this.client.getClientIdIssuedAt() < 0) {
                     this.client.setClientIdIssuedAt(0);
                 }
-
+    
             } else {
                 throw e;
             }
         }
-
+    
         return this.client;
     }
     **/
 
     protected void setDefaultAppType() {
         String appType = client.getApplicationType();
-        if (OidcOAuth20Util.isNullEmpty(appType))
-        {
+        if (OidcOAuth20Util.isNullEmpty(appType)) {
             client.setApplicationType(OIDCConstants.OIDC_CLIENTREG_PARM_WEB);
         }
     }
@@ -340,8 +340,7 @@ public class OidcBaseClientValidator {
 
     protected void setDefaultTokenEndpointAuthMethod() {
         String tokenEndpointAuthMethod = client.getTokenEndpointAuthMethod();
-        if (OidcOAuth20Util.isNullEmpty(tokenEndpointAuthMethod))
-        {
+        if (OidcOAuth20Util.isNullEmpty(tokenEndpointAuthMethod)) {
             client.setTokenEndpointAuthMethod(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC);
         }
     }
@@ -365,8 +364,7 @@ public class OidcBaseClientValidator {
 
         if (!OidcOAuth20Util.isNullEmpty(appType) &&
                 !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_NATIVE) &&
-                !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_WEB))
-        {
+                !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_WEB)) {
             String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
@@ -557,8 +555,7 @@ public class OidcBaseClientValidator {
                 !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC) &&
                 // !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_JWT) &&
                 // !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_PRIVATE_KEY_JWT) &&
-                !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE))
-        {
+                !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)) {
 
             String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
                     MESSAGE_BUNDLE,
@@ -591,10 +588,10 @@ public class OidcBaseClientValidator {
             throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         } else if (!OidcOAuth20Util.isNullEmpty(client.getPreAuthorizedScope()) && !OidcOAuth20Util.isNullEmpty(client.getScope())) {
             String errorMsg = "The value \"%s\" for the client registration metadata field \"%s\" should also be specified as a value in the client registration metadata field \"scope\".";
-
+        
             String[] scopeArr = client.getScope().split(" ");
             Set<String> scopeSet = getSetFromArr(scopeArr);
-
+        
             String[] preAuthorizedScopeArr = client.getPreAuthorizedScope().split(" ");
             for (String preAuthorizedScope : preAuthorizedScopeArr) {
                 if (!scopeSet.contains(preAuthorizedScope)) {
@@ -602,7 +599,7 @@ public class OidcBaseClientValidator {
                     throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
-
+        
         }
         **/
 
