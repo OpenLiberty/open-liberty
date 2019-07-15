@@ -20,10 +20,8 @@ import componenttest.custom.junit.runner.FATRunner;
 public class FATSuite {
 
     @ClassRule
-    public static DB2Container<?> db2 = new DB2Container<>()
+    public static DB2Container db2 = new DB2Container()
                     .acceptLicense()
-                    .withPrivilegedMode(true)
-                    .withExposedPorts(50000)
                     // Use 5m timeout for local runs, 15m timeout for remote runs
                     .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15))
                     .withLogConsumer(FATSuite::log);

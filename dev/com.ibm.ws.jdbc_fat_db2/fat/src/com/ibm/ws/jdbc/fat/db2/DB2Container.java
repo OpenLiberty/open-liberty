@@ -1,34 +1,35 @@
 package com.ibm.ws.jdbc.fat.db2;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
-
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.testcontainers.containers.ContainerLaunchException;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.LicenseAcceptance;
 
-public class DB2Container<SELF extends DB2Container<SELF>> extends JdbcDatabaseContainer<SELF> {
-    public static final String IMAGE = "ibmcom/db2";
-    public static final String DEFAULT_TAG = "11.5.0.0";
+public class DB2Container extends JdbcDatabaseContainer<DB2Container> {
 
-    public static final Integer DB2_PORT = 50000;
+    public static final String NAME = "db2";
+    public static final String DEFAULT_DB2_IMAGE_NAME = "ibmcom/db2";
+    public static final String DEFAULT_TAG = "11.5.0.0a";
+    public static final int DB2_PORT = 50000;
+
     private String databaseName = "test";
     private String username = "db2inst1";
-    private String password = "test";
-    private boolean licenseAccepted = false;
+    private String password = "foobar1234";
 
     public DB2Container() {
-        this(IMAGE + ":" + DEFAULT_TAG);
+        this(DEFAULT_DB2_IMAGE_NAME + ":" + DEFAULT_TAG);
     }
 
-    public DB2Container(final String dockerImageName) {
-        super(dockerImageName);
+    public DB2Container(String imageName) {
+        super(imageName);
+        withPrivilegedMode(true);
         this.waitStrategy = new LogMessageWaitStrategy()
                         .withRegEx(".*Setup has completed\\..*")
-                        .withStartupTimeout(Duration.of(5, MINUTES));
+                        .withStartupTimeout(Duration.of(3, ChronoUnit.MINUTES));
     }
 
     @Override
@@ -38,18 +39,32 @@ public class DB2Container<SELF extends DB2Container<SELF>> extends JdbcDatabaseC
 
     @Override
     protected void configure() {
+        // If license was not accepted programatically, check if it was accepted via resource file
+        if (!getEnvMap().containsKey("LICENSE")) {
+            LicenseAcceptance.assertLicenseAccepted(this.getDockerImageName());
+            acceptLicense();
+        }
+
         addExposedPort(DB2_PORT);
+
         addEnv("DBNAME", databaseName);
         addEnv("DB2INSTANCE", username);
         addEnv("DB2INST1_PASSWORD", password);
-        if (!licenseAccepted && !getEnvMap().containsKey("LICENSE")) {
-            throw new ContainerLaunchException("Must accept the license in order to use this image." +
-                                               " Call acceptLicense() or set the 'LICENSE=accept' in the env");
-        }
-        if (licenseAccepted)
-            addEnv("LICENSE", "accept");
-        if (!isPrivilegedMode())
-            throw new ContainerLaunchException("The DB2 containers must be started in privileged mode in order to work properly.");
+
+        // These settings help the DB2 container start faster
+        if (!getEnvMap().containsKey("AUTOCONFIG"))
+            addEnv("AUTOCONFIG", "false");
+        if (!getEnvMap().containsKey("ARCHIVE_LOGS"))
+            addEnv("ARCHIVE_LOGS", "false");
+    }
+
+    /**
+     * Accepts the license for the DB2 container by setting the LICENSE=accept
+     * variable as described at <a href="https://hub.docker.com/r/ibmcom/db2">https://hub.docker.com/r/ibmcom/db2</a>
+     */
+    public DB2Container acceptLicense() {
+        addEnv("LICENSE", "accept");
+        return this;
     }
 
     @Override
@@ -63,11 +78,6 @@ public class DB2Container<SELF extends DB2Container<SELF>> extends JdbcDatabaseC
     }
 
     @Override
-    public String getDatabaseName() {
-        return databaseName;
-    }
-
-    @Override
     public String getUsername() {
         return username;
     }
@@ -78,26 +88,26 @@ public class DB2Container<SELF extends DB2Container<SELF>> extends JdbcDatabaseC
     }
 
     @Override
-    public String getTestQueryString() {
-        return "SELECT 1 FROM sysibm.sysdummy1";
+    public String getDatabaseName() {
+        return databaseName;
     }
 
     @Override
-    public SELF withDatabaseName(final String databaseName) {
-        this.databaseName = databaseName;
-        return self();
-    }
-
-    @Override
-    public SELF withUsername(final String username) {
+    public DB2Container withUsername(String username) {
         this.username = username;
-        return self();
+        return this;
     }
 
     @Override
-    public SELF withPassword(final String password) {
+    public DB2Container withPassword(String password) {
         this.password = password;
-        return self();
+        return this;
+    }
+
+    @Override
+    public DB2Container withDatabaseName(String dbName) {
+        this.databaseName = dbName;
+        return this;
     }
 
     @Override
@@ -105,8 +115,8 @@ public class DB2Container<SELF extends DB2Container<SELF>> extends JdbcDatabaseC
         getWaitStrategy().waitUntilReady(this);
     }
 
-    public SELF acceptLicense() {
-        licenseAccepted = true;
-        return self();
+    @Override
+    protected String getTestQueryString() {
+        return "SELECT 1 FROM SYSIBM.SYSDUMMY1";
     }
 }
