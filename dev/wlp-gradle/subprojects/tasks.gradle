@@ -187,8 +187,8 @@ task approvedPackages {
     foundPackages.removeAll(approvedPackages);
     if (foundPackages.size() != 0) {
       throw new GradleException("Found new packages which have not been approved by the legal team yet.\n" + 
-                                "Add the new packages to the 'wlp.approved.packages' list in this project's bnd.bnd file and\n" + 
-                                "seek a code review from the legal team to ensure they are aware of the new package.\n" + 
+                                "Add the new packages to the 'wlp.approved.packages' property in " + project.file('bnd.bnd').absolutePath + "\n" + 
+                                "and seek a code review from the legal team to ensure they are aware of the new package.\n" + 
                                 "Unapproved packages located:\n" + foundPackages);
     }
   }

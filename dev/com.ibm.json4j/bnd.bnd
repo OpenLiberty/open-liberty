@@ -24,5 +24,12 @@ Private-Package: \
 
 instrument.disabled: true
 
+wlp.approved.packages: \
+  com.ibm.json,\
+  com.ibm.json.java,\
+  com.ibm.json.java.internal,\
+  com.ibm.json.xml,\
+  com.ibm.json.xml.internal
+
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
