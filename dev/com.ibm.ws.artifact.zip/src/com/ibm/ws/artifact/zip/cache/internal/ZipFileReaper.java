@@ -797,7 +797,7 @@ public class ZipFileReaper {
             ZipFileData ripestQuick = pendingQuickStorage.getFirst();
             long expireAtQuick = ripestQuick.lastPendAt + quickPendMin;
 
-            ZipFileData ripestSlow = pendingQuickStorage.getFirst();
+            ZipFileData ripestSlow = pendingSlowStorage.getFirst();
             long expireAtSlow = ripestSlow.lastPendAt + slowPendMin;
 
             if ( expireAtQuick <= expireAtSlow ) {
@@ -925,7 +925,6 @@ public class ZipFileReaper {
     }
 
     private final ReaperLock reaperLock;
-    private static final DateFormat outputTimeFormat = new SimpleDateFormat("MM/dd/yyyy kk:mm:ss:SSS zzz");
 
     //
 
@@ -1433,16 +1432,21 @@ public class ZipFileReaper {
 
     //
 
+    private static final DateFormat INTROSPECT_STAMP_FORMAT =
+    	new SimpleDateFormat("MM/dd/yyyy kk:mm:ss:SSS zzz");
+
     public void introspect(PrintWriter output) {
         synchronized ( reaperLock ) {
+            Date currentTime = new Date();
+            long introspectAt = System.nanoTime();
+
+            output.println("  Report   [ " + INTROSPECT_STAMP_FORMAT.format(currentTime) + " ]");
+
+            output.println();
             output.println("  IsActive [ " + Boolean.valueOf(isActive) + " ]");
             output.println("  Initial  [ " + toAbsSec(initialAt) + " (s) ]" );
             output.println("  Final    [ " + toAbsSec(finalAt) + " (s) ]");
-            //current time
-            //format : [MM/dd/yyyy kk:mm:ss:SSS zzz]
-            Date currentTime = new Date();
-            output.println(String.format("  Current  [ %s ]",outputTimeFormat.format(currentTime)));
-
+            output.println("  Current  [ " + toAbsSec(introspectAt) + " (s) ]");
 
             introspectReaperThread(output);
 
@@ -1453,18 +1457,18 @@ public class ZipFileReaper {
             } else {
                 for ( Map.Entry<String, ZipFileData> reaperEntry : storage.entrySet() ) {
                     output.println();
-                    reaperEntry.getValue().introspect(output);
+                    reaperEntry.getValue().introspect(output, introspectAt);
                 }
             }
 
-            pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY);
-            pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY);
+            pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
+            pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
 
             if ( completedStorage == null ) {
                 output.println();
                 output.println("Completed zip file data is not being tracked");
             } else {
-                completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY);
+                completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY, introspectAt);
             }
         }
     }

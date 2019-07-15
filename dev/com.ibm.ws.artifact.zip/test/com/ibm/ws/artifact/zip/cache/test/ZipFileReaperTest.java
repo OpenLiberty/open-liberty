@@ -161,13 +161,13 @@ public class ZipFileReaperTest {
     public static final int ZIP_PATH_COUNT = 20;
 
     private String[] createZipPaths() {
-         String[] zipPaths = new String[ZIP_PATH_COUNT];
+         String[] useZipPaths = new String[ZIP_PATH_COUNT];
 
          for ( int pathNo = 0; pathNo < ZIP_PATH_COUNT; pathNo++ ) {
-             zipPaths[pathNo] = ZIP_PATH_ROOT + "/" + ZIP_NAME_PREFIX + pad0(pathNo, ZIP_NAME_SUFFIX_PAD) + ZIP_EXT;
+             useZipPaths[pathNo] = ZIP_PATH_ROOT + "/" + ZIP_NAME_PREFIX + pad0(pathNo, ZIP_NAME_SUFFIX_PAD) + ZIP_EXT;
          }
 
-         return zipPaths;
+         return useZipPaths;
     }
 
     public void ensureZipFiles() throws IOException{
