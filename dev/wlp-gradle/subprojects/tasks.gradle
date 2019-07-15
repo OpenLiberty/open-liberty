@@ -163,6 +163,38 @@ compileJava {
   options.fork = true
 }
 
+task approvedPackages {
+  dependsOn jar
+  def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
+  enabled bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
+  inputs.files project.file('bnd.bnd')
+  outputs.files jar.archiveFile
+  doLast {
+    def approvedPackages = new HashSet();
+    def foundPackages = new HashSet();
+    bnd('wlp.approved.packages').split(",").each{pkg -> approvedPackages.add(pkg)}
+    def jarFile = new java.util.jar.JarFile(file(jar.archiveFile));
+    jarFile.entries().each{
+      def name = it.getName();
+      if (name.endsWith(".class")) {
+        foundPackages.add(name.substring(0, name.lastIndexOf('/')).replace('/', '.'));
+      }
+    };
+    jarFile.close();
+    if (foundPackages.size() == 0) {
+      throw new GradleException("Found a jar that is published to the wlp install but it did not contain any packages: " + file(jar.archiveFile).absolutePath);
+    }
+    foundPackages.removeAll(approvedPackages);
+    if (foundPackages.size() != 0) {
+      throw new GradleException("Found new packages which have not been approved by the legal team yet.\n" + 
+                                "Add the new packages to the 'wlp.approved.packages' list in this project's bnd.bnd file and\n" + 
+                                "seek a code review from the legal team to ensure they are aware of the new package.\n" + 
+                                "Unapproved packages located:\n" + foundPackages);
+    }
+  }
+}
+assemble.dependsOn approvedPackages
+
 test {
   dependsOn ':cnf:copyMavenLibs'
   def testports = fileTree(dir: compileTestJava.destinationDir, include: 'unittestports.properties')
