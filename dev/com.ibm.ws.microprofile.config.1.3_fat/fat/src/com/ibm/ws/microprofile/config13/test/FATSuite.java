@@ -16,10 +16,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ServerXMLTest.class,
-                MapEnvVarTest.class,
-                VariableServerXMLTest.class,
-                DuplicateInServerXMLTest.class
+                HotAddMPConfig.class,
+//                ServerXMLTest.class,
+//                MapEnvVarTest.class,
+//                VariableServerXMLTest.class,
+//                DuplicateInServerXMLTest.class
 })
 public class FATSuite {
 
