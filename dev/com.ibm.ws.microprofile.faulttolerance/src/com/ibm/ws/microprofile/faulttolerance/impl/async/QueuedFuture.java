@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 
@@ -55,6 +56,15 @@ public class QueuedFuture<R> implements Future<R>, Runnable {
 
     //threadContext is the context retrieved from the originating thread
     private ThreadContextDescriptor threadContext;
+
+    /**
+     * Counter to be incremented when an execution starts and decremented when it stops
+     */
+    private final AtomicInteger inProgressCounter;
+
+    public QueuedFuture(AtomicInteger inProgressCounter) {
+        this.inProgressCounter = inProgressCounter;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -205,6 +215,7 @@ public class QueuedFuture<R> implements Future<R>, Runnable {
         Throwable thrownException = null;
 
         try {
+            inProgressCounter.incrementAndGet();
             ArrayList<ThreadContext> contextAppliedToThread = null;
             if (this.threadContext != null) {
                 //apply the JEE contexts to the thread before calling the inner task
@@ -225,6 +236,8 @@ public class QueuedFuture<R> implements Future<R>, Runnable {
                 thrownException = e;
             }
         } finally {
+            // Ensure that the inProgressCounter is decremented before completing the resultFuture
+            inProgressCounter.decrementAndGet();
             // We've finished running and caught any exceptions that occurred, now store the result in the resultFuture
             // If abort() has already been called then the result future will already be completed and the result (or exception) here is discarded.
             if (thrownException == null) {
@@ -259,8 +272,8 @@ public class QueuedFuture<R> implements Future<R>, Runnable {
      * Submit this task for execution by the given executor service.
      *
      * @param executorService the executor service to use
-     * @param innerTask the task to run
-     * @param threadContext the thread context to apply when running the task
+     * @param innerTask       the task to run
+     * @param threadContext   the thread context to apply when running the task
      */
     public void start(ExecutorService executorService, Callable<Future<R>> innerTask, ThreadContextDescriptor threadContext) {
         synchronized (this) {
