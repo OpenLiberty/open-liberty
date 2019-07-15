@@ -13,6 +13,7 @@ package com.ibm.websphere.simplicity.config.wim;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.ibm.websphere.simplicity.config.ConfigElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 
 /**
  * Configuration for the following nested elements:
@@ -24,7 +25,7 @@ import com.ibm.websphere.simplicity.config.ConfigElement;
 public class GroupProperties extends ConfigElement {
 
     private DynamicMemberAttribute dynamicMemberAttribute;
-    private MemberAttribute memberAttribute;
+    private ConfigElementList<MemberAttribute> memberAttribute;
     private MembershipAttribute membershipAttribute;
 
     /**
@@ -37,8 +38,8 @@ public class GroupProperties extends ConfigElement {
     /**
      * @return the memberAttribute
      */
-    public MemberAttribute getMemberAttribute() {
-        return memberAttribute;
+    public ConfigElementList<MemberAttribute> getMemberAttributes() {
+        return (memberAttribute == null) ? (memberAttribute = new ConfigElementList<MemberAttribute>()) : memberAttribute;
     }
 
     /**
@@ -60,7 +61,7 @@ public class GroupProperties extends ConfigElement {
      * @param memberAttribute the memberAttribute to set
      */
     @XmlElement(name = "memberAttribute")
-    public void setMemberAttribute(MemberAttribute memberAttribute) {
+    public void setMemberAttributes(ConfigElementList<MemberAttribute> memberAttribute) {
         this.memberAttribute = memberAttribute;
     }
 

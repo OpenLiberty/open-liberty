@@ -33,7 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener {
-    private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class);
+    private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class,OsgiLogConstants.TRACE_GROUP, OsgiLogConstants.MESSAGE_BUNDLE);
 
     final static class OSGiTraceComponent extends TraceComponent {
         private final String ffdcMe;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.kernel.boot.ReturnCode;
@@ -156,7 +157,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
             String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
             Log.info(c, "testStartingAStoppedServer", "consoleOutput = " + serverConsoleOutput);
             try {
-                Assert.assertTrue("No indication that application started", serverConsoleOutput.contains("CWWKZ0001I: Application simpleApp started"));
+                Pattern p = Pattern.compile(".*CWWKZ0001I:.*simpleApp.*", Pattern.DOTALL);
+                Assert.assertTrue("No indication that application started", p.matcher(serverConsoleOutput).matches());
             } catch (Throwable t) {
                 failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
                 Log.error(c, CURRENT_METHOD_NAME, t);
@@ -359,6 +361,35 @@ public class EmbeddedServerDriver implements ServerEventListener {
         stopRunningServer();
     }
 
+    public void testForceStoppingAStartedServer() {
+        PrintStream originalSysOut = System.out;
+        try {
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(baos, true, "UTF-8"));
+
+            warmStartServer();
+            verifyServerEvent("\"STARTING\" ServerEvent should have fired", startingEventOccurred);
+            verifyServerEvent("\"STARTED\" ServerEvent should have fired", startedEventOccurred);
+            stopRunningServer("--force");
+
+            String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
+            Log.info(c, "testForceStoppingAStartedServer", "consoleOutput = " + serverConsoleOutput);
+            try {
+                Assert.assertFalse("Waiting for server to quiesce message found. Server stop with --force did not work correctly",
+                                   serverConsoleOutput.contains("CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce."));
+                Assert.assertFalse("Server completed quiesce message found. Server stop with --force did not work correctly",
+                                   serverConsoleOutput.contains("CWWKE1101I: Server quiesce complete."));
+            } catch (Throwable t) {
+                failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
+                Log.error(c, CURRENT_METHOD_NAME, t);
+            }
+        } catch (UnsupportedEncodingException ex) {
+        } finally {
+            System.setOut(originalSysOut);
+        }
+    }
+
     public void testBadArgument() {
         Future<Result> startFuture = server.start(new String[] { "--nOnSeNsE" });
 
@@ -544,8 +575,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
         checkServerRunning(true); // server should be started
     }
 
-    private void stopRunningServer() {
-        Future<Result> stopFuture = server.stop();
+    private void stopRunningServer(String... arg) {
+        Future<Result> stopFuture = server.stop(arg);
         try {
             result = stopFuture.get();
             dumpResult("Stopping a started server", result);

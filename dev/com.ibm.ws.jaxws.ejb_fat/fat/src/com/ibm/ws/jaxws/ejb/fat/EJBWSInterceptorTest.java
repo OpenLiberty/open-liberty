@@ -33,6 +33,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -61,6 +62,12 @@ public class EJBWSInterceptorTest {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, ejbwsinterceptorear + ".ear").addAsModule(war).addAsModule(jar);
 
         ShrinkHelper.exportDropinAppToServer(server, ear);
+
+        // Java 7 throws "java.lang.ClassNotFoundException[java.net.URLPermission]" due to java.net.URLPermission defined in server.xml
+        // Using java7_server.xml in which java.net.URLPermission settings are removed solve this test run problem
+        if (7 == JavaInfo.forServer(server).majorVersion()) {
+            server.setServerConfigurationFile("EJBWSInterceptor/java7_server.xml");
+        }
 
         try {
             server.startServer();

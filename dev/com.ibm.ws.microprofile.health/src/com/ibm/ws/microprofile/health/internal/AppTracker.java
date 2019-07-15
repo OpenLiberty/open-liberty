@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -49,4 +49,18 @@ public interface AppTracker {
      */
     Set<String> getModuleNames(String appName);
 
+    /**
+     * Returns true if the application with the specified name is started, otherwise false.
+     *
+     * @param appName
+     * @return true if the application with the specified name is started, otherwise false.
+     */
+    boolean isStarted(String appName);
+
+    /**
+     * Sets the HealthCheckService associated with this AppTracker.
+     *
+     * @param healthService
+     */
+    void setHealthCheckService(HealthCheckService healthService);
 }

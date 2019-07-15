@@ -11,6 +11,8 @@
 package com.ibm.ws.crypto.certificateutil.keytool;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.util.List;
 
@@ -23,12 +25,6 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
  *
  */
 public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreator {
-
-    /** {@inheritDoc} */
-    @Override
-    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg) throws CertificateException {
-        return (createDefaultSSLCertificate(filePath, password, validity, subjectDN, keySize, sigAlg, null));
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -162,12 +158,18 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
      */
     public String defaultExtInfo() {
         String hostname = getHostName();
-        String ext = null;
+        String ext = "SAN=dns:localhost";
 
-        if (Character.isDigit(hostname.charAt(0)))
-            ext = "SAN=ip:" + hostname;
-        else
-            ext = "SAN=dns:" + hostname;
+        InetAddress addr;
+        try {
+            addr = InetAddress.getByName(hostname);
+            if (addr != null && addr.toString().startsWith("/"))
+                ext = "SAN=ip:" + hostname;
+            else
+                ext = "SAN=dns:" + hostname;
+        } catch (UnknownHostException e) {
+            // use localhost if unknown exception occurs
+        }
         return ext;
     }
 

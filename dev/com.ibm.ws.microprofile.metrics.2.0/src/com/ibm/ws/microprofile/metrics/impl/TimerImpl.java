@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2019 IBM Corporation and others.
+* Copyright (c) 2017 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -55,7 +55,7 @@ public class TimerImpl implements Timer {
         /**
          * Updates the timer with the difference between current and start time. Call to this method will
          * not reset the start time. Multiple calls result in multiple updates.
-         * 
+         *
          * @return the elapsed time in nanoseconds
          */
         @Override

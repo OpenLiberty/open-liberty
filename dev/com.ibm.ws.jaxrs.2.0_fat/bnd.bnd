@@ -29,6 +29,7 @@ src: \
   test-applications/jackson/src,\
   test-applications/jacksonJsonIgnore/src,\
   test-applications/json/src,\
+  test-applications/testManagedBeans/src,\
   test-applications/paramconverter/src,\
   test-applications/params/src,\
   test-applications/providerAndResource/src,\

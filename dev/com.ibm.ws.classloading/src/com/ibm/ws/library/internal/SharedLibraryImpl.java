@@ -37,6 +37,7 @@ import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.config.Fileset;
+import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.library.LibraryChangeListener;
@@ -108,7 +109,8 @@ public class SharedLibraryImpl implements Library {
             // which will be a list of pid (or, if cardinality=0, then just a pid).
             try {
                 listenerFilter = FrameworkUtil.createFilter("(&(objectClass=" + LibraryChangeListener.class.getName() +
-                                                            ")(|(library=" + instanceId + ")(libraryRef=*" + instancePid + "*)))");
+                                                            ")(|" + FilterUtils.createPropertyFilter("library", instanceId)
+                                                                  + "(libraryRef=*" + instancePid + "*)))");
             } catch (InvalidSyntaxException e) {
                 //auto FFDC because the syntax shouldn't be wrong!
                 Tr.error(tc, "cls.library.id.invalid", instanceId, e.toString());

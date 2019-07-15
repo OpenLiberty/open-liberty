@@ -11,7 +11,7 @@
 
 package com.ibm.ejs.cm.logger;
 
-import java.io.*;
+import java.io.StringWriter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -20,7 +20,7 @@ public class TraceWriter extends StringWriter {
 
     /**
      * Class constructor
-     * 
+     *
      * @param dest TraceComponent: which is the trace component the destination intialized
      */
     public TraceWriter(TraceComponent dest) {
@@ -30,6 +30,7 @@ public class TraceWriter extends StringWriter {
     /**
      * @deprecated where possible, use com.ibm.websphere.ras package instead
      */
+    @Deprecated
     public TraceWriter(com.ibm.ejs.ras.TraceComponent dest) {
         this((TraceComponent) dest);
     }
@@ -40,6 +41,7 @@ public class TraceWriter extends StringWriter {
 
     // StringWriter overrides
 
+    @Override
     public void flush() {
         synchronized (lock) {
             super.flush();
@@ -47,6 +49,7 @@ public class TraceWriter extends StringWriter {
         }
     }
 
+    @Override
     public void write(char[] cbuf, int off, int len) {
         synchronized (lock) {
             super.write(cbuf, off, len);
@@ -54,6 +57,7 @@ public class TraceWriter extends StringWriter {
         }
     }
 
+    @Override
     public void write(int b) {
         synchronized (lock) {
             super.write(b);
@@ -63,6 +67,7 @@ public class TraceWriter extends StringWriter {
         }
     }
 
+    @Override
     public void write(String str) {
         synchronized (lock) {
             super.write(str);
@@ -70,6 +75,7 @@ public class TraceWriter extends StringWriter {
         }
     }
 
+    @Override
     public void write(String str, int off, int len) {
         synchronized (lock) {
             super.write(str, off, len);
@@ -105,5 +111,5 @@ public class TraceWriter extends StringWriter {
     private final TraceComponent destination;
 
     /** Trace component */
-    private static final TraceComponent tc = Tr.register(TraceWriter.class);
+    private static final TraceComponent tc = Tr.register(TraceWriter.class,null);
 }

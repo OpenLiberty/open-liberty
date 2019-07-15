@@ -37,7 +37,7 @@ import com.ibm.wsspi.request.probe.bci.RequestProbeHelper;
 public class RequestProbeTransformer implements ClassFileTransformer {
 
     private Instrumentation inst = null;
-    private static final TraceComponent tc = Tr.register(RequestProbeTransformer.class);
+    private static final TraceComponent tc = Tr.register(RequestProbeTransformer.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 
     /**
      * @param instrumentation

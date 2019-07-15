@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,13 +72,11 @@ public class TAIConfigImplTest {
         taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, false);
         taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, false);
         taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, false);
-        taiProps.put(TAIConfigImpl.KEY_CONTINUE_AFTER_UNPROTECTED_URI, true);
 
         taiConfig = new TAIConfigImpl(taiProps);
         assertFalse(taiConfig.isFailOverToAppAuthType());
         assertFalse(taiConfig.isInvokeForFormLogin());
         assertFalse(taiConfig.isInvokeForUnprotectedURI());
-        assertTrue(taiConfig.isContinueAfterUnprotectedURI());
     }
 
     @Test
@@ -103,12 +101,10 @@ public class TAIConfigImplTest {
         taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, true);
         taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, true);
         taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, true);
-        taiProps.put(TAIConfigImpl.KEY_CONTINUE_AFTER_UNPROTECTED_URI, true);
 
         taiConfig = new TAIConfigImpl(taiProps);
         assertTrue(taiConfig.isFailOverToAppAuthType());
         assertTrue(taiConfig.isInvokeForFormLogin());
         assertTrue(taiConfig.isInvokeForUnprotectedURI());
-        assertTrue(taiConfig.isContinueAfterUnprotectedURI());
     }
 }

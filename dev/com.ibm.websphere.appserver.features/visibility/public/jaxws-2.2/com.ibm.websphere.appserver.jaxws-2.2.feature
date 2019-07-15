@@ -49,7 +49,7 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.cxf-rt-databinding-jaxb.2.6.2, \
  com.ibm.ws.org.apache.cxf-rt-management.2.6.2, \
  com.ibm.ws.org.apache.cxf-rt-ws-addr.2.6.2, \
- com.ibm.ws.jaxws.common, \
+ com.ibm.ws.jaxws.common; start-phase:=CONTAINER_LATE, \
  com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
  com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\
  com.ibm.ws.jaxws.tools.2.2.10, \

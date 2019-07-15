@@ -1336,7 +1336,7 @@
   <Object ocdref="com.ibm.ws.jdbc.dataSource.properties.postgresql"/>
  </Designate>
 
- <OCD ibm:beta="true" id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+ <OCD id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="databaseName"            required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"              required="false" type="String"  name="%serverName"   description="%serverName.desc"/>
   <AD id="portNumber"              required="false" type="Integer" name="%portNumber"   description="%portNumber.desc"/>
@@ -1351,6 +1351,20 @@
   <!-- By default, we disable the PostgreSQL PreparedStatement cache, in favor of the Liberty statement cache -->
   <AD id="preparedStatementCacheQueries" ibmui:group="Advanced" required="false" type="Integer" default="0" min="0"    name="%preparedStatementCacheQueries" description="%preparedStatementCacheQueries.desc"/>
   <AD id="readOnly"                      ibmui:group="Advanced" required="false" type="Boolean"                        name="%readOnly"            description="%readOnly.desc"/>
+  <AD id="ssl"                           ibmui:group="Advanced" required="false" type="Boolean"                        name="%ssl"                 description="%ssl.desc"/>
+  <AD id="sslCert"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="location"    name="%sslCert"             description="%sslCert.desc"/>
+  <AD id="sslfactory"                    ibmui:group="Advanced" required="false" type="String"                         name="%sslfactory"          description="%sslfactory.desc"/>
+  <AD id="sslKey"                        ibmui:group="Advanced" required="false" type="String"  ibm:type="location"    name="%sslKey"              description="%sslKey.desc"/>
+  <AD id="sslMode"                       ibmui:group="Advanced" required="false" type="String"                         name="%sslMode"             description="%sslMode.desc">
+   <Option value="disable"     label="disable"/>
+   <Option value="allow"       label="allow"/>
+   <Option value="prefer"      label="prefer"/>
+   <Option value="require"     label="require"/>
+   <Option value="verify-ca"   label="verify-ca"/>
+   <Option value="verify-full" label="verify-full"/>
+  </AD>
+  <AD id="sslPassword"                   ibmui:group="Advanced" required="false" type="String"  ibm:type="password"    name="%sslPassword"         description="%sslPassword.desc"/>
+  <AD id="sslRootCert"                   ibmui:group="Advanced" required="false" type="String"  ibm:type="location"    name="%sslRootCert"         description="%sslRootCert.desc"/>
   <AD id="socketTimeout"                 ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%socketTimeout"       description="%socketTimeout.desc"/>
   <AD id="targetServerType"              ibmui:group="Advanced" required="false" type="String"                         name="%targetServerType"    description="%targetServerType.desc">
    <Option value="any"             label="any"/>
@@ -1363,12 +1377,6 @@
   <AD id="tcpKeepAlive"                  ibmui:group="Advanced" required="false" type="Boolean" name="%tcpKeepAlive" description="%tcpKeepAlive.desc"/>
   <AD id="user"                          ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
   <AD id="URL"                           ibmui:group="Advanced" required="false" type="String"  name="%URL" description="%URL.desc"/>
-  <!-- TODO: security related settings -->
-  <!-- SSL -->
-  <!-- JAAS properties -->
-  <!-- kerberosServerName -->
-  <!-- useSpnego -->
-  <!-- gsslib -->
  </OCD>
 
 </metatype:MetaData>

@@ -70,7 +70,7 @@ public class HealthExecutorImpl implements HealthExecutor {
         HealthCheckCDIBeanInvoker proxy = appModuleContextService.createContextualProxy(execProps, j2eeName, healthCheckCDIBeanInvoker, HealthCheckCDIBeanInvoker.class);
 
         try {
-            retval = proxy.checkAllBeans();
+            retval = proxy.checkAllBeans(appName, moduleName);
         } catch (HealthCheckBeanCallException e) {
             logger.log(Level.SEVERE, "healthcheck.bean.call.exception.CWMH0050E", new Object[] { e.getBeanName(),
                                                                                                  appName,
@@ -92,4 +92,8 @@ public class HealthExecutorImpl implements HealthExecutor {
         return retval;
     }
 
+    @Override
+    public void removeModuleReferences(String appName, String moduleName) {
+        healthCheckCDIBeanInvoker.removeModuleReferences(appName, moduleName);
+    }
 }

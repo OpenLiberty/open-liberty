@@ -11,6 +11,7 @@
 package com.ibm.ws.rest.handler.validator.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -19,9 +20,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,6 +34,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -49,6 +54,15 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
                         .addPackages(true, "web")//
                         .addAsManifestResource(new File("test-applications/testOpenAPIApp/resources/META-INF/openapi.yaml"));
         ShrinkHelper.exportDropinAppToServer(server, app);
+
+        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValAdapter.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("org.test.validator.adapter"));
+        ShrinkHelper.exportToServer(server, "dropins", rar);
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "customLoginModule.jar");
+        jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
+        ShrinkHelper.exportToServer(server, "/", jar);
 
         server.startServer();
 
@@ -89,19 +103,48 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
         assertEquals(err, "DBUSER1", json.getString("schema"));
         assertEquals(err, "dbuser1", json.getString("user"));
+    }
 
-        request.method("POST");
-        json = request.run(JsonObject.class);
-        err = "Unexpected json response: " + json.toString();
-        assertEquals(err, "DefaultDataSource", json.getString("uid"));
-        assertEquals(err, "DefaultDataSource", json.getString("id"));
+    /**
+     * Single test method to verify that JMS is set up properly in this server.
+     */
+    @Test
+    public void testDefaultJMSConnectionFactory() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/DefaultJMSConnectionFactory");
+        JsonObject json = request.run(JsonObject.class);
+        String err = "Unexpected json response: " + json.toString();
+        assertEquals(err, "DefaultJMSConnectionFactory", json.getString("uid"));
+        assertEquals(err, "DefaultJMSConnectionFactory", json.getString("id"));
         assertNull(err, json.get("jndiName"));
         assertTrue(err, json.getBoolean("successful"));
         assertNull(err, json.get("failure"));
         assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
-        assertTrue(err, json.getString("databaseProductVersion").matches(VERSION_REGEX));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
-        assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
+        assertEquals(err, "IBM", json.getString("jmsProviderName"));
+        assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, "clientID", json.getString("clientID"));
+    }
+
+    /**
+     * Verify that REST endpoint for validation of cloudantDatabase is reachable
+     * and reports an error when the cloudantDatabase element is pointing at the wrong library.
+     */
+    @AllowedFFDC("java.lang.ClassNotFoundException")
+    @Test
+    public void testWrongLibraryForCloudant() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/cldb");
+        JsonObject json = request.run(JsonObject.class);
+        String err = "Unexpected json response: " + json.toString();
+        assertEquals(err, "cldb", json.getString("uid"));
+        assertEquals(err, "cldb", json.getString("id"));
+        assertEquals(err, "cloudant/testdb", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertEquals(err, "java.lang.ClassNotFoundException", json.getString("class"));
+        assertEquals(err, "com.cloudant.client.api.ClientBuilder", json.getString("message"));
+        JsonArray stack;
+        assertNotNull(err, stack = json.getJsonArray("stack"));
+        assertTrue(err, stack.size() > 3);
     }
 }

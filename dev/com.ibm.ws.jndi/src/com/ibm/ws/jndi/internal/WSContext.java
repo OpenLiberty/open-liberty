@@ -35,7 +35,6 @@ import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.spi.NamingManager;
 
-import com.ibm.ws.jndi.WSNamingEnumeration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -49,6 +48,7 @@ import com.ibm.ws.jndi.Adapter;
 import com.ibm.ws.jndi.WSContextBase;
 import com.ibm.ws.jndi.WSName;
 import com.ibm.ws.jndi.WSNameParser;
+import com.ibm.ws.jndi.WSNamingEnumeration;
 
 final class WSContext extends WSContextBase implements Context, Referenceable {
     private final static TraceComponent tc = Tr.register(WSContext.class);
@@ -277,23 +277,23 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
 
     @Override
     protected NamingEnumeration<NameClassPair> list(final WSName subname) throws NamingException {
-        return new WSNamingEnumeration<NameClassPair>(myNode.getChildren(subname).entrySet(),
-                new Adapter<Entry<String, Object>, NameClassPair>() {
-                    public NameClassPair adapt(Entry<String, Object> entry) {
-                        String className = resolveObjectClassName(entry.getValue());
-                        return new NameClassPair(entry.getKey(), className);
-                    }
-                });
+        return new WSNamingEnumeration<NameClassPair>(myNode.getChildren(subname).entrySet(), new Adapter<Entry<String, Object>, NameClassPair>() {
+            @Override
+            public NameClassPair adapt(Entry<String, Object> entry) {
+                String className = resolveObjectClassName(entry.getValue());
+                return new NameClassPair(entry.getKey(), className);
+            }
+        });
     }
 
     @Override
     protected NamingEnumeration<Binding> listBindings(final WSName subname) throws NamingException {
-        return new WSNamingEnumeration<Binding>(myNode.getChildren(subname).entrySet(),
-                new Adapter<Entry<String, Object>, Binding>() {
-                    public Binding adapt(Entry<String, Object> entry) throws NamingException {
-                        return new Binding(entry.getKey(), resolveObject(entry.getValue(), subname.plus(entry.getKey())));
-                    }
-                });
+        return new WSNamingEnumeration<Binding>(myNode.getChildren(subname).entrySet(), new Adapter<Entry<String, Object>, Binding>() {
+            @Override
+            public Binding adapt(Entry<String, Object> entry) throws NamingException {
+                return new Binding(entry.getKey(), resolveObject(entry.getValue(), subname.plus(entry.getKey())));
+            }
+        });
     }
 
     @Override
@@ -417,7 +417,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
         checkNotExternal(subname, entry, "unbind");
         if (entry instanceof ServiceRegistration) {
             ServiceRegistration<?> reg = (ServiceRegistration<?>) entry;
-            reg.unregister();
+            unregister(reg);
         } else if (entry instanceof ContextNode) {
             ContextNode node = (ContextNode) entry;
             if (!!!scrubContents(node))

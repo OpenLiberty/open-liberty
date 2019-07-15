@@ -1,0 +1,53 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>concurrent-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>persistentExecutor-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>jdbc-4.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <persistentExecutor
+    id="MyExecutor"
+    jndiName="concurrent/MyExecutor"
+    taskStoreRef="DBTaskStore"
+    contextServiceRef="DefaultContextService"
+    enableTaskExecution="true"
+    initialPollDelay="0"
+    pollInterval="-1"
+    retryInterval="500ms"
+    retryLimit="-1"
+  />
+
+  <databaseStore id="DBTaskStore" dataSourceRef="Derby"/>
+
+  <contextService id="ClassloaderContextOnly">
+    <classloaderContext/>
+  </contextService>
+
+  <!-- database for scheduled tasks -->
+  <dataSource id="Derby" jndiName="jdbc/persistcfgdb">
+    <jdbcDriver libraryRef="DerbyLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:persistcfgdb"/>
+  </dataSource>
+  <library id="DerbyLib">
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  </library>
+
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  
+  <variable name="onError" value="FAIL"/>
+</server>

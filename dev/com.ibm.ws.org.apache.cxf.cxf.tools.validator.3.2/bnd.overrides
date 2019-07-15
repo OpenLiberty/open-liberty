@@ -18,5 +18,4 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Import-Package: \
 
 Export-Package: \
-#  org.apache.cxf.tools.*
-#  org.apache.cxf.tools.*
+  org.apache.cxf.tools.validator

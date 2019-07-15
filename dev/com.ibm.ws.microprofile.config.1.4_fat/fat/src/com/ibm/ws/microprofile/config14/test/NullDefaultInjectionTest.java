@@ -25,6 +25,8 @@ import com.ibm.ws.microprofile.config14.nullDefaultInjection.web.NullDefaultInje
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -42,6 +44,7 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.EXPERIMENTAL)
 public class NullDefaultInjectionTest extends FATServletClient {
 
     public static final String APP_NAME = "nullDefaultInjectionApp";

@@ -39,7 +39,7 @@ public class ClientSASITTX509CertChain implements CSSSASIdentityToken {
     private final String domain;
     private final String realm;
 
-    private static TraceComponent tc = Tr.register(ClientSASITTX509CertChain.class);
+    private static TraceComponent tc = Tr.register(ClientSASITTX509CertChain.class,TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     public ClientSASITTX509CertChain(String oid, Class principalClass, String domain, String realm) {
         this.oid = (oid == null ? GSSUPMechOID.value.substring(4) : oid);

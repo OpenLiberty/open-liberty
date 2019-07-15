@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,6 +122,23 @@ public class ReferrerURLCookieHandlerTest {
         assertEquals(slashPath, handler.getPathName(req));
     }
 
+    @Test
+    /**
+     * getPathNameTest_slashContext will make sure ReferrerURLCookieHandler.getPathName
+     * will return the "/" when WebAppSecConfig.isIncludePathInWASReqURL()
+     * returns true.
+     */
+    public void getPathNameTest_slashContext_includePathTrue() {
+        context.checking(new Expectations() {
+            {
+                one(webAppSecConfig).isIncludePathInWASReqURL();
+                will(returnValue(true));
+                one(req).getContextPath();
+                will(returnValue(null));
+            }
+        });
+        assertEquals(slashPath, handler.getPathName(req));
+    }
     /**
      * getReferrerURLFromCookies shall return null if there is no
      * REFERRER_URL cookie.

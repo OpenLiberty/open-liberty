@@ -212,19 +212,19 @@ public class BridgeUtils implements WIMUserRegistryDefines {
             String delimiter = getCoreConfiguration().getDelimiter(virtualRealm);
             virtualRealmsDelimiter.put(virtualRealm, delimiter);
         }
-        //add default/UR realm to the list of realms to handle no VMM realm scenorio
+        //add default/UR realm to the list of realms to handle no VMM realm scenario
         if (virtualRealms.size() == 0) {
-            virtualRealms = new HashSet(); //if empty it will be a abstract set.So need to initialize, else will fail while adding element to it.
+            virtualRealms = new HashSet<String>(); //if empty it will be a abstract set.So need to initialize, else will fail while adding element to it.
             virtualRealms.add(defaultRealm);
             virtualRealmsDelimiter.put(defaultRealm, defaultRealmDelimiter);
         }
 
-        return seperateIDAndRealm(inputString, defaultRealm, defaultRealmDelimiter, virtualRealms,
+        return separateIDAndRealm(inputString, defaultRealm, defaultRealmDelimiter, virtualRealms,
                                   virtualRealmsDelimiter);
     }
 
-    protected IDAndRealm seperateIDAndRealm(String inputString, String defaultRealm, String defaultRealmDelimiter,
-                                            Set virtualRealms, Map virtualRealmsDelimiter) throws WIMException {
+    protected IDAndRealm separateIDAndRealm(String inputString, String defaultRealm, String defaultRealmDelimiter,
+                                            Set<?> virtualRealms, Map<?, ?> virtualRealmsDelimiter) throws WIMException {
         // initialize the return value
         IDAndRealm returnValue = null;
         // d116636
@@ -232,67 +232,73 @@ public class BridgeUtils implements WIMUserRegistryDefines {
         boolean found = false;
         boolean realmFound = false;
         // get the set of virtual realms
-        for (Iterator toUse = virtualRealms.iterator(); toUse.hasNext() && !found;) {
+        for (Iterator<?> toUse = virtualRealms.iterator(); toUse.hasNext() && !found;) {
             // initialize the buffer
             StringBuffer buffer = new StringBuffer();
             String virtualRealm = (String) toUse.next();
             String delimiter = (String) virtualRealmsDelimiter.get(virtualRealm);
             // d116636
             returnValue = new IDAndRealm();
-            // loop through the string and find the realm and ID
-            for (int i = inputString.length() - 1; i >= 0; i--) {
-                // found a delimiter
-                if (Character.toString(inputString.charAt(i)).equals(delimiter)) {
-                    // parsing the realm
-                    if (!returnValue.isRealmDefined()) {
-                        // the delimiter is escaped
-                        if (i - 1 >= 0 && inputString.charAt(i - 1) == BACKSLASH) {
-                            buffer.append(inputString.charAt(i));
-                            i--;
-                        }
-                        // the delimiter is not escaped
-                        else {
-                            // true positive
-                            String realm = buffer.reverse().toString();
-                            if (virtualRealm.equals(realm)) {
-                                returnValue.setDelimiter(delimiter);
-                                returnValue.setRealm(realm);
-                                buffer.setLength(0);
-                                realmFound = true;
+
+            /*
+             * Edge case. Valid virtual realms should be passed in.
+             */
+            if (virtualRealm != null) {
+                // loop through the string and find the realm and ID
+                for (int i = inputString.length() - 1; i >= 0; i--) {
+                    // found a delimiter
+                    if (Character.toString(inputString.charAt(i)).equals(delimiter)) {
+                        // parsing the realm
+                        if (!returnValue.isRealmDefined()) {
+                            // the delimiter is escaped
+                            if (i - 1 >= 0 && inputString.charAt(i - 1) == BACKSLASH) {
+                                buffer.append(inputString.charAt(i));
+                                i--;
                             }
-                            // false positive
-                            // d116636
+                            // the delimiter is not escaped
                             else {
-                                break;
+                                // true positive
+                                String realm = buffer.reverse().toString();
+                                if (virtualRealm.equals(realm)) {
+                                    returnValue.setDelimiter(delimiter);
+                                    returnValue.setRealm(realm);
+                                    buffer.setLength(0);
+                                    realmFound = true;
+                                }
+                                // false positive
+                                // d116636
+                                else {
+                                    break;
+                                }
+                            }
+                        }
+                        // parsing the ID
+                        else {
+                            // the delimiter is escaped
+                            if (i - 1 >= 0 && inputString.charAt(i - 1) == BACKSLASH) {
+                                buffer.append(inputString.charAt(i));
+                                i--;
+                            }
+                            // the delimiter is not escaped
+                            else {
+                                throw new WIMException(inputString);
                             }
                         }
                     }
-                    // parsing the ID
+                    // found a character
                     else {
-                        // the delimiter is escaped
-                        if (i - 1 >= 0 && inputString.charAt(i - 1) == BACKSLASH) {
+                        if (i == 0 && realmFound) {
                             buffer.append(inputString.charAt(i));
-                            i--;
+                            returnValue.setId(buffer.reverse().toString());
+                            found = true;
+                            break;
+                        } else if (i == 0) {
+                            buffer.append(inputString.charAt(i));
+                            returnValue.setId(buffer.reverse().toString());
+                            buffer.setLength(0);
+                        } else {
+                            buffer.append(inputString.charAt(i));
                         }
-                        // the delimiter is not escaped
-                        else {
-                            throw new WIMException(inputString);
-                        }
-                    }
-                }
-                // found a character
-                else {
-                    if (i == 0 && realmFound) {
-                        buffer.append(inputString.charAt(i));
-                        returnValue.setId(buffer.reverse().toString());
-                        found = true;
-                        break;
-                    } else if (i == 0) {
-                        buffer.append(inputString.charAt(i));
-                        returnValue.setId(buffer.reverse().toString());
-                        buffer.setLength(0);
-                    } else {
-                        buffer.append(inputString.charAt(i));
                     }
                 }
             }
@@ -532,7 +538,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * @return default realm Name
      */
     public String getDefaultRealmName() {
-        String returnRealm = getCoreConfiguration().getDefaultRealmName();
+        String returnRealm = getCoreConfiguration().getConfiguredPrimaryRealmName();
         if (returnRealm == null) {
             returnRealm = urRealmName;
         }

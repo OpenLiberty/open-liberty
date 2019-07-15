@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.osgi.framework.VersionRange;
 
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 
@@ -121,4 +122,8 @@ public class KernelResolverRequirement implements FeatureResource {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public ActivationType getActivationType() {
+        throw new UnsupportedOperationException();
+    }
 }

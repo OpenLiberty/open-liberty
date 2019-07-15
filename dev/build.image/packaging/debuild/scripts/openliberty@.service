@@ -1,0 +1,17 @@
+[Unit]
+Description=Open Liberty server
+After=network.target
+After=systemd-user-sessions.service
+After=network-online.target
+
+[Service]
+Type=forking
+
+ExecStart=/usr/libexec/openliberty start %i
+ExecStop=/usr/libexec/openliberty stop %i
+
+User=openliberty
+Group=openliberty
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,13 @@ package com.ibm.ws.microprofile.config.cdi;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -39,10 +38,11 @@ public class ConfigBean extends AbstractConfigBean<Config> implements Bean<Confi
     /** {@inheritDoc} */
     @Override
     public Config create(CreationalContext<Config> creationalContext) {
-        // Although this is a request scoped bean, this config instance will be cached per classloader, so you don't really get a new config object per request
+        // Although this is a singleton bean, the DelegatingConfig checks the current classloader on each method call
+        // The config for each classloader is cached so this is ok
         // However, the config object is updated with new values dynamically, so the user shouldn't notice any difference.
-        // This also means that injecting config gives the same result as calling getConfig() in user code
-        return ConfigProvider.getConfig();
+        // This means that calling an injected Config always gives the same result as making the same call on the result of getConfig()
+        return DelegatingConfig.INSTANCE;
     }
 
     /** {@inheritDoc} */
@@ -69,7 +69,7 @@ public class ConfigBean extends AbstractConfigBean<Config> implements Bean<Confi
     @Override
     @Trivial
     public Class<? extends Annotation> getScope() {
-        return RequestScoped.class;
+        return ApplicationScoped.class;
     }
 
 }

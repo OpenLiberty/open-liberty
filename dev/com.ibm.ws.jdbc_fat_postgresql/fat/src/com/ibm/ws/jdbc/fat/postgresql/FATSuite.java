@@ -19,9 +19,16 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                PostgreSQLTest.class
+                PostgreSQLTest.class,
+                PostgreSQLSSLTest.class
 })
 public class FATSuite {
+
+    static {
+        // TODO: temporary debug setting so we can further investigate intermittent
+        // testcontainers ping issues on remote build machines
+        System.setProperty("javax.net.debug", "all");
+    }
 
     @BeforeClass
     public static void setupBukcet() throws Exception {

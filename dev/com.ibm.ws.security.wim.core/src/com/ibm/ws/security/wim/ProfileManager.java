@@ -162,7 +162,10 @@ public class ProfileManager implements ProfileServiceLite {
     private long pagingSearchResultsCacheTimeOut = 30000;
 
     private ConfigManager configMgr;
+
     private final RepositoryManager repositoryManager;
+
+    protected static final String DEFAULT_REALM_NAME = "WIMRegistry";
 
     //TODO For now it doesn't make any diff. Could be be implemented as service only LA comes in picture
     PropertyManager propMgr = new PropertyManager();
@@ -176,6 +179,13 @@ public class ProfileManager implements ProfileServiceLite {
 
     public void setConfigManager(ConfigManager configManager) {
         configMgr = configManager;
+
+        /*
+         * Set the RepositoryManager on the ConfigManager.
+         */
+        if (configMgr != null) {
+            configMgr.setRepositoryManager(this.repositoryManager);
+        }
     }
 
     private ConfigManager getConfigManager() {
@@ -2433,7 +2443,7 @@ public class ProfileManager implements ProfileServiceLite {
         List<Context> contexts = root.getContexts();
         if (contexts == null || contexts.size() == 0) {
             if (getConfigManager() != null)
-                value = getConfigManager().getDefaultRealmName();
+                value = getConfigManager().getConfiguredPrimaryRealmName();
         } else {
 
             int i = 0;
@@ -2446,7 +2456,7 @@ public class ProfileManager implements ProfileServiceLite {
                 i++;
             }
             if (value == null) {
-                value = getConfigManager().getDefaultRealmName();
+                value = getConfigManager().getConfiguredPrimaryRealmName();
             }
         }
         return value;
@@ -2465,11 +2475,7 @@ public class ProfileManager implements ProfileServiceLite {
         String value = null;
         value = getRealmName(root);
         if (value == null) {
-            try {
-                value = getRealmName();
-            } catch (Exception e) {
-                // leave realm at null
-            }
+            value = getDefaultRealmName();
         }
         return value;
     }
@@ -2587,18 +2593,46 @@ public class ProfileManager implements ProfileServiceLite {
     }
 
     private boolean isConfigChangeLogSupportEnabled(String reposId) throws WIMException {
-        // TODO::
         return false;
     }
 
-    public String getRealmName() throws WIMException {
-        String realmName = null;
+    /**
+     * Get the default realm name to use when a realm is not provided. This will be either:
+     *
+     * <ol>
+     * <li>The configured primary realm name.</li>
+     * <li>The first federated repository's realm name.</li>
+     * <li>The default realm name ({@value #DEFAULT_REALM_NAME}).</li>
+     * </ol>
+     *
+     * @return The default realm name to use when a realm is NOT provided.
+     */
+    public String getDefaultRealmName() {
 
-        @SuppressWarnings("unchecked")
-        List<String> repoIds = getRepositoryManager().getRepoIds();
-        if (repoIds != null && repoIds.size() > 0) {
-            Repository repository = getRepositoryManager().getRepository(repoIds.get(0));
-            realmName = repository.getRealm();
+        /*
+         * If the primary realm is configured, use it.
+         */
+        String realmName = getConfigManager().getConfiguredPrimaryRealmName();
+
+        /*
+         * If no primary realm is configured, use the realm name of the first federated repository.
+         */
+        if (realmName == null) {
+
+            List<String> repoIds = getRepositoryManager().getRepoIds();
+            if (repoIds != null && !repoIds.isEmpty()) {
+                Repository repository = getRepositoryManager().getRepository(repoIds.get(0));
+                if (repository != null) {
+                    realmName = repository.getRealm();
+                }
+            }
+        }
+
+        /*
+         * If we still have no realm name, use the default realm name.
+         */
+        if (realmName == null) {
+            realmName = DEFAULT_REALM_NAME;
         }
 
         return realmName;
@@ -2794,6 +2828,11 @@ public class ProfileManager implements ProfileServiceLite {
         }
 
         if (retRoot != null) {
+
+            /*
+             * TODO In the future, we may want to delete from page cache.
+             */
+
             retRoot = postDelete(retRoot, repositoryId, returnDeleted);
         }
 

@@ -121,7 +121,7 @@ connectionpool.freeConnections.description=Il numero di connessioni gestite nel 
 
 session.create.total.description=Il numero di sessioni in cui \u00e8 stato effettuato l'accesso dal momento dell'abilitazione di questa metrica.
 session.liveSessions.description=Il numero di utenti attualmente collegati.
-session.activeSessions.description=Il numero di sessioni attive contemporaneamente.  (Una \u00e8 attiva se il prodotto sta attualmente elaborando una richiesta che utilizza la sessione utente).
+session.activeSessions.description=Il numero di sessioni attive contemporaneamente. (Una \u00e8 attiva se il prodotto sta attualmente elaborando una richiesta che utilizza la sessione utente).
 session.invalidated.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita dal momento dell'abilitazione di questa metrica.
 session.invalidatedbyTimeout.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita per timeout dal momento dell'abilitazione di questa metrica.
 

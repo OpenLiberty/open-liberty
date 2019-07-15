@@ -15,9 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.Key;
 import java.security.KeyException;
@@ -1395,12 +1397,25 @@ public class WSKeyStore extends Properties {
     }
 
     private String createCertSANInfo(String hostname) {
-        String ext = null;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "createCertSANInfo: " + hostname);
+        String ext = "SAN=dns:localhost";
 
-        if (Character.isDigit(hostname.charAt(0)))
-            ext = "SAN=ip:" + hostname;
-        else
-            ext = "SAN=dns:" + hostname;
+        InetAddress addr;
+        try {
+            addr = InetAddress.getByName(hostname);
+            if (addr != null && addr.toString().startsWith("/"))
+                ext = "SAN=ip:" + hostname;
+            else
+                ext = "SAN=dns:" + hostname;
+        } catch (UnknownHostException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "createCertSANInfo exception -> " + e.getMessage());
+            }
+            // use localhost if unknown exception occurs
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "createCertSANInfo: " + ext);
         return ext;
     }
 

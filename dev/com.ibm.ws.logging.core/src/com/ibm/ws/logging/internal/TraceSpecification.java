@@ -33,7 +33,7 @@ public class TraceSpecification {
      * Lazy TraceComponent: don't initialize this unless/until we need to
      */
     private final static class TraceComponentHolder {
-        static final TraceComponent instance = Tr.register(TraceSpecification.class);
+        static final TraceComponent instance = Tr.register(TraceSpecification.class,NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
     }
 
     private static Comparator<TraceElement> SPEC_COMPARATOR = new Comparator<TraceElement>() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.ws.classloading.internal.util.CompositeIterable;
 import com.ibm.ws.library.internal.SharedLibraryFactory;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
+import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
 
 public class Providers {
@@ -128,7 +129,7 @@ public class Providers {
         }
 
         // Filter the SharedLibrary service references by ID.
-        String filter = "(" + "id=" + id + ")";
+        String filter = FilterUtils.createPropertyFilter("id", id);
         Collection<ServiceReference<Library>> refs = null;
         try {
             refs = bundleContext.getServiceReferences(Library.class, filter);

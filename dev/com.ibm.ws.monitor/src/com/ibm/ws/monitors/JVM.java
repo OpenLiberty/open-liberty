@@ -49,7 +49,7 @@ public class JVM extends StatisticActions {
     private SPICountStatistic gcCount;
     private SPICountStatistic gcTime;
 
-    private final TraceComponent tc = Tr.register(JVM.class);
+    private static final TraceComponent tc = Tr.register(JVM.class);
 
     //For New Monitoring:
     @SuppressWarnings("unused")

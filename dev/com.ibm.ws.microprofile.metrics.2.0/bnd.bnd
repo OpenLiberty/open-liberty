@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -38,9 +38,6 @@ Export-Package: \
 	com.ibm.ws.microprofile.metrics.config;thread-context=true,\
 	com.ibm.ws.microprofile.metrics.helper
 
-Include-Resource: \
-	OSGI-INF=resources/OSGI-INF
-
 -dsannotations-inherit: true
 -dsannotations: \
 	com.ibm.ws.microprofile.metrics.MetricsConfig,\
@@ -78,5 +75,6 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.microprofile.metrics.common;version=latest
  

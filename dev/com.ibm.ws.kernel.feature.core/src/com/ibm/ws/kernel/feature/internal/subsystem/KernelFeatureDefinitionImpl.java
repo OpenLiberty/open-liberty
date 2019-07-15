@@ -28,6 +28,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -266,7 +267,7 @@ public class KernelFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl 
                 attrs.put("type", "file");
                 if (osTag != null)
                     attrs.put("os", osTag);
-                result.add(new FeatureResourceImpl(f.getPath(), attrs, "", this.getFeatureName()));
+                result.add(new FeatureResourceImpl(f.getPath(), attrs, "", this.getFeatureName(), ActivationType.PARALLEL));
             } else if (f.isDirectory()) {
                 for (File c : f.listFiles()) {
                     addAllBeneath(installRoot, c, result, osTag);

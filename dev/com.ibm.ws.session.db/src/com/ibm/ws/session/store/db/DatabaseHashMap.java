@@ -401,9 +401,20 @@ public class DatabaseHashMap extends BackedHashMap {
             }
 
             if (usingAS400DB2 && firstInitialize) { //added firstInitialize for PK55900
-                if (collectionName == null) //PK78174  so we won't overwrite the collectionName set at setUserInfo
-                    collectionName = getCollectionName(url);
-                tableName = collectionName + "." + tableName;
+                // if (collectionName == null) //PK78174  so we won't overwrite the collectionName set at setUserInfo
+                //     collectionName = getCollectionName(url);
+                // tableName = collectionName + "." + tableName;
+                if (collectionName == null) { //PK78174  so we won't overwrite the collectionName set at setUserInfo
+                    int index = tableName.indexOf(".");
+                    if (index != -1) { // SessionTableName = "schema_name.table_name"
+                        collectionName = tableName.substring(0, index);
+                    } else {
+                        collectionName = getCollectionName(url);
+                        tableName = collectionName + "." + tableName;
+                    }
+                } else {
+                    tableName = collectionName + "." + tableName;
+                }
                 firstInitialize = false;
                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[INIT_DB_SETTINGS], "AS400DB2 Table Name value = ", tableName);
@@ -452,7 +463,13 @@ public class DatabaseHashMap extends BackedHashMap {
         String qualifierName = null;
 
         if (usingAS400DB2 || usingDB2Connect) {
-            tbName = TABLE_NAME.toUpperCase();
+            //tbName = TABLE_NAME.toUpperCase();
+            int index = tableName.indexOf(".");
+            if (index != -1) {
+                tbName = tableName.substring(index + 1).toUpperCase();
+            } else {
+                tbName = tableName.toUpperCase();
+            }
             if (collectionName != null)
                 qualifierName = collectionName;
         } else if (usingDB2 || usingDerby || usingOracle) { // cmd 162172
@@ -483,7 +500,11 @@ public class DatabaseHashMap extends BackedHashMap {
                 } // Oracle case to be handled later
             } //PM27191 END
         }
-
+        
+        if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_TABLE_DEFINITION], "Qualifier Name = " + qualifierName + " Table Name = " + tbName);
+        }
+	
         ResultSet rs1 = dmd.getColumns(null, qualifierName, tbName, "%");
         try {
             while (rs1.next()) {
@@ -3302,8 +3323,13 @@ public class DatabaseHashMap extends BackedHashMap {
 
         //Introduce noQualifiertblName and set it to "SESSIONS" instead of using tableName since tableName is set to
         //qualifierName.tableName which is different from the one using in iSeries platform
-        String sysIndexes = null, sysKeys = null, noQualifiertblName = "SESSIONS", qualifierName = null, sqlQueryIndex = null, sqlQueryCol = null, returnIndexName = null, index_colNames = null, schemaSeparator = ".";
+        String sysIndexes = null, sysKeys = null, noQualifiertblName = tableName, qualifierName = null, sqlQueryIndex = null, sqlQueryCol = null, returnIndexName = null, index_colNames = null, schemaSeparator = ".";
 
+        int index = tableName.indexOf(".");
+        if (index != -1) {
+            noQualifiertblName = tableName.substring(index+1);
+        }
+	
         PreparedStatement ps = null, ps1 = null;
         ResultSet rs = null, rs1 = null;
         int counter = 0;

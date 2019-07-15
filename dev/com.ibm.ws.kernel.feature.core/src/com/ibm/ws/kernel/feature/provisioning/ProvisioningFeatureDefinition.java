@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Locale;
 
 import com.ibm.ws.kernel.feature.FeatureDefinition;
+import com.ibm.ws.kernel.provisioning.ExtensionConstants;
 
 /**
  * Provisioning operations incur overhead, and must be invoked within the
@@ -39,7 +40,7 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
     /**
      * @return The bundle repository this feature belongs to: null or empty for core,
      *         "usr" for the user extension, or a product extension
-     * 
+     *
      * @see ExtensionConstants#CORE_EXTENSION
      * @see ExtensionConstants#USER_EXTENSION
      */
@@ -47,7 +48,7 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
 
     /**
      * Get a collection of {@link FeatureResource} that represent the content of this feature as defined by the headers.
-     * 
+     *
      * @param type the type of content to return, or null for all content.
      * @return
      */
@@ -55,21 +56,21 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
 
     /**
      * Get the file representing this feature definition, used by minify to know which features to retain.
-     * 
+     *
      * @return The file backing this feature definition
      */
     public File getFeatureDefinitionFile();
 
     /**
      * Get the file representing the checksum file for this feature.
-     * 
+     *
      * @return The file of checksums.
      */
     public File getFeatureChecksumFile();
 
     /**
      * Get an abitrary header from the feature manifest.
-     * 
+     *
      * @param string
      * @return
      */
@@ -90,7 +91,7 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
 
     /**
      * Get the Short Name for this feature, as defined by its header.
-     * 
+     *
      * @return
      */
     public String getIbmShortName();
@@ -98,14 +99,14 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
     /**
      * Get a collection of File objects representing the locations that may be the NLS resources for this Feature.
      * The File objects returned may or may not exist.
-     * 
+     *
      * @return
      */
     public Collection<File> getLocalizationFiles();
 
     /**
      * Get the list of comma separated superseded features. Each separated feature is in [].
-     * 
+     *
      * @return
      */
     public String getSupersededBy();
@@ -118,7 +119,7 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
 
     /**
      * Get whether the feature is superseded or not.
-     * 
+     *
      * @return
      */
     public boolean isSuperseded();

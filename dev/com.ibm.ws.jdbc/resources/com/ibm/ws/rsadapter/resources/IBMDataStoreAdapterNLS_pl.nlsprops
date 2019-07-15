@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Sprawd\u017a, czy opakowanie i parametry opakowaneg
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Nie mo\u017cna odpakowa\u0107 obiektu do klasy {0}, poniewa\u017c klasa {0} nie jest klas\u0105 interfejsu.
+NOT_AN_INTERFACE.explanation=Metoda unwrap zezwala tylko na odpakowywanie do klasy interfejsu.
+NOT_AN_INTERFACE.useraction=Odpakuj do klasy interfejsu, a nie do klasy konkretnej.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.

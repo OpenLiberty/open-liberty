@@ -12,6 +12,8 @@
 package com.ibm.ws.anno.util.internal;
 
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
@@ -63,7 +65,7 @@ public class UtilImpl_Factory implements Util_Factory {
 
     @Override
     public Set<String> createIdentityStringSet() {
-        return new UtilImpl_IdentityStringSet();
+        return Collections.newSetFromMap(new IdentityHashMap<String, Boolean>());
     }
 
     @Override

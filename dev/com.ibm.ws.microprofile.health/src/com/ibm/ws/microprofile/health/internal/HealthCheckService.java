@@ -38,4 +38,12 @@ public interface HealthCheckService {
      */
     void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse);
 
+    /**
+     * Removes references to an application module. Currently this operation removes entries from the
+     * BeanManager cache that is maintained to avoid looking it up all the time.
+     *
+     * @param appName
+     * @param moduleName
+     */
+    void removeModuleReferences(String appName, String moduleName);
 }

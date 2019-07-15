@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2018 IBM Corporation and others.
+ * Copyright (c) 1998, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,8 @@ public class WsLogManager extends LogManager {
      */
     private static final String CONFIGURE_BY_LOGGING_PROPERTIES_FILE = "java.util.logging.configureByLoggingPropertiesFile";
 
-    private static final boolean configureByServer = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
-    private static final boolean configureByLoggingProperties = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
+    private static boolean configureByServer = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
+    private static boolean configureByLoggingProperties = "true".equalsIgnoreCase(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
 
     private static volatile Constructor<?> wsLogger;
 
@@ -70,7 +70,28 @@ public class WsLogManager extends LogManager {
      */
     @Override
     public void readConfiguration() throws IOException, SecurityException {
-        if (!configureByServer || configureByLoggingProperties) {
+    	
+    	boolean configureByServerLocal = AccessController.doPrivileged(
+    			new PrivilegedAction<Boolean>() {
+    				
+    				@Override
+    				public Boolean run() {
+    					return Boolean.parseBoolean(System.getProperty(CONFIGURE_BY_SERVER_PROPERTY_NAME, "true"));
+    				}
+    			});
+    	boolean configureByLoggingPropertiesLocal = AccessController.doPrivileged(
+    			new PrivilegedAction<Boolean>() {
+    				
+    				@Override
+    				public Boolean run() {
+    					return Boolean.parseBoolean(System.getProperty(CONFIGURE_BY_LOGGING_PROPERTIES_FILE));
+    				}
+    			}); 
+        
+    	configureByServer = configureByServerLocal;
+    	configureByLoggingProperties = configureByLoggingPropertiesLocal;
+    	
+    	if (!configureByServer || configureByLoggingProperties) {
             super.readConfiguration();
         } else {
             // Add a ConsoleHandler to the root logger until we're far enough

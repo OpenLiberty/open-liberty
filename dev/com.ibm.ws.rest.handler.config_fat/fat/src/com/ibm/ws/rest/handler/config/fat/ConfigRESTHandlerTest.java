@@ -1003,4 +1003,28 @@ public class ConfigRESTHandlerTest extends FATServletClient {
             assertTrue("Expected 403 response", ex.getMessage().contains("403"));
         }
     }
+
+    // Invoke /ibm/api/config REST API for a configuration element name that includes special characters.
+    // Attempt to use an "OSGi filter injection attack" to match an entry that shouldn't be matched
+    // and verify that no results are returned.
+    @Test
+    public void testElementNameUsesEscapedCharacters() throws Exception {
+        JsonArray array = new HttpsRequest(server, "/ibm/api/config/abc(d)\\k*m").run(JsonArray.class);
+        String err = "unexpected response: " + array;
+        assertEquals(err, 0, array.size());
+
+        array = new HttpsRequest(server, "/ibm/api/config/uvw)(id=DefaultDataSource)(id=xyz").run(JsonArray.class);
+        err = "unexpected response: " + array;
+        assertEquals(err, 0, array.size());
+    }
+
+    // Invoke /ibm/api/config/dataSource/{uid} with HTTP POST (should not be allowed)
+    @Test
+    public void testPOSTRejected() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource")
+                        .method("POST")
+                        .expectCode(405) // Method Not Allowed
+                        .run(JsonObject.class);
+        assertNull("Json response should be empty.", json);
+    }
 }
