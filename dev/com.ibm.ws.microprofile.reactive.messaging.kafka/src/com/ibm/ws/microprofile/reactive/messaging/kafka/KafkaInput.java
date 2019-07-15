@@ -144,6 +144,8 @@ public class KafkaInput<K, V> {
         } finally {
             this.lock.unlock();
         }
+
+        ackTracker.shutdown();
     }
 
     @FFDCIgnore(WakeupException.class)

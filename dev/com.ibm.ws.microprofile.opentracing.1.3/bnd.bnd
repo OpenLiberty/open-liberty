@@ -52,4 +52,5 @@ Include-Resource: \
 	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest, \
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
-	com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest
+	com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
+	com.ibm.ws.io.opentracing.opentracing-util.0.31.0;version=latest

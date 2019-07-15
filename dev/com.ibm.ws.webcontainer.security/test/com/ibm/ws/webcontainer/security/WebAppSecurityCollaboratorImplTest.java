@@ -787,8 +787,6 @@ public class WebAppSecurityCollaboratorImplTest {
                 allowing(webRequest).getFormLoginConfiguration();
                 will(returnValue(formLoginConfiguration));
                 allowing(webRequest).isUnprotectedURI();
-                allowing(webRequest).isContinueAfterUnprotectedURI();
-                will(returnValue(true));
                 allowing(webRequest).getRequiredRoles();
                 will(returnValue(requiredRoles));
                 allowing(webRequest).isAccessPrecluded();

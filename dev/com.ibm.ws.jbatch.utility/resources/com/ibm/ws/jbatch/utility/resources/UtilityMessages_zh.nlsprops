@@ -1,0 +1,134 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=\u9519\u8bef\uff1a{0}
+error.inputConsoleNotAvailable=\u8f93\u5165\u63a7\u5236\u53f0\u4e0d\u53ef\u7528\u3002
+error.missingIO=\u9519\u8bef\uff0c\u7f3a\u5c11 I/O \u8bbe\u5907\uff1a{0}\u3002
+
+usage=\u7528\u6cd5\uff1a{0}
+task.unknown=\u4ee5\u4e0b\u4efb\u52a1\u672a\u77e5\uff1a{0}
+for.task.usage=\u5bf9\u4e8e\u4efb\u52a1\u63cf\u8ff0\u548c\u7528\u6cd5\uff1a{0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=\u7f3a\u5c11\u5fc5\u9700\u53c2\u6570\uff1a{0}\u3002
+argument.unrecognized=\u4e0d\u53ef\u8bc6\u522b\u7684\u53c2\u6570\uff1a{0}\u3002
+argument.unrecognized.expected=\u4e0d\u53ef\u8bc6\u522b\u7684\u53c2\u6570\uff1a{0}\u3002\
+\u53ef\u80fd\u60a8\u672c\u610f\u4e3a\uff1a{1}\u3002
+argument.invalid.value=\u53c2\u6570\u7684\u503c\u4e0d\u53ef\u63a5\u53d7\uff1a{0}={1}\u3002\u53ef\u63a5\u53d7\u7684\u503c\uff1a{2}\u3002
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: \u5df2\u63d0\u4ea4\u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0}\u3002
+job.submitted.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.submitted.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.restarted=CWWKY0102I: \u5df2\u5bf9\u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0} \u63d0\u4ea4\u91cd\u65b0\u542f\u52a8\u8bf7\u6c42\u3002
+job.restarted.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.restarted.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.stopped=CWWKY0103I: \u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0} \u5df2\u505c\u6b62\u3002\u6279\u5904\u7406\u72b6\u6001\uff1a{2}\u3002\u9000\u51fa\u72b6\u6001\uff1a{3}
+job.stopped.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.stopped.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.stop.submitted=CWWKY0104I: \u5df2\u5bf9\u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0} \u63d0\u4ea4\u505c\u6b62\u8bf7\u6c42\u3002
+job.stop.submitted.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.stop.submitted.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.finished=CWWKY0105I: \u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0} \u5df2\u5b8c\u6210\u3002\u6279\u5904\u7406\u72b6\u6001\uff1a{2}\u3002\u9000\u51fa\u72b6\u6001\uff1a{3}
+job.finished.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.finished.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.instance.record=CWWKY0106I: JobInstance:{0}
+job.instance.record.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.instance.record.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.execution.record=CWWKY0107I: JobExecution:{0}
+job.execution.record.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.execution.record.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+waiting.for.termination=CWWKY0108I: \u7b49\u5f85 JobExecution:{0} \u7ec8\u6b62
+waiting.for.termination.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+waiting.for.termination.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+waiting.for.latest.job.execution=CWWKY0109I: \u7b49\u5f85\u5b9e\u4f8b\u6807\u8bc6\u4e3a {0} \u7684\u4f5c\u4e1a\u7684\u6700\u65b0\u4f5c\u4e1a\u6267\u884c
+waiting.for.latest.job.execution.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+waiting.for.latest.job.execution.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+waiting.for.next.job.execution=CWWKY0110I: \u7b49\u5f85 JobExecution:{0} \u540e\u7684\u4e0b\u4e00\u6b21\u4f5c\u4e1a\u6267\u884c
+waiting.for.next.job.execution.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+waiting.for.next.job.execution.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+joblog.to.file=CWWKY0111I: \u4f5c\u4e1a\u65e5\u5fd7\u5df2\u5199\u81f3\u6587\u4ef6 {0}
+joblog.to.file.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+joblog.to.file.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+failover.to.next.target=CWWKY0112I: \u9488\u5bf9 {0} \u4e2d\u7684\u6279\u5904\u7406\u7ba1\u7406\u5668\u7684\u8bf7\u6c42\u5931\u8d25\u3002\u6b63\u5c06\u8bf7\u6c42\u8f6c\u53d1\u81f3 {1} \u4e2d\u7684\u6279\u5904\u7406\u7ba1\u7406\u5668\u3002\u6545\u969c\u4e3a\uff1a{2}
+failover.to.next.target.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+failover.to.next.target.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+joblog.location=CWWKY0113I: \u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0} \u5b8c\u6210\u65f6\uff0c\u5c06\u4e0b\u8f7d\u5176\u4f5c\u4e1a\u65e5\u5fd7\u3002\
+\u540c\u65f6\uff0c\u60a8\u53ef\u901a\u8fc7\u8bbf\u95ee\u4ee5\u4e0b\u4f4d\u7f6e\u7684\u94fe\u63a5\u6765\u67e5\u770b\u4f5c\u4e1a\u65e5\u5fd7\uff1a{2}
+joblog.location.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+joblog.location.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+joblog.download=CWWKY0114I: \u6b63\u901a\u8fc7 {2} \u4e0b\u8f7d\u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0} \u7684\u4f5c\u4e1a\u65e5\u5fd7\u3002
+joblog.download.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+joblog.download.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.purged=CWWKY0115I: \u5df2\u6210\u529f\u6e05\u9664\u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0}\u3002
+job.purged.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.purged.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+shutdown.hook=CWWKY0116I: \u7b49\u5f85\u5b9e\u4f8b\u6807\u8bc6\u4e3a {1} \u7684\u4f5c\u4e1a {0} \u5b8c\u6210\u65f6\uff0c\u5ba2\u6237\u673a\u5b9e\u7528\u7a0b\u5e8f\u5df2\u5173\u95ed\u3002
+shutdown.hook.explanation=\u7b49\u5f85\u4f5c\u4e1a\u5b8c\u6210\u65f6\u5f3a\u5236\u5173\u95ed\u547d\u4ee4\u884c\u5b9e\u7528\u7a0b\u5e8f\u7684\u60c5\u51b5\u4e0b\u4f1a\u53d1\u51fa\u6b64\u6d88\u606f\u3002\
+\u4f5c\u4e3a\u54cd\u5e94\uff0c\u5b9e\u7528\u7a0b\u5e8f\u4f1a\u5c1d\u8bd5\u901a\u8fc7\u63d0\u4ea4\u505c\u6b62\u8bf7\u6c42\u6765\u505c\u6b62\u8be5\u4f5c\u4e1a\u3002
+shutdown.hook.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+job.purged.multi=CWWKY0117I: \u5c1d\u8bd5\u6e05\u9664\u5b9e\u4f8b\u6807\u8bc6\u4e3a {0} \u7684\u4f5c\u4e1a\uff0c\u8fd4\u56de\u7684\u72b6\u6001\u4e3a\uff1a{1}\u3002\u6d88\u606f\uff1a{2}\uff0c\u91cd\u5b9a\u5411 URL\uff1a{3}
+job.purged.multi.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.purged.multi.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+job.parms.vals=CWWKY0118I: \u6700\u7ec8\u4f5c\u4e1a\u53c2\u6570\u96c6\u4e3a {0}
+job.parms.vals.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+job.parms.vals.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+control.props.vals=CWWKY0119I: \u6700\u7ec8\u63a7\u5236\u5c5e\u6027\u96c6\u4e3a {0}
+control.props.vals.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+control.props.vals.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+control.props.file.warning=CWWKY0120W: \u65e0\u6cd5\u5728\u63a7\u5236\u5c5e\u6027\u6587\u4ef6\u4e2d\u4f7f\u7528\u5c5e\u6027 {0}\uff0c\u5c06\u5ffd\u7565\u3002\u4ec5\u53ef\u5728\u547d\u4ee4\u884c\u4e0a\u4f7f\u7528\u5c5e\u6027 {0}\u3002
+control.props.file.warning.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+control.props.file.warning.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+

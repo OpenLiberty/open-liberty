@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: \u017b\u0105danie {0} jest uruchomione w w\u0105tku {1} przez co najmniej {2} ms. Nast\u0119puj\u0105cy stos wywo\u0142a\u0144 pokazuje, jaki w\u0105tek jest obecnie uruchomiony.\n\n {3}\nPoni\u017csza tabela przedstawia zdarzenia, kt\u00f3re by\u0142y uruchomione podczas tego \u017c\u0105dania.\n{4} 
+REQUEST_TIMER_WARNING.explanation=\u017b\u0105danie dzia\u0142a\u0142o przez d\u0142u\u017cszy czas ni\u017c skonfigurowany przedzia\u0142 czasu powolnych \u017c\u0105da\u0144. Informacje w tabeli pokazuj\u0105, jakie zdarzenia by\u0142y ju\u017c uruchomione jako cz\u0119\u015b\u0107 \u017c\u0105dania. Zdarzenia, kt\u00f3re wci\u0105\u017c dzia\u0142aj\u0105, s\u0105 wskazywane za pomoc\u0105 znaku + obok przedzia\u0142u czasu. Warto\u015b\u0107 domy\u015blna przedzia\u0142u czasu powolnych \u017c\u0105da\u0144 wynosi 10 sekund. Sprawd\u017a w pliku server.xml bie\u017c\u0105c\u0105 warto\u015b\u0107.
+REQUEST_TIMER_WARNING.useraction=U\u017cyj informacji w tabeli, aby okre\u015bli\u0107, jaka cz\u0119\u015b\u0107 \u017c\u0105dania dzia\u0142a wolniej ni\u017c oczekiwano. Je\u015bli pojawi\u0142o si\u0119 wiele ostrze\u017ce\u0144 dla r\u00f3\u017cnych \u017c\u0105da\u0144 w prawie tym samym czasie, mo\u017ce to wskazywa\u0107, \u017ce co\u015b spowolni\u0142o ca\u0142y proces serwera, na przyk\u0142ad inny proces w tym samym systemie wykorzystuj\u0105cy du\u017c\u0105 ilo\u015b\u0107 zasob\u00f3w przetwarzania.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: \u017b\u0105danie {0} jest uruchomione w w\u0105tku {1} przez co najmniej {2} ms. Poni\u017csza tabela przedstawia zdarzenia, kt\u00f3re by\u0142y uruchomione podczas tego \u017c\u0105dania.\n{3}
+HUNG_REQUEST_WARNING.explanation=\u017b\u0105danie dzia\u0142a\u0142o przez d\u0142u\u017cszy czas ni\u017c skonfigurowany przedzia\u0142 czasu zawieszonych \u017c\u0105da\u0144. Informacje w tabeli pokazuj\u0105, jakie zdarzenia by\u0142y ju\u017c uruchomione jako cz\u0119\u015b\u0107 \u017c\u0105dania. W celu zebrania dodatkowych informacji o mo\u017cliwej przyczynie zawieszenia \u017c\u0105dania automatycznie wyzwolone zostan\u0105 podstawowe modu\u0142y Java. Warto\u015b\u0107 domy\u015blna przedzia\u0142u czasu zawieszonych \u017c\u0105da\u0144 wynosi 10 minut. Sprawd\u017a w pliku server.xml bie\u017c\u0105c\u0105 warto\u015b\u0107.
+HUNG_REQUEST_WARNING.useraction=U\u017cyj informacji w tabeli, aby okre\u015bli\u0107, jaka cz\u0119\u015b\u0107 \u017c\u0105dania zawiesi\u0142a si\u0119 lub dzia\u0142a w p\u0119tli. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: \u017b\u0105danie {0} w w\u0105tku {1}, kt\u00f3re wcze\u015bniej zosta\u0142o wykryte jako zawieszone, zosta\u0142o zako\u0144czone po {2} ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=Zadanie zawieszonych \u017c\u0105da\u0144 powiadomi u\u017cytkownika, gdy zawieszone \u017c\u0105danie zostanie zako\u0144czone.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: Nie mo\u017cna odczyta\u0107 konfiguracji czasu powi\u0105zanej z identyfikatorem PID {0} z konfiguracji.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=Us\u0142uga czasu \u017c\u0105dania podj\u0119\u0142a pr\u00f3b\u0119 odczytania wbudowanej konfiguracji czasu z pliku server.xml. Identyfikator PID powi\u0105zany z elementem czasu znajduje si\u0119 w komunikacie.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Sprawd\u017a inne komunikaty o b\u0142\u0119dach w pliku messages.log, takie jak CWWKG0058E, aby zapozna\u0107 si\u0119 ze szczeg\u00f3\u0142ami problemu z konfiguracj\u0105. Popraw konfiguracj\u0119 w celu usuni\u0119cia b\u0142\u0119du.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Konfiguracja czasu typu {0} i wzorzec informacji o kontek\u015bcie {1} ju\u017c istniej\u0105. Konfiguracja czasu powi\u0105zana z identyfikatorem PID {2} zast\u0119puje poprzedni\u0105 konfiguracj\u0119 czasu.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=Znaleziono zduplikowan\u0105 konfiguracj\u0119 czasu w pliku server.xml. Kombinacja typu i wzorca informacji o kontek\u015bcie by\u0142a ju\u017c zdefiniowana.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Sprawd\u017a plik server.xml i usu\u0144 wszystkie zduplikowane konfiguracje czasu.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: W konfiguracji czasu dla identyfikatora PID {0} podano wzorzec informacji o kontek\u015bcie, ale w konfiguracji czasu \u017c\u0105dania ustawiono warto\u015b\u0107 atrybutu includeContextInfo na false. Konfiguracja czasu zostanie zignorowana.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=Us\u0142uga czasu \u017c\u0105da\u0144 odczyta\u0142a wbudowan\u0105 konfiguracj\u0119 czasu z pliku server.xml. Konfiguracja czasu okre\u015bla wzorzec informacji o kontek\u015bcie do dopasowania. Us\u0142uga czasu \u017c\u0105da\u0144 jest skonfigurowana do wy\u0142\u0105czania informacji o kontek\u015bcie dla wszystkich \u017c\u0105da\u0144 i nie mo\u017ce dopasowa\u0107 \u017c\u0105da\u0144 do tej konfiguracji czasu.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Sprawd\u017a plik server.xml i rozwi\u0105\u017c konflikty konfiguracji, zmieniaj\u0105c warto\u015b\u0107 atrybutu includeContextInfo na true w konfiguracji czasu \u017c\u0105dania lub usuwaj\u0105c wzorzec informacji o kontek\u015bcie z konfiguracji czasu.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: W konfiguracji czasu dla identyfikatora PID {0} podano wzorzec informacji o kontek\u015bcie, kt\u00f3ry zawiera znak wieloznaczny w nieobs\u0142ugiwanym po\u0142o\u017ceniu. Znak wieloznaczny b\u0119dzie traktowany jak gwiazdka. Wzorzec informacji o kontek\u015bcie: {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=Us\u0142uga czasu \u017c\u0105da\u0144 odczyta\u0142a wbudowan\u0105 konfiguracj\u0119 czasu z pliku server.xml. Znak gwiazdki we wzorcu informacji o kontek\u015bcie jest traktowany jak znak wieloznaczny, chyba \u017ce jego znaczenie zostanie zmienione przy u\u017cyciu uko\u015bnika odwrotnego. Znak wieloznaczny jest dozwolony tylko jako ostatni znak we wzorcu informacji o kontek\u015bcie.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Aby interpretowa\u0107 znak wieloznaczny jako gwiazdk\u0119, zmie\u0144 jego znaczenie przy u\u017cyciu znaku uko\u015bnika odwrotnego.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nTabela zosta\u0142a obci\u0119ta, poniewa\u017c liczba zdarze\u0144 \u017c\u0105dania przekroczy\u0142a dozwolony limit.

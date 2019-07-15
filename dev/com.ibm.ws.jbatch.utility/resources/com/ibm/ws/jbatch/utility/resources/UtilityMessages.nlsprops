@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Error: {0}
+error.inputConsoleNotAvailable=Input console is not available.
+error.missingIO=Error, missing I/O device: {0}.
+
+usage=Usage: {0}
+task.unknown=Unknown task: {0}
+for.task.usage=For task description and usage: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Missing required argument: {0}.
+argument.unrecognized=Unrecognized argument: {0}.
+argument.unrecognized.expected=Unrecognized argument: {0}. Perhaps you meant: {1}.
+argument.invalid.value=Unacceptable value for argument: {0}={1}. Acceptable values: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: Job {0} with instance ID {1} has been submitted.
+job.submitted.explanation=This message is for informational purposes only.
+job.submitted.useraction=No action is required.
+
+job.restarted=CWWKY0102I: A restart request has been submitted for job {0} with instance ID {1}.
+job.restarted.explanation=This message is for informational purposes only.
+job.restarted.useraction=No action is required.
+
+job.stopped=CWWKY0103I: Job {0} with instance ID {1} has stopped. Batch status: {2}. Exit status: {3}
+job.stopped.explanation=This message is for informational purposes only.
+job.stopped.useraction=No action is required.
+
+job.stop.submitted=CWWKY0104I: A stop request has been submitted for job {0} with instance ID {1}.
+job.stop.submitted.explanation=This message is for informational purposes only.
+job.stop.submitted.useraction=No action is required.
+
+job.finished=CWWKY0105I: Job {0} with instance ID {1} has finished. Batch status: {2}. Exit status: {3}
+job.finished.explanation=This message is for informational purposes only.
+job.finished.useraction=No action is required.
+
+job.instance.record=CWWKY0106I: JobInstance:{0}
+job.instance.record.explanation=This message is for informational purposes only.
+job.instance.record.useraction=No action is required.
+
+job.execution.record=CWWKY0107I: JobExecution:{0}
+job.execution.record.explanation=This message is for informational purposes only.
+job.execution.record.useraction=No action is required.
+
+waiting.for.termination=CWWKY0108I: Waiting for termination of JobExecution:{0}
+waiting.for.termination.explanation=This message is for informational purposes only.
+waiting.for.termination.useraction=No action is required.
+
+waiting.for.latest.job.execution=CWWKY0109I: Waiting for the latest job execution for job with instance ID {0}
+waiting.for.latest.job.execution.explanation=This message is for informational purposes only.
+waiting.for.latest.job.execution.useraction=No action is required.
+
+waiting.for.next.job.execution=CWWKY0110I: Waiting for the next job execution after JobExecution:{0}
+waiting.for.next.job.execution.explanation=This message is for informational purposes only.
+waiting.for.next.job.execution.useraction=No action is required.
+
+joblog.to.file=CWWKY0111I: The joblog was written to file {0}
+joblog.to.file.explanation=This message is for informational purposes only.
+joblog.to.file.useraction=No action is required.
+
+failover.to.next.target=CWWKY0112I: A request for the batch manager at {0} failed. Forwarding the request to the batch manager at {1}. The failure was: {2}
+failover.to.next.target.explanation=This message is for informational purposes only.
+failover.to.next.target.useraction=No action is required.
+
+joblog.location=CWWKY0113I: The joblog for job {0} with instance ID {1} will be downloaded when the job completes. \
+ In the meantime, you may view the joblog by following the links here: {2}
+joblog.location.explanation=This message is for informational purposes only.
+joblog.location.useraction=No action is required.
+
+joblog.download=CWWKY0114I: The joblog for job {0} with instance ID {1} is being downloaded via {2}.
+joblog.download.explanation=This message is for informational purposes only.
+joblog.download.useraction=No action is required.
+
+job.purged=CWWKY0115I: Job {0} with instance ID {1} has been successfully purged.
+job.purged.explanation=This message is for informational purposes only.
+job.purged.useraction=No action is required.
+
+shutdown.hook=CWWKY0116I: The client utility was shut down while waiting for job {0} with instance ID {1} to finish.
+shutdown.hook.explanation=This message is issued when the command-line utility is forcefully shut down while waiting for a job to finish. \
+ In response, the utility attempts to stop the job by submitting a stop request.
+shutdown.hook.useraction=No action is required.
+
+job.purged.multi=CWWKY0117I: Attempt to purge job with instance id {0} returned status: {1}. Message: {2} RedirectUrl: {3}
+job.purged.multi.explanation=This message is for informational purposes only.
+job.purged.multi.useraction=No action is required.
+
+job.parms.vals=CWWKY0118I: The final set of job parameters are {0}
+job.parms.vals.explanation=This message is for informational purposes only.
+job.parms.vals.useraction=No action is required.
+
+control.props.vals=CWWKY0119I: The final set of control properties are {0}
+control.props.vals.explanation=This message is for informational purposes only.
+control.props.vals.useraction=No action is required.
+
+control.props.file.warning=CWWKY0120W: Property {0} cannot be used in a control properties file and will be ignored. Property {0} can only be used on the command line.
+control.props.file.warning.explanation=This message is for informational purposes only.
+control.props.file.warning.useraction=No action is required.
+
+

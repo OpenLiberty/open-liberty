@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: Die Stapeljobprotokollierung f\u00fcr Job {0}, Jobinstanz {1}, Jobausf\u00fchrung {2} wurde wegen einer Ausnahme nicht gestartet.\n{3}
+job.logging.create.new.explanation=Bei der Stapeljobprotokollierung wurde keine Protokolldatei erstellt. Die Stapelprotokollierung ist wegen einer Ausnahme fehlgschlagen.
+job.logging.create.new.useraction=Sehen Sie sich die Ausnahme an, \u00fcberpr\u00fcfen Sie den Dateisystemstatus und ergreifen Sie die entsprechende Korrekturma\u00dfnahme. Die Stapelausf\u00fchrung wird ohne Jobprotokollierung fortgesetzt.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: Bei der Stapeljobprotokollierung wurden wegen einer Ausnahme keine zus\u00e4tzlichen Protokollteildateien erstellt. \n{0}\nDie Stapeljobprotokollierung versucht, die aktuelle Datei weiterzuverwenden. 
+job.logging.create.next.explanation=Bei der Stapeljobprotokollierung wurden keine zus\u00e4tzlichen Protokollteildateien erstellt. Die Erstellung einer neuen Datei w\u00e4hrend der Stapelprotokollierung ist wegen einer Ausnahme fehlgeschlagen.\n Die Stapeljobprotokollierung versucht, die aktuelle Datei weiterzuwenden.
+job.logging.create.next.useraction=Sehen Sie sich die Ausnahme an, \u00fcberpr\u00fcfen Sie den Dateisystemstatus und ergreifen Sie die entsprechende Korrekturma\u00dfnahme. Die Stapeljobprotokollierung versucht, die aktuelle Datei weiterzuverwenden.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: Bei der Stapeljobprotokollierung wurde die Protokollteildatei wegen einer Ausnahme nicht gelesen. \n{0}
+job.logging.read.log.explanation=Bei der Stapeljobprotokollierung wurde die Protokollteildatei nicht gelesen. Das Lesen der Teildatei bei der Stapelprotokollierung ist wegen einer Ausnahme fehlgeschlagen. \nDie Stapeljobprotokollierung wird ohne Ver\u00f6ffentlichung des Jobprotokollereignisses fortgesetzt.
+job.logging.read.log.useraction=Sehen Sie sich die Ausnahme an, \u00fcberpr\u00fcfen Sie den Dateisystemstatus und ergreifen Sie die entsprechende Korrekturma\u00dfnahme.\nDie Stapeljobprotokollierung wird ohne Ver\u00f6ffentlichung des Jobprotokollereignisses fortgesetzt.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: Bei der Stapeljobprotokollierung wurde die folgende Protokollteildatei oder das folgende Verzeichnis nicht gel\u00f6scht: {0}. 
+job.logging.delete.log.explanation=Bei der Stapeljobprotokollierung wurde die Protokollteildatei oder ein Verzeichnis nicht gel\u00f6scht.\nDie Stapeljobprotokollierung wird ohne L\u00f6schen der Datei bzw. des Verzeichnisses fortgesetzt.
+job.logging.delete.log.useraction=Sehen Sie sich die Ausnahme an, \u00fcberpr\u00fcfen Sie den Dateisystemstatus und ergreifen Sie die entsprechende Korrekturma\u00dfnahme.\nDie Stapeljobprotokollierung wird ohne L\u00f6schen der Datei bzw. des Verzeichnisses fortgesetzt.

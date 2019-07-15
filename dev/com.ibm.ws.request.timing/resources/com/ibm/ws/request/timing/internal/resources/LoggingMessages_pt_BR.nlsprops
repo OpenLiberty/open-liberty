@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: A solicita\u00e7\u00e3o {0} est\u00e1 em execu\u00e7\u00e3o no encadeamento {1} por, pelo menos, {2}ms. O rastreio de pilha a seguir mostra que esse encadeamento est\u00e1 em execu\u00e7\u00e3o atualmente.\n\n {3}\n A tabela a seguir mostra os eventos que executaram durante essa solicita\u00e7\u00e3o.\n{4} 
+REQUEST_TIMER_WARNING.explanation=A solicita\u00e7\u00e3o est\u00e1 em execu\u00e7\u00e3o por mais tempo do que a dura\u00e7\u00e3o de solicita\u00e7\u00e3o lenta configurada. As informa\u00e7\u00f5es na tabela mostram quais eventos j\u00e1 executaram como parte da solicita\u00e7\u00e3o. Eventos que ainda est\u00e3o em execu\u00e7\u00e3o s\u00e3o indicados com um + ao lado da dura\u00e7\u00e3o. O valor padr\u00e3o para a dura\u00e7\u00e3o da solicita\u00e7\u00e3o lenta \u00e9 10 segundos, verifique o arquivo server.xml para o valor atual.
+REQUEST_TIMER_WARNING.useraction=Use as informa\u00e7\u00f5es na tabela para determinar qual parte da solicita\u00e7\u00e3o est\u00e1 mais lenta do que o esperado.  Se muitos avisos s\u00e3o fornecidos para diferentes solicita\u00e7\u00f5es quase ao mesmo tempo, isso pode indicar que alguma coisa diminuiu a velocidade do processo do servidor inteiro, como outro processo no mesmo sistema consumindo uma grande quantidade de recursos de processamento.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: A solicita\u00e7\u00e3o {0} est\u00e1 em execu\u00e7\u00e3o no encadeamento {1} por, pelo menos, {2}ms. A tabela a seguir mostra os eventos que executaram durante essa solicita\u00e7\u00e3o.\n{3}
+HUNG_REQUEST_WARNING.explanation=A solicita\u00e7\u00e3o est\u00e1 em execu\u00e7\u00e3o por mais tempo do que a dura\u00e7\u00e3o de solicita\u00e7\u00e3o suspensa configurada. As informa\u00e7\u00f5es na tabela mostram quais eventos j\u00e1 executaram como parte da solicita\u00e7\u00e3o. N\u00facleos Java ser\u00e3o acionados automaticamente para coletar informa\u00e7\u00f5es adicionais sobre o que pode estar causando a suspens\u00e3o da solicita\u00e7\u00e3o. O valor padr\u00e3o para a dura\u00e7\u00e3o da solicita\u00e7\u00e3o suspensa \u00e9 10 minutos, verifique o  arquivo server.xml para o valor atual.
+HUNG_REQUEST_WARNING.useraction=Use as informa\u00e7\u00f5es na tabela para determinar qual parte da solicita\u00e7\u00e3o est\u00e1 suspensa ou em um loop. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: A solicita\u00e7\u00e3o {0} no encadeamento {1}, que anteriormente foi detectada como interrompida, foi conclu\u00edda depois de {2}ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=A tarefa de solicita\u00e7\u00e3o suspensa notificar\u00e1 o usu\u00e1rio quando qualquer solicita\u00e7\u00e3o suspensa for conclu\u00edda.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.    
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: A configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o associada ao PID {0} n\u00e3o pode ser lida na configura\u00e7\u00e3o.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=O servi\u00e7o de sincroniza\u00e7\u00e3o de solicita\u00e7\u00e3o tentou ler uma configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o integrada no arquivo server.xml. O PID associado ao elemento de sincroniza\u00e7\u00e3o est\u00e1 na mensagem.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Verifique o messages.log para obter outras mensagens de erro, tais como CWWKG0058E, para obter detalhes sobre o problema de configura\u00e7\u00e3o. Corrija a configura\u00e7\u00e3o para resolver o erro.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Uma configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o do tipo {0} e padr\u00e3o de informa\u00e7\u00f5es de contexto {1} j\u00e1 existe. A configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o associada ao PID {2} substitui a configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o anterior.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=Uma configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o duplicada foi localizada no arquivo server.xml. A combina\u00e7\u00e3o de tipo e padr\u00e3o de informa\u00e7\u00f5es de contexto j\u00e1 estava definida.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Inspecione o arquivo server.xml e remova quaisquer configura\u00e7\u00f5es de sincroniza\u00e7\u00e3o duplicadas.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: A configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o para o PID {0} fornece um padr\u00e3o de informa\u00e7\u00f5es de contexto, mas a configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o de solicita\u00e7\u00e3o define o atributo includeContextInfo para false.A configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o ser\u00e1 ignorada.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=O servi\u00e7o de sincroniza\u00e7\u00e3o de solicita\u00e7\u00e3o leu uma configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o integrada no arquivo server.xml. A configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o especificou um padr\u00e3o de informa\u00e7\u00f5es de contexto para corresponder.O servi\u00e7o de sincroniza\u00e7\u00e3o de solicita\u00e7\u00e3o est\u00e1 configurado para desativar informa\u00e7\u00f5es de contexto para todas as solicita\u00e7\u00f5es e n\u00e3o pode corresponder solicita\u00e7\u00f5es para essa configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Inspecione o arquivo server.xml e resolva o conflito de configura\u00e7\u00e3o mudando o valor de includeContextInfo para true na configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o de solicita\u00e7\u00e3o ou removendo o padr\u00e3o de informa\u00e7\u00f5es de contexto da configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: A configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o associada ao PID {0} fornece um padr\u00e3o de informa\u00e7\u00f5es de contexto que cont\u00e9m um curinga em um local n\u00e3o suportado.O curinga ser\u00e1 tratado como um asterisco.O padr\u00e3o de informa\u00e7\u00f5es de contexto \u00e9 {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=O servi\u00e7o de sincroniza\u00e7\u00e3o de solicita\u00e7\u00e3o leu uma configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o integrada no arquivo server.xml. No padr\u00e3o de informa\u00e7\u00f5es de contexto, um caractere asterisco \u00e9 tratado como um curinga, a menos que seja escapado com um caractere de barra invertida.Um curinga \u00e9 permitido apenas como o \u00faltimo caractere do padr\u00e3o de informa\u00e7\u00f5es de contexto.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Para interpretar o caractere curinga como um asterisco, escape-o com um caractere de barra invertida.
+
+TRUNCATED_REQUEST_MESSAGE=\n \n A tabela foi truncada porque o n\u00famero de eventos para a solicita\u00e7\u00e3o excedeu o limite permitido.

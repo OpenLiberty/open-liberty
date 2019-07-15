@@ -63,33 +63,23 @@ public class JMXMBeanEvent extends AuditEvent {
             set(AuditEvent.TARGET_REALM, AuditUtils.getRealmName());
 
             if (params != null) {
+                /*
+                 * The format of the parameter is enclosed by bracket for each element of root parameters.
+                 * For example, if parameter is {1, 2}, the output is [1][2].
+                 * If an element is array, it is enclosed another bracket and each elements of the array is
+                 * separated by comma. For example, if parameter is {1, {10, 20}}, the output is
+                 * [1][[10, 20]].
+                 * If there is a nested array, the same rule for the array will apply.
+                 * For example, if paramter is {1, (10, {100, 200}}}, the output is
+                 * [1][10, [100, 200]].
+                 */
                 StringBuffer buf = new StringBuffer();
-                for (int i = 0; i < params.length; i++) {
-                    if (params[i] != null) {
-                        if (params[i].getClass() != null && params[i].getClass().isArray()) {
-                            if (params[i] instanceof long[]) {
-                                buf.append("[").append(java.util.Arrays.toString((long[]) params[i])).append("]");
-                            } else if (params[i] instanceof boolean[]) {
-                                buf.append("[").append(java.util.Arrays.toString((boolean[]) params[i])).append("]");
-                            } else if (params[i] instanceof byte[]) {
-                                buf.append("[").append(java.util.Arrays.toString((byte[]) params[i])).append("]");
-                            } else if (params[i] instanceof int[]) {
-                                buf.append("[").append(java.util.Arrays.toString((int[]) params[i])).append("]");
-                            } else if (params[i] instanceof short[]) {
-                                buf.append("[").append(java.util.Arrays.toString((short[]) params[i])).append("]");
-                            } else if (params[i] instanceof char[]) {
-                                buf.append("[").append(java.util.Arrays.toString((char[]) params[i])).append("]");
-                            } else if (params[i] instanceof float[]) {
-                                buf.append("[").append(java.util.Arrays.toString((float[]) params[i])).append("]");
-                            } else if (params[i] instanceof double[]) {
-                                buf.append("[").append(java.util.Arrays.toString((double[]) params[i])).append("]");
-                            } else if (params[i] instanceof Object[]) {
-                                buf.append("[").append(unravelArray(buf, params[i])).append("]");
-                            }
-                        } else
-                            buf.append("[").append(params[i]).append("]");
+                for (Object element : params) {
+                    if (element != null) {
+                        buf.append("[").append(ParameterUtils.format(element)).append("]");
                     }
                 }
+
                 String siggy = buf.toString();
                 if (!siggy.isEmpty())
                     set(AuditEvent.TARGET_JMX_MBEAN_PARAMS, siggy);
@@ -127,29 +117,5 @@ public class JMXMBeanEvent extends AuditEvent {
                 Tr.debug(tc, "Internal error creating JMXMBeanEvent", e);
             }
         }
-    }
-
-    public StringBuffer unravelArray(StringBuffer buf, Object param) {
-        if (param instanceof long[]) {
-            buf.append("[").append(java.util.Arrays.toString((long[]) param)).append("]");
-        } else if (param instanceof boolean[]) {
-            buf.append("[").append(java.util.Arrays.toString((boolean[]) param)).append("]");
-        } else if (param instanceof int[]) {
-            buf.append("[").append(java.util.Arrays.toString((int[]) param)).append("]");
-        } else if (param instanceof byte[]) {
-            buf.append("[").append(java.util.Arrays.toString((byte[]) param)).append("]");
-        } else if (param instanceof short[]) {
-            buf.append("[").append(java.util.Arrays.toString((short[]) param)).append("]");
-        } else if (param instanceof char[]) {
-            buf.append("[").append(java.util.Arrays.toString((char[]) param)).append("]");
-        } else if (param instanceof float[]) {
-            buf.append("[").append(java.util.Arrays.toString((float[]) param)).append("]");
-        } else if (param instanceof double[]) {
-            buf.append("[").append(java.util.Arrays.toString((double[]) param)).append("]");
-        } else if (param instanceof Object[]) {
-            buf.append("[").append(unravelArray(buf, param)).append("]");
-        }
-        return buf;
-
     }
 }

@@ -63,7 +63,6 @@ public class LifeCycle12Test extends AbstractTest {
         runGetMethod("/rest/lifecycle1", 200, "Resource: LifeCycleResource1", true);
         runGetMethod("/rest/lifecycle1", 200, "Resource: LifeCycleResource1", true);
         runGetMethod("/rest/lifecycle1", 200, "Resource: LifeCycleResource1", true);
-        Thread.currentThread();
         Thread.sleep(1500);
 
         assertLibertyMessage("postConstruct method is called on com.ibm.ws.jaxrs20.cdi12.fat.lifecyclemethod.LifeCycleResource1", 3, "equal");
@@ -74,30 +73,11 @@ public class LifeCycle12Test extends AbstractTest {
         assertLibertyMessage("preDestory method is called on com.ibm.ws.jaxrs20.cdi12.fat.lifecyclemethod.LifeCycleResource2", 0, "equal");
 
         Thread.sleep(1500);
-        uninstallApplication();
-        Thread.currentThread();
+        assertTrue("Failed to remove app from dropins dir", server.removeAndStopDropinsApplications(LIFECYCLEWAR));
         Thread.sleep(1500);
 
         assertLibertyMessage("preDestory method is called on com.ibm.ws.jaxrs20.cdi12.fat.lifecyclemethod.LifeCycleApplication", 1, "equal");
         assertLibertyMessage("preDestory method is called on com.ibm.ws.jaxrs20.cdi12.fat.lifecyclemethod.LifeCycleResource2", 1, "equal");
 
-    }
-
-    /*
-     * "remove the dropins app the way LibertyServer does (or just use the LibertyServer method)...
-     * Instead of deleting the file itself, move it to a path outside of dropins.
-     * That is more of an atomic operation and guarantees that for expanded applications
-     * we don't get one event with some file deletes, and then another with the rest."
-     */
-    protected void uninstallApplication() throws Exception {
-        boolean success = false;
-        try {
-            String dropinsFilePath = server.getServerRoot() + "/dropins/" + LIFECYCLEWAR;
-            String nonDropinsFilePath = server.getServerRoot() + "/" + LIFECYCLEWAR;
-            success = LibertyFileManager.renameLibertyFile(server.getMachine(), dropinsFilePath, nonDropinsFilePath);
-        } catch (Exception e) {
-            Log.warning(this.getClass(), e.getMessage());
-        }
-        assertTrue("Application lifecyclemethod does not appear to have removed.", success);
     }
 }

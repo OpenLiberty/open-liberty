@@ -122,4 +122,11 @@ public class HealthCheckServiceImpl implements HealthCheckService {
 
         hcHttpResponseBuilder.setHttpResponse(httpResponse);
     }
+
+    @Override
+    public void removeModuleReferences(String appName, String moduleName) {
+        if (hcExecutor != null) {
+            hcExecutor.removeModuleReferences(appName, moduleName);
+        }
+    }
 }

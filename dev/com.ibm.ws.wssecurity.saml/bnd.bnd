@@ -1,0 +1,51 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: wsssaml
+Bundle-SymbolicName: com.ibm.ws.wssecurity.saml
+Bundle-Description: IBM SAML token on Web Service Security; version=${bVersion}
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: \
+  WSSecurity
+
+Export-Package: \
+ com.ibm.ws.wssecurity.saml.impl
+ 
+
+Service-Component: \
+  com.ibm.ws.wssecurity.saml.impl.WssSamlServiceImpl; \
+    implementation:=com.ibm.ws.wssecurity.saml.impl.WssSamlServiceImpl; \
+    provide:=com.ibm.ws.security.sso.common.SsoService; \
+    configuration-policy:=ignore; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    securityService=com.ibm.ws.security.SecurityService; \
+    ssoService=com.ibm.ws.security.sso.common.SsoService; \
+    optional:='ssoService'; \
+    greedy:='ssoService, securityService'; \
+    dynamic:='ssoService,securityService'; \
+    multiple:="ssoService"; \
+    properties:="service.vendor=IBM,type=wssSaml"
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.sso.common;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

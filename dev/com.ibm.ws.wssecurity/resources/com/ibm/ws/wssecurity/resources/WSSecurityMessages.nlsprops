@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: WS-Security cannot be applied to any web service.  An error occurred while attempting to register the WS-Security policy loader with the CXF framework: [{0}]
+error.policy.notloaded.explanation=The WS-Security policy loader could not be registered with the CXF framework during server startup.  Because of the error, the WS-Security runtime will not be invoked for any SOAP message and WS-Security constraints will not be added.
+error.policy.notloaded.useraction=Address the error described in the message.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security cannot be applied to any web service client application.  The WS-Security client configuration element, wsSecurityClient, does not exist in server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=The wsSecurity-1.1 feature is enabled but the WS-Security component cannot find the wsSecurityClient element in server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=If WS-Security constraints are required for a client web service application, add the required wsSecurityClient configuration element to server.xml.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: WS-Security cannot be applied to any web service provider application. The WS-Security provider configuration element, wsSecurityProvider, does not exist in server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=The wsSecurity-1.1 feature is enabled but the WS-Security component cannot find the wsSecurityProvider element in server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=If WS-Security constraints are required for a provider web service application, add the required wsSecurityProvider configuration element to server.xml.
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: A caller token configuration cannot not be applied to web service provider applications.  The name, [{0}], specified for the callerToken element in the wsSecurityProvider configuration in the server.xml is not valid. The valid values are: [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=The name specified for the callerToken element in the wsSecurityProvider configuration in the server.xml is not valid.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=Check the server.xml file to make sure that a supported value is specified for the callerToken element. The valid values are displayed in the error message.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: A security subject cannot be created for the web service.  The callerToken cannot be identified in the inbound message because more than one UsernameToken exists in the SOAP Security header.
+multiple_unt_exist_err.explanation=The callerToken in server.xml is set to UsernameToken and the Security header in the inbound SOAP message contains more than one UsernameToken.  Because of this, the WS-Security runtime cannot determine which UsernameToken to use for the caller token.
+multiple_unt_exist_err.useraction=Do one of the following: 1) Change the client configuration to send only one UsernameToken 2) Remove the callerToken configuration in server.xml
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E: A security subject cannot be created for the web service.  A {0} callerToken is configured, but there is no {0} token in the inbound SOAP Security header.  A caller token could not be selected.
+no_caller_exist_err.explanation=The callerToken configured in the server.xml is not present in the SOAP Security header. 
+no_caller_exist_err.useraction=Do one of the following: 1) Change the client configuration to send the correct caller token 2) Remove the callerToken configuration in the server.xml
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: A security subject cannot be created for the web service due to [{0}].
+error_authenticate.explanation=A security subject for the caller token retrieved from the SOAP Security header could not be created.  The reason for the error is described in the message.
+error_authenticate.useraction=Address the error described in the message.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: A security subject cannot be created for the web service.  The caller token cannot be identified in the inbound message.  The callerToken in the server.xml is set to X509Token, endorsingSupportingToken is set to true (the default), and there is more than one EndorsingSupportingTokens in the inbound SOAP Security header.
+multiple_endorsing_token_err.explanation=The callerToken in the server.xml is set to X509Token, endorsingSupportingToken is set to true (the default), and there is more than one EndorsingSupportingTokens in the inbound SOAP Security header.  Since a single caller token must exist in the message for a caller token to be successfully selected, having multiple EndorsingSupportingTokens is not allowed.                                   
+multiple_endorsing_token_err.useraction=Do one of the following: 1) Change the policy so that only one endorsingSupportingToken will be included in the message, 2) Remove the callerToken configuration in the server.xml, 3) Set endorsingSupportingToken to false in the callerToken configuration in server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: A security subject cannot be created for the web service.  The caller token cannot be identified in the inbound message.  The callerToken in the server.xml is set to X509Token, endorsingSupportingToken is set to false, and there is more than one Asymmetric signature token in the inbound SOAP Security header.
+multiple_asymmetric_token_err.explanation=The callerToken in the server.xml is set to X509Token, endorsingSupportingToken is set to false, and there is more than one Asymmetric signature token in the inbound SOAP Security header.  Since a single caller token must exist in the message for a caller token to be successfully selected, having multiple Asymmetric signature tokens is not allowed.                                   
+multiple_asymmetric_token_err.useraction=Do one of the following: 1) Change the policy so that only one Asymmetric signature token will be included in the message, 2) Remove the callerToken configuration in the server.xml
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: The NotBefore assertion [{0}] in the SAML token is out of range. The current time is [{1}]. The current clock skew setting is [{2}] seconds.
+saml_token_not_yet_valid.explanation=The NotBefore assertion within the SAML token specifies the time at which the token becomes valid; the token cannot be used before this time. To use this SAML token, the value of the NotBefore assertion must be an instant in the past. A possible reason for the error is that the receiver's clock is out of sync with the clock of the creator of the assertion.
+saml_token_not_yet_valid.useraction=Make sure the date and time on the IdP is synchronized with this SAML Web Single Sign-On (SSO) service provider, or increase the clock skew.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: The NotOnOrAfter assertion [{0}] in the SAML token is out of range. The current time is [{1}]. The current clock skew setting is [{2}] seconds.
+saml_token_expired.explanation=The NotOnOrAfter assertion within the SAML token specifies the time at which the token expires. The token must be used before this time. A possible reason for the error is that the receiver's clock is out of sync with the clock of the creator of the assertion.
+saml_token_expired.useraction=Make sure the date and time on the IdP is synchronized with this SAML Web Single Sign-On (SSO) service provider, or increase the clock skew.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: The IssueInstant [{0}] in the SAML token is out of range. The current time is [{1}]. The current clock skew setting is [{2}] seconds.
+saml_token_issued_too_long_ago.explanation=The IssueInstant assertion within the SAML token was too far in the past for this token to be used. A SAML token must be used within a configured time after being issued. A possible reason for the error is that the receiver's clock is out of sync with the clock of the creator of the assertion.
+saml_token_issued_too_long_ago.useraction=Make sure the date and time on the IdP is synchronized with this SAML Web Single Sign-On (SSO) service provider, or increase the clock skew.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: The IssueInstant [{0}] in the SAML token is in the future and therefore out of range. The current time is [{1}]. The current clock skew setting is [{2}] seconds.
+saml_token_issue_instant_in_future.explanation=The IssueInstant assertion within the SAML token was set to a time in the future and is therefore not yet considered valid. The IssueInstant value must be in the past in order for the SAML token to be valid. A possible reason for the error is that the receiver's clock is out of sync with the clock of the creator of the assertion.
+saml_token_issue_instant_in_future.useraction=Make sure the date and time on the IdP is synchronized with this SAML Web Single Sign-On (SSO) service provider, or increase the clock skew.
+
+failed_to_extract_saml_element=CWWKW0218W: An exception occurred while attempting to extract the SAML element from the provided SAML token. The exception was: [{0}]
+failed_to_extract_saml_element.explanation=An exception occurred while parsing the SAML token. The token might have been malformed, or there was an internal error while attempting to parse the token string.
+failed_to_extract_saml_element.useraction=Check the server logs for more information about the error.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: An exception occurred while attempting to extract the SAML token from the subject. The exception was: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=An exception occurred while extracting the SAML token from the subject.
+failed_to_extract_saml_token_from_subject.useraction=Check the server logs for more information about the error.
+
+failed_to_obtain_subject_info=CWWKW0220E: Authentication failed due to an exception while obtaining subject information from the SAML assertion. The exception was: [{0}]
+failed_to_obtain_subject_info.explanation=An exception occurred while attempting to obtain information about the subject from the provided SAML token.
+failed_to_obtain_subject_info.useraction=Check the server logs for more information about the error.
+
+failed_to_authenticate=CWWKW0221E: Authentication failed due to an unexpected exception. The exception was: [{0}].
+failed_to_authenticate.explanation=There was likely a problem obtaining subject or identity information while interacting with the user registry.
+failed_to_authenticate.useraction=Check the server logs for more information about the error. Ensure that the subject information in the SAML token maps to the expected values in the configured user registry.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: Token validation failed because the received UsernameToken password type [{0}] does not match the required password type [{0}].
+password_type_mismatch.explanation=The password type in the UsernameToken did not match the required password type as defined in the WS-Security policy. These types must be identical; the web service client must assert the same password type that is defined in the WS-Security policy in order for validation to succeed.
+password_type_mismatch.useraction=Ensure that the web service client asserts the same password type that is defined in the WS-Security policy.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: Token validation failed because a custom password type was detected, but the configuration data provided in the request specifies that custom password types are not supported.
+cannot_handle_custom_password_types.explanation=The password in the UsernameToken was neither hashed nor in plaintext and was therefore considered a custom password type. The configuration in the request data specifies that custom password types are not supported.
+cannot_handle_custom_password_types.useraction=Ensure that the web service client uses a password type as defined in the UsernameToken profile, or configure the web service provider to accept custom password types.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: The user name or password specified in the UsernameToken was empty. Check the UsernameToken to ensure that a non-empty user name and password are provided in the token.
+empty_user_or_password.explanation=The user name or password entries in the UsernameToken were either missing or empty.
+empty_user_or_password.useraction=Check that a user name and password are provided in the token. If a user name and password are not provided, obtain a new UsernameToken.
+
+registry_exception_checking_password=CWWKW0225E: An exception occurred while accessing the user registry or while checking the password for user [{0}]. The exception was: [{1}]
+registry_exception_checking_password.explanation=There was an error obtaining a reference to the user registry from the user registry service, or an exception occurred while checking the password for the given user.
+registry_exception_checking_password.useraction=Check the server logs for more information about the exception. Ensure that the provided user name and password are correct and correspond to an entry in the configured user registry.
+
+check_password_failed=CWWKW0226E: The user [{0}] could not be validated. Verify that the user name and password credentials that were provided are correct.
+check_password_failed.explanation=The specified user could not be validated against the configured user registry. This is likely due to a user name or password mismatch.
+check_password_failed.useraction=Check the provided credentials to ensure that the user name and password match an entry in the configured user registry.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: A null password was returned from the password callback handler.
+no_password_returned_by_callback.explanation=The password callback handler must return a non-null password for passwords of type PasswordDigest within a UsernameToken.
+no_password_returned_by_callback.useraction=Ensure that the password callback handler returns a non-null and non-empty password for a valid user.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: The SAML assertion does not contain a [{0}] attribute.  A [{0}] attribute is required because the caller configuration specified this as a [{1}] identifier. 
+SAML20_ATTRIBUTE_ERR.explanation=The SAML assertion is either missing the attribute or the caller configuration specified a wrong value for the mentioned identifier.
+SAML20_ATTRIBUTE_ERR.useraction=Do one of the following: 1)Make sure that the attribute exists in the SAML assertion. 2) Configure the callerToken to specify a different attribute as the identifier.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: The SAML assertion does not contain a [{0}] element.  A [{0}] element is required.  
+SAML20_ELEMENT_ERR.explanation=The SAML assertion is missing an element required by the WS-Security run time to complete the processing of the caller token.
+SAML20_ELEMENT_ERR.useraction=Do one of the following: 1)Make sure that the required element exists in the SAML assertion. 2) Configure the callerToken to define a value for the element.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with the message [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=The UserCredentialResolver service provided by the user feature can not map the SAML Assertion properly and throws a UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Make sure the UserCredentialResolver service is properly set up if the UserIdentityException is not expected.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: A security subject cannot be created for the web service.  The callerToken cannot be identified in the inbound message because more than one Saml Assertion exists in the SOAP Security header.
+multiple_saml_exist_err.explanation=The callerToken in the server.xml is set to SamlToken and the Security header in the inbound SOAP message contains more than one Saml Assertion.  Because of this, the WS-Security runtime cannot determine which Saml Assertion to use for the caller token.
+multiple_saml_exist_err.useraction=Do one of the following: 1) Change the client configuration to send only one Saml Assertion 2) Remove the callerToken configuration in the server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: A security subject cannot be created for the web service using the user ID [{0}].
+error_authenticate_maptouser.explanation=A security subject for the caller token retrieved from the SOAP Security header could not be created. Make sure that the user specified in the message exists in the user registry.
+error_authenticate_maptouser.useraction=Do one of the following: 1) Make sure that the user exists in the user registry in the server.xml. 2) Do not set the mapToUserRegistry attribute in the callerToken configuration.
+
+no_callbacks_provided=CWWKW0233E: No callbacks were provided to handle the request.
+no_callbacks_provided.explanation=At least one callback must be passed to the callback handler in order to process and return a SAML token.
+no_callbacks_provided.useraction=There is no user action available for this case.
+
+no_saml_found_in_subject=CWWKW0234E: The required SAML token is missing from the subject.
+no_saml_found_in_subject.explanation=There was an error extracting the SAML token from the subject or a SAML element was not found in the current subject.
+no_saml_found_in_subject.useraction=If you create the run-as subject, make sure that the SAML token is added to the subject. Otherwise ensure that your server configuration supports adding the SAML token to the subject by checking the includeTokenInSubject attribute in your SAML configuration.

@@ -28,7 +28,7 @@ def setProperties = { props ->
         'zipopenliberty.kernel.archivename',
         'zipopenliberty.webprofile8.archivename',
         'zipopenliberty.javaee8.archivename',
-        'zipopenliberty.microprofile2.archivename'
+        'zipopenliberty.microprofile3.archivename'
     ]
     if (genPropsFile.exists()) {
         Properties genProps = new Properties()
@@ -130,6 +130,11 @@ def setProperties = { props ->
     props.setProperty('version.qualifier', qualifier)
     props.setProperty('buildLabel', timestamp)
 
+    // The qualifier below is needed for service builds only, do not delete it.
+    gradle.rootProject { rootProject ->
+        rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")
+        rootProject.ext.releaseVersionOverride = gradle.userProps.getProperty('release.version.override')
+    }
     /**
      * For each property in `gradle.userProps`, set it to rootProject's extra project properties.
      */

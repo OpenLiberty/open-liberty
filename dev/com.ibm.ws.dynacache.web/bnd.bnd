@@ -1,0 +1,75 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+#
+#Imported but not exported:
+#com.ibm.ejs.util.am
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: dynacache web
+Bundle-SymbolicName: com.ibm.ws.dynacache.web
+Bundle-Description: Dynacache Web cache capability in Liberty
+    
+Include-Resource: \
+    META-INF/cachespec.dtd=resources/cachespec.dtd
+
+Export-Package: \
+ com.ibm.websphere.command; provide:=true, \
+ com.ibm.websphere.command.web; provide:=true, \
+ com.ibm.websphere.servlet.cache; provide:=true, \
+ com.ibm.ws.cache.servlet, \
+ com.ibm.ws.cache.command, \
+ com.ibm.ws.cache.web*, \
+ com.ibm.wsspi.cache.web; provide:=true
+ 
+Import-Package: \
+ com.ibm.ws.cache.resources, \
+ *
+
+Private-Package: \
+ com.ibm.ws.cache.command
+
+-dsannotations: \
+  com.ibm.ws.cache.web.ServletCacheServiceImpl, \
+  com.ibm.ws.cache.web.config.ConfigManager, \
+  com.ibm.ws.cache.servlet.CacheProxyResponseFactoryImpl, \
+  com.ibm.ws.cache.servlet.FragmentComposerFactoryImpl, \
+  com.ibm.ws.cache.servlet.ServletCacheEngine
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.dynacache;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.common.encoder;version=latest, \
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.2;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.jsp;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+# <property name="extra.vmargs" value="-Xmx1g" />
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.resource;version=latest

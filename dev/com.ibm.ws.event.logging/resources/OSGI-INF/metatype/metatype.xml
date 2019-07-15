@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD name="%eventLogging.name" description="%eventLogging.desc" id="com.ibm.ws.event.logging.metatype" ibm:supportExtensions="true" ibm:alias="eventLogging">
+           
+           <AD name="%sampleRate" description="%sampleRate.desc"
+            id="sampleRate" required="false" type="Integer" min="1" default="1" />
+            
+	        <AD id="logMode" ibm:variable="logMode" name="%logMode.name" description="%logMode.desc" type="String" default="exit"> 
+	            <Option label="%logMode.entry" value="entry"/>
+		        <Option label="%logMode.exit" value="exit"/>
+	            <Option	label="%logMode.entryExit" value="entryExit"/>   
+	        </AD>
+            
+            <AD name="%minDuration" description="%minDuration.desc"
+            id="minDuration" required="false" type="String" ibm:type="duration(ms)" default="1s" />
+            
+            <AD name="%eventTypes" description="%eventTypes.desc"
+            id="eventTypes" required="false" type="String" default="all" />
+			
+			<AD id="includeContextInfo"
+            	name="%includeContextInfo" 
+            	description="%includeContextInfo.desc" 
+            	required="false" type="Boolean" default="true" />
+           
+    </OCD>
+
+
+    <Designate pid="com.ibm.ws.event.logging">
+        <Object ocdref="com.ibm.ws.event.logging.metatype" />
+    </Designate>
+
+  
+</metatype:MetaData>
+
+
+ 

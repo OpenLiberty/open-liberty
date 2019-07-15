@@ -1,0 +1,45 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>jndi-1.0</feature>
+        <feature>osgiConsole-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>persistentExecutor-1.0</feature>
+        <!-- feature>testFeature-1.0</feature -->
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Test feature configurable element -->
+    <delayExecUserFeature jndiName="tempUserService" activateDelay="30s" numberOfNotificationSleeps="1" />
+
+    <persistentExecutor id="executor1" jndiName="concurrent/executorservice1" taskStoreRef="DBTaskStore" 
+      retryLimit="1" initialPollDelay="1s" pollInterval="3s"/>
+
+  <databaseStore id="DBTaskStore" dataSourceRef="SchedDB"/>
+
+  <!-- database for scheduled tasks -->
+  <dataSource id="SchedDB">
+    <jdbcDriver libraryRef="FATJDBCLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:delayexec"/>
+  </dataSource>
+  <library id="FATJDBCLib">
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  </library>
+  
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  
+  <transactions timeout="180"/>
+
+  <variable name="onError" value="FAIL"/>
+
+</server>

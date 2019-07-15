@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.saml.sso-2.0/resources/com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML Web SSO 20 Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS5000 - CWWKS5099
+#This is duplicated with /com.ibm.ws.security.saml.sso-2.0/resources/com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages.nlsprops
+
+SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: Der SAML Web SSO Version 2.0-Endpunktservice ist aktiviert.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=Der SAML Web SSO Version 2.0-Endpunktservice ist aktiviert.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Es ist keine Aktion erforderlich.
+
+# web RequestFilter
+SAML20_INVALID_ACS_URL=CWWKS5003E: Der angeforderte Endpunkt [{0}] wird in diesem SAML Web Single Sign-On (SSO)-Service-Provider (SP) nicht unterst\u00fctzt. 
+SAML20_INVALID_ACS_URL.explanation=Die angegebene URL ist kein g\u00fcltiger SP-Endpunkt. Dies ist m\u00f6glicherweise auf eine falsche Konfiguration im SP zur\u00fcckzuf\u00fchren. 
+SAML20_INVALID_ACS_URL.useraction=Stellen Sie sicher, dass der SP ordnungsgem\u00e4\u00df konfiguriert ist.
+
+# EndpointServlet
+SAML20_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5005E: Eine SAML Web Single Sign-On-Anforderung kann nicht verarbeitet werden, weil kein SAML Web SSO-Feature verf\u00fcgbar ist.
+SAML20_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Es wurde eine SAML Web Single Sign-On-Anforderung vom Server empfangen, aber das Feature samlWeb-2.0 ist in der Datei server.xml nicht aktiviert oder es ist nicht verf\u00fcgbar.
+SAML20_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Stellen Sie sicher, dass das Feature samlWeb-2.0 und dessen Abh\u00e4ngigkeiten im featureManager der Datei server.xml konfiguriert sind.

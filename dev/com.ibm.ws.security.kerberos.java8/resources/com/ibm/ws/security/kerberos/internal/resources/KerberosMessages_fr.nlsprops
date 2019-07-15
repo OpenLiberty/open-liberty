@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: Impossible de simuler les droits d''acc\u00e8s de l''utilisateur {0} pour obtenir automatiquement les donn\u00e9es utilisateur GSSCredential lors de l''utilisation du nom principal de service {1} en raison de l''exception {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=Impossible de simuler les droits d'acc\u00e8s de l'utilisateur en raison d'une exception inattendue.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Assurez-vous que le nom principal de service d\u00e9l\u00e9gu\u00e9 est activ\u00e9 pour le d\u00e9l\u00e9gu\u00e9 et consultez les journaux serveur pour plus d'informations.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: Impossible de simuler les droits d''acc\u00e8s de l''utilisateur {0} pour obtenir les donn\u00e9es GSSCredential pour le service de back end lors de l''utilisation du nom principal de service d\u00e9l\u00e9gu\u00e9 {1} en raison de l''exception {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=Impossible de simuler les droits d'acc\u00e8s de l'utilisateur en raison d'une exception inattendue.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Assurez-vous que l'attribut S4U2proxy est d\u00e9fini sur true dans la configuration d'\u00e9l\u00e9ment SPNEGO, que le SPN de service d\u00e9l\u00e9gu\u00e9 est activ\u00e9 pour le d\u00e9l\u00e9gu\u00e9 dans Key Distribution Center (KDC), que le ticket de service client a un indicateur acheminable d\u00e9fini sur true, et les tickets de service de d\u00e9l\u00e9gu\u00e9 ont un indicateur acheminable d\u00e9fini sur true. Passez en revue les journaux du serveur pour plus d'informations.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: Impossible de traiter la m\u00e9thode {0} car la d\u00e9l\u00e9gation contrainte S4U2self n''est pas activ\u00e9e.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=Impossible de traiter la m\u00e9thode car la d\u00e9l\u00e9gation contrainte S4U2self n'est pas activ\u00e9e.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Assurez-vous que la fonction de d\u00e9l\u00e9gation contrainte est activ\u00e9 et que l'attribut S4U2self est d\u00e9fini sur true dans la configuration de d\u00e9l\u00e9gation contrainte dans le fichier server.xml. Passez en revue les journaux du serveur pour plus d'informations.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: Impossible de traiter la m\u00e9thode {0} car la d\u00e9l\u00e9gation contrainte S4U2proxy n''est pas activ\u00e9e.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=Impossible de traiter la m\u00e9thode car la d\u00e9l\u00e9gation contrainte n'est pas activ\u00e9e.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Assurez-vous que la fonction de d\u00e9l\u00e9gation contrainte est activ\u00e9 et que l'attribut S4U2proxy est d\u00e9fini sur true dans la configuration de d\u00e9l\u00e9gation contrainte dans le fichier server.xml. Passez en revue les journaux du serveur pour plus d'informations.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: La fonction de d\u00e9l\u00e9gation contrainte Kerberos n''est pas accept\u00e9e avec le fournisseur Java {0} et la version Java {1}.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=La fonction de d\u00e9l\u00e9gation contrainte Kerberos ne peut pas \u00eatre activ\u00e9e en raison de la combinaison de fournisseur et de version du runtime Java.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utilisez le fournisseur et la version Java accept\u00e9s par la fonction de d\u00e9l\u00e9gation contrainte Kerberos.
+
+
+
+
+
+
+
+
+
+
+
+
