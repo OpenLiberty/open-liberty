@@ -24,8 +24,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
-import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -93,7 +91,9 @@ public class AuthorizationCodeHandler {
 
         SSLSocketFactory sslSocketFactory = null;
         try {
-            sslSocketFactory = getSSLSocketFactory(clientConfig.getTokenEndpointUrl(), clientConfig.getSSLConfigurationName(), clientId);
+            //sslSocketFactory = getSSLSocketFactory(clientConfig.getTokenEndpointUrl(), clientConfig.getSSLConfigurationName(), clientId);
+            boolean throwExc = clientConfig.getTokenEndpointUrl() != null && clientConfig.getTokenEndpointUrl().startsWith("https");
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, throwExc, false);
         } catch (SSLException e) {
             Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e.getMessage() != null ? e.getMessage() : "invalid ssl context", clientConfig.getClientId() });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
@@ -124,21 +124,8 @@ public class AuthorizationCodeHandler {
             // this has a LOT of dependencies.
             oidcResult = jose4jUtil.createResultWithJose4J(responseState, tokens, clientConfig, oidcClientRequest);
 
-            //if tokens were valid, go get the userinfo if configured to do so, and update the authentication result to include it.
-            UserInfoHelper uih = new UserInfoHelper(clientConfig);
-            if (uih.willRetrieveUserInfo()) {
-                OidcTokenImplBase idToken = null;
-                if (oidcResult.getCustomProperties() != null) {
-                    idToken = (OidcTokenImplBase) oidcResult.getCustomProperties().get(Constants.ID_TOKEN_OBJECT);
-                }
-                String subjFromIdToken = null;
-                if (idToken != null) {
-                    subjFromIdToken = idToken.getSubject();
-                }
-                if (subjFromIdToken != null) {
-                    uih.getUserInfo(oidcResult, sslSocketFactory, tokens.get(Constants.ACCESS_TOKEN), subjFromIdToken);
-                }
-            }
+            //go get the userinfo if configured to do so, and update the authentication result to include it.
+            new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, tokens, sslSocketFactory);
 
         } catch (BadPostRequestException e) {
             Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getErrorMessage(), clientId, clientConfig.getTokenEndpointUrl() });
@@ -149,26 +136,6 @@ public class AuthorizationCodeHandler {
             oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
         return oidcResult;
-    }
-
-    protected SSLSocketFactory getSSLSocketFactory(String tokenUrl, String sslConfigurationName, String clientId) throws SSLException {
-        SSLSocketFactory sslSocketFactory = null;
-
-        try {
-            sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
-        } catch (javax.net.ssl.SSLException e) {
-            throw new SSLException(e.getMessage());
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
-        }
-
-        if (sslSocketFactory == null) {
-            if (tokenUrl != null && tokenUrl.startsWith("https")) {
-                throw new SSLException(Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientId }));
-            }
-        }
-        return sslSocketFactory;
     }
 
     // refactored from Oauth SendErrorJson.  Only usable for sending an http400.

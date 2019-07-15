@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.web;
 
@@ -103,14 +103,14 @@ public class OidcRedirectServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 return;
             }
-            getTokenFromFragment(request, response); // bt: using javascript, send the browser to the redirect url registered for the client.
-        } else { // bt: state has been set by OP, continue processing.
+            getTokenFromFragment(request, response); //using javascript, send the browser to the redirect url registered for the client.
+        } else { // state has been set by OP, continue processing.
             this.doPost(request, response);
         }
     }
 
-    /**
-     * bt: this method gets entered twice during routine processing.
+    /*
+     * this method gets entered twice during routine processing.
      * First time, browser has been redirected to OP and is coming back with auth code or id token.
      */
     @Override
@@ -123,8 +123,8 @@ public class OidcRedirectServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
-        // bt: when base security first redirected the browser, they set this cookie to hold the original URL.
-        // bt: Now it's time to get it back.
+        //  when base security first redirected the browser, they set this cookie to hold the original URL.
+        //  Now it's time to get it back.
         String cookieName = ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
         Cookie[] cookies = request.getCookies();
         String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
@@ -175,14 +175,16 @@ public class OidcRedirectServlet extends HttpServlet {
         }
         boolean isHttpsRequest = requestUrl.toLowerCase().startsWith("https");
         OidcClientConfigImpl clientCfg = activatedOidcClientImpl.getOidcClientConfig(request, clientId);
-        new OidcClientUtil().setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg); //bt: store all req params in digested cookie
+        // store all request params in digested cookie
+        new OidcClientUtil().setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg);
+
         if ((oidcClientId != null && !oidcClientId.isEmpty()) || id_token != null) {
-            postToWASReqURL(request, response, requestUrl, oidcClientId); // bt: implicit flow???
+            postToWASReqURL(request, response, requestUrl, oidcClientId); //  implicit flow???
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "... expect to be redirected by the browser:" + requestUrl);
             }
-            response.sendRedirect(requestUrl); // bt: back to protected resource
+            response.sendRedirect(requestUrl); // send back to protected resource
         }
     }
 
@@ -238,7 +240,7 @@ public class OidcRedirectServlet extends HttpServlet {
                 Tr.debug(tc, "get unexpected exception", e);
             }
         }
-        
+
         Cookie c = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams, request);
         if (clientCfg.isHttpsRequired() && isHttpsRequest) {
             c.setSecure(true);
