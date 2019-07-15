@@ -33,6 +33,7 @@ import com.ibm.ws.security.oauth20.web.AbstractOidcEndpointServices;
  */
 public class OidcBaseClientValidator {
     protected static final String MESSAGE_BUNDLE = "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages";
+    private static final String[] illegalChars = new String[] { "<", ">" };
 
     private OidcBaseClient client; // Defensive copy of OidcBaseClient reference used in constructor
 
@@ -61,6 +62,7 @@ public class OidcBaseClientValidator {
      * @throws OidcServerException
      */
     public OidcBaseClient validateCreateUpdate() throws OidcServerException {
+        detectIllegalChars();
         validateAppType();
 
         validateResponseTypes();
@@ -93,9 +95,44 @@ public class OidcBaseClientValidator {
     }
 
     /**
+     * check for disallowed characters that could allow javascript to be fed back to ui.
+     */
+    private void detectIllegalChars() throws OidcServerException {
+        dic(client.getClientId());
+        dic(client.getClientSecret());
+        dic(client.getRedirectUris());
+        dic(client.getClientName());
+        dic(client.getPostLogoutRedirectUris());
+        dic(client.getPreAuthorizedScope());
+        dic(client.getFunctionalUserId());
+        dic(client.getFunctionalUserGroupIds());
+    }
+
+    // detect illegal chars
+    private void dic(String s) throws OidcServerException {
+        if (s == null || s.length() == 0) {
+            return;
+        }
+        for (int i = 0; i < illegalChars.length; i++) {
+            if (s.contains(illegalChars[i])) {
+                String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
+                        MESSAGE_BUNDLE,
+                        "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", // CWWKS1423E
+                        new Object[] { illegalChars[i] }, "");
+                throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            }
+        }
+    }
+
+    // detect illegal chars
+    private void dic(JsonArray a) throws OidcServerException {
+        dic(a.toString());
+    }
+
+    /**
      * Method will return raw values of client, but with defaults set for
      * omitted fields
-     * 
+     *
      * @return copy of client passed in, but with default fields set where appropriate
      */
     public OidcBaseClient setDefaultsForOmitted() {

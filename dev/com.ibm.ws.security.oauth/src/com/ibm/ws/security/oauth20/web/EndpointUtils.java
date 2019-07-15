@@ -195,4 +195,27 @@ public class EndpointUtils {
         return lookupKey;
     }
 
+    // fix any unescaped ". Doesn't handle bs,ff,\n,\r,\t \Uxxxx, \\, \/
+    public static String escapeQuotesForJson(String in) {
+        String quot = "\"";
+        String bsh = "\\";
+        if (!in.contains(quot)) {
+            return in;
+        }
+        String prev = "";
+        String next = "";
+        StringBuffer out = new StringBuffer();
+        for (int i = 0; i < in.length(); i++) {
+            prev = next;
+            next = in.substring(i, i + 1);
+            if (next.equals(quot)) {
+                if (!prev.equals(bsh)) {
+                    out.append(bsh).append(next); // fix "
+                    continue;
+                }
+            }
+            out.append(next);
+        }
+        return out.toString();
+    }
 }

@@ -217,7 +217,7 @@ public class OAuth20EndpointServices {
             }
             return;
         }
-        boolean isBrowser = false;
+        boolean isBrowserWithBasicAuth = false;
         UIAccessTokenBuilder uitb = null;
         try {
             switch (endpointType) {
@@ -285,6 +285,10 @@ public class OAuth20EndpointServices {
                 if (!authenticateUI(request, response, servletContext, oauth20Provider, oidcOptionalParams, null)) {
                     break;
                 }
+                checkUIConfig(oauth20Provider, request);
+                // put auth header and access token and feature enablement state into request attributes for ui to use
+                uitb = new UIAccessTokenBuilder(oauth20Provider, request);
+                uitb.createHeaderValuesForUI();
                 // new MockUiPage(request, response).render(); // TODO: replace with hook to real ui.
                 RequestDispatcher rd2 = servletContext.getRequestDispatcher("WEB-CONTENT/accountManager/index.jsp");
                 rd2.forward(request, response);
@@ -294,6 +298,10 @@ public class OAuth20EndpointServices {
                 if (!authenticateUI(request, response, servletContext, oauth20Provider, oidcOptionalParams, OAuth20Constants.TOKEN_MANAGER_ROLE)) {
                     break;
                 }
+                checkUIConfig(oauth20Provider, request);
+                // put auth header and access token and feature enablement state into request attributes for ui to use
+                uitb = new UIAccessTokenBuilder(oauth20Provider, request);
+                uitb.createHeaderValuesForUI();
                 // new MockUiPage(request, response).render(); // TODO: replace with hook to real ui.
                 RequestDispatcher rd3 = servletContext.getRequestDispatcher("WEB-CONTENT/tokenManager/index.jsp");
                 rd3.forward(request, response);
@@ -307,14 +315,14 @@ public class OAuth20EndpointServices {
                 break;
             }
         } catch (OidcServerException e) {
-            if (!isBrowser) {
+            if (!isBrowserWithBasicAuth) {
                 // we don't want routine browser auth challenges producing ffdc's.
                 // (but if a login is invalid in that case, we will still get a CWIML4537E from base sec.)
                 // however for non-browsers we want ffdc's like we had before, so generate manually
                 com.ibm.ws.ffdc.FFDCFilter.processException(e,
-                        "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "274", this);
+                        "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
             }
-            boolean suppressBasicAuthChallenge = isBrowser; // ui must NOT log in using basic auth, so logout function will work.
+            boolean suppressBasicAuthChallenge = isBrowserWithBasicAuth; // ui must NOT log in using basic auth, so logout function will work.
             WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(), suppressBasicAuthChallenge);
         }
 
@@ -332,9 +340,7 @@ public class OAuth20EndpointServices {
         if (!isUIAuthenticationComplete(request, response, provider, result, requiredRole)) {
             return false;
         }
-        // put auth header and access token and feature enablement state into request attributes for ui to use
-        UIAccessTokenBuilder uitb = new UIAccessTokenBuilder(provider, request);
-        uitb.createHeaderValuesForUI();
+
         return true;
     }
 
@@ -376,9 +382,10 @@ public class OAuth20EndpointServices {
         metatypeService.sendClientMetatypeData(request, response);
     }
 
-    private boolean uiEnabled(OAuth20Provider provider, HttpServletRequest request) {
+    private boolean checkUIConfig(OAuth20Provider provider, HttpServletRequest request) {
         String uri = request.getRequestURI();
         String id = provider.getInternalClientId();
+        String secret = provider.getInternalClientSecret();
         OidcBaseClient client = null;
         boolean result = false;
         try {
@@ -387,10 +394,10 @@ public class OAuth20EndpointServices {
             // ffdc
         }
         if (client != null) {
-            result = client.isEnabled() && (client.isAppPasswordAllowed() || client.isAppTokenAllowed());
+            result = secret != null && client.isEnabled() && (client.isAppPasswordAllowed() || client.isAppTokenAllowed());
         }
         if (!result) {
-            Tr.error(tc2, "OAUTH_UI_ENDPOINT_NOT_ENABLED", uri);
+            Tr.warning(tc2, "OAUTH_UI_ENDPOINT_NOT_ENABLED", uri);
         }
         return result;
     }
@@ -453,7 +460,7 @@ public class OAuth20EndpointServices {
         String reqConsentNonce = getReqConsentNonce(request);
         boolean afterLogin = isAfterLogin(request); // we've been to login.jsp or it's replacement.
 
-        if (reqConsentNonce == null) { // validate request for initial authorization request only //bt: we probably don't need this for ui
+        if (reqConsentNonce == null) { // validate request for initial authorization request only 
             oauthResult = clientAuthorization.validateAuthorization(provider, request, response);
             if (oauthResult.getStatus() != OAuthResult.STATUS_OK) {
                 return oauthResult;
