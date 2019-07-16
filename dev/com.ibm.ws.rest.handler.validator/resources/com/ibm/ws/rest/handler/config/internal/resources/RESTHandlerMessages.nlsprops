@@ -1,0 +1,32 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+MISSING_DELIMITER_ERROR=CWWKO1012E: Login config property lacks delimiter '=' between key and value
+MISSING_DELIMITER_ERROR.explanation=The X-Login-Config-Props header does not contain a key value pairing delimited by an equals sign('=').
+MISSING_DELIMITER_ERROR.useraction=Update the login config property provided to use a key value pairing that is delimited by an '='.
+
+VALIDATOR_NOT_FOUND_ERROR=CWWKO1013E: Unable to obtain validator for {0}
+VALIDATOR_NOT_FOUND_ERROR.explanation=A validator for to handle the specified element type could not be found.
+VALIDATOR_NOT_FOUND_ERROR.useraction=Ensure the element type being validated can be validated, and the necessary features to validate it are enabled.
