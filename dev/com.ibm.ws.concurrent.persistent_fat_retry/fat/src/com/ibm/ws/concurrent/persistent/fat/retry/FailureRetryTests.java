@@ -30,7 +30,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.FeatureManager;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
@@ -39,15 +41,19 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.database.DerbyEmbeddedUtilities;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Tests for error paths in persistent scheduled executor
  */
+@RunWith(FATRunner.class)
 public class FailureRetryTests {
 
 	private static final LibertyServer server = FATSuite.server;
+	
+	private static final String APP_NAME = "retrytest";
 
-	private static final Set<String> appNames = Collections.singleton("retrytest");
+	private static final Set<String> appNames = Collections.singleton(APP_NAME);
 
 	@Rule
 	public TestName testName = new TestName();
@@ -141,8 +147,7 @@ public class FailureRetryTests {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		savedConfig = server.getServerConfiguration().clone();
-		for (String name : appNames)
-			server.addInstalledAppForValidation(name);
+		ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 		DerbyEmbeddedUtilities.createDB(server, "SchedDB");
 	}
 
