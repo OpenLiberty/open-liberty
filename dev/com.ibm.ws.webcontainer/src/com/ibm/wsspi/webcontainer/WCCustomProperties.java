@@ -310,7 +310,7 @@ public class WCCustomProperties {
     //18.0.0.3
     public static String SERVLET_PATH_FOR_DEFAULT_MAPPING;
 
-    //19.0.0.4
+    //19.0.0.8
     public static boolean GET_REAL_PATH_RETURNS_QUALIFIED_PATH;
 
     static {
@@ -788,7 +788,7 @@ public class WCCustomProperties {
         //18.0.0.3
         SERVLET_PATH_FOR_DEFAULT_MAPPING = customProps.getProperty("com.ibm.ws.webcontainer.servletpathfordefaultmapping"); //4666
 
-        // 19.0.0.7
+        // 19.0.0.8
         GET_REAL_PATH_RETURNS_QUALIFIED_PATH = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.getrealpathreturnsqualifiedpath", "true")).booleanValue();
     }
 
