@@ -12,6 +12,7 @@ package com.ibm.ws.security.oauth20.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -126,6 +127,7 @@ public class OAuth20ClientMetatypeService {
                 return;
             }
             response.setHeader("Content-Type", "application/json");
+            response.setCharacterEncoding(StandardCharsets.UTF_16.toString());
             PrintWriter writer = response.getWriter();
             writer.println(metadataJson.toString());
             writer.flush();
