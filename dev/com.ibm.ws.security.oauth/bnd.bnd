@@ -174,4 +174,5 @@ Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/Pr
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
-	com.ibm.ws.org.eclipse.equinox.metatype;version=latest
+	com.ibm.ws.org.eclipse.equinox.metatype;version=latest,\
+	com.ibm.ws.security.jwt;version=latest

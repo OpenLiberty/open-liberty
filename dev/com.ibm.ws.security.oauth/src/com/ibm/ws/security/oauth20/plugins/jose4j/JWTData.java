@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.jwt.utils.JwtDataConfig;
 import com.ibm.ws.security.oauth20.TraceConstants;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -46,15 +47,27 @@ public class JWTData {
 
     String signatureAlgorithm = null;
     JWTTokenException noKeyException = null;
+    com.ibm.ws.security.jwt.utils.JwtData wrappedJwtData; // wrap the JWT feature's class for commonality.
 
     public JWTData(@Sensitive String sharedKey, OidcServerConfig oidcServerConfig, String tokenType) {
         this.oidcServerConfig = oidcServerConfig;
         this.tokenType = tokenType;
         this.signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
-
         bIdToken = TYPE_ID_TOKEN.equals(tokenType);
         bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
-        initSigningKey(sharedKey);
+        Key privateKey = null;
+        try {
+            privateKey = oidcServerConfig.getPrivateKey();
+            JwtDataConfig config = new JwtDataConfig(signatureAlgorithm, oidcServerConfig.getJSONWebKey(), sharedKey,
+                    privateKey, null, null, tokenType,
+                    oidcServerConfig.isJwkEnabled());
+            wrappedJwtData = new com.ibm.ws.security.jwt.utils.JwtData(config);
+            _signingKey = wrappedJwtData.getSigningKey();
+            _keyId = wrappedJwtData.getKeyID();
+        } catch (Exception e) {
+            recordException(e);
+        }
+
     }
 
     /*
@@ -62,7 +75,7 @@ public class JWTData {
      */
     @FFDCIgnore(Exception.class)
     @Sensitive
-    protected void initSigningKey(@Sensitive String sharedKey) {
+    protected void initSigningKeyOld(@Sensitive String sharedKey) {
         try {
             if (this.oidcServerConfig.isJwkEnabled() && SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
                 JSONWebKey jwk = this.oidcServerConfig.getJSONWebKey();
@@ -86,15 +99,19 @@ public class JWTData {
                 }
             }
         } catch (Exception e) {
-            // UnsupportedEncodingException e (won't happen)
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception obtaining the signing key: " + e);
-            }
-            // error messages
-            // JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key was not available. The signature algorithm is [{0}]. {1}
-            Object[] objs = new Object[] { signatureAlgorithm, e.getLocalizedMessage() }; // let JWTTokenException handle the exception
-            noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
+            recordException(e);
         }
+    }
+
+    private void recordException(Exception e) {
+        // UnsupportedEncodingException e (won't happen)
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Exception obtaining the signing key: " + e);
+        }
+        // error messages
+        // JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key was not available. The signature algorithm is [{0}]. {1}
+        Object[] objs = new Object[] { signatureAlgorithm, e.getLocalizedMessage() }; // let JWTTokenException handle the exception
+        noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
     }
 
     public String getSignatureAlgorithm() {
