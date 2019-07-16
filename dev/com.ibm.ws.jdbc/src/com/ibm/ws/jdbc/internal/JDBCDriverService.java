@@ -41,6 +41,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
@@ -50,6 +52,7 @@ import javax.sql.XADataSource;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -286,6 +289,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                                 try {
                                     if (value instanceof String) {
                                         String str = (String) value;
+                                        // Decode password(s) that are embedded in value of Oracle connectionProperties property
+                                        if ("connectionProperties".equals(name) && className.startsWith("oracle.jdbc") && 
+                                                        (str.contains("javax.net.ssl.keyStorePassword") || str.contains("javax.net.ssl.trustStorePassword" ))); {
+                                            str = decodeOracleConnectionPropertiesPwds(str);
+                                        }
                                         // Decode passwords
                                         if (isPassword)
                                             str = PasswordUtil.getCryptoAlgorithm(str) == null ? str : PasswordUtil.decode(str);
@@ -1071,4 +1079,40 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             Tr.debug(this, tc, "unsetSharedLib", lib);
         modified(null, false);
     }
+    
+    /** Decode passwords embedded in an Oracle connectionProperties element
+     * @ connProp an Oracle connectionProperties string which may contain encoded passwords
+     * @return a connectionProperties string with the passwords decoded
+     */
+    public static String decodeOracleConnectionPropertiesPwds(String connProp)
+                    throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
+        final String pattern1 = "javax\\.net\\.ssl\\.keyStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
+        final String pattern2 = "javax\\.net\\.ssl\\.trustStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
+        connProp = decodeEmbeddedPassword(connProp, pattern1, 1);
+        return decodeEmbeddedPassword(connProp, pattern2, 1);
+    }
+    /**
+     * Given a string which potentially contains a key value pair where the value is a password encoded using
+     * one of the supported methods, use the supplied regex pattern to locate the key value pair and
+     * replace the value portion of the string with the decoded password.  For example,
+     * given the following value of an Oracle database connectionProperties string:
+     * "oracle.net.ssl_version=1.2;javax.net.ssl.keyStorePassword={aes}AIEJn6kmbn878lbUd8jJGWKMDYPm9FD1EoiL4JFNXO7f;javax.net.ssl.keyStore= path-to-keystore/keystore.p12"
+     * return this string:
+     * "oracle.net.ssl_version=1.2;javax.net.ssl.keyStorePassword=foobar;javax.net.ssl.keyStore= path-to-keystore/keystore.p12"
+     * 
+     * @param input A string potentially containing an encoded password
+     * @param pattern A regex pattern which attempts to match the password portion in the group specified in groupNumber
+     * @param groupNumber The group of the regex that contains the password to be decoded
+     * @return
+     */
+    private static String decodeEmbeddedPassword(String input, String pattern, int groupNumber)
+                    throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
+        Matcher matcher = Pattern.compile(pattern).matcher(input);
+        if (!matcher.find()) return input; // pattern not found
+        String password = matcher.group(groupNumber);
+        // decode password if encoded                   
+        password = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(password);
+        return new StringBuilder(input).replace(matcher.start(groupNumber), matcher.end(groupNumber), password).toString();
+    }
+
 }
