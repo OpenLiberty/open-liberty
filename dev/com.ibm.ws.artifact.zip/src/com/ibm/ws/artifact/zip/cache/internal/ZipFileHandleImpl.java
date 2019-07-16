@@ -94,11 +94,14 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    public String introspect() {
+    public void introspect(PrintWriter output) {
         synchronized(zipFileLock) {
-            return (
+            output.println(
+                "  " +
                 "ZipFileHandle@0x" + Integer.toHexString(hashCode()) +
-                " (" + path + ", " + Integer.toString(openCount) + ")" );
+                "(" + path + ", " + Integer.toString(openCount) + ")" );
+
+            introspectEntryCache(output);
         }
     }
 
@@ -215,10 +218,10 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private static final Integer zipEntriesLock = new Integer(1);
-    private static final Map<String, byte[]> zipEntries;
+    private final Integer zipEntriesLock = new Integer(1);
+    private final Map<String, byte[]> zipEntries;
 
-    static {
+    {
         if ( (ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT == 0) ||
              (ZipCachingProperties.ZIP_CACHE_ENTRY_MAX == 0) ) {
             zipEntries = null;
@@ -410,33 +413,29 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         return bytes;
     }
 
-	protected static void introspectEntryCache(PrintWriter output) {
-		output.println();
-		output.println("Zip Entry Cache:");
+    protected void introspectEntryCache(PrintWriter output) {
+        if ( zipEntries == null ) {
+            return;
+        } else if ( zipEntries.isEmpty() ) {
+            return;
+        } else {
+            for ( Map.Entry<String, byte[]> zipEntryEntry : zipEntries.entrySet() ) {
+                output.println(
+                    "    [ " + zipEntryEntry.getKey() + " ]" +
+                    " [ " + Integer.toString(zipEntryEntry.getValue().length) + " bytes ]");
+            }
+        }
+    }
 
-    	if ( ZipFileHandleImpl.zipEntries == null ) {
-    		output.println("  ** DISABLED **");
+    protected static void introspectZipReaper(PrintWriter output, long introspectAt) {
+        output.println();
+        output.println("Zip Reaper:");
 
-    	} else {
-    		synchronized ( ZipFileHandleImpl.zipEntriesLock ) {
-	    		for ( Map.Entry<String, byte[]> zipEntryEntry : ZipFileHandleImpl.zipEntries.entrySet() ) {
-	    			output.println(
-	    				"  [ " + zipEntryEntry.getKey() + " ]" +
-	    				" [ " + Integer.toString(zipEntryEntry.getValue().length) + " bytes ]");
-	    		}
-	    	}
-	    }
-	}
+        if ( ZipFileHandleImpl.zipFileReaper == null ) {
+            output.println("  ** DISABLED **");
 
-    protected static void introspectZipReaper(PrintWriter output) {
-		output.println();
-		output.println("Zip Reaper:");
-
-		if ( ZipFileHandleImpl.zipFileReaper == null ) {
-    		output.println("  ** DISABLED **");
-
-		} else {
-    		ZipFileHandleImpl.zipFileReaper.introspect(output);
-    	}
+        } else {
+            ZipFileHandleImpl.zipFileReaper.introspect(output, introspectAt);
+        }
     }
 }

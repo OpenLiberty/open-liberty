@@ -399,16 +399,16 @@ ZipFile [Path]
     private static final String TAB = "    ";
 
     private static String addTabs(String line, int tabs) {
-    	if ( tabs > 0 ) {
-    		StringBuilder builder = new StringBuilder( TAB.length() * tabs + line.length() );
-    		while ( tabs > 0 ) {
-    			tabs--;
-    			builder.append(TAB);
-    		}
-    		builder.append(line);
-    		line = builder.toString();
-    	}
-    	return line;
+        if ( tabs > 0 ) {
+            StringBuilder builder = new StringBuilder( TAB.length() * tabs + line.length() );
+            while ( tabs > 0 ) {
+                tabs--;
+                builder.append(TAB);
+            }
+            builder.append(line);
+            line = builder.toString();
+        }
+        return line;
     }
 
     private static void indentLine(PrintWriter output, String line, int tabs) {
@@ -416,12 +416,12 @@ ZipFile [Path]
     }
 
     public void introspect(PrintWriter output, long introspectAt) {
-    	// Tails of state intervals.  Necessary to put into the
-    	// introspected statistics the entire timeline of the zip file data.
-    	//
-    	// Tail values are not yet recorded to the zip file data state.
-    	// Each records the time since the current state was entered to
-    	// the introspection time.
+        // Tails of state intervals.  Necessary to put into the
+        // introspected statistics the entire timeline of the zip file data.
+        //
+        // Tail values are not yet recorded to the zip file data state.
+        // Each records the time since the current state was entered to
+        // the introspection time.
 
         long openTail;
         long pendTail;
@@ -440,17 +440,19 @@ ZipFile [Path]
             pendTail = 0;
             closeTail = introspectAt - lastFullCloseAt;
         } else {
-        	output.println("Unknown zip file state [ " + zipFileState + " ] [ " + path + " ]");
-        	return;
+            output.println("Unknown zip file state [ " + zipFileState + " ] [ " + path + " ]");
+            return;
         }
 
         String line;
 
         line = String.format("ZipFile [ %s ]", path);
         indentLine(output, line, 0);
-        line = String.format("State   [ %s ]", zipFileState.toString());
-        indentLine(output, line, 0);
 
+        line = String.format("State: [ %s ]", zipFileState.toString());
+        indentLine(output, line, 1);
+
+        output.println();
         line = "Request Counts:";
         indentLine(output, line, 1);
 
@@ -468,8 +470,7 @@ ZipFile [Path]
 
         output.println();
 
-        line = String.format("Lifetime:   [ %s (s) ]", toRelSec(initialAt, introspectAt));
-        indentLine(output, line, 1);
+        indentLine(output, "Lifetime:", 1);
 
         line = String.format("Pre-Open:   [ %s (s) ]", toRelSec(initialAt, firstOpenAt));
         indentLine(output, line, 2);
@@ -481,6 +482,8 @@ ZipFile [Path]
         indentLine(output, line, 2);
         line = String.format("Post-Close: [ %s (s) ]", toAbsSec(0));
         indentLine(output, line, 2);
+        line = String.format("Total:      [ %s (s) ]", toRelSec(initialAt, introspectAt));
+        indentLine(output, line, 2);
 
         output.println();
         indentLine(output,"Transition Counts:", 1);
@@ -489,25 +492,25 @@ ZipFile [Path]
         line = String.format("to Pending: [ %s ] [ %s (s) ]", toCount(openToPendCount), toAbsSec(openDuration));
         indentLine(output, line, 3);
         if ( zipFileState == ZipFileState.OPEN ) {
-            line = String.format("Active:     [ %s ] [ %s (s) ]", toCount(1), toAbsSec(openTail));
+            line = String.format("Active:                [ %s (s) ]", toAbsSec(openTail));
             indentLine(output, line, 3);
         }
 
         indentLine(output, "Pending:", 2);
-        line = String.format("to Open:  [ %s ] [ %s (s) ]", toCount(pendToOpenCount), toAbsSec(pendToOpenDuration));
+        line = String.format("to Open:    [ %s ] [ %s (s) ]", toCount(pendToOpenCount), toAbsSec(pendToOpenDuration));
         indentLine(output, line, 3);
-        line = String.format("to Close: [ %s ] [ %s (s) ]", toCount(pendToFullCloseCount), toAbsSec(pendToFullCloseDuration));
+        line = String.format("to Close:   [ %s ] [ %s (s) ]", toCount(pendToFullCloseCount), toAbsSec(pendToFullCloseDuration));
         indentLine(output, line, 3);
         if ( zipFileState == ZipFileState.PENDING ) {
-            line = String.format("Active:     [ %s ] [ %s (s) ]", toCount(1), toAbsSec(pendTail));
+            line = String.format("Active:                [ %s (s) ]", toAbsSec(pendTail));
             indentLine(output, line, 3);
         }
 
         indentLine(output, "Close:", 2);
-        line = String.format("to Open:  [ %s ] [ %s (s) ]", toCount(fullCloseToOpenCount), toAbsSec(fullCloseToOpenDuration));
+        line = String.format("to Open:    [ %s ] [ %s (s) ]", toCount(fullCloseToOpenCount), toAbsSec(fullCloseToOpenDuration));
         indentLine(output, line, 3);
         if ( zipFileState == ZipFileState.FULLY_CLOSED ) {
-            line = String.format("Active:     [ %s ] [ %s (s) ]", toCount(1), toAbsSec(closeTail));
+            line = String.format("Active:                [ %s (s) ]", toAbsSec(closeTail));
             indentLine(output, line, 3);
         }
 
@@ -519,16 +522,22 @@ ZipFile [Path]
         line = String.format("Last:  [ %s (s) ]", toRelSec(initialAt, lastOpenAt));
         indentLine(output, line, 3);
 
+        String firstPendText = ( (firstPendAt == -1) ? "******.****** (s)" : toRelSec(initialAt, firstPendAt) );
+        String lastPendText = ( (lastPendAt == -1) ? "******.****** (s)" : toRelSec(initialAt, lastPendAt) );
+
         indentLine(output, "Pend:", 2);
-        line = String.format("First: [ %s (s) ]", toRelSec(initialAt, firstPendAt));
+        line = String.format("First: [ %s (s) ]", firstPendText);
         indentLine(output, line, 3);
-        line = String.format("Last:  [ %s (s) ]", toRelSec(initialAt, lastPendAt));
+        line = String.format("Last:  [ %s (s) ]", lastPendText);
         indentLine(output, line, 3);
 
+        String firstFullCloseText = ( (firstFullCloseAt == -1) ? "******.****** (s)" : toRelSec(initialAt, firstFullCloseAt) );
+        String lastFullCloseText = ( (lastFullCloseAt == -1) ? "******.****** (s)" : toRelSec(initialAt, lastFullCloseAt) );
+
         indentLine(output, "Close:", 2);
-        line = String.format("First: [ %s (s) ]", toRelSec(initialAt, firstFullCloseAt));
+        line = String.format("First: [ %s (s) ]", firstFullCloseText);
         indentLine(output, line, 3);
-        line = String.format("Last:  [ %s (s) ]", toRelSec(initialAt, lastFullCloseAt));
+        line = String.format("Last:  [ %s (s) ]", lastFullCloseText);
         indentLine(output, line, 3);
     }
 

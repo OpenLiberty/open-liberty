@@ -12,9 +12,6 @@ package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -257,7 +254,7 @@ public class ZipFileReaper {
 
     static {
         logEmitter = new DeferredLogEmitter();
-        logThread = new Thread(logEmitter);
+        logThread = new Thread(logEmitter, "reaper logger");
         logThread.setDaemon(true);
         logThread.start();
     }
@@ -305,7 +302,7 @@ public class ZipFileReaper {
 
         protected void introspect(PrintWriter output) {
             output.println();
-            output.println("  Runner   [ " + this + " ]");
+            output.println("  Runner [ " + this + " ]");
 
             long reaperInitialAt = getReaper().getInitialAt();
 
@@ -322,6 +319,9 @@ public class ZipFileReaper {
             output.println("    Next Reap     [ " + toRelSec(reaperInitialAt, nextReapAt) + " (s) ]");
             String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec(nextReapDelay) );
             output.println("    Next Delay    [ " + delayText + " (s) ]");
+
+            output.println();
+            output.println("  Logger [ " + logThread + " ]");
         }
 
         private final ZipFileReaper reaper;
@@ -1432,16 +1432,8 @@ public class ZipFileReaper {
 
     //
 
-    private static final DateFormat INTROSPECT_STAMP_FORMAT =
-    	new SimpleDateFormat("MM/dd/yyyy kk:mm:ss:SSS zzz");
-
-    public void introspect(PrintWriter output) {
+    public void introspect(PrintWriter output, long introspectAt) {
         synchronized ( reaperLock ) {
-            Date currentTime = new Date();
-            long introspectAt = System.nanoTime();
-
-            output.println("  Report   [ " + INTROSPECT_STAMP_FORMAT.format(currentTime) + " ]");
-
             output.println();
             output.println("  IsActive [ " + Boolean.valueOf(isActive) + " ]");
             output.println("  Initial  [ " + toAbsSec(initialAt) + " (s) ]" );
