@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+
+CAN_NOT_VALIDATE_RESOURCE_ERROR=CWWKO1007E: One or more dependencies not satisfied, or feature that enables the resource is not enabled, or it is not possible to validate this type of resource
+CAN_NOT_VALIDATE_RESOURCE_ERROR.explanation=The validation request for the provided configuration cannot be completed. This could be due to a unsatisfied dependency, a missing feature that enables configuration, or the configuration might not support validation.
+CAN_NOT_VALIDATE_RESOURCE_ERROR.useraction=Verify the features that enable the configuration is enabled, there are no missing dependencies, and the resource supports validation.
+              
+INVALID_IDENTIFIER_ERROR=CWWKO1007E: Unique identifier {0} is not valid. Expected: {1}
+INVALID_IDENTIFIER_ERROR.explanation=
+INVALID_IDENTIFIER_ERROR.useraction=
+
+
+# multiple found
+MULTIPLE_FOUND_ERROR=CWWKO1008E: The unique identifier {0} maps to multiple instances of the element type.
+MULTIPLE_FOUND_ERROR.explanation=The server configuration cannot have multiple instances of the same element type with the same unique identifier.
+MULTIPLE_FOUND_ERROR.useraction=Update the server configuration to correct the conflicting unique identifiers.
+
+CONFIG_INSTANCE_NOT_FOUND_ERROR=CWWKO1009E: Did not find any configured instances of {0} matching the request.                     
+CONFIG_INSTANCE_NOT_FOUND_ERROR.explanation=The requested configuration could not be found in the server configuration.
+CONFIG_INSTANCE_NOT_FOUND_ERROR.useraction=Verify the configuration element being validated exists and the spelling is correct.                                                           
+
