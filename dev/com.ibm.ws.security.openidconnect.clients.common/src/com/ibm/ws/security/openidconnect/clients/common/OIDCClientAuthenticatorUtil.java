@@ -256,14 +256,16 @@ public class OIDCClientAuthenticatorUtil {
         oidcResult = jose4jUtil.createResultWithJose4J(responseState, reqParameters, clientConfig, oidcClientRequest);
 
         // get userinfo if configured and available.
-        boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
-        SSLSocketFactory sslSocketFactory = null;
-        try {
-            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, false, needHttps);
-        } catch (com.ibm.websphere.ssl.SSLException e) {
-            //ffdc
+        if (clientConfig.getUserInfoEndpointUrl() != null) {
+            boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
+            SSLSocketFactory sslSocketFactory = null;
+            try {
+                sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, false, needHttps);
+            } catch (com.ibm.websphere.ssl.SSLException e) {
+                //ffdc
+            }
+            new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory);
         }
-        new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory);
 
         return oidcResult;
     }
