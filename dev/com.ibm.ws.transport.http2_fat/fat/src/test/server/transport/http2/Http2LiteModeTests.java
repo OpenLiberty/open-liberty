@@ -547,4 +547,33 @@ public class Http2LiteModeTests extends FATServletClient {
     public void testModifiedInitialWindowSizeAfterHeaderFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    /**
+     * Test Coverage: Connect to server via the insecure port and immediately send the HTTP/2 magic string.
+     * The HTTP/2 connection preface should complete.
+     * Then send a standard HTTP/2 request
+     * Test Outcome: HTTP/2 response arrives as expected.
+     * Spec Section: 3.4
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testHeaderAndDataPriorKnowledge() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Connect to server via the insecure port and immediately send the HTTP/2 magic string.
+     * The HTTP/2 connection preface should complete.
+     * Then send a standard HTTP/2 POST request and body
+     * Test Outcome: HTTP/2 response arrives as expected.
+     * Spec Section: 3.4
+
+     * @throws Exception
+     */
+    @Test
+    public void testPostRequestDataKnowledge() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
 }
