@@ -76,6 +76,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
     private static final String EXTENSION_API_CLASSES_SEPARATOR = ";";
 
+    //This is a map from OSGi Service ID (of the extension) to a ExtensionArchive
     private final Map<Long, ExtensionArchive> runtimeExtensionMap = new HashMap<>();
     private ExtensionArchive probeExtensionArchive = null;
 

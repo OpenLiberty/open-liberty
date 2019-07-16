@@ -225,6 +225,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     protected void unsetExtensionService(ServiceReference<WebSphereCDIExtension> reference) {
         extensionsSR.removeReference(reference);
+        //the cdi container has a cache of ExtensionArchives ... remove this extension from that cache
         CDIContainerImpl cdiContainer = getCDIContainer();
         if (cdiContainer != null) {
             cdiContainer.removeRuntimeExtensionArchive(reference);
