@@ -190,6 +190,43 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     }
 
     /**
+     * Propagate CDI context across completion stages after having first accessed a request scoped bean.
+     */
+    @Test
+    public void testCDIContextPropagationAcrossMultipleStagesBeanAccessedFirst() throws Exception {
+        requestBean.getState();
+
+        CompletableFuture<Void> cf = appCDIExecutor.runAsync(() -> {
+            requestBean.setState(requestBean.getState() + ",1");
+        }).thenRunAsync(() -> {
+            requestBean.setState(requestBean.getState() + ",2");
+        }).thenRunAsync(() -> {
+            requestBean.setState(requestBean.getState() + ",3");
+        });
+        cf.join();
+
+        assertEquals("UNINITIALIZED,1,2,3", requestBean.getState());
+    }
+
+    /**
+     * Propagate CDI context across completion stages. Access (and modify) a request scoped bean
+     * within the stages, but not before.
+     */
+    @Test
+    public void testCDIContextPropagationAcrossMultipleStagesBeanFirstUsedInCompletionStage() throws Exception {
+        CompletableFuture<Void> cf = appCDIExecutor.runAsync(() -> {
+            requestBean.setState(requestBean.getState() + ",A");
+        }).thenRunAsync(() -> {
+            requestBean.setState(requestBean.getState() + ",B");
+        }).thenRunAsync(() -> {
+            requestBean.setState(requestBean.getState() + ",C");
+        });
+        cf.join();
+
+        assertEquals("UNINITIALIZED", requestBean.getState()); // TODO change to: UNINITIALIZED,A,B,C ?
+    }
+
+    /**
      * Verify that a ThreadContext instance behaves according to the specified configuration attributes of its builder.
      */
     @Test
