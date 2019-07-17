@@ -126,7 +126,8 @@ public class PersistentExecutorsTestServlet extends HttpServlet {
 
         for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && !status.hasResult(); status = executor.getStatus(taskId))
             Thread.sleep(POLL_INTERVAL);
-        if (!status.isDone())
+       
+        if (status.getNextExecutionTime() != null || !status.isDone())
             throw new Exception("Task did not complete within alotted interval. " + status);
 
         int result = status.get();
