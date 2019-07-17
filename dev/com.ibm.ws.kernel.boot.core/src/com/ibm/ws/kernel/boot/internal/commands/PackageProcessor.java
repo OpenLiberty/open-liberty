@@ -479,6 +479,8 @@ public class PackageProcessor implements ArchiveProcessor {
          * Add the archived loose files
          */
         getReferencedResources(entryConfigs);
+        for (ArchiveEntryConfig e : entryConfigs)
+            System.out.println(e);
 
         /*
          * Add process config directory (actually <userRoot>/servers/<processName> or <userRoot>/clients/<processName>)
@@ -620,9 +622,11 @@ public class PackageProcessor implements ArchiveProcessor {
                 looseConfig = ProcessorUtils.convertToLooseConfig(lf);
                 if (looseConfig != null) {
                     try {
-                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
-                                                                                                                  includeUsr(options.get(PackageOption.INCLUDE)));
-                        entryConfigs.add(looseArchiveEntryConfig);
+                        //ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
+                        //                                                                                          includeUsr(options.get(PackageOption.INCLUDE)));
+                        entryConfigs.addAll(ProcessorUtils.createLooseExpandedArchiveEntryConfigs(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
+                                                                                                  includeUsr(options.get(PackageOption.INCLUDE))));
+
                     } catch (FileNotFoundException e) {
                         // If any exception occurs when creating loose file archive, just skip it and create the next one.
                         System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.unableToPackageLooseConfigFileMissingPath"), lf));

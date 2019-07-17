@@ -177,7 +177,7 @@ public class ProcessorUtils {
     }
 
     /**
-     * Using the method to create Loose config's Archive entry config
+     * Method to add looseConfigs in expanded (non-archive) format
      *
      * @param looseConfig
      * @param looseFile
@@ -185,8 +185,82 @@ public class ProcessorUtils {
      * @return
      * @throws IOException
      */
-    public static ArchiveEntryConfig createLooseArchiveEntryConfig(LooseConfig looseConfig, File looseFile, BootstrapConfig bootProps,
-                                                                   String archiveEntryPrefix, boolean isUsr) throws IOException {
+    public static List<ArchiveEntryConfig> createLooseExpandedArchiveEntryConfigs(LooseConfig looseConfig, File looseFile, BootstrapConfig bootProps,
+                                                                                  String archiveEntryPrefix, boolean isUsr) throws IOException {
+
+        List<ArchiveEntryConfig> entryConfigs = new ArrayList<ArchiveEntryConfig>();
+        String entryPath = generateBaseEntryPath(looseFile, bootProps, archiveEntryPrefix, isUsr);
+
+        try {
+
+            Iterator<LooseConfig> configIter = looseConfig.iteration();
+
+            while (configIter.hasNext()) {
+                LooseConfig config = configIter.next();
+                processExpandedArchive(entryPath, config, entryConfigs, bootProps);
+            }
+        } finally {
+
+        }
+        return entryConfigs;
+
+    }
+
+    public static void processExpandedArchive(String entryPath, LooseConfig config, List<ArchiveEntryConfig> entryConfigs, BootstrapConfig bootProps) throws IOException {
+
+        if (LooseType.ARCHIVE.equals(config.type)) { // archive tag
+            //TODO: If loose type is archive need to collect this as expanded app.
+            File childFile = processArchive(null, config, false, bootProps);
+            String combinedEntryPath = entryPath + config.targetInArchive;
+            System.out.println("       %%% combinedEntryPath:  " + combinedEntryPath);
+            processExpandedArchive(combinedEntryPath, config, entryConfigs, bootProps);
+            //TODO - this is an endless loop. Need to change config.type then somehow.
+            entryConfigs.add(new FileEntryConfig(combinedEntryPath, childFile));
+            System.out.println(" ** processArchive:LooseType is ARCHIVE **");
+
+        } else if (LooseType.DIR.equals(config.type)) {// directory tag
+            System.out.println(" ** processArchive:LooseType is DIR **");
+            final File dir;
+            try {
+                dir = FileUtils.convertPathToFile(config.sourceOnDisk, bootProps);
+            } catch (IllegalArgumentException ex) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.unableToPackageLooseConfigFileCannotResolveLocSymbol"),
+                                                        config.sourceOnDisk));
+                return;
+            }
+            //TODO: Combine targetInArchive with entryPath
+            //DirEntryConfig dirConfig = new DirEntryConfig(config.targetInArchive, dir, true, PatternStrategy.ExcludePreference);
+            String combinedEntryPath = entryPath + config.targetInArchive;
+            System.out.println("       %%% combinedEntryPath:  " + combinedEntryPath);
+            DirEntryConfig dirConfig = new DirEntryConfig(combinedEntryPath, dir, true, PatternStrategy.ExcludePreference);
+            System.out.println("  dirConfig.getEntryPath(): " + dirConfig.getEntryPath());
+            if (config.excludes != null) {
+                dirConfig.exclude(convertToRegex(config.excludes));
+            }
+            entryConfigs.add(dirConfig);
+
+        } else { // file tag
+            System.out.println(" ** processArchive:LooseType is FILE **");
+            //TODO: Combine targetInArchive with entryPath
+            //entryConfigs.add(new FileEntryConfig(config.targetInArchive, FileUtils.convertPathToFile(config.sourceOnDisk, bootProps)));
+            String combinedEntryPath = entryPath + config.targetInArchive;
+            System.out.println("       %%% combinedEntryPath:  " + combinedEntryPath);
+
+            entryConfigs.add(new FileEntryConfig(combinedEntryPath, FileUtils.convertPathToFile(config.sourceOnDisk, bootProps)));
+        }
+
+    }
+
+    /**
+     * Common code for generating the entryPath
+     *
+     * @param looseFile
+     * @param bootProps
+     * @param archiveEntryPrefix
+     * @param isUsr
+     * @return
+     */
+    private static String generateBaseEntryPath(File looseFile, BootstrapConfig bootProps, String archiveEntryPrefix, boolean isUsr) {
         File usrRoot = bootProps.getUserRoot();
         int len = usrRoot.getAbsolutePath().length();
 
@@ -200,11 +274,37 @@ public class ProcessorUtils {
         entryPath = entryPath.replace("//", "/");
         entryPath = entryPath.substring(0, entryPath.length() - 4); // trim the .xml
 
-        File archiveFile = processArchive(looseFile.getName(), looseConfig, true, bootProps);
+        return entryPath;
 
-        return new FileEntryConfig(entryPath, archiveFile);
     }
 
+    /**
+     * Using the method to create Loose config's Archive entry config
+     *
+     * @param looseConfig
+     * @param looseFile
+     * @param bootProps
+     * @return
+     * @throws IOException
+     */
+    public static ArchiveEntryConfig createLooseArchiveEntryConfig(LooseConfig looseConfig, File looseFile, BootstrapConfig bootProps,
+                                                                   String archiveEntryPrefix, boolean isUsr) throws IOException {
+
+        File archiveFile = processArchive(looseFile.getName(), looseConfig, true, bootProps);
+
+        return new FileEntryConfig(generateBaseEntryPath(looseFile, bootProps, archiveEntryPrefix, isUsr), archiveFile);
+    }
+
+    /**
+     * Method creates archive file with resources defined in LooseConfig
+     *
+     * @param looseFileName
+     * @param looseConfig
+     * @param isRoot
+     * @param bootProps
+     * @return
+     * @throws IOException
+     */
     private static File processArchive(String looseFileName, LooseConfig looseConfig, boolean isRoot, BootstrapConfig bootProps) throws IOException {
         Archive thisArchive = null;
         File archiveFile = null;
@@ -235,8 +335,10 @@ public class ProcessorUtils {
                 if (LooseType.ARCHIVE.equals(config.type)) { // archive tag
                     File childFile = processArchive(null, config, false, bootProps);
                     thisArchive.addEntryConfig(new FileEntryConfig(config.targetInArchive, childFile));
+                    System.out.println(" ** processArchive:LooseType is ARCHIVE **");
 
                 } else if (LooseType.DIR.equals(config.type)) {// directory tag
+                    System.out.println(" ** processArchive:LooseType is DIR **");
                     final File dir;
                     try {
                         dir = FileUtils.convertPathToFile(config.sourceOnDisk, bootProps);
@@ -246,6 +348,7 @@ public class ProcessorUtils {
                         continue;
                     }
                     DirEntryConfig dirConfig = new DirEntryConfig(config.targetInArchive, dir, true, PatternStrategy.ExcludePreference);
+                    System.out.println("  dirConfig.getEntryPath(): " + dirConfig.getEntryPath());
                     if (config.excludes != null) {
                         dirConfig.exclude(convertToRegex(config.excludes));
                     }
