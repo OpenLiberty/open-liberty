@@ -14,6 +14,8 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRebalanceListener;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecords;
@@ -27,6 +29,9 @@ import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.WakeupException;
  *
  */
 public class KafkaConsumerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kafka.clients.consumer.KafkaConsumer<K, V>> implements KafkaConsumer<K, V> {
+
+    private static final String CLAZZ = KafkaConsumerImpl.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLAZZ);
 
     public KafkaConsumerImpl(Map<String, Object> consumerConfig) {
         super(new org.apache.kafka.clients.consumer.KafkaConsumer<>(consumerConfig));
@@ -54,6 +59,9 @@ public class KafkaConsumerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kaf
      */
     @Override
     public void subscribe(Collection<String> topics, ConsumerRebalanceListener listener) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLAZZ, "subscribe", "Topics: {0}", topics);
+        }
         org.apache.kafka.clients.consumer.ConsumerRebalanceListener delegateListener = new ConsumerRebalanceListenerImpl(listener);
         this.getDelegate().subscribe(topics, delegateListener);
     }
@@ -64,6 +72,9 @@ public class KafkaConsumerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kaf
      */
     @Override
     public ConsumerRecords<K, V> poll(Duration duration) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLAZZ, "poll", "Duration: {0}", duration);
+        }
         org.apache.kafka.clients.consumer.ConsumerRecords<K, V> delegateRecords;
         try {
             delegateRecords = this.getDelegate().poll(duration);
@@ -80,6 +91,9 @@ public class KafkaConsumerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kaf
      */
     @Override
     public void commitAsync(Map<TopicPartition, OffsetAndMetadata> offsets, OffsetCommitCallback callback) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLAZZ, "commitAsync", "Offsets: {0}", offsets);
+        }
         Map<org.apache.kafka.common.TopicPartition, org.apache.kafka.clients.consumer.OffsetAndMetadata> delegateOffsets = unwrap(offsets);
 
         org.apache.kafka.clients.consumer.OffsetCommitCallback delegateOffsetCommitCallback = (o, e) -> {

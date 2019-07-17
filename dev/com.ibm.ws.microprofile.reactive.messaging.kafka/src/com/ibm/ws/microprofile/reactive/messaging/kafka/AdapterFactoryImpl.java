@@ -59,7 +59,7 @@ public class AdapterFactoryImpl extends KafkaAdapterFactory {
                                                       TopicPartition.class,
                                                       WakeupException.class);
 
-            URL[] urls = new URL[] { AbstractKafkaAdapter.class.getProtectionDomain().getCodeSource().getLocation() }; // URL for the adapter impl bundle
+            URL[] urls = new URL[] { AbstractKafkaAdapter.class.getProtectionDomain().getCodeSource().getLocation() };// URL for the adapter impl bundle
 
             return new AppLibraryClassLoader(urls, interfaces, Thread.currentThread().getContextClassLoader());
         });
