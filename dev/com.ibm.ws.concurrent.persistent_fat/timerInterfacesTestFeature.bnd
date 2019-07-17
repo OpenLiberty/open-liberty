@@ -8,16 +8,16 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../ant_build/resources/bnd/bundle.props
-bVersion=1.0.0
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+#This file defines the timerInterfaceTestFeature-1.0 user feature bundle
 
 Bundle-Name: TimerInterfacesTestFeatureBundle
 Bundle-SymbolicName: test.feature.sim.ejb.timer; singleton:=true
 Bundle-Description: Bundles that provides a task that simulates being an EJB timer task; version=${bVersion}
 
-Export-Package: test.feature.sim.ejb.timer
+Export-Package: test.feature.sim.ejb.timer;version=1.0
 
 Private-Package: test.feature.sim.ejb.timer.internal.*
 

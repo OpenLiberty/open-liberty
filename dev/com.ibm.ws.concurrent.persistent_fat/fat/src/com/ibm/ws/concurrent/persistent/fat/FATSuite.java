@@ -28,11 +28,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class FATSuite {
     static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat");
 
-    /**
-     * Copies the simulated GA repository local files (saved during compilation) to the server install root.
-     *
-     * @param traceTag The tag String to be used to log info.
-     */
     @BeforeClass
     public static void beforeSuite() throws Exception {
         // Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
@@ -45,6 +40,6 @@ public class FATSuite {
         server.copyFileToLibertyInstallRoot("lib/features/", "features/timerInterfacesTestFeature-1.0.mf");
         assertTrue("Helper feature should have been copied to lib/features.",
                    server.fileExistsInLibertyInstallRoot("lib/features/timerInterfacesTestFeature-1.0.mf"));
-        server.copyFileToLibertyInstallRoot("lib/", "bundles/test.feature.sim.ejb.timer_1.0.0.jar");
+        server.copyFileToLibertyInstallRoot("lib/", "bundles/test.feature.sim.ejb.timer.jar");
     }
 }

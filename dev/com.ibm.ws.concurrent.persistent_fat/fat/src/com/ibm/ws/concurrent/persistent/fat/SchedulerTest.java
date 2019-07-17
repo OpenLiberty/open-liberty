@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
@@ -42,7 +43,7 @@ import componenttest.topology.utils.FATServletClient;
 import web.SchedulerFATServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfSysProp(DB_Informix) // persistent executor is not support on Informix
+@SkipIfSysProp(DB_Informix) //persistent executor is not supported on Informix
 public class SchedulerTest extends FATServletClient {
 
     private static final String APP_NAME = "schedtest";
@@ -58,7 +59,7 @@ public class SchedulerTest extends FATServletClient {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addInstalledAppForValidation(APP_NAME);
+    	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
         if ("Derby".equalsIgnoreCase(System.getProperty("fat.bucket.db.type", "Derby")))
             DerbyEmbeddedUtilities.createDB(server, "TaskStoreDS", "userx", "passx");
 

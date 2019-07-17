@@ -33,7 +33,7 @@
   <authData fat.modify="true" id="authx" user="userx" password="passx"/>
   
   <library id="FATJDBCLib">
-    <fileset dir="${server.config.dir}/derby"/>
+    <fileset dir="${shared.resource.dir}/derby"/>
   </library>
 
   <!-- database (always Derby) for the test application -->
@@ -42,10 +42,10 @@
     <properties createDatabase="create" databaseName="memory:testdb"/>
   </dataSource>
   <library id="DerbyJDBCLib">
-    <fileset dir="${server.config.dir}/derby"/>
+    <fileset dir="${shared.resource.dir}/derby"/>
   </library>
   
-  <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
   <javaPermission className="java.io.FilePermission" name="${server.config.dir}/ddl/*" actions="read"/>
   <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

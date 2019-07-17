@@ -10,3 +10,17 @@
  *******************************************************************************/
 
 addRequiredLibraries.dependsOn addDerby
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.concurrent.persistent_fat')
+}
+
+task copyFeatureBundle(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'test.feature.sim.ejb.timer.jar'
+}
+
+autoFVT {
+  dependsOn copyFeatureBundle
+}
