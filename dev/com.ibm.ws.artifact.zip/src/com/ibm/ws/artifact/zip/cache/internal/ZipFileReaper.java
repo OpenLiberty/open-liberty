@@ -742,7 +742,7 @@ public class ZipFileReaper {
             ZipFileData ripestQuick = pendingQuickStorage.getFirst();
             long expireAtQuick = ripestQuick.lastPendAt + quickPendMin;
 
-            ZipFileData ripestSlow = pendingQuickStorage.getFirst();
+            ZipFileData ripestSlow = pendingSlowStorage.getFirst();
             long expireAtSlow = ripestSlow.lastPendAt + slowPendMin;
 
             if ( expireAtQuick <= expireAtSlow ) {
