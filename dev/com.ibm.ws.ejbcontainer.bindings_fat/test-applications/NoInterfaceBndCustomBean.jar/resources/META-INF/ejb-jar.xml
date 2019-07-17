@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+         version="3.1"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd">
+  <enterprise-beans>
+    <session>
+      <display-name>NoInterfaceSF</display-name>
+      <ejb-name>NoInterfaceSF</ejb-name>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSF</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSFLocal</display-name>
+      <ejb-name>NoInterfaceSFLocal</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness</business-local>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSFLocal</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSFRemote</display-name>
+      <ejb-name>NoInterfaceSFRemote</ejb-name>
+      <business-remote>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.RemoteBusiness</business-remote>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSFRemote</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSFComponent</display-name>
+      <ejb-name>NoInterfaceSFComponent</ejb-name>
+      <local-home>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalHome</local-home>
+      <local>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalComponent</local>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <init-method>
+        <create-method>
+          <method-name>create</method-name>
+        </create-method>
+        <bean-method>
+          <method-name>initialize</method-name>
+        </bean-method>
+      </init-method>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSFComponent</env-entry-value>
+      </env-entry>
+    </session>
+
+
+    <session>
+      <display-name>NoInterfaceSG</display-name>
+      <ejb-name>NoInterfaceSG</ejb-name>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSG</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSGLocal</display-name>
+      <ejb-name>NoInterfaceSGLocal</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness</business-local>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSGLocal</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSGRemote</display-name>
+      <ejb-name>NoInterfaceSGRemote</ejb-name>
+      <business-remote>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.RemoteBusiness</business-remote>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSGRemote</env-entry-value>
+      </env-entry>
+    </session>
+
+
+    <session>
+      <display-name>NoInterfaceSL</display-name>
+      <ejb-name>NoInterfaceSL</ejb-name>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSL</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSLLocal</display-name>
+      <ejb-name>NoInterfaceSLLocal</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness</business-local>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSLLocal</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSLRemote</display-name>
+      <ejb-name>NoInterfaceSLRemote</ejb-name>
+      <business-remote>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.RemoteBusiness</business-remote>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSLRemote</env-entry-value>
+      </env-entry>
+    </session>
+    <session>
+      <display-name>NoInterfaceSLComponent</display-name>
+      <ejb-name>NoInterfaceSLComponent</ejb-name>
+      <local-home>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalHome</local-home>
+      <local>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalComponent</local>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <description>bean name</description>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoInterfaceSLComponent</env-entry-value>
+      </env-entry>
+    </session>
+  </enterprise-beans>
+</ejb-jar>
