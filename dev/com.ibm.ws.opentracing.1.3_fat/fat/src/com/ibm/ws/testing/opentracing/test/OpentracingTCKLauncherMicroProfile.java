@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.testing.opentracing.test;
 
+import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,6 +56,8 @@ public class OpentracingTCKLauncherMicroProfile {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpentracingTck() throws Exception {
         // Use default tck-suite.xml
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingTck");
+        
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
+
     }
 }
