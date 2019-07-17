@@ -114,11 +114,11 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=The value in the indicated attrib
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Set the indicated attribute to a proper value.  
 
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: OAuth client registration or update failed because the client data contains an illegal character [{0}].
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=The character [{0}] is not allowed in client data.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=The character is not allowed in client data.
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Remove illegal characters and resubmit the request. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: The client id {0} was not found.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=The request contained a client id {0} which was not found.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=The request contained a client id which was not found.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Retry the request with a valid client id.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: The registration request was made to an incorrect URI.
@@ -138,7 +138,7 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=The JSON in the request 
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Review the API documentation for this service, and retry the request.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Client id {0} already exists.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=The operation failed as the client id {0} already exists.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=The operation failed as the client id already exists.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
 
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: An update of the client fails.
@@ -445,7 +445,7 @@ JAVA8_REQUIRED=CWWKS1495W: The OpenID Connect provider cannot process the [{0}] 
 JAVA8_REQUIRED.explanation=The Java version in  use is not 8 or higher.
 JAVA8_REQUIRED.useraction=Install Java version 8 or higher.
 
-JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: The {0} OpenIdConnect provider has the {1} attribute set to use {2} algorithm and this requires Java 8 or higher. The specified provider will ignore the accessTokenEncoding setting.
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: The {0} OpenID Connect provider has the configuration attribute {1} set to use {2} algorithm and this requires Java 8 or higher. The specified provider will ignore the {3} setting.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=The Java version in use is not 8 or higher.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Install Java version 8 or higher to use the mentioned configuration option.
 

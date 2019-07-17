@@ -99,18 +99,18 @@ public class OidcBaseClientValidator {
      * check for disallowed characters that could allow javascript to be fed back to ui.
      */
     private void detectIllegalChars() throws OidcServerException {
-        detectCh(client.getClientId());
-        detectCh(client.getClientSecret());
-        detectCh(client.getRedirectUris());
-        detectCh(client.getClientName());
-        detectCh(client.getPostLogoutRedirectUris());
-        detectCh(client.getPreAuthorizedScope());
-        detectCh(client.getFunctionalUserId());
-        detectCh(client.getFunctionalUserGroupIds());
+        detectIllegalCharacters(client.getClientId());
+        detectIllegalCharacters(client.getClientSecret());
+        detectIllegalCharacters(client.getRedirectUris());
+        detectIllegalCharacters(client.getClientName());
+        detectIllegalCharacters(client.getPostLogoutRedirectUris());
+        detectIllegalCharacters(client.getPreAuthorizedScope());
+        detectIllegalCharacters(client.getFunctionalUserId());
+        detectIllegalCharacters(client.getFunctionalUserGroupIds());
     }
 
     // detect illegal chars
-    private void detectCh(@Sensitive String s) throws OidcServerException {
+    private void detectIllegalCharacters(@Sensitive String s) throws OidcServerException {
         if (s == null || s.length() == 0) {
             return;
         }
@@ -126,8 +126,8 @@ public class OidcBaseClientValidator {
     }
 
     // detect illegal chars
-    private void detectCh(@Sensitive JsonArray a) throws OidcServerException {
-        detectCh(a.toString());
+    private void detectIllegalCharacters(@Sensitive JsonArray a) throws OidcServerException {
+        detectIllegalCharacters(a.toString());
     }
 
     /**
@@ -159,16 +159,16 @@ public class OidcBaseClientValidator {
     public OidcBaseClient validate() throws OidcServerException {
         return validateCommons(false);
     }
-    
+
     public OidcBaseClient validateAndSetDefaultsOnErrors() {
         try {
             return validateCommons(true);
         } catch (OidcServerException e) {
         } //This will not occur
-    
+
         return null; //This will not occur
     }
-    
+
     private OidcBaseClient validateCommons(boolean setDefaultsOnError) throws OidcServerException {
         //application_type - defaults to web if omitted
         try {
@@ -180,7 +180,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateResponseTypes();
         } catch (OidcServerException e) {
@@ -191,7 +191,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         Set<String> grantTypes = new HashSet<String>();
         try {
             grantTypes = validateGrantTypes();
@@ -203,7 +203,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             //response_types and grant_types need to match
             validateResponseAndGrantMatch(grantTypes);
@@ -216,7 +216,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateRedirectUris();
         } catch (OidcServerException e) {
@@ -227,7 +227,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             //scope (space separated, if omitted can register default scope)
             validateScopes();
@@ -239,7 +239,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateSujectType();
         } catch (OidcServerException e) {
@@ -250,7 +250,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             //token_endpoint_auth_method - if omitted, defaults to client_secret_basic
             validateTokenEndpointAuthMethod();
@@ -262,7 +262,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validatePostLogoutRedirectUris();
         } catch (OidcServerException e) {
@@ -273,7 +273,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validatePreAuthorizedScopes();
         } catch (OidcServerException e) {
@@ -284,7 +284,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateTrustedUriPrefixes();
         } catch (OidcServerException e) {
@@ -295,7 +295,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateOutputParameters();
         } catch (OidcServerException e) {
@@ -307,12 +307,12 @@ public class OidcBaseClientValidator {
                 if (this.client.getClientIdIssuedAt() < 0) {
                     this.client.setClientIdIssuedAt(0);
                 }
-    
+
             } else {
                 throw e;
             }
         }
-    
+
         return this.client;
     }
     **/
@@ -588,10 +588,10 @@ public class OidcBaseClientValidator {
             throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         } else if (!OidcOAuth20Util.isNullEmpty(client.getPreAuthorizedScope()) && !OidcOAuth20Util.isNullEmpty(client.getScope())) {
             String errorMsg = "The value \"%s\" for the client registration metadata field \"%s\" should also be specified as a value in the client registration metadata field \"scope\".";
-        
+
             String[] scopeArr = client.getScope().split(" ");
             Set<String> scopeSet = getSetFromArr(scopeArr);
-        
+
             String[] preAuthorizedScopeArr = client.getPreAuthorizedScope().split(" ");
             for (String preAuthorizedScope : preAuthorizedScopeArr) {
                 if (!scopeSet.contains(preAuthorizedScope)) {
@@ -599,7 +599,7 @@ public class OidcBaseClientValidator {
                     throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
-        
+
         }
         **/
 
