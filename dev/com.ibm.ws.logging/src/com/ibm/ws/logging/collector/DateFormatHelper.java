@@ -62,17 +62,20 @@ public class DateFormatHelper {
     private static final String removeClockFormat(StringBuilder sb) {
         int start = 0;
         int end = sb.length() - 1;
+        char letter;
         // trim left side
-        while (start <= end && sb.charAt(start) == ' ')
+        while (start <= end && ((letter = sb.charAt(start)) == ' ' || letter == 'a'))
             start++;
         // trim right side
-        while (end > start && sb.charAt(end) == ' ')
+        while (end > start && ((letter = sb.charAt(end)) == ' ' || letter == 'a'))
             end--;
-        // replace characters 'h', 'k', and 'K' to 'H'
+        // replace characters 'h', 'k', and 'K' to 'H' and 'a' to ' '
         for (int i = start; i <= end; i++) {
-            char letter = sb.charAt(i);
+            letter = sb.charAt(i);
             if (letter == 'h' || letter == 'k' || letter == 'K')
                 sb.setCharAt(i, 'H');
+            else if (letter == 'a')
+                sb.setCharAt(i, ' ');
         }
         return sb.substring(start, end + 1);
     }
