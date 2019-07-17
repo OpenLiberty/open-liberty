@@ -24,7 +24,7 @@
 
 # All messages must use the range CWWKO1560 to CWWKO1569
 
-CWWKO1560_VALIDATION_NOT_IMPLEMENTED=CWWKO1560E: Validation is not provided for {0}, which implements {1}.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED=CWWKO1560E: Validation is not provided for connection factory {0}, which implements {1}.
 CWWKO1560_VALIDATION_NOT_IMPLEMENTED.explanation=Validation is only possible for resource adapter connection factories that are JMS connection factories or implement javax.resource.cci.ConnectionFactory or javax.sql.DataSource.
 CWWKO1560_VALIDATION_NOT_IMPLEMENTED.useraction=Do not attempt to validate this type of connection factory.
 
@@ -32,6 +32,6 @@ CWWKO1561_JMS_NOT_ENABLED=CWWKO1561E: JMS feature is not enabled.
 CWWKO1561_JMS_NOT_ENABLED.explanation=The JMS feature is required for this configuration element.
 CWWKO1561_JMS_NOT_ENABLED.useraction=Enable the JMS feature in the server configuration.
 
-CWWKO1562_NO_CONSPEC=CWWKO1561E: Validation cannot be performed with the requested user and password because there is no standard way of locating the proper ConnectionSpec implementation.
+CWWKO1562_NO_CONSPEC=CWWKO1562E: Validation cannot be performed with the requested user and password because there is no standard way of locating the proper ConnectionSpec implementation.
 CWWKO1562_NO_CONSPEC.explanation=The validation REST endpoint was unable to guess the name of the ConnectionSpec implementation, so it has no way of supplying the requested user name and password to the connection factory.
-CWWKO1562_NO_CONSPEC.useraction=Omit the user and password paramaters when requesting validation of this connection factory.
+CWWKO1562_NO_CONSPEC.useraction=Omit the user and password parameters when requesting validation of this connection factory.

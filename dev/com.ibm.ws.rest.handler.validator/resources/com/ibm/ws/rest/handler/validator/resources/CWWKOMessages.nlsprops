@@ -34,4 +34,4 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Verify that the feature that provides the c
 
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: The X-Login-Config-Props header requires an equals sign character (=) as a delimiter between the login configuration property name and value.
 CWWKO1552_MISSING_DELIMITER.explanation=The equals sign delimiter is necessary to determine which part of the X-Login-Config-Props header is the login configuration property name and which part is the value.
-CWWKO1552_MISSING_DELIMITER.useraction=Update the X-Login-Config-Props header to include an equals sign (=) between the log configuration property name and value.
+CWWKO1552_MISSING_DELIMITER.useraction=Update the X-Login-Config-Props header to include an equals sign (=) between the login configuration property name and value.
