@@ -223,9 +223,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         Object target = validatorRefs.isEmpty() || targetRef == null ? null : getService(context, targetRef);
         if (target == null) {
             json.put("successful", false);
-            json.put("failure",
-                     toJSONObject("message",
-                                  "One or more dependencies not satisfied, or feature that enables the resource is not enabled, or it is not possible to validate this type of resource"));
+            json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1551_CANNOT_VALIDATE")));
         } else {
             // Build a map of params for the testable service
             Map<String, Object> params = new HashMap<String, Object>();
@@ -266,7 +264,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
                         lcProps.put(resolvePotentialVariable(name), resolvePotentialVariable(value));
                     } else {
                         json.put("successful", false);
-                        json.put("failure", toJSONObject("message", "Login config property lacks delimiter '=' between key and value"));
+                        json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1552_MISSING_DELIMITER")));
                     }
                 }
                 params.put(Validator.LOGIN_CONFIG_PROPS, lcProps);
@@ -275,7 +273,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             Validator validator = getService(context, validatorRefs.iterator().next());
             if (validator == null) {
                 json.put("successful", false);
-                json.put("failure", toJSONObject("message", "Unable to obtain validator for " + configElementPid));
+                json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1550_VALIDATOR_NOT_FOUND", configElementPid)));
             } else if (!json.containsKey("successful")) {
                 Map<String, ?> result;
                 try {

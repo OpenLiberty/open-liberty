@@ -174,11 +174,11 @@ public class ConnectionFactoryValidator implements Validator {
                 if (interfaces.contains("javax.jms.ConnectionFactory")) { // also covers QueueConnectionFactory and TopicConnectionFactory
                     jmsValidator = getJMSValidator();
                     if (jmsValidator == null)
-                        result.put(FAILURE, "JMS feature is not enabled.");
+                        result.put(FAILURE, Tr.formatMessage(tc, "CWWKO1561_JMS_NOT_ENABLED"));
                     else
                         jmsValidator.validate(cf, user, password, result);
                 } else
-                    result.put(FAILURE, "Validation is not implemented for " + cf.getClass().getName() + " which implements " + interfaces + ".");
+                    result.put(FAILURE, Tr.formatMessage(tc, "CWWKO1560_VALIDATION_NOT_IMPLEMENTED", cf.getClass().getName(), interfaces));
             }
         } catch (Throwable x) {
             ArrayList<String> sqlStates = new ArrayList<String>();
@@ -253,7 +253,7 @@ public class ConnectionFactoryValidator implements Validator {
 
             if (conSpec == null) {
                 // TODO find ConnectionSpec impl another way?
-                throw new RuntimeException("Unable to locate " + ConnectionSpec.class.getName() + " impl from resource adapter.");
+                throw new RuntimeException(Tr.formatMessage(tc, "CWWKO1562_NO_CONSPEC"));
             }
         }
 
@@ -342,7 +342,7 @@ public class ConnectionFactoryValidator implements Validator {
             try {
                 boolean isValid = con.isValid(120); // TODO better ideas for timeout value?
                 if (!isValid)
-                    result.put(FAILURE, "FALSE returned by JDBC driver's Connection.isValid operation");
+                    result.put(FAILURE, "java.sql.Connection.isValid: false");
             } catch (SQLFeatureNotSupportedException x) {
             }
         } finally {
