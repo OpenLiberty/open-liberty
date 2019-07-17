@@ -24,7 +24,6 @@ IBM-API-Package: javax.faces; type="spec", \
  javax.faces.view; type="spec", \
  javax.faces.view.facelets; type="spec", \
  javax.faces.webapp; type="spec", \
- org.apache.myfaces; type="third-party", \
  org.apache.myfaces.*; type="third-party"
 IBM-ShortName: jsf-2.2
 Subsystem-Name: JavaServer Faces 2.2
