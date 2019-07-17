@@ -203,13 +203,21 @@ public class URIMatcher40 extends URIMatcher {
 
         // hit the defaultNode "/*"
         if (defaultNode != null) {
-
             // Servlet 4.0: default match
-            dispatchContext.setMappingMatch(MappingMatch.DEFAULT);
-            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                logger.logp(Level.FINE, CLASS_NAME, methodName, "set MappingMatch to: " + MappingMatch.DEFAULT);
-            }
+            // Two possibilities here: 1. /* mapping.  This can be considered a special MappingMatch.PATH where the PATH happens to be just the root /
+            //                    2. / (default servlet) mapping
 
+            if (dispatchContext.hasSlashStarMapping()) {
+                dispatchContext.setMappingMatch(MappingMatch.PATH);
+                if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, methodName, "default, set MappingMatch to: " + MappingMatch.PATH);
+                }
+            } else {
+                dispatchContext.setMappingMatch(MappingMatch.DEFAULT);
+                if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, methodName, "default, set MappingMatch to: " + MappingMatch.DEFAULT);
+                }
+            }
             //PK39337 - start
             dispatchContext.setPossibleSlashStarMapping(true);
             //PK39337 - end

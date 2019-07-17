@@ -186,8 +186,12 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
                     returnMapping = new HttpServletMappingImpl(MappingMatch.EXTENSION, matchValue, pattern, servletName);
                     break;
                 case PATH:
-                    // matchValue is the pathInfo after the last "/" and pattern is the servletPath + "/*"
-                    matchValue = pathInfo.substring(pathInfo.lastIndexOf("/") + 1, pathInfo.length());
+                    // the initial matchValue is already calculated earlier without leading slash.
+                    // in the case of /* mapping, skip the pathInfo.substring.
+                    if (!dispatchContext.hasSlashStarMapping()) {
+                        // matchValue is the pathInfo after the last "/" and pattern is the servletPath + "/*"
+                        matchValue = pathInfo.substring(pathInfo.lastIndexOf("/") + 1, pathInfo.length());
+                    }
                     pattern = servletPath + "/*";
                     returnMapping = new HttpServletMappingImpl(MappingMatch.PATH, matchValue, pattern, servletName);
                     break;
