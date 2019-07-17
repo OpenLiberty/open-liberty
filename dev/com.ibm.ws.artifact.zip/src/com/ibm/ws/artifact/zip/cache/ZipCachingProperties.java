@@ -517,7 +517,7 @@ public class ZipCachingProperties {
         if ( nano < 0 ) {
             return "-" + toAbsSec(-1 * nano, padLeft);
         } else if ( nano == 0 ) {
-            return PAD.substring(0, padLeft) + "." + PAD.substring(PAD_RIGHT);
+            return PAD.substring(0, padLeft) + "." + PAD.substring(0, PAD_RIGHT);
         }
 
         String nanoText = Long.toString(nano);
@@ -554,7 +554,7 @@ public class ZipCachingProperties {
             }
             return PAD.substring(0, padLeft) +
                    "." +
-                   PAD.substring(PAD_RIGHT - 1) + "*";
+                   PAD.substring(0, PAD_RIGHT - 1) + "*";
         }
     }
 

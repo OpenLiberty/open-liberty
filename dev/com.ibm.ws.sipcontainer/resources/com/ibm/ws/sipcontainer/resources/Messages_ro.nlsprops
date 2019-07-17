@@ -1,0 +1,928 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
+#COMPONENTPREFIX CWSCT
+#COMPONENTNAMEFOR CWSCT WebSphere SIP Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+
+info.container.initialized=CWSCT0001I: Ini\u0163ializarea containerului SIP s-a terminat.
+info.container.initialized.explanation=SIP com.ibm.ws.sip.container este func\u0163ional \u015fi gata s\u0103 primeasc\u0103 mesaje de la re\u0163ea.
+info.container.initialized.useraction=Acesta este un mesaj informativ.  Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+info.container.version=CWSCT0002I: Container SIP {0}
+info.container.version.explanation=Num\u0103rul de versiune al componentei de container SIP.
+info.container.version.useraction=Acesta este un mesaj informativ.  Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+warning.mean.disabled=CWSCT0003W: MBean-ul SIP Container nu poate porni.
+warning.mean.disabled.explanation=MBean-ul SIP Container nu poate porni. Opera\u0163iile JMX nu vor fi disponibile pentru SIP Container.
+warning.mean.disabled.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception=CWSCT0004E: A ap\u0103rut urm\u0103toarea excep\u0163ie:
+error.exception.explanation=A fost prins\u0103 o excep\u0163ie de SIP com.ibm.ws.sip.container.
+error.exception.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.failover.started=CWSCT0006I: Preluarea la defect a pornit. Num\u0103rul de obiecte primite {0} pentru numele logic {1}.
+info.failover.started.explanation=Unul din serverele din cluster a fost oprit, \u015fi unele din numele sale logice sunt transferate la acest server. Obiectele sesiune asociate cu numele logice sunt acum activate pe acest server.
+info.failover.started.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.failover.ended=CWSCT0008I: Preluarea la defect s-a terminat pentru numele logic {0}
+info.failover.ended.explanation=S-a terminat activarea obiectelor sesiune care sunt asociate cu un nume logic. Vede\u0163i "Preluarea la defect a pornit" pentru numele logic \u015fi num\u0103rul de obiecte.
+info.failover.ended.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.parser.configuration=CWSCT0010E: Eroare configurare parser sip.xml.
+error.parser.configuration.explanation=A survenit o eroare la \u00eencercarea de ini\u0163ializare a parserului XML. Acesta mi indic\u0103 o eroare \u00een documentul sip.xml.
+error.parser.configuration.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.parser.not.available=CWSCT0011E: Parser indisponibil; nu poate s\u0103 \u00eencarce configura\u0163ia aplica\u0163iei.
+error.parser.not.available.explanation=SIP com.ibm.ws.sip.container nu poate \u00eenc\u0103rca o aplica\u0163ie din fi\u015fierul sip.xml deoarece nu exist\u0103 niciun parser XML.
+error.parser.not.available.useraction=C\u0103uta\u0163i un mesaj anterior din istoric care s\u0103 indice "Eroare la configurarea parserului sip.xml".
+
+error.parse.exception=CWSCT0012E: Excep\u0163ie parsare; parsarea sip.xml {0} a e\u015fuat.
+error.parse.exception.explanation=SIP com.ibm.ws.sip.container nu poate \u00eenc\u0103rca o aplica\u0163ie din fi\u015fierul sip.xml din cauza unei erori \u00een documentul sip.xml.
+error.parse.exception.useraction=C\u0103uta\u0163i erorile \u00een fi\u015fierul sip.xml. Pute\u0163i g\u0103si informa\u0163ii despre formatul standard de fi\u015fier sip.xml \u00een JSR 116 (SIP Servlet API) capitolele 11 (Mapping Requests to Servlets) \u015fi 15 (Deployment Descriptor).
+
+error.listener.not.found=CWSCT0013E: Clasa ascult\u0103tor: {0} nu a fost g\u0103sit\u0103 pentru aplica\u0163ia: {1}.
+error.listener.not.found.explanation=Clasa loader nu a putut g\u0103si clasa listener.
+error.listener.not.found.useraction=Verifica\u0163i \u00een fi\u015fierul sip.xml dac\u0103 numele de clas\u0103 listener este corect. Asigura\u0163i-v\u0103 c\u0103 clasa listener este \u00een calea de clase.
+
+error.init.listener.failed=CWSCT0014E: Crearea Listener Class: {0} a e\u015fuat pentru aplica\u0163ia: {1}.
+error.init.listener.failed.explanation=SIP com.ibm.ws.sip.container nu a putut instan\u0163ia clasa de ascult\u0103tori.
+error.init.listener.failed.useraction=Verifica\u0163i \u00een fi\u015fierul sip.xml dac\u0103 numele de clas\u0103 de ascult\u0103tori este corect. Asigura\u0163i-v\u0103 c\u0103 clasa de ascult\u0103tori are un constructor public care nu a\u015fteapt\u0103 argumente.
+
+error.too.many.timer.listeners=CWSCT0015E: XML nevalid - mai mul\u0163i Timer Listener asigna\u0163i unei aplica\u0163ii {0}.
+error.too.many.timer.listeners.explanation=Documentul sip.xml define\u015fte mai mult de un TimerListener pentru aceea\u015fi aplica\u0163ie.
+error.too.many.timer.listeners.useraction=Verifica\u0163i fi\u015fierul sip.xml \u015fi asigura\u0163i-v\u0103 c\u0103 este doar o singur\u0103 clas\u0103 TimerListener pentru aplica\u0163ie.
+
+error.parsing.session.ttl=CWSCT0016E: Eroare parsare TTL sesiune pentru aplica\u0163ia SIP: {0}.
+error.parsing.session.ttl.explanation=Docuumentul sip.xml nu con\u0163ine o valoare de timeout sesiune de aplica\u0163ie valid\u0103.
+error.parsing.session.ttl.useraction=Verifica\u0163i fi\u015fierul sip.xml pentru a v\u0103 asigura c\u0103 setarea de timeout sesiune este exprimat\u0103 \u00eentr.un num\u0103r \u00eentreg de minute.
+
+error.mapping.to.nonexisting.siplet=CWSCT0017E: Mapare pentru siplet-ul care nu exist\u0103: {0}, Aplica\u0163ia: {1}.
+error.mapping.to.nonexisting.siplet.explanation=Documentul sip.xml con\u0163ine o mapare de servlet pentru unservlet nedefinit.
+error.mapping.to.nonexisting.siplet.useraction=Verifica\u0163i fi\u015fierul sip.xml \u015fi verifica\u0163i c\u0103 toate tagurile servlet-name de sub servlet-mapping corespund cu un servlet existent \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 o defini\u0163ie tipar pentru maparea servletului.
+
+error.invalid.condition.type=CWSCT0018E: Tip condi\u0163ie nevalid \u00een sip.xml: {0}.
+error.invalid.condition.type.explanation=Docuumentul sip.xml nu con\u0163ine un tip valid de condi\u0163ie de potrivire servlet.
+error.invalid.condition.type.useraction=Verifica\u0163i fi\u015fierul sip.xml pentru a v\u0103 asigura c\u0103 regulile de potrivire se conformeaz\u0103 la JSR 116 (SIP Servlet API) 11.3 (Conditions).
+
+error.parsing.condition=CWSCT0019E: Eroare parsare condi\u0163ie {0}, var: {1}\t,valoare: {2}.
+error.parsing.condition.explanation=Docuumentul sip.xml nu con\u0163ine o regul\u0103 de potrivire servlet valid\u0103.
+error.parsing.condition.useraction=Verifica\u0163i fi\u015fierul sip.xml pentru a v\u0103 asigura c\u0103 regulile de potrivire se conformeaz\u0103 la JSR 116 (SIP Servlet API) capitolul 11 (Mapping Requests to Servlets).
+
+error.parsing.and.condition=CWSCT0020E: Eroare parsare condi\u0163ie AND; subelementele nu au fost g\u0103site.
+error.parsing.and.condition.explanation=Documentul sip.xml con\u0163ine o condi\u0163ie AND f\u0103r\u0103 sub-elemente.
+error.parsing.and.condition.useraction=Verifica\u0163i fi\u015fierul sip.xml pentru a v\u0103 asigura c\u0103 exist\u0103 reguli d epotrivire sub tagul AND.
+
+error.parsing.sip.app=CWSCT0021E: Eroare \u00een defini\u0163ia xml pentru sip-app.
+error.parsing.sip.app.explanation=Documentul sip.xml con\u0163ine zero sau mai multe sec\u0163iuni sip-app. Nu poate s\u0103 fie dec\u00e2t una.
+error.parsing.sip.app.useraction=Verifica\u0163i fi\u015fierul sip.xml \u015fi asigura\u0163i-v\u0103 c\u0103 este doar o singur\u0103 sec\u0163iune sip-app.
+
+error.local.sip.dtd.not.found=CWSCT0022E: Eroare - documentul DTD SIP local nu a fost g\u0103sit.
+error.local.sip.dtd.not.found.explanation=Nu exist\u0103 o defini\u0163ie local\u0103 pentru /javax/servlet/sip/sip-app_1_0.dtd
+error.local.sip.dtd.not.found.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.server.overload.cleared=CWSCT0023I: Serverul nu mai este supra\u00eenc\u0103rcat. Factorul de \u00eenc\u0103rcare este redus la {0}
+info.server.overload.cleared.explanation=SIP com.ibm.ws.sip.container nu mai este considerat supra\u00eenc\u0103rcat \u015fi acum este gata s\u0103 trateze sesiuni noi
+info.server.overload.cleared.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.failed.create.stack=CWSCT0025E: Crearea stivei SIP a e\u015fuat.
+error.failed.create.stack.explanation=Stiva SIP intern\u0103 a e\u015fuat s\u0103 se ini\u0163ializeze.
+error.failed.create.stack.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sip.stack.exception=CWSCT0026E: Excep\u0163ie \u00een stiva SIP.
+error.sip.stack.exception.explanation=A fost prins\u0103 o excep\u0163ie \u00een stratul de stiv\u0103 SIP. Stiva va \u00eencerca s\u0103 continue rularea normal\u0103.
+error.sip.stack.exception.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.listening.point=CWSCT0028I: Punct de ascultare container SIP {0}:{1}/{2}
+info.listening.point.explanation=Acesta este un mesaj informativ tip\u0103rit pentru fiecare adres\u0103 gazd\u0103, fiecare num\u0103r de port \u015fi protocol de transport, num\u0103r port \u015fi protocol de transport, pe care ascult\u0103 com.ibm.ws.sip.container SIP, pentru trafic SIP de intrare.
+info.listening.point.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.forward.response=CWSCT0029E: \u00cenaintarea SIP a e\u015fuat; cererea r\u0103spuns este {0}
+error.forward.response.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 \u00eenainteze un mesaj SIP.
+error.forward.response.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.proxying.to.branch=CWSCT0030E: Func\u0163ia de proxy la o ramur\u0103 de c\u0103tre SIP a e\u015fuat; URI-ul este {0}
+error.proxying.to.branch.explanation=SIP com.ibm.ws.sip.container, ac\u0163ion\u00e2nd ca un proxy, a e\u015fuat s\u0103 \u00eenainteze o cerere la una dintre destina\u0163ii.
+error.proxying.to.branch.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.create.record.route.uri=CWSCT0031E: Crearea rutei de \u00eenregistrare {0} de c\u0103tre SIP a e\u015fuat
+error.create.record.route.uri.explanation=SIP com.ibm.ws.sip.container, ac\u0163ion\u00e2nd ca un proxy, a e\u015fuat s\u0103 creeze un antet Rutare \u00eenregistrare.
+error.create.record.route.uri.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.proxy.set.parallel.illegal.state=CWSCT0032E: SIP nu poate modifica proxy la paralel dup\u0103 proxyTo
+error.proxy.set.parallel.illegal.state.explanation=Codul de servlet SIP a apelat Proxy.setParallel() dup\u0103 apelarea Proxy.proxyTo()
+error.proxy.set.parallel.illegal.state.useraction=Modifica\u0163i codul aplica\u0163ie astfel \u00eenc\u00e2t Proxy.setParallel() s\u0103 nu fie apelat\u0103 dup\u0103 Proxy.proxyTo()
+
+error.proxy.set.recourse.illegal.state=CWSCT0033E: SIP nu poate parcurge recursiv un proxy stateless.
+error.proxy.set.recourse.illegal.state.explanation=Codul de servlet SIP a apelat Proxy.setRecurse() pe un Proxy stateless.
+error.proxy.set.recourse.illegal.state.useraction=Modifica\u0163i codul aplica\u0163iei ca s\u0103 nu apeleze Proxy.setRecurse() pe un Proxy stateless.
+
+error.proxy.set.stateful.illegal.state=CWSCT0034E: SIP nu poate modifica proxy la stateful dup\u0103 proxyTo
+error.proxy.set.stateful.illegal.state.explanation=Codul de servlet SIP a apelat Proxy.setStateful() dup\u0103 apelarea Proxy.proxyTo()
+error.proxy.set.stateful.illegal.state.useraction=Modifica\u0163i codul aplica\u0163ie astfel \u00eenc\u00e2t Proxy.setStateful() s\u0103 nu fie apelat\u0103 dup\u0103 Proxy.proxyTo()
+
+error.proxy.cancel.request=CWSCT0035E: Cererea de anulare de c\u0103tre SIP a e\u015fuat; cerere anulare: {0}
+error.proxy.cancel.request.explanation=SIP com.ibm.ws.sip.container a e\u015fuat trimiterea unei cereri CANCEL.
+error.proxy.cancel.request.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sending.response.upstream=CWSCT0036E: Trimiterea r\u0103spunsului \u00een amonte de c\u0103tre SIP a e\u015fuat; r\u0103spuns: {0}
+error.sending.response.upstream.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 trimit\u0103 un r\u0103spuns \u00een sens ascendent (sensul ascendent este direc\u0163ia \u00een care r\u0103spunsurile circul\u0103 de la UAS \u00eenapoi la UAC)
+error.sending.response.upstream.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.proxy.set.recordroute.illegal.state=CWSCT0037E: SIP nu poate seta ruta de \u00eenregistrare dup\u0103 proxyTo
+error.proxy.set.recordroute.illegal.state.explanation=Codul de servlet SIP a apelat Proxy.setRecordRoute() dup\u0103 apelarea Proxy.proxyTo()
+error.proxy.set.recordroute.illegal.state.useraction=Modifica\u0163i codul aplica\u0163ie astfel \u00eenc\u00e2t Proxy.setRecordRoute() s\u0103 nu fie apelat\u0103 dup\u0103 Proxy.proxyTo()
+
+error.create.request=CWSCT0040E: Crearea cererii de c\u0103tre SIP a e\u015fuat; cerere: {0}
+error.create.request.explanation=SIP com.ibm.ws.sip.container a e\u015fuat crearea unui mesaj de cerere SIP.
+error.create.request.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.failed.parse.route.header=CWSCT0041E: Ob\u0163inerea antetului rutei a e\u015fuat.
+error.failed.parse.route.header.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 ob\u0163in\u0103 un antet Rut\u0103 \u00eentr-o cerere.
+error.failed.parse.route.header.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.resolving.inet.address=CWSCT0042E: Rezolvarea adresei de internet a e\u015fuat.
+error.resolving.inet.address.explanation=A e\u015fuat rezolvarea unei adrese de internet de la numele de gaz\u0103d\u0103 la adresa IP.
+error.resolving.inet.address.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.proxy.set.recordroute.non.dialog.method=CWSCT0043E: Nu poate s\u0103 seteze ruta de \u00eenregistrare pentru o cerere non dialog: {0}
+error.proxy.set.recordroute.non.dialog.method.explanation=Codul de servlet SIP a apelat Proxy.setRecordRoute() pe o cerere care nu creeaz\u0103 un dialog.
+error.proxy.set.recordroute.non.dialog.method.useraction=Modifica\u0163i codul aplica\u0163iei ca s\u0103 nu apeleze Proxy.setRecordRoute() pe cereri care nu creeaz\u0103 un dialog. Exemple de cereri care creeaz\u0103 dialoguri sunt INVITE, REFER \u015fi SUBSCRIBE.
+
+error.call.should.be.invoked=CWSCT0044E: Proxy a atins un apel de func\u0163ie nea\u015fteptat.
+error.call.should.be.invoked.explanation=SIP com.ibm.ws.sip.container a primit un mesaj unde nu \u00eel a\u015fteapt\u0103.
+error.call.should.be.invoked.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.route.header.unavailable=CWSCT0045E: Nu poate s\u0103 fac\u0103 proxy pentru cererile urm\u0103toare f\u0103r\u0103 antet de rut\u0103: {0}
+error.route.header.unavailable.explanation=SIP com.ibm.ws.sip.container nu poate delega o cerere ulterioar\u0103 pe un dialog, eoarece cererea de intrare nu are niciun antet Rut\u0103.
+error.route.header.unavailable.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+
+error.unkown.uri.type=CWSCT0046E: Tip URI necunoscut; nu poate s\u0103 acceseze parametrii din antetul: {0}
+error.unkown.uri.type.explanation=SIP com.ibm.ws.sip.container nu poate procesa un mesaj deoarece URI-ul nu este un URI sip sau sips.
+error.unkown.uri.type.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.processing.strict.routing=CWSCT0048E: Eroare procesare Rutare strict\u0103; URI-ul cerere nu con\u0163ine ID-ul sesiunii. {0}
+error.processing.strict.routing.explanation=SIP com.ibm.ws.sip.container a primit o cerere pe un dialog de la un ruter strict \u015fi lipse\u015fte parametrul de ID sesiune din Cerere-URI, sau are valoarea gre\u015fit\u0103.
+error.processing.strict.routing.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sending.response=CWSCT0049E: Eroare trimitere r\u0103spuns
+error.sending.response.explanation=SIP com.ibm.ws.sip.container a e\u015fuat trimiterea unui r\u0103spuns.
+error.sending.response.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.default.invoke.siplet.not.found=CWSCT0051E: Nu poate s\u0103 g\u0103seasc\u0103 un siplet pentru invocare; handler implicit indisponibil.
+error.default.invoke.siplet.not.found.explanation=Nu exist\u0103 un servlet SIP care s\u0103 se potriveasc\u0103 pentru tratarea cererii.
+error.default.invoke.siplet.not.found.useraction=Verifica\u0163i regulile de potrivire ale aplica\u0163iei SIP instalate \u015fi asigura\u0163i-v\u0103 c\u0103 m\u0103car una poate fi potrivit\u0103 la cerere.
+
+error.handling.request=CWSCT0052E: Nu poate s\u0103 g\u0103seasc\u0103 dialogul pentru cererea BYE primit\u0103. Call-Id este {0}
+error.handling.request.explanation=SIP com.ibm.ws.sip.container a primit o cerere BYE care nu este potrivit\u0103 cu niciun dialog existent.
+error.handling.request.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.invalid.operator.var=CWSCT0053E: Variabil\u0103 nevalid\u0103 \u00een operator; var: {0}
+error.invalid.operator.var.explanation=Docuumentul sip.xml nu con\u0163ine o variabil\u0103 valid\u0103.
+error.invalid.operator.var.useraction=Verifica\u0163i fi\u015fierul sip.xml pentru a v\u0103 asigura c\u0103 variabila este valid\u0103 conform cu JSR 116 (SIP Servlet API) 11.2 (SIP Request Object Model).
+
+error.missing.sub.elements=CWSCT0054E: Evaluarea operatorului {0} a e\u015fuat; subelementele nu sunt disponibile.
+error.missing.sub.elements.explanation=Documentul sip.xml con\u0163ine o condi\u0163ie f\u0103r\u0103 sub-elemente.
+error.missing.sub.elements.useraction=Verifica\u0163i fi\u015fierul sip.xml pentru a v\u0103 asigura c\u0103 potrivirea tiparului este conform\u0103 cu JSR 116 (SIP Servlet API) 11.3 (Conditions).
+
+error.ip.parse=CWSCT0055E: IPAuthenticator a e\u015fuat parsarea configura\u0163iei
+error.ip.parse.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 parseze lista de adrese IP de \u00eencredere din configura\u0163ie.
+error.ip.parse.useraction=Verifica\u0163i proprietatea de configura\u0163ie com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.host=CWSCT0056E: IPAuthenticator e\u015fuat, gazd\u0103 necunoscut\u0103
+error.ip.host.explanation=Lista de adrese IP de \u00eencredere pentru autentificarea SIP con\u0163ine un nume de gazd\u0103 care nu se poate rezolva.
+error.ip.host.useraction=Verifica\u0163i lista de adrese IP de \u00eencredere \u00een proprietatea de configura\u0163ie com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.header.parse=CWSCT0057E: IPAuthenticator a e\u015fuat parsarea antetului
+error.ip.header.parse.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 parseze un antet Via pentru autentificarea IP.
+error.ip.header.parse.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.ip.header.exception=CWSCT0058E: Problem\u0103 antet IPAuthenticator.
+error.ip.header.exception.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 g\u0103seasc\u0103 un antet Via \u00een mesajul pentru autentificarea IP.
+error.ip.header.exception.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.expires=CWSCT0059E: SIP a e\u015fuat ob\u0163inerea expir\u0103rilor; formatat necorespunz\u0103tor: {0}
+error.get.expires.explanation=Apelul aplica\u0163iei la Address.setExpires() a e\u015fuat deoarece antetul de adres\u0103 al mesajului con\u0163ine o valoare de parametru expirare prost formatat\u0103.
+error.get.expires.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.display.name=CWSCT0060E: SIP a e\u015fuat setarea afi\u015f\u0103rii numelui; nume: {0}
+error.set.display.name.explanation=Apelul aplica\u0163iei la Address.setDisplayName() a e\u015fuat.
+error.set.display.name.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 numele de afi\u015fare este valid \u015fi nu este null.
+
+error.set.expires=CWSCT0061E: SIP a e\u015fuat setarea expir\u0103rilor; secunde: {0}
+error.set.expires.explanation=Apelul aplica\u0163iei la Address.setExpires() a e\u015fuat.
+error.set.expires.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.parameter=CWSCT0062E: SIP a e\u015fuat setarea parametrilor; nume: {0}, valoare: {1}
+error.set.parameter.explanation=Apelul aplica\u0163iei la Address.setParameter() sau SipURI.setParameter() a e\u015fuat.
+error.set.parameter.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 numele \u015fi valoarea parametrului sunt valide.
+
+error.set.q=CWSCT0063E: SIP a e\u015fuat setarea q; valoare: {0}
+error.set.q.explanation=Apelul aplica\u0163iei la Address.setQ() a e\u015fuat.
+error.set.q.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 valoarea priorit\u0103\u0163ii este valid\u0103.
+
+error.get.method=CWSCT0064E: Ob\u0163inerea metodei de c\u0103tre SIP de la cererea lansat\u0103 \u00een execu\u0163ie: {0} a e\u015fuat.
+error.get.method.explanation=Apelul aplica\u0163iei la SipServletMessage.getMethod() a e\u015fuat.
+error.get.method.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.request.uri=CWSCT0065E: Ob\u0163inerea URI-ului cererii de c\u0103tre SIP de la cererea lansat\u0103 \u00een execu\u0163ie: {0} a e\u015fuat.
+error.get.request.uri.explanation=Apelul aplica\u0163iei la SipServletRequest.getRequestURI() a e\u015fuat.
+error.get.request.uri.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.create.response=CWSCT0066E: Crearea r\u0103spunsului la cerere: {0} de c\u0103tre SIP a e\u015fuat
+error.create.response.explanation=SIP com.ibm.ws.sip.container  a e\u015fuat s\u0103 creeze un r\u0103spuns la cerere.
+error.create.response.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.send.request=CWSCT0067E: Trimiterea cererii de c\u0103tre SIP utiliz\u00e2nd JAIN; URI: {0} a e\u015fuat
+error.send.request.explanation=SIP com.ibm.ws.sip.container a e\u015fuat trimiterea unei cereri.
+error.send.request.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.add.header=CWSCT0069E: Ad\u0103ugarea antetului de c\u0103tre SIP a e\u015fuat; nume: {0}, valoare: {1}
+error.add.header.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 adauge un antet la mesaj.
+error.add.header.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.send.response=CWSCT0070E: Trimiterea r\u0103spunsului de c\u0103tre SIP, {0} a e\u015fuat
+error.send.response.explanation=A ap\u0103rut o eroare \u00een timp ce SIP com.ibm.ws.sip.container \u00eencerca s\u0103 trimit\u0103 un r\u0103spuns.
+error.send.response.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.header=CWSCT0071E: SIP a e\u015fuat setarea antetului; nume: {0}, valoare: {1}
+error.set.header.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 seteze o valoare antet \u00een mesaj.
+error.set.header.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.host=CWSCT0072E: SIP a e\u015fuat setarea gazdei; gazd\u0103: {0}
+error.set.host.explanation=Apelul aplica\u0163iei la SipURI.setHost() a e\u015fuat.
+error.set.host.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 numele de gazd\u0103 este valid \u015fi nu este null.
+
+error.set.port=CWSCT0073E: SIP a e\u015fuat setarea portului; port: {0}
+error.set.port.explanation=Apelul aplica\u0163iei la SipURI.setPort() a e\u015fuat.
+error.set.port.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.secure=CWSCT0074E: SIP a e\u015fuat setarea securit\u0103\u0163ii; valoare: {0}
+error.set.secure.explanation=Apelul aplica\u0163iei la SipURI.setSecure() a e\u015fuat.
+error.set.secure.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.user=CWSCT0075E: SIP a e\u015fuat setarea utilizatorului; utilizator: {0}
+error.set.user.explanation=Apelul aplica\u0163iei la SipURI.setUser() a e\u015fuat.
+error.set.user.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 numele de utilizator este valid \u015fi nu este null.
+
+error.set.user.password=CWSCT0076E: SIP a e\u015fuat setarea parolei utilizatorului; parol\u0103: {0}
+error.set.user.password.explanation=Apelul aplica\u0163iei la SipURI.setUserPassword() a e\u015fuat.
+error.set.user.password.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 parola utilizatorului este valid\u0103 \u015fi nu este null.
+
+error.get.accept.language=CWSCT0077E: SIP a e\u015fuat ob\u0163inerea limbii acceptate, {0}
+error.get.accept.language.explanation=Apelul aplica\u0163iei la SipServletMessage.getAcceptLanguage() a e\u015fuat.
+error.get.accept.language.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.accept.languages=CWSCT0078E: SIP a e\u015fuat ob\u0163inerea limbilor acceptate, {0}
+error.get.accept.languages.explanation=Apelul aplica\u0163iei la SipServletMessage.getAcceptLanguages() a e\u015fuat.
+error.get.accept.languages.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.address.header=CWSCT0079E: Ob\u0163inerea antetului adresei de c\u0103tre SIP a e\u015fuat; nume: {0}
+error.get.address.header.explanation=Apelul aplica\u0163iei la SipServletMessage.getAddressHeader() a e\u015fuat.
+error.get.address.header.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.address.headers=CWSCT0080E: Ob\u0163inerea anteturilor adresei de c\u0103tre SIP a e\u015fuat; nume: {0}
+error.get.address.headers.explanation=Apelul aplica\u0163iei la SipServletMessage.getAddressHeaders() a e\u015fuat.
+error.get.address.headers.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.character.encoding=CWSCT0081E: Ob\u0163inerea cod\u0103rii {0} caracterului de c\u0103tre SIP a e\u015fuat
+error.get.character.encoding.explanation=Apelul aplica\u0163iei la SipServletMessage.getCharacterEncoding() a e\u015fuat.
+error.get.character.encoding.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.content.length=CWSCT0082E: Ob\u0163inerea lungimii con\u0163inutului {0} de c\u0103tre SIP a e\u015fuat
+error.get.content.length.explanation=Apelul aplica\u0163iei la SipServletMessage.getContentLength() a e\u015fuat.
+error.get.content.length.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.content.type=CWSCT0083E: SIP a e\u015fuat ob\u0163inerea tipului de con\u0163inut {0}
+error.get.content.type.explanation=Apelul aplica\u0163iei la SipServletMessage.getContentType() a e\u015fuat.
+error.get.content.type.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.header=CWSCT0084E: SIP a e\u015fuat ob\u0163inerea antetului; nume: {0}
+error.get.header.explanation=Apelul aplica\u0163iei la SipServletMessage.getHeader() a e\u015fuat.
+error.get.header.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.header.names=CWSCT0085E: SIP a e\u015fuat ob\u0163inerea antetului; nume {0}
+error.get.header.names.explanation=Apelul aplica\u0163iei la SipServletMessage.getHeaderNames() a e\u015fuat.
+error.get.header.names.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.headers=CWSCT0086E: SIP a e\u015fuat ob\u0163inerea anteturilor; nume: {0}
+error.get.headers.explanation=Apelul aplica\u0163iei la SipServletMessage.getHeaders() a e\u015fuat.
+error.get.headers.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.content=CWSCT0087E: SIP a e\u015fuat setarea con\u0163inutului; con\u0163inut: {0}, tip con\u0163inut: {1}
+error.set.content.explanation=Apelul aplica\u0163iei la SipServletMessage.setContent() a e\u015fuat.
+error.set.content.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 este valid \u015fi nu este null con\u0163inutul mesajului.
+
+error.get.via.headers=CWSCT0088E: SIP a e\u015fuat ob\u0163inerea prin anteturi {0}
+error.get.via.headers.explanation=Apelul aplica\u0163iei la SipServletMessage.getViaHeaders() a e\u015fuat.
+error.get.via.headers.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.contact.header=CWSCT0089E: SIP a e\u015fuat ob\u0163inerea antetului contact {0}
+error.get.contact.header.explanation=Apelul aplica\u0163iei la SipServletMessage.getContactHeader() a e\u015fuat.
+error.get.contact.header.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.jain.sip.headers=CWSCT0090E: SIP a e\u015fuat ob\u0163inerea anteturilor JAIN SIP {0}
+error.get.jain.sip.headers.explanation=SIP com.ibm.ws.sip.container a e\u015fuat ob\u0163inerea unuia sau mai multor anteturi din mesajul intern JAIN.
+error.get.jain.sip.headers.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.max.forwards=CWSCT0091E: SIP a e\u015fuat ob\u0163inerea \u00eenaint\u0103rilor maxime {0}
+error.get.max.forwards.explanation=Apelul aplica\u0163iei la SipServletRequest.getMaxForwards() a e\u015fuat.
+error.get.max.forwards.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.reason.phrase=CWSCT0092E: SIP a e\u015fuat ob\u0163inerea expresiei cauz\u0103 {0}
+error.get.reason.phrase.explanation=Apelul aplica\u0163iei la SipServletResponse.getReasonPhrase() a e\u015fuat.
+error.get.reason.phrase.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.get.status=CWSCT0093E: SIP a e\u015fuat ob\u0163inerea st\u0103rii {0}
+error.get.status.explanation=Apelul aplica\u0163iei la SipServletResponse.getStatus() a e\u015fuat.
+error.get.status.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.status=CWSCT0094E: Setarea st\u0103rii de c\u0103tre SIP a e\u015fuat; stare: {0}, expresie cauz\u0103: {1}
+error.set.status.explanation=Apelul aplica\u0163iei la SipServletResponse.setStatus() a e\u015fuat.
+error.set.status.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 este valid codul de statut. Dac\u0103 a\u0163i furnizat \u015fi o fraz\u0103 motiv, asigura\u0163i-v\u0103 c\u0103 nu este goal\u0103 sau null.
+
+error.create.address=CWSCT0095E: Crearea adresei de c\u0103tre SIP a e\u015fuat; URI: {0}, nume afi\u015fare: {1}
+error.create.address.explanation=Apelul aplica\u0163iei la SipFactory.createAddress() a e\u015fuat.
+error.create.address.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 numele de afi\u015fare \u015fi URI-ul sunt valide.
+
+error.create.sip.uri=CWSCT0097E: Crearea URI-ului SIP de c\u0103tre SIP a e\u015fuat; utilizator: {0}, gazd\u0103: {1}
+error.create.sip.uri.explanation=Apelul aplica\u0163iei la SipFactory.createSipURI() a e\u015fuat.
+error.create.sip.uri.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 parametrii de utilizator \u015fi gazd\u0103 sunt valizi \u015fi nu sunt null.
+
+error.create.uri=CWSCT0098E: Crearea URI-ului de c\u0103tre SIP a e\u015fuat; URI: {0}
+error.create.uri.explanation=Apelul aplica\u0163iei la SipFactory.createURI() a e\u015fuat.
+error.create.uri.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 \u015firul URI este un URI valid.
+
+error.push.route=CWSCT0099E: \u00cempingere rut\u0103 e\u015fuat\u0103; URI: {0}
+error.push.route.explanation=Apelul aplica\u0163iei la SipServletRequest.pushRoute() sau SipServletRequest.pushRecordRoute() a e\u015fuat.
+error.push.route.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 SipURI este valid.
+
+error.set.uri=CWSCT0100E: Setare URI de c\u0103tre SIP e\u015fuat\u0103; URI: {0}
+error.set.uri.explanation=Apelul aplica\u0163iei la Address.setURI() a e\u015fuat.
+error.set.uri.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 URI este valid.
+
+error.sending.ack=CWSCT0101E: Trimitere cerere caracter de confirmare e\u015fuat\u0103.
+error.sending.ack.explanation=SIP com.ibm.ws.sip.container a e\u015fuat trimiterea unei cereri ACK.
+error.sending.ack.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sending.cancel=CWSCT0102E: Trimitere cerere anulare e\u015fuat\u0103.
+error.sending.cancel.explanation=SIP com.ibm.ws.sip.container a e\u015fuat trimiterea unei cereri CANCEL.
+error.sending.cancel.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.failed.create.timeout.response=CWSCT0103E: Generare r\u0103spuns timeout e\u015fuat\u0103.
+error.failed.create.timeout.response.explanation=Unei cereri care a fost trimis\u0103 de la SIP com.ibm.ws.sip.container nu i s-a r\u0103spuns timp de 32 de secunde \u015fi SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 genereze un r\u0103spuns de timeout aplica\u0163iei.
+error.failed.create.timeout.response.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.cloning.address=CWSCT0104E: Clonare adres\u0103 e\u015fuat\u0103.
+error.cloning.address.explanation=Eroare intern\u0103 \u00een SIP com.ibm.ws.sip.container care cloneaz\u0103 un obiect Adres\u0103.
+error.cloning.address.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.invalid.tel.url=CWSCT0105E: URL telefonie nevalid: {0}
+error.invalid.tel.url.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 \u00eenainteze un URL tel.
+error.invalid.tel.url.useraction=Verifica\u0163i c\u0103 \u015firul URL brut are cel pu\u0163in o lungime de 4 octe\u0163i (3 pentru schem\u0103 \u015fi unul pentru caracterul dou\u0103 puncte (:)).
+
+error.sending.487.response=CWSCT0106E: Eroare trimitere r\u0103spuns 487 {0}
+error.sending.487.response.explanation=\u00cen timpul anul\u0103rii unei cereri, SIP com.ibm.ws.sip.container a e\u015fuat trimiterea r\u0103spunsului 487 (Cerere terminat\u0103) la cererea original\u0103.
+error.sending.487.response.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.set.character.encoding=CWSCT0108E: Eroare setare codare caracter: {0}
+error.set.character.encoding.explanation=Apelul aplica\u0163iei la SipServletMessage.setCharacterEncoding() a e\u015fuat.
+error.set.character.encoding.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 psarametrul de codificare este valid \u015fi nu este null.
+
+error.setting.tag=CWSCT0109E: Eroare setare valoare tag: {0}
+error.setting.tag.explanation=Apelul aplica\u0163iei la Address.setTag() a e\u015fuat.
+error.setting.tag.useraction=Verifica\u0163i codul aplica\u0163iei pentru a v\u0103 asigura c\u0103 parametrul tag este valid.
+
+info.sequence.logger.enabled=CWSCT0113I: Programul de \u00eenregistrare \u00een istoric a secven\u0163ei SIP Session este activat, nivel: {0}
+info.sequence.logger.enabled.explanation=\u00cenregistrarea \u00een istoric pentru secven\u0163a sesiune/dialog SIP este activat\u0103.
+info.sequence.logger.enabled.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.unexpected.uri.in.route=CWSCT0115E: URI SIP a\u015fteptat dar s-a primit: {0}
+error.unexpected.uri.in.route.explanation=
+error.unexpected.uri.in.route.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.standalone.started=CWSCT0116I: Containerul SIP utilizeaz\u0103 o configura\u0163ie autonom\u0103.
+info.standalone.started.explanation=SIP com.ibm.ws.sip.container nu ruleaz\u0103 ca un serviciu Websphere.
+info.standalone.started.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.init.siplet=CWSCT0117E: Ini\u0163ializare siplet {0} e\u015fuat\u0103
+error.init.siplet.explanation=SIP com.ibm.ws.sip.container a e\u015fuat la \u00eenc\u0103rcarea sau instan\u0163ierea unei clase servlet SIP.
+error.init.siplet.useraction=Verifica\u0163i fi\u015fierul sip.xml pentru a v\u0103 asigura c\u0103 numele clasei este corect \u015fi c\u0103 are un constructor public care nu a\u015fteapt\u0103 argumente.
+
+error.invoke.servlet=CWSCT0118E: Service siplet {0} e\u015fuat
+error.invoke.servlet.explanation=A fost creat\u0103 o excep\u0163ie de codul servletului SIP.
+error.invoke.servlet.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.servlet.unavailable=CWSCT0119E: Invocare siplet e\u015fuat\u0103; servlet indisponibil: {0}, {1}
+error.servlet.unavailable.explanation=Servletul SIP nu exist\u0103.
+error.servlet.unavailable.useraction=Verifica\u0163i \u00een fi\u015fierul sip.xml dac\u0103 numele de clas\u0103 servlet este corect.
+
+error.initialize.sip.container=CWSCT0120E: Eroare la ini\u0163ializarea SIP com.ibm.ws.sip.container
+error.initialize.sip.container.explanation=Eroare la ini\u0163ializarea SIP com.ibm.ws.sip.container; detalii suplimentare pot fi g\u0103site \u00een fi\u015fierul de urm\u0103rire.
+error.initialize.sip.container.useraction=Activa\u0163i urm\u0103rirea diagnozei pentru SIP com.ibm.ws.sip.container, reporni\u0163i serverul pentru a recrea problema \u015fi apoi trage\u0163i istoricul de urm\u0103rire.
+
+warning.timer.listener.unavailable=CWSCT0122W: Eroare dispecerizare eveniment cronometru; ascult\u0103tor cronometru indisponibil pentru: {0}
+warning.timer.listener.unavailable.explanation=Cronometrul servletului SIP a fost declan\u015fat, dar nu este asociat cu el niciun ascult\u0103tor.
+warning.timer.listener.unavailable.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+warning.timer.unavailable=CWSCT0124W: TimerServiceImpl nu este disponibil
+warning.timer.unavailable.explanation=Toate cronometrele sunt dezactivate \u00een SIP com.ibm.ws.sip.container
+warning.timer.unavailable.useraction=Verifica\u0163i configura\u0163ia com.ibm.ws.sip.container SIP \u015fi \u00eenl\u0103tura\u0163i proprietatea "enable.timers", au seta\u0163i valoarea sa la "true".
+
+error.transaction.id.alreay.set=CWSCT0125E: ID-ul tranzac\u0163iei este deja setat pentru tranzac\u0163ie; curent {0}, nou {1}
+error.transaction.id.alreay.set.explanation=Tranzac\u0163ia SIP a fost deja ini\u0163ializat\u0103 cu un ID de tranzac\u0163ie \u015fi nu poate fi schimbat.
+error.transaction.id.alreay.set.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.cannot.lookup.host=CWSCT0336E: VirtualHostAlias.init: nu poate c\u0103uta gazda {0}
+error.cannot.lookup.host.explanation=SIP com.ibm.ws.sip.container a e\u015fuat la rezolvarea numelui de gazd\u0103 a unui alias de gazd\u0103 virtual\u0103 la o adres\u0103 IP.
+error.cannot.lookup.host.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.invoking.request=CWSCT0139E: Invocare cerere de c\u0103tre SIP e\u015fuat\u0103; mesajul este {0}
+error.invoking.request.explanation=A fost creat\u0103 o excep\u0163ie \u00een timp ce SIP com.ibm.ws.sip.container a \u00eencercat s\u0103 invoce o cerere.
+error.invoking.request.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sending.response.from.prepare.for.write=CWSCT0140E: Trimitere r\u0103spuns de c\u0103tre SIP e\u015fuat\u0103 pentru preg\u0103tirea de scriere.
+error.sending.response.from.prepare.for.write.explanation=SIP com.ibm.ws.sip.container a e\u015fuat trimiterea r\u0103spunsului din interiorul apel\u0103rii la prepareHeadersForWrite().
+error.sending.response.from.prepare.for.write.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.message.dispatcher.invalid.state=CWSCT0142E: Eroare dispecerul nu a finalizat dispecerizarea mesajului anterior.
+error.message.dispatcher.invalid.state.explanation=SIP com.ibm.ws.sip.container nu poate dispeceriza un mesaj deoarece nu s-a finalizat dispecerizarea mesajului anterior.
+error.message.dispatcher.invalid.state.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.non.http.request=CWSCT0145E: A primit o cerere {0} \u00een timp ce a\u015ftepta javax.servlet.http.HttpServletRequest
+error.non.http.request.explanation=SIP com.ibm.ws.sip.container a primit o cerere de la web com.ibm.ws.sip.container care nu este javax.servlet.http.HttpServletRequest.
+error.non.http.request.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.failed.to.register.collaborator=CWSCT0146E: \u00cenregistrarea colaboratorului {0} a e\u015fuat
+error.failed.to.register.collaborator.explanation=SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 se \u00eenregistreze ca ascult\u0103tor la Websphere.
+error.failed.to.register.collaborator.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.cnf=CWSCT0188E: Eroare - Class Not Found Exception; nu poate s\u0103 transmit\u0103 \u00een serii.
+error.exception.cnf.explanation=SIP com.ibm.ws.sip.container a prins o excep\u0163ie de tipul ClassNotFoundException \u00een timpul serializ\u0103rii obiectului.
+error.exception.cnf.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.io.serialize.deserialize=CWSCT0189E: Eroare - eroare IO; nu poate s\u0103 serializeze / deserializeze.
+error.exception.io.serialize.deserialize.explanation=SIP com.ibm.ws.sip.container a prins o excep\u0163ie de tipul IOException \u00een timpul serializ\u0103rii obiectului.
+error.exception.io.serialize.deserialize.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.cache.alg=CWSCT0185E: Eroare - Algoritmul de memorare \u00een cache nu exist\u0103.
+error.exception.cache.alg.explanation=Algoritmul cache cerut de managerul de sesiune com.ibm.ws.sip.container SIP nu exist\u0103.
+error.exception.cache.alg.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.replicator=CWSCT0186E: Eroare - Excep\u0163ie Replicator
+error.exception.replicator.explanation=Excetp\u0163ie de replicare prins\u0103 de managerul de sesiune SIP com.ibm.ws.sip.container.
+error.exception.replicator.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sipha.version=CWSCT0187I: SIP HA {0}
+info.sipha.version.explanation=S-a ini\u0163ializat componenta de disponibilitate \u00eenalt\u0103 SIP com.ibm.ws.sip.container.
+info.sipha.version.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.drs=CWSCT0219E: Eroare - excep\u0163ie drs
+error.exception.drs.explanation=A fost prins\u0103 o excep\u0163ie \u00een SIP com.ibm.ws.sip.container \u00een timpul replic\u0103rii DRS.
+error.exception.drs.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.admin=CWSCT0220E: Eroare - excep\u0163ie admin JMX
+error.exception.admin.explanation=A fost prins\u0103 o excep\u0163ie \u00een com.ibm.ws.sip.container SIP \u00een timpul activ\u0103rii MBean pentru managerul de sesiune.
+error.exception.admin.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.drs.broker=CWSCT0222E: Eroare - excep\u0163ie multibroker DRS.
+error.drs.broker.explanation=A fost prins\u0103 o excep\u0163ie \u00een SIP com.ibm.ws.sip.container utiliz\u00e2nd multi-brokerul DRS.
+error.drs.broker.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.drs.setting.mode=CWSCT0224E: Eroare - Modul DRS nu este BOTH_CLIENT_SERVER (peer to peer)
+error.drs.setting.mode.explanation=Modul DRS nu este potrivit pentru replicarea datelor \u00een SIP com.ibm.ws.sip.container.
+error.drs.setting.mode.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.drs.setting.missing=CWSCT0225E: Info - DRS nu este setat
+info.drs.setting.missing.explanation=Replicarea \u00een SIP com.ibm.ws.sip.container i este dezactivat\u0103 pentru c\u0103 DRS nu este setat.
+info.drs.setting.missing.useraction=Trebuie s\u0103 configura\u0163i WebContainer SessionManager s\u0103 foloseasc\u0103 replicarea memorie-la-memorie.
+
+info.drs.enablefailover.disabled=CWSCT0226I: Info - Preluarea la defect pentru SIP com.ibm.ws.sip.container dezactivat\u0103.
+info.drs.enablefailover.disabled.explanation=Preluarea la defect pentru SIP com.ibm.ws.sip.container dezactivat\u0103.
+info.drs.enablefailover.disabled.useraction=Utiliza\u0163i proprietatea personalizat\u0103 "enable.replication" (pentru sip com.ibm.ws.sip.container) pentru activare.
+
+info.drs.enablefailover.enabled=CWSCT0227I: Info - Componenta de disponibilitate \u00eenalt\u0103 SIP com.ibm.ws.sip.container activat\u0103.
+info.drs.enablefailover.enabled.explanation=Componenta de disponibilitate \u00eenalt\u0103 SIP com.ibm.ws.sip.container este activat\u0103 pentru echilibrarea \u00eenc\u0103rc\u0103rii \u015fi preluarea la defect.
+info.drs.enablefailover.enabled.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.ha.groupleft=CWSCT0228E: Eroare - HAGroupLeftException
+error.exception.ha.groupleft.explanation=SIP com.ibm.ws.sip.container a prins o excep\u0163ie de tipul HAGroupLeftException \u00een timp ce era activat ca membru de grup.
+error.exception.ha.groupleft.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.ha.param.reject=CWSCT0229E: Eroare - HAParameterRejectedException
+error.exception.ha.param.reject.explanation=SIP com.ibm.ws.sip.container a prins o excep\u0163ie de tipul HAParameterRejectedException \u00een timp ce era activat ca membru de grup.
+error.exception.ha.param.reject.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.io.deserialize=CWSCT0231E: Eroare - excep\u0163ie IO; nu poate s\u0103 deserializeze.
+error.exception.io.deserialize.explanation=Serializarea datelor a e\u015fuat \u00een SIP com.ibm.ws.sip.container.
+error.exception.io.deserialize.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.ha=CWSCT0232E: Eroare - excep\u0163ie HA
+error.exception.ha.explanation=A fost prins\u0103 o excep\u0163ie \u00een componenta de disponibilitate \u00eenalt\u0103 SIP com.ibm.ws.sip.container.
+error.exception.ha.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.ds=CWSCT0233E: Eroare - Excep\u0163ie stiv\u0103 de date
+error.exception.ds.explanation=O DataStackException a fost prins\u0103 \u00een componenta de disponibilitate \u00eenalt\u0103 SIP com.ibm.ws.sip.container.
+error.exception.ds.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.io=CWSCT0237E: Eroare - excep\u0163ie IO
+error.exception.io.explanation=O IOException a fost prins\u0103 \u00een SIP com.ibm.ws.sip.container.
+error.exception.io.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.ucf.no_cluster_define=CWSCT0238E: Eroare - UCF Exception; nu este definit nici un cluster.
+error.exception.ucf.no_cluster_define.explanation=SIP com.ibm.ws.sip.container nu se poate al\u0103tura sau desp\u0103r\u0163i de cluster deoarece nu este definit niciun cluster.
+error.exception.ucf.no_cluster_define.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.ucf.noclusterservice=CWSCT0240E: Eroare - nu exist\u0103 nici un serviciu al membrului cluster-ului.
+error.exception.ucf.noclusterservice.explanation=SIP com.ibm.ws.sip.container nu poate porni sau opri componenta de disponibilitate \u00eenalt\u0103 deoarece a ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a accesa serviciul de cluster.
+error.exception.ucf.noclusterservice.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.ucf.no.member.available=CWSCT0241E: Eroare - UCF Exception - nu este disponibil nici un membru.
+error.exception.ucf.no.member.available.explanation=SIP com.ibm.ws.sip.container a e\u015fuat ob\u0163inerea informa\u0163iilor de punct final proxy SIP de la UCF.
+error.exception.ucf.no.member.available.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.class.not.found=CWSCT0243E: Eroare - excep\u0163ie Clasa nu a fost g\u0103sit\u0103.
+error.exception.class.not.found.explanation=O ClassNotFoundException a fost prins\u0103 \u00een SIP com.ibm.ws.sip.container.
+error.exception.class.not.found.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.orb=CWSCT0244E: Eroare - nu poate ob\u0163ine obiectul ORB
+error.orb.explanation=SIP com.ibm.ws.sip.container nu poate publica numele sale logice din cauza unei erori la ob\u0163inerea obiectului ORB.
+error.orb.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.orb.cc=CWSCT0245E: Eroare - excep\u0163ie cast clas\u0103 ORB
+error.orb.cc.explanation=SIP com.ibm.ws.sip.container nu poate publica numele sale logice din cauza unei ClassCastException.
+error.orb.cc.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.orb.in=CWSCT0246E: Eroare - cerere nume ORB nevalid\u0103
+error.orb.in.explanation=SIP com.ibm.ws.sip.container nu poate publica numele sale logice din cauza unei excep\u0163ii InvalidName.
+error.orb.in.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.classnotfound=CWSCT0259E: Eroare - clasa nu a fost g\u0103sit\u0103
+error.exception.classnotfound.explanation=SIP com.ibm.ws.sip.container TAI a e\u015fuat s\u0103 se ini\u0163ializeze din cauza unei ClassNotFoundException
+error.exception.classnotfound.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.instantiate=CWSCT0260E: Eroare - excep\u0163ie instan\u0163iere
+error.exception.instantiate.explanation=SIP com.ibm.ws.sip.container TAI a e\u015fuat s\u0103 se ini\u0163ializeze din cauza unei InstantiationException.
+error.exception.instantiate.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.illegalaccess=CWSCT0261E: Eroare - excep\u0163ie acces ilegal.
+error.exception.illegalaccess.explanation=SIP com.ibm.ws.sip.container TAI a e\u015fuat s\u0103 se ini\u0163ializeze din cauza unei IllegalAccessException.
+error.exception.illegalaccess.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.filenotfound=CWSCT0262E: Eroare - fi\u015fierul nu a fost g\u0103sit.
+error.exception.filenotfound.explanation=Securitatea SIP com.ibm.ws.sip.container nu poate deschide fi\u015fierul de parole.
+error.exception.filenotfound.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.login=CWSCT0264E: Eroare - Context logare- e\u015fuat
+error.exception.login.explanation=O LoginException a fost prins\u0103 de SIP com.ibm.ws.sip.container TAI \u00een timpul ob\u0163inerii subiectului de utilizator.
+error.exception.login.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.naming=CWSCT0266E: Eroare - excep\u0163ie numire
+error.exception.naming.explanation=O NamingException a fost prins\u0103 \u00een securitatea SIP com.ibm.ws.sip.container.
+error.exception.naming.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.parse=CWSCT0267E: Eroare - excep\u0163ie parsare.
+error.exception.parse.explanation=A fost prins\u0103 o excep\u0163ie de parsare \u00een SIP com.ibm.ws.sip.container TAI (Trust Association Interceptor).
+error.exception.parse.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.exception.stack=CWSCT0315E: Excep\u0163ie \u00een stiva SIP.
+error.exception.stack.explanation= A fost prins\u0103 o excep\u0163ie \u00een stiva SIP.
+error.exception.stack.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sipstack.version=CWSCT0316I: Stiva SIP {0}
+info.sipstack.version.explanation=Stiva SIP este ini\u0163ializat\u0103
+info.sipstack.version.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.unknown.host.exception=CWSCT0317E: Excep\u0163ie gazd\u0103 necunoscut\u0103; nu poate s\u0103 rezolve numele gazd\u0103.
+error.unknown.host.exception.explanation=A fost prins\u0103 o excep\u0163ie UnknownHostException \u00een stiva SIP la \u00eencercarea de rezolvare a unui nume de gazd\u0103 la o adres\u0103 IP.
+error.unknown.host.exception.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.base64parser.exception=CWSCT0318E: Excep\u0163ie parser; scriere \u00een fluxul de ie\u015fire e\u015fuat\u0103.
+error.base64parser.exception.explanation=Stiva SIP nu a putut scrie \u00een fluxul de ie\u015fire.
+error.base64parser.exception.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.same.to.tag=CWSCT0319E: Acela\u015fi tag To \u00een dou\u0103 sau mai multe r\u0103spunsuri de la mai multe ramuri proxy
+error.same.to.tag.explanation=Acela\u015fi tag To a fost primit \u00een dou\u0103 sau mai multe r\u0103spunsuri de la mai multe ramuri proxy.  Aceast\u0103 ac\u0163iune nu este valid\u0103 conforma specifica\u0163iei RFC 3261.
+error.same.to.tag.useraction=Asigura\u0163i-v\u0103 c\u0103 instan\u0163ele de server UAS (User Agent Server) respondent genereaz\u0103 taguri To unice pentru fiecare dialog, pentru a se conforma specifica\u0163iei RFC 3261. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1=CWSCT0321I: Configura\u0163ie ini\u0163ializare stiv\u0103 SIP
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.explanation=Configura\u0163ia stivei SIP este ini\u0163ializat\u0103.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2=CWSCT0322I: Transport ini\u0163ializare stiv\u0103 SIP
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.explanation=Transportul stivei SIP este ini\u0163ializat
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3=CWSCT0323I: Ini\u0163ializarea stivei SIP s-a terminat.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.explanation=Ini\u0163ializarea stivei SIP este finalizat\u0103.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.stack.timer.b=CWSCT0324I: Stiv\u0103 SIP, Timer B setat la {0} milisecunde.
+info.stack.timer.b.explanation=Cronometrul (timer) B al stivei SIP este setat. Mai multe informa\u0163ii despre Timer B \u00een RFC 3261.
+info.stack.timer.b.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints=CWSCT0328I: SIP porne\u015fte ascultarea \u00een {0}.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.explanation=Stiva SIP a \u00eenceput s\u0103 asculte pe punctul de ascultare specificat.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sip.container.launched.but.not.loaded=CWSCT0332I: Containerul SIP a fost lansat in execu\u0163ie cu succes dar nu va fi ini\u0163ializat p\u00e2n\u0103 c\u00e2nd nu este \u00eenc\u0103rcat\u0103 aplica\u0163ia SIP.
+info.sip.container.launched.but.not.loaded.explanation=Containerul SIP va fi ini\u0163ializat c\u00e2nd prima aplica\u0163ie SIP este \u00eenc\u0103rcat\u0103.
+info.sip.container.launched.but.not.loaded.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.replication.failed=CWSCT0333E: Replicare e\u015fuat\u0103.
+error.replication.failed.explanation=A ap\u0103rut o excep\u0163ie \u00een SIP com.ibm.ws.sip.container \u00een timpul replic\u0103rii.
+error.replication.failed.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.failed.to.deserialize.replication=CWSCT0334E: Deserializare replicare e\u015fuat\u0103.
+error.failed.to.deserialize.replication.explanation=A ap\u0103rut o excep\u0163ie \u00een replicarea SIP com.ibm.ws.sip.container \u00een timpul deserializ\u0103rii obiectelor.
+error.failed.to.deserialize.replication.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.failed.to.reactivate.objects.after.failover=CWSCT0335E: Reactivare obiecte dup\u0103 preluarea la defect e\u015fuat\u0103.
+error.failed.to.reactivate.objects.after.failover.explanation=A ap\u0103rut o excep\u0163ie \u00een SIP com.ibm.ws.sip.container \u00een timpul activ\u0103rii sesiunii dup\u0103 preluarea la defect.
+error.failed.to.reactivate.objects.after.failover.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+warning.display.name.different=CWSCT0337W: Afi\u015farea numelor \u00een sip.xml ({0}) este diferit\u0103 de afi\u015farea numelor \u00een web.xml ({1}).
+warning.display.name.different.explanation=Numele de afi\u015fare al aplica\u0163iei din sip.xml este diferit de numele de afi\u015fare din web.xml. Acest lucru nu este conform cu JSR-116 sec\u0163iunea 15.2.
+warning.display.name.different.useraction=Modifica\u0163i descriptorii de implementare ca s\u0103 se potriveasc\u0103 cu numele de afi\u015fare al aplica\u0163iei.
+
+warning.dispatch.failed=CWSCT0338W: Dispecerizarea mesajului SIP \u00een pool-ul de fire de execu\u0163ie a e\u015fuat. Mesaj= {0}, Call ID= {1}, Cod de eroare= {2}.
+warning.dispatch.failed.explanation=SIP com.ibm.ws.sip.container a e\u015fuat dispecerizarea unui mesaj la pool-ul de fire de execu\u0163ie.
+warning.dispatch.failed.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.cannot.identify.object.type=CWSCT0339E: Deserializare: Nu poate identifica tipul obiectului.
+error.cannot.identify.object.type.explanation=SIP com.ibm.ws.sip.container nu poate identifica tipul obiectului pentru deserializare.
+error.cannot.identify.object.type.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.security.password.retrieve=CWSCT0340E: Eroare - nu poate extrage atributul parol\u0103.
+error.security.password.retrieve.explanation=Autentificarea a e\u015fuat deoarece SIP com.ibm.ws.sip.container nu poate extrage atributul userPassword din intrarea unei persoane \u00een director.
+error.security.password.retrieve.useraction=Modifica\u0163i set\u0103rile de configura\u0163ie LDAP \u00een a\u015fa fel \u00eenc\u00e2t serverul s\u0103 aib\u0103 acces la atributul userPassword din director.
+
+warn.server.overloaded=CWSCT0341W: Serverul este supra\u00eenc\u0103rcat.
+warn.server.overloaded.explanation=Serverul SIP (Session Initiation Protocol) nu mai poate accepta mesaje c\u00e2t este supra\u00eenc\u0103rcat.
+warn.server.overloaded.useraction=Reduce\u0163i mesajele de intrare sau reduce\u0163i orice alte surse posibile de stres pentru ma\u015fina serverului.
+
+warn.server.overloaded.too.many.sessions=CWSCT0342W: Serverul este supra\u00eenc\u0103rcat deoarece exist\u0103 prea multe sesiuni de aplica\u0163ii. 
+warn.server.overloaded.too.many.sessions.explanation=Serverul SIP nu mai poate accepta mesaje de intrare, c\u00e2t este supra\u00eenc\u0103rcat. Sunt active prea multe sesiuni de aplica\u0163ii.
+warn.server.overloaded.too.many.sessions.useraction=Reduce\u0163i num\u0103rul de sesiuni de aplica\u0163ii care sunt create sau seta\u0163i o valoare mai mare pentru num\u0103rul maxim de sesiuni de aplica\u0163ii pe Session Initiation Protocol ( SIP ) com.ibm.ws.sip.container.
+
+warn.server.overloaded.too.many.messages=CWSCT0343W: Serverul este supra\u00eenc\u0103rcat deoarece sunt primite prea multe mesaje \u00een timpul unei perioade medii. 
+warn.server.overloaded.too.many.messages.explanation=Serverul SIP nu mai poate accepta mesaje de intrare, c\u00e2t este supra\u00eenc\u0103rcat. Traficul de mesaje este prea mare.
+warn.server.overloaded.too.many.messages.useraction=Reduce\u0163i \u00eenc\u0103rcarea mesajelor sau seta\u0163i valoarea maxim\u0103 de mesaje per perioad\u0103 la o valoare mai mare de pe Session Initiation Protocol (SIP) com.ibm.ws.sip.container.
+
+warn.server.overloaded.slow.response=CWSCT0344W: Serverul este supra\u00eenc\u0103rcat deoarece timpul de r\u0103spuns al serverului este prea mare.
+warn.server.overloaded.slow.response.explanation=Serverul SIP nu mai poate accepta mesaje de intrare, c\u00e2t este supra\u00eenc\u0103rcat.
+warn.server.overloaded.slow.response.useraction=Reduce\u0163i traficul de mesaje de intrare sau reduce\u0163i orice alte surse posibile de stres pentru ma\u015fina serverului. Dac\u0103 este activat\u0103 \u015fi setat\u0103 valoarea timp de r\u0103spuns maxim \u00een Session Initiation Protocol (SIP) com.ibm.ws.sip.container, lua\u0163i \u00een considerare modificarea lui la o valoare mai mare.
+
+warn.dispatch.queue.overloaded=CWSCT0345W: Dimensiunea maxim\u0103 a cozii de dispecerizare de {0} a fost dep\u0103\u015fit\u0103. Noile mesaje vor fi abandonate.
+warn.dispatch.queue.overloaded.explanation=Serverul SIP nu mai poate accepta mesaje de intrare, c\u00e2t coada de dispecerizare este supra\u00eenc\u0103rcat\u0103.
+warn.dispatch.queue.overloaded.useraction=Reduce\u0163i \u00eenc\u0103rcarea mesajelor sau seta\u0163i valoarea maxim\u0103 a dimensiunii cozii de dispecerizare la o valoare mai mare pe Session Initiation Protocol (SIP) com.ibm.ws.sip.container.
+
+error.container.queue.overloaded=CWSCT0346E: Coada de dispecerizare este supra\u00eenc\u0103rcat\u0103. Urm\u0103torul mesaj a fost respins: {0}
+error.container.queue.overloaded.explanation=Firele de execu\u0163ie SIP com.ibm.ws.sip.container nu pot manipula \u00eenc\u0103rcarea curent\u0103 de taskuri.
+error.container.queue.overloaded.useraction=Reduce\u0163i toate sursele posibile de stres pentru ma\u015fina serverului, \u00een special traficul de mesaje pentru containerul SIP. \u00cen plus, examina\u0163i cantitatea de resurse care este consumat\u0103 de codul de aplica\u0163ie SIP.
+
+info.bootstrap.started=CWSCT0347I: Replicarea bootstrap a pornit.
+info.bootstrap.started.explanation=Session Initiation Protocol (SIP) com.ibm.ws.sip.container \u00ee\u015fi replic\u0103 datele sesiunilor unui peer nou conectat.
+info.bootstrap.started.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+info.bootstrap.finished=CWSCT0348I: Replicarea bootstrap s-a terminat. 
+info.bootstrap.finished.explanation=Session Initiation Protocol (SIP) com.ibm.ws.sip.container a terminat replicarea datelor sesiunilor unui peer nou conectat.
+info.bootstrap.finished.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+info.sip.stack.timer=CWSCT0349I: Valoarea cronometrului stivei SIP [{0}] este setat\u0103 la [{1}]
+info.sip.stack.timer.explanation=Valoarea cronometrului este modificat\u0103 \u00een configura\u0163ie.
+info.sip.stack.timer.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sip.container.quiesce.on=CWSCT0350I: Introducere mod lini\u015ftire
+info.sip.container.quiesce.on.explanation=SIP com.ibm.ws.sip.container MBean a primit o comand\u0103 administrativ\u0103 de dezactivare. \u00cen acest mod, noilor apeluri nu li se face service pe instan\u0163a com.ibm.ws.sip.container.
+info.sip.container.quiesce.on.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sip.container.quiesce.off=CWSCT0351I: Ie\u015fire mod lini\u015ftire
+info.sip.container.quiesce.off.explanation=SIP com.ibm.ws.sip.container MBean a primit o comand\u0103 administrativ\u0103 de dez-inactivare.
+info.sip.container.quiesce.off.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sip.get.server.type=CWSCT0352E: Ob\u0163inere Tip server e\u015fuat\u0103.   Eroare = {0}.
+error.sip.get.server.type.explanation=A ap\u0103rut o excep\u0163ie la ob\u0163inerea tipului de server.
+error.sip.get.server.type.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sip.get.configuration=CWSCT0353E: Ob\u0163inere Configura\u0163ie la pornire e\u015fuat\u0103.   Eroare = {0}.
+error.sip.get.configuration.explanation=A ap\u0103rut o excep\u0163ie la ob\u0163inerea configra\u0163iei.
+error.sip.get.configuration.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sip.container.running.stanalone=CWSCT0354I: Rulare pe server autonom
+info.sip.container.running.stanalone.explanation=SIP com.ibm.ws.sip.container ruleaz\u0103 \u00eentr-un mediu autonom. Nu este activat High Availability Manager.
+info.sip.container.running.stanalone.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sip.cannot.run.on.server=CWSCT0355E: Nu poate rula pe acest tip de server:  {0}.
+error.sip.cannot.run.on.server.explanation=SipContainer nu poate rula pe tipul de server specificat.
+error.sip.cannot.run.on.server.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.parse.auth.challange=CWSCT0356E: Parsare antet de autentificare e\u015fuat\u0103.
+error.parse.auth.challange.explanation=Apelul aplica\u0163iei la SipServletResponse.getChallangeRealm() a e\u015fuat.
+error.parse.auth.challange.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+error.exception.ioeinbody=CWSCT0357E: Eroare - Nu poate ob\u0163ine corpul mesajului.
+error.exception.ioeinbody.explanation=O IOException a fost prins\u0103 \u00een codul de securitate SIP com.ibm.ws.sip.container.
+error.exception.ioeinbody.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+warn.unsupported.realm=CWSCT0358W: Regiune de autentificare necunoscut\u0103 {0}
+warn.unsupported.realm.explanation=A fost primit\u0103 o cerere SIP pentru o regiune de autentificare necunoscut\u0103. 
+warn.unsupported.realm.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.unhashed.creds=CWSCT0359I: Atributele Acreditare hash nu au fost g\u0103site.
+info.unhashed.creds.explanation=Atributele necesare pentru acredit\u0103rile hash nu au fost g\u0103site. Pentru autentificare se folose\u015fte c\u0103utarea parolei utilizator \u00een clar (unhashed).
+info.unhashed.creds.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sip.container.quiesce.ended=CWSCT0360I: Dezactivarea serverului s-a terminat cu succes
+info.sip.container.quiesce.ended.explanation=Opera\u0163ia de dezactivare SIP com.ibm.ws.sip.container s-a terminat \u015fi toate sesiunile de aplica\u0163ii au fost invalidate.
+info.sip.container.quiesce.ended.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.sip.heartbeat.new.proxy=CWSCT0361I: Puls re\u0163ea de la un proxy nou {0} cu timeout {1} \u015fi limita {2}
+info.sip.heartbeat.new.proxy.explanation=SIP com.ibm.ws.sip.container a detectat un nou proxy SIP \u00een cluster \u015fi este activat\u0103 detec\u0163ia de \u00eentrerupere de re\u0163ea SIP.
+info.sip.heartbeat.new.proxy.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+warn.sip.heartbeat.limit.exceeded=CWSCT0362I: Limita de puls re\u0163ea s-a dep\u0103\u015fit cu proxy-ul SIP {0}. {1} impulsuri au sc\u0103pat.
+warn.sip.heartbeat.limit.exceeded.explanation=SIP com.ibm.ws.sip.container nu a primit mesaje de ritmicitate de la proxy-ul front-end \u00een valoarea preconfigurat\u0103 de timeout.
+warn.sip.heartbeat.limit.exceeded.useraction=Verifica\u0163i c\u0103 proxy-ul SIP proxy \u00eenc\u0103 ruleaz\u0103 iar linia de re\u0163ea SIP dintre proxy \u015fi com.ibm.ws.sip.container este func\u0163ional\u0103.
+
+error.sip.heartbeat.server.restart=CWSCT0363I: SIP com.ibm.ws.sip.container a detectat \u00eentreruperea re\u0163elei \u015fi se va reporni singur.
+error.sip.heartbeat.server.restart.explanation=SIP com.ibm.ws.sip.container a pierdut leg\u0103tura cu toate proxy-urile front-end din cluster. Acum se reporne\u015fte. Sesiunile active vor migra la o copie de rezerv\u0103 com.ibm.ws.sip.container, dac\u0103 este prezent\u0103 una \u00een domeniul de replicare.
+error.sip.heartbeat.server.restart.useraction=Determina\u0163i cauza \u00eentreruperii re\u0163elei SIP. Concentra\u0163i-v\u0103 pe linia re\u0163elei dintre proxy \u015fi serverul de aplica\u0163ii. Pute\u0163i utiliza un detector de re\u0163ea pentru a urm\u0103ri mesajele SIP KEEPALIVE \u00eentre proxy \u015fi com.ibm.ws.sip.container.
+
+error.sip.heartbeat.restart.failure=CWSCT0364I: SIP com.ibm.ws.sip.container a e\u015fuat s\u0103 reporneasc\u0103
+error.sip.heartbeat.restart.failure.explanation=SIP com.ibm.ws.sip.container a \u00eencercat s\u0103 se reporneasc\u0103 ca urmare a \u00eentreruperii re\u0163elei, dar aceast\u0103 ac\u0163iune a e\u015fuat. com.ibm.ws.sip.container \u00ee\u015fi va opri activitatea f\u0103r\u0103 a se reporni.
+error.sip.heartbeat.restart.failure.useraction=Reporni\u0163i serverul de aplica\u0163ii manual.
+
+error.replication.b2blinkage.failed=CWSCT0365E: G\u0103sirea sesiunii SIP pentru linkage B2B {0} dup\u0103 preluare la defect a e\u015fuat
+error.replication.b2blinkage.failed.explanation=A ap\u0103rut o eroare \u00een SIP com.ibm.ws.sip.container \u00een timpul replic\u0103rii.
+error.replication.b2blinkage.failed.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+info.dar.init.2=CWSCT0401I: Ruterul de aplica\u0163ii implicit a fost ini\u0163ializat.
+info.dar.init.2.explanation=Ruterul de aplica\u0163ii implicit alege aplica\u0163ia dup\u0103 ordinea lor de pornire.
+info.dar.init.2.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+info.dar.init.3=CWSCT0403I: Ruterul de aplica\u0163ii extern a fost \u00eenc\u0103rcat \u00een concordan\u0163\u0103 cu proprietatea personalizat\u0103 definit\u0103 - javax.servlet.sip.ar.spi.SipApplicationRouterProvider, nume clas\u0103 - {0}.
+info.dar.init.3.explanation=Ruterul de aplica\u0163ii extern este ruterul de aplica\u0163ii care este implementat \u015fi \u00eenc\u0103rcat de o ter\u0163\u0103 parte.
+info.dar.init.3.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+info.dar.init.4=CWSCT0404I: Fi\u015fierul de propriet\u0103\u0163i DAR (Default Application Router) a fost \u00eenc\u0103rcat, nume fi\u015fier - {0}.
+info.dar.init.4.explanation=DAR (Default Application Router) livrat de utilizator a fost localizat \u015fi \u00eenc\u0103rcat
+info.dar.init.4.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+info.dar.init.5=CWSCT0405I: Ruterul de aplica\u0163ii este configurat s\u0103 selecteze aplica\u0163ii dup\u0103 pornirea lor.
+info.dar.init.5.explanation=Ruterul de aplica\u0163ii implicit alege aplica\u0163ia dup\u0103 ordinea lor de pornire.
+info.dar.init.5.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+error.dar.repository.create.1=CWSCT0406E: Eroare la crearea magaziei ruterului de aplica\u0163ii implicit: {0}.
+error.dar.repository.create.1.explanation=O eroare intern\u0103.
+error.dar.repository.create.1.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+error.dar.selector.1=CWSCT0407E: Nici o stare pentru ruterul de aplica\u0163ii implicit.
+error.dar.selector.1.explanation=C\u00e2nd ruterul de aplica\u0163ii prime\u015fte cerere cu directiva diferit\u0103 de NEW ar trebui s\u0103 con\u0163in\u0103 un index de stare \u00een lan\u0163ul aplica\u0163iei. 
+error.dar.selector.1.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+error.dar.property.parser.1=CWSCT0408E: Ruterul de aplica\u0163ii implicit, strategie proprietate, a e\u015fuat \u00eenc\u0103rcarea fi\u015fierului de propriet\u0103\u0163i.
+error.dar.property.parser.1.explanation=Fi\u015fierul de propriet\u0103\u0163i al ruterului de aplica\u0163ii este \u00eentr-un format gre\u015fit.
+error.dar.property.parser.1.useraction=Verifica\u0163i c\u0103 fi\u015fierul de propriet\u0103\u0163i al ruterului de aplica\u0163ii este \u00eentr-un format corect.
+
+warn.sip.proxy.outboundif.invalid=CWSCT0409W: Proxy-urile sunt configurate cu interfe\u0163e de ie\u015fire diferite.
+warn.sip.proxy.outboundif.invalid.explanation=Toate proxy-urile trebuie configurate cu acela\u015fi IP virtual.
+warn.sip.proxy.outboundif.invalid.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+error.failed.create.500.response=CWSCT0410E: Generarea unui r\u0103spuns al ruterului de aplica\u0163ii a e\u015fuat.
+error.failed.create.500.response.explanation=Ruterul de aplica\u0163ii a ridicat o excep\u0163ie nea\u015fteptat\u0103 iar com.ibm.ws.sip.container a \u00eencercat s\u0103 genereze 500 de r\u0103spunsuri \u015fi a e\u015fuat.
+error.failed.create.500.response.useraction=Contacta\u0163i proprietarul ruterului de aplica\u0163ii.
+
+warn.sip.custom.property.deprecated=CWSCT0411W: Proprietatea personalizat\u0103 [{0}] este perimat\u0103.
+warn.sip.custom.property.deprecated.explanation=Ea \u00eenc\u0103 este onorat\u0103 \u015fi valoarea ei folosit\u0103 dac\u0103 este definit\u0103 \u00een configura\u0163ie, este de preceden\u0163\u0103 mai mare dec\u00e2t atributul - din motive de compatibilitae cu versiunile anterioare.
+warn.sip.custom.property.deprecated.useraction=Seta\u015fi aceast\u0103 valoare prin intermediul set\u0103rilor de configurare SIP Container din interfa\u0163a de utilizator admin.
+
+warn.sip.queue.hung=CWSCT0412W: un task SIP \u00eenrudit cu {0} apare ca fiind suspendat. Acest task va fi ignorat.
+warn.sip.queue.hung.explanation= Taskul a dep\u0103\u015fit timpul configurat pentru detectarea ag\u0103\u0163\u0103rii unui fir de execu\u0163ie. Mesajel SIP ulterioare pe aceast\u0103 sesiune s-ar putea s\u0103 e\u015fueze.
+warn.sip.queue.hung.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+warn.server.overloaded.message.queue.overloaded=CWSCT0413W: Serverul este supra\u00eenc\u0103rcat de vreme ce cozile de fire de execu\u0163ie com.ibm.ws.sip.container au atins capacitatea maxim\u0103.
+warn.server.overloaded.message.queue.overloaded.explanation=Serverul SIP nu mai poate accepta mesaje de intrare, c\u00e2t este supra\u00eenc\u0103rcat.
+warn.server.overloaded.message.queue.overloaded.useraction=Reduce\u0163i traficul de intrare de mesaje sau seta\u0163i valoarea maxim\u0103 de a dimensiunii cozii Session Initiation Protocol (SIP) com.ibm.ws.sip.container la o valoare mai mare.
+
+info.sip.replication.mode=CWSCT0414I: Modul replicare SIP este:{0} 
+info.sip.replication.mode.explanation=Frecven\u0163a cu care sunt replicate sesiunile SIP \u00een domeniul de replicare (dac\u0103 exist\u0103).
+info.sip.replication.mode.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+info.dar.weight=CWSCT0415I: \u00cenc\u0103rcare ruter de aplica\u0163ii implicit, strategie pondere.
+info.dar.weight.explanation=Nu a fost livrat niciun ruter de aplica\u0163ii personalizat sau fi\u015fier de configurare DAR, SIP com.ibm.ws.sip.container va utiliza comportamentul implicit de sortare a aplica\u0163iilor \u00een func\u0163ie de pondere.
+info.dar.weight.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.dar.no.config=CWSCT0416E: Fi\u015fierul de configurare DAR (Default Application Router) nu a fost localizat \u00een calea livrat\u0103 {0}.
+error.dar.no.config.explanation=Fi\u015fierul de configurare DAR (Default Application Router) livrat de utilizator nu a fost g\u0103sit
+error.dar.no.config.useraction=Verifica\u0163i dac\u0103 a fost corect\u0103 calea livrat\u0103 \u00een propriet\u0103\u0163ile SIP com.ibm.ws.sip.container "javax.servlet.sip.ar.dar.configuration"
+
+error.sip.descriptor.wrong.class=CWSCT0417E: Numele clasei Siplet definit \u00een sip.xml nu a fost g\u0103sit, nume clas\u0103: {0}. 
+error.sip.descriptor.wrong.class.explanation=Documentul sip.xml define\u015fte un nume de clas\u0103 siplet care nu poate fi \u00eenc\u0103rcat.
+error.sip.descriptor.wrong.class.useraction=Verifica\u0163i fi\u015fierul dumneavoastr\u0103 sip.xml \u015fi asigura\u0163i-v\u0103 c\u0103 numele clasei a fost scris corect.
+
+info.sip.outbound.initialized=CWSCT0418I: Extensia de protocol "outbound" SIP s-a ini\u0163ializat cu succes.
+info.sip.outbound.initialized.explanation=Servletul SIP com.ibm.ws.sip.container este preg\u0103tit pentru re-utilizarea conexiunilor ini\u0163iate de clien\u0163i, \u00een func\u0163ie de extensia de protocol "ie\u015fire".
+info.sip.outbound.initialized.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Pentru mai multe informa\u0163ii despre extensia de protocol "outbound", vede\u0163i subiectul "Reutilizarea conexiunilor ini\u0163iate de client SIP" \u00een Centrul de informare Websphere Application Server.
+
+warn.sip.outbound.no.key.set=CWSCT0419W: Nu este specificat niciun set de chei pentru extensia de protocol SIP "outbound".
+warn.sip.outbound.no.key.set.explanation=Servletul SIP com.ibm.ws.sip.container gestioneaz\u0103 conexiunile ini\u0163iate de clien\u0163i, \u00een func\u0163ie de extensia de protocol SIP "ie\u015fire", dar securitatea este dezactivat\u0103. \u00cen aceast\u0103 situa\u0163ie, jetoanele de flux sunt vulnerabile la modificarea lor de c\u0103tre cei care vor s\u0103 fac\u0103 un atac.
+warn.sip.outbound.no.key.set.useraction=Pentru a activa securitatea conexiunilor ini\u0163iate de client, vede\u0163i subiectul "Reutilizarea conexiunilor ini\u0163iate de client SIP" \u00een Centrul de informare Websphere Application Server.
+
+info.sip.outbound.key.set.updated=CWSCT0420I: Nu a fost actualizat niciun set de chei pentru extensia de protocol SIP "outbound".
+info.sip.outbound.key.set.updated.explanation=O cheie nou\u0103 a fost generat\u0103 \u00een setul de chei.
+info.sip.outbound.key.set.updated.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+error.sip.outbound.failure=CWSCT0421E: Extensia de protocol "outbound" SIP a e\u015fuat ini\u0163ializarea cu setul de chei {0}.
+error.sip.outbound.failure.explanation=Servletul SIP com.ibm.ws.sip.container nu poate procesa extensia de protocol "de ie\u015fire", deoarece a ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a ini\u0163ializa setul de chei specificat.
+error.sip.outbound.failure.useraction=Asigura\u0163i-v\u0103 c\u0103 setul de chei specificat este prezent \u00een configura\u0163ia de seturi de chei. Pentru mai multe informa\u0163ii, vede\u0163i subiectul "Reutilizarea conexiunilor ini\u0163iate de client SIP" \u00een Centrul de informare Websphere Application Server.
+
+warn.sip.invalid.comma.separated.headers=CWSCT0422W: Sintax\u0103 invalid\u0103 \u00een proprietatea personalizat\u0103 "comma.separated.headers".
+warn.sip.invalid.comma.separated.headers.explanation=Proprietatea personalizat\u0103 de SIP com.ibm.ws.sip.container "comma.separated.headers" con\u0163ine o setare invalid\u0103.
+warn.sip.invalid.comma.separated.headers.useraction=Fie specifica\u0163i o valoare valid\u0103 pentru proprietatea personalizat\u0103 "comma.separated.headers", fie \u00eenl\u0103tura\u0163i aceast\u0103 proprietate personalizat\u0103 din set\u0103rile dumneavoastr\u0103 de configurare SIP com.ibm.ws.sip.container. Propriet\u0103\u0163ile personalizate ale SIP com.ibm.ws.sip.container sunt descrise \u00een subiectul din Centrul de informare Websphere Application Server "Propriet\u0103\u0163i personalizate SIP com.ibm.ws.sip.container".
+
+sip.app.deployment.failed=CWSCT0423E: A e\u015fuat implementarea Aplica\u0163iei {0}, din motivul {1}.
+sip.app.deployment.failed.explanation=Implementarea a e\u015fuat din cauza unui descriptor invalid de implementare.
+sip.app.deployment.failed.useraction=Verifica\u0163i c\u0103 descriptorii de implementare sip.xml sau adnot\u0103rile nu intr\u0103 \u00een conflict \u015fi sunt valide valide corespunz\u0103tor specifica\u0163iilor.
+
+info.dar.start.order=CWSCT0424I: \u00cenc\u0103rcarea ruterului implicit de aplica\u0163ii, pornirea strategiei de pondere.
+info.dar.start.order.explanation=Nu a fost furnizat niciun ruter de aplica\u0163ii personalizat sau fi\u015fier de configurare DAR, SIP com.ibm.ws.sip.container va utiliza comportamentul implicit de sortare a aplica\u0163iilor \u00een func\u0163ie de ordinea de pornire.
+info.dar.start.order.useraction=Nu este necesar\u0103 nicio ac\u0163iune
+
+warn.change.in.endpoints=CWSCT0425W: Configura\u0163ia canalului SIP s-a modificat. Modific\u0103rile \u00een punctele finale SIP \u00een timp ce serverul ruleaz\u0103 pot cauza e\u015fuarea dialogurilor \u00een curs.
+warn.change.in.endpoints.explanation=Fiabilitatea de stare a dialogurilor SIP se bazeaz\u0103 pe persisten\u0163a configura\u0163iei interfe\u0163elor SIP.
+warn.change.in.endpoints.useraction=Repornirea serverului este recomandat\u0103 dac\u0103 dialogurile SIP existente sunt \u00een curs.
+
+warn.dar.file.modification=CWSCT0426W: Loca\u0163ia fi\u015fierului Default SIP Application Router (DAR) sau con\u0163inutul sunt neschimbate.
+warn.dar.file.modification.explanation=Loca\u0163ia fi\u015fierului DAR sau con\u0163inutul nu pot fi modificate c\u00e2nd serverul ruleaz\u0103.
+warn.dar.file.modification.useraction=Pentru a aplica modific\u0103rile, reporni\u0163i serverul.
+
+error.no.main.serv=CWSCT0427E: Aplica\u0163ia a definit un servlet principal care nu exist\u0103:  {0}.
+error.no.main.serv.explanation=Servletul principal nu se potrive\u015fte cu niciun servlet existent.
+error.no.main.serv.useraction=Asigura\u0163i-v\u0103 c\u0103 servletul principal este definit corect \u00een descriptorul de implementare sau de adnotare \u015fi c\u0103 se refer\u0103 la o clas\u0103 de tip SipServlet.
+
+cant.both.main.serv.mapping=CWSCT0428E: Aplica\u0163ia define\u015fte \u015fi servletul principal {0} \u015fi regulile de mapare servleturi, ceea ce nu este permis.
+cant.both.main.serv.mapping.explanation=Aplica\u0163ia nu poate defini \u015fi servletul principal \u015fi regulile de mapare servleturi.
+cant.both.main.serv.mapping.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia define\u015fte fie servletul principal fie regulile de mapare servleturi, dar nu ambele. Pute\u0163i defini servletul principal \u00een descriptorul de implementare sau prin adnotare.
+
+must.define.main.serv=CWSCT0429E: Aplica\u0163ia nu define\u015fte un servlet principal dar are mai mult de un siplet.
+must.define.main.serv.explanation=Dac\u0103 aplica\u0163ia are mai mult de un siplet, trebuie de asemenea s\u0103 defini\u0163i un servlet principal.
+must.define.main.serv.useraction=Asigura\u0163i-v\u0103 c\u0103 servletul principal este definit corect \u00een descriptorul de implementare sau prin adnotare. Defini\u0163ia de servlet principal trebuie s\u0103 se refere la o clas\u0103 de tipul SipServlet.
+
+start.sipChain.error=CWSCT0430E: Lan\u0163ul SIP a e\u015fuat s\u0103 porneasc\u0103.
+start.sipChain.error.explanation=Dac\u0103 lan\u0163ul SIP a e\u015fuat s\u0103 porneasc\u0103, ar putea s\u0103 fie probleme cu defini\u0163iile punctelor finale SIP.
+start.sipChain.error.useraction=Verifica\u0163i c\u0103 punctele finale SIP sunt bine definite.
+
+config.sipChain.error=CWSCT0431E: A e\u015fuat ini\u0163ializarea unui lan\u0163 SIP.
+config.sipChain.error.explanation=Dac\u0103 un lan\u0163 SIP e\u015fueaz\u0103 s\u0103 se ini\u0163ializeze, atunci nu este creat sau ini\u0163ializat un canal din lan\u0163 sau a e\u015fuat crearea lan\u0163ului. Aceasta include \u00eencerc\u0103ri e\u015fuate de legare a porturilor.
+config.sipChain.error.useraction=Verifica\u0163i c\u0103 punctele finale SIP sunt bine definite.
+
+error.asynchwork.host.unknown=CWSCT0432E: A e\u015fuat trimiterea asincron\u0103 a lucrului de vreme ce gazda este necunoscut\u0103.
+error.asynchwork.host.unknown.explanation=Containerul SIP a \u00eencercat s\u0103 trimit\u0103 lucru asincron dar a e\u015fuat din cauza gazdei necunoscute.
+error.asynchwork.host.unknown.useraction=Verifica\u0163i configura\u0163ia gazdei \u00eenainte de a trimite lucru asincron.
+
+info.sip.queue.stats=CWSCT0433I: Mod de tip\u0103rire statistici de cozi SIP Container= {0}. 1 = doar c\u00e2nd este supra\u00eenc\u0103rcat, 2 = \u00eentotdeauna. O dat\u0103 la fiecare {1} msec.
+info.sip.queue.stats.explanation=Modul de tip\u0103rire statistici de cozi SIP Container.
+info.sip.queue.stats.useraction=Acesta este un mesaj informativ.  Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+error.init.loadonstartup.app=CWSCT0435E: Serverul SIP a e\u015fuat ini\u0163ializarea aplica\u0163iei cu un atribut de servlet loadOnStartup: {0}
+error.init.loadonstartup.app.explanation=A ap\u0103rut o eroare c\u00e2nd a fost ini\u0163ializat\u0103 aplica\u0163ia SIP cu atributul de servlet specificat loadOnStartup.
+error.init.loadonstartup.app.useraction=Revede\u0163i fi\u015fierul SIP de urm\u0103rire server care este localizat \u00een directorul de istorice \u00een folderul SERVER_DIR pentru mai multe detalii despre aceast\u0103 eroare.
+
+warn.sip.resolver.failed.connection=CWSCT0436W: A e\u015fuat SIP Resolver Connection, adresa la distan\u0163\u0103 = {0}.
+warn.sip.resolver.failed.connection.explanation=Session Initiation Protocol (SIP) Resolver nu s-a putut conecta la un nod la distan\u0163\u0103.
+warn.sip.resolver.failed.connection.useraction=Serverul de nume la distan\u0163\u0103 ar putea s\u0103 nu fie disponibil. Verifica\u0163i configura\u0163ia serverului de nume.
+
+warn.sip.resolver.server.not.responding=CWSCT0437W: Serverul de nume nu r\u0103spunde la c\u0103utarea SIP. Adres\u0103 la distan\u0163\u0103 = {0}.
+warn.sip.resolver.server.not.responding.explanation=Serverul de nume la distan\u0163\u0103 nu r\u0103spunde la ultima cerere de rezolvitor Session Initiation Protocol (SIP).
+warn.sip.resolver.server.not.responding.useraction=Serverul nume ar putea s\u0103 nu func\u0163ioneze. Verifica\u0163i disponibilitatea serverului de nume.
+
+info.sip.resolver.established.connection=CWSCT0438I: SIP Resolver a f\u0103cut o conexiune la = {0}.
+info.sip.resolver.established.connection.explanation=Rezolvitorul Session Initiation Protocol (SIP) a f\u0103cut o conexiune TCP la un server de nume la distan\u0163\u0103
+info.sip.resolver.established.connection.useraction=Nu este necesar\u0103 nicio ac\u0163iune din partea utilizatorului.
+
+info.sip.resolver.initialized=CWSCT0439I: Serviciul rezolvitor SIP s-a ini\u0163ializat cu serverul de nume {0}.
+info.sip.resolver.initialized.explanation=Serviciul rezolvitor Session Initiation Protocol (SIP) s-a ini\u0163ializat.
+info.sip.resolver.initialized.useraction=Nu este necesar\u0103 nicio ac\u0163iune din partea utilizatorului.
+
+info.sip.resolver.not.initialized=CWSCT0440I: Serviciul rezolvitor SIP nu s-a ini\u0163ializat.
+info.sip.resolver.not.initialized.explanation=Serviciul rezolvitor Session Initiation Protocol (SIP) nu a configurat un server de nume.
+info.sip.resolver.not.initialized.useraction=Reconfigura\u0163i Serviciul rezolvitor SIP cu un server de nume.
+
+warning.traditional.enabled=CWSCT0441W: Containerul SIP nu suport\u0103 PMI-ul tradi\u0163ional.
+warning.traditional.enabled.explanation=Atributul enableTraditionalPMI este setat la true \u00een fi\u015fierul server.xml. Containerul SIP nu suport\u0103 PMI tradi\u0163ional \u00een Liberty.
+warning.traditional.enabled.useraction=\u00cenl\u0103tura\u0163i proprietatea enableTraditionalPMI din fi\u015fierul server.xml.

@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: Po\u017eadavek {0} byl spu\u0161t\u011bn na podprocesu {1} po dobu alespo\u0148 {2} ms. N\u00e1sleduj\u00edc\u00ed trasov\u00e1n\u00ed z\u00e1sobn\u00edku zobrazuje, co tento podproces aktu\u00e1ln\u011b prov\u00e1d\u00ed.\n\n {3}\nN\u00e1sleduj\u00edc\u00ed tabulka zobrazuje ud\u00e1losti, kter\u00e9 jsou spu\u0161t\u011bny b\u011bhem tohoto po\u017eadavku.\n{4} 
+REQUEST_TIMER_WARNING.explanation=Po\u017eadavek byl spu\u0161t\u011bn d\u00e9le ne\u017e nakonfigurovan\u00e9 trv\u00e1n\u00ed pro pomal\u00fd po\u017eadavek. Informace v tabulce zobrazuj\u00ed, jak\u00e9 ud\u00e1losti jsou ji\u017e jako sou\u010d\u00e1st po\u017eadavku spu\u0161t\u011bny. Dosud spu\u0161t\u011bn\u00e9 ud\u00e1losti jsou ozna\u010deny znakem + vedle trv\u00e1n\u00ed. V\u00fdchoz\u00ed hodnota trv\u00e1n\u00ed pro pomal\u00fd po\u017eadavek je 10 sekund, aktu\u00e1ln\u00ed hodnotu zjist\u00edte v souboru server.xml.
+REQUEST_TIMER_WARNING.useraction=Z informac\u00ed v tabulce ur\u010dete, kter\u00e1 \u010d\u00e1st po\u017eadavku je neo\u010dek\u00e1van\u011b pomalej\u0161\u00ed. Je-li pro r\u016fzn\u00e9 po\u017eadavky uvedeno t\u00e9m\u011b\u0159 v jednom okam\u017eiku mnoho varov\u00e1n\u00ed, m\u016f\u017ee to zna\u010dit, \u017ee n\u011bco zpomalilo cel\u00fd proces na serveru, nap\u0159. \u017ee jin\u00fd proces na stejn\u00e9m syst\u00e9mu vyu\u017e\u00edv\u00e1 velkou \u010d\u00e1st kapacity provozn\u00edch prost\u0159edk\u016f.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: Po\u017eadavek {0} byl spu\u0161t\u011bn na podprocesu {1} po dobu alespo\u0148 {2} ms. N\u00e1sleduj\u00edc\u00ed tabulka zobrazuje ud\u00e1losti, kter\u00e9 jsou spu\u0161t\u011bny b\u011bhem tohoto po\u017eadavku.\n{3}
+HUNG_REQUEST_WARNING.explanation=Po\u017eadavek byl spu\u0161t\u011bn d\u00e9le ne\u017e nakonfigurovan\u00e9 trv\u00e1n\u00ed pro zablokovan\u00fd po\u017eadavek. Informace v tabulce zobrazuj\u00ed, jak\u00e9 ud\u00e1losti jsou ji\u017e jako sou\u010d\u00e1st po\u017eadavku spu\u0161t\u011bny. Ke shrom\u00e1\u017ed\u011bn\u00ed dal\u0161\u00edch informac\u00ed, co mohlo zp\u016fsobit zablokov\u00e1n\u00ed po\u017eadavku, se automaticky spust\u00ed j\u00e1dra Java. V\u00fdchoz\u00ed hodnota trv\u00e1n\u00ed pro zablokovan\u00fd po\u017eadavek je 10 minut, aktu\u00e1ln\u00ed hodnotu zjist\u00edte v souboru server.xml.
+HUNG_REQUEST_WARNING.useraction=Z informac\u00ed v tabulce ur\u010dete, kter\u00e1 \u010d\u00e1st po\u017eadavku je zablokovan\u00e1 nebo zacyklen\u00e1. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: Po\u017eadavek {0} na podprocesu {1}, kter\u00fd byl d\u0159\u00edve zji\u0161t\u011bn jako zablokovan\u00fd, byl dokon\u010den po {2} ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=U\u017eivatel bude \u00falohou zablokovan\u00e9ho po\u017eadavku informov\u00e1n, dojde-li k dokon\u010den\u00ed zablokovan\u00e9ho po\u017eadavku.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: Konfiguraci \u010dasov\u00e1n\u00ed p\u0159idru\u017eenou k PID {0} nelze \u010d\u00edst z konfigurace.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=Slu\u017eba \u010dasov\u00e1n\u00ed po\u017eadavk\u016f se pokusila p\u0159e\u010d\u00edst vlo\u017eenou konfiguraci \u010dasov\u00e1n\u00ed ze souboru server.xml. PID p\u0159idru\u017een\u00e9 k prvku \u010dasov\u00e1n\u00ed je ve zpr\u00e1v\u011b.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy viz messages.log, nap\u0159. CWWKG0058E, kde jsou podrobnosti k probl\u00e9mu s konfigurac\u00ed. Opravou konfigurace vy\u0159e\u0161te chybu.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Konfigurace \u010dasov\u00e1n\u00ed typu {0} a vzorek informac\u00ed o kontextu {1} ji\u017e existuje. Konfigurace \u010dasov\u00e1n\u00ed p\u0159idru\u017een\u00e1 k PID {2} nahrazuje p\u0159edchoz\u00ed konfiguraci \u010dasov\u00e1n\u00ed.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=Duplicitn\u00ed konfigurace \u010dasov\u00e1n\u00ed byla nalezena v souboru server.xml. Kombinace typu a vzorku informac\u00ed o kontextu ji\u017e byla nadefinov\u00e1na.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Zkontrolujte soubor server.xml a odeberte v\u0161echny duplicitn\u00ed konfigurace \u010dasov\u00e1n\u00ed.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: Konfigurace \u010dasov\u00e1n\u00ed pro PID {0} dod\u00e1v\u00e1 vzorek informac\u00ed o kontextu, ale konfigurace \u010dasov\u00e1n\u00ed po\u017eadavk\u016f nastavuje atribut includeContextInfo na false. Konfigurace \u010dasov\u00e1n\u00ed bude ignorov\u00e1na.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=Slu\u017eba \u010dasov\u00e1n\u00ed po\u017eadavk\u016f \u010dte vlo\u017eenou konfiguraci \u010dasov\u00e1n\u00ed ze souboru server.xml. Konfigurace \u010dasov\u00e1n\u00ed ur\u010dila vzorek informac\u00ed o kontextu pro porovn\u00e1n\u00ed. Slu\u017eba \u010dasov\u00e1n\u00ed po\u017eadavk\u016f je konfigurov\u00e1na tak, aby zak\u00e1zala informace o kontextu pro v\u0161echny po\u017eadavky, nelze proto porovnat po\u017eadavky s touto konfigurac\u00ed \u010dasov\u00e1n\u00ed.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Zkontrolujte soubor server.xml a vy\u0159e\u0161te konflikt konfigurace zm\u011bnou hodnoty includeContextInfo na true v konfiguraci \u010dasov\u00e1n\u00ed po\u017eadavk\u016f nebo odebr\u00e1n\u00edm vzorku informac\u00ed o kontextu z konfigurace \u010dasov\u00e1n\u00ed.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: Konfigurace \u010dasov\u00e1n\u00ed p\u0159idru\u017een\u00e1 k PID {0} dod\u00e1v\u00e1 vzorek informac\u00ed o kontextu, kter\u00fd obsahuj e z\u00e1stupn\u00fd znak v nepodporovan\u00e9m um\u00edst\u011bn\u00ed. Z\u00e1stupn\u00fd znak bude pova\u017eov\u00e1n za hv\u011bzdi\u010dku. Vzorek informac\u00ed o kontextu je {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=Slu\u017eba \u010dasov\u00e1n\u00ed po\u017eadavk\u016f \u010dte vlo\u017eenou konfiguraci \u010dasov\u00e1n\u00ed ze souboru server.xml. Ve vzorku informac\u00ed o kontextu je znak hv\u011bzdi\u010dky pova\u017eov\u00e1n jako z\u00e1stupn\u00fd znak, dokud nen\u00ed uvozen znakem zp\u011btn\u00e9ho lom\u00edtka. Z\u00e1stupn\u00fd znak je povolen pouze jako posledn\u00ed znak vzorku informac\u00ed o kontextu.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Chcete-li interpretovat z\u00e1stupn\u00fd znak jako hv\u011bzdi\u010dku, uvo\u010fte jej znakem zp\u011btn\u00e9ho lom\u00edtka.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nTabulka byla o\u0159\u00edznuta, proto\u017ee po\u010det ud\u00e1lost\u00ed pro po\u017eadavek p\u0159ekro\u010dil povolen\u00fd limit.

@@ -15,7 +15,9 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
-
+	
+	<webContainer deferServletLoad="false"/>
+	
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 

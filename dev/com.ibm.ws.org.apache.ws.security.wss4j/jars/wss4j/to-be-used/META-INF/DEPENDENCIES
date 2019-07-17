@@ -1,0 +1,33 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+Apache WebServices - WSS4J
+
+
+From: 'Internet2' (http://www.internet2.edu/)
+  - OpenSAML-J (http://opensaml.org/) org.opensaml:opensaml:jar:2.5.1-1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - OpenWS (http://opensaml.org/) org.opensaml:openws:jar:1.4.2-1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - XMLTooling-J (http://opensaml.org/) org.opensaml:xmltooling:jar:1.3.2-1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Joda.org' (http://www.joda.org)
+  - Joda time (http://joda-time.sourceforge.net) joda-time:joda-time:jar:1.6.2
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'QOS.ch' (http://www.qos.ch)
+  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.6.1
+    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Commons Logging (http://commons.apache.org/logging) commons-logging:commons-logging:jar:1.1.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache XML Security for Java (http://santuario.apache.org/) org.apache.santuario:xmlsec:bundle:1.5.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
+
+

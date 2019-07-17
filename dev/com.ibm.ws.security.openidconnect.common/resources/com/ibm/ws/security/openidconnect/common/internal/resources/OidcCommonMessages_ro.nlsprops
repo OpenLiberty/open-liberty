@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: Cererea punct final jeton a e\u015fuat. Nu se poate valida fi\u015fierul JWT Token cerut de c\u0103tre [{0}] din cauza unei semn\u0103turi lips\u0103 din jetonul JWT. Furnizorul OpenID Connect a specificat algoritmul [{1}] a\u015fteapt\u0103 s\u0103 fie semnat JWT Token.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Nu se poate verifica jetonul JWT deoarece jetonul nu este semnat. Furnizorul OpenID Connect a\u015fteapt\u0103 s\u0103 fie semnat jetonul.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Verifica\u0163i configura\u0163ia de client OpenID Connect pentru a v\u0103 asigura c\u0103 semneaz\u0103 JWT Token.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: Cererea punct final jeton a e\u015fuat. Nu se poate valida fi\u015fierul JWT Token cerut de c\u0103tre [{0}] din cauza unei nepotriviri de algoritmi de semnare \u00eentre furnizorul OpenID Connect [{1}] \u015fi clientul OpenID Connect [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Nu se poate verifica JWT Token deoarece furnizorul \u015fi clientul OpenID Connect utilizeaz\u0103 algoritmi diferi\u0163i de semn\u0103tur\u0103 pentru a semna/verifica jetonul.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Verifica\u0163i configura\u0163ia de client OpenID Connect pentru a specifica un algoritm semn\u0103tur\u0103 care se potrive\u015fte cu furnizorul OpenID.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: Cererea punctului final de jeton a e\u015fuat. Un jeton semnat JWT trebuie s\u0103 aib\u0103 3 segmente separate prin ''.'', dar acest JWT Token are [{0}] segmente.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Un jeton semnat JWT trebuie s\u0103 aib\u0103 exact 3 segmente separate prin '.'. Acest JWT Token are nu num\u0103r gre\u015fit de segmente.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 JWT Token este valid \u015fi are 3 segmente.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: Cererea punctului final de jeton a e\u015fuat. Validarea jetonului JWT cerut\u0103 de [{0}] a e\u015fuat. A primit o excep\u0163ie InvalidJwtException cu mesajul:[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Un jeton JWT nu poate fi validat din cauza unei excep\u0163ii InvalidJwtException indicat\u0103 \u00een mesaj.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corecta\u0163i eroarea care este indicat\u0103 \u00een mesaj.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: Cererea punctului final de jeton a e\u015fuat. Nu este g\u0103sit un JWT Token \u00een cerere.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=Cererea trebuie s\u0103 furnizeze un dar nu poate g\u0103si JWT Token \u00een cererea punctului final de jeton.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Furniza\u0163i un JWT Token valid \u00een cererea punctului final de jeton.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine RunAsSubject. Excep\u0163ia a fost: [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=A survenit o excep\u0163ie la ob\u0163inerea RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul este configurat \u015fi porne\u015fte corespunz\u0103tor.
+

@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: N\u00e3o \u00e9 poss\u00edvel personificar o usu\u00e1rio {0} para obter o GSSCredential do usu\u00e1rio ao usar o service principal name delegado {1} devido \u00e0 exce\u00e7\u00e3o {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=N\u00e3o \u00e9 poss\u00edvel personificar o usu\u00e1rio devido \u00e0 uma exce\u00e7\u00e3o inesperada.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Assegurar-se de que o service principal name (SPN) delegado est\u00e1 ativado para a delega\u00e7\u00e3o e a revis\u00e3o dos logs do servidor para obter mais informa\u00e7\u00f5es.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: N\u00e3o \u00e9 poss\u00edvel personificar o usu\u00e1rio {0} para obter o GSSCredential para o servi\u00e7o de backend ao usar o service principal name delegado {1} devido \u00e0 exce\u00e7\u00e3o {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=N\u00e3o \u00e9 poss\u00edvel personificar o usu\u00e1rio devido \u00e0 uma exce\u00e7\u00e3o inesperada.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Assegure-se de que o atributo S4U2proxy esteja configurado como true na configura\u00e7\u00e3o do elemento SPNEGO, que o servi\u00e7o delegado SPN esteja ativado para o delegado no Centro de distribui\u00e7\u00e3o de chaves (KDC) e que os chamados de servi\u00e7o ao cliente tenham uma sinaliza\u00e7\u00e3o configurada como true e os chamados de servi\u00e7o delegado tenham uma sinaliza\u00e7\u00e3o configurada como true. Revise os logs do servidor para obter informa\u00e7\u00f5es adicionais.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: N\u00e3o \u00e9 poss\u00edvel processar o m\u00e9todo {0}, porque a delega\u00e7\u00e3o restrita S4U2self n\u00e3o est\u00e1 ativada.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=N\u00e3o \u00e9 poss\u00edvel processar o m\u00e9todo, porque a delega\u00e7\u00e3o restrita S4U2self n\u00e3o est\u00e1 ativada.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Assegure-se de que o recurso de delega\u00e7\u00e3o restrita esteja ativado e que o atributo S4U2self esteja configurado como true na configura\u00e7\u00e3o de delega\u00e7\u00e3o restrita no arquivo server.xml. Revise os logs do servidor para obter informa\u00e7\u00f5es adicionais.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: N\u00e3o \u00e9 poss\u00edvel processar o m\u00e9todo {0}, porque a delega\u00e7\u00e3o restrita S4U2proxy n\u00e3o est\u00e1 ativada.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=N\u00e3o \u00e9 poss\u00edvel processar o m\u00e9todo, porque a delega\u00e7\u00e3o restrita S4U2proxy n\u00e3o est\u00e1 ativada.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Assegure-se de que o recurso de delega\u00e7\u00e3o restrita esteja ativado e que o atributo S4U2proxy esteja configurado como true na configura\u00e7\u00e3o de delega\u00e7\u00e3o restrita no arquivo server.xml. Revise os logs do servidor para obter informa\u00e7\u00f5es adicionais.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: O recurso de delega\u00e7\u00e3o restrita do Kerberos n\u00e3o \u00e9 suportado com o fornecedor Java {0} e vers\u00e3o {1}.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=O recurso de delega\u00e7\u00e3o restrita do Kerberos n\u00e3o pode ser ativado devido ao fornecedor e \u00e0 vers\u00e3o do Java Runtime.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Use o fornecedor Java e a vers\u00e3o que s\u00e3o suportados pelo recurso de delega\u00e7\u00e3o restrita do Kerberos.
+
+
+
+
+
+
+
+
+
+
+
+

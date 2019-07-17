@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+<!-- Delete this comment: 
+     For each component in your configuration (in the bnd file): 
+     * If config is required, add configuration-policy:=require
+     * If config is not required, add configuration-policy:=ignore
+     * If config may or may not be used, use configuration-policy:=optional
+     
+     If no components in the bundle use config (all are ignore), delete the metatype.xml file
+     entirely.
+      -->
+
+    <OCD id="com.ibm.ws.wssecurity.config" description="%wssecurity.name.desc" name="%wssecurity.name" 
+         ibm:alias="wsSecurityProvider" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+         <AD id="ws-security.username" name="%user" description="%user.desc" required="false" type="String" />
+         <AD id="ws-security.callback-handler" name="%cbh" description="%cbh.desc" required="false" type="String" />
+         <AD id="ws-security.encryption.username" name="%encuser" description="%encuser.desc" required="false" type="String"/>
+         <AD id="ws-security.signature.username" name="%siguser" description="%siguser.desc" required="false" type="String" />
+         <AD id="callerToken" name="%caller" description="%caller.desc" ibm:type="pid" required="false" type="String" 
+          ibm:reference="com.ibm.ws.wssecurity.caller.config" cardinality="1"/>
+         <AD id="signatureProperties" name="%sig" description="%sig.desc" ibm:type="pid" required="false" type="String" 
+         ibm:reference="com.ibm.ws.wssecurity.sig.config"/>
+         <AD id="encryptionProperties" name="%enc" description="%enc.desc" ibm:type="pid" required="false" type="String" 
+         ibm:reference="com.ibm.ws.wssecurity.enc.config"/>
+         <AD id="ws-security.enable.nonce.cache" name="%noncecache" description="%noncecache.desc" required="false" type="Boolean" default="true"/>
+         <AD id="samlToken" ibm:type="pid" ibm:reference="com.ibm.ws.wssecurity.config.samltoken" required="false" type="String" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.wssecurity.config">
+        <Object ocdref="com.ibm.ws.wssecurity.config" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.wssecurity.client.config" description="%wssecurity.client.name.desc" name="%wssecurity.client.name" 
+         ibm:alias="wsSecurityClient" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+         <AD id="ws-security.username" name="%user" description="%user.desc" required="false" type="String" />
+         <AD id="ws-security.password" name="%password" description="%password.desc" required="false" 
+         ibm:type="password" type="String" />
+         <AD id="ws-security.callback-handler" name="%cbh" description="%cbh.desc" required="false" type="String" />
+         <AD id="ws-security.encryption.username" name="%encuser" description="%encuser.desc" required="false" type="String"/>
+         <AD id="ws-security.signature.username" name="%siguser" description="%siguser.desc" required="false" type="String" />
+         <AD id="signatureProperties" name="%sig" description="%sig.desc" ibm:type="pid" required="false" type="String" 
+         ibm:reference="com.ibm.ws.wssecurity.sig.config"/>
+         <AD id="encryptionProperties" name="%enc" description="%enc.desc" ibm:type="pid" required="false" type="String" 
+         ibm:reference="com.ibm.ws.wssecurity.enc.config"/>
+                    
+    </OCD>
+
+    <Designate pid="com.ibm.ws.wssecurity.client.config">
+        <Object ocdref="com.ibm.ws.wssecurity.client.config" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.wssecurity.caller.config" name="%callerprops" description="%callerprops.desc">
+        <AD id="name" required="false" type="String" name="%callername" description="%callername.desc" />
+        <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc" required="false" type="String"/>
+        <AD id="groupIdentifier" name="%groupIdentifier" description="%groupIdentifier.desc" required="false" type="String" />     
+        <AD id="userUniqueIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" />
+        <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc" required="false" type="String" />
+        <AD id="includeTokenInSubject" name ="%includeTokenInSubject" description="%includeTokenInSubject.desc" required="false" type="Boolean" default="true"/>
+        <AD id="mapToUserRegistry" name ="%mapToUserRegistry" description="%mapToUserRegistry.desc" required="false" type="String" default="No">
+                <Option label="%mapToUserRegistry.NO"     value="No" />
+            	<Option label="%mapToUserRegistry.USER"   value="User" />
+            	<Option label="%mapToUserRegistry.GROUP"  value="Group" />
+        </AD>
+        <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" />     
+        <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/> 
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.wssecurity.caller.config">
+        <Object ocdref="com.ibm.ws.wssecurity.caller.config" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.wssecurity.sig.config" name="%sigprops" description="%sigprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
+           ibm:type="password" name="%ksp" description="%ksp.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%ksfile" description="%ksfile.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.truststore.file" required="false" type="String" 
+           name="%tsfile" description="%tsfile.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.truststore.password" required="false" type="String" 
+           ibm:type="password" name="%tspass" description="%tspass.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.truststore.type" required="false" type="String" 
+           name="%tstype" description="%tstype.desc" />
+           <AD id="org.apache.ws.security.crypto.provider" required="false" type="String" name="%crypto" 
+           description="%crypto.desc" default="org.apache.ws.security.components.crypto.Merlin"/>
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.provider" required="false" type="String" 
+           name="%ksprovider" description="%ksprovider.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.cert.provider" required="false" type="String" 
+           name="%certprovider" description="%certprovider.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.x509crl.file" required="false" type="String" 
+           name="%crl" description="%crl.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.private.password" required="false" type="String" 
+           ibm:type="password" name="%keypass" description="%keypass.desc" />
+         
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.wssecurity.sig.config">
+        <Object ocdref="com.ibm.ws.wssecurity.sig.config" />
+    </Designate>
+    
+   <OCD id="com.ibm.ws.wssecurity.enc.config" name="%encprops" description="%encprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
+           ibm:type="password" name="%ksp" description="%ksp.desc" />
+           <AD id="org.apache.ws.security.crypto.provider" required="false" type="String" name="%crypto" 
+           description="%crypto.desc" default="org.apache.ws.security.components.crypto.Merlin" /> 
+           <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%ksfile" description="%ksfile.desc" /> 
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.provider" required="false" type="String" 
+           name="%ksprovider" description="%ksprovider.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.cert.provider" required="false" type="String" 
+           name="%certprovider" description="%certprovider.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.x509crl.file" required="false" type="String" 
+           name="%crl" description="%crl.desc" />  
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.private.password" required="false" type="String" 
+           ibm:type="password" name="%keypass" description="%keypass.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.truststore.file" required="false" type="String" 
+           name="%tsfile" description="%tsfile.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.truststore.password" required="false" type="String" 
+           ibm:type="password" name="%tspass" description="%tspass.desc" />           
+           <AD id="org.apache.ws.security.crypto.merlin.truststore.type" required="false" type="String" 
+           name="%tstype" description="%tstype.desc" />
+          
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.wssecurity.enc.config">
+        <Object ocdref="com.ibm.ws.wssecurity.enc.config" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.wssecurity.config.samltoken.metatype" name="%samltoken" description="%samltoken.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+        <AD id="wantAssertionsSigned" name ="%wantAssertionsSigned" description="%wantAssertionsSigned.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" 
+            required="false" type="String" default="5m" ibm:type="duration" />
+        <AD id="requiredSubjectConfirmationMethod" name="%requiredSubjectConfirmationMethod" description="%requiredSubjectConfirmationMethod.desc" 
+            required="false" type="String" default="bearer" >
+                <Option label="bearer"          value="bearer" />
+        </AD>    	
+        <AD id="timeToLive" name="%timeToLive" description="%timeToLive.desc" 
+            required="false" type="String" default="30m" ibm:type="duration" />
+        <AD id="audienceRestrictions" name="%audienceRestrictions" description="%audienceRestrictions.desc"
+			required="false" type="String" cardinality="2147483647" />	             
+	    <!-- To be implemented     	
+		<AD id="trustAnchor" name="%trustStoreRef" description="%trustStoreRef.desc" 
+	        required="false" type="String"/>
+	    <AD id="trustedIssuers" name="%trustedIssuers" description="%trustedIssuers.desc"
+			required="false" type="String" cardinality="2147483647" default="ALL_ISSUERS"/>	
+         -->    				     
+    </OCD> 
+    
+    <Designate factoryPid="com.ibm.ws.wssecurity.config.samltoken">
+        <Object ocdref="com.ibm.ws.wssecurity.config.samltoken.metatype" />
+    </Designate>    
+    
+</metatype:MetaData>

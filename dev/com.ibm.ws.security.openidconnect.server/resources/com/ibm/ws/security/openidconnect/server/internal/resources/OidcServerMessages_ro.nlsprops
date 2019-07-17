@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1600 - CWWKS1649
+OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Configura\u0163ia furnizorului OpenID Connect {0} a fost procesat\u0103 cu succes.
+OIDC_SERVER_CONFIG_PROCESSED.explanation=Configura\u0163ia furnizorului OpenID Connect a fost procesat\u0103 cu succes.
+OIDC_SERVER_CONFIG_PROCESSED.useraction=F\u0103r\u0103
+
+OIDC_SERVER_CONFIG_MODIFIED=CWWKS1601I: Configura\u0163ia furnizorului OpenID Connect {0} a fost modificat\u0103 cu succes.
+OIDC_SERVER_CONFIG_MODIFIED.explanation=Configura\u0163ia furnizorului OpenID Connect a fost modificat\u0103 cu succes.
+OIDC_SERVER_CONFIG_MODIFIED.useraction=F\u0103r\u0103.
+
+OIDC_SERVER_CONFIG_EXECTED_ONE=CWWKS1602I: Configura\u0163ia furnizorului OpenID Connect are mai mult de o valoare configurat\u0103 pentru proprietatea furnizorului: {0}.
+OIDC_SERVER_CONFIG_EXECTED_ONE.explanation=Valoarea propriet\u0103\u0163ii furnizorului OpenID Connect care este cerut\u0103 a a\u015fteptat o valoare, dar a returnat mai multe. 
+OIDC_SERVER_CONFIG_EXECTED_ONE.useraction=Inspecta\u0163i proprietatea furnizorului OpenID Connect \u00een fi\u015fierul server.xml pentru a asigura c\u0103 este configurat\u0103 numai o valoare.
+
+OIDC_SERVER_CONFIG_REQUIRES_ONE=CWWKS1603I: Configura\u0163ia furnizorului OpenID Connect nu are nicio valoare configurat\u0103 pentru proprietatea furnizorului: {0}.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.explanation=Valoarea propriet\u0103\u0163ii furnizorului OpenID Connect care este cerut\u0103 a a\u015fteptat cel pu\u0163in o valoare, dar nu a returnat niciuna.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.useraction=Inspecta\u0163i proprietatea furnizorului OpenID Connect \u00een fi\u015fierul server.xml pentru a asigura c\u0103 este configurat\u0103 cel pu\u0163in o valoare.
+
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN=CWWKS1604I: Configura\u0163ia furnizorului OpenID Connect nu are o proprietate boolean\u0103 configurat\u0103 pentru: {0}.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.explanation=Valoarea propriet\u0103\u0163ii furnizorului OpenID Connect care este cerut\u0103 a\u015ftepta o valoare boolean\u0103 de 'true' sau 'false'.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.useraction=Inspecta\u0163i proprietatea furnizorului OpenID Connect \u00een fi\u015fierul server.xml pentru a v\u0103 asigura c\u0103 este configurat\u0103 o valoare boolean\u0103 de 'true' sau 'false'.
+
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR=CWWKS1605E: Tipul de acord invalid {0} este specificat. Tipurile de acorduri valide sunt {1}.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.explanation=Tipul de acord specificat nu este valid.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.useraction=Specifica\u0163i unul dintre tipurile de acorduri disponibile.
+
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR=CWWKS1606E: Tipul de acordare specificat {0} nu este permis. Tipurile de acorduri permise sunt {1}.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.explanation=Tipul de acordare specificat este valid dar furnizorul OpenID Connect nu \u00eel poate trata.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.useraction=Specifica\u0163i unul dintre tipurile de acorduri permise.
+
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR=CWWKS1607E: Cererea de autorizare are un tip de r\u0103spuns invalid {0}, tipurile de r\u0103spuns valide sunt {1}.
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.explanation=Tipul de r\u0103spuns specificat nu este valid. 
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.useraction=Cererea de autorizare ar trebuie s\u0103 fie modificat\u0103 pentru a include unul dintre tipurile de r\u0103spuns valide.
+
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR=CWWKS1608E: Cererea de autorizare nu poate avea ambele tipuri de r\u0103spuns {0} \u015fi {1}.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.explanation=Cererea de autorizare ar trebui s\u0103 aib\u0103 doar un tip de r\u0103spuns.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.useraction=Cererea de autorizare ar trebuie s\u0103 fie modificat\u0103 pentru a include un singur tip de r\u0103spuns.
+
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR=CWWKS1609E: Cererea OpenID Connect nu are domeniul openid.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.explanation=Cererea OpenID Connect cu tipul de r\u0103spuns id_token necesit\u0103 openid \u00een lista de domenii.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 domeniul openid este inclus \u00een cerere.
+
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR=CWWKS1610E: Cererea OpenID Connect nu are atributul necesar Nonce.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.explanation=Valoarea Nonce este necesar\u0103 pentru cererile OpenID Connect care utilizeaz\u0103 fluxul implicit.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.useraction=Furniza\u0163i valoarea Nonce cu cererile implicite OpenID Connect.
+
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR=CWWKS1611E: Cererii de jeton JWT \u00eei lipsesc anumite revendic\u0103ri cerute {0}.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.explanation=Jetonul JWT nu are toate revendic\u0103rile cerute \u00een Date utile.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.useraction=Furniza\u0163i revendic\u0103rile cerute \u00een Datele utile ale jetonului JWT.
+
+OIDC_SERVER_REQUIRED_CLAIM_ERR=CWWKS1612E: Revendicarea cerut\u0103 {0} \u00een datele utile ale jetonului JWT este invalid\u0103 {1}.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.explanation=Revendicarea cerut\u0103 \u00een datele utile ale jetonului JWT nu este valid\u0103.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.useraction=Furniza\u0163i o revendicare bun\u0103 \u00een datele utile ale jetonului JWT.
+
+OIDC_SERVER_CLAIM_ERR=CWWKS1613E: Revendicarea {0} \u00een datele utile ale jetonului JWT este invalid\u0103 {1}.
+OIDC_SERVER_CLAIM_ERR.explanation=Revendicarea din datele utile ale jetonului JWT nu este valid\u0103.
+OIDC_SERVER_CLAIM_ERR.useraction=Furniza\u0163i o revendicare bun\u0103 \u00een datele utile ale jetonului JWT.
+
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR=CWWKS1614E: Jetonul JWT trebuie s\u0103 asigure revendicarea 'iat' deoarece configura\u0163ia furnizorului de jetoane JWT a definit 'maxJwtLifetimeMinutesAllowed'.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.explanation=Configura\u0163ia furnizorului de jetoane JWT a definit 'maxJwtLifetimeMinutesAllowed', jetonul JWT de intrare este necesar pentru a furniza revendicarea 'iat'.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.useraction=\u00cenl\u0103tura\u0163i 'maxJwtLifetimeMinutesAllowed' din configura\u0163ie sau furniza\u0163i revendicarea 'iat' \u00een Datele utile ale jetonului JWT.
+
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR=CWWKS1615E: Alt jeton JWT cu acela\u015fi emitent: revendic\u0103rile {0} \u015fi jti:{1} trebuie s\u0103 fie lansat deja.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.explanation=Un jeton JWT cu acelea\u015fi revendic\u0103ri 'iss' \u015fi 'jti' a fost cerut deja. Acest lucru un atac prin redare poten\u0163ial.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 emitentul Jetonului JWT care furnizeaz\u0103 fiecare Jeton JWT cu o revendicare 'jti' unic\u0103.
+
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN=CWWKS1616E: A fost f\u0103cut\u0103 o cerere userinfo f\u0103r\u0103 niciun jeton de acces. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.explanation=A fost f\u0103cut\u0103 o cerere userinfo f\u0103r\u0103 niciun jeton de acces, este necesar un jeton de acces.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.useraction=Furniza\u0163i un jeton de acces fie parametrul de cerere access_token fie antetul de autorizare.
+
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN=CWWKS1617E: A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces care nu a fost recunoscut. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.explanation=A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces care nu a fost recunoscut. Este necesar un jeton de acces valid.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.useraction=Furniza\u0163i un jeton de acces valid, fie parametrul de cerere access_token fie antetul de autorizare.
+
+OIDC_SERVER_USERINFO_INVALID_REQUEST=CWWKS1618E: Un URI de cerere userinfo nu a fost valid. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.explanation=Un URI de cerere userinfo nu a fost valid, este necesar un URI valid.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.useraction=Furniza\u0163i un URI de cerere userinfo valid.
+
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN=CWWKS1619E: A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces care nu a avut domeniul ''openid''. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.explanation=A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces care nu a avut domeniul 'openid'. 
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.useraction=Furniza\u0163i un jeton de acces care a fost creat cu domeniul 'openid'.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: A survenit o eroare de server intern\u0103 a survenit \u00een timp proces\u0103rii unei cereri userinfo. Eroarea a fost {0}. URI-ul de cerere a fost {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=A survenit o eroare de server intern\u0103 a survenit \u00een timp proces\u0103rii unei cereri userinfo. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Contacta\u0163i suportul IBM.
+
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS=CWWKS1621E: A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces \u00een parametrul de cerere access_token \u015fi \u00een antetul de autorizare. Este permis un singur jeton de acces. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.explanation=A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces \u00een parametrul de cerere access_token \u015fi \u00een antetul de autorizare. Este permis un  singur jeton de acces.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.useraction=Furniza\u0163i un jeton de acces fie cu parametrul de cerere access_token sau cu antet de autoriza\u0163ie, dar nu ambele.
+
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE=CWWKS1622E: A fost f\u0103cut\u0103 o cerere userinfo cu un jeton care nu a fost un jeton de acces. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.explanation=A fost f\u0103cut\u0103 o cerere userinfo cu un jeton care nu a fost un jeton de acces. Este necesar un jeton de acces valid.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.useraction=Furniza\u0163i un jeton de acces valid, fie cu parametrul de cerere access_token fie cu antetul de autorizare. 
+
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN=CWWKS1623E: A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces expirat. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.explanation=A fost f\u0103cut\u0103 o cerere userinfo cu un jeton de acces expirat. Este necesar un jeton de acces valid.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.useraction=Furniza\u0163i un jeton de acces valid, fie cu parametrul de cerere access_token fie cu antetul de autorizare.
+
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND=CWWKS1624E: Un URI de cerere userinfo nu a fost valid. Furnizorul {0} nu a fost g\u0103sit. URI-ul de cerere a fost {1}.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.explanation=Un URI de cerere userinfo nu a fost valid. Furnizorul con\u0163inut \u00een URI nu a fost g\u0103sit. Este necesar un URI valid.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.useraction=Furniza\u0163i un URI de cerere userinfo valid care s\u0103 con\u0163in\u0103 un nume valid de furnizor.
+
+OIDC_SERVER_IDTOKEN_VERIFY_ERR=CWWKS1625E: Furnizorul OpenID Connect a e\u015fuat s\u0103 valideze ID-ul de jeton din cauza [{0}].
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.explanation=Furnizorul OpenID Connect nu poate valida ID-ul de jeton. Aceasta ar putea fi cauzat\u0103 de o inconsisten\u0163\u0103 \u00een cheile de semn\u0103tur\u0103 \u00eentre creatorul ID-ului de jeton \u015fi acest furnizor.
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 clientul OpenID Connect (RP) trimite ID-ul de jeton care fost generat de acest furnizor. Vede\u0163i de asemenea ac\u0163iunea de utilizator pentru eroarea care apare dup\u0103 aceast\u0103 eroare.
+
+OIDC_SERVER_USERNAME_MISMATCH_ERR=CWWKS1626E: Numele de utilizator logare [{0}] nu se potrive\u015fte cu subiectul ID-ului de jeton [{1}].
+OIDC_SERVER_USERNAME_MISMATCH_ERR.explanation=Furnizorul OpenID Connect detecteaz\u0103 c\u0103 furnizorul de identitate de utilizator de logare nu este consistent cu informa\u0163iile de utilizator \u00een ID-ul de jeton. Aceasta ar putea fi cauzat\u0103 de c\u0103tre un utilizator final care comut\u0103 utilizatorii de logare.
+OIDC_SERVER_USERNAME_MISMATCH_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 utilizatorul final nu comut\u0103 identitatea furnizorului OpenID Connect.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM=CWWKS1627E: A survenit o eroare de server intern\u0103 \u00een timpul proces\u0103rii unei cereri userinfo. Serviciul de repozitoriu federalizat nu a fost disponibil. URI-ul de cerere a fost {0}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.explanation=A survenit o eroare de server intern\u0103 \u00een timpul proces\u0103rii unei cereri userinfo. Serviciul de repozitoriu federalizat nu a fost disponibil.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.useraction=Contacta\u0163i suportul IBM.
+
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1628E: A ap\u0103rut o eroare de configurare. Nu este disponibil niciun serviciu de punct final OpenID Connect. Asigura\u0163i-v\u0103 c\u0103 ave\u0163i configurat\u0103 caracteristica openidConnectServer-1.0. 
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Nu este disponibil niciun serviciu de punct final OpenID Connect prin registrul de servicii OSGi.
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Include\u0163i caracteristica openidConnectServer-1.0 \u00een serverul dumneavoastr\u0103 de configurare.
+
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS1629E: Serviciul de configurare OpenID Connect nu este disponibil pentru furnizorul {0}.
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Serviciul de configurare OpenID Connect nu este disponibil pentru furnizor. 
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Inspecta\u0163i proprietatea furnizorului OpenID Connect \u00een fi\u015fierul server.xml pentru a asigura c\u0103 este specificat cel pu\u0163in un furnizor.
+
+OIDC_OAUTH_PROVIDER_OBJECT_NULL=CWWKS1630E: Un obiect OAuth20Provider este nul pentru furnizorul OpenID Connect {0}.
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.explanation=Furnizorul OpenID Connect nu are niciun OAuthProvider
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.useraction=Inspecta\u0163i proprietatea furnizorului OpenID Connect \u00een fi\u015fierul server.xml pentru a asigura c\u0103 este specificat cel pu\u0163in un furnizor OAuth.
+
+OIDC_ENDPOINT_SERVICE_ACTIVATED=CWWKS1631I: Serviciul de punct final OpenID Connect este activat.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.explanation=Serviciul de punct final OpenID Connect este activat.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.useraction=F\u0103r\u0103
+
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND=CWWKS1632E: Numele furnizorului OAuth referen\u0163iat de furnizorul OpenID Connect {0} nu a fost g\u0103sit.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.explanation=Furnizorul OpenID Connect nu are un nume de furnizor OAuth, sau un funizor OAuth cu numele dat nu exist\u0103.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.useraction=Specifica\u0163i un nume valid de furnizor OAuth pentru furnizorul OpenID Connect.
+
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER=CWWKS1633E: A fost f\u0103cut\u0103 o cerere userinfo cu un parametru nesuportat {0}. URI-ul de cerere a fost {1}.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.explanation=A fost f\u0103cut\u0103 o cerere userinfo cu un parametru nesuportat.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.useraction=Invoca\u0163i punctul final userinfo f\u0103r\u0103 parametrul nesuportat.
+
+OIDC_REQUEST_ATTRIBUTE_MISSING=CWWKS1634E: Punctul final de cerere {0} nu are atributul {1}.
+OIDC_REQUEST_ATTRIBUTE_MISSING.explanation=Atributul lipse\u015fte din cerere
+OIDC_REQUEST_ATTRIBUTE_MISSING.useraction=Inspecta\u0163i punctul final de cerere \u00een fi\u015fierul pentru a v\u0103 asigura c\u0103 ave\u0163i furnizorul corect
+
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS=CWWKS1635W: Atributul furnizorului OpenID Connect, issuerIdentifier={0}, trebuie s\u0103 utilizeze schema https dac\u0103 httpsRequired este setat la adev\u0103rat. Resetare la valoare implicit\u0103.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.explanation=issuerIdentifier este setat incorect.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.useraction=Modifica\u0163i atributul de furnizor OpenIDConnect, issuerIdentifier, pentru a utiliza schema https.
+
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH=CWWKS1636E: Parametrul post_logout_redirect_uri: {0} nu se potrive\u015fte cu valoarea atributului de furnizor OpenID Connect, postLogoutRedirectUris={1} \u00een ID-ul de client: {2}.
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.explanation=Parametrul post_logout_redirect_uri pe care \u00eel trimite clientul OpenID Connect (RP) nu se afl\u0103 \u00een lista de URI-uri specificat\u0103 de atributul postLogoutRedirectUris sau valoarea postLogoutRedirectUris nu este setat\u0103. 
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea parametrului post_logout_redirect_uri se afl\u0103 \u00een lista atributului postLogoutRedirectUris care se afl\u0103 pe clientul \u00eenregistrat. De asemenea, dac\u0103 ID-ul de client este nul sau dac\u0103 parametrul id_token_hint nu este valid sau nu a fost trimis, parametrul id_token_hint este necesar pentru a identifica ID-ul de client.
+
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR=CWWKS1637E: Informa\u0163iile de utilizator pentru {0} returnate de caracteristica de utilizator Liberty {1} sunt nule.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.explanation=UserinfoProvider instalat \u00een Liberty \u00eentoarce null pentru utilizatorul dat.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 UserinfoProvider \u00eentoarce un JSONObject valid.
+
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED=CWWKS1638I: Exist\u0103 multiple UserinfoProvider configurate.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.explanation=Exist\u0103 mai mult de un TokenIntrospectProvider configurat \u00een fi\u015fierul server.xml.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.useraction=F\u0103r\u0103
+
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT=CWWKS1639E: Informa\u0163iile de utilizator pentru {0} returnate de caracteristica de utilizator Liberty {1} sunt invalide.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.explanation=UserinfoProvider instalat \u00een Liberty \u00eentoarce un JSONObject invalid pentru utilizatorul dat.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.useraction=Asigura\u0163i-v\u0103 c\u0103 UserinfoProvider \u00eentoarce un JSONObject valid.
+
+OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Nu a putut fi procesat\u0103 o cerere pentru un \u015fir JWK JSON. Atributele de furnizor OpenID Connect keyStoreRef sau keyAliasName ar putea fi incorecte sau atributul signatureAlgorithm ar putea fi setat la RS256. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Producerea unui \u015fir JWK JSON necesit\u0103 ca atributul signatureAlgorithm al furnizorului de OpenID Connect s\u0103 fie setat la RS256. Atributele KeyStoreRef \u015fi keyAliasName trebuie s\u0103 fie valide dac\u0103 sunt specificate. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Corecta\u0163i atributele de configurare ale furnizorului de OpenID Connect.
+
+
+IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Versiunea Java folosit\u0103 de acest runtime [{0}] nu este suportat\u0103 de ID token Mediator SPI. Versiunea suportat\u0103 de Java este 1.7 sau mai \u00eenalt\u0103.
+IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Versiunea Java din mesaj nu poate suporta func\u0163ia ID token Mediator SPI. 
+IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Instala\u0163i Java versiunea 1.7 sau mai \u00eenalt\u0103.
+

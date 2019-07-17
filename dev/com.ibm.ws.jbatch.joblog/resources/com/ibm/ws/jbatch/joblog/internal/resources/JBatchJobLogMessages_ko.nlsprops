@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: \uc791\uc5c5 {0}, \uc791\uc5c5 \uc778\uc2a4\ud134\uc2a4 {1}, \uc791\uc5c5 \uc2e4\ud589 {2}\uc5d0 \ub300\ud55c \uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \uc608\uc678\ub85c \uc778\ud574 \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.\n{3}
+job.logging.create.new.explanation=\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ub85c\uadf8 \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc77c\uad04\ucc98\ub9ac \ub85c\uae45\uc774 \uc608\uc678\ub85c \uc778\ud574 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+job.logging.create.new.useraction=\uc608\uc678\ub97c \uac80\ud1a0\ud558\uace0 \ud30c\uc77c \uc2dc\uc2a4\ud15c \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc5ec \uc815\uc815 \uc870\uce58\ub97c \ucde8\ud558\uc2ed\uc2dc\uc624. \uc77c\uad04\ucc98\ub9ac \uc2e4\ud589\uc774 \uc791\uc5c5 \ub85c\uae45 \uc5c6\uc774 \uacc4\uc18d\ub429\ub2c8\ub2e4.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: \uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \uc608\uc678\ub85c \uc778\ud574 \ucd94\uac00 \ub85c\uadf8 \ud30c\ud2b8 \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.\n{0}\n\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ud604\uc7ac \ud30c\uc77c\ub85c \uacc4\uc18d \uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+job.logging.create.next.explanation=\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ucd94\uac00 \ub85c\uadf8 \ud30c\ud2b8 \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc77c\uad04\ucc98\ub9ac \ub85c\uae45 \uc0c8 \ud30c\uc77c \uc791\uc131\uc774 \uc608\uc678\ub85c \uc778\ud574 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.\n \uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ud604\uc7ac \ud30c\uc77c\ub85c \uacc4\uc18d \uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+job.logging.create.next.useraction=\uc608\uc678\ub97c \uac80\ud1a0\ud558\uace0 \ud30c\uc77c \uc2dc\uc2a4\ud15c \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc5ec \uc815\uc815 \uc870\uce58\ub97c \ucde8\ud558\uc2ed\uc2dc\uc624. \uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ud604\uc7ac \ud30c\uc77c\ub85c \uacc4\uc18d \uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: \uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ub85c\uadf8 \ud30c\ud2b8 \ud30c\uc77c\uc744 \uc77d\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.\n{0}.
+job.logging.read.log.explanation=\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ub85c\uadf8 \ud30c\ud2b8 \ud30c\uc77c\uc744 \uc77d\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc77c\uad04\ucc98\ub9ac \ub85c\uae45\uc774 \ud30c\ud2b8 \ud30c\uc77c \uc77d\uae30\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.\n\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \uc791\uc5c5 \ub85c\uadf8 \uc774\ubca4\ud2b8\ub97c \uacf5\uac1c\ud558\uc9c0 \uc54a\uace0 \uacc4\uc18d \uc218\ud589\ub429\ub2c8\ub2e4.
+job.logging.read.log.useraction=\uc608\uc678\ub97c \uac80\ud1a0\ud558\uace0 \ud30c\uc77c \uc2dc\uc2a4\ud15c \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ud6c4 \uc815\uc815 \uc870\uce58\ub97c \ucde8\ud558\uc2ed\uc2dc\uc624.\n\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \uc791\uc5c5 \ub85c\uadf8 \uc774\ubca4\ud2b8\ub97c \uacf5\uac1c\ud558\uc9c0 \uc54a\uace0 \uacc4\uc18d \uc218\ud589\ub429\ub2c8\ub2e4.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: \uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ub2e4\uc74c \ub85c\uadf8 \ud30c\ud2b8 \ud30c\uc77c \ub610\ub294 \ub514\ub809\ud1a0\ub9ac\ub97c \uc0ad\uc81c\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4: {0}.
+job.logging.delete.log.explanation=\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ub85c\uadf8 \ud30c\ud2b8 \ud30c\uc77c \ub610\ub294 \ub514\ub809\ud1a0\ub9ac\ub97c \uc0ad\uc81c\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.\n\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ud30c\uc77c \ub610\ub294 \ub514\ub809\ud1a0\ub9ac\ub97c \uc0ad\uc81c\ud558\uc9c0 \uc54a\uace0 \uacc4\uc18d \uc218\ud589\ub429\ub2c8\ub2e4.
+job.logging.delete.log.useraction=\uc608\uc678\ub97c \uac80\ud1a0\ud558\uace0 \ud30c\uc77c \uc2dc\uc2a4\ud15c \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ud6c4 \uc815\uc815 \uc870\uce58\ub97c \ucde8\ud558\uc2ed\uc2dc\uc624.\n\uc77c\uad04\ucc98\ub9ac \uc791\uc5c5 \ub85c\uae45\uc774 \ud30c\uc77c \ub610\ub294 \ub514\ub809\ud1a0\ub9ac\ub97c \uc0ad\uc81c\ud558\uc9c0 \uc54a\uace0 \uacc4\uc18d \uc218\ud589\ub429\ub2c8\ub2e4.

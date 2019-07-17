@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	id="WebApp_ID" version="2.4">
+	<display-name>SAML Web SSO Version 2.0 Endpoint Servlet</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<servlet>
+		<description>SAML SSo 20 Endpoint Servlet</description>
+		<display-name>SAML SSO 20 Endpoint Servlet</display-name>
+		<servlet-name>Endpoint20Servlet</servlet-name>
+		<servlet-class>com.ibm.ws.security.saml.sso20.web.EndpointServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Endpoint20Servlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
+    <filter>
+		<display-name>SAML SSO 20 Request Filter</display-name>
+		<filter-name>Request20Filter</filter-name>
+		<filter-class>com.ibm.ws.security.saml.sso20.web.RequestFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>Request20Filter</filter-name>
+		<servlet-name>Endpoint20Servlet</servlet-name>
+	</filter-mapping>
+	
+	<security-role>
+		<role-name>authenticated</role-name>
+	</security-role>
+    <security-role>
+		<role-name>clientManager</role-name>
+	</security-role>	
+ 
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>SAML Web SSO Version 2.0 login page</web-resource-name>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	
+</web-app>

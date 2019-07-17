@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Java Batch Job Logger
+Bundle-SymbolicName: com.ibm.ws.jbatch.joblog
+Bundle-Description: WebSphere Job Logger for Java Batch (jbatch) ; version=${bVersion}
+
+WS-TraceGroup: wsbatch
+
+Export-Package:\
+ com.ibm.ws.jbatch.joblog;provide=true,\
+ com.ibm.ws.jbatch.joblog.services;provide=true
+ 
+Private-Package:\
+ com.ibm.ws.jbatch.joblog.internal.* 
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
+-dsannotations:\
+ com.ibm.ws.jbatch.joblog.internal.impl.JobLogManagerImpl,\
+ com.ibm.ws.jbatch.joblog.internal.callback.JobLogExecutionStartCallback,\
+ com.ibm.ws.jbatch.joblog.internal.callback.JobLogExecutionEndCallback
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.javaee.batch.1.0;version=latest,\
+	com.ibm.jbatch.container;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest
+
+instrument.classesExcludes: com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages*.class

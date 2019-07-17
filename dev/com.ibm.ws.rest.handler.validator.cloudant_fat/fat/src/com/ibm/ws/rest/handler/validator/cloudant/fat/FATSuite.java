@@ -23,6 +23,12 @@ import componenttest.topology.utils.HttpUtils;
 })
 public class FATSuite {
 
+    static {
+        // TODO: temporary debug setting so we can further investigate intermittent
+        // testcontainers ping issues on remote build machines
+        System.setProperty("javax.net.debug", "all");
+    }
+
     @BeforeClass
     public static void setup() throws Exception {
         HttpUtils.trustAllCertificates();

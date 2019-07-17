@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.apache.cxf.ws.wss4j
+Bundle-Description: org.apache.cxf.ws wss4j; version=1.6.18
+Bundle-SymbolicName: com.ibm.ws.org.apache.ws.security.wss4j.1.6.7
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.ws.security.*           
+ 
+# these should be optional only when resolving jars from wlp/dev
+Import-Package: \
+ org.opensaml*;resolution:=optional, \
+ org.apache.commons.logging;resolution:=optional, \
+ org.joda.time;version="[1.6,2)";resolution:=optional, \
+ com.ibm.websphere.ras;resolution:=optional, \
+ com.ibm.websphere.ras.annotation;resolution:=optional, \
+ com.ibm.ws.ffdc;resolution:=optional, \
+ com.sun.xml.messaging.saaj.soap;resolution:=optional, \
+ *
+   
+DynamicImport-Package: \
+ org.bouncycastle.jce.provider,\
+ org.apache.ws.security.components.crypto,\
+ org.apache.ws.security.saml   
+ 
+Include-Resource: \
+ @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/META-INF/**,\
+ @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/templates/**,\
+ @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/schemas/**,\
+ @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/*xml
+
+Build-Jdk:
+Built-By:
+Bundle-DocURL:
+Bundle-License:
+Implementation-Title:
+Implementation-Vendor:
+Implementation-Vendor-Id:
+Implementation-Version:
+Specification-Title:
+Specification-Vendor:
+Specification-Version:

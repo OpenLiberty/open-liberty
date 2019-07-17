@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: Nelze zosobnit u\u017eivatele {0} k z\u00edsk\u00e1n\u00ed pov\u011b\u0159en\u00ed GSSCredential pro sebe, kdy\u017e se pou\u017e\u00edv\u00e1 hlavn\u00ed n\u00e1zev slu\u017eby delegov\u00e1n\u00ed {1}, kv\u016fli v\u00fdjimce {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=Nelze zosobnit u\u017eivatele kv\u016fli neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Ujist\u011bte se, \u017ee je pro delegov\u00e1n\u00ed povolen hlavn\u00ed n\u00e1zev slu\u017eby (SPN) delegov\u00e1n\u00ed, a zkontrolujte protokoly serveru, kde naleznete dal\u0161\u00ed informace.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: Nelze zosobnit u\u017eivatele {0} k z\u00edsk\u00e1n\u00ed pov\u011b\u0159en\u00ed GSSCredential pro back-endovou slu\u017ebu, kdy\u017e se pou\u017e\u00edv\u00e1 hlavn\u00ed n\u00e1zev slu\u017eby delegov\u00e1n\u00ed {1}, a to kv\u016fli v\u00fdjimce {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=Nelze zosobnit u\u017eivatele kv\u016fli neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Ujist\u011bte, \u017ee je v konfiguraci prvku SPNEGO atribut S4U2proxy nastaven na true, \u017ee je v centru Key Distribution Center (KDC) n\u00e1zev SPN slu\u017eby delegov\u00e1n\u00ed povolen pro delegov\u00e1n\u00ed, \u017ee tiket slu\u017eby klienta m\u00e1 nastaven p\u0159\u00edznak forwardable na true a \u017ee tikety slu\u017eby delegov\u00e1n\u00ed maj\u00ed nastaven p\u0159\u00edznak forwardable na true. Vyhledejte dal\u0161\u00ed informace v protokolech serveru.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: Nelze zpracovat metodu {0}, proto\u017ee nen\u00ed povolena slu\u017eba delegov\u00e1n\u00ed S4U2self.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=Nelze zpracovat metodu, proto\u017ee nen\u00ed povolena slu\u017eba delegov\u00e1n\u00ed S4U2self.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Ujist\u011bte se, \u017ee funkce omezen\u00e9ho delegov\u00e1n\u00ed je povolena a atribut S4U2self je nastaven na true v konfiguraci omezen\u00e9ho delegov\u00e1n\u00ed v souboru server.xml. Vyhledejte dal\u0161\u00ed informace v protokolech serveru.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: Nelze zpracovat metodu {0}, proto\u017ee nen\u00ed povolena slu\u017eba delegov\u00e1n\u00ed S4U2proxy.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=Nelze zpracovat metodu, proto\u017ee nen\u00ed povolena slu\u017eba delegov\u00e1n\u00ed S4U2proxy.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Ujist\u011bte se, \u017ee funkce omezen\u00e9ho delegov\u00e1n\u00ed je povolena a atribut S4U2proxy je nastaven na true v konfiguraci omezen\u00e9ho delegov\u00e1n\u00ed v souboru server.xml. Vyhledejte dal\u0161\u00ed informace v protokolech serveru.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: Funkce omezen\u00e9ho delegov\u00e1n\u00ed Kerberos nen\u00ed podporov\u00e1na u dodavatele {0} a verze {1} Java.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Funkci omezen\u00e9ho delegov\u00e1n\u00ed Kerberos nelze povolit kv\u016fli dodavateli a verzi prost\u0159ed\u00ed Java Runtime.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Pou\u017eijte dodavatele a verzi Java podporovan\u00e9 funkc\u00ed omezen\u00e9 delegov\u00e1n\u00ed Kerberos.
+
+
+
+
+
+
+
+
+
+
+
+
