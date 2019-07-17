@@ -13,7 +13,7 @@
  * This package contains the SPI for the configuration-based REST handler extensions.
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "rest.configbased")
+@TraceOptions(traceGroup = "rest.configbased", messageBundle = "com.ibm.wsspi.rest.config.resources.CWWKOMessages")
 package com.ibm.wsspi.rest.config;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

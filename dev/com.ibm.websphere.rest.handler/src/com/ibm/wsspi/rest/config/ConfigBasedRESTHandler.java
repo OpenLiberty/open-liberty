@@ -305,15 +305,16 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
             if (uid.equals(uniqueId)) { // require the correct uid
                 String id = (String) configProps.get("id");
                 result = handleSingleInstance(request, uid, id == null || isGenerated(id) ? null : id, entry.getValue());
-            } else // TODO need correct error message
-                result = handleError(request, null, "Unique identifier " + uid + " is not valid. Expected: " + uniqueId);
+            } else
+                result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1501_INVALID_IDENTIFIER", uid, uniqueId));
         } else {
-            result = handleError(request, null, "multiple found");
+            result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1502_MULTIPLE_FOUND", uid));
         }
 
-        // TODO better message for instance not found?
         if (result == null)
-            result = handleError(request, uid, "Did not find any configured instances of " + elementName + " matching the request");
+            result = handleError(request, uid, Tr.formatMessage(tc, "CWWKO1500_NOT_FOUND", elementName));
+
+        // TODO use client's locale for above 3 messages
 
         populateResponse(response, result);
 

@@ -925,7 +925,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         String err = "unexpected response: " + json;
         assertNotNull(err, json);
         assertEquals(err, "dataSource[NestedElementCase]/JdBcDrIvEr[default-0]", json.getString("uid"));
-        assertEquals(err, "Did not find any configured instances of jdbcDriver matching the request", json.getString("error"));
+        String error = json.getString("error");
+        assertTrue(err, error.startsWith("CWWKO1500E") && error.contains("jdbcDriver"));
 
         json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
         err = "unexpected response: " + json;

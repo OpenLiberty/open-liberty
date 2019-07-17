@@ -205,7 +205,8 @@ public class ValidateJCATest extends FATServletClient {
         assertFalse(err, json.getBoolean("successful"));
         assertNull(err, json.get("info"));
         assertNotNull(err, json = json.getJsonObject("failure"));
-        assertTrue(err, json.getString("message").contains("Did not find any configured instances of connectionFactory matching the request"));
+        String message = json.getString("message");
+        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("connectionFactory"));
     }
 
     /**
