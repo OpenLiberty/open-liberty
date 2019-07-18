@@ -7,3 +7,4 @@ IBM-Process-Types: client, \
 -bundles=com.ibm.ws.injection
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

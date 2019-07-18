@@ -5,3 +5,4 @@ visibility=private
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.servlet_2.4-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

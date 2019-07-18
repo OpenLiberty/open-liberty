@@ -6,3 +6,4 @@ singleton=true
 -bundles=com.ibm.websphere.javaee.jsp.2.3; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.servlet.jsp:javax.servlet.jsp-api:2.3.1"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

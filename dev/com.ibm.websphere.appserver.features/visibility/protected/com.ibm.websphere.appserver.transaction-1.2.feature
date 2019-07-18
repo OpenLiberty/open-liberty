@@ -38,3 +38,4 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.transaction_1.1-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

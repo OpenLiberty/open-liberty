@@ -17,3 +17,4 @@ Subsystem-Name: Java Naming and Directory Interface 1.0
  com.ibm.ws.jndi
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
