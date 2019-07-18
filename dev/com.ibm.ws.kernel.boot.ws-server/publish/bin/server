@@ -1068,7 +1068,7 @@ case "$ACTION" in
         then
           WLP_DEBUG_SUSPEND=y
         fi
-        if [ "${WLP_DEBUG_REMOTE}" = "y"]
+        if [ "${WLP_DEBUG_REMOTE}" = "y" ]
         then
           WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
         else
