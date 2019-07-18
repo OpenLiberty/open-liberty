@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.cache;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -19,7 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -36,40 +36,36 @@ public class ControllerCacheTest extends FATServletClient {
     private static final String APP_NAME = "controllerCacheApp";
 
     @Server("serverA")
-    //@TestServlet(servlet = ControllerCacheTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverA;
 
-    //@Server("serverB")
-    //public static LibertyServer serverB;
+    @Server("serverB")
+    public static LibertyServer serverB;
 
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(serverA, APP_NAME, "test.controller.cache.web");
-
-        String serverAhazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        if (FATSuite.isMulticastDisabled()) {
-            Log.info(ControllerCacheTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-            serverAhazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        }
+        ShrinkHelper.defaultApp(serverB, APP_NAME, "test.controller.cache.web");
+        serverB.useSecondaryHTTPPort();
 
         String rand = UUID.randomUUID().toString();
+        String configLocation = new File(serverA.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only-multicastDisabled.xml").getAbsolutePath();
         serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-                                            "-Dhazelcast.config.file=" + serverAhazelcastConfigFile));
-        serverA.startServer(ControllerCacheTest.class.getSimpleName() + "-A.log");
+                                            "-Dhazelcast.config=" + configLocation));
+        serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
+                                            "-Dhazelcast.config=" + configLocation));
 
-        //serverB.useSecondaryHTTPPort();
-        //String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/hazelcast-client-localhost-only.xml").getAbsolutePath();
-        //serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-        //                                    "-Dhazelcast.config=" + configLocation));
-        //serverB.startServer(ControllerCacheTest.class.getSimpleName() + "-B.log");
+        serverA.startServer(ControllerCacheTest.class.getSimpleName() + "-A.log");
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?keyInitServerA=A", "putEntries");
+
+        serverB.startServer(ControllerCacheTest.class.getSimpleName() + "-B.log");
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?keyInitServerB=B", "putEntries");
     }
 
     @AfterClass
     public static void cleanup() throws Exception {
         try {
-            //if (serverB.isStarted())
-            //    serverB.stopServer();
+            if (serverB.isStarted())
+                serverB.stopServer();
         } finally {
             if (serverA.isStarted())
                 serverA.stopServer();
@@ -82,5 +78,19 @@ public class ControllerCacheTest extends FATServletClient {
     @Test
     public void testBasicAddAndRemove() throws Exception {
         runTest(serverA, APP_NAME + "/ControllerCacheTestServlet", testName);
+    }
+
+    /**
+     * In order for the more meaningful tests to work, the two servers need to be accessing the same cache. Prove this is happening.
+     */
+    @Test
+    public void testBasicUpdatesVisibleAcrossServers() throws Exception {
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?source=testBasicUpdatesVisibleAcrossServers" +
+                         "&keyBasicUpdateVisible=ServerAValue",
+                "putEntries");
+
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?source=testBasicUpdatesVisibleAcrossServers" +
+                         "&keyBasicUpdateVisible=ServerAValue",
+                "getEntries");
     }
 }

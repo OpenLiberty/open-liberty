@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Enumeration;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
@@ -24,8 +25,8 @@ import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-
-import org.junit.Test;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import componenttest.app.FATServlet;
 
@@ -46,6 +47,23 @@ public class ControllerCacheTestServlet extends FATServlet {
         });
     }
 
+    /**
+     * Confirm that entries exist in the cache, as specified in query parameters of the form,
+     * key<KeyName>=<ExpectedValue>
+     */
+    public void getEntries(HttpServletRequest req, HttpServletResponse res) {
+        for (Enumeration<String> en = req.getParameterNames(); en.hasMoreElements();) {
+            String paramName = en.nextElement();
+            if (paramName.startsWith("key")) {
+                String expected = req.getParameter(paramName);
+                paramName = paramName.substring(3);
+                String found = cache.get(paramName);
+                System.out.println("Getting " + paramName + ", found: " + found);
+                assertEquals("Unexpected value of " + paramName, expected, found);
+            }
+        }
+    }
+
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         cache = AccessController.doPrivileged((PrivilegedAction<Cache<String, String>>) () -> {
@@ -53,14 +71,33 @@ public class ControllerCacheTestServlet extends FATServlet {
             cacheConfig.setTypes(String.class, String.class);
             cacheProvider = Caching.getCachingProvider();
             cacheManager = cacheProvider.getCacheManager();
-            return cacheManager.createCache("ControllerCacheTest", cacheConfig);
+            Cache<String, String> c = cacheManager.getCache("ControllerCacheTest", String.class, String.class);
+            if (c == null)
+                return cacheManager.createCache("ControllerCacheTest", cacheConfig);
+            else
+                return c;
         });
+    }
+
+    /**
+     * Add or replace cache entries, as specified in query parameters of the form,
+     * key<KeyName>=<NewValue>
+     */
+    public void putEntries(HttpServletRequest req, HttpServletResponse res) {
+        for (Enumeration<String> en = req.getParameterNames(); en.hasMoreElements();) {
+            String paramName = en.nextElement();
+            if (paramName.startsWith("key")) {
+                String value = req.getParameter(paramName);
+                paramName = paramName.substring(3);
+                System.out.println("Putting " + paramName);
+                cache.put(paramName, value);
+            }
+        }
     }
 
     /**
      * A basic that adds and removes a cache entry to demonstrate that the JCache provider is set up correctly and working.
      */
-    @Test
     public void testBasicAddAndRemove() {
         cache.put("testBasicAddAndRemove", "value1");
         assertEquals("value1", cache.get("testBasicAddAndRemove"));

@@ -7,6 +7,10 @@
     
     <include location="../fatTestPorts.xml"/>
 
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
     <application location="controllerCacheApp.war">
         <classloader commonLibraryRef="HazelcastLib"/>
     </application>
