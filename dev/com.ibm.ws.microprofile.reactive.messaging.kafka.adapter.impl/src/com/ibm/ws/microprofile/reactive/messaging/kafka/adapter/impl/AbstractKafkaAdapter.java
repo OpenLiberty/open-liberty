@@ -29,4 +29,9 @@ public abstract class AbstractKafkaAdapter<T> implements KafkaAdapter {
         return this.delegate;
     }
 
+    @Override
+    public String toString() {
+        return this.delegate.toString();
+    }
+
 }
