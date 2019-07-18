@@ -312,6 +312,9 @@ public class WCCustomProperties {
 
     //19.0.0.8
     public static boolean GET_REAL_PATH_RETURNS_QUALIFIED_PATH;
+    
+    
+    public static String START_APPS_INLINE;
 
     static {
         setCustomPropertyVariables(); //initilizes all the variables
@@ -790,6 +793,8 @@ public class WCCustomProperties {
 
         // 19.0.0.8
         GET_REAL_PATH_RETURNS_QUALIFIED_PATH = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.getrealpathreturnsqualifiedpath", "true")).booleanValue();
+        
+        START_APPS_INLINE = WebContainer.getWebContainerProperties().getProperty("deferservletloadexemption"); 
     }
 
     private static void setCustomizedDefaultValues(){

@@ -2162,5 +2162,59 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
         }
         this.responseEncoding = encoding;
     }
+    
+    public void setStartsAppInLine() {
+        //default is true for DeferServletLoad, return if explicitly set to "false" meaning all apps are starting inline
+        if (!WCCustomProperties.DEFER_SERVLET_LOAD)
+            return;
+        
+        String startAppsInLine = null;
+        if (this.contextParams != null){
+            startAppsInLine = (String) this.contextParams.get("CXT_DEFER_SERVLET_LOAD_EXEMPTION");
+            if (startAppsInLine != null){
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+                    logger.logp(Level.FINE, CLASS_NAME,"setStartsAppInLine", "cxtParam provided for defer servlet load exemption: "+startAppsInLine +" ,for web application -> "+ applicationName);                                              
+
+                if(startAppsInLine.equalsIgnoreCase("true")){
+                    this.setStartingAppInline(true);
+                }
+                
+                return;
+            }
+        }
+        
+        startAppsInLine =   WCCustomProperties.START_APPS_INLINE;
+        if (startAppsInLine != null){
+            String appsToBeStartedInLine= startAppsInLine;
+
+            if (appsToBeStartedInLine.equals("*")){
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+                    logger.logp(Level.FINE, CLASS_NAME,"setStartsAppInLine", "Invalid setting.  Use deferservletload = false instead");
+                return;
+            }
+            else{
+                String [] parsedStr = appsToBeStartedInLine.split(",");
+                for (String toCheckStr:parsedStr){
+                    toCheckStr = toCheckStr.trim();
+                    if (applicationName != null && applicationName.equalsIgnoreCase(toCheckStr)){
+                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+                            logger.logp(Level.FINE, CLASS_NAME,"setStartsAppInLine", "starting inline for application -> "+ applicationName);
+                        this.setStartingAppInline(true);
+                        return;
+                    }
+                }
+            }
+        } 
+    }
+    
+    private boolean startAppInLine = false; 
+    
+    public void setStartingAppInline(boolean b){  
+        this.startAppInLine = b;
+    }
+
+    public boolean isStartingAppInline(){
+        return this.startAppInLine;
+    }
 
 }

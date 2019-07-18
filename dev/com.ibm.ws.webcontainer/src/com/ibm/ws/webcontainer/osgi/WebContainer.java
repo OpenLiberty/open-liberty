@@ -911,7 +911,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
                 WebModuleMetaData wmmd = (WebModuleMetaData) ((ExtendedModuleInfo)webModule).getMetaData();
                 J2EEName j2eeName = wmmd.getJ2EEName();
                 WebAppConfiguration appConfig = (WebAppConfiguration) wmmd.getConfiguration();
- 
                 WebCollaboratorComponentMetaDataImpl wccmdi = (WebCollaboratorComponentMetaDataImpl) wmmd.getCollaboratorComponentMetaData();
                 wccmdi.setJ2EEName(j2eeName);
                 metaDataService.fireComponentMetaDataCreated(wccmdi);
@@ -942,10 +941,15 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
                 this.deployedModuleMap.put(webModule, dMod);
                 addWebApplication(dMod);
             
-                // If the Webcontainer attribute "deferServletLoad" is set to "false" (not the default)
+                // If the Webcontainer attribute "deferServletLoad" is set to "false" (default is true)
                 // then start the web application now, inline on this thread
                 // otherwise, launch is on its own thread
-                if (!WCCustomProperties.DEFER_SERVLET_LOAD) {
+                // 19.0.0.9 added support to allow specified app to be started inline (only for default of deferServletLoad )
+                if (!WCCustomProperties.DEFER_SERVLET_LOAD || appConfig.isStartingAppInline() ) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "startModule " + "inline");
+                    }
+                    
                     if (!startWebApplication(dMod)) {
                         throw new StateChangeException("startWebApplication");
                     }

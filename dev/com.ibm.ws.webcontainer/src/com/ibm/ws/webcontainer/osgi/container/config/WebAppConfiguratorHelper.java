@@ -529,6 +529,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
             config.setSTSHeaderValue(); //PI67099
             config.setEncodeDispatchedRequestURI(); //PI67942
             config.setMultiReadOfPostDataValue(); //MultiRead
+            config.setStartsAppInLine();   //allow specified app to startup inline
         }
         
         public void setVirtualHostName(VirtualHost virtualHost) {
