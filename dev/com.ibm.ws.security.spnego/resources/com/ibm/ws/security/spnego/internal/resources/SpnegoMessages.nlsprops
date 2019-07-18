@@ -102,9 +102,9 @@ SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E: Can not get the content 
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation=The custom error page cannot be loaded due to the exception when getting the content type.
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction=Review the custom error page content type to make sure it is valid.
 
-SPNEGO_CAN_NOT_VALIDATE_TOKEN=CWWKS4320E: The SPNEGO or Kerberos token included in the HttpServletRequest can not be validated {0}
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.explanation=The SPNEGO or Kerberos token used to authenticate the request is not valid.
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.useraction=If no additional error message is displayed, please enable JGSS and KRB5 debugging. Please see the JDK documentation for how to enable JGSS and KRB5 debugging. Verify the SPNEGO configuration and make sure the client, SPN and Kerberos keytab files use the same encryption type that is specified in the Kerberos configuration file.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: The GSSContext cannot be established with a valid SPNEGO or Kerberos token included in the {0} HttpServletRequest. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=The SPNEGO or Kerberos token used to authenticate the request is valid, but the GSSContext cannot be established.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=If no additional error message is displayed, enable JGSS and KRB5 debugging. Refer to the JDK documentation for instructions on enabling JGSS and KRB5 debugging. Verify the SPNEGO configuration and make sure the client, SPN, and Kerberos keytab files use the same encryption type that is specified in the Kerberos configuration file.
 
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Can not get the delegate service SPN {0} from the GSSCredential. A GSSException was received: {1}
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Can not get the delegate service SPN from the GSSCredential. The client GSSCredential for the proxy will not be in the subject.

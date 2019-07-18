@@ -9,3 +9,4 @@ Subsystem-Version: 1.0
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.httptransport_4.1-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

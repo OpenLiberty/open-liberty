@@ -8,8 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply plugin: "net.ossindex.audit"
+package com.ibm.ws.security.oauth20.web;
 
-audit {
-    failOnError = true
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+public class EndpointUtilsTest {
+
+    @Test
+    public void testEscapeQuotesForJson() {
+        String result = EndpointUtils.escapeQuotesForJson("badquote:\" goodquote:\\\"");
+        String expected = "badquote:\\\" goodquote:\\\"";
+        assertTrue("expected backslash to be inserted before unescaped quotation mark but got: " + result,
+                expected.equals(result));
+    }
+
 }

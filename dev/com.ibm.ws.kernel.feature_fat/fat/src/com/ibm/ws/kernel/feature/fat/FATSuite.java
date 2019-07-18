@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 // Disabled FeatureProcessTypeTest.class,
+                BundleOriginTest.class,
                 ActivationTypeTest.class,
                 AutoFeaturesTest.class,
                 FeatureTest.class,

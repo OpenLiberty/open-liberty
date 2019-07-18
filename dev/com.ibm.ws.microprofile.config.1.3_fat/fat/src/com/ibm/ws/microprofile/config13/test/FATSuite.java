@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                HotAddMPConfig.class,
                 ServerXMLTest.class,
                 MapEnvVarTest.class,
                 VariableServerXMLTest.class,

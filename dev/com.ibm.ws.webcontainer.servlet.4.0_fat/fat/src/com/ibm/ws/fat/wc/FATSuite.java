@@ -19,6 +19,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
+import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
@@ -59,7 +60,8 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 //              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class,
                 WCServletPathForDefaultMappingDefault.class,
-                WCServletPathForDefaultMappingFalse.class
+                WCServletPathForDefaultMappingFalse.class,
+                WCGetMappingSlashStarTest.class
 })
 public class FATSuite {
 

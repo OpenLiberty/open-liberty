@@ -91,7 +91,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  */
 public class Provisioner {
     private static final TraceComponent tc = Tr.register(Provisioner.class);
-    private static final String BUNDLE_LOC_FEATURE_TAG = "feature@";
+    public static final String BUNDLE_LOC_FEATURE_TAG = "feature@";
     static final String BUNDLE_LOC_REFERENCE_TAG = "reference:";
     private final String BUNDLE_LOC_FILE_REFERENCE_TAG = BUNDLE_LOC_REFERENCE_TAG + "file:";
     private static final String BUNDLE_LOC_PROD_EXT_TAG = "productExtension:";

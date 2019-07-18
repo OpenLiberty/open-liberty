@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997,2005 IBM Corporation and others.
+ * Copyright (c) 1997,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -672,8 +672,9 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
             }
 
             String fileSystemPath = context.getRealPath(path);
+            URL resource = webapp.getResource(path);
 
-            if (adaptableContainer != null && fileSystemPath != null) {
+            if (adaptableContainer != null && fileSystemPath != null && resource != null) {
                 return true;
             } else if (fileSystemPath == null) {
                 return false;
