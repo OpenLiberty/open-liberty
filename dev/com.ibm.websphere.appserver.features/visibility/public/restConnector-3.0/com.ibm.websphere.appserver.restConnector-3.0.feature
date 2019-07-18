@@ -23,5 +23,5 @@ Subsystem-Name: Admin REST Connector 3.0
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.restConnector_1.3-javadoc.zip, \
  clients/jython/README, \
  dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.restHandler_2.0-javadoc.zip
-kind=noship
+kind=beta
 edition=core
