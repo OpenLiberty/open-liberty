@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleOutgoingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +49,6 @@ import org.testcontainers.containers.KafkaContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.Direction;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -72,33 +73,15 @@ public class KafkaMessagingTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ConnectorProperties sourceConfig = new ConnectorProperties(Direction.INCOMING, "test-in")
-                        .addProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers())
-                        .addProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer")
-                        .addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer")
-                        .addProperty(ConsumerConfig.GROUP_ID_CONFIG, "test-consumer")
-                        .addProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
-                        .addProperty("connector", "io.openliberty.kafka")
-                        .addProperty("topics", "test-in");
-
-        ConnectorProperties sinkConfig = new ConnectorProperties(Direction.OUTGOING, "test-out")
-                        .addProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers())
-                        .addProperty("connector", "io.openliberty.kafka")
-                        .addProperty("topic", "test-out")
-                        .addProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
-                        .addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-
         PropertiesAsset config = new PropertiesAsset()
-                        .include(sourceConfig)
-                        .include(sinkConfig);
-
-        File libsDir = new File("lib/LibertyFATTestFiles/libs");
+                        .include(simpleOutgoingChannel(kafka, "test-out"))
+                        .include(simpleIncomingChannel(kafka, "test-in", "test-consumer"));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(BasicMessagingBean.class.getPackage())
                         .addAsResource(config, "META-INF/microprofile-config.properties")
-                        .addAsManifestResource(BasicMessagingBean.class.getResource("permissions.xml"), "permissions.xml")
-                        .addAsLibraries(libsDir.listFiles());
+                        .addAsManifestResource(KafkaUtils.kafkaPermissions(), "permissions.xml")
+                        .addAsLibraries(kafkaClientLibs());
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
         server.startServer();

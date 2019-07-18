@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.testcontainers.containers.KafkaContainer;
+
 /**
  * Shrinkwrap asset for an MP reactive connector config
  * <p>
@@ -36,6 +40,45 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
  * </pre>
  */
 public class ConnectorProperties extends PropertiesAsset {
+
+    /**
+     * Creates a simple configuration for a channel sending to a topic of the same name
+     * <p>
+     * The message type is String
+     *
+     * @param kafka       the kafka container
+     * @param channelName the channel and topic name
+     * @return the ConnectorProperties to add to the app configuration
+     */
+    public static ConnectorProperties simpleOutgoingChannel(KafkaContainer kafka, String channelName) {
+        return new ConnectorProperties(Direction.OUTGOING, channelName)
+                        .addProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers())
+                        .addProperty("connector", "io.openliberty.kafka")
+                        .addProperty("topic", channelName)
+                        .addProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
+                        .addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+    }
+
+    /**
+     * Creates a simple configuration for a channel receiving from a topic of the same name
+     * <p>
+     * The message type is String
+     *
+     * @param kafka       the kafka container
+     * @param channelName the channel and topic name
+     * @param groupId     the reader group id (used to commit message offsets)
+     * @return the ConnectorProperties to add to the app configuration
+     */
+    public static ConnectorProperties simpleIncomingChannel(KafkaContainer kafka, String channelName, String groupId) {
+        return new ConnectorProperties(Direction.INCOMING, channelName)
+                        .addProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers())
+                        .addProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer")
+                        .addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer")
+                        .addProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
+                        .addProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+                        .addProperty("connector", "io.openliberty.kafka")
+                        .addProperty("topics", channelName);
+    }
 
     private final String prefix;
 
