@@ -1594,6 +1594,6 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=Verify the AsyncLi
 # {0} is the name of the ServletContainerInitializer that was being invoked at the time of the Exception.
 # {1} is the Exception that was thrown from the onStartup method of the ServletContainerInitializer {0}.
 # {2} is the application name that the ServletContainerInitializer is contained in.
-exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: ServletContainerInitializer [{0}] threw the following exception while invoking the onStartup method: [{1}] located in the following application: [{2}]
+exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: The [{0}] ServletContainerInitializer, located in the following application [{2}], produced the following error while invoking the onStartup method: [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=An exception was thrown from a ServletContainerInitializer while invoking the onStartup method.
-exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Review the Exception for the root cause of the error.
+exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Review the Exception to determine the cause of the error.
