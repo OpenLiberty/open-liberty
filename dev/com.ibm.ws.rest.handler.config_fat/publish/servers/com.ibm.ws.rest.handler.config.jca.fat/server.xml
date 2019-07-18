@@ -13,7 +13,7 @@
 
   <featureManager>
     <feature>componenttest-1.0</feature>
-    <feature>restConnector-3.0</feature>
+    <feature>restConnector-2.0</feature>
     <feature>jca-1.7</feature>
   </featureManager>
 

@@ -664,7 +664,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         for (int i = 0; i < length; i++)
             features.add(ja.getString(i));
         assertTrue(err, features.contains("componenttest-1.0"));
-        assertTrue(err, features.contains("restConnector-3.0"));
+        assertTrue(err, features.contains("restConnector-2.0"));
         assertTrue(err, features.contains("jdbc-4.2"));
         assertTrue(err, features.contains("timedexit-1.0"));
         assertTrue(err, features.contains("usr:nestedFlat-1.0"));

@@ -14,7 +14,7 @@
   <featureManager>
     <feature>appSecurity-2.0</feature>
     <feature>componenttest-1.0</feature>
-    <feature>restConnector-3.0</feature>
+    <feature>restConnector-2.0</feature>
     <feature>jms-2.0</feature>
     <feature>mpOpenApi-1.0</feature>
     <feature>wasJmsClient-2.0</feature>
