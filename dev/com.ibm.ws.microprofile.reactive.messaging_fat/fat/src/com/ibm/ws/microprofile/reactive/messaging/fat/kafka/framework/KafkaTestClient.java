@@ -61,14 +61,14 @@ public class KafkaTestClient {
      * @param topicName the topic to read from
      * @return the reader
      */
-    public SimpleKafkaReader readerFor(String topicName) {
+    public SimpleKafkaReader<String> readerFor(String topicName) {
         Map<String, Object> consumerConfig = new HashMap<>();
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(consumerConfig, new StringDeserializer(), new StringDeserializer());
-        SimpleKafkaReader reader = new SimpleKafkaReader(kafkaConsumer, topicName);
+        SimpleKafkaReader<String> reader = new SimpleKafkaReader<String>(kafkaConsumer, topicName);
         openClients.add(reader);
         return reader;
     }
@@ -81,12 +81,12 @@ public class KafkaTestClient {
      * @param topicName the topic to write to
      * @return the writer
      */
-    public SimpleKafkaWriter writerFor(String topicName) {
+    public SimpleKafkaWriter<String> writerFor(String topicName) {
         Map<String, Object> producerConfig = new HashMap<>();
         producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
 
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(producerConfig, new StringSerializer(), new StringSerializer());
-        SimpleKafkaWriter writer = new SimpleKafkaWriter(kafkaProducer, topicName);
+        SimpleKafkaWriter<String> writer = new SimpleKafkaWriter<String>(kafkaProducer, topicName);
         openClients.add(writer);
         return writer;
     }
