@@ -6,3 +6,4 @@ IBM-Process-Types: client, server
  com.ibm.ws.security.java2sec
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

@@ -23,3 +23,4 @@ visibility=private
  dev/api/ibm/schema/ibm-ejb-jar-ext_1_1.xsd
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

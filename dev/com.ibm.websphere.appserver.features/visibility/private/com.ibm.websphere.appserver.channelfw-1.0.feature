@@ -9,3 +9,4 @@ IBM-Process-Types: server, \
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.endpoint_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
