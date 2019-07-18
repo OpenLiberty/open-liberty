@@ -22,10 +22,10 @@
 [![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
 
 # Summary
-A lightweight open framework for building fast and efficient cloud-native Java microservices.
-* Open Liberty is fast to start up with low memory footprint and live reload for quick iteration
+A lightweight open framework for building fast and efficient cloud-native Java microservices:
+* Open Liberty is fast to start up with low memory footprint and live reload for quick iteration.
 * Simple to add and remove features from the latest versions of MicroProfile and Java EE.
-* Zero migration let's you focus on what's important, not the APIs changing under you.
+* Zero migration lets you focus on what's important, not the APIs changing under you.
 
 ## Getting Started
 
@@ -61,7 +61,7 @@ The bin directory contains a server script to help control the server process.
 The script supports the following actions:
 
 Command| Does...
-:-----:|:-----:
+:-----:|-----
 `create`|creates a new server
 `start`|launches the server as a background process
 `run`|launches the server in the foreground
