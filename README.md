@@ -21,26 +21,11 @@
 [![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
 [![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
 
-<!-- TABLE OF CONTENTS -->
-
-## Table of Contents
-* [Summary](#summary)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Downloads](#downloads)
-* [Usage](#usage)
-  * [Docs](#open-liberty-docs)
-* [Contributing](#contributing)
-  * [Running a Build](#running-a-build)
-* [License](#license)
-* [Contact](#contact)
-
 # Summary
 A lightweight open framework for building fast and efficient cloud-native Java microservices.
-
-* The Open Liberty modular architecture means only the features you need are loaded at runtime to help reduce image size and memory consumption. The smaller footprint means you can run more application instances per machine to help reduce production costs.
-
-* Servers running Open Liberty start faster, making them ideal for rapid scale-up and scale-down of containerized applications.
+* Open Liberty is fast to start up with low memory footprint and live reload for quick iteration
+* Simple to add and remove features from the latest versions of MicroProfile and Java EE.
+* Zero migration let's you focus on what's important, not the APIs changing under you.
 
 ## Getting Started
 
@@ -51,20 +36,26 @@ A lightweight open framework for building fast and efficient cloud-native Java m
 
 Open browser to http://localhost:9080/ and explore the demo application.
 
-This [guide](https://openliberty.io/guides/getting-started.html) shows how it was built
-
-### Prerequisites
-
-* Java SE 8,11,12 - [More details](https://openliberty.io/docs/ref/general/#java-se.html)
+See [this guide](https://openliberty.io/guides/getting-started.html)  to learn how it works.
 
 ### Downloads
 
-* Zipped released versions and nightly build artifacts from: https://www.openliberty.io/downloads/
-* Official Released Open Liberty Docker containers from : https://hub.docker.com/_/open-liberty
+* [Maven Central](https://mvnrepository.com/artifact/io.openliberty/openliberty-runtime)
+* [Open Liberty website](https://www.openliberty.io/downloads/)
+* [Docker Hub](https://hub.docker.com/_/open-liberty)
 
 ## Usage
 
-### Controlling Open Liberty
+
+### Docker
+
+* [This guide](https://openliberty.io/guides/docker.html) demonstrates development using Docker containers. 
+
+### Maven
+
+* [This guide](https://openliberty.io/guides/maven-intro.html) demonstrates development using the Liberty Maven Plugin. 
+
+### Command Line
 
 The bin directory contains a server script to help control the server process.
 The script supports the following actions:
@@ -100,9 +91,9 @@ To use the script on other platforms:
 
 
 ### Open Liberty Docs
-Visit the [OpenLiberty website](https://openliberty.io/docs/)
-* Reference docs including features, config and API's
-* Open Liberty Guides - exploring many technologies through step by step examples.
+
+* [Open Liberty Guides](https://openliberty.io/guides/)
+* [Reference docs including features, config and API's](https://openliberty.io/docs/)
 
 
 ## Contributing
@@ -138,12 +129,6 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
     ```open-liberty\dev\cnf\release\dev\openliberty\<version>\openliberty-xxx.zip```
 
 ## License
-[![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
 
 Usage is provided under the [EPL 1.0 license](https://opensource.org/licenses/EPL-1.0) See LICENSE for the full details.
 
-
-## Contact
-1. [Open Liberty group.io](https://groups.io/g/openliberty)
-2. [Open an issue](https://github.com/OpenLiberty/open-liberty/issues)
-3. [Open Liberty on stackoverflow](https://stackoverflow.com/questions/tagged/open-liberty)
