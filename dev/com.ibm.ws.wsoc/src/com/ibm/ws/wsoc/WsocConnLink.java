@@ -181,24 +181,6 @@ public class WsocConnLink {
         return (wrc);
     }
 
-    // removed due to race condition with doing the async read outside of the sync block
-//    public boolean okToReadOnWire() {
-//        synchronized (linkSync) {
-//            if (tc.isDebugEnabled()) {
-//                Tr.debug(tc, "readLinkStatus: " + readLinkStatus);
-//            }
-//            if ((readLinkStatus == READ_LINK_STATUS.BEFORE_READ_ON_WIRE) || (readLinkStatus == READ_LINK_STATUS.OK_TO_READ)) {
-//                readLinkStatus = READ_LINK_STATUS.READ_ON_WIRE;
-//                if (tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "readLinkStatus: " + readLinkStatus);
-//                }
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
-//    }
-
     public OK_TO_READ okToStartRead() {
 
         synchronized (linkSync) {
