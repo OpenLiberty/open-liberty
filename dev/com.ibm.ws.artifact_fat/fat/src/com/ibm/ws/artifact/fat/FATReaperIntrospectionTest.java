@@ -99,7 +99,7 @@ public class FATReaperIntrospectionTest{
         //send the dump action to the server
         server.executeServerScript("dump",null);
 
-        logInfo("methodName", String.format("Sent dump action to server going to sleep for %d seconds", SECONDS_WAITING_FOR_DUMP));
+        logInfo(methodName, String.format("Sent dump action to server going to sleep for %d seconds", SECONDS_WAITING_FOR_DUMP));
 
         //wait 30 seconds for the dump to be created in the server directory
         Thread.sleep(1000 * SECONDS_WAITING_FOR_DUMP);
