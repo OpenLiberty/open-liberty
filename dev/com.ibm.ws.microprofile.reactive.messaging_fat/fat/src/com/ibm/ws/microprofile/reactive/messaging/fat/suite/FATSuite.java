@@ -15,12 +15,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
+
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 BasicReactiveMessagingTest.class,
-                KafkaMessagingTest.class
+                KafkaMessagingTest.class,
+                KafkaAcknowledgementTest.class
 })
 public class FATSuite {
 
