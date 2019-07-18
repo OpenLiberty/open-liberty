@@ -683,6 +683,8 @@ if (isBuildOsNativePackages){
         dependsOn updateRulesTemplate
 
         workingDir 'packaging'
+        environment "GPG_PASS", rootProject.userProps.getProperty(“gpgPassphrase“)
+
         mkdir("packaging/tempPackagingDir/tempTar")
         
         def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
@@ -695,6 +697,12 @@ if (isBuildOsNativePackages){
         errorOutput = new ByteArrayOutputStream()
 
         commandLine 'sh', './buildOsNativePackages.sh'
+
+        if (isRelease){
+            commandLine 'sh', './buildOsNativePackagesGPGKey.sh'
+        } else{
+            commandLine 'sh', './buildOsNativePackagesNoGPGKey.sh'
+        }
 
         ignoreExitValue true
 

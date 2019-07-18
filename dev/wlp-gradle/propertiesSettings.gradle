@@ -59,6 +59,9 @@ def setProperties = { props ->
     //Sets my RPM/DEB flag to true on every release build
     boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
     props.setProperty('build.os.native.packages', isBuildOsNativePackages.toString())
+    //gpg passphrase variable to sign the rpm/deb packages
+    String gpgPassphrase = props.getProperty('build.os.native.packages.gpg.passphrase') == null     ? "" : props.getProperty('build.os.native.packages.gpg.passphrase')
+    props.setProperty('build.os.native.packages.gpg.passphrase', gpgPassphrase)
 
     gradle.rootProject { rootProject ->
         rootProject.ext.isUsingArtifactory  = isUsingArtifactory
@@ -69,6 +72,7 @@ def setProperties = { props ->
         rootProject.ext.isPublicPublishing  = isPublicPublishing
         rootProject.ext.isUnittestsDisabled = isUnittestsDisabled
         rootProject.ext.isBuildOsNativePackages = isBuildOsNativePackages
+        rootProject.ext.gpgPassphrase = gpgPassphrase
 
         // Test results for this run
         rootProject.ext.testCountTotal           = 0

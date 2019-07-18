@@ -1,0 +1,10 @@
+#!/usr/bin/expect -f
+
+set timeout 240
+cd debuild/openliberty/debian
+spawn bash -c "debuild -d -b -sa"
+expect "Enter passphrase:"
+send "%GPG_PASS%\r"
+expect "Enter passphrase:"
+send "%GPG_PASS%\r"
+expect eof
