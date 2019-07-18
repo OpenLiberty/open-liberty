@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.FATSuite.kafkaContainer;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
@@ -18,9 +19,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
@@ -43,9 +42,6 @@ public class KafkaAcknowledgementTest {
     @Server("SimpleRxMessagingServer")
     @TestServlet(contextRoot = APP_NAME, servlet = KafkaAcknowledgementTestServlet.class)
     public static LibertyServer server;
-
-    @ClassRule
-    public static KafkaContainer kafkaContainer = new KafkaContainer();
 
     @BeforeClass
     public static void setup() throws Exception {

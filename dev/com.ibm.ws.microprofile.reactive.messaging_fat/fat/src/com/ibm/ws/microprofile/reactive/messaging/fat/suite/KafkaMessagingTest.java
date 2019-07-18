@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleOutgoingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.FATSuite.kafkaContainer;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -41,10 +42,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -62,9 +61,6 @@ public class KafkaMessagingTest {
 
     private static final String APP_NAME = "basicKafkaTest";
 
-    @ClassRule
-    public static KafkaContainer kafka = new KafkaContainer();
-
     @Server("SimpleRxMessagingServer")
     public static LibertyServer server;
 
@@ -74,8 +70,8 @@ public class KafkaMessagingTest {
     @BeforeClass
     public static void setup() throws Exception {
         PropertiesAsset config = new PropertiesAsset()
-                        .include(simpleOutgoingChannel(kafka, "test-out"))
-                        .include(simpleIncomingChannel(kafka, "test-in", "test-consumer"));
+                        .include(simpleOutgoingChannel(kafkaContainer, "test-out"))
+                        .include(simpleIncomingChannel(kafkaContainer, "test-in", "test-consumer"));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(BasicMessagingBean.class.getPackage())
@@ -90,13 +86,13 @@ public class KafkaMessagingTest {
     @BeforeClass
     public static void initializeKafkaClients() {
         Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
+        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, "testClient");
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         kafkaConsumer = new KafkaConsumer<>(consumerConfig, new StringDeserializer(), new StringDeserializer());
 
         Map<String, Object> producerConfig = new HashMap<>();
-        producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
+        producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         kafkaProducer = new KafkaProducer<>(producerConfig, new StringSerializer(), new StringSerializer());
     }
 

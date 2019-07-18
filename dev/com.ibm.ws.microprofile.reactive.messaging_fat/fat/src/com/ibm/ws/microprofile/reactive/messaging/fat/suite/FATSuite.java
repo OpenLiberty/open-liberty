@@ -11,9 +11,11 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
 
@@ -26,6 +28,9 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 KafkaAcknowledgementTest.class
 })
 public class FATSuite {
+
+    @ClassRule
+    public static KafkaContainer kafkaContainer = new KafkaContainer();
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
