@@ -12,7 +12,6 @@ package com.ibm.ws.jsp23.fat.tests;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -21,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.annotation.MinimumJavaLevel;
@@ -39,9 +39,7 @@ import componenttest.custom.junit.runner.FATRunner;
 // No need to run against cdi-2.0 since these tests don't use CDI at all.
 @SkipForRepeat("CDI-2.0")
 @RunWith(FATRunner.class)
-public class JSPJava8Test extends com.ibm.ws.fat.util.LoggingTest {
-
-    private static final Logger LOG = Logger.getLogger(JSPJava8Test.class.getName());
+public class JSPJava8Test extends LoggingTest {
     private static final String APP_NAME = "TestJSPWithJava8";
 
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
@@ -54,9 +52,6 @@ public class JSPJava8Test extends com.ibm.ws.fat.util.LoggingTest {
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
                                       APP_NAME + ".war");
 
-        // Start the server and use the class name so we can find logs easily.
-        // Many tests use the same server
-        // SHARED_SERVER.getLibertyServer().startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(APP_NAME);
         SHARED_SERVER.startIfNotStarted();
     }

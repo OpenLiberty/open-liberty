@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -41,7 +42,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 // No need to run against cdi-2.0 since these tests don't use CDI at all.
 @SkipForRepeat("CDI-2.0")
 @RunWith(FATRunner.class)
-public class JSPServerHttpUnit extends com.ibm.ws.fat.util.LoggingTest {
+public class JSPServerHttpUnit extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(JSPServerTest.class.getName());
     private static final String APP_NAME = "TestJSP2.3";
 
@@ -58,9 +59,6 @@ public class JSPServerHttpUnit extends com.ibm.ws.fat.util.LoggingTest {
                                       "com.ibm.ws.jsp23.fat.testjsp23.servlets",
                                       "com.ibm.ws.jsp23.fat.testjsp23.tagHandler");
 
-        // Start the server and use the class name so we can find logs easily.
-        // Many tests use the same server
-        // SHARED_SERVER.getLibertyServer().startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(APP_NAME);
         SHARED_SERVER.startIfNotStarted();
     }
