@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
-import com.ibm.ws.artifact.zip.internal.SystemUtils;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 /**
@@ -444,106 +443,6 @@ ZipFile [Path]
             output.println("Unknown zip file state [ " + zipFileState + " ] [ " + path + " ]");
             return;
         }
-        else if(zipFileState == ZipFileState.PENDING){
-            openTail = 0;
-            pendTail = SystemUtils.getNanoTime() - lastPendAt;
-            closeTail = 0;
-        }
-        else if(zipFileState == ZipFileState.FULLY_CLOSED){
-            openTail = 0;
-            pendTail = 0;
-            closeTail = SystemUtils.getNanoTime() - lastFullCloseAt;
-        }
-        else{
-            //should not get here, conditionals for every value in enumeration
-            throw new IllegalStateException("Cannot introspect on ZipFileData with illegal state");
-        }
-
-        tempOutput = String.format("ZipFile\t[ %s ]" , path);
-        outputIntrospectLine(output, tempOutput, 0);
-
-        tempOutput = String.format("State\t[ %s ]",zipFileState.toString());
-        outputIntrospectLine(output, tempOutput, 1);
-
-        tempOutput = "Request Counts:";
-        outputIntrospectLine(output, tempOutput, 1);
-
-        tempOutput = String.format("Open Requests:\t[ %s ]",toCount(openCount));
-        outputIntrospectLine(output, tempOutput, 2);
-
-        tempOutput = String.format("Close Requests:\t[ %s ]",toCount(closeCount));
-        outputIntrospectLine(output, tempOutput, 2);
-
-        tempOutput = String.format("Active Opens:\t[ %s ]", toCount(Math.abs(openCount - closeCount)));
-        outputIntrospectLine(output, tempOutput, 2);
-
-        output.println("");
-
-        tempOutput = String.format("State Durations:\t[ %s (s) ]", toRelSec(initialAt,SystemUtils.getNanoTime()));
-        outputIntrospectLine(output, tempOutput, 1);
-
-        tempOutput = String.format("Pre-Open:\t\t[ %s (s) ]",toRelSec(initialAt, firstOpenAt));
-        outputIntrospectLine(output, tempOutput, 2);
-
-        tempOutput = String.format("Open:\t\t\t[ %s (s) ]", toAbsSec(openDuration + openTail));
-        outputIntrospectLine(output, tempOutput, 2);
-
-        tempOutput = String.format("Pending:\t\t[ %s (s) ]", toAbsSec(pendToOpenDuration + pendToFullCloseDuration + pendTail));
-        outputIntrospectLine(output, tempOutput, 2);
-
-        tempOutput = String.format("Closed:\t\t\t[ %s (s) ]",toAbsSec(fullCloseToOpenDuration + closeTail));
-        outputIntrospectLine(output, tempOutput, 2);
-   
-        tempOutput = String.format("Post-Close:\t\t[ %s (s) ]",0.0);
-        outputIntrospectLine(output, tempOutput, 2);
-
-        output.println("");
-        outputIntrospectLine(output,"Transition Counts:",1);
-        outputIntrospectLine(output,"Open:",2);
-
-        tempOutput = String.format("to Pending:\t[ %s ]\t[ %s (s) ]",toCount(openToPendCount),toAbsSec(openDuration));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        outputIntrospectLine(output, "Pending:", 2);
-
-        tempOutput = String.format("to Open:\t[ %s ]\t[ %s (s) ]",toCount(pendToOpenCount),toAbsSec(pendToOpenDuration));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        tempOutput = String.format("to Close:\t[ %s ]\t[ %s (s) ]",toCount(pendToFullCloseCount),toAbsSec(pendToFullCloseDuration));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        outputIntrospectLine(output, "Close:", 2);
-
-        tempOutput = String.format("to Open:\t[ %s ]\t[ %s (s) ]",toCount(fullCloseToOpenCount),toAbsSec(fullCloseToOpenDuration));
-        outputIntrospectLine(output, tempOutput, 3);
-        
-        output.println("");
-        outputIntrospectLine(output, "Event Times:", 1);
-        outputIntrospectLine(output, "Open:", 2);
-
-        tempOutput = String.format("First:\t[ %s (s) ]",toRelSec(initialAt,firstOpenAt));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        tempOutput = String.format("Last:\t[ %s (s) ]", toRelSec(initialAt,lastOpenAt));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        outputIntrospectLine(output, "Pend:", 2);
-
-        tempOutput = String.format("First:\t[ %s (s) ]", toRelSec(initialAt,firstPendAt));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        tempOutput = String.format("Last:\t[ %s (s) ]",toRelSec(initialAt,lastPendAt));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        outputIntrospectLine(output, "Close:", 2);
-
-        tempOutput = String.format("First:\t[ %s (s) ]", toRelSec(initialAt,firstFullCloseAt));
-        outputIntrospectLine(output, tempOutput, 3);
-
-        tempOutput = String.format("Last:\t[ %s (s) ]",toRelSec(initialAt,lastFullCloseAt));
-        outputIntrospectLine(output, tempOutput, 3);
-
-    }
 
         String line;
 

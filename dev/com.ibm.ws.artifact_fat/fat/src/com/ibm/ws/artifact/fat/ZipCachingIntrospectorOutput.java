@@ -43,7 +43,7 @@ public class ZipCachingIntrospectorOutput{
         zipCachingReader.readLine();//="The description of this introspector:"
 
         introspectorDescription = zipCachingReader.readLine();//="Liberty zip file caching diagnostics"
-
+        
         do{
             currentLine = zipCachingReader.readLine();
         }while(!(currentLine.equals("No ZipCachingServiceImpl configured") || currentLine.equals("Entry Cache Settings:")));
@@ -207,6 +207,189 @@ public class ZipCachingIntrospectorOutput{
         zipCachingReader.close();
     }
 
+    private static boolean matchMany(String line, String... headers){
+        for(String header: headers){
+            if(line.equals(header)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String fastForward(BufferedReader zipCachingReader, String header) throws IOException{
+        String currentLine = zipCachingReader.readLine();
+        String section = "";
+        if(currentLine == null){
+            return section;
+        }
+        while(currentLine != null && !matchMany(currentLine,header)){
+            section += currentLine + "\n";
+
+            currentLine = zipCachingReader.readLine();
+        }
+
+        return section;
+    }
+
+    // private String introspectorDescription, entryCacheSettings, zipReaperSettings, handleIntrospection, zipEntryCache, zipReaperValues;
+    // private String activeAndPendingIntrospection;
+    // private String pendingQuickIntrospection;
+    // private String pendingSlowIntrospection;
+    // private String completedIntrospection;
+    private String zipCachingTime;
+    private String outputFormat;
+    private String activeAndCachedZipFileHandles;
+
+    //new constructor for parsing the output zip caching introspector
+    public ZipCachingIntrospectorOutput(InputStream in, Object o) throws Exception{
+        BufferedReader zipCachingReader = new BufferedReader(new InputStreamReader(in));
+        String currentLine, section;
+        final String EOF = "------------------------------------------------------------";
+
+        int count = 0;
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", "Starting the constructor: " + Integer.toString(++count,10));
+        
+        //description of this introspector
+        currentLine = zipCachingReader.readLine();
+
+        //"Liberty zip file caching diagnostics"
+        introspectorDescription = zipCachingReader.readLine();
+        
+        fastForward(zipCachingReader, "Zip Caching Service:");
+        
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        zipCachingTime = fastForward(zipCachingReader, "Format:");
+
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        outputFormat = fastForward(zipCachingReader, "Entry Cache Settings:");
+
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        entryCacheSettings = fastForward(zipCachingReader, "Zip Reaper Settings:");
+        
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        zipReaperSettings = fastForward(zipCachingReader, "Active and Cached ZipFile Handles:");
+        
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        //handleintrospections + zipEntryCache = activeAndCachedZipFileHandles
+        //"Active and Cached ZipFile Handles:" => "Zip Reaper:"
+        section = fastForward(zipCachingReader, "Zip Reaper:");
+        {
+            if(section.contains("  ** NONE **")){
+                activeAndCachedZipFileHandles = null;
+            }
+            else{
+                activeAndCachedZipFileHandles = section;
+            }
+        }
+
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        //zipReaperValues
+        //"Zip Reaper:" => "Active and Pending Data:" || EOF
+        section = fastForward(zipCachingReader, "Active and Pending Data:");
+        //check if DISABLED if so then set the rest of the variables to be null and return
+        {
+            currentLine = zipCachingReader.readLine();
+
+            if(currentLine.equals("  ** DISABLED **")){
+                return;
+            }
+            else{
+                zipReaperValues = section;
+            }
+        }
+
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        //activeAndPendingIntrospection
+        //"Active and Pending Data:" => "Zip File Data [ pendingQuick ]"
+        section = fastForward(zipCachingReader, "Zip File Data [ pendingQuick ]");
+        //check if is NONE if so then set to null else set as section
+        {  
+            if(section.contains("  ** NONE **")){
+                activeAndPendingIntrospection = null;
+            }
+            else{
+                activeAndPendingIntrospection = section;
+            }
+
+        }
+
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        //pendingQuickIntrospection
+        //"Zip File Data [ pendingQuick ]" => "Zip File Data [ pendingSlow ]"
+        section = fastForward(zipCachingReader, "Zip File Data [ pendingSlow ]");
+        //check if contains NONE if so then set to null else set as section
+        {
+            if(section.contains("  ** NONE **")){
+                pendingQuickIntrospection = null;
+            }
+            else{
+                pendingQuickIntrospection = section;
+            }
+        }
+
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+        currentLine = zipCachingReader.readLine();
+        section = "";
+
+        //while the current line isn't
+        //  start of completed storage
+        //  not being tacked message
+        //  end of file
+
+        while(!matchMany(currentLine, "Zip File Data [ completed ]", "Completed zip file data is not being tracked", EOF)){
+            section += currentLine + "\n";
+            currentLine = zipCachingReader.readLine();
+        }
+
+        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+        //assign pending slow introspections
+        if(section.contains("  ** NONE **")){
+            pendingSlowIntrospection = null;
+        }
+        else{
+            pendingSlowIntrospection = section;
+        }
+
+        //check the current line if it stopped at the start of completed storage or the non tracked line
+        if(currentLine.equals("Zip File Data [ completed ]")){
+
+            section = fastForward(zipCachingReader, EOF);
+
+            FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
+            if(section.contains("  ** NONE **")){
+                completedIntrospection = null;
+            }
+            else{
+                completedIntrospection = section;
+            }
+
+
+        }
+        else if(currentLine.equals("Completed zip file data is not being tracked")){
+            completedIntrospection = null;
+        }
+        else if(currentLine.equals(EOF)){
+            //should not get to the EOF without reaching one of the two lines above
+            throw new RuntimeException("Reached EOF unexpectedly for Introspector Output");
+        }
+        else{
+            //should not get to else since output should have 1 of the first 2 conditionals
+            throw new RuntimeException("Malformed Introspector Output");
+    }
+
+
+    }
+
     public String getIntrospectorDescription() {
         return introspectorDescription;
     }
@@ -246,6 +429,12 @@ public class ZipCachingIntrospectorOutput{
     public String getCompletedIntrospection() {
         return completedIntrospection;
     }
+
+    public String getActiveAndCachedZipFileHandles(){
+        return activeAndCachedZipFileHandles;
+    }
+
+    
 
     public List<String> getZipHandleArchiveNames(){
         if(getHandleIntrospection() == null)
