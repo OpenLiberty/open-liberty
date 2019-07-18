@@ -11,17 +11,12 @@
 package com.ibm.ws.security.oauth20.plugins.jose4j;
 
 import java.security.Key;
-import java.security.interfaces.RSAPrivateKey;
-
-import org.jose4j.keys.HmacKey;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.utils.JwtDataConfig;
 import com.ibm.ws.security.oauth20.TraceConstants;
-import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 /**
@@ -47,7 +42,9 @@ public class JWTData {
 
     String signatureAlgorithm = null;
     JWTTokenException noKeyException = null;
-    com.ibm.ws.security.jwt.utils.JwtData wrappedJwtData; // wrap the JWT feature's class for commonality.
+
+    // use common class for openidconnect and jwt features, for consistent behavior
+    com.ibm.ws.security.jwt.utils.JwtData wrappedJwtData;
 
     public JWTData(@Sensitive String sharedKey, OidcServerConfig oidcServerConfig, String tokenType) {
         this.oidcServerConfig = oidcServerConfig;
@@ -55,49 +52,19 @@ public class JWTData {
         this.signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
         bIdToken = TYPE_ID_TOKEN.equals(tokenType);
         bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
+
         Key privateKey = null;
+        boolean needPrivateKey = !oidcServerConfig.isJwkEnabled() && SIGNATURE_ALG_RS256.equals(signatureAlgorithm);
         try {
-            privateKey = oidcServerConfig.getPrivateKey();
+            if (needPrivateKey) {
+                privateKey = oidcServerConfig.getPrivateKey();
+            }
             JwtDataConfig config = new JwtDataConfig(signatureAlgorithm, oidcServerConfig.getJSONWebKey(), sharedKey,
                     privateKey, null, null, tokenType,
                     oidcServerConfig.isJwkEnabled());
             wrappedJwtData = new com.ibm.ws.security.jwt.utils.JwtData(config);
             _signingKey = wrappedJwtData.getSigningKey();
             _keyId = wrappedJwtData.getKeyID();
-        } catch (Exception e) {
-            recordException(e);
-        }
-
-    }
-
-    /*
-     * Handle the signingKey here to get the same error messages
-     */
-    @FFDCIgnore(Exception.class)
-    @Sensitive
-    protected void initSigningKeyOld(@Sensitive String sharedKey) {
-        try {
-            if (this.oidcServerConfig.isJwkEnabled() && SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
-                JSONWebKey jwk = this.oidcServerConfig.getJSONWebKey();
-                _signingKey = jwk.getPrivateKey();
-                _keyId = jwk.getKeyID();
-            } else {
-                if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
-                    _signingKey = new HmacKey(sharedKey.getBytes("UTF-8"));
-                } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
-                    _signingKey = this.oidcServerConfig.getPrivateKey();
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "RSAPrivateKey: " + (_signingKey instanceof RSAPrivateKey));
-                    }
-                    if (!(_signingKey instanceof RSAPrivateKey)) {
-                        // error handling
-                        String errorMsg = Tr.formatMessage(tc, "SIGNING_KEY_NOT_RSA", new Object[] { signatureAlgorithm });
-                        Object[] objs = new Object[] { signatureAlgorithm, errorMsg };
-                        noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
-                        _signingKey = null; // we will catch this later in jwtSigner
-                    }
-                }
-            }
         } catch (Exception e) {
             recordException(e);
         }

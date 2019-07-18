@@ -15,7 +15,7 @@ import java.security.Key;
 
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
-// config holder for JwtData class so it can be called by other projects
+// config holder for JwtData class
 public class JwtDataConfig {
 	public final String signatureAlgorithm;
 	public final JSONWebKey jwk;
