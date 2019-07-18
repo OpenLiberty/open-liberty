@@ -1542,7 +1542,8 @@ public class H2StreamProcessor {
             buf.put(bytes);
         }
         buf.flip();
-        if (expectedContentLength != -1 && buf.limit() != expectedContentLength) {
+        int actualContentLength = buf.limit();
+        if (expectedContentLength != -1 && actualContentLength != expectedContentLength) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "processCompleteData release buffer and throw ProtocolException");
             }
@@ -1550,7 +1551,13 @@ public class H2StreamProcessor {
             ProtocolException pe = new ProtocolException("content-length header did not match the expected amount of data received");
             pe.setConnectionError(false); // stream error
             throw pe;
+        } else if (expectedContentLength == -1 && actualContentLength > 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "processCompleteData no content-length header was sent for stream-id: " + streamId() +" but it received " 
+                    + actualContentLength +" bytes of of body data");
+            }
         }
+        this.h2HttpInboundLinkWrap.setH2ContentLength(actualContentLength);
         moveDataIntoReadBufferArray(buf);
     }
 
