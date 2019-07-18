@@ -45,7 +45,7 @@ public class JSF23ThirdPartyApiTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23ThirdPartyApiServer")
+    @Server("jsf23ThirdPartyAPIServer")
     public static LibertyServer jsf23ThirdPartyApiServer;
 
     @BeforeClass
