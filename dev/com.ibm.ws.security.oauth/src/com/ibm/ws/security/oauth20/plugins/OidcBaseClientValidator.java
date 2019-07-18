@@ -24,6 +24,7 @@ import com.google.gson.JsonElement;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.AbstractOidcEndpointServices;
@@ -33,8 +34,9 @@ import com.ibm.ws.security.oauth20.web.AbstractOidcEndpointServices;
  */
 public class OidcBaseClientValidator {
     protected static final String MESSAGE_BUNDLE = "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages";
+    private static final String[] illegalChars = new String[] { "<", ">" };
 
-    private OidcBaseClient client; // Defensive copy of OidcBaseClient reference used in constructor
+    private final OidcBaseClient client; // Defensive copy of OidcBaseClient reference used in constructor
 
     private OidcBaseClientValidator(OidcBaseClient client) {
         this.client = client.getDeepCopy();
@@ -56,11 +58,12 @@ public class OidcBaseClientValidator {
     /**
      * Method will perform pre-condition checking of Client Registration parameter
      * values meant for creation or update of client.
-     * 
+     *
      * @return copy of approved client, with some fields normalized
      * @throws OidcServerException
      */
     public OidcBaseClient validateCreateUpdate() throws OidcServerException {
+        detectIllegalChars();
         validateAppType();
 
         validateResponseTypes();
@@ -93,9 +96,44 @@ public class OidcBaseClientValidator {
     }
 
     /**
+     * check for disallowed characters that could allow javascript to be fed back to ui.
+     */
+    private void detectIllegalChars() throws OidcServerException {
+        detectIllegalCharacters(client.getClientId());
+        detectIllegalCharacters(client.getClientSecret());
+        detectIllegalCharacters(client.getRedirectUris());
+        detectIllegalCharacters(client.getClientName());
+        detectIllegalCharacters(client.getPostLogoutRedirectUris());
+        detectIllegalCharacters(client.getPreAuthorizedScope());
+        detectIllegalCharacters(client.getFunctionalUserId());
+        detectIllegalCharacters(client.getFunctionalUserGroupIds());
+    }
+
+    // detect illegal chars
+    private void detectIllegalCharacters(@Sensitive String s) throws OidcServerException {
+        if (s == null || s.length() == 0) {
+            return;
+        }
+        for (int i = 0; i < illegalChars.length; i++) {
+            if (s.contains(illegalChars[i])) {
+                String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
+                        MESSAGE_BUNDLE,
+                        "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", // CWWKS1423E
+                        new Object[] { illegalChars[i] }, "");
+                throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            }
+        }
+    }
+
+    // detect illegal chars
+    private void detectIllegalCharacters(@Sensitive JsonArray a) throws OidcServerException {
+        detectIllegalCharacters(a.toString());
+    }
+
+    /**
      * Method will return raw values of client, but with defaults set for
      * omitted fields
-     * 
+     *
      * @return copy of client passed in, but with default fields set where appropriate
      */
     public OidcBaseClient setDefaultsForOmitted() {
@@ -126,7 +164,7 @@ public class OidcBaseClientValidator {
         try {
             return validateCommons(true);
         } catch (OidcServerException e) {
-        } //This will not occur 
+        } //This will not occur
 
         return null; //This will not occur
     }
@@ -214,7 +252,7 @@ public class OidcBaseClientValidator {
         }
 
         try {
-            //token_endpoint_auth_method - if omitted, defaults to client_secret_basic 
+            //token_endpoint_auth_method - if omitted, defaults to client_secret_basic
             validateTokenEndpointAuthMethod();
         } catch (OidcServerException e) {
             if (setDefaultsOnError) {
@@ -281,8 +319,7 @@ public class OidcBaseClientValidator {
 
     protected void setDefaultAppType() {
         String appType = client.getApplicationType();
-        if (OidcOAuth20Util.isNullEmpty(appType))
-        {
+        if (OidcOAuth20Util.isNullEmpty(appType)) {
             client.setApplicationType(OIDCConstants.OIDC_CLIENTREG_PARM_WEB);
         }
     }
@@ -303,8 +340,7 @@ public class OidcBaseClientValidator {
 
     protected void setDefaultTokenEndpointAuthMethod() {
         String tokenEndpointAuthMethod = client.getTokenEndpointAuthMethod();
-        if (OidcOAuth20Util.isNullEmpty(tokenEndpointAuthMethod))
-        {
+        if (OidcOAuth20Util.isNullEmpty(tokenEndpointAuthMethod)) {
             client.setTokenEndpointAuthMethod(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC);
         }
     }
@@ -328,8 +364,7 @@ public class OidcBaseClientValidator {
 
         if (!OidcOAuth20Util.isNullEmpty(appType) &&
                 !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_NATIVE) &&
-                !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_WEB))
-        {
+                !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_WEB)) {
             String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
@@ -520,8 +555,7 @@ public class OidcBaseClientValidator {
                 !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC) &&
                 // !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_JWT) &&
                 // !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_PRIVATE_KEY_JWT) &&
-                !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE))
-        {
+                !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)) {
 
             String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
                     MESSAGE_BUNDLE,
