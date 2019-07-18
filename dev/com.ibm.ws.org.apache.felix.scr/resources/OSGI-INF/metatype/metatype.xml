@@ -17,6 +17,7 @@
  </Designate>
 
  <OCD id="org.apache.felix.scr.ScrService" name="internal" description="internal use only">
+  <AD id="ds.cache.metadata" type="String"  default="true" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="ds.info.service" type="String"  default="true" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="ds.global.extender" type="String"  default="true" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="ds.loglevel" type="String"  default="Warnings" ibm:variable="ds.loglevel" name="internal" description="internal use only"/>
