@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * Batches up elements
  *
@@ -25,6 +28,8 @@ import javax.enterprise.concurrent.ManagedScheduledExecutorService;
  *            the element type
  */
 public class Batcher<T> {
+
+    private static final TraceComponent tc = Tr.register(Batcher.class);
 
     private final int maxBatchSize;
     private final Duration maxBatchTime;
@@ -147,15 +152,18 @@ public class Batcher<T> {
 
         public Batcher<T> build() {
             if ((this.maxBatchTime != null) && (this.executor == null)) {
-                throw new IllegalStateException("Executor must be set if maxBatchTime is set");
+                String msg = Tr.formatMessage(tc, "internal.kafka.connector.error.CWMRX1000E", "Executor must be set if maxBatchTime is set");
+                throw new IllegalStateException(msg);
             }
 
             if ((this.maxBatchSize == -1) && (this.maxBatchTime == null)) {
-                throw new IllegalStateException("Either maxBatchSize or maxBatchTime must be set");
+                String msg = Tr.formatMessage(tc, "internal.kafka.connector.error.CWMRX1000E", "Either maxBatchSize or maxBatchTime must be set");
+                throw new IllegalStateException(msg);
             }
 
             if (this.processBatchAction == null) {
-                throw new IllegalStateException("processBatchAction must be set");
+                String msg = Tr.formatMessage(tc, "internal.kafka.connector.error.CWMRX1000E", "processBatchAction must be set");
+                throw new IllegalStateException(msg);
             }
 
             return new Batcher<>(this.maxBatchSize, this.maxBatchTime, this.processBatchAction, this.executor);

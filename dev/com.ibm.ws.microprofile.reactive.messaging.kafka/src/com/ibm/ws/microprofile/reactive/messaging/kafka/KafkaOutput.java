@@ -40,7 +40,7 @@ public class KafkaOutput<K, V> {
     }
 
     private void logError(Throwable t) {
-        Tr.error(tc, "Unexpected error caused reactive message stream to exit: {}", t);
+        Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
     }
 
     private void sendMessage(Message<V> message) {
@@ -59,7 +59,7 @@ public class KafkaOutput<K, V> {
     }
 
     private static void reportSendException(Throwable t) {
-        Tr.error(tc, "Error sending message to kafka: {}", t);
+        Tr.error(tc, "kafka.send.error.CWMRX1003E", t);
     }
 
 }
