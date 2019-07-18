@@ -16,12 +16,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_informix;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -34,7 +34,6 @@ import web.PersistentTimersTestServlet;
  */
 @RunWith(FATRunner.class)
 @SkipIfSysProp(DB_Informix) // persistent executor is not support on Informix
-@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 public class PersistentExecutorTimersTest extends FATServletClient {
 
     private static final String APP_NAME = "timersapp";
@@ -47,7 +46,7 @@ public class PersistentExecutorTimersTest extends FATServletClient {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addInstalledAppForValidation(APP_NAME);
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "ejb");
 
         ServerConfiguration config = server.getServerConfiguration();
 
