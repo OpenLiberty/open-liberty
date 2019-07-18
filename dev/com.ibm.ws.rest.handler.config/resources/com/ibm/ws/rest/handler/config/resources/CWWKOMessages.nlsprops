@@ -24,10 +24,10 @@
 
 # All messages must use the range CWWKO1530 to CWWKO1549
 
-CWWKO1530_CIRCULAR_DEPENDENCY=CWWKO1530I: Configuration information for {0} is truncated because it contains a cycle.
-CWWKO1530_CIRCULAR_DEPENDENCY.explanation=When a cycle exists in the configuration, it is broken by truncating the redundant configuration detail.
+CWWKO1530_CIRCULAR_DEPENDENCY=CWWKO1530I: Configuration information for {0} is truncated because it contains a cyclic dependency.
+CWWKO1530_CIRCULAR_DEPENDENCY.explanation=When a cyclic dependency exists in the configuration, it is broken by truncating the redundant configuration detail.
 CWWKO1530_CIRCULAR_DEPENDENCY.useraction=No action is needed.
 
 CWWKO1531_NOT_FOUND=CWWKO1531E: Configuration element {0} is not recognized, or the feature that provides it is not enabled.
 CWWKO1531_NOT_FOUND.explanation=The requested type of configuration element is not provided by any of the features that are enabled.
-CWWKO1531_NOT_FOUND.useraction=Check that the spelling is correct and that the right features are enabled for this configuration.
+CWWKO1531_NOT_FOUND.useraction=Check that the spelling is correct and that the correct features are enabled for this configuration.
