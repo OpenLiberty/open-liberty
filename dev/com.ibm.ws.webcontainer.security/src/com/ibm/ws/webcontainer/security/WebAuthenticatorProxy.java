@@ -12,11 +12,13 @@ package com.ibm.ws.webcontainer.security;
 
 import java.util.HashMap;
 
+import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.audit.utils.AuditConstants;
@@ -64,6 +66,16 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
         String authType = webRequest.getLoginConfig().getAuthenticationMethod();
 
         if ((authResult.getStatus() == AuthResult.CONTINUE)) {
+            // if target is unprotected, then check if TAI is enabled and invokeForUnprotectedURI is set as true.
+            // if these conditions are met, return SUCCESS.
+            if (webRequest.isUnprotectedURI() && webRequest.isPerformTAIForUnProtectedURI()) {
+                authResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, null, null, AuditEvent.OUTCOME_SUCCESS);
+                int statusCode = webRequest.getHttpServletResponse().getStatus();
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
+                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, webRequest.getHttpServletRequest().getRequestURI(), statusCode);
+                // no need to set auth type, so return now.
+                return authResult;
+            }
             WebAuthenticator authenticator = getWebAuthenticator(webRequest);
             if (authenticator == null) {
                 return new AuthenticationResult(AuthResult.FAILURE, "Unable to get the appropriate WebAuthenticator. Unable to get the appropriate WebAuthenticator.");

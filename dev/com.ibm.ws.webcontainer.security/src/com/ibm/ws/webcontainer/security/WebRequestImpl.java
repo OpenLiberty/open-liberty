@@ -50,6 +50,7 @@ public class WebRequestImpl implements WebRequest {
     private boolean requestAuthenticate = false;
     private boolean disableClientCertFailOver = false;
     private final SpnegoUtil spnegoUtil = new SpnegoUtil();
+    private boolean isPerformTAIForUnProtectedURI = false;
 
     public WebRequestImpl(HttpServletRequest req, HttpServletResponse resp,
                           SecurityMetadata securityMetadata, WebAppSecurityConfig config) {
@@ -301,4 +302,15 @@ public class WebRequestImpl implements WebRequest {
     public void setDisableClientCertFailOver(boolean isDisable) {
         disableClientCertFailOver = isDisable;
     }
+
+    @Override
+    public void setPerformTAIForUnProtectedURI(boolean isPerformTAIForUnProtectedURI) {
+        this.isPerformTAIForUnProtectedURI = isPerformTAIForUnProtectedURI;
+    }
+
+    @Override
+    public boolean isPerformTAIForUnProtectedURI() {
+        return isPerformTAIForUnProtectedURI;
+    }
+
 }
