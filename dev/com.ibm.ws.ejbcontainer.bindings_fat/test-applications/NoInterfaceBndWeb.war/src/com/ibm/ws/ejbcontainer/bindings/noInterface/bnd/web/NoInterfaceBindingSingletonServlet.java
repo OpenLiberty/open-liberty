@@ -100,12 +100,12 @@ public class NoInterfaceBindingSingletonServlet extends NoInterfaceBindingAbstra
         BasicNoInterfaceSGBean bbean = (BasicNoInterfaceSGBean) ivContext.lookup("ejblocal:" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanName, bbean.getBeanName());
+        assertEquals("short default no-interface reference of bean is invalid", beanName, bbean.getBeanName());
 
         // Lookup long default of basic No-Interface bean - should find
         bbean = (BasicNoInterfaceSGBean) ivContext.lookup("ejblocal:" + APP_NAME + "/" + MOD_NAME + "/" + beanName + "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanName, bbean.getBeanName());
+        assertEquals("long default no-interface reference of bean is invalid", beanName, bbean.getBeanName());
     }
 }

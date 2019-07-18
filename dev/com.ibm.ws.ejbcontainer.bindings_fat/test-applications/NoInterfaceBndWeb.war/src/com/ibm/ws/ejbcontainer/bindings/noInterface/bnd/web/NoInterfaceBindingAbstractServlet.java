@@ -137,6 +137,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
             bean = (ComplexNoInterfaceBean) ivContext.lookup("ejblocal:" + beanInterface);
             fail("Ambiguous No-Interface short default found");
         } catch (NamingException nex) {
+            // TODO: Enable when AmbiguousEJBReferenceException support is added
             // Throwable cause = nex.getCause();
             // if (cause instanceof AmbiguousEJBReferenceException) {
             // svLogger.info("lookup of short default failed as expected : " +
@@ -159,7 +160,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "/" + beanName + "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanName, bean.getBeanName());
+        assertEquals("long default no-interface reference of bean is invalid", beanName, bean.getBeanName());
 
         // -----------------------------------------------------------------------
         // Lookup long default of No-Interface bean with Local
@@ -169,13 +170,13 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "/" + beanNameLocal + "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameLocal, bean.getBeanName());
+        assertEquals("long default no-interface reference of bean with local is invalid", beanNameLocal, bean.getBeanName());
 
         LocalBusiness lbean = (LocalBusiness) ivContext.lookup("ejblocal:" + APP_NAME + "/" + MOD_NAME +
                                                                "/" + beanNameLocal + "#" + beanLocalInterface);
 
         // Verify the reference is valid by using it....
-        assertTrue(lbean.localMethod("default test").contains(beanNameLocal));
+        assertTrue("long default local reference of bean with local is invalid", lbean.localMethod("default test").contains(beanNameLocal));
 
         // -----------------------------------------------------------------------
         // Lookup long default of No-Interface bean with Remote
@@ -185,13 +186,13 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "/" + beanNameRemote + "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameRemote, bean.getBeanName());
+        assertEquals("long default no-interface reference of bean with remote is invalid", beanNameRemote, bean.getBeanName());
 
         RemoteBusiness rbean = (RemoteBusiness) ivContext.lookup("ejb/" + APP_NAME + "/" + MOD_NAME +
                                                                  "/" + beanNameRemote + "#" + beanRemoteInterface);
 
         // Verify the reference is valid by using it....
-        assertTrue(rbean.remoteMethod("default test").contains(beanNameRemote));
+        assertTrue("long default remote reference of bean with remote is invalid", rbean.remoteMethod("default test").contains(beanNameRemote));
 
         // -----------------------------------------------------------------------
         // Lookup long default of No-Interface bean with Component
@@ -202,14 +203,14 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                              "/" + beanNameComp + "#" + beanInterface);
 
             // Verify the reference is valid by using it....
-            assertEquals(beanNameComp, bean.getBeanName());
+            assertEquals("long default no-interface reference of bean with component is invalid", beanNameComp, bean.getBeanName());
 
             LocalHome lhome = (LocalHome) ivContext.lookup("ejblocal:" + APP_NAME + "/" + MOD_NAME +
                                                            "/" + beanNameComp + "#" + beanCompInterface);
 
             // Verify the reference is valid by using it....
             LocalComponent cbean = lhome.create();
-            assertTrue(cbean.localMethod("default test").contains(beanNameComp));
+            assertTrue("long default component reference of bean with component is invalid", cbean.localMethod("default test").contains(beanNameComp));
         }
     }
 
@@ -246,7 +247,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanName, bean.getBeanName());
+        assertEquals("component-id no-interface reference of bean is invalid", beanName, bean.getBeanName());
 
         // -----------------------------------------------------------------------
         // Lookup with component-id of No-Interface bean with Local
@@ -257,13 +258,13 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameLocal, bean.getBeanName());
+        assertEquals("component-id no-interface reference of bean with local is invalid", beanNameLocal, bean.getBeanName());
 
         LocalBusiness lbean = (LocalBusiness) ivContext.lookup("ejblocal:" + componentidLocal +
                                                                "#" + beanLocalInterface);
 
         // Verify the reference is valid by using it....
-        assertTrue(lbean.localMethod("default test").contains(beanNameLocal));
+        assertTrue("component-id local reference of bean with local is invalid", lbean.localMethod("default test").contains(beanNameLocal));
 
         // -----------------------------------------------------------------------
         // Lookup with component-id of No-Interface bean with Remote
@@ -274,13 +275,13 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameRemote, bean.getBeanName());
+        assertEquals("component-id no-interface reference of bean with remote is invalid", beanNameRemote, bean.getBeanName());
 
         RemoteBusiness rbean = (RemoteBusiness) ivContext.lookup("ejb/" + componentidRemote +
                                                                  "#" + beanRemoteInterface);
 
         // Verify the reference is valid by using it....
-        assertTrue(rbean.remoteMethod("default test").contains(beanNameRemote));
+        assertTrue("component-id remote reference of bean with remote is invalid", rbean.remoteMethod("default test").contains(beanNameRemote));
 
         // -----------------------------------------------------------------------
         // Lookup with component-id of No-Interface bean with Component
@@ -292,14 +293,14 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                              "#" + beanInterface);
 
             // Verify the reference is valid by using it....
-            assertEquals(beanNameComp, bean.getBeanName());
+            assertEquals("component-id no-interface reference of bean with component is invalid", beanNameComp, bean.getBeanName());
 
             LocalHome lhome = (LocalHome) ivContext.lookup("ejblocal:" + componentidComp +
                                                            "#" + beanCompInterface);
 
             // Verify the reference is valid by using it....
             LocalComponent cbean = lhome.create();
-            assertTrue(cbean.localMethod("default test").contains(beanNameComp));
+            assertTrue("component-id component reference of bean with component is invalid", cbean.localMethod("default test").contains(beanNameComp));
         }
     }
 
@@ -340,7 +341,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          simpleName);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanName, bean.getBeanName());
+        assertEquals("simple-binding-name no-interface reference of bean is invalid", beanName, bean.getBeanName());
 
         // -----------------------------------------------------------------------
         // Lookup with simple-binding-name of No-Interface bean with Local
@@ -351,13 +352,13 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "#" + beanInterface);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameLocal, bean.getBeanName());
+        assertEquals("simple-binding-name no-interface reference of bean with local is invalid", beanNameLocal, bean.getBeanName());
 
         LocalBusiness lbean = (LocalBusiness) ivContext.lookup("ejblocal:" + simpleNameLocal +
                                                                "#" + beanLocalInterface);
 
         // Verify the reference is valid by using it....
-        assertTrue(lbean.localMethod("default test").contains(beanNameLocal));
+        assertTrue("simple-binding-name local reference of bean with local is invalid", lbean.localMethod("default test").contains(beanNameLocal));
 
         // -----------------------------------------------------------------------
         // Lookup with simple-binding-name of No-Interface bean with Remote
@@ -367,12 +368,12 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          simpleNameRemote);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameRemote, bean.getBeanName());
+        assertEquals("simple-binding-name no-interface reference of bean with remote is invalid", beanNameRemote, bean.getBeanName());
 
         RemoteBusiness rbean = (RemoteBusiness) ivContext.lookup(simpleNameRemote);
 
         // Verify the reference is valid by using it....
-        assertTrue(rbean.remoteMethod("default test").contains(beanNameRemote));
+        assertTrue("simple-binding-name remote reference of bean with remote is invalid", rbean.remoteMethod("default test").contains(beanNameRemote));
 
         // -----------------------------------------------------------------------
         // Lookup with simple-binding-name of No-Interface bean with Component
@@ -384,14 +385,14 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                              "#" + beanInterface);
 
             // Verify the reference is valid by using it....
-            assertEquals(beanNameComp, bean.getBeanName());
+            assertEquals("simple-binding-name no-interface reference of bean with component is invalid", beanNameComp, bean.getBeanName());
 
             LocalHome lhome = (LocalHome) ivContext.lookup("ejblocal:" + simpleNameComp +
                                                            "#" + beanCompInterface);
 
             // Verify the reference is valid by using it....
             LocalComponent cbean = lhome.create();
-            assertTrue(cbean.localMethod("default test").contains(beanNameComp));
+            assertTrue("simple-binding-name component reference of bean with component is invalid", cbean.localMethod("default test").contains(beanNameComp));
         }
     }
 
@@ -428,7 +429,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          beanName);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanName, bean.getBeanName());
+        assertEquals("custom no-interface reference of bean is invalid", beanName, bean.getBeanName());
 
         // -----------------------------------------------------------------------
         // Lookup with custom of No-Interface bean with Local
@@ -439,13 +440,13 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "/" + beanName);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameLocal, bean.getBeanName());
+        assertEquals("custom no-interface reference of bean with local is invalid", beanNameLocal, bean.getBeanName());
 
         LocalBusiness lbean = (LocalBusiness) ivContext.lookup("ejblocal:" + customPrefixLocal +
                                                                "/" + beanNameLocal);
 
         // Verify the reference is valid by using it....
-        assertTrue(lbean.localMethod("default test").contains(beanNameLocal));
+        assertTrue("custom local reference of bean with local is invalid", lbean.localMethod("default test").contains(beanNameLocal));
 
         // -----------------------------------------------------------------------
         // Lookup with custom of No-Interface bean with Remote
@@ -456,12 +457,12 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                          "/" + beanName);
 
         // Verify the reference is valid by using it....
-        assertEquals(beanNameRemote, bean.getBeanName());
+        assertEquals("custom no-interface reference of bean with remote is invalid", beanNameRemote, bean.getBeanName());
 
         RemoteBusiness rbean = (RemoteBusiness) ivContext.lookup(customPrefixRemote + "/" + beanNameRemote);
 
         // Verify the reference is valid by using it....
-        assertTrue(rbean.remoteMethod("default test").contains(beanNameRemote));
+        assertTrue("custom remote reference of bean with remote is invalid", rbean.remoteMethod("default test").contains(beanNameRemote));
 
         // -----------------------------------------------------------------------
         // Lookup with custom of No-Interface bean with Component
@@ -473,14 +474,14 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
                                                              "/" + beanName);
 
             // Verify the reference is valid by using it....
-            assertEquals(beanNameComp, bean.getBeanName());
+            assertEquals("custom no-interface reference of bean with component is invalid", beanNameComp, bean.getBeanName());
 
             LocalHome lhome = (LocalHome) ivContext.lookup("ejblocal:" + customPrefixComp +
                                                            "/" + beanNameComp);
 
             // Verify the reference is valid by using it....
             LocalComponent cbean = lhome.create();
-            assertTrue(cbean.localMethod("default test").contains(beanNameComp));
+            assertTrue("custom component reference of bean with component is invalid", cbean.localMethod("default test").contains(beanNameComp));
         }
     }
 }
