@@ -57,37 +57,7 @@ See [this guide](https://openliberty.io/guides/getting-started.html)  to learn h
 
 ### Command Line
 
-The bin directory contains a server script to help control the server process.
-The script supports the following actions:
-
-Command| Does...
-:-----:|-----
-`create`|creates a new server
-`start`|launches the server as a background process
-`run`|launches the server in the foreground
-`debug`|launches the server in the foreground with JVM debug options
-`stop`|stops a running server
-`status`|check to see if a specified server is running
-`package`|packages server runtime and target server configuration/application(s) into zip archive file
-`dump`|dump diagnostic information from the server into an archive
-`javadump`|dump diagnostic information from the server JVM
-`list`|list existing servers
-`version`|displays the version of the server runtime
-`pause`|pause all the components in the server that can be paused
-`resume`|resume all paused components in the server
-`help`|get command-line/script help, including descriptions of additional options
-
-To use the script on Windows (the .bat extension is optional):
-
-    bin\server.bat create <serverName>
-    bin\server.bat start <serverName>
-    bin\server.bat help
-
-To use the script on other platforms:
-
-    bin/server create <serverName>
-    bin/server start <serverName>
-    bin/server help
+* [This reference](https://openliberty.io/docs/ref/command/) demonstrates the basic server operation commands.
 
 
 ### Open Liberty Docs
