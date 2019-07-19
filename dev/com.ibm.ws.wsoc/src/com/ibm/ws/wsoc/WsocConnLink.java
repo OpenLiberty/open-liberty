@@ -90,6 +90,7 @@ public class WsocConnLink {
 
     private final int closeFrameReadTimeout = 30000; // 30 seconds to wait for a close frame seems reasonable
     private final int WAIT_ON_WRITE_TO_CLOSE = 5500; // watchdog timer on waiting to write a close frame once a close has been initiated.
+    private final int WAIT_ON_READ_TO_CLOSE = 8500; // watchdog timer on waiting to cancel a read once a close has been initiated.
 
     public Object linkSync = new Object() {};
     public boolean readNotifyTriggered = false;
@@ -178,23 +179,6 @@ public class WsocConnLink {
         WsocReadCallback wrc = new WsocReadCallback();
         wrc.setConnLinkCallback(this);
         return (wrc);
-    }
-
-    public boolean okToReadOnWire() {
-        synchronized (linkSync) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "readLinkStatus: " + readLinkStatus);
-            }
-            if ((readLinkStatus == READ_LINK_STATUS.BEFORE_READ_ON_WIRE) || (readLinkStatus == READ_LINK_STATUS.OK_TO_READ)) {
-                readLinkStatus = READ_LINK_STATUS.READ_ON_WIRE;
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "readLinkStatus: " + readLinkStatus);
-                }
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 
     public OK_TO_READ okToStartRead() {
@@ -738,10 +722,10 @@ public class WsocConnLink {
 
                 try {
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "linkSync.wait(). waiting on read to clear");
+                        Tr.debug(tc, "linkSync.wait(). waiting on read to clear.");
                     }
                     while (readNotifyTriggered == false) {
-                        linkSync.wait();
+                        linkSync.wait(WAIT_ON_READ_TO_CLOSE);
                     }
                     if (readLinkStatus == READ_LINK_STATUS.CLOSE_REQUESTED_FROM_IDLE_TIMEOUT || closeFrameState == CLOSE_FRAME_STATE.ANTICIPATING) {
                         // cancelling the outstanding (idle) read appears to have worked
@@ -972,8 +956,19 @@ public class WsocConnLink {
                 timeout = closeFrameReadTimeout;
             }
 
-            if (okToReadOnWire()) {
-                rrc.read(numBytes, wrc, forceQueue, timeout);
+            // need to test if the read is ok and set the read link status and do the async read inside  the sync block,
+            // to avoid race conditions.  With forceQueue true, the async read thread will not do the actual read.
+            synchronized (linkSync) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "readLinkStatus: " + readLinkStatus);
+                }
+                if ((readLinkStatus == READ_LINK_STATUS.BEFORE_READ_ON_WIRE) || (readLinkStatus == READ_LINK_STATUS.OK_TO_READ)) {
+                    readLinkStatus = READ_LINK_STATUS.READ_ON_WIRE;
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "readLinkStatus: " + readLinkStatus);
+                    }
+                    rrc.read(numBytes, wrc, forceQueue, timeout);
+                }
             }
 
         } else {
