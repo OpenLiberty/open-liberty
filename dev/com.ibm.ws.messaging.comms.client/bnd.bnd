@@ -59,7 +59,6 @@ Service-Component: \
      immediate:=true,\
    com.ibm.ws.messaging.comms.wasJmsOutbound;\
      implementation:=com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;\
-     executorService=java.util.concurrent.ExecutorService;\
      commsClientService=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;\
      tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
      sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
