@@ -11,7 +11,7 @@ unzip -qq tempPackagingDir/openliberty-*.zip -d tempPackagingDir/tempTar
 
 #setting up the server.env
 mkdir -p tempPackagingDir/tempTar/wlp/etc
-touch tempPackagingDir/tempTar/wlp/etc/server.env && echo "WLP_USER_DIR=/var/local/openliberty/usr" >> tempPackagingDir/tempTar/wlp/etc/server.env && echo "PID_DIR=/var/run/openliberty" >> tempPackagingDir/tempTar/wlp/etc/server.env
+touch tempPackagingDir/tempTar/wlp/etc/server.env && echo "WLP_USER_DIR=/var/lib/openliberty/usr" >> tempPackagingDir/tempTar/wlp/etc/server.env && echo "PID_DIR=/var/run/openliberty" >> tempPackagingDir/tempTar/wlp/etc/server.env
 
 #pack contents into .tar.gz
 tar -czf openliberty-$driverVer.tar.gz -C tempPackagingDir/tempTar/wlp .
