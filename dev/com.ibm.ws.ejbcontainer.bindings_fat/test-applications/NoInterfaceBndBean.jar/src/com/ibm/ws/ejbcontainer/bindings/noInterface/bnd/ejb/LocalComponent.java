@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.bindings.fat;
+package com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.ejb.EJBLocalObject;
 
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                DefaultBindingsTest.class
-})
-public class FATSuite {
+/**
+ * EJB 2.1 Local interface for Enterprise Beans
+ */
+public interface LocalComponent extends EJBLocalObject {
+    public String localMethod(String text);
 }
