@@ -196,7 +196,7 @@ public class FATReaperMultipleIntrospectionTest{
             Assert.fail("Could not find introspector output in dump archive");
         }
 
-        ZipCachingIntrospectorOutput output = new ZipCachingIntrospectorOutput(firstDump.getZipCachingDumpStream(), "TEST");
+        ZipCachingIntrospectorOutput output = new ZipCachingIntrospectorOutput(firstDump.getZipCachingDumpStream());
 
         List<String> archiveNames = output.getZipHandleArchiveNames();
         logInfo(methodName, archiveNames.toString());
@@ -252,7 +252,7 @@ public class FATReaperMultipleIntrospectionTest{
             //make and pull in the dump which should have everything closed
             server.executeServerScript("dump",null);
             recent = DumpArchive.getMostRecentDumpArchive(server);
-            recentOutput = new ZipCachingIntrospectorOutput(recent.getZipCachingDumpStream(), "TEST");
+            recentOutput = new ZipCachingIntrospectorOutput(recent.getZipCachingDumpStream());
             recentActiveAndPending = recentOutput.getOpenAndActiveArchiveNames();
 
             //first dump should have everything fully closed
@@ -273,7 +273,7 @@ public class FATReaperMultipleIntrospectionTest{
 
             //pull in the dump which has the newly opened resources
             recent = DumpArchive.getMostRecentDumpArchive(server);
-            recentOutput = new ZipCachingIntrospectorOutput(recent.getZipCachingDumpStream(), "TEST");
+            recentOutput = new ZipCachingIntrospectorOutput(recent.getZipCachingDumpStream());
             recentActiveAndPending = recentOutput.getOpenAndActiveArchiveNames();
 
             //verify that the two expected archives are open
@@ -285,7 +285,7 @@ public class FATReaperMultipleIntrospectionTest{
 
             //pull in the information on the last dump
             recent = DumpArchive.getMostRecentDumpArchive(server);
-            recentOutput = new ZipCachingIntrospectorOutput(recent.getZipCachingDumpStream(), "TEST");
+            recentOutput = new ZipCachingIntrospectorOutput(recent.getZipCachingDumpStream());
             recentActiveAndPending = recentOutput.getOpenAndActiveArchiveNames();
 
             //all the archives should be closed in the last dump

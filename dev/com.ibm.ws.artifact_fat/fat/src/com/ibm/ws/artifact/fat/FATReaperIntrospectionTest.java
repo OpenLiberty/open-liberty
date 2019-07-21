@@ -183,7 +183,7 @@ public class FATReaperIntrospectionTest{
         Assert.assertTrue(DumpArchive.ZIP_CACHING_INTROSPECTOR_FILE_NAME + " was not found in archive: " + dump.getName(), dump.doesZipCachingIntrospectorDumpExist());
 
         //make an introspection output object with the stream of the Zip Caching Introspector output file
-        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream(), "test") ;
+        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream()) ;
         
         //make sure there is output for the ZipFileHandles
         Assert.assertNotNull("Zip Reaper Introspector Output does not have ZipFileHandle section",dumpOutput.getActiveAndCachedZipFileHandles());
@@ -231,7 +231,7 @@ public class FATReaperIntrospectionTest{
         Assert.assertTrue(DumpArchive.ZIP_CACHING_INTROSPECTOR_FILE_NAME + " was not found in archive: " + dump.getName(), dump.doesZipCachingIntrospectorDumpExist());
 
         //make an introspection output object with the stream of the Zip Caching Introspector output file
-        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream(), "TEST") ;
+        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream()) ;
 
         
         //get the value of the the ZipReaperThread
@@ -268,7 +268,7 @@ public class FATReaperIntrospectionTest{
         Assert.assertTrue(DumpArchive.ZIP_CACHING_INTROSPECTOR_FILE_NAME + " was not found in archive: " + dump.getName(), dump.doesZipCachingIntrospectorDumpExist());
 
         //make an introspection output object with the stream of the Zip Caching Introspector output file
-        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream(), "test");
+        ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream());
 
          //store the raw output for each ZipFileData introspection
         List<String> zipFileDataIntrospections = dumpOutput.getAllZipFileDataIntrospections();
