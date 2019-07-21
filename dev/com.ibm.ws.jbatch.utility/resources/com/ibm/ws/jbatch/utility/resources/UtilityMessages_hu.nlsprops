@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Hiba: {0}
+error.inputConsoleNotAvailable=A beviteli konzol nem \u00e9rhet\u0151 el.
+error.missingIO=Hiba, hi\u00e1nyz\u00f3 I/O eszk\u00f6z: {0}.
+
+usage=Haszn\u00e1lat:  {0}
+task.unknown=Ismeretlen feladat: {0}
+for.task.usage=Feladatle\u00edr\u00e1s \u00e9s haszn\u00e1lat: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Hi\u00e1nyz\u00f3 k\u00f6telez\u0151 argumentum: {0}.
+argument.unrecognized=Ismeretlen argumentum: {0}.
+argument.unrecognized.expected=Ismeretlen argumentum: {0}. Tal\u00e1n erre gondolt: {1}.
+argument.invalid.value=Elfogadhatatlan \u00e9rt\u00e9k az argumentumhoz: {0}={1}. Elfogadhat\u00f3 \u00e9rt\u00e9kek: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: A(z) {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa {0} feladat elk\u00fcld\u00e9sre ker\u00fclt.
+job.submitted.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.submitted.useraction=Nincs teend\u0151.
+
+job.restarted=CWWKY0102I: A(z) {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa {0} feladathoz egy \u00fajraind\u00edt\u00e1si k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre.
+job.restarted.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.restarted.useraction=Nincs teend\u0151.
+
+job.stopped=CWWKY0103I: A(z) {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa {0} feladat le\u00e1llt. K\u00f6teg\u00e1llapot: {2}. Kil\u00e9p\u00e9si \u00e1llapot: {3}
+job.stopped.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.stopped.useraction=Nincs teend\u0151.
+
+job.stop.submitted=CWWKY0104I: A(z) {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa {0} feladathoz egy le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre.
+job.stop.submitted.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.stop.submitted.useraction=Nincs teend\u0151.
+
+job.finished=CWWKY0105I: A(z) {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa {0} feladat befejez\u0151d\u00f6tt. K\u00f6teg\u00e1llapot: {2}. Kil\u00e9p\u00e9si \u00e1llapot: {3}
+job.finished.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.finished.useraction=Nincs teend\u0151.
+
+job.instance.record=CWWKY0106I: Feladatp\u00e9ld\u00e1ny: {0}
+job.instance.record.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.instance.record.useraction=Nincs teend\u0151.
+
+job.execution.record=CWWKY0107I: Feladatv\u00e9grehajt\u00e1s: {0}
+job.execution.record.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.execution.record.useraction=Nincs teend\u0151.
+
+waiting.for.termination=CWWKY0108I: V\u00e1rakoz\u00e1s a feladatv\u00e9grehajt\u00e1s lez\u00e1r\u00e1s\u00e1ra: {0}
+waiting.for.termination.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+waiting.for.termination.useraction=Nincs teend\u0151.
+
+waiting.for.latest.job.execution=CWWKY0109I: V\u00e1rakoz\u00e1s a(z) {0} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa feladat legut\u00f3bbi feladatv\u00e9grehajt\u00e1s\u00e1ra
+waiting.for.latest.job.execution.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+waiting.for.latest.job.execution.useraction=Nincs teend\u0151.
+
+waiting.for.next.job.execution=CWWKY0110I: V\u00e1rakoz\u00e1s a(z) {0} feladatv\u00e9grehajt\u00e1s ut\u00e1ni k\u00f6vetkez\u0151 feladatv\u00e9grehajt\u00e1sra.
+waiting.for.next.job.execution.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+waiting.for.next.job.execution.useraction=Nincs teend\u0151.
+
+joblog.to.file=CWWKY0111I: A munkanapl\u00f3 a(z) {0} f\u00e1jlba ker\u00fclt \u00edr\u00e1sra
+joblog.to.file.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+joblog.to.file.useraction=Nincs teend\u0151.
+
+failover.to.next.target=CWWKY0112I: A k\u00f6tegkezel\u0151h\u00f6z int\u00e9zett k\u00e9r\u00e9s meghi\u00fasult itt: {0}. A k\u00e9r\u00e9s tov\u00e1bb\u00edt\u00e1sa a k\u00f6vetkez\u0151 helyen l\u00e9v\u0151 k\u00f6tegkezel\u0151h\u00f6z: {1}. A hiba: {2}
+failover.to.next.target.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+failover.to.next.target.useraction=Nincs teend\u0151.
+
+joblog.location=CWWKY0113I: A(z) {0} feladat {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa munkanapl\u00f3ja le lesz t\u00f6ltve a feladat befejez\u00e9sekor. \
+Ezalatt megtekintheti a munkanapl\u00f3kat a k\u00f6vetkez\u0151 hivatkoz\u00e1sokon: {2}
+joblog.location.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+joblog.location.useraction=Nincs teend\u0151.
+
+joblog.download=CWWKY0114I: A(z) {0} feladat {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa munkanapl\u00f3j\u00e1nak let\u00f6lt\u00e9se folyamatban van: {2}.
+joblog.download.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+joblog.download.useraction=Nincs teend\u0151.
+
+job.purged=CWWKY0115I: A(z) {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa {0} feladat v\u00e9gleges t\u00f6rl\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt.
+job.purged.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.purged.useraction=Nincs teend\u0151.
+
+shutdown.hook=CWWKY0116I: Az \u00fcgyf\u00e9l seg\u00e9dprogramot le\u00e1ll\u00edtott\u00e1k, mik\u00f6zben a(z) {1} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa {0} feladat befejez\u0151d\u00e9s\u00e9re v\u00e1rt.
+shutdown.hook.explanation=Ez az \u00fczenet olyankor ker\u00fcl kibocs\u00e1t\u00e1sra, amikor a parancssori seg\u00e9dprogram le\u00e1ll\u00edt\u00e1s\u00e1t kik\u00e9nyszer\u00edtik, mik\u00f6zben egy feladat befejez\u0151d\u00e9s\u00e9re v\u00e1rakozik. \
+V\u00e1laszul a seg\u00e9dprogram le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9s elk\u00fcld\u00e9s\u00e9vel megpr\u00f3b\u00e1lja le\u00e1ll\u00edtani a feladatot.
+shutdown.hook.useraction=Nincs teend\u0151.
+
+job.purged.multi=CWWKY0117I: A(z) {0} p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00fa feladat ki\u00fcr\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet a k\u00f6vetkez\u0151 \u00e1llapotot adta vissza: {1}. \u00dczenet: {2} \u00c1tir\u00e1ny\u00edt\u00e1si URL: {3}
+job.purged.multi.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.purged.multi.useraction=Nincs teend\u0151.
+
+job.parms.vals=CWWKY0118I: A v\u00e9gleges feladatparam\u00e9ter-k\u00e9szlet: {0}
+job.parms.vals.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+job.parms.vals.useraction=Nincs teend\u0151.
+
+control.props.vals=CWWKY0119I: A v\u00e9gleges vez\u00e9rl\u0151elem tulajdons\u00e1gk\u00e9szlet: {0}
+control.props.vals.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+control.props.vals.useraction=Nincs teend\u0151.
+
+control.props.file.warning=CWWKY0120W: A(z) {0} tulajdons\u00e1g vez\u00e9rl\u0151elem tulajdons\u00e1gf\u00e1jlban nem haszn\u00e1lhat\u00f3 \u00e9s figyelmen k\u00edv\u00fcl marad. A(z) {0} tulajdons\u00e1got csak a parancssorban lehet haszn\u00e1lni.
+control.props.file.warning.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+control.props.file.warning.useraction=Nincs teend\u0151. \
+
+

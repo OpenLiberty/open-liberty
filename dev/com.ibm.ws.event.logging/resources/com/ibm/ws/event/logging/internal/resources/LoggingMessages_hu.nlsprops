@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.event.logging/resources/com/ibm/ws/event/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR WebSphere Application Server Event Logging
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# Messages in the range TRAS3100 to 3299 are reserved for this messages file.
+# -------------------------------------------------------------------------------------------------
+
+# updated the old TRAS0113I to TRAS3100I
+EVENT_LOGGING_STARTUP_INFO=TRAS3100I: Az esem\u00e9nynapl\u00f3z\u00e1s enged\u00e9lyezve. Minden {0} k\u00e9r\u00e9sb\u0151l egy mintav\u00e9telezve lesz. Csak a(z) {1}ms id\u0151tartamot meghalad\u00f3 \u00e9s {2} t\u00edpus\u00fa esem\u00e9nyek lesznek napl\u00f3zva.  
+EVENT_LOGGING_STARTUP_INFO.explanation=Az esem\u00e9nynapl\u00f3z\u00e1si szolg\u00e1ltat\u00e1s az \u00fczenetben jelzett konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sokkal elindult. 
+EVENT_LOGGING_STARTUP_INFO.useraction=Semmit sem kell tennie.

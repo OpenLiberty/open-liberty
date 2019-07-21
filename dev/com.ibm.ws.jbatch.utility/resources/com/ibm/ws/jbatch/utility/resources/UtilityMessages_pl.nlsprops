@@ -1,0 +1,140 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=B\u0142\u0105d: {0}
+error.inputConsoleNotAvailable=Konsola wej\u015bciowa jest niedost\u0119pna.
+error.missingIO=B\u0142\u0105d. Brak urz\u0105dzenia we/wy: {0}.
+
+usage=U\u017cycie: {0}
+task.unknown=Nieznane zadanie: {0}
+for.task.usage=Opis zadania i sk\u0142adnia: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Brak wymaganego argumentu: {0}.
+argument.unrecognized=Nierozpoznany argument: {0}.
+argument.unrecognized.expected=Nierozpoznany argument: {0}. By\u0107 mo\u017ce chodzi\u0142o o: {1}.
+argument.invalid.value=Niedopuszczalna warto\u015b\u0107 \
+argumentu: {0}={1}. Dopuszczalne warto\u015bci: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: Zadanie {0} z identyfikatorem instancji {1} zosta\u0142o wprowadzone.
+job.submitted.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.submitted.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.restarted=CWWKY0102I: Wprowadzono \u017c\u0105danie restartu dla zadania {0} z identyfikatorem instancji {1}.
+job.restarted.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.restarted.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.stopped=CWWKY0103I: Zadanie {0} z identyfikatorem instancji {1} zosta\u0142o zatrzymane. Status zadania wsadowego: {2}. Status wyj\u015bcia: {3}
+job.stopped.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.stopped.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.stop.submitted=CWWKY0104I: Wprowadzono \u017c\u0105danie zatrzymania dla zadania {0} z identyfikatorem instancji {1}.
+job.stop.submitted.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.stop.submitted.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.finished=CWWKY0105I: Zadanie {0} z identyfikatorem instancji {1} zosta\u0142o zako\u0144czone. Status zadania wsadowego: {2}. Status wyj\u015bcia: {3}
+job.finished.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.finished.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.instance.record=CWWKY0106I: Instancja zadania: {0}
+job.instance.record.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.instance.record.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.execution.record=CWWKY0107I: Wykonywanie zadania: {0}
+job.execution.record.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.execution.record.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+waiting.for.termination=CWWKY0108I: Oczekiwanie na zako\u0144czenie wykonywania zadania: {0}
+waiting.for.termination.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+waiting.for.termination.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+waiting.for.latest.job.execution=CWWKY0109I: Oczekiwanie na wykonanie ostatniego zadania dla zadania o identyfikatorze instancji {0}
+waiting.for.latest.job.execution.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+waiting.for.latest.job.execution.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+waiting.for.next.job.execution=CWWKY0110I: Oczekiwanie na wykonanie kolejnego zadania po wykonaniu zadania: {0}
+waiting.for.next.job.execution.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+waiting.for.next.job.execution.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+joblog.to.file=CWWKY0111I: Dziennik zada\u0144 zosta\u0142 \
+zapisany do pliku {0}
+joblog.to.file.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+joblog.to.file.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+failover.to.next.target=CWWKY0112I: Nie powiod\u0142o si\u0119 \u017c\u0105danie skierowane do mened\u017cera zada\u0144 wsadowych w {0}. Przekazywanie \u017c\u0105dania do mened\u017cera zada\u0144 wsadowych w {1}. Niepowodzenie: {2}
+failover.to.next.target.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+failover.to.next.target.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+joblog.location=CWWKY0113I: Dziennik zada\u0144 zwi\u0105zany z zadaniem {0} o identyfikatorze instancji {1} zostanie pobrany po zako\u0144czeniu zadania. \
+Do tego czasu mo\u017cesz przegl\u0105da\u0107 dziennik zada\u0144, korzystaj\u0105c z nast\u0119puj\u0105cych odsy\u0142aczy: {2}
+joblog.location.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+joblog.location.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+joblog.download=CWWKY0114I: Dziennik zada\u0144 zwi\u0105zany z zadaniem {0} o identyfikatorze instancji {1} jest pobierany za po\u015brednictwem {2}.
+joblog.download.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+joblog.download.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.purged=CWWKY0115I: Zadanie {0} z identyfikatorem instancji {1} zosta\u0142o pomy\u015blnie wyczyszczone.
+job.purged.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.purged.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+shutdown.hook=CWWKY0116I: Program narz\u0119dziowy klienta zosta\u0142 wy\u0142\u0105czony podczas oczekiwania na zako\u0144czenie zadania {0} o identyfikatorze instancji {1}.
+shutdown.hook.explanation=Ten komunikat jest wy\u015bwietlany, je\u015bli zamkni\u0119cie programu narz\u0119dziowego wiersza komend zostanie wymuszone podczas oczekiwania na zako\u0144czenie zadania. \
+W odpowiedzi program narz\u0119dziowy podejmie pr\u00f3b\u0119 zatrzymania zadania poprzez wys\u0142anie \u017c\u0105dania zatrzymania.
+shutdown.hook.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.purged.multi=CWWKY0117I: Pr\u00f3ba wyczyszczenia \
+zadania z identyfikatorem instancji {0} zwr\u00f3ci\u0142a status: {1}. Komunikat: \
+{2} Adres URL przekierowania: {3}
+job.purged.multi.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.purged.multi.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+job.parms.vals=CWWKY0118I: Ostateczny zestaw parametr\u00f3w zadania: {0}
+job.parms.vals.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+job.parms.vals.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+control.props.vals=CWWKY0119I: Ostateczny zestaw parametr\u00f3w kontrolera: {0}
+control.props.vals.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+control.props.vals.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+control.props.file.warning=CWWKY0120W: Nie mo\u017cna u\u017cy\u0107 w\u0142a\u015bciwo\u015bci {0} w pliku w\u0142a\u015bciwo\u015bci sterowania i zostanie on zignorowany. W\u0142a\u015bciwo\u015bci {0} mo\u017cna u\u017cy\u0107 tylko w wierszu komend.
+control.props.file.warning.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+control.props.file.warning.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+

@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security dla \u017cadnej us\u0142ugi Web Service. Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zarejestrowania programu \u0142aduj\u0105cego strategii WS-Security w strukturze CXF: [{0}]
+error.policy.notloaded.explanation=Program \u0142aduj\u0105cy strategii WS-Security nie mo\u017ce zosta\u0107 zarejestrowany w strukturze CXF podczas uruchamiania serwera. Z powodu tego b\u0142\u0119du \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie zostanie wywo\u0142ane dla \u017cadnego komunikatu SOAP i ograniczenia zabezpiecze\u0144 WS-Security nie zostan\u0105 dodane.
+error.policy.notloaded.useraction=Spr\u00f3buj usun\u0105\u0107 b\u0142\u0105d opisany w komunikacie.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security dla \u017cadnej aplikacji klienckiej us\u0142ugi Web Service. Element konfiguracji klienta WS-Security wsSecurityClient nie istnieje w pliku server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=Sk\u0142adnik wsSecurity-1.1 jest w\u0142\u0105czony, ale komponent WS-Security nie mo\u017ce znale\u017a\u0107 elementu wsSecurityClient w pliku server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Je\u015bli ograniczenia zabezpiecze\u0144 WS-Security s\u0105 wymagane dla aplikacji klienckiej us\u0142ugi Web Service, dodaj wymagany element konfiguracji wsSecurityClient do pliku server.xml. 
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security dla \u017cadnej aplikacji dostawcy us\u0142ug Web Service. Element konfiguracji dostawcy WS-Security wsSecurityProvider nie istnieje w pliku server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=Sk\u0142adnik wsSecurity-1.1 jest w\u0142\u0105czony, ale komponent WS-Security nie mo\u017ce znale\u017a\u0107 elementu wsSecurityProvider w pliku server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Je\u015bli ograniczenia zabezpiecze\u0144 WS-Security s\u0105 wymagane dla aplikacji dostawcy us\u0142ug Web Service, dodaj wymagany element konfiguracji wsSecurityProvider do pliku server.xml. 
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Konfiguracji znacznika programu wywo\u0142uj\u0105cego nie mo\u017cna zastosowa\u0107 do aplikacji dostawcy us\u0142ug WWW. Nazwa [{0}] podana dla elementu callerToken w konfiguracji elementu wsSecurityProvider w pliku server.xml jest niepoprawna. Poprawne warto\u015bci to: [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=Nazwa podana dla elementu callerToken w konfiguracji elementu wsSecurityProvider w pliku server.xml jest niepoprawna.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=Sprawd\u017a, czy w pliku server.xml okre\u015blono obs\u0142ugiwan\u0105 warto\u015b\u0107 dla elementu callerToken. Poprawne warto\u015bci s\u0105 wy\u015bwietlone w komunikacie o b\u0142\u0119dzie.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla us\u0142ugi Web Service. Nie mo\u017cna zidentyfikowa\u0107 elementu callerToken w komunikacie przychodz\u0105cym, poniewa\u017c istnieje wiele element\u00f3w UsernameToken w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_unt_exist_err.explanation=W pliku security.xml element callerToken jest ustawiony na warto\u015b\u0107 UsernameToken i nag\u0142\u00f3wek zabezpiecze\u0144 w przychodz\u0105cym komunikacie SOAP zawiera wiele element\u00f3w UsernameToken.  Z tego powodu \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie mo\u017ce okre\u015bli\u0107, kt\u00f3rego elementu UsernameToken u\u017cy\u0107 dla znacznika programu wywo\u0142uj\u0105cego.
+multiple_unt_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 konfiguracj\u0119 klienta, aby wysy\u0142a\u0107 tylko jeden element UsernameToken. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml. 
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E: Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla us\u0142ugi Web Service. Skonfigurowano element callerToken {0}, lecz nie ma znacznika {0} w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP. Nie mo\u017cna wybra\u0107 znacznika programu wywo\u0142uj\u0105cego.
+no_caller_exist_err.explanation=Element callerToken skonfigurowany w pliku server.xml nie jest obecny w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP. 
+no_caller_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 konfiguracj\u0119 klienta, aby wysy\u0142a\u0107 poprawny znacznik programu wywo\u0142uj\u0105cego. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml.
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla us\u0142ugi Web Service, przyczyna: [{0}].
+error_authenticate.explanation=Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla znacznika programu wywo\u0142uj\u0105cego pobranego z nag\u0142\u00f3wka zabezpiecze\u0144 SOAP. Przyczyna b\u0142\u0119du jest opisana w komunikacie.
+error_authenticate.useraction=Spr\u00f3buj usun\u0105\u0107 b\u0142\u0105d opisany w komunikacie.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW. Znacznik programu wywo\u0142uj\u0105cego nie mo\u017ce zosta\u0107 zidentyfikowany w komunikacie przychodz\u0105cym. Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 true (warto\u015b\u0107 domy\u015blna), a istnieje wiele element\u00f3w EndorsingSupportingTokens w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_endorsing_token_err.explanation=Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 true (warto\u015b\u0107 domy\u015blna), a istnieje wiele element\u00f3w EndorsingSupportingTokens w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.  Poniewa\u017c pojedynczy znacznik programu wywo\u0142uj\u0105cego musi istnie\u0107 w komunikacie, aby mo\u017cna by\u0142o pomy\u015blnie wybra\u0107 znacznik programu wywo\u0142uj\u0105cego, stosowanie wielu element\u00f3w EndorsingSupportingTokens jest niedozwolone. 
+multiple_endorsing_token_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 strategi\u0119 w taki spos\u00f3b, aby tylko jeden element endorsingSupportingToken by\u0142 do\u0142\u0105czany do komunikatu. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml. 3) Ustaw element endorsingSupportingToken na warto\u015b\u0107 false w konfiguracji elementu callerToken w pliku server.xml.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW. Znacznik programu wywo\u0142uj\u0105cego nie mo\u017ce zosta\u0107 zidentyfikowany w komunikacie przychodz\u0105cym. Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 false, a istnieje wiele znacznik\u00f3w podpisu Asymmetric w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_asymmetric_token_err.explanation=Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 false, a istnieje wiele znacznik\u00f3w podpisu Asymmetric w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.  Poniewa\u017c pojedynczy znacznik programu wywo\u0142uj\u0105cego musi istnie\u0107 w komunikacie, aby mo\u017cna by\u0142o pomy\u015blnie wybra\u0107 znacznik programu wywo\u0142uj\u0105cego, stosowanie wielu element\u00f3w Asymmetric jest niedozwolone. 
+multiple_asymmetric_token_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 strategi\u0119 w taki spos\u00f3b, aby tylko jeden znacznik podpisu Asymmetric by\u0142 do\u0142\u0105czany do komunikatu. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml.
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: Asercja NotBefore [{0}] w znaczniku SAML jest spoza zakresu. Bie\u017c\u0105cy czas: [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi [{2}] s.
+saml_token_not_yet_valid.explanation=Asercja NotBefore w znaczniku SAML okre\u015bla czas, kiedy znacznik stanie si\u0119 wa\u017cny. Nie mo\u017cna u\u017cywa\u0107 znacznika przed tym czasem. Aby mo\u017cna by\u0142o u\u017cywa\u0107 tego znacznika SAML, warto\u015b\u0107 asercji NotBefore musi by\u0107 momentem z przesz\u0142o\u015bci. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji.
+saml_token_not_yet_valid.useraction=Upewnij si\u0119, \u017ce data i godzina w systemie dostawcy to\u017csamo\u015bci s\u0105 zsynchronizowane z dostawc\u0105 us\u0142ugi pojedynczego logowania SAML Web SSO, lub zwi\u0119ksz przesuni\u0119cie zegara.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: Asercja NotOnOrAfter [{0}] w znaczniku SAML jest spoza zakresu. Bie\u017c\u0105cy czas: [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi [{2}] s.
+saml_token_expired.explanation=Asercja NotOnOrAfter w znaczniku SAML okre\u015bla czas, kiedy znacznik utraci wa\u017cno\u015b\u0107. Znacznik musi zosta\u0107 u\u017cyty przed tym czasem. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji.
+saml_token_expired.useraction=Upewnij si\u0119, \u017ce data i godzina w systemie dostawcy to\u017csamo\u015bci s\u0105 zsynchronizowane z dostawc\u0105 us\u0142ugi pojedynczego logowania SAML Web SSO, lub zwi\u0119ksz przesuni\u0119cie zegara.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: Warto\u015b\u0107 IssueInstant [{0}] w znaczniku SAML jest spoza zakresu. Bie\u017c\u0105cy czas: [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi [{2}] s.
+saml_token_issued_too_long_ago.explanation=Asercja IssueInstant w znaczniku SAML mia\u0142a miejsce zbyt daleko w przesz\u0142o\u015bci, aby ten znacznik m\u00f3g\u0142 zosta\u0107 u\u017cyty. Znacznik SAML musi zosta\u0107 u\u017cyty w skonfigurowanym czasie od momentu wydania. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji.
+saml_token_issued_too_long_ago.useraction=Upewnij si\u0119, \u017ce data i godzina w systemie dostawcy to\u017csamo\u015bci s\u0105 zsynchronizowane z dostawc\u0105 us\u0142ugi pojedynczego logowania SAML Web SSO, lub zwi\u0119ksz przesuni\u0119cie zegara.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: Warto\u015b\u0107 IssueInstant [{0}] w znaczniku SAML jest z przysz\u0142o\u015bci i dlatego jest spoza zakresu. Bie\u017c\u0105cy czas: [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi [{2}] s.
+saml_token_issue_instant_in_future.explanation=Asercja IssueInstant w znaczniku SAML zosta\u0142a ustawiona na czas w przysz\u0142o\u015bci i dlatego nie jest uwa\u017cana za wa\u017cn\u0105. Warto\u015b\u0107 IssueInstant musi by\u0107 ustawiona na czas w przesz\u0142o\u015bci, aby znacznik SAML by\u0142 wa\u017cny. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji.
+saml_token_issue_instant_in_future.useraction=Upewnij si\u0119, \u017ce data i godzina w systemie dostawcy to\u017csamo\u015bci s\u0105 zsynchronizowane z dostawc\u0105 us\u0142ugi pojedynczego logowania SAML Web SSO, lub zwi\u0119ksz przesuni\u0119cie zegara.
+
+failed_to_extract_saml_element=CWWKW0218W: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wyodr\u0119bnienia elementu SAML z udost\u0119pnionego znacznika SAML. Wyj\u0105tek: [{0}]
+failed_to_extract_saml_element.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas analizowania znacznika SAML. Znacznik m\u00f3g\u0142 zosta\u0107 zniekszta\u0142cony lub wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas pr\u00f3by przeanalizowania \u0142a\u0144cucha znacznika.
+failed_to_extract_saml_element.useraction=Sprawd\u017a dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wyodr\u0119bnienia znacznika SAML z podmiotu. Wyj\u0105tek: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyodr\u0119bniania znacznika SAML z podmiotu.
+failed_to_extract_saml_token_from_subject.useraction=Sprawd\u017a dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du.
+
+failed_to_obtain_subject_info=CWWKW0220E: Uwierzytelnianie nie powiod\u0142o si\u0119 z powodu wyst\u0105pienia wyj\u0105tku podczas uzyskiwania informacji o podmiocie z asercji SAML. Wyj\u0105tek: [{0}]
+failed_to_obtain_subject_info.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania informacji o podmiocie z udost\u0119pnionego znacznika SAML.
+failed_to_obtain_subject_info.useraction=Sprawd\u017a dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du.
+
+failed_to_authenticate=CWWKW0221E: Uwierzytelnianie nie powiod\u0142o si\u0119 z powodu nieoczekiwanego wyj\u0105tku. Wyj\u0105tek: [{0}].
+failed_to_authenticate.explanation=Prawdopodobnie wyst\u0105pi\u0142 problem podczas uzyskiwania informacji o podmiocie lub to\u017csamo\u015bci w czasie interakcji z rejestrem u\u017cytkownik\u00f3w.
+failed_to_authenticate.useraction=Sprawd\u017a dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du. Sprawd\u017a, czy informacje o podmiocie w znaczniku SAML s\u0105 odwzorowywane na oczekiwane warto\u015bci w skonfigurowanym rejestrze u\u017cytkownik\u00f3w.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: Sprawdzanie poprawno\u015bci znacznika nie powiod\u0142o si\u0119, poniewa\u017c odebrany typ has\u0142a UsernameToken [{0}] nie jest zgodny z wymaganym typem has\u0142a [{0}].
+password_type_mismatch.explanation=Typ has\u0142a w znaczniku UsernameToken nie jest zgodny z wymaganym typem has\u0142a zdefiniowanym w strategii WS-Security. Te typy musz\u0105 by\u0107 takie same. Klient us\u0142ugi WWW musi dokona\u0107 asercji tego samego typu has\u0142a, kt\u00f3re jest zdefiniowane w strategii WS-Security, aby sprawdzenie poprawno\u015bci powiod\u0142o si\u0119.
+password_type_mismatch.useraction=Sprawd\u017a, czy klient us\u0142ugi WWW dokonuje asercji tego samego typu has\u0142a, kt\u00f3re zosta\u0142o zdefiniowane w strategii WS-Security.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: Sprawdzenie poprawno\u015bci znacznika nie powiod\u0142o si\u0119, poniewa\u017c wykryto niestandardowy typ has\u0142a, a dane konfiguracyjne udost\u0119pnione w \u017c\u0105daniu okre\u015blaj\u0105, \u017ce niestandardowe typy has\u0142a nie jest obs\u0142ugiwane.
+cannot_handle_custom_password_types.explanation=Has\u0142o w znaczniku UsernameToken nie by\u0142o zakodowane ani nie wyst\u0119powa\u0142o w postaci zwyk\u0142ego tekstu i dlatego by\u0142o uwa\u017cane za niestandardowy typ has\u0142a. Konfiguracja w danych \u017c\u0105dania okre\u015bla, \u017ce niestandardowe typy hase\u0142 nie s\u0105 obs\u0142ugiwane.
+cannot_handle_custom_password_types.useraction=Sprawd\u017a, czy klient us\u0142ugi WWW u\u017cywa typu has\u0142a zgodnego z definicj\u0105 w profilu UsernameToken, lub skonfiguruj dostawc\u0119 us\u0142ugi WWW pod k\u0105tem akceptowania niestandardowych typ\u00f3w has\u0142a.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: Nazwa u\u017cytkownika lub has\u0142o podane w znaczniku UsernameToken by\u0142y puste. Sprawd\u017a znacznik UsernameToken, aby upewni\u0107 si\u0119, czy w znaczniku udost\u0119pniono niepust\u0105 nazw\u0119 u\u017cytkownika i niepuste has\u0142o.
+empty_user_or_password.explanation=Brak wpis\u00f3w nazwy u\u017cytkownika lub has\u0142a w znaczniku UsernameToken lub wpisy te maj\u0105 puste warto\u015bci.
+empty_user_or_password.useraction=Sprawd\u017a, czy nazwa u\u017cytkownika i has\u0142o zosta\u0142y udost\u0119pnione w znaczniku. Je\u015bli nie udost\u0119pniono nazwy u\u017cytkownika i has\u0142a, uzyskaj nowy znacznik UsernameToken.
+
+registry_exception_checking_password=CWWKW0225E: Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania dost\u0119pu do rejestru u\u017cytkownik\u00f3w lub podczas sprawdzania has\u0142a dla u\u017cytkownika [{0}]. Wyj\u0105tek: [{1}]
+registry_exception_checking_password.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzyskiwania odwo\u0142ania do rejestru u\u017cytkownik\u00f3w z us\u0142ugi rejestru u\u017cytkownik\u00f3w lub wyst\u0105pi\u0142 wyj\u0105tek podczas sprawdzania has\u0142a dla danego u\u017cytkownika.
+registry_exception_checking_password.useraction=Sprawd\u017a dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji o wyj\u0105tku. Upewnij si\u0119, \u017ce podane nazwa u\u017cytkownika i has\u0142o s\u0105 poprawne i odpowiadaj\u0105 wpisowi w skonfigurowanym rejestrze u\u017cytkownik\u00f3w.
+
+check_password_failed=CWWKW0226E: Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci u\u017cytkownika [{0}]. Sprawd\u017a, czy podane referencje nazwy u\u017cytkownika i has\u0142a s\u0105 poprawne.
+check_password_failed.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci podanego u\u017cytkownika wzgl\u0119dem skonfigurowanego rejestru u\u017cytkownik\u00f3w. Jest to prawdopodobnie spowodowane niezgodno\u015bci\u0105 nazwy u\u017cytkownika lub has\u0142a.
+check_password_failed.useraction=Sprawd\u017a podane referencje, aby upewni\u0107 si\u0119, \u017ce nazwa u\u017cytkownika i has\u0142o s\u0105 zgodne z wpisem w skonfigurowanym rejestrze u\u017cytkownik\u00f3w.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: Procedura obs\u0142ugi wywo\u0142ania zwrotnego has\u0142a zwr\u00f3ci\u0142a has\u0142o o warto\u015bci NULL.
+no_password_returned_by_callback.explanation=W przypadku hase\u0142 typu PasswordDigest w znaczniku UsernameToken procedura obs\u0142ugi wywo\u0142ania zwrotnego has\u0142a musi zwraca\u0107 has\u0142a z warto\u015bci\u0105 inn\u0105 ni\u017c NULL.
+no_password_returned_by_callback.useraction=Upewnij si\u0119, \u017ce procedura obs\u0142ugi wywo\u0142ania zwrotnego has\u0142a zwraca dla poprawnego u\u017cytkownika niepuste has\u0142o o warto\u015bci innej ni\u017c NULL.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: Asercja SAML nie zawiera atrybutu [{0}].  Atrybut [{0}] jest wymagany, poniewa\u017c konfiguracja programu wywo\u0142uj\u0105cego okre\u015bla to jako identyfikator [{1}]. 
+SAML20_ATTRIBUTE_ERR.explanation=W asercji SAML brakuje atrybutu lub w konfiguracji programu wywo\u0142uj\u0105cego podano b\u0142\u0119dn\u0105 warto\u015b\u0107 dla wspomnianego identyfikatora.
+SAML20_ATTRIBUTE_ERR.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce atrybut istnieje w asercji SAML. 2) Skonfiguruj element callerToken, aby jako identyfikator okre\u015bli\u0107 inny atrybut.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: Asercja SAML nie zawiera elementu [{0}].  Element [{0}] jest wymagany.  
+SAML20_ELEMENT_ERR.explanation=W asercji SAML brakuje elementu wymaganego przez \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security do zako\u0144czenia przetwarzania znacznika programu wywo\u0142uj\u0105cego.
+SAML20_ELEMENT_ERR.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce wymagany element istnieje w asercji SAML. 2) Skonfiguruj element callerToken, aby zdefiniowa\u0107 warto\u015b\u0107 elementu.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: Us\u0142uga UserCredentialResolver nie mo\u017ce rozstrzygn\u0105\u0107 asercji SAML i zg\u0142asza wyj\u0105tek UserIdentityException z komunikatem [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Us\u0142uga UserCredentialResolver udost\u0119pniana przez sk\u0142adnik u\u017cytkownika nie mo\u017ce poprawnie odwzorowa\u0107 asercji SAML i zg\u0142asza wyj\u0105tek UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Je\u015bli wyj\u0105tek UserIdentityException nie jest oczekiwany, upewnij si\u0119, \u017ce us\u0142uga UserCredentialResolver jest poprawnie skonfigurowana.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW. Nie mo\u017cna zidentyfikowa\u0107 elementu callerToken w komunikacie przychodz\u0105cym, poniewa\u017c istnieje wiele asercji Salm w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_saml_exist_err.explanation=W pliku server.xml element callerToken jest ustawiony na warto\u015b\u0107 SamlToken, a nag\u0142\u00f3wek zabezpiecze\u0144 w przychodz\u0105cym komunikacie SOAP zawiera wiele asercji Saml.  Z tego powodu \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie mo\u017ce okre\u015bli\u0107, kt\u00f3rej asercji Saml u\u017cy\u0107 dla znacznika programu wywo\u0142uj\u0105cego.
+multiple_saml_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 konfiguracj\u0119 klienta, aby wysy\u0142a\u0107 tylko jedn\u0105 asercj\u0119 Saml. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: Przy u\u017cyciu identyfikatora u\u017cytkownika [{0}] nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW.
+error_authenticate_maptouser.explanation=Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla znacznika programu wywo\u0142uj\u0105cego pobranego z nag\u0142\u00f3wka zabezpiecze\u0144 SOAP. Upewnij si\u0119, \u017ce w rejestrze u\u017cytkownik\u00f3w istnieje identyfikator u\u017cytkownika podany w komunikacie.
+error_authenticate_maptouser.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce u\u017cytkownik istnieje w rejestrze u\u017cytkownik\u00f3w w pliku server.xml. 2) Nie ustawiaj atrybutu mapToUserRegistry w konfiguracji callerToken.
+
+no_callbacks_provided=CWWKW0233E: Nie udost\u0119pniono \u017cadnych wywo\u0142a\u0144 zwrotnych na potrzeby obs\u0142ugi \u017c\u0105dania.
+no_callbacks_provided.explanation=Do procedury obs\u0142ugi wywo\u0142ania zwrotnego nale\u017cy przekaza\u0107 co najmniej jedno wywo\u0142anie zwrotne, aby przetworzy\u0107 i zwr\u00f3ci\u0107 znacznik SAML.
+no_callbacks_provided.useraction=W tym przypadku nie jest dost\u0119pna \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+no_saml_found_in_subject=CWWKW0234E: W podmiocie brak wymaganego znacznika SAML.
+no_saml_found_in_subject.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyodr\u0119bniania znacznika SAML z podmiotu lub w bie\u017c\u0105cym podmiocie nie znaleziono elementu SAML.
+no_saml_found_in_subject.useraction=Je\u015bli tworzysz podmiot \u201euruchom jako\u201d, dodaj znacznik SAML do podmiotu. W przeciwnym razie zadbaj o to, aby konfiguracja serwera obs\u0142ugiwa\u0142a dodawanie znacznika SAML do podmiotu \u2013 w tym celu zaznacz atrybut includeTokenInSubject w konfiguracji SAML.

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.spnego.metatype" name="%spnego.conf" description="%spnego.conf.desc"  ibm:alias="spnego">
+          
+          <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+
+         <AD id="authenticationFilter.target" name="internal" description="internal use only"
+            required="false" type="String"  default="(service.pid=${authFilterRef})" />         
+        
+         <AD id="canonicalHostName" name="%canonicalHostName" description="%canonicalHostName.desc"
+            required="false" type="Boolean" default="true" />
+        
+        <AD id="krb5Config" name="%krb5Config" description="%krb5Config.desc"
+            required="false" type="String" />
+            
+         <AD id="krb5Keytab" name="%krb5Keytab" description="%krb5Keytab.desc"
+            required="false" type="String" />
+
+        <AD id="servicePrincipalNames" name="%servicePrincipalNames" description="%servicePrincipalNames.desc"
+            required="false" type="String" />       
+                     
+        <AD id="disableFailOverToAppAuthType" name="%disableFailOverToAppAuthType" description="%disableFailOverToAppAuthType.desc"
+            required="false" type="Boolean" default="true" />
+       
+        <AD id="spnegoNotSupportedErrorPageURL" name="%spnegoNotSupportedErrorPageURL" description="%spnegoNotSupportedErrorPageURL.desc"
+            required="false" type="String" /> 
+       
+        <AD id="ntlmTokenReceivedErrorPageURL" name="%ntlmTokenReceivedErrorPageURL" description="%ntlmTokenReceivedErrorPageURL.desc"
+            required="false" type="String" /> 
+        
+        <AD id="trimKerberosRealmNameFromPrincipal" name="%trimKerberosRealmNameFromPrincipal" description="%trimKerberosRealmNameFromPrincipal.desc"
+            required="false" type="Boolean" default="true" />
+
+        <AD id="includeClientGSSCredentialInSubject" name="%includeClientGSSCredentialInSubject" description="%includeClientGSSCredentialInSubject.desc"
+            required="false" type="Boolean" default="true" />     
+
+        <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only"  
+            required="false" type="Boolean" default="true"/>
+
+        <AD id="allowLocalHost" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false" />      
+
+        <AD id="skipForUnprotectedURI" name="internal"  description="internal use only" 
+            required="false" type="Boolean" default="true" />
+
+        <AD id="invokeAfterSSO" name="internal"  description="internal use only" 
+            required="false" type="Boolean" default="true" />
+
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.spnego">
+        <Object ocdref="com.ibm.ws.security.spnego.metatype" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.security.spnego.internal.SpnegoHelperProxy" name="internal" description="internal use only">
+
+        <AD name="internal" description="internal use only"
+        	id="kerberosExtService" required="false" type="String"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.s4u2proxy.KerberosExtService" ibm:final="true" default="defaultConstrainedDelegation"/>
+
+       	<AD name="internal" description="internal use only" 
+        	id="KerberosExtService.target" required="false" type="String"
+        	ibm:final="true" default="(service.pid=${kerberosExtService})" />
+        
+        <AD id="KerberosExtService.cardinality.minimum" name="internal"  description="internal use only" 
+            type="String" required="false" default="${count(kerberosExtService)}" />
+        	
+    </OCD>
+    
+    <Designate pid="com.ibm.ws.security.spnego.internal.SpnegoHelperProxy">
+        <Object ocdref="com.ibm.ws.security.spnego.internal.SpnegoHelperProxy"/>
+    </Designate>
+    
+
+</metatype:MetaData>

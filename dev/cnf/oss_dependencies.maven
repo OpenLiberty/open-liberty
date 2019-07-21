@@ -177,7 +177,6 @@ org.apache.felix:org.apache.felix.gogo.runtime:0.16.2
 org.apache.felix:org.apache.felix.gogo.shell:0.12.0
 org.apache.felix:org.apache.felix.http.api:2.2.0
 org.apache.felix:org.apache.felix.http.base:2.2.0
-org.apache.felix:org.apache.felix.scr:2.1.16
 org.apache.geronimo.specs:geronimo-jaxb_2.2_spec:1.0.1
 org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1
 org.apache.geronimo.specs:geronimo-osgi-registry:1.1
@@ -238,7 +237,7 @@ org.eclipse.jetty.websocket:websocket-common:9.4.7.RC0
 org.eclipse.microprofile.config:microprofile-config-api:1.1
 org.eclipse.microprofile.config:microprofile-config-api:1.2.1
 org.eclipse.microprofile.config:microprofile-config-api:1.3
-org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.0-RC3
+org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.0
@@ -455,3 +454,10 @@ com.cloudant:cloudant-client:2.8.0
 com.cloudant:cloudant-http:2.16.0
 com.cloudant:cloudant-http:2.8.0
 wsdl4j:wsdl4j:1.6.2
+
+com.googlecode.json-simple:json-simple:1.1.1
+commons-fileupload:commons-fileupload:1.3.3
+net.sf.ehcache:ehcache-core:2.5.2
+org.apache.felix:org.osgi.service.obr:1.0.2
+org.opensaml:opensaml:2.6.1
+org.opensaml:xmltooling:1.4.4

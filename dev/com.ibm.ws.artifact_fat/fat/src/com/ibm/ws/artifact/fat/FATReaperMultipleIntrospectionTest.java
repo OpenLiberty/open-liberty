@@ -199,7 +199,7 @@ public class FATReaperMultipleIntrospectionTest{
         ZipCachingIntrospectorOutput output = new ZipCachingIntrospectorOutput(firstDump.getZipCachingDumpStream());
 
         List<String> archiveNames = output.getZipHandleArchiveNames();
-
+        logInfo(methodName, archiveNames.toString());
         for(int i = 1; i <= numberOfApps; ++i){
             //check each app name exists and remove it
             if(archiveNames.remove("app" + i + ".war")){

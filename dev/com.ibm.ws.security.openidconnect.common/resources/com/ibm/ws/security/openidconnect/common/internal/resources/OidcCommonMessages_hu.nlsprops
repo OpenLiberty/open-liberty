@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult. A(z) [{0}] \u00e1ltal k\u00e9rt JWT token nem \u00e9rv\u00e9nyes\u00edthet\u0151 a JWT tokenb\u0151l hi\u00e1nyz\u00f3 al\u00e1\u00edr\u00e1s miatt. Az OpenID Connect szolg\u00e1ltat\u00f3 [{1}] algoritmust adott meg, \u00e9s elv\u00e1rja, hogy a JWT token legyen al\u00e1\u00edrva.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=A JWT token nem \u00e9rv\u00e9nyes\u00edthet\u0151, mert a token nincs al\u00e1\u00edrva. OpenID Connect szolg\u00e1ltat\u00f3 elv\u00e1rja, hogy a token legyen al\u00e1\u00edrva.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az al\u00e1\u00edrja a JWT tokent.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult. A(z) [{0}] \u00e1ltal k\u00e9rt JWT token \u00e9rv\u00e9nyes\u00edt\u00e9se nem lehets\u00e9ges a(z) [{1}] OpenID Connect szolg\u00e1ltat\u00f3 \u00e9s a(z) [{2}] OpenID Connect \u00fcgyf\u00e9l k\u00f6z\u00f6tti al\u00e1\u00edr\u00e1si algoritmusok elt\u00e9r\u00e9se miatt.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Az JWT token nem ellen\u0151rizhet\u0151, mert az OpenID Connect szolg\u00e1ltat\u00f3 \u00e9s \u00fcgyf\u00e9l k\u00fcl\u00f6nb\u00f6z\u0151 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1l a token al\u00e1\u00edr\u00e1s\u00e1ra/ellen\u0151rz\u00e9s\u00e9re.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1nak ellen\u0151rz\u00e9s\u00e9vel biztos\u00edtsa, hogy az OpenID Connect szolg\u00e1ltat\u00f3nak megfelel\u0151 al\u00e1\u00edr\u00e1si algoritmust adjon meg.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult. Egy al\u00e1\u00edrt JWT tokennek 3, ''.'' karakterrel elv\u00e1lasztott szegmensb\u0151l kell \u00e1llnia, de ez a JWT token [{0}] szegmenssel rendelkezik.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Egy al\u00e1\u00edrt JWT tokennek pontosan 3, '.' karakterrel elv\u00e1lasztott szegmensb\u0151l kell \u00e1llnia. Ennek a JWT tokennek rossz a szegmenssz\u00e1ma.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a JWT token \u00e9rv\u00e9nyes, \u00e9s 3 szegmenssel rendelkezik.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult. A JWT tokennek a(z) [{0}] \u00e1ltal k\u00e9rt \u00e9rv\u00e9nyes\u00edt\u00e9se meghi\u00fasult. InvalidJwtException (\u00e9rv\u00e9nytelen \u00e1llapot) miatt kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 \u00fczenettel:[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=A JWT token nem \u00e9rv\u00e9nyes\u00edthet\u0151 az \u00fczenetben jelzett \u00e9rv\u00e9nytelen \u00e1llapot (InvalidJwtException) miatt.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Jav\u00edtsa ki az \u00fczenetben jelzett hib\u00e1t.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult. Egy k\u00f6telez\u0151 JWT token nem tal\u00e1lhat\u00f3 a k\u00e9r\u00e9sben.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=A k\u00e9r\u00e9snek meg kell adnia egy JWT tokent, de a token v\u00e9gponti k\u00e9r\u00e9sben nem tal\u00e1lhat\u00f3 JWT token.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Adjon meg egy \u00e9rv\u00e9nyes JWT tokent a token v\u00e9gponti k\u00e9r\u00e9sben.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Kiv\u00e9tel t\u00f6rt\u00e9nt a RunAsSubject lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel: [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a RunAsSubject lek\u00e9r\u00e9se k\u00f6zben.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 megfelel\u0151en van konfigur\u00e1lva \u00e9s elind\u00edtva.
+

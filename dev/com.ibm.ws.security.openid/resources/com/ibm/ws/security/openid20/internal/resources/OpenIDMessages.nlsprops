@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openid20/internal/resources/OpenIDMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1500 - CWWKS1519
+OPENID_RP_SERVICE_ACTIVATE=CWWKS1500I: OpenID Relying Party service is activated. 
+OPENID_RP_SERVICE_ACTIVATE.explanation=The OpenID Relying Party Service is activated.
+OPENID_RP_SERVICE_ACTIVATE.useraction=None.
+
+OPENID_RP_SERVICE_DEACTIVATE=CWWKS1501I: OpenID Relying Party service is deactivated. 
+OPENID_RP_SERVICE_DEACTIVATE.explanation=The OpenID Relying Party Service is deactivated.
+OPENID_RP_SERVICE_DEACTIVATE.useraction=None.
+
+OPENID_RP_CONFIG_PROCESSED=CWWKS1502I: OpenID relying party configuration successfully processed.
+OPENID_RP_CONFIG_PROCESSED.explanation=The OpenID relying party configuration has been successfully processed.
+OPENID_RP_CONFIG_PROCESSED.useraction=None.
+
+OPENID_RP_CONFIG_MODIFIED=CWWKS1503I: OpenID relying party configuration successfully modified.
+OPENID_RP_CONFIG_MODIFIED.explanation=The OpenID relying party configuration has been successfully modified.
+OPENID_RP_CONFIG_MODIFIED.useraction=None.
+
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID=CWWKS1504W: The OpenID relying party configuration is not valid when maxAssociationAttempts is set to zero and allowStateless is set to false. Reset the maxAssociationAttempts to the default value.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.explanation=Cannot set maxAssociationAttempts to zero and allowStateless to false.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.useraction=Specify a valid OpenID relying party configuration for the maxAssociationAttempts and allowStateless attributes.
+
+OPENID_VERSION_NOT_TEST=CWWKS1505W: OpenID provider version {0} was not tested so it may not work properly.
+OPENID_VERSION_NOT_TEST.explanation=This version of the OpenID provider was not tested. Its functions may not work properly. Run it at your own risks. 
+OPENID_VERSION_NOT_TEST.useraction=None. Run it at your own risks.
+
+OPENID_RP_NO_RESULT_ERR=CWWKS1506E: OpenID can not get a valid result for claim identifier {0}. 
+OPENID_RP_NO_RESULT_ERR.explanation=OpenID provider does not return a valid result. The causes could be the user failed to authenticate or he/she rejected the authorization.
+OPENID_RP_NO_RESULT_ERR.useraction=None.
+
+OPENID_RP_CONFIG_INVALID_SSLREF=CWWKS1507E: OpenID configuration requires SSL but sslRef {0} does not exist or is blank.
+OPENID_RP_CONFIG_INVALID_SSLREF.explanation=The enforceHttps attribute of the OpenID configuration is set to true but sslRef does not exist.
+OPENID_RP_CONFIG_INVALID_SSLREF.useraction=Ensure the sslRef reference to a valid SSL configuration.
+
+OPENID_HTTPS_WITHOUT_SSL_SERVICE=CWWKS1508E: OpenID configuration requires SSL but SSL service is not available. 
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.explanation=The enforceHttps attribute of OpenID configuration is set to true. But SSL service is not available.
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.useraction=Ensure that you have the correct SSL information in the server.xml.
+
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1509E: OpenID configuration requires SSL but SSL is not properly configured. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.explanation=The enforceHttps attribute of OpenID configuration is set to true. The keyStore element may be missing or incorrectly specified. The SSL feature may not be enabled. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Ensure that you have the correct SSL information in the server.xml.
+
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS=CWWKS1510E: The relying party requires SSL but the openID provider URL protocol is {0}.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.explanation=The relying party requires SSL but the openID provider URL protocol is not HTTPs.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.useraction=Ensure the openID provider supports SSL. If the openID provider does not support HTTPs, set enforceHttps to false.
+
+OPENID_RP_CAN_NOT_ACCESS_OP=CWWKS1511E: Cannot access the OpenID provider {0}.
+OPENID_RP_CAN_NOT_ACCESS_OP.explanation=Cannot access the OpenID provider.
+OPENID_RP_CAN_NOT_ACCESS_OP.useraction=Specify a valid OpenID provider.
+
+OPENID_RP_REQUEST_IDENTIFIER_NULL=CWWKS1512E: OpenID replying party request identifier is null.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.explanation=OpenID replying party request identifier is null.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.useraction=None.
+
+OPENID_AUTHENTICATE_FAILED=CWWKS1513E: OpenID authentication failed for identifier {0}.
+OPENID_AUTHENTICATE_FAILED.explanation=OpenID authentication failed for the identifier.
+OPENID_AUTHENTICATE_FAILED.useraction=Ensure the identifier is valid.
+
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY=CWWKS1514E: There is no cache entry found for unique key {0}.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.explanation= There is no cache entry found for unique key.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.useraction=Ensure the maxSize of the discovery information cache is big enough to cache all the requests at any given time.
+
+OPENID_VERIFY_RESPONSE_FAILED=CWWKS1515E: OpenID can not verify the OP response for claimed identifier {0}.
+OPENID_VERIFY_RESPONSE_FAILED.explanation=  OpenID can not verify the OP response for the claimed identifier.
+OPENID_VERIFY_RESPONSE_FAILED.useraction=Ensure openID relying party can communicate with openID provider.

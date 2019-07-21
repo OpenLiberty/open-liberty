@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: Cererea {0} ruleaz\u0103 pe firul de execu\u0163ie {1} de cel pu\u0163in {2} ms. Urm\u0103toarea urm\u0103 de stiv\u0103 indic\u0103 faptul c\u0103 acest fir de execu\u0163ie ruleaz\u0103 curent.\n\n {3}\nTabelul urm\u0103tor afi\u015feaz\u0103 evenimentele care au rulat \u00een timpul acestei cereri.\n{4} 
+REQUEST_TIMER_WARNING.explanation=Cererea a rulat pentru mai mult timp dec\u00e2t durata configurat\u0103 de cerere lent\u0103. Informa\u0163iile din tabel arat\u0103 ce evenimente au rulat deja ca parte a cererii. Evenimentele care \u00eenc\u0103 ruleaz\u0103 sunt indicate cu un + l\u00e2ng\u0103 durat\u0103. Valoarea implicit\u0103 pentru durata cererii \u00eencete este de 10 secunde, verifica\u0163i fi\u015fierul server.xml pentru valoarea curent\u0103.
+REQUEST_TIMER_WARNING.useraction=Folosi\u0163i informa\u0163iile din tabel pentru a determina care parte din cererea este mai lent\u0103 dec\u00e2t era de a\u015fteptat.  Dac\u0103 sunt furnizate mai multe avertismente pentru diferite cereri aproape \u00een acela\u015fi timp poate indica faptul c\u0103 ceva a \u00eencetinit \u00eentregul proces de server, cum ar fi un alt proces pe acela\u015fi sistem care consum\u0103 o mare parte din resursele de procesare.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: Cererea {0} ruleaz\u0103 pe firul de execu\u0163ie {1} de cel pu\u0163in {2} ms. Tabelul urm\u0103tor afi\u015feaz\u0103 evenimentele care au rulat \u00een timpul acestei cereri.\n{3}
+HUNG_REQUEST_WARNING.explanation=Cererea a rulat pentru mai mult timp dec\u00e2t durata configurat\u0103 de cerere ag\u0103\u0163at\u0103. Informa\u0163iile din tabel arat\u0103 ce evenimente au rulat deja ca parte a cererii. Nucleele Java vor fi declan\u015fate automat pentru a str\u00e2nge \u00een continuare informa\u0163ii despre care ar putea fi cauza ca cererea s\u0103 r\u0103m\u00e2n\u0103 ag\u0103\u0163at\u0103. Valoarea implicit\u0103 pentru durata cererii ag\u0103\u0163ate este 10 minute, verifica\u0163i fi\u015fierul server.xml pentru valoarea curent\u0103.
+HUNG_REQUEST_WARNING.useraction=Folosi\u0163i informa\u0163iile din tabel pentru a determina care parte din cerere se aga\u0163\u0103 sau este \u00eentr-o bucl\u0103. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: Cererea {0} pe pirul de execu\u0163ie {1} care a fost detectat\u0103 anterior c\u0103 este ag\u0103\u0163at\u0103, s-a finalizat dup\u0103 {2} ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=Taskul de cerere ag\u0103\u0163at\u0103 va notifica utilizatorul c\u00e2nd este finalizat\u0103 orice cerere ag\u0103\u0163at\u0103.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Nu e necesar\u0103 nicio ac\u0163iune.    
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: Configura\u0163ia temporiz\u0103rii asociat\u0103 cu PID {0} nu poate fi citit\u0103 din configura\u0163ie.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=Serviciul de temporizare a cererilor  a \u00eencercat s\u0103 citeasc\u0103 o configura\u0163ie de temporizare \u00eenglobat\u0103 din fi\u015fierul server.xml. PID-ul asociat cu elementul de temporizare este \u00een mesaj.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Uita\u0163i-v\u0103 \u00een messages.log pentru alte mesaje de eroare, cum ar fi CWWKG0058E, pentru detalii despre problema de configurare. Corecta\u0163i configura\u0163ia pentru a rezolva eroarea.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Exist\u0103 deja o configura\u0163ie de temporizare de tip {0} \u015fi un model de informa\u0163ii de context {1}. Configura\u0163ia temporiz\u0103rii asociat\u0103 cu PID {2} \u00eenlocuie\u015fte configura\u0163ia anterioar\u0103 de temporizare.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=A fost g\u0103sit\u0103 o configura\u0163ie de temporizare duplicat \u00een fi\u015fierul server.xml. A fost deja definit\u0103 o combina\u0163ie de tip \u015fi de model de informa\u0163ii de context.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Inspecta\u0163i fi\u015fierul server.xml \u015fi \u00eenl\u0103tura\u0163i toate configura\u0163iile de temporizare duplicat.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: Configurarea temporiz\u0103rii pentru PID-ul {0} asigur\u0103 un tipar de informa\u0163ii de context dar configurarea temporiz\u0103rii cererii seteaz\u0103 atributul includeContextInfo la fals. Configurarea temporiz\u0103rii va fi ignorat\u0103.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=Serviciul de temporizare a cererilor cite\u015fte o configura\u0163ie \u00eenglobat\u0103 de temporizare din fi\u015fierul server.xml. Configurarea temporiz\u0103rii a specificat un model de informa\u0163ii de context care s\u0103 se potriveasc\u0103. Serviciul de temporizare a cererilor este configurat pentru a dezactiva informa\u0163iile de context pentru toate cererile \u015fi nu poate potrivi cererile cu aceast\u0103 configura\u0163ie de temporizare.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Inspecta\u0163i fi\u015fierul server.xml \u015fi rezolva\u0163i conflictul de configura\u0163ie modific\u00e2nd valoarea includeContextInfo la adev\u0103rat \u00een configura\u0163ia de temporizare cereri sau \u00eenl\u0103tur\u00e2nd modelul de informa\u0163ii de context din configura\u0163ia de temporizare.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: Configurarea temporiz\u0103rii asociat\u0103 cu PID-ul {0} asigur\u0103 un tipar de informa\u0163ii de context care con\u0163ine un metacaracter \u00eentr-o loca\u0163ie nesuportat\u0103. Metacaracterul va fi tratat ca asterisc. Modelul de informa\u0163ii de context este {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=Serviciul de temporizare a cererilor cite\u015fte o configura\u0163ie \u00eenglobat\u0103 de temporizare din fi\u015fierul server.xml. \u00cen modelul de informa\u0163ii de context, un caracter asterisc este tratat ca un metacaracter, \u00een afar\u0103 de cazul \u00een care este marcat cu un caracter bar\u0103 oblic\u0103 invers\u0103. Un metacaracter este permis doar ca ultimul caracter al modelului de informa\u0163ii de context.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Pentru a interpreta metacaracterul ca asterisc, marca\u0163i-l cu un caracter bar\u0103 oblic\u0103 invers\u0103.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nTabela a fost trunchiat\u0103 deoarece num\u0103rul de evenimente pentru cerere a dep\u0103\u015fit limita permis\u0103.

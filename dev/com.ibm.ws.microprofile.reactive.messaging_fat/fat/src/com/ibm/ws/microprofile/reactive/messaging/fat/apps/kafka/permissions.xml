@@ -30,7 +30,7 @@
      <!-- Kafka client connects to the kafka broker server -->
      <permission>
        <class-name>java.net.SocketPermission</class-name>
-       <name>localhost</name>
+       <name>*</name>
        <actions>connect</actions>
      </permission>
      

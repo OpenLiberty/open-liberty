@@ -1,0 +1,37 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>persistentExecutor-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <persistentExecutor jndiName="concurrent/myScheduler" taskStoreRef="DBTaskStore" enableTaskExecution="false"/>
+  <databaseStore id="DBTaskStore" schema="ժ9Ћ" tablePrefix="Ɣ1_">
+    <authData user="user1" password="password1"/>
+  </databaseStore>
+
+  <!-- database for scheduled tasks -->
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="FATJDBCLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:persistexecdisabled"/>
+  </dataSource>
+  <library id="FATJDBCLib">
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  </library>
+  
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+  <variable name="onError" value="FAIL"/>
+</server>

@@ -1,0 +1,276 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
+
+# BEWARE: Due to code refactoring, some of these messages are also used in the clients.common bundle. Check there too before using or
+# altering any of these messages.
+
+#used_by_client_project
+OIDC_CLIENT_CONFIG_PROCESSED=CWWKS1700I: Konfiguracja klienta OpenID Connect {0} zosta\u0142a pomy\u015blnie przetworzona.
+OIDC_CLIENT_CONFIG_PROCESSED.explanation=Pomy\u015blnie przetworzono konfiguracj\u0119 klienta OpenID Connect (strona zale\u017cna lub serwer zasob\u00f3w).
+OIDC_CLIENT_CONFIG_PROCESSED.useraction=Brak
+
+#used_by_client_project
+OIDC_CLIENT_CONFIG_MODIFIED=CWWKS1701I: Zmiana konfiguracji klienta OpenID Connect {0} zosta\u0142a pomy\u015blnie przetworzona.
+OIDC_CLIENT_CONFIG_MODIFIED.explanation=Pomy\u015blnie zmodyfikowano konfiguracj\u0119 klienta OpenID Connect (strona zale\u017cna lub serwer zasob\u00f3w).
+OIDC_CLIENT_CONFIG_MODIFIED.useraction=Brak.
+
+#1702 is used by clients.common bundle, do not use.
+
+# used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Klient OpenID Connect wymaga protoko\u0142u SSL (HTTPS), ale adres URL dostawcy OpenID Connect to adres HTTP: [{0}].  Zaktualizuj konfiguracj\u0119 tak, aby atrybut [enforceHTTPS] by\u0142 zgodny ze schematem URL elementu docelowego. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Klient OpenID Connect (strona zale\u017cna lub serwer zasob\u00f3w) wymaga protoko\u0142u SSL (HTTPS), ale protok\u00f3\u0142 adresu URL dostawcy OpenID Connect okre\u015blony w konfiguracji klienta OpenID Connect nie jest protoko\u0142em HTTPS.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. 2) Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, ustaw atrybut enforceHTTPS w konfiguracji klienta OpenID Connect na warto\u015b\u0107 false.
+
+# unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Ten warunek jest niedozwolony.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Klient OpenID Connect (strona zale\u017cna) wys\u0142a\u0142 \u017c\u0105danie do dostawcy OpenID Connect, kt\u00f3ry odes\u0142a\u0142 odpowied\u017a z parametrem stanu niezgodnym ze stanem strony zale\u017cnej w momencie wys\u0142ania. Dostawca OpenID musi do\u0142\u0105czy\u0107 do odpowiedzi taki sam stan, jaki zosta\u0142 wys\u0142any.  Stan jest u\u017cywany w ten spos\u00f3b do ochrony przed atakami typu CSRF (Cross-Site Request Forgery). 
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Upewnij si\u0119, \u017ce adres URL u\u017cywanego dostawcy OpenID jest poprawny. Sprawd\u017a dzienniki dostawcy OpenID, aby upewni\u0107 si\u0119, \u017ce otrzyma\u0142 \u017c\u0105danie.
+
+# This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: Nie powiod\u0142o si\u0119 uwierzytelnianie znacznika identyfikatora przez klient OpenID Connect [{0}], poniewa\u017c identyfikator podmiotu nie zosta\u0142 uwzgl\u0119dniony w znaczniku. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Aby uwierzytelni\u0107 znacznik identyfikatora, klient OpenID Connect (strona zale\u017cna) musi mie\u0107 identyfikator podmiotu. Znacznik identyfikatora odebrany w odpowiedzi od dostawcy OpenID Connect nie zawiera identyfikatora podmiotu, dlatego uwierzytelnianie nie powiod\u0142o si\u0119. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect zwraca znacznik identyfikatora, kt\u00f3ry zawiera identyfikator podmiotu.
+
+#used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora przez klient OpenID Connect [{1}]. Przyczyna: [{0}].
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Klient OpenID Connect (strona zale\u017cna) nie mo\u017ce pomy\u015blnie sprawdzi\u0107 poprawno\u015bci znacznika identyfikatora. Mo\u017ce to by\u0107 spowodowane niepowodzeniem procesu sprawdzania poprawno\u015bci wymaganych \u017c\u0105da\u0144. Niekt\u00f3re wymagane \u017c\u0105dania znacznika identyfikatora obejmuj\u0105 wystawc\u0119, grup\u0119 docelow\u0105 i czas wystawienia. 
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Upewnij si\u0119, \u017ce zegar systemowy klienta OpenID Connect jest zsynchronizowany z zegarem systemowym dostawcy OpenID Connect (w przypadku, gdy znajduj\u0105 si\u0119 w dw\u00f3ch r\u00f3\u017cnych systemach). Zapoznaj si\u0119 r\u00f3wnie\u017c z czynno\u015bci\u0105 u\u017cytkownika dla b\u0142\u0119du, kt\u00f3ry zostanie wy\u015bwietlony po tym b\u0142\u0119dzie.
+
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Klient OpenID Connect [{1}] nie mo\u017ce utworzy\u0107 kontekstu SSL. Przyczyna: [{0}]. Upewnij si\u0119, \u017ce funkcja SSL jest poprawnie skonfigurowana.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=W konfiguracji klienta OpenID Connect (strona zale\u017cna lub serwer zasob\u00f3w) okre\u015blono, \u017ce ma by\u0107 u\u017cywany schemat HTTPS, ale po\u0142\u0105czenie HTTPS nie mog\u0142o zosta\u0107 nawi\u0105zane. Opcja SSL mo\u017ce nie by\u0107 w\u0142\u0105czona. Element keyStore mo\u017ce by\u0107 niepoprawnie skonfigurowany lub mo\u017ce go brakowa\u0107.  
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Sprawd\u017a, czy plik server.xml zawiera poprawne informacje dotycz\u0105ce protoko\u0142u SSL. Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla b\u0142\u0119du, kt\u00f3ry zosta\u0142 wy\u015bwietlony przed tym komunikatem.
+
+#1708 is used in clients.common bundle. don't use it.
+
+#used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: U\u017cytkownik odm\u00f3wi\u0142 wykonania \u017c\u0105dania OpenID Connect lub wyst\u0105pi\u0142 inny b\u0142\u0105d, kt\u00f3rego wynikiem by\u0142a odmowa \u017c\u0105dania.
+OAUTH_REQUEST_ACCESS_DENIED.explanation=U\u017cytkownik odm\u00f3wi\u0142 wykonania \u017c\u0105dania OpenID Connect poprzez anulowanie \u017c\u0105dania w formularzu zgody na zasi\u0119g lub wyst\u0105pi\u0142 inny b\u0142\u0105d, kt\u00f3ry spowodowa\u0142 odmow\u0119 dost\u0119pu do \u017c\u0105dania OpenID Connect.
+OAUTH_REQUEST_ACCESS_DENIED.useraction=U\u017cytkownik musi pozwoli\u0107 dostawcy OpenID Connect na wsp\u00f3\u0142u\u017cytkowanie zasi\u0119g\u00f3w wymaganych przez klienta, aby \u017c\u0105danie OpenID Connect mog\u0142o zosta\u0107 pomy\u015blnie wykonane. Je\u015bli u\u017cytkownik zatwierdzi\u0142 \u017c\u0105danie, sprawd\u017a dzienniki dostawcy OpenID pod k\u0105tem wyst\u0119powania dodatkowych b\u0142\u0119d\u00f3w.
+
+#used_by_client_project
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: U\u017cytkownik odm\u00f3wi\u0142 wykonania \u017c\u0105dania lub wyst\u0105pi\u0142 inny b\u0142\u0105d, kt\u00f3rego wynikiem by\u0142a odmowa \u017c\u0105dania.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=U\u017cytkownik odm\u00f3wi\u0142 wykonania \u017c\u0105dania OpenID Connect poprzez anulowanie \u017c\u0105dania w formularzu zgody na zasi\u0119g lub wyst\u0105pi\u0142 inny b\u0142\u0105d, kt\u00f3ry spowodowa\u0142 odmow\u0119 dost\u0119pu do \u017c\u0105dania OpenID Connect.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=U\u017cytkownik musi pozwoli\u0107 dostawcy OpenID Connect na wsp\u00f3\u0142u\u017cytkowanie zasi\u0119g\u00f3w wymaganych przez klienta, aby \u017c\u0105danie OpenID Connect mog\u0142o zosta\u0107 pomy\u015blnie wykonane. Je\u015bli u\u017cytkownik zatwierdzi\u0142 \u017c\u0105danie, sprawd\u017a dzienniki dostawcy OpenID pod k\u0105tem wyst\u0119powania dodatkowych b\u0142\u0119d\u00f3w.
+
+# 1712,13,14 are used in the clients.common bundle. Do not use here.
+
+#used_by_client_project
+OSGI_SERVICE_ERROR=CWWKS1715E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga OSGi nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer z opcj\u0105 clean.
+
+#used_by_client_project
+PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu utraci\u0142 wa\u017cno\u015b\u0107. Roszczenie Godzina utraty wa\u017cno\u015bci (expiration time - exp) ma warto\u015b\u0107 [{0}], a bie\u017c\u0105ca godzina to [{1}].
+PROPAGATION_TOKEN_EXPIRED_ERR.explanation=Znacznik dost\u0119pu utraci\u0142 wa\u017cno\u015b\u0107 i \u015brodowisko robocze nie mo\u017ce kontynuowa\u0107 propagacji znacznika dost\u0119pu.
+PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Podaj wa\u017cny znacznik dost\u0119pu i zsynchronizuj czas system\u00f3w.
+
+#used_by_client_project
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu jest niepoprawny. Warto\u015b\u0107 roszczenia Godzina wystawienia (issue at time - iat) wynosz\u0105ca [{0}] przypada w przysz\u0142o\u015bci [{1}]. Ten warunek nie jest dozwolony.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.explanation=\u017b\u0105danie Godzina wystawienia w znaczniku dost\u0119pu przypada w przysz\u0142o\u015bci. Jest to niedozwolone.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.useraction=Upewnij si\u0119, \u017ce znacznik dost\u0119pu nie zosta\u0142 wystawiony w przysz\u0142o\u015bci i/lub zsynchronizuj czasy system\u00f3w.
+
+#used_by_client_project
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu nie zawiera roszczenia [{0}]. Wymagane s\u0105 roszczenia [{1}].
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Znacznik dost\u0119pu nie zawiera wszystkich wymaganych \u017c\u0105da\u0144. 
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Sprawd\u017a, czy podany znacznik dost\u0119pu zawiera wymagane \u017c\u0105dania.
+
+#used_by_client_project
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna u\u017cy\u0107 znajduj\u0105cego si\u0119 w \u017c\u0105daniu znacznika dost\u0119pu. Warto\u015b\u0107 roszczenia Nie przed godzin\u0105 (not before time - nbf) wynosz\u0105ca [{0}] przypada w przysz\u0142o\u015bci [{1}]. Ten warunek nie jest dozwolony.
+PROPAGATION_TOKEN_NBF_ERR.explanation=\u017b\u0105danie Nie przed godzin\u0105 w znaczniku dost\u0119pu ma warto\u015b\u0107 przypadaj\u0105c\u0105 w przysz\u0142o\u015bci i \u015brodowisko wykonawcze nie mo\u017ce u\u017cy\u0107 tego znacznika dost\u0119pu w chwili obecnej.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Upewnij si\u0119, \u017ce w znaczniku dost\u0119pu nie ustawiono \u017c\u0105dania nbf przypadaj\u0105cego w przysz\u0142o\u015bci i/lub zsynchronizuj czasy system\u00f3w. Mo\u017cna tak\u017ce wys\u0142a\u0107 ponownie \u017c\u0105danie p\u00f3\u017aniej.
+
+#used_by_client_project
+PROPAGATION_TOKEN_NOT_ACTIVE=CWWKS1720E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu nie jest aktywny. Metod\u0105 sprawdzania poprawno\u015bci jest [{0}], a adresem URL punktu ko\u0144cowego sprawdzania poprawno\u015bci jest [{1}].
+PROPAGATION_TOKEN_NOT_ACTIVE.explanation=Podany znacznik dost\u0119pu nie jest aktywny i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
+PROPAGATION_TOKEN_NOT_ACTIVE.useraction=Sprawd\u017a, czy podany znacznik dost\u0119pu jest poprawny i sprawd\u017a szczeg\u00f3\u0142owe informacje w dziennikach dostawcy OpenID Connector, je\u015bli to mo\u017cliwe. Upewnij si\u0119 tak\u017ce, \u017ce okre\u015blona metoda sprawdzania poprawno\u015bci i adres URL punktu ko\u0144cowego w konfiguracji klienta OpenID Connect s\u0105 poprawne.
+
+#used_by_client_project
+OIDC_PROPAGATION_FAIL=CWWKS1721E: Serwer zasob\u00f3w odebra\u0142 b\u0142\u0105d [{0}] podczas pr\u00f3by sprawdzenia poprawno\u015bci znacznika dost\u0119pu. Znacznik utraci\u0142 wa\u017cno\u015b\u0107 lub punkt ko\u0144cowy sprawdzania poprawno\u015bci [{1}] nie mo\u017ce go rozpozna\u0107.
+OIDC_PROPAGATION_FAIL.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci udost\u0119pnionego znacznika dost\u0119pu z powodu odpowiedzi z b\u0142\u0119dem odebranej od dostawcy OpenID Connect. 
+OIDC_PROPAGATION_FAIL.useraction=Upewnij si\u0119, \u017ce znacznik propagacji jest poprawny i, je\u015bli to mo\u017cliwe, sprawd\u017a dzienniki dostawcy OpenID Connect, aby uzyska\u0107 wi\u0119cej szczeg\u00f3\u0142\u00f3w na temat tego b\u0142\u0119du.
+
+# 1722 is used in clients.common bundle, do not use here.
+
+#used_by_client_project
+PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: Wyst\u0105pi\u0142 b\u0142\u0105d invalid_client w chwili, gdy serwer zasob\u00f3w podj\u0105\u0142 pr\u00f3b\u0119 sprawdzenia poprawno\u015bci znacznika dost\u0119pu przy u\u017cyciu identyfikatora klienta [{0}] i adresu URL sprawdzania poprawno\u015bci [{1}].
+PROPAGATION_TOKEN_INVALID_CLIENTID.explanation=Nie mo\u017cna zweryfikowa\u0107 podanego znacznika dost\u0119pu z powodu wyst\u0105pienia b\u0142\u0119du invalid_client w dostawcy OpenID Connect. \u015arodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
+PROPAGATION_TOKEN_INVALID_CLIENTID.useraction=Sprawd\u017a, czy w konfiguracji klienta OpenID Connect znajduje si\u0119 identyfikator klienta zgodny z identyfikatorem klienta w konfiguracji dostawcy OpenID Connect i, je\u015bli to mo\u017cliwe, sprawd\u017a dzienniki dostawcy OpenID Connect w celu uzyskania dodatkowych informacji.
+
+#used_by_client_project
+PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Serwer zasob\u00f3w nie m\u00f3g\u0142 uwierzytelni\u0107 \u017c\u0105dania, poniewa\u017c atrybut issuerIdentifier [{0}] w konfiguracji nie zawiera \u017c\u0105dania iss [{1}] w znaczniku dost\u0119pu.
+PROPAGATION_TOKEN_ISS_ERROR.explanation=Nie mo\u017cna sprawdzi\u0107 podanego znacznika dost\u0119pu, poniewa\u017c \u017c\u0105danie iss w tym znaczniku nie jest zgodne z atrybutem konfiguracyjnym issuerIdentifier i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
+PROPAGATION_TOKEN_ISS_ERROR.useraction=Sprawd\u017a, czy konfiguracja klienta OpenID Connect ma atrybut issuerIdentifier zawieraj\u0105cy \u017c\u0105danie iss w znaczniku dost\u0119pu. 
+
+#used_by_client_project
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: Serwer zasob\u00f3w nie m\u00f3g\u0142 sprawdzi\u0107 poprawno\u015bci znacznika dost\u0119pu, poniewa\u017c warto\u015bci\u0105 atrybutu validationEndpointUrl [{0}] nie by\u0142 poprawny adres URL lub nie mo\u017cna by\u0142o sprawdzi\u0107 poprawno\u015bci.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci podanego znacznika dost\u0119pu, poniewa\u017c warto\u015b\u0107 atrybutu validationEndpointUrl okre\u015blona w konfiguracji klienta OpenID Connect jest niepoprawna i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Upewnij si\u0119, \u017ce zosta\u0142a podana poprawna warto\u015b\u0107 atrybutu validationEndpointUrl w konfiguracji klienta OpenID Connect.
+
+#used_by_client_project
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c nie zawiera ono wymaganego znacznika propagacji, np. znacznika dost\u0119pu lub znacznika jwt.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=\u017b\u0105danie musi zawiera\u0107 wymagany znacznik propagacji, np. znacznik dost\u0119pu lub znacznik jwt, aby serwer zasob\u00f3w m\u00f3g\u0142 przeprowadzi\u0107 uwierzytelnianie i propagacj\u0119 znacznika.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Zapewnij poprawny znacznik propagacji w \u017c\u0105daniu.
+
+# USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c serwer nie mo\u017ce sprawdzi\u0107 poprawno\u015bci znacznika dost\u0119pu z powodu b\u0142\u0119du [{0}]. Metod\u0105 sprawdzania poprawno\u015bci jest [{1}], a adresem URL punktu ko\u0144cowego sprawdzania poprawno\u015bci jest [{2}].
+PROPAGATION_TOKEN_INTERNAL_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci udost\u0119pnionego znacznika dost\u0119pu z powodu b\u0142\u0119du wewn\u0119trznego. \u015arodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania. 
+PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Sprawd\u017a dzienniki serwera zasob\u00f3w pod k\u0105tem wszelkich innych b\u0142\u0119d\u00f3w zarejestrowanych przed tym b\u0142\u0119dem.
+
+
+# USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR=CWWKS1728E: The resource server failed the authentication request because the issuerIdentifier [{0}] in the configuration does not match the "iss" claim [{1}] in the UserInfo.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR.explanation=The provided access token cannot be verified because the "iss" claim in the UserInfo does not match the issuerIdentifier configuration attribute, and the runtime cannot continue with the authentication process.
+# PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
+
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c metoda sprawdzania poprawno\u015bci [{0}] nie jest odpowiednia dla adresu URL punktu ko\u0144cowego sprawdzania poprawno\u015bci [{1}].
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Element validationEndpointUrl okre\u015blony w konfiguracji klienta OpenID Connect nie jest odpowiednim punktem ko\u0144cowym dla okre\u015blonego elementu validationMethod.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Zaktualizuj konfiguracj\u0119 klienta OpenID Connect, zmieniaj\u0105c element validationMethod lub validationEndpointUrl.
+ 
+# 1730 used in clients.common, don't use here.
+
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera roszczenia [{0}] okre\u015blonego przez atrybut [{1}].
+PROPAGATION_TOKEN_MISSING_REALM.explanation=Udost\u0119pniony znacznik dost\u0119pu nie zawiera okre\u015blonego \u017c\u0105dania na potrzeby identyfikacji dziedziny i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
+PROPAGATION_TOKEN_MISSING_REALM.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy w konfiguracji klienta OpenID Connect okre\u015blono atrybut realmName. 2) Sprawd\u017a, czy dostawca OpenID Connect emituje znacznik dost\u0119pu z okre\u015blonym \u017c\u0105daniem. 3) Sprawd\u017a, czy dostawca OpenID Connect mo\u017ce emitowa\u0107 znacznik dost\u0119pu z \u017c\u0105daniem iss. 
+
+# do not translate the quoted "required"
+#used_by_client_project
+BAD_INBOUND_PRPAGATION_REQUIRED=CWWKS1732E: Konfiguracja [{0}] klienta OpenID Connect zosta\u0142a wy\u0142\u0105czona, poniewa\u017c warto\u015b\u0107 atrybutu validationEndpointUrl [{1}] nie jest poprawna, a atrybut inboundPropagation ma warto\u015b\u0107 required.
+BAD_INBOUND_PRPAGATION_REQUIRED.explanation=Wskazany klient OpenID Connect ustawi\u0142 atrybut inboundPropagation na warto\u015b\u0107 required, ale skonfigurowany atrybut validationEndpointUrl nie jest poprawny. Atrybut validationEndpointUrl musi by\u0107 ustawiony na poprawny identyfikator URI korzystaj\u0105cy ze schematu identyfikatora URI http lub https. Klient OpenID Connect dzia\u0142aj\u0105cy jako serwer zasob\u00f3w nie b\u0119dzie w stanie przetworzy\u0107 \u017cadnych \u017c\u0105da\u0144.
+BAD_INBOUND_PRPAGATION_REQUIRED.useraction=Upewnij si\u0119, \u017ce w konfiguracji klienta OpenID Connect podano niepusty atrybut validationEndpointUrl, kt\u00f3ry u\u017cywa schematu URI http lub https.
+
+# do not translate the quoted "supported" and "none"
+#used_by_client_project
+BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: Atrybut validationEndpointUrl [{0}] nie jest poprawny, ale atrybut inboundPropagation jest ustawiony na warto\u015b\u0107 supported. W celu obs\u0142ugi propagacji przychodz\u0105cej nale\u017cy okre\u015bli\u0107 poprawny atrybut validationEndpointUrl, aby klient OpenID Connect [{1}] zachowywa\u0142 si\u0119 tak, jakby jego atrybut inboundPropagation mia\u0142 warto\u015b\u0107 none.
+BAD_INBOUND_PRPAGATION_SUPPORTED.explanation=Atrybut validationEndpointUrl podany we wskazanej konfiguracji klienta OpenID Connect nie jest poprawny. Do obs\u0142ugi propagacji przychodz\u0105cej wymagany jest poprawny atrybut validationEndpointUrl. Warto\u015b\u0107 atrybutu validationEndpointUrl nie mo\u017ce by\u0107 pusta i musi korzysta\u0107 ze schematu identyfikatora URI http lub https. Klient OpenID Connect b\u0119dzie zachowywa\u0107 si\u0119 tak, jakby jego atrybut inboundPropagation mia\u0142 warto\u015b\u0107 none.
+BAD_INBOUND_PRPAGATION_SUPPORTED.useraction=Upewnij si\u0119, \u017ce w konfiguracji klienta OpenID Connect podano niepusty atrybut validationEndpointUrl, kt\u00f3ry u\u017cywa schematu URI http lub https. 
+
+#1734 used by clients.common bundle, don't use here. 
+
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c odpowied\u017a z punktu ko\u0144cowego sprawdzania poprawno\u015bci [{0}] zawiera \u017c\u0105danie [{1}], ale atrybut [{2}] ma warto\u015b\u0107 true.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Poniewa\u017c w konfiguracji klienta OpenID Connect podano atrybut disableIssChecking, serwer zasob\u00f3w oczekuje, \u017ce odpowied\u017a JSON z punktu ko\u0144cowego sprawdzania poprawno\u015bci nie b\u0119dzie zawiera\u0142a \u017c\u0105dania iss.  
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. Zaktualizuj konfiguracj\u0119 klienta OpenID Connect i ustaw atrybut disableIssChecking na warto\u015b\u0107 false lub skonfiguruj punkt ko\u0144cowy sprawdzania poprawno\u015bci tak, aby nie emitowa\u0142 \u017c\u0105dania iss.
+
+# Do not translate "JSON Web Token"
+#0=Java runtime level, 1=Minimum Java level required by JWT library
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_JWT_JDK7=CWWKS1736E: Wersja \u015brodowiska Java u\u017cywana przez to \u015brodowisko wykonawcze [{0}] nie jest obs\u0142ugiwana przez t\u0119 bibliotek\u0119 znacznik\u00f3w WWW JSON. Obs\u0142ugiwane jest \u015brodowisko Java w wersji [{1}] lub nowsze.
+OIDC_CLIENT_JWT_JDK7.explanation=Biblioteki Open Source s\u0142u\u017c\u0105ce do przetwarzania znacznik\u00f3w WWW JSON nie obs\u0142uguj\u0105 wersji \u015brodowiska Java, kt\u00f3ra jest aktualnie u\u017cywana na serwerze Liberty.
+OIDC_CLIENT_JWT_JDK7.useraction=Zainstaluj \u015brodowisko Java w tej samej lub wy\u017cszej wersji ni\u017c poziom \u015brodowiska Java wy\u015bwietlony w komunikacie.
+
+#1737 used in clients.common bundle, do not use here.
+#1738 is unused.
+
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+#0=signatureAlgorithm, 1=exception or error message if any
+#used_by_client_project and clients project
+OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Klucz podpisywania wymagany przez algorytm podpisywania [{0}] by\u0142 niedost\u0119pny. {1}
+OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Nie mo\u017cna znale\u017a\u0107 klucza podpisywania lub nie mo\u017cna znale\u017a\u0107 klucza u\u017cywaj\u0105cego skonfigurowanego algorytmu podpisywania. Przyczyn\u0105 mog\u0105 by\u0107 brakuj\u0105ce, zniekszta\u0142cone lub niedok\u0142adne informacje w konfiguracji klienta lub w znaczniku.
+OIDC_CLIENT_NO_VERIFYING_KEY.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Je\u015bli do podpisywania i sprawdzania poprawno\u015bci znacznik\u00f3w u\u017cywane jest \u015brodowisko JWK, sprawd\u017a, czy poprawnie skonfigurowano atrybut jwkEndpointUrl i czy \u017c\u0105dania JWT oraz JWK s\u0105 poprawne. 2) Je\u015bli do podpisywania i sprawdzania poprawno\u015bci znacznik\u00f3w u\u017cywane s\u0105 certyfikaty X.509, sprawd\u017a, czy poprawnie skonfigurowano atrybuty signatureAlgorithm, trustStoreRef i trustStoreAlias. 3) Je\u015bli do podpisywania i sprawdzania poprawno\u015bci znacznik\u00f3w u\u017cywane s\u0105 klucze wsp\u00f3\u0142u\u017cytkowane, sprawd\u017a, czy poprawnie skonfigurowano atrybuty clientId i clientSecret.
+
+#0=More specific error message, 1=clientId
+#used_by_client_project
+OIDC_CLIENT_BAD_RS_TOKEN=CWWKS1740W: Znacznik propagacji przychodz\u0105cej dla klienta [{1}] nie jest poprawny. Przyczyna: [{0}]. \u017b\u0105danie zostanie uwierzytelnione przy u\u017cyciu programu OpenID Connect.
+OIDC_CLIENT_BAD_RS_TOKEN.explanation=Nie mo\u017cna zweryfikowa\u0107 znacznika pod k\u0105tem \u017c\u0105dania propagacji przychodz\u0105cej. Klient podejmie pr\u00f3b\u0119 uwierzytelnienia przy u\u017cyciu programu OpenID Connect.
+OIDC_CLIENT_BAD_RS_TOKEN.useraction=Je\u015bli to niepowodzenie by\u0142o oczekiwane, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie sprawd\u017a, czy \u015brodowisko propagacji przychodz\u0105cej zosta\u0142o pomy\u015blnie skonfigurowane.
+
+# Do not translate "signatureAlgorithm"
+#0=OIDC client ID, 1="none"
+#used_by_client_project
+OIDC_CLIENT_NONE_ALG=CWWKS1741W: W atrybucie signatureAlgorithm klienta OpenID Connect [{0}] ustawiono warto\u015b\u0107 [{1}].
+OIDC_CLIENT_NONE_ALG.explanation=Poniewa\u017c dla algorytmu podpisywania (signatureAlgorithm) ustawiono warto\u015b\u0107 none (Brak), oczekiwany jest niepodpisany znacznik. Ta sytuacja nie jest cz\u0119sto spotykana.
+OIDC_CLIENT_NONE_ALG.useraction=Je\u015bli znaczniki przychodz\u0105ce nie maj\u0105 by\u0107 podpisywane, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie wybierz obs\u0142ugiwany algorytm podpisywania, taki jak RS256 lub HS256.
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# CWWKS1742E
+#JWK_RETRIVE_FAILED=CWWKS1742E: Cannot get the Json Web Key(JWK) from the URL [{0}]. Response status [{1}]. Message:[{2}] 
+
+
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+# do not translate WASOidcCode
+# 0: the content of WASOidcCode, 1: client ID
+#used_by_client_project and clients project
+OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: Informacja cookie WASOidcCode [{0}] w \u017c\u0105daniu do klienta OpenID Connect [{1}] nie jest poprawna. Jej warto\u015b\u0107 mog\u0142a zosta\u0107 zmodyfikowana.
+OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=Klient OpenID Connect (strona zale\u017cna) odebra\u0142 informacj\u0119 cookie WASOidcCode, kt\u00f3ra nie jest poprawna. Jej warto\u015b\u0107 mog\u0142a zosta\u0107 zmodyfikowana.
+OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Sprawd\u017a, czy informacja cookie nie zosta\u0142a zmodyfikowana i czy zdekodowana zawarto\u015b\u0107 informacji cookie rozpoczyna si\u0119 od poprawnie sformatowanego obiektu JSON.
+
+#1746, 1747  used in clients.common, do not use here. 
+
+# do not translate GET
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: \u017b\u0105danie GET skierowane do [{0}] jest niepoprawne. Zosta\u0142 zwr\u00f3cony kod odpowiedzi 500.
+OIDC_CLIENT_BAD_GET_REQUEST.explanation=Odebrano \u017c\u0105danie, kt\u00f3re nie by\u0142o zgodne z oczekiwanym adresem URL lub nie zawiera\u0142o wymaganych parametr\u00f3w.
+OIDC_CLIENT_BAD_GET_REQUEST.useraction=Sprawd\u017a konfiguracj\u0119 dostawcy OpenID Connect. Ten komunikat mo\u017ce by\u0107 r\u00f3wnie\u017c wynikiem prowadzenia nas\u0142uchu za pomoc\u0105 przegl\u0105darki. 
+
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Brak wymaganego parametru stanu. Zosta\u0142 zwr\u00f3cony kod odpowiedzi 500.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=Odebrano \u017c\u0105danie, kt\u00f3re nie zawiera\u0142o wymaganego parametru stanu.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Sprawd\u017a konfiguracj\u0119 dostawcy OpenID Connect. Ten komunikat mo\u017ce by\u0107 r\u00f3wnie\u017c wynikiem prowadzenia nas\u0142uchu za pomoc\u0105 przegl\u0105darki.
+
+# STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
+
+# do not translate hostname 
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Brakuje wymaganych informacji cookie o nazwie rozpoczynaj\u0105cej si\u0119 od \u0142a\u0144cucha WASReqURLOidc. Nazwa hosta u\u017cywana w celu uzyskania dost\u0119pu do klienta mo\u017ce nie by\u0107 zgodna z nazw\u0105 zarejestrowan\u0105 u dostawcy. Zosta\u0142 zwr\u00f3cony kod odpowiedzi 500.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Odebrano \u017c\u0105danie, kt\u00f3re nie zawiera\u0142o wymaganych informacji cookie.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Brak informacji cookie mo\u017ce wynika\u0107 st\u0105d, \u017ce podejmowana jest pr\u00f3ba uzyskania dost\u0119pu do klienta z u\u017cyciem nazwy hosta, kt\u00f3ra r\u00f3\u017cni si\u0119 od nazwy hosta przekierowania zarejestrowanej u dostawcy.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Konfiguracja klienta OpenId Connect (strona zale\u017cna - Relying Party lub RP) [{2}] zawiera zar\u00f3wno adres URL punktu ko\u0144cowego wykrywania [{0}], jak i inne punkty ko\u0144cowe. Strona zale\u017cna u\u017cyje informacji z \u017c\u0105dania wykrywania i zignoruje inne skonfigurowane punkty ko\u0144cowe [ {1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Klient OpenId Connect korzysta z punktu ko\u0144cowego wykrywania do kontaktowania si\u0119 z dostawc\u0105 i u\u017cywa informacji z \u017c\u0105dania wykrywania do kontaktowania si\u0119 z innymi punktami ko\u0144cowymi, takimi jak autoryzacja, znacznik i informacje o u\u017cytkowniku.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Skonfiguruj albo punkt ko\u0144cowy wykrywania, albo inny punkt ko\u0144cowy, taki jak autoryzacja, znacznik i informacje o u\u017cytkowniku, ale nie oba te elementy.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: Konfiguracja klienta OpenId Connect (strona zale\u017cna - Relying Party lub RP) [{2}] zawiera zar\u00f3wno adres URL punktu ko\u0144cowego wykrywania [{0}], jak identyfikator wystawcy [{1}]. Strona zale\u017cna u\u017cyje informacji z \u017c\u0105dania wykrywania i zignoruje skonfigurowany identyfikator wystawcy.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=Klient OpenId Connect korzysta z punktu ko\u0144cowego wykrywania do kontaktowania si\u0119 z dostawc\u0105 i u\u017cywa informacji z \u017c\u0105dania wykrywania.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Skonfiguruj albo punkt ko\u0144cowy wykrywania, albo identyfikator wystawcy, ale nie oba.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: Konfiguracja klienta OpenID Connect (strona zale\u017cna - Relying Party lub RP) [{3}] zawiera element [{0}], warto\u015b\u0107 domy\u015bln\u0105 dla [{1}], a w wyniku wykonania wykrywania ta warto\u015b\u0107 zmieni\u0142a si\u0119 na [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Je\u015bli dostawca OpenID Connect nie obs\u0142uguje warto\u015bci domy\u015blnych strony zale\u017cnej, to w zale\u017cno\u015bci od wielko\u015bci strony zale\u017cnej warto\u015bci domy\u015blne mo\u017cna ustawi\u0107 tak, aby by\u0142y obs\u0142ugiwane przez OP.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Komunikat informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: Klient OpenID Connect [{0}] nie m\u00f3g\u0142 uzyska\u0107 informacji o punkcie ko\u0144cowym dostawcy Open ID Connect za po\u015brednictwem adresu URL punktu ko\u0144cowego wykrywania [{1}]. Zaktualizuj konfiguracj\u0119 klienta OpenID Connect przy u\u017cyciu poprawnego adresu URL punktu ko\u0144cowego wykrywania HTTPS. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Klient OpenID Connect jest skonfigurowany do wykrywania punkt\u00f3w ko\u0144cowych dostawcy OpenID Connect za po\u015brednictwem adresu URL wykrywania, ale proces wykrywania nie powi\u00f3d\u0142 si\u0119. Klient OpenID Connect nie b\u0119dzie m\u00f3g\u0142 przetworzy\u0107 \u017c\u0105da\u0144 uwierzytelniania, dop\u00f3ki konfiguracja w\u0142a\u015bciwo\u015bci discoveryEndpointURL nie zostanie poprawiona lub wykrywanie nie powiedzie si\u0119.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Popraw konfiguracj\u0119 klienta OpenID Connect, aby upewni\u0107 si\u0119, \u017ce 1) adres URL punktu ko\u0144cowego wykrywania odnosi si\u0119 do poprawnego dostawcy OpenID Connect, 2) adres URL punktu ko\u0144cowego wykrywania jest adresem HTTPS i 3) elementy funkcji SSL i magazynu kluczy s\u0105 poprawnie skonfigurowane przy u\u017cyciu certyfikatu zaufanego dostawcy OpenID Connect. Upewnij si\u0119, \u017ce punkt ko\u0144cowy wykrywania dostawcy OpenID Connect dzia\u0142a.
+
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Z adresu URL [{0}] nie zosta\u0142a zwr\u00f3cona poprawna odpowied\u017a. To jest status odpowiedzi [{1}] i b\u0142\u0105d [{2}] przekazane z \u017c\u0105dania wykrywania.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=Klient OpenID Connect nie m\u00f3g\u0142 uzyska\u0107 dost\u0119pu do punktu ko\u0144cowego wykrywania dostawcy OpenID Connect, a komunikat mo\u017ce zawiera\u0107 wi\u0119cej informacji o b\u0142\u0119dzie.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect jest dost\u0119pny i \u017ce podany punkt ko\u0144cowy wykrywania jest poprawny.
+
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: Konfiguracja klienta OpenID Connect [{0}] zosta\u0142a ustanowiona przy u\u017cyciu informacji z adresu URL punktu ko\u0144cowego wykrywania [{1}]. Te informacje umo\u017cliwiaj\u0105 klientowi interakcje z dostawc\u0105 OpenID Connect w celu przetwarzania \u017c\u0105da\u0144, takich jak autoryzacja i znacznik.
+OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=Klient OpenID Connect kontaktuje si\u0119 z punktem ko\u0144cowym wykrywania dostawcy OpenID Connect w celu pobrania informacji, takich jak authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl i jwkEndpointUrl. Te informacje umo\u017cliwiaj\u0105 klientowi OpenID Connect wsp\u00f3\u0142prac\u0119 z dostawc\u0105 OpenID Connect w celu wysy\u0142ania \u017c\u0105da\u0144 autoryzacji, znacznik\u00f3w, jwk i informacji o u\u017cytkowniku.
+OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Komunikat informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS1527I: Konfiguracja klienta OpenID Connect [{0}] zosta\u0142a zaktualizowana przy u\u017cyciu nowych informacji odebranych z adresu URL punktu ko\u0144cowego wykrywania [{1}].
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje si\u0119 z punktem ko\u0144cowym wykrywania dostawcy OpenID Connect, 1) je\u015bli wyst\u0105pi\u0142 problem zwi\u0105zany z kontaktowaniem si\u0119 z punktami ko\u0144cowymi autoryzacji lub znacznika dostawcy OpenID Connect, 2) je\u015bli bie\u017c\u0105cy czas jest p\u00f3\u017aniejszy od czasu nast\u0119pnego wykrywania. Czas nast\u0119pnego wykrywania jest obliczany przez dodanie warto\u015bci discoveryPollingRate do bie\u017c\u0105cego czasu po ka\u017cdym wywo\u0142aniu wykrywania.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Komunikat informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: Konfiguracja klienta OpenID Connect [ {0}] jest sp\u00f3jna z informacjami pochodz\u0105cymi z adresu URL punktu ko\u0144cowego wykrywania [ {1}], wi\u0119c nie s\u0105 wymagane \u017cadne aktualizacje konfiguracji.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje si\u0119 z punktem ko\u0144cowym wykrywania dostawcy OpenID Connect, 1) je\u015bli wyst\u0105pi\u0142 problem zwi\u0105zany z kontaktowaniem si\u0119 z punktami ko\u0144cowymi autoryzacji lub znacznika dostawcy OpenID Connect 2), je\u015bli bie\u017c\u0105cy czas jest p\u00f3\u017aniejszy od czasu nast\u0119pnego wykrywania. Czas nast\u0119pnego wykrywania jest obliczany przez dodanie warto\u015bci discoveryPollingRate do bie\u017c\u0105cego czasu po ka\u017cdym wywo\u0142aniu wykrywania. Je\u015bli najnowsze informacje wykrywania s\u0105 zgodne z poprzednimi, aktualizacje konfiguracji nie zostan\u0105 przeprowadzone.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Komunikat informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Brakuje wymaganego atrybutu konfiguracji [{0}] lub jest on pusty, a warto\u015b\u0107 domy\u015blna nie zosta\u0142a podana. Upewnij si\u0119, \u017ce atrybut jest skonfigurowany lub zosta\u0142 wykryty przez dostawc\u0119 i pobrany od niego, nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Podany atrybut konfiguracji mo\u017ce by\u0107 nieobecny w konfiguracji serwera. Je\u015bli warto\u015b\u0107 jest podana, bia\u0142e znaki na jej pocz\u0105tku i na ko\u0144cu s\u0105 usuwane podczas przetwarzania, dlatego warto\u015b\u0107 w konfiguracji mo\u017ce by\u0107 pusta lub zawiera\u0107 wy\u0142\u0105cznie bia\u0142e znaki. Je\u015bli punkt ko\u0144cowy wykrywania zosta\u0142 skonfigurowany tak, aby pobiera\u0107 warto\u015b\u0107 tego atrybutu od dostawcy, mo\u017ce to spowodowa\u0107 wyst\u0105pienie problemu z wykrywaniem.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Upewnij si\u0119, \u017ce podany atrybut konfiguracji nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w. Je\u015bli punkt ko\u0144cowy wykrywania jest skonfigurowany pod k\u0105tem uzyskiwania tej informacji, upewnij si\u0119, \u017ce nie ma \u017cadnych b\u0142\u0119d\u00f3w zwi\u0105zanych z \u017c\u0105daniem wykrywania.
+ 
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

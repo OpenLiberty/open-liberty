@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: La solicitud de punto final de se\u00f1al ha fallado. No se puede validar la se\u00f1al de JWT solicitada por {0} debido a que falta una firma en la se\u00f1al de JWT. El proveedor de OpenID Connect ha especificado el algoritmo {1} y espera que la se\u00f1al JWT est\u00e9 firmada.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=No se puede verificar la se\u00f1al de JWT porque la se\u00f1al no est\u00e1 firmada. El proveedor de OpenID Connect espera que la se\u00f1al est\u00e9 firmada.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Compruebe la configuraci\u00f3n del cliente de OpenID Connect para asegurarse de que firma la se\u00f1al JWT.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: La solicitud de punto final de se\u00f1al ha fallado. No se puede validar la se\u00f1al de JWT solicitada por [{0}] debido a una discrepancia de algoritmos de firma entre el proveedor OpenID Connect [{1}] y el cliente de OpenID Connect [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=No se puede verificar la se\u00f1al de JWT porque el proveedor y el cliente est\u00e1n utilizando algoritmos de firma diferentes para firmar o verificar la se\u00f1al.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Compruebe que la configuraci\u00f3n del cliente de OpenID Connect especifique un algoritmo de firma que coincida con la del proveedor de OpenID Connect.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: La solicitud de punto final de se\u00f1al ha fallado. Una se\u00f1al de JWT necesita tener 3 segmentos separados por ''.'', pero esta se\u00f1al de JWT tiene {0}] segmentos.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Una se\u00f1al de JWT necesita tener 3 segmentos separados por '.'. Esta se\u00f1al de JWT tiene un n\u00famero de segmentos err\u00f3neo.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Aseg\u00farese de que la se\u00f1al de JWT sea v\u00e1lida y tenga 3 segmentos.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: La solicitud de punto final de se\u00f1al ha fallado. Ha fallado la validaci\u00f3n de la se\u00f1al JWT solicitada por [{0}]. Ha recibido una InvalidJwtException con el mensaje:[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=No se puede validar una se\u00f1al de JWT debido a una InvalidJwtException indicada en el mensaje.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrija el error indicado en el mensaje.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: La solicitud de punto final de se\u00f1al ha fallado. No se ha encontrado una se\u00f1al de JWT v\u00e1lida en la solicitud.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=La solicitud debe proporcionar una se\u00f1al de JWT pero no se ha encontrado la se\u00f1al de JWT en la solicitud de punto final de se\u00f1al.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Proporcione una se\u00f1al de JWT v\u00e1lida en la solicitud de punto final de se\u00f1al.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Se ha producido una excepci\u00f3n al intentar obtener el RunAsSubject. La excepci\u00f3n era: [{0}]
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Se ha producido una excepci\u00f3n al obtener el RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Aseg\u00farese de que el servidor est\u00e9 configurado y se inicie correctamente.
+

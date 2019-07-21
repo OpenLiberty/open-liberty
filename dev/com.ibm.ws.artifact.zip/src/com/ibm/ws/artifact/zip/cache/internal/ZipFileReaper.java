@@ -12,9 +12,6 @@ package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,6 +19,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -257,7 +256,7 @@ public class ZipFileReaper {
 
     static {
         logEmitter = new DeferredLogEmitter();
-        logThread = new Thread(logEmitter);
+        logThread = new Thread(logEmitter, "reaper logger");
         logThread.setDaemon(true);
         logThread.start();
     }
@@ -305,7 +304,7 @@ public class ZipFileReaper {
 
         protected void introspect(PrintWriter output) {
             output.println();
-            output.println("  Runner   [ " + this + " ]");
+            output.println("  Runner [ " + this + " ]");
 
             long reaperInitialAt = getReaper().getInitialAt();
 
@@ -322,6 +321,9 @@ public class ZipFileReaper {
             output.println("    Next Reap     [ " + toRelSec(reaperInitialAt, nextReapAt) + " (s) ]");
             String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec(nextReapDelay) );
             output.println("    Next Delay    [ " + delayText + " (s) ]");
+
+            output.println();
+            output.println("  Logger [ " + logThread + " ]");
         }
 
         private final ZipFileReaper reaper;
@@ -797,7 +799,7 @@ public class ZipFileReaper {
             ZipFileData ripestQuick = pendingQuickStorage.getFirst();
             long expireAtQuick = ripestQuick.lastPendAt + quickPendMin;
 
-            ZipFileData ripestSlow = pendingQuickStorage.getFirst();
+            ZipFileData ripestSlow = pendingSlowStorage.getFirst();
             long expireAtSlow = ripestSlow.lastPendAt + slowPendMin;
 
             if ( expireAtQuick <= expireAtSlow ) {
@@ -1433,16 +1435,13 @@ public class ZipFileReaper {
 
     //
 
-    public void introspect(PrintWriter output) {
+    public void introspect(PrintWriter output, long introspectAt) {
         synchronized ( reaperLock ) {
+            output.println();
             output.println("  IsActive [ " + Boolean.valueOf(isActive) + " ]");
             output.println("  Initial  [ " + toAbsSec(initialAt) + " (s) ]" );
             output.println("  Final    [ " + toAbsSec(finalAt) + " (s) ]");
-            //current time
-            //format : [MM/dd/yyyy kk:mm:ss:SSS zzz]
-            Date currentTime = new Date();
-            output.println(String.format("  Current  [ %s ]",outputTimeFormat.format(currentTime)));
-
+            output.println("  Current  [ " + toAbsSec(introspectAt) + " (s) ]");
 
             introspectReaperThread(output);
 
@@ -1453,18 +1452,18 @@ public class ZipFileReaper {
             } else {
                 for ( Map.Entry<String, ZipFileData> reaperEntry : storage.entrySet() ) {
                     output.println();
-                    reaperEntry.getValue().introspect(output);
+                    reaperEntry.getValue().introspect(output, introspectAt);
                 }
             }
 
-            pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY);
-            pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY);
+            pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
+            pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
 
             if ( completedStorage == null ) {
                 output.println();
                 output.println("Completed zip file data is not being tracked");
             } else {
-                completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY);
+                completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY, introspectAt);
             }
         }
     }

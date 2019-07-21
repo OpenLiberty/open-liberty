@@ -454,8 +454,13 @@ public class ZipFileDataStore {
      * @param displayFully Control parameter: When true, display the
      *     full details of each element.  When false, display just
      *     the names of each element.
+     * @param introspectAt When the introspection began.
      */
-    protected void introspect(PrintWriter output, boolean displayFully) {
+    protected void introspect(
+    	PrintWriter output,
+    	boolean displayFully,
+    	long introspectAt) {
+
         output.println();
         output.println("Zip File Data [ " + getName() + " ]");
         if ( isEmpty() ) {
@@ -465,7 +470,7 @@ public class ZipFileDataStore {
             while ( values.hasNext() ) {
                 if ( displayFully ) {
                     output.println();
-                    values.next().introspect(output);
+                    values.next().introspect(output, introspectAt);
                 } else {
                     output.println( "  [ " + values.next().getPath() + " ]");
                 }

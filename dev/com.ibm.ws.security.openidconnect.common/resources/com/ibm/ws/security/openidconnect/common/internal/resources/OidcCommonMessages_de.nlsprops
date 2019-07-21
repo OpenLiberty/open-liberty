@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das von [{0}] angeforderte JWT-Token kann nicht validiert werden, weil die Signatur im JWT-Token fehlt. Der OpenID Connect-Provider gibt den Algorithmus [{1}] an und erwartet, dass das JWT-Token signiert ist.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Das JWT kann nicht gepr\u00fcft werden, weil das JWT-Token nicht signiert ist. Der OpenID Connect-Provider erwartet, dass das Token signiert ist.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Clientkonfiguration, um sicherzustellen, dass das JWT-Token signiert wird.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das von [{0}] angeforderte JWT-Token kann nicht validiert werden, weil die Signaturalgorithmen des OpenID Connect-Providers [{1}] und des OpenID Connect-Clients [{2}] nicht \u00fcbereinstimmen.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Das JWT-Token kann nicht gepr\u00fcft werden, weil Provider und Client unterschiedliche Signaturalgorithmen f\u00fcr die Signatur und die \u00dcberpr\u00fcfung des Tokens verwenden.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Clientkonfiguration und geben Sie den Signaturalgorithmus an, der dem OpenID Connect-Provider entspricht.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: Die Tokenendpunktanforderung ist fehlgeschlagen. Ein signiertes JWT-Token muss drei, jeweils durch einen Punkt (''.'') getrennte Segmente haben, aber dieses JWT-Token hat [{0}] Segmente.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Ein signiertes JWT-Token muss exakt drei, jeweils durch einen Punkt ('.') getrennte Segmente haben. Dieses JWT-Token hat jedoch eine ung\u00fcltige Anzahl von Segmenten.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Stellen Sie sicher, dass das JWT-Token g\u00fcltig ist und drei Segmente hat.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Validierung von [{0}] angeforderten JWT-Tokens ist fehlgeschlagen. Es wurde eine Ausnahme des Typs InvalidJwtException mit der folgenden Nachricht ausgegeben: [{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Das JWT-Token kann nicht validiert werden, weil die in der Nachricht angegebene Ausnahme des Typs IllegalStatException eingetreten ist.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Korrigieren Sie den in der Nachricht angegebenen Fehler.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: Die Tokenendpunktanforderung ist fehlgeschlagen. Ein erforderliches JWT-Token wurde nicht in der Anforderung gefunden.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=Die Anforderung muss ein JWT-Token enthalten, aber das JWT-Token wurde nicht in der Tokenendpunktanforderung gefunden.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Geben Sie ein g\u00fcltiges JWT-Token in der Tokenendpunktanforderung an.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten. Ausnahme: [{0}]
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Stellen Sie sicher, dass der Server ordnungsgem\u00e4\u00df konfiguriert und gestartet ist.
+

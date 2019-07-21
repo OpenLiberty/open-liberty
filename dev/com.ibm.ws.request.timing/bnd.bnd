@@ -1,0 +1,92 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Request Timing
+Bundle-SymbolicName: com.ibm.ws.request.timing
+Bundle-Description: RequestTiming: Request Timing; version=${bVersion}
+
+WS-TraceGroup: requestTiming
+
+Export-Package:  com.ibm.ws.request.timing.config, \
+    com.ibm.ws.request.timing.notification, \
+    com.ibm.ws.request.timing.stats
+
+Private-Package: com.ibm.ws.request.timing.probeExtensionImpl, \
+    com.ibm.ws.request.timing.internal.*, \
+    com.ibm.ws.request.timing.queue, \
+	com.ibm.ws.request.timing.manager, \
+	com.ibm.ws.request.timing, \
+	com.ibm.ws.request.timing.stats.internal
+
+Service-Component:\
+	com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension; \
+        implementation:=com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension; \
+        provide:='\
+          com.ibm.wsspi.probeExtension.ProbeExtension,\
+          com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension';\
+        properties:="service.vendor=IBM"; \
+        immediate:='true', \
+    com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
+        implementation:=com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
+        provide:='\
+          com.ibm.wsspi.logging.Introspector,\
+          com.ibm.wsspi.probeExtension.ProbeExtension,\
+          com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension';\
+        properties:="service.vendor=IBM"; \
+        interruptibleRequestLifecycle=com.ibm.ws.request.interrupt.InterruptibleRequestLifecycle; \
+        immediate:='true', \
+    com.ibm.ws.request.timing.RequestTimingService; \
+        implementation:=com.ibm.ws.request.timing.RequestTimingService; \
+        provide:='\
+         com.ibm.ws.request.timing.RequestTimingService,\
+         com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener'; \
+        configurationAdmin=org.osgi.service.cm.ConfigurationAdmin;\
+        scheduledExecutor=java.util.concurrent.ScheduledExecutorService; \
+        executor=java.util.concurrent.ExecutorService; \
+        libertyProcess=com.ibm.ws.kernel.LibertyProcess; \
+        slowRequestProbeExt=com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension; \
+        hungRequestProbeExt=com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
+        hungRequestNotification=com.ibm.ws.request.timing.notification.HungRequestNotification; \
+        configParser=com.ibm.ws.request.timing.config.RequestTimingConfigParser; \
+        properties:="service.vendor=IBM"; \
+        multiple:='hungRequestNotification,configParser'; \
+        dynamic:='hungRequestNotification,configParser';\
+        optional:='hungRequestNotification,configParser';\
+        modified:='modified'; \
+        immediate:='true', \
+     com.ibm.ws.request.timing.stats.internal.RequestTimingStatistics; \
+        implementation:=com.ibm.ws.request.timing.stats.internal.RequestTimingStatistics; \
+        provide:='\
+         com.ibm.ws.request.timing.stats.RequestTiming,\
+         com.ibm.ws.request.timing.stats.internal.RequestTimingStatistics'; \
+        slowRequestProbeExt=com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension; \
+        hungRequestProbeExt=com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
+        properties:="service.vendor=IBM"; \
+        immediate:='true'
+    	
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.request.interrupt;version=latest,\
+	com.ibm.ws.request.probes;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

@@ -1,0 +1,410 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Descriere:
+global.actions=Ac\u0163iuni:
+global.options=Op\u0163iuni:
+global.required=Necesar:
+global.usage=Folosire:
+global.usage.options=\t{0} {1} [options]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\tFolosi\u0163i help [action] pentru informa\u0163ii de op\u0163iuni detaliate ale fiec\u0103rei ac\u0163iuni.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\tTip\u0103ri\u0163i informa\u0163iile de ajutor pentru ac\u0163iunea specificat\u0103.
+
+help.usage.options=\t{0} {1} [actionName]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\ \ \ \ --batchManager=[host]:[port],[host2]:[port2],...
+connect.required-desc.--batchManager=\tGazda \u015fi portul API-ului REST al managerului de batch-uri. Pute\u0163i specifica \n\
+\tmai multe \u0163inte, pentru disponibilitate \u00eenalt\u0103 \u015fi preluare la defect. \u0162intle sunt \n\
+\tdelimitate cu virgule ','. 
+
+connect.required-key.--user=\ \ \ \ --user=[username]
+connect.required-desc.--user=\tNumele de utilizator pentru logarea la managerul de batch-uri.
+
+connect.required-key.--password=\ \ \ \ --password[=pwd]
+connect.required-desc.--password=\tParola pentru logarea la managerul de batch-uri. Dac\u0103 nu este definit\u0103 nicio valoare\n\
+\tve\u0163i fi promptat.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\ \ \ \ --controlPropertiesFile=[control-properties-file]
+connect.optional-desc.--controlPropertiesFile=\tUn fi\u015fier de propriet\u0103\u0163i care con\u0163ine parametrii de control, cum ar fi gazda \u015fi \n\
+\t portul la care s\u0103 se conecteze. Ace\u015fti parametri sunt \u00eenlocui\u0163i de parametrii \n\
+\t specifica\u0163i direct \u00een linia de comand\u0103.
+
+connect.optional-key.--httpTimeout_s=\ \ \ \ --httpTimeout_s=[timeout \
+http \u00een secunde]
+connect.optional-desc.--httpTimeout_s=\tTimeout-ul \
+\u00een secunde aplicat la cererile HTTP f\u0103cute din utilitar la\n\
+\tAPI-ul REST al managerului de batch. Aceea\u015fi valoare de timeout \
+este aplicat\u0103 la\n\
+\tambele opera\u0163ii de conectare \u015fi citire. Dac\u0103 nu se specific\u0103, \
+valoarea implicit\u0103\n \teste de 30 de secunde.
+
+connect.optional-key.--trustSslCertificates=\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\tIndicat\u0103 faptul c\u0103 utilitarul ar trebui s\u0103 aib\u0103 \u00eencredere \u00een toate certificatele SSL. Utilitarul \n\
+\tcomunic\u0103 cu managerul de batch REST API peste HTTPS. \n\
+\tImplicit se verific\u0103 certificatul SSL al managerului de batch, doar dac\u0103\n\
+\taceast\u0103 op\u0163iune este specificat\u0103, caz \u00een care acesta are \u00eencredere \u00een certificatul SSL\n\
+\t\u015fi nu realizeaz\u0103 nicio verificare.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\ \ \ \ --wait
+wait.optional-desc.--wait=\tDac\u0103 este specificat\u0103, programul va a\u015ftepta ca jobul s\u0103 se finalizeze\n\
+\t\u00eenainte de a ie\u015fi. Codul de ie\u015fire este setat conform st\u0103rii \n\
+\tbatch a jobului (cu excep\u0163ia czului \u00een care se specific\u0103 --returnExitStatus).\n\
+\tCoduri de ie\u015fire stare batch:\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\ \ \ \ --pollingInterval_s=[polling interval in seconds]
+wait.optional-desc.--pollingInterval_s=\tIntervalul de timp la care s\u0103 sondeze pentru starea jobului.\n\
+\tValoarea implicit\u0103 este 30 de secunde.
+
+wait.optional-key.--verbose=\ \ \ \ --verbose
+wait.optional-desc.--verbose=\tDac\u0103 este specificat, programul va \u00eenregistra \u00een istoric un\n\
+\tmesaj de fiecare dat\u0103 c\u00e2nd se sondeaz\u0103 starea jobului.
+
+wait.optional-key.--getJobLog=\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\tDac\u0103 este specificat, programul va desc\u0103rca istoricul de job \u015fi-l\n\
+\tva tip\u0103ri la STDOUT dup\u0103 terminarea jobului. Aceast\u0103 op\u0163iune trebuie s\u0103 fie combinat\u0103 cu --wait.
+
+wait.optional-key.--returnExitStatus=\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\tFolosi\u0163i starea de ie\u015fire a jobului drept cod de ie\u015fire al acestui program. Aceast\u0103 op\u0163iune \n\
+\ttrebuie combinat\u0103 cu --wait. Ddac\u0103 starea de ie\u015fire se potrive\u015fte cu \n\
+\tun nume BatchStatus (de ex. "COMPLETED"), atunci codul de ie\u015fire este \n\
+\tsetat conform map\u0103rii descrise de op\u0163iunea --wait. Altfel, codul de \n\
+\tie\u015fire este parsat de la \u00eenceputul \u015firului st\u0103rii de ie\u015fire.\n\
+\tDe exemplu:\n\
+\t\texitStatus="0", cod ie\u015fire: 0\n\
+\t\texitStatus="8:mesajul de eroare poate fi pus aici", cod ie\u015fire: 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\tLansa\u0163i un job batch nou. 
+
+submit.optional-key.--applicationName=\ \ \ \ --applicationName=[applicationName]
+submit.optional-desc.--applicationName=\tNumele aplica\u0163iei de batch. \n\
+\tNot\u0103: Trebuie specificat --applicationName sau --moduleName. \n\
+\tDac\u0103 --applicationName nu este specificat,  valoarea absolut\u0103 este [moduleName] \n\
+\tf\u0103r\u0103 extensia ".war" sau ".jar".
+
+submit.optional-key.--moduleName=\ \ \ \ --moduleName=[moduleName]
+submit.optional-desc.--moduleName=\tIdentific\u0103 un modul WAR sau EJB \u00een aplica\u0163ia de batch. \n\
+\tJobul este lansat sub contextul componentei de modul. \n\
+\tNot\u0103: Trebuie specificat --applicationName sau --moduleName. \n\
+\tDac\u0103 nu se spcific\u0103 --moduleName, prime\u015fte valoarea implicit\u0103 "[applicationName].war".
+
+submit.optional-key.--componentName=\ \ \ \ --componentName=[componentName]
+submit.optional-desc.--componentName=\tIdentific\u0103 o component\u0103 EJB \u00een modulul EJB de aplica\u0163ii batch.\n\
+\tJobul este lansat sub contextul componentei EJB.
+
+submit.optional-key.--jobXMLName=\ \ \ \ --jobXMLName=[jobXMLName]
+submit.optional-desc.--jobXMLName=\tNumele XML-ului de job care descrie jobul. Fi\u015fierul este citit \n\
+\tdin directorul joburi-batch din modulul de aplica\u0163ie. \n\
+\tNot\u0103: Trebuie specificat fie --jobXMLName fie --jobXMLFile.
+
+submit.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[job-properties-file]
+submit.optional-desc.--jobPropertiesFile=\tUn fi\u015fier de propriet\u0103\u0163i ce con\u0163ine parametri de job.\n\
+\tAcesta este un alias al op\u0163iunii --jobParametersFile.
+
+submit.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[job-parameters-file]
+submit.optional-desc.--jobParametersFile=\tUn fi\u015fier de propriet\u0103\u0163i ce con\u0163ine parametri de job.\n\
+\tAcesta este un alias al op\u0163iunii --jobPropertiesFile.
+
+submit.optional-key.--jobParameter=\ \ \ \ --jobParameter=[cheie]=[valoare]
+submit.optional-desc.--jobParameter=\tSpecifica\u0163i un parametru de job. Pot fi specificate mai mult \n\
+\tde o op\u0163iune --jobParameter. Op\u0163iunea --jobParameter \u00eenlocuie\u015fte\n\
+\tpropriet\u0103\u0163ile numite similare din --jobParametersFile.
+
+submit.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\tAceast\u0103 op\u0163iune poate fi folosit\u0103 \u00eempreun\u0103 cu --wait. Se \u00eenregistreaz\u0103 un c\u00e2rlig\n\
+\tde oprire cu JVM-ul care ob\u0163ine controlul c\u00e2nd programul batchManager este \n\
+\tterminat anormal.  C\u00e2rligul de oprire \u00eencearc\u0103 s\u0103 opreasc\u0103 jobul pe \n\
+\tcare a\u015fteapt\u0103 prin trimiterea unei cereri de oprire c\u0103tre server. \n\
+\tNot\u0103: C\u00e2rligele de oprire a activit\u0103\u0163ii JVM ob\u0163in controlul numai c\u00e2nd JVM-ul este terminat \n\
+\t\u00een anumite moduri. Pentru mai multe informa\u0163ii, vede\u0163i documenta\u0163ia Java pentru \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+submit.optional-key.--jobXMLFile=\ \ \ \ --jobXMLFile=[jobXMLFile]
+submit.optional-desc.--jobXMLFile=\tNumele unui fi\u015fier care con\u0163ine JSL-ul pentru job. Fi\u015fierul este \n\
+\tcitit de utilitarul batchManager \u015fi lansat inline cu \n\
+\tcererea, mai degrab\u0103 dec\u00e2t s\u0103 fie citit din directorul joburi-batch\n\
+\tdin modulul de aplica\u0163ie. \n\
+\tNot\u0103: Trebuie specificat fie --jobXMLName fie --jobXMLFile.
+
+submit.optional-key.--restartTokenFile=\ \ \ \ -restartTokenFile=[restart-token-file]
+submit.optional-desc.--restartTokenFile=\tNumele unui fi\u015fier care p\u0103streaz\u0103 ID-ul de instan\u0163\u0103 al jobului \n\
+\tde restartat.  Fi\u015fierul este citit \u015fi scris de utilitarul \n\
+\tbatchManager.  Dac\u0103 fi\u015fierul con\u0163ine un ID de instan\u0163\u0103, jobul este repornit.  Dac\u0103 nu, \n\
+\teste lansat un job nou \u015fi ID-ul de instan\u0163\u0103 rezultat este memorat \u00een \n\
+\ttfi\u015fier.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\tRepornirea unui job batch.
+
+restart.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+restart.optional-desc.--jobInstanceId=\tInstan\u0163a de job de repornit.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+restart.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+restart.optional-desc.--jobExecutionId=\tExecu\u0163ia de job de repornit.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+restart.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[job-properties-file]
+restart.optional-desc.--jobPropertiesFile=\tUn fi\u015fier de propriet\u0103\u0163i ce con\u0163ine parametri de job.\n\
+\tAcesta este un alias al op\u0163iunii --jobParametersFile.
+
+restart.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[job-parameters-file]
+restart.optional-desc.--jobParametersFile=\tUn fi\u015fier de propriet\u0103\u0163i ce con\u0163ine parametri de job.\n\
+\tAcesta este un alias al op\u0163iunii --jobPropertiesFile.
+
+restart.optional-key.--jobParameter=\ \ \ \ --jobParameter=[cheie]=[valoare]
+restart.optional-desc.--jobParameter=\tSpecifica\u0163i un parametru de job. Pot fi specificate mai mult \n\
+\tde o op\u0163iune --jobParameter. Op\u0163iunea --jobParameter \u00eenlocuie\u015fte\n\
+\tpropriet\u0103\u0163ile numite similare din --jobParametersFile.
+
+restart.optional-key.--reusePreviousParams=\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\tDac\u0103 specificat, jobul va reutiliza parametrii jobului anterior.
+
+restart.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\tAceast\u0103 op\u0163iune poate fi folosit\u0103 \u00eempreun\u0103 cu --wait. Se \u00eenregistreaz\u0103 un c\u00e2rlig\n\
+\tde oprire cu JVM-ul care ob\u0163ine controlul c\u00e2nd programul batchManager este \n\
+\tterminat anormal.  C\u00e2rligul de oprire \u00eencearc\u0103 s\u0103 opreasc\u0103 jobul pe \n\
+\tcare a\u015fteapt\u0103 prin trimiterea unei cereri de oprire c\u0103tre server. \n\
+\tNot\u0103: C\u00e2rligele de oprire a activit\u0103\u0163iiJVM ob\u0163in controlul numai c\u00e2nd JVM-ul este terminat \n\
+\t\u00een anumite moduri. Pentru mai multe informa\u0163ii, ede\u0163i documenta\u0163ia Java pentru \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\tOprirea unui job batch.
+
+stop.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+stop.optional-desc.--jobInstanceId=\tInstan\u0163a de job de oprit.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+stop.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+stop.optional-desc.--jobExecutionId=\tExecu\u0163ia de job de oprit.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\tVizualizarea st\u0103rii unui job.
+
+status.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+status.optional-desc.--jobInstanceId=\tInstan\u0163a de job de vizualizat.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+status.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+status.optional-desc.--jobExecutionId=\tExecu\u0163ia jobului de vizualizat.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\tDesc\u0103rca\u0163i istoricul de job pentru \
+un job batch.
+
+getJobLog.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+getJobLog.optional-desc.--jobInstanceId=\tDesc\u0103rca\u0163i \
+istoricul de job pentru instan\u0163a de job dat\u0103.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+getJobLog.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+getJobLog.optional-desc.--jobExecutionId=\tDesc\u0103rca\u0163i \
+istoricul de job pentru execu\u0163ia de job dat\u0103.\n\
+\tNot\u0103: Fie --jobInstanceId, fie --jobExecutionId trebuie s\u0103 fie specificat.
+
+getJobLog.optional-key.--outputFile=\ \ \ \ --outputFile=[outputFile]
+getJobLog.optional-desc.--outputFile=\tCale la un \
+fi\u015fier local.  Istoricul de job este scris \u00een acest fi\u015fier.\n\
+\tDac\u0103 nu se specific\u0103, loca\u0163ia de ie\u015fire implicit\u0103 depinde de \
+--type.\n\
+\tDac\u0103 --type=text, istoricul de job este scris \u00een STDOUT.\n\
+\tDac\u0103 --type=zip, istoricul de job este scris \u00een numele de fi\u015fier \
+sugerat de\n \tantetul 'Content-Disposition' din r\u0103spunsul HTTP.
+
+getJobLog.optional-key.--type=\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\tDesc\u0103rca\u0163i \
+istoricul de job fie ca text simplu, fie ca fi\u015fier de arhivare.\n\
+\tDac\u0103 nu se specific\u0103, valoarea implicit\u0103 este text.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\tListeaz\u0103 instan\u0163ele jobului. 
+
+listJobs.optional-key.--page=\ \ \ \ --page=[page]
+listJobs.optional-desc.--page=\tPagina de \u00eenregistr\u0103ri ale instan\u0163ei de job de returnat. Numerele paginilor \u00eencep de la 0.\n\
+\tDe exemplu:\n\
+\t\t--page=0 --pageSize=10 returneaz\u0103 primele 10 \u00eenregistr\u0103ri.\n\
+\t\t--page=2 --pageSize=10 returneaz\u0103 \u00eenregistr\u0103rile de la 20 la 29.\n\
+\tDac\u0103 nu se specific\u0103, valoarea implicit\u0103 este 0.
+
+listJobs.optional-key.--pageSize=\ \ \ \ --pageSize=[pageSize]
+listJobs.optional-desc.--pageSize=\tDimensiunea paginii de \u00eenregistr\u0103ri ale instan\u0163ei de job de returnat.\n\
+\tDe exemplu:\n\
+\t\t--page=0 --pageSize=10 returneaz\u0103 primele 10 \u00eenregistr\u0103ri.\n\
+\t\t--page=1 --pageSize=20 returneaz\u0103 \u00eenregistr\u0103rile de la 20 la 39.\n\
+\tDac\u0103 nu se specific\u0103, valoarea implicit\u0103 este 50.
+
+listJobs.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+listJobs.optional-desc.--jobInstanceId=\tFiltrul de ID-uri instan\u0163e de job s-a aplicat \u00eenregistr\u0103rilor instan\u0163elor de job.\n\
+\tDe exemplu:\n\
+\t\t--jobInstanceId=10:20 returneaz\u0103 \u00eenregistr\u0103rile de la records 10 la 20.\n\
+\t\t--jobInstanceId=">10" returneaz\u0103 \u00eenregistr\u0103rile mai mari sau egale dec\u00e2t 10.\n\
+\t\t--jobInstanceId="<10" returneaz\u0103 \u00eenregistr\u0103rile mai mici sau egale cu 10.\n\
+\t\t--jobInstanceId=10,12,15 returneaz\u0103 \u00eenregistr\u0103rile 10, 12 \u015fi 15.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 maxim 50\n\
+\t\t\u00eenregistr\u0103ri.
+
+listJobs.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+listJobs.optional-desc.--createTime=\tFiltrul de creare dat\u0103 s-a aplicat \u00eenregistr\u0103rilor instan\u0163elor de job.\n\
+\tDe exemplu:\n\
+\t\t--createTime=2015-09-10:2015-09-27 \u00eentoarce \u00eenregistr\u0103ri care au fost create\n\
+\t\t\t\u00eentre 10.09.2015 \u015fi 27.09.2015, inclusiv.\n\
+\t\t--createTime=">3d" \u00eentoarce \u00eenregistr\u0103ri care au fost create cu 3 zile \u00een urm\u0103 UTC sau \n\
+\t\t\tdup\u0103 (data de creare este mai mare sau egal\u0103 cu data cu 3 zile \u00een urm\u0103).\n\
+\t\t--createTime="<3d" \u00eentoarce \u00eenregistr\u0103ri care au fost create cu 3 zile \u00een urm\u0103 UTC sau \n\
+\t\t\t\u00eenainte (data de creare este mai mic\u0103 sau egal\u0103 cu data cu 3 zile \u00een urm\u0103).\n\
+\t\t--createTime=2015-09-15 \u00eentoarce toate \u00eenregistr\u0103rile care au fost create pe 15.09.2015.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 maxim 50\n\
+\t\t\u00eenregistr\u0103ri.  Ori de c\u00e2te ori se specific\u0103 createTime=>Xd sau\n\
+\t\tcreateTime<Xd, data va fi calculat\u0103 pe serverul dispecer\n\
+\t\t\u00een ora UTC. 
+
+listJobs.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+listJobs.optional-desc.--instanceState=\tFiltrul de stare instan\u0163e s-a aplicat \u00eenregistr\u0103rilor instan\u0163elor de job.\n\
+\tDe exemplu:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED returneaz\u0103 \u00eenregistr\u0103ri \u00een st\u0103rile\n\
+\t\tCOMPLETED, FAILED \u015fi STOPPED.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 maxim 50\n\
+\t\t\u00eenregistr\u0103ri.
+
+listJobs.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+listJobs.optional-desc.--exitStatus=\tFiltrul de stare de ie\u015fire s-a aplicat \u00eenregistr\u0103rilor de execu\u0163ie joburi care sunt\n\
+\tasociate cu \u00eenregistr\u0103rile instan\u0163elor de joburi.\n\
+\tDe exemplu:\n\
+\t\t--exitStatus=*JOB* returneaz\u0103 \u00eenregistr\u0103rile instan\u0163elor de joburi care au \u00eenregistr\u0103ri de \n\
+\t\texecu\u0163ie care con\u0163in cuv\u00e2ntul JOB \u00een starea lor de ie\u015fire.\n\
+\t\tNot\u0103: Criteriile pot utiliza operatorul metacaracter (*) la\n\
+\t\torice cap\u0103t.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 maxim 50\n\
+\t\t\u00eenregistr\u0103ri.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\tEpura\u0163i toate \u00eenregistr\u0103rile \u015fi istoricele pentru o instan\u0163\u0103 de job sau epura\u0163i o list\u0103 de \n\
+\t\u00eenregistr\u0103ri de instan\u0163\u0103 de job.
+
+purge.optional-key.--page=\ \ \ \ --page=[page]
+purge.optional-desc.--page=\tPagina de \u00eenregistr\u0103ri ale instan\u0163ei de job de returnat. Numerele paginilor \u00eencep de la 0.\n\
+\tDe exemplu:\n\
+\t\t--page=0 --pageSize=10 returneaz\u0103 primele 10 \u00eenregistr\u0103ri.\n\
+\t\t--page=2 --pageSize=10 returneaz\u0103 \u00eenregistr\u0103rile de la 20 la 29.\n\
+\tDac\u0103 nu se specific\u0103, valoarea implicit\u0103 este 0.
+
+purge.optional-key.--pageSize=\ \ \ \ --pageSize=[pageSize]
+purge.optional-desc.--pageSize=\tDimensiunea paginii de \u00eenregistr\u0103ri ale instan\u0163ei de job de returnat.\n\
+\tDe exemplu:\n\
+\t\t--page=0 --pageSize=10 returneaz\u0103 primele 10 \u00eenregistr\u0103ri.\n\
+\t\t--page=1 --pageSize=20 returneaz\u0103 \u00eenregistr\u0103rile de la 20 la 39.\n\
+\tDac\u0103 nu se specific\u0103, valoarea implicit\u0103 este 50.
+
+purge.optional-key.--purgeJobStoreOnly=\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\tIndic\u0103 faptul c\u0103 opera\u0163ia de epurare ar trebui s\u0103 \u015ftearg\u0103 numai intr\u0103ri din \n\
+\tbaza de date a depozitului de joburi. Nu va fi f\u0103cut\u0103 nicio \u00eencercare de a \u015fterge istoricele de joburi din \n\
+\tsistemul de fi\u015fiere.
+
+purge.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+purge.optional-desc.--jobInstanceId=\tFiltrul de ID-uri instan\u0163e de job s-a aplicat epur\u0103rii \u00eenregistr\u0103rilor instan\u0163elor de job.\n\
+\tDe exemplu:\n\
+\t\t--jobInstanceId=10:20 epureaz\u0103 \u00eenregistr\u0103rile de la 10 la 20.\n\
+\t\t--jobInstanceId=">10" epureaz\u0103 \u00eenregistr\u0103rile mai mari sau egale dec\u00e2t 10.\n\
+\t\t--jobInstanceId="<10" epureaz\u0103 \u00eenregistr\u0103rile mai mici sau egale cu 10.\n\
+\t\t--jobInstanceId=10,12,15 epureaz\u0103 \u00eenregistr\u0103rile 10, 12 \u015fi 15.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 implicit maxim 50\n\
+\t\t\u00eenregistr\u0103ri.
+
+purge.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+purge.optional-desc.--createTime=\tFiltrul de creare dat\u0103 s-a aplicat epur\u0103rii \u00eenregistr\u0103rilor instan\u0163elor de job.\n\
+\tDe exemplu:\n\
+\t\t--createTime=2015-09-10:2015-09-27 epureaz\u0103 \u00eenregistr\u0103ri care au fost create\n\
+\t\t\t\u00eentre 10.09.2015 \u015fi 27.09.2015, inclusiv.\n\
+\t\t--createTime=">3d" epureaz\u0103 \u00eenregistr\u0103ri care au fost create cu 3 zile \u00een urm\u0103 UTC sau \n\
+\t\t\tdup\u0103 (data de creare este mai mare sau egal\u0103 cu data cu 3 zile \u00een urm\u0103).\n\
+\t\t--createTime="<3d" epureaz\u0103 \u00eenregistr\u0103ri care au fost create cu 3 zile \u00een urm\u0103 UTC sau \n\
+\t\t\t\u00eenainte (data de creare este mai mic\u0103 sau egal\u0103 cu data cu 3 zile \u00een urm\u0103).\n\
+\t\t--createTime=2015-09-15 epureaz\u0103 toate \u00eenregistr\u0103rile care au fost create pe 15.09.2015.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 implicit maxim 50\n\
+\t\t\u00eenregistr\u0103ri. Ori de c\u00e2te ori se specific\u0103 createTime=>Xd sau\n\
+\t\tcreateTime<Xd, data va fi calculat\u0103 pe serverul dispecer\n\
+\t\t\u00een ora UTC. 
+
+purge.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+purge.optional-desc.--instanceState=\tFiltrul de stare de instan\u0163\u0103 s-a aplicat epur\u0103rii \u00eenregistr\u0103rilor instan\u0163elor de job.\n\
+\tDe exemplu:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED epureaz\u0103 \u00eenregistr\u0103ri \u00een st\u0103rile\n\
+\t\tCOMPLETED, FAILED \u015fi STOPPED.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 implicit maxim 50\n\
+\t\t\u00eenregistr\u0103ri.
+
+purge.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+purge.optional-desc.--exitStatus=\tFiltrul de stare de ie\u015fire s-a aplicat \u00eenregistr\u0103rilor de execu\u0163ie joburi care sunt \n\
+\tasociate cu epurarea \u00eenregistr\u0103rilor instan\u0163elor de joburi.\n\
+\tDe exemplu:\n\
+\t\t--exitStatus=*JOB* cur\u0103\u0163\u0103 \u00eenregistr\u0103rile instan\u0163elor de joburi care au \u00eenregistr\u0103ri de\n\
+\t\texecu\u0163ie care con\u0163in cuv\u00e2ntul JOB \u00een starea lor de ie\u015fire.\n\
+\t\tNot\u0103: Criteriile pot utiliza operatorul metacaracter (*) la\n\
+\t\torice cap\u0103t.\n\
+\t\tDac\u0103 nu sunt specificate --page \u015fi --pageSize, se returneaz\u0103 implicit maxim 50\n\
+\t\t\u00eenregistr\u0103ri.

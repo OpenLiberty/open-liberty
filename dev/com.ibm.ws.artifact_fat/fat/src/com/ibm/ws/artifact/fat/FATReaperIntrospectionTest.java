@@ -99,7 +99,7 @@ public class FATReaperIntrospectionTest{
         //send the dump action to the server
         server.executeServerScript("dump",null);
 
-        logInfo("methodName", String.format("Sent dump action to server going to sleep for %d seconds", SECONDS_WAITING_FOR_DUMP));
+        logInfo(methodName, String.format("Sent dump action to server going to sleep for %d seconds", SECONDS_WAITING_FOR_DUMP));
 
         //wait 30 seconds for the dump to be created in the server directory
         Thread.sleep(1000 * SECONDS_WAITING_FOR_DUMP);
@@ -186,7 +186,8 @@ public class FATReaperIntrospectionTest{
         ZipCachingIntrospectorOutput dumpOutput = new ZipCachingIntrospectorOutput(dump.getZipCachingDumpStream()) ;
         
         //make sure there is output for the ZipFileHandles
-        Assert.assertNotNull("Zip Reaper Introspector Output does not have ZipFileHandle section",dumpOutput.getHandleIntrospection());
+        Assert.assertNotNull("Zip Reaper Introspector Output does not have ZipFileHandle section",dumpOutput.getActiveAndCachedZipFileHandles());
+
 
         //get all the file names for the ZipFileData introspections
         List<String> archiveHandleNames = dumpOutput.getZipHandleArchiveNames();
@@ -276,6 +277,9 @@ public class FATReaperIntrospectionTest{
 
         //if there are zip file data introspections to verify
         if(!zipFileDataIntrospections.isEmpty()){
+
+            logInfo(methodName, zipFileDataIntrospections.toString());
+
             /////////////////////////////////////////////////////////
             //for each of the zip file data introspections
             for(String zipFileDataIntrospection: zipFileDataIntrospections){

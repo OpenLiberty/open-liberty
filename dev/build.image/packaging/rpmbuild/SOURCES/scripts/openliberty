@@ -18,7 +18,7 @@ if [ -z $templateOpt ]; then
 fi
 
 usage() {
-    echo "Usage: $0 {start|stop|restart} serverName {defaultServer|javaee7|javee8|microProfile1|microProfile2|springBoot1|springBoot2|webProfile7|webProfile8}"
+    echo "Usage: $0 {start|stop|restart} serverName {defaultServer|javaee7|javee8|microProfile1|microProfile2|microProfile3|springBoot1|springBoot2|webProfile7|webProfile8}"
 }
 
 start() {

@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: Impossibile impersonare l''utente {0} per ottenere GSSCredential utente per self quando si utilizza il nome principal del servizio di delega {1} a causa dell''eccezione {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=Impossibile impersonare l'utente a causa di un'eccezione imprevista.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Assicurarsi che l'SPN (service principal name) di delega sia abilitato per la delega ed esaminare i log del server per ulteriori informazioni.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: Impossibile impersonare l''utente {0} per ottenere GSSCredential per il servizio di  backend quando si utilizza il nome principal del servizio di delega {1} a causa dell''eccezione {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=Impossibile impersonare l'utente a causa di un'eccezione imprevista.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Assicurarsi che l'attributo S4U2proxy sia impostato su true nella configurazione dell'elemento SPNEGO e che l'SPN del servizio di delega sia abilitato per la delega nel KDC (Key Distribution Center) e che il ticket del servizio client abbia l'indicatore di inoltrabilit\u00e0 impostato su true. Per ulteriori informazioni, esaminare i log del server.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: Impossibile elaborare il metodo {0} perch\u00e9 la delega vincolata S4U2self non \u00e8 abilitata.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=Impossibile elaborare il metodo perch\u00e9 la delega vincolata S4U2self non \u00e8 abilitata.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Assicurarsi che la funzione di delega vincolata sia abilitata e che l'attributo S4U2self sia impostato su true nella configurazione della delega vincolata nel file server.xml. Per ulteriori informazioni, esaminare i log del server.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: Impossibile elaborare il metodo {0} perch\u00e9 la delega vincolata S4U2proxy non \u00e8 abilitata.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=Impossibile elaborare il metodo perch\u00e9 la delega vincolata S4U2proxy non \u00e8 abilitata.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Assicurarsi che la funzione di delega vincolata sia abilitata e che l'attributo S4U2proxy sia impostato su true nella configurazione della delega vincolata nel file server.xml. Per ulteriori informazioni, esaminare i log del server.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: La funzione di delega vincolata Kerberos non \u00e8 supportata dal fornitore {0} e dalla versione {1} di Java.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Impossibile abilitare la funzione di delega vincolata Kerberos a causa del fornitore del runtime Java e della versione.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utilizzare il fornitore e la versione Java supportati dalla funzione di delega vincolata Kerberos.
+
+
+
+
+
+
+
+
+
+
+
+

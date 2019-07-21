@@ -1336,7 +1336,7 @@
   <Object ocdref="com.ibm.ws.jdbc.dataSource.properties.postgresql"/>
  </Designate>
 
- <OCD ibm:beta="true" id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+ <OCD id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="databaseName"            required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"              required="false" type="String"  name="%serverName"   description="%serverName.desc"/>
   <AD id="portNumber"              required="false" type="Integer" name="%portNumber"   description="%portNumber.desc"/>
