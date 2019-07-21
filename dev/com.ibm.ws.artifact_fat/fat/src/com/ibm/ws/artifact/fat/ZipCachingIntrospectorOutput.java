@@ -29,13 +29,6 @@ public class ZipCachingIntrospectorOutput{
     private String pendingSlowIntrospection;
     private String completedIntrospection;
 
-    /*
-    private PropertyIntrospection parsePropertyLine(String description, String line){
-        String[] splitLine = line.split("\\s+[\\[\\]\\s]+\\s*");
-        return new PropertyIntrospection(description, splitLine[1], splitLine[2], splitLine[3]);
-    }
-    */
-
     public ZipCachingIntrospectorOutput(InputStream in) throws IOException{
         BufferedReader zipCachingReader = new BufferedReader(new InputStreamReader(in));
         String currentLine, aggregateLine;
@@ -231,11 +224,6 @@ public class ZipCachingIntrospectorOutput{
         return section;
     }
 
-    // private String introspectorDescription, entryCacheSettings, zipReaperSettings, handleIntrospection, zipEntryCache, zipReaperValues;
-    // private String activeAndPendingIntrospection;
-    // private String pendingQuickIntrospection;
-    // private String pendingSlowIntrospection;
-    // private String completedIntrospection;
     private String zipCachingTime;
     private String outputFormat;
     private String activeAndCachedZipFileHandles;
@@ -247,7 +235,7 @@ public class ZipCachingIntrospectorOutput{
         final String EOF = "------------------------------------------------------------";
 
         int count = 0;
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", "Starting the constructor: " + Integer.toString(++count,10));
+        
         
         //description of this introspector
         currentLine = zipCachingReader.readLine();
@@ -257,23 +245,17 @@ public class ZipCachingIntrospectorOutput{
         
         fastForward(zipCachingReader, "Zip Caching Service:");
         
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
-
         zipCachingTime = fastForward(zipCachingReader, "Format:");
 
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         outputFormat = fastForward(zipCachingReader, "Entry Cache Settings:");
 
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         entryCacheSettings = fastForward(zipCachingReader, "Zip Reaper Settings:");
         
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         zipReaperSettings = fastForward(zipCachingReader, "Active and Cached ZipFile Handles:");
         
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         //handleintrospections + zipEntryCache = activeAndCachedZipFileHandles
         //"Active and Cached ZipFile Handles:" => "Zip Reaper:"
@@ -287,16 +269,13 @@ public class ZipCachingIntrospectorOutput{
             }
         }
 
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         //zipReaperValues
         //"Zip Reaper:" => "Active and Pending Data:" || EOF
         section = fastForward(zipCachingReader, "Active and Pending Data:");
         //check if DISABLED if so then set the rest of the variables to be null and return
         {
-            currentLine = zipCachingReader.readLine();
-
-            if(currentLine.equals("  ** DISABLED **")){
+            if(section.contains("  ** DISABLED **")){
                 return;
             }
             else{
@@ -304,13 +283,13 @@ public class ZipCachingIntrospectorOutput{
             }
         }
 
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         //activeAndPendingIntrospection
         //"Active and Pending Data:" => "Zip File Data [ pendingQuick ]"
         section = fastForward(zipCachingReader, "Zip File Data [ pendingQuick ]");
         //check if is NONE if so then set to null else set as section
         {  
+
             if(section.contains("  ** NONE **")){
                 activeAndPendingIntrospection = null;
             }
@@ -320,7 +299,6 @@ public class ZipCachingIntrospectorOutput{
 
         }
 
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         //pendingQuickIntrospection
         //"Zip File Data [ pendingQuick ]" => "Zip File Data [ pendingSlow ]"
@@ -335,7 +313,6 @@ public class ZipCachingIntrospectorOutput{
             }
         }
 
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
 
         currentLine = zipCachingReader.readLine();
         section = "";
@@ -350,7 +327,6 @@ public class ZipCachingIntrospectorOutput{
             currentLine = zipCachingReader.readLine();
         }
 
-        FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
         //assign pending slow introspections
         if(section.contains("  ** NONE **")){
             pendingSlowIntrospection = null;
@@ -364,7 +340,7 @@ public class ZipCachingIntrospectorOutput{
 
             section = fastForward(zipCachingReader, EOF);
 
-            FATLogging.info(ZipCachingIntrospectorOutput.class,"Construct", Integer.toString(++count,10));
+
 
             if(section.contains("  ** NONE **")){
                 completedIntrospection = null;
@@ -437,15 +413,15 @@ public class ZipCachingIntrospectorOutput{
     
 
     public List<String> getZipHandleArchiveNames(){
-        if(getHandleIntrospection() == null)
+        if(getActiveAndCachedZipFileHandles() == null)
             return null;
         else{
             List<String> handles = new LinkedList<String>();
             //pattern will capture the file name at the end of the path including comma and directory seperator
             //open-liberty/dev/build.image/wlp/usr/servers/com.ibm.ws.artifact.zipReaper/apps[/testServlet1.war,]
             Pattern p = Pattern.compile("[/\\\\][^/:\\*\\?\\\"<>\\|\\\\]+\\.[ewj]ar,");
-            for(String line : getHandleIntrospection().split("\n")){
-                if(hasAValidGroup(line, p)){
+            for(String line : getActiveAndCachedZipFileHandles().split("\n")){
+                if(line.contains("ZipFileHandle@0x") && hasAValidGroup(line, p)){
                     //match for the archive name and remove the comma and directory seperator
                     handles.add(getFirstGroup(line,p, "\\/," ));
                 }
@@ -534,7 +510,7 @@ public class ZipCachingIntrospectorOutput{
             for(String introspectLine: rawIntrospection.split("\n")){
                 //pattern for the first line of the ZipFileData.introspect() output
                 if(introspectLine.matches("ZipFile\\s\\[\\s.+\\s\\]")){
-                    if(!aggregate.equals("")){
+                    if(!aggregate.equals("") && !aggregate.equals("\n")){
                         aggregateList.add(aggregate);
                         
                     }
@@ -547,11 +523,13 @@ public class ZipCachingIntrospectorOutput{
 
             }
             
-            if(!aggregate.equals("")){
+            if(!aggregate.equals("") && !aggregate.equals("\n")){
                 aggregateList.add(aggregate);
             }
             
         }
+
+        
     }
 
     private static boolean hasAValidGroup(String introspectLine, Pattern matchPattern){
