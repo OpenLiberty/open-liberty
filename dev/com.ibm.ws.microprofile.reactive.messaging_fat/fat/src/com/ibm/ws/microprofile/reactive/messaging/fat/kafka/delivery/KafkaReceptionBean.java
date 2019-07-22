@@ -10,59 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
 
-import static org.eclipse.microprofile.reactive.messaging.Acknowledgment.Strategy.MANUAL;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+import org.eclipse.microprofile.reactive.messaging.Acknowledgment.Strategy;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractReceptionBean;
+
 @ApplicationScoped
-public class KafkaReceptionBean {
+public class KafkaReceptionBean extends AbstractReceptionBean {
 
     public final static String CHANNEL_NAME = "reception-test-input";
 
-    private final Queue<Message<String>> receivedMessages = new LinkedList<>();
-
-    @Acknowledgment(MANUAL)
     @Incoming(CHANNEL_NAME)
+    @Acknowledgment(Strategy.MANUAL)
+    @Override
     public CompletionStage<Void> recieveMessage(Message<String> msg) {
-        synchronized (this) {
-            receivedMessages.add(msg);
-            this.notifyAll();
-        }
-        return CompletableFuture.completedFuture(null);
-    }
-
-    public List<Message<String>> getReceivedMessages(int count, Duration timeout) throws InterruptedException {
-        ArrayList<Message<String>> result = new ArrayList<>();
-        Duration remaining = timeout;
-        long startTime = System.nanoTime();
-        while (!remaining.isNegative() && result.size() < count) {
-            synchronized (this) {
-                while (!receivedMessages.isEmpty() && result.size() < count) {
-                    result.add(receivedMessages.poll());
-                }
-                if (result.size() < count) {
-                    this.wait(remaining.toMillis());
-                }
-            }
-            Duration elapsed = Duration.ofNanos(System.nanoTime() - startTime);
-            remaining = timeout.minus(elapsed);
-        }
-        assertThat("Wrong number of records fetched from kafka", result, hasSize(count));
-        return result;
+        return super.recieveMessage(msg);
     }
 
 }
