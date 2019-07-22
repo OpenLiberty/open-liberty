@@ -1,5 +1,6 @@
 Subsystem-ManifestVersion: 1
 IBM-ShortName: controllerTestFeature-1.0
+IBM-Test-Feature: true
 Subsystem-SymbolicName: test.concurrent.persistent.controllerTestFeature-1.0; visibility:=public
 Subsystem-Version: 1.0
 Subsystem-Content: com.ibm.websphere.appserver.persistentExecutor-1.0; type="osgi.subsystem.feature",

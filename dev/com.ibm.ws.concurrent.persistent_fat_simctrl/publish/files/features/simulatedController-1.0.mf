@@ -1,5 +1,6 @@
 Subsystem-ManifestVersion: 1
 IBM-ShortName: simulatedController-1.0
+IBM-Test-Feature: true
 Subsystem-SymbolicName: test.concurrent.persistent.simulatedController-1.0; visibility:=public
 Subsystem-Version: 1.0
 Subsystem-Content: test.concurrent.persistent.fat.simctrl;  version="[1,1.0.100)",

@@ -12,10 +12,6 @@
 
 addRequiredLibraries.dependsOn addDerby
 
-dependencies {
-  requiredLibs project(':com.ibm.ws.concurrent.persistent_fat_simctrl')
-}
-
 task copyFeatureBundle(type: Copy) {
   from buildDir
   into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
