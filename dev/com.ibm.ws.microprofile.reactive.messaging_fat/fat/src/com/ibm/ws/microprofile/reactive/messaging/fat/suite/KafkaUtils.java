@@ -8,30 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl;
+package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
-import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapter;
+import java.io.File;
+import java.net.URL;
 
 /**
  *
  */
-public abstract class AbstractKafkaAdapter<T> implements KafkaAdapter {
+public class KafkaUtils {
 
-    private final T delegate;
-
-    public AbstractKafkaAdapter(T delegate) {
-        this.delegate = delegate;
+    public static File[] kafkaClientLibs() {
+        File libsDir = new File("lib/LibertyFATTestFiles/libs");
+        return libsDir.listFiles();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public final T getDelegate() {
-        return this.delegate;
-    }
-
-    @Override
-    public String toString() {
-        return this.delegate.toString();
+    public static URL kafkaPermissions() {
+        return KafkaUtils.class.getResource("permissions.xml");
     }
 
 }
