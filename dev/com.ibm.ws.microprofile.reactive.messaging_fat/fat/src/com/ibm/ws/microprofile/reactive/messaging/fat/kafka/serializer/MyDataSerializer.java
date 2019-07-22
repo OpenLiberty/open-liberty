@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
 
+import java.nio.charset.Charset;
+
 import org.apache.kafka.common.serialization.Serializer;
 
 /**
@@ -21,7 +23,7 @@ public class MyDataSerializer implements Serializer<MyData> {
     @Override
     public byte[] serialize(String topic, MyData data) {
         String dataStr = data.getDataA() + ":" + data.getDataB();
-        return dataStr.getBytes();
+        return dataStr.getBytes(Charset.forName("UTF-8"));
     }
 
 }

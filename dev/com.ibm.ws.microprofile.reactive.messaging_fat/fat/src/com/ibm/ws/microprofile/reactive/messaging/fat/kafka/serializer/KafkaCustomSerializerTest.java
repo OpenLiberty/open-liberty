@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
+package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
@@ -26,13 +26,12 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.MyDataDeserializer;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.MyDataMessagingBean;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.MyDataSerializer;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PropertiesAsset;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -45,6 +44,7 @@ public class KafkaCustomSerializerTest {
     private static final String APP_NAME = "myDataKafkaTest";
 
     @Server("SimpleRxMessagingServer")
+    @TestServlet(contextRoot = APP_NAME, servlet = KafkaSerializerTestServlet.class)
     public static LibertyServer server;
 
     @BeforeClass
@@ -63,7 +63,7 @@ public class KafkaCustomSerializerTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addPackage(KafkaAcknowledgementTestServlet.class.getPackage())
+                        .addPackage(KafkaSerializerTestServlet.class.getPackage())
                         .addPackage(AbstractKafkaTestServlet.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 

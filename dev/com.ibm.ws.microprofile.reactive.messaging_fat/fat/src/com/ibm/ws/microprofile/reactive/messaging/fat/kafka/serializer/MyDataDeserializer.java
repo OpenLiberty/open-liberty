@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
 
+import java.nio.charset.Charset;
+
 import org.apache.kafka.common.serialization.Deserializer;
 
 /**
@@ -20,7 +22,7 @@ public class MyDataDeserializer implements Deserializer<MyData> {
     /** {@inheritDoc} */
     @Override
     public MyData deserialize(String topic, byte[] data) {
-        String dataStr = new String(data);
+        String dataStr = new String(data, Charset.forName("UTF-8"));
         String[] dataArr = dataStr.split(":");
         String dataA = dataArr[0];
         String dataB = dataArr[1];
