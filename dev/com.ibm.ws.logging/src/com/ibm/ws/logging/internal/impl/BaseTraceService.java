@@ -49,6 +49,7 @@ import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.NLSConstants;
@@ -469,10 +470,12 @@ public class BaseTraceService implements TrService {
         Map<String, String> traceMap = new HashMap<>();
         Map<String, String> ffdcMap = new HashMap<>();
         Map<String, String> accessLogMap = new HashMap<>();
+        Map<String, String> auditMap = new HashMap<>();
 
         List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES1_1);
         List<String> FFDCList = Arrays.asList(FFDCData.NAMES1_1);
         List<String> AccessLogList = Arrays.asList(AccessLogData.NAMES1_1);
+        List<String> AuditList = Arrays.asList(AuditData.NAMES1_1);
 
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
 
@@ -496,6 +499,10 @@ public class BaseTraceService implements TrService {
                     accessLogMap.put(entry[0], entry[1]);
                     valueFound = true;
                 }
+                if (AuditList.contains(entry[0])) {
+                    auditMap.put(entry[0], entry[1]);
+                    valueFound = true;
+                }
                 if (!valueFound) {
                     //if the value does not exist in any of the known keys, give a warning
                     Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
@@ -512,6 +519,8 @@ public class BaseTraceService implements TrService {
                     ffdcMap.put(entry[1], entry[2]);
                 } else if (CollectorConstants.ACCESS_LOG_EVENT_TYPE.equals(entry[0])) {
                     accessLogMap.put(entry[1], entry[2]);
+                } else if (CollectorConstants.AUDIT_LOG_EVENT_TYPE.equals(entry[0])) {
+                    auditMap.put(entry[1], entry[2]);
                 } else {
                     Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
@@ -523,6 +532,7 @@ public class BaseTraceService implements TrService {
         FFDCData.newJsonLoggingNameAliases(ffdcMap);
         LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
         LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
+        AuditData.newJsonLoggingNameAliases(auditMap);
     }
 
     /**

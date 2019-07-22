@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GCData;
 import com.ibm.ws.logging.data.GenericData;
@@ -319,10 +320,10 @@ public class CollectorJsonUtils_JSON {
 
     public static String jsonifyAudit(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
+        AuditData auditData = new AuditData();
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        StringBuilder sb = CollectorJsonHelpers.startAuditJson1_1(hostName, wlpUserDir, serverName);
-//        StringBuilder sb = CollectorJsonHelpers.startAuditJsonFields(hostName, wlpUserDir, serverName);
+        StringBuilder sb = CollectorJsonHelpers.startAuditJsonFields(hostName, wlpUserDir, serverName);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -344,13 +345,13 @@ public class CollectorJsonUtils_JSON {
                      *
                      * Parse the rest of audit GDO KVP - They are strings.
                      */
-                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
+                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime") || auditData.getDatetimeKeyJSON().equals(key)) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_DATETIME, datetime, false, true, false, false, false);
-                    } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_SEQUENCE, kvp.getStringValue(), false, false, false, false, !kvp.isString());
-                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
+                        CollectorJsonHelpers.addToJSON(sb, auditData.getDatetimeKeyJSON(), datetime, false, true, false, false, false);
+                    } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber") || auditData.getSequenceKeyJSON().equals(key)) {
+                        CollectorJsonHelpers.addToJSON(sb, auditData.getSequenceKeyJSON(), kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                    } else if (key.equals(LogFieldConstants.IBM_THREADID) || auditData.getThreadIDJSON().equals(key)) {
+                        CollectorJsonHelpers.addToJSON(sb, auditData.getThreadIDJSON(), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
                     } else {
                         CollectorJsonHelpers.addToJSON(sb, "ibm_audit_" + key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
                     }
