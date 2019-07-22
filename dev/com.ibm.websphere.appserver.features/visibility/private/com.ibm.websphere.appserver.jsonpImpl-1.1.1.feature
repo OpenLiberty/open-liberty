@@ -8,3 +8,4 @@ visibility=private
  com.ibm.ws.org.glassfish.json.1.1
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
