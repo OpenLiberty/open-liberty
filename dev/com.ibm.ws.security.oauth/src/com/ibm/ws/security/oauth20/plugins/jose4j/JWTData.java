@@ -52,15 +52,10 @@ public class JWTData {
         this.signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
         bIdToken = TYPE_ID_TOKEN.equals(tokenType);
         bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
-
-        Key privateKey = null;
-        boolean needPrivateKey = !oidcServerConfig.isJwkEnabled() && SIGNATURE_ALG_RS256.equals(signatureAlgorithm);
         try {
-            if (needPrivateKey) {
-                privateKey = oidcServerConfig.getPrivateKey();
-            }
+            // pass null private key so key gets looked up and kid generated
             JwtDataConfig config = new JwtDataConfig(signatureAlgorithm, oidcServerConfig.getJSONWebKey(), sharedKey,
-                    privateKey, null, null, tokenType,
+                    null, oidcServerConfig.getKeyAliasName(), oidcServerConfig.getKeyStoreRef(), tokenType,
                     oidcServerConfig.isJwkEnabled());
             wrappedJwtData = new com.ibm.ws.security.jwt.utils.JwtData(config);
             _signingKey = wrappedJwtData.getSigningKey();
@@ -75,9 +70,14 @@ public class JWTData {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Exception obtaining the signing key: " + e);
         }
+        // if it's a keystore exception, tell them the likely fix.
+        String extraMsg = "";
+        if (e instanceof java.security.KeyStoreException) {
+            extraMsg = " " + Tr.formatMessage(tc, "CHECK_KEYSTORE_REF", new Object[] {});
+        }
         // error messages
         // JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key was not available. The signature algorithm is [{0}]. {1}
-        Object[] objs = new Object[] { signatureAlgorithm, e.getLocalizedMessage() }; // let JWTTokenException handle the exception
+        Object[] objs = new Object[] { signatureAlgorithm, e.getLocalizedMessage() + extraMsg }; // let JWTTokenException handle the exception
         noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
     }
 

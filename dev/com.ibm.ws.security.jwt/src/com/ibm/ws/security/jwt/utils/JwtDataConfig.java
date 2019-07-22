@@ -13,6 +13,7 @@ package com.ibm.ws.security.jwt.utils;
 
 import java.security.Key;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 // config holder for JwtData class
@@ -26,8 +27,8 @@ public class JwtDataConfig {
 	public final String tokenType;
 	public final boolean isJwkEnabled;
 
-	public JwtDataConfig(String signatureAlgorithm, JSONWebKey jwk, String sharedKey, Key signingKey, String keyAlias,
-			String keyStoreRef, String tokenType, boolean isJwkEnabled) {
+	public JwtDataConfig(String signatureAlgorithm, JSONWebKey jwk, @Sensitive String sharedKey, Key signingKey,
+			String keyAlias, String keyStoreRef, String tokenType, boolean isJwkEnabled) {
 		this.signatureAlgorithm = signatureAlgorithm;
 		this.jwk = jwk;
 		this.sharedKey = sharedKey;
