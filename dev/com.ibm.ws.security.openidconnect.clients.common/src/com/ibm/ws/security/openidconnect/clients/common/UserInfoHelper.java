@@ -59,7 +59,24 @@ public class UserInfoHelper {
             subjFromIdToken = idToken.getSubject();
         }
         if (subjFromIdToken != null) {
-            return getUserInfo(oidcResult, sslsf, tokens.get(Constants.ACCESS_TOKEN), subjFromIdToken);
+            return getUserInfoIfPossible(oidcResult, tokens.get(Constants.ACCESS_TOKEN), subjFromIdToken, sslsf);
+        }
+        return false;
+    }
+
+    /**
+     * get userinfo from provider's UserInfo Endpoint if configured and active.
+     * If successful, update properties in the ProviderAuthenticationResult
+     *
+     * @return true if PAR was updated with userInfo
+     *
+     */
+    public boolean getUserInfoIfPossible(ProviderAuthenticationResult oidcResult, String accessToken, String subject, SSLSocketFactory sslsf) {
+        if (!willRetrieveUserInfo()) {
+            return false;
+        }
+        if (subject != null && accessToken != null) {
+            return getUserInfo(oidcResult, sslsf, accessToken, subject);
         }
         return false;
     }

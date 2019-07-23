@@ -11,7 +11,6 @@
 package com.ibm.ws.security.openidconnect.client;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
@@ -27,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 
@@ -48,7 +49,6 @@ import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
-import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
@@ -141,12 +141,9 @@ public class AccessTokenAuthenticator {
                 if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
                     oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
                     // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
-                    //bt: we don't have an idToken(??) so might need to adjust a bit.
-                    oidcResult = (new UserInfoHelper(clientConfig)).getUserInfoIfPossible(oidcResult, tokens, sslSocketFactory);
+                    (new UserInfoHelper(clientConfig)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory);
                 } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
                     oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-                    //todo: set up userinfo here too.
-
                 }
             } else {
                 logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INVALID_VALIDATION_URL", validationEndpointURL);
@@ -509,11 +506,11 @@ public class AccessTokenAuthenticator {
 
     protected ProviderAuthenticationResult getUserInfoFromToken(OidcClientConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, OidcClientRequest oidcClientRequest) {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
-
+        Map<String, Object> responseMap = null;
+        JSONObject jobj = null;
         try {
-            Map<String, Object> responseMap = oidcClientUtil.getUserinfo(clientConfig.getValidationEndpointUrl(), accessToken, sslSocketFactory, clientConfig.isHostNameVerificationEnabled(), clientConfig.getUseSystemPropertiesForHttpClientConnections());
+            responseMap = oidcClientUtil.getUserinfo(clientConfig.getValidationEndpointUrl(), accessToken, sslSocketFactory, clientConfig.isHostNameVerificationEnabled(), clientConfig.getUseSystemPropertiesForHttpClientConnections());
 
-            JSONObject jobj = null; // JSONObject.parse(jresponse);
             jobj = handleResponseMap(responseMap, clientConfig, oidcClientRequest);
             if (jobj != null) {
                 if (tc.isDebugEnabled()) {
@@ -538,6 +535,16 @@ public class AccessTokenAuthenticator {
             logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INTERNAL_ERR", e.getLocalizedMessage(), clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
             return oidcResult;
         }
+
+        // if result was good, put userinfo string on the subject as well.
+        try {
+            String userInfoStr = jobj == null ? null : jobj.serialize();
+            if (oidcResult != null && oidcResult.getUserName() != null && userInfoStr != null) {
+                oidcResult.getCustomProperties().put(Constants.USERINFO_STR, userInfoStr);
+            }
+        } catch (IOException e) {
+        } // ffdc
+
         return oidcResult;
     }
 
