@@ -24,14 +24,15 @@ package com.ibm.ws.security.oauth20.web;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.oauth.core.api.OAuthResult;
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.error.OAuthException;
@@ -63,7 +64,6 @@ import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
  *  for something that's much longer lived, an app-password or an app-token.
  */
 public class TokenExchange {
-    protected static final String MESSAGE_BUNDLE = "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages";
     public static final String CT_APPLICATION_JSON_UTF8 = "application/json;charset=UTF-8";
     public static final String HDR_AUTHORIZATION = "Authorization";
     public static final String CT_APPLICATION_URLENC = "application/x-www-form-urlencoded";
@@ -89,7 +89,7 @@ public class TokenExchange {
             OAuth20Constants.GRANT_TYPE_IMPLICIT };
     public static final HashSet<String> ALLOWED_RT_GT_SET = new HashSet<String>(Arrays
             .asList(ALLOWED_RT_GT));
-    private static TraceComponent tc = Tr.register(TokenExchange.class);
+    private static TraceComponent tc = Tr.register(TokenExchange.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     private static final ThreadLocal<Map<String, Object>> auditMap = new ThreadLocal<Map<String, Object>>() {
         @Override
@@ -101,6 +101,8 @@ public class TokenExchange {
     public int numberRevoked = 0;
 
     private final AuditManager auditManager = new AuditManager();
+
+    private Enumeration<Locale> requestLocales = null;
 
     // internal class to encapsulate authentication and request info for convenient use.
     private final class AuthResult {
@@ -162,6 +164,7 @@ public class TokenExchange {
     }
 
     private void processCommon(boolean isAppPasswordRequest, OAuth20Provider provider, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        requestLocales = request.getLocales();
 
         processCommonAudit(isAppPasswordRequest, provider, request, response);
 
@@ -173,11 +176,7 @@ public class TokenExchange {
             processCommonDelete(isAppPasswordRequest, provider, request, response);
         } else {
             String endpoint = isAppPasswordRequest ? OAuth20Constants.APP_PASSWORD_URI : OAuth20Constants.APP_TOKEN_URI;
-            String errorMsg = TraceNLS.getFormattedMessage(TokenExchange.class,
-                    MESSAGE_BUNDLE,
-                    "OAUTH_UNSUPPORTED_METHOD", // CWWKS1433E
-                    new Object[] { request.getMethod(), endpoint },
-                    "CWWKS1433E: The HTTP method {0} is not supported for the  {1} endpoint.");
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), endpoint });
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMsg);
             auditMap.get().put(AuditConstants.AUDIT_OUTCOME, AuditConstants.FAILURE);
@@ -329,10 +328,7 @@ public class TokenExchange {
         okToCreate = tokenCollection.size() < maxQuantity;
 
         if (!okToCreate) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS", // CWWKS1487E
-                    new Object[] { authRes.user }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS", new Object[] { authRes.user });
             return errorMsg != null ? errorMsg : "Error- maximum quantity of tokens reached";
         } else {
             return null;
@@ -401,10 +397,7 @@ public class TokenExchange {
             return result;
         }
         if (!isAccessTokenPresent(request)) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_INVALID_REQUEST_NO_TOKEN", // CWWKS1490E
-                    new Object[] { request.getMethod(), request.getRequestURI() }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_NO_TOKEN", new Object[] { request.getMethod(), request.getRequestURI() });
             Tr.error(tc, errorMsg);
             RateLimiter.limit();
             sendInvalidRequestError(errorMsg, response);
@@ -414,10 +407,7 @@ public class TokenExchange {
         // call authenticate here
         String user = null;
         if (!clientIdAndSecretValid(provider, clientIdAndSecret)) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_INVALID_REQUEST_AUTHN_FAIL", // CWWKS1485E
-                    new Object[] { request.getMethod(), request.getRequestURI() }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_AUTHN_FAIL", new Object[] { request.getMethod(), request.getRequestURI() });
             Tr.error(tc, errorMsg);
             RateLimiter.limit();
             sendInvalidClientError(errorMsg, response);
@@ -433,10 +423,7 @@ public class TokenExchange {
         String clientId = clientIdAndSecret[0];
         // see if client is configured to allow use of app passwords/tokens
         if (!checkClientAuthorization(appPasswordRequest, provider, clientId, request.getMethod())) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_UNAUTHORIZED_CLIENT", // CWWKS1486E
-                    new Object[] { clientId }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_UNAUTHORIZED_CLIENT", new Object[] { clientId });
             Tr.error(tc, errorMsg);
             sendUnauthorizedClientError(errorMsg, response);
             return result;
@@ -456,10 +443,7 @@ public class TokenExchange {
             targetUser = escapeIllegalCharacters(targetUser);
             isAdmin = isAdminUser(user, request);
             if (!isAdmin && !targetUser.equals(user)) { // non-admin requesting processing of somebody else's token is invalid
-                String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                        MESSAGE_BUNDLE,
-                        "OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED", // CWWKS1483E
-                        new Object[] { request.getMethod(), request.getRequestURI() }, null);
+                String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED", new Object[] { request.getMethod(), request.getRequestURI() });
                 Tr.error(tc, errorMsg);
                 sendInvalidRequestError(errorMsg, response);
                 return result;
@@ -663,10 +647,7 @@ public class TokenExchange {
      *
      */
     private void handleInvalidAccessTokenError(HttpServletRequest request, HttpServletResponse response, String msgKey) {
-        String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                MESSAGE_BUNDLE,
-                msgKey, // CWWKS1489E
-                new Object[] { request.getMethod(), request.getRequestURI() }, null);
+        String errorMsg = Tr.formatMessage(tc, requestLocales, msgKey, new Object[] { request.getMethod(), request.getRequestURI() });
         Tr.error(tc, errorMsg);
         sendInvalidRequestError(errorMsg, response);
 
@@ -746,7 +727,7 @@ public class TokenExchange {
      */
     private boolean checkParamLength(String paramName, String param, String URI, HttpServletResponse resp) {
         if (param.length() > PARAM_MAX_LENGTH) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(), MESSAGE_BUNDLE, "OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG", new Object[] { paramName, URI, PARAM_MAX_LENGTH }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG", new Object[] { paramName, URI, PARAM_MAX_LENGTH });
             Tr.error(tc, errorMsg);
             sendInvalidRequestError(errorMsg, resp);
             return false;
@@ -760,7 +741,7 @@ public class TokenExchange {
             return;
         }
         if (!checkParamLength(OAuth20Constants.USED_BY, usedBy, request.getRequestURI(), response)) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(), MESSAGE_BUNDLE, "OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG", new Object[] { OAuth20Constants.USED_BY, request.getRequestURI(), PARAM_MAX_LENGTH }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG", new Object[] { OAuth20Constants.USED_BY, request.getRequestURI(), PARAM_MAX_LENGTH });
             throw new OAuth20BadParameterException(errorMsg, new Object[] { OAuth20Constants.USED_BY, usedBy });
         }
 
@@ -803,7 +784,7 @@ public class TokenExchange {
         // {"error_description":"CWWKS1406E: The token request had an invalid client credential. The request URI was \/oidc\/endpoint\/OP\/token.","error":"invalid_request"}
         // send 400 per RFC6749 5.2
         WebUtils.sendErrorJSON(response, HttpServletResponse.SC_BAD_REQUEST,
-                Constants.ERROR_CODE_INVALID_REQUEST, null);
+                Constants.ERROR_CODE_INVALID_REQUEST, errorDescription);
         auditMap.get().put(AuditConstants.AUDIT_OUTCOME, AuditConstants.FAILURE);
 
         auditMap.get().put(AuditConstants.DETAILED_ERROR, Constants.ERROR_CODE_INVALID_REQUEST);
@@ -816,7 +797,7 @@ public class TokenExchange {
      */
     private void sendInvalidClientError(String errorDescription, HttpServletResponse response) {
         WebUtils.sendErrorJSON(response, HttpServletResponse.SC_UNAUTHORIZED,
-                Constants.ERROR_CODE_INVALID_CLIENT, null);
+                Constants.ERROR_CODE_INVALID_CLIENT, errorDescription);
         auditMap.get().put(AuditConstants.AUDIT_OUTCOME, AuditConstants.FAILURE);
 
         auditMap.get().put(AuditConstants.DETAILED_ERROR, Constants.ERROR_CODE_INVALID_CLIENT);
@@ -829,7 +810,7 @@ public class TokenExchange {
      */
     private void sendUnauthorizedClientError(String errorDescription, HttpServletResponse response) {
         WebUtils.sendErrorJSON(response, HttpServletResponse.SC_BAD_REQUEST,
-                Constants.ERROR_CODE_UNAUTHORIZED_CLIENT, null);
+                Constants.ERROR_CODE_UNAUTHORIZED_CLIENT, errorDescription);
         auditMap.get().put(AuditConstants.AUDIT_OUTCOME, AuditConstants.FAILURE);
 
         auditMap.get().put(AuditConstants.DETAILED_ERROR, Constants.ERROR_CODE_UNAUTHORIZED_CLIENT);
@@ -901,16 +882,13 @@ public class TokenExchange {
         String clientSecret = null;
         String authHeader = req.getHeader(HDR_AUTHORIZATION);
         if (authHeader == null) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_INVALID_REQUEST_NO_AUTHHEADER", // CWWKS1491E
-                    new Object[] { req.getMethod(), req.getRequestURI() }, null);
+            String errorMsg = Tr.formatMessage(tc, req.getLocales(), "OAUTH_INVALID_REQUEST_NO_AUTHHEADER", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg);
             sendInvalidClientError(errorMsg, response);
             return null;
         }
         if (!authHeader.startsWith("Basic ")) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(), MESSAGE_BUNDLE, "OAUTH_AUTH_HEADER_NOT_BASIC_AUTH", new Object[] { req.getMethod(), req.getRequestURI() }, null);
+            String errorMsg = Tr.formatMessage(tc, req.getLocales(), "OAUTH_AUTH_HEADER_NOT_BASIC_AUTH", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg);
             sendInvalidClientError(errorMsg, response);
             return null;
@@ -926,10 +904,7 @@ public class TokenExchange {
         }
         boolean valid = clientId != null && clientId.length() > 0 && clientSecret != null && clientSecret.length() > 0;
         if (!valid) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_INVALID_REQUEST_NO_ID_SECRET", // CWWKS1484E
-                    new Object[] { req.getMethod(), req.getRequestURI() }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_NO_ID_SECRET", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg);
             sendInvalidClientError(errorMsg, response);
         }
@@ -1028,10 +1003,7 @@ public class TokenExchange {
         boolean inuse = false;
         boolean missing = appName == null || appName.length() == 0;
         if (missing) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM", // CWWKS1435E: Missing {0} parameter in the request.
-                    new Object[] { OAuth20Constants.APP_NAME }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM", new Object[] { OAuth20Constants.APP_NAME });
             return errorMsg != null ? errorMsg : "Error- required request paramater app_name missing";
         }
 
@@ -1039,10 +1011,7 @@ public class TokenExchange {
         if (!badLength)
             inuse = isAppNameInUse(tokenCollection, appName);
         if (badLength || inuse) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG", // CWWKS1482E
-                    new Object[] { appName, provider.getID() }, null);
+            String errorMsg = Tr.formatMessage(tc, requestLocales, "OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG", new Object[] { appName, provider.getID() });
             return errorMsg != null ? errorMsg : "Error- appname invalid or in use";
         }
         return null;
