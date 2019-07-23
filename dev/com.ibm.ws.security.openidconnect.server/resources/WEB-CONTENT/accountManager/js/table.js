@@ -127,8 +127,8 @@ var table = (function() {
      * @param {*} authID - unique ID for this app-password or app-token
      */
     var __enableRowActions = function(authID) {
-        $(".regenerate_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".regenerate_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -143,8 +143,8 @@ var table = (function() {
             __regenerateAuthMechanism(authID, name, type, issueDate);                        
         });
 
-        $(".delete_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".delete_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -258,7 +258,7 @@ var table = (function() {
         // Enable the correct actions
         $regenerateDlg.find('.tool_modal_cancel_button').removeClass('hidden');   
         $regenerateDlg.find('.tool_modal_generate_button').prop('disabled', false).off('click');
-        $regenerateDlg.find('.tool_modal_generate_button').on('click', function() {
+        $regenerateDlg.find('.tool_modal_generate_button').on('click', function(event) {
             utils.startProcessingSpinner('add_regen_processing');
             regeneratePWorToken(authID, name, type); 
         }).removeClass('hidden');
@@ -379,7 +379,7 @@ var table = (function() {
 
         // Remove any previous onclick handler for delete button
         $deleteDlg.find('.tool_modal_delete_button').off('click');
-        $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
+        $deleteDlg.find('.tool_modal_delete_button').on('click', function(event) {
                 utils.startProcessingSpinner('delete_processing');
                 __deletePWorToken(authID, name, type);
         });

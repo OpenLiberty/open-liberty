@@ -16,7 +16,7 @@ var tokenMgr = (function() {
 
     var __initTableSearch = function(searchInputField, searchClearButton) {
         // Search field - when data entered, show the 'x' to clear the search input field
-        $('#' + searchInputField).keyup(function() {            // Search field
+        $('#' + searchInputField).keyup(function(event) {       // Search field
             var searchValue = $(this).val().trim();
             if (searchValue === "") {
                 // Hide the clear search button
@@ -40,7 +40,7 @@ var tokenMgr = (function() {
         });
 
         // Clear search input when requested
-        $('#' + searchClearButton).click(function() {      // 'x' in search field
+        $('#' + searchClearButton).click(function(event) {    // 'x' in search field
             var $searchInputField = $(this).siblings(".tool_filter_input");
             $searchInputField.val("").focus().trigger({ type : 'keyup', which : 13 });
         });

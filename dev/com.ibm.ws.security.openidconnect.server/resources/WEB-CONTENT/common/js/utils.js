@@ -101,7 +101,7 @@ var utils = (function() {
         if (showTryAgain) {
             $tryAgainButton.removeClass('hidden');
             if (actionCallback) {
-                $tryAgainButton.on('click', function() {
+                $tryAgainButton.on('click', function(event) {
                     actionCallback();
                 });
             }
@@ -170,7 +170,7 @@ var utils = (function() {
      */
     var initLogout = function() {
         $('.tool_logout_div').removeClass('hidden');
-        $('.tool_logout_button').on('click', function(){
+        $('.tool_logout_button').on('click', function(event){
             startProcessingSpinner('ca_loader');
 
             logoutUser().done(function (response) {
@@ -217,13 +217,13 @@ var utils = (function() {
      */
     var initModalDialogKeystrokes = function() {
         // Close the dialog with the buttons
-        $(".tool_modal_close").click(function () {
+        $(".tool_modal_close").click(function(event) {
             $(".tool_modal_container").addClass('hidden');
             returnFocus();
         });
 
         // ESC in a dialog will close the dialog
-        $(document).keydown(function (event) {
+        $(document).keydown(function(event) {
             var key = event.which || event.keyCode;
             if (key === 27) {   // ESC key
                 $(".tool_modal_container").addClass('hidden');

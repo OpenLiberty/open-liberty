@@ -31,7 +31,7 @@ var clientInputDialog = (function() {
             $('#add_new_client').prop('disabled', false);
 
             // Array 'Add element' buttons
-            $('.tool_modal_array_add_ele').click(function () {
+            $('.tool_modal_array_add_ele').click(function(event) {
                 var $array = $(this).closest('.tool_modal_array').find('table');
                 var newRow = __createArrayEntry();
                 $array.append(newRow);
@@ -93,7 +93,7 @@ var clientInputDialog = (function() {
                         __displaySelectionList($selectionListButton, false);
                     }
                 }
-            })).on('focus', function() {
+            })).on('focus', function(event) {
                 var $selectionListButton = $(this);
                 var $dropDownList = $selectionListButton.siblings('.tool_multiSelect_dropdown');
                 if ($dropDownList.css('display') === 'none') {
@@ -178,14 +178,14 @@ var clientInputDialog = (function() {
                 }
             });
             // Close the dropdown list when user selects any other field or button
-            $('#add_edit_client_modal .tool_modal_body_field:not(:has(.tool_multiSelect_listbox)), #add_edit_client_modal .tool_modal_action_button').on('click', function() {
+            $('#add_edit_client_modal .tool_modal_body_field:not(:has(.tool_multiSelect_listbox)), #add_edit_client_modal .tool_modal_action_button').on('click', function(event) {
                 var $selectionListButtons = $('.tool_multiSelect_field');
                 for (var i=0; i<$selectionListButtons.length; i++) {
                     var $selectionListButton = $($selectionListButtons[i]);
                     __displaySelectionList($selectionListButton, false);
                 }
             });
-            $('#add_edit_client_modal .tool_modal_body_field_input, #add_edit_client_modal .tool_modal_array td input, #add_edit_client_modal .tool_modal_radio_button').on('focus', function() {
+            $('#add_edit_client_modal .tool_modal_body_field_input, #add_edit_client_modal .tool_modal_array td input, #add_edit_client_modal .tool_modal_radio_button').on('focus', function(event) {
                 var $selectionListButtons = $('.tool_multiSelect_field');
                 for (var i=0; i<$selectionListButtons.length; i++) {
                     var $selectionListButton = $($selectionListButtons[i]);
@@ -215,22 +215,22 @@ var clientInputDialog = (function() {
             });
 
             // Radio buttons - groups and T/F Booleans
-            $('#add_edit_client_modal .tool_modal_radio_button').on('click', function() {
+            $('#add_edit_client_modal .tool_modal_radio_button').on('click', function(event) {
                 var $selectedrb = $(this);
                 var rbName = this.name;
                 $selectedrb.attr('aria-checked', true);
                 $("#add_edit_client_modal .tool_modal_radio_button[name='" + rbName + "']:not(:checked)").attr('aria-checked', false);
-            }).on('focus', function () {
+            }).on('focus', function(event) {
                 // Find the associated label element
                 var rbID = this.id;
                 $("label[for='" + rbID + "']").find('.tool_modal_radio_button_appearance').addClass('radio_button_focus');
-            }).on('blur', function () {
+            }).on('blur', function(event) {
                 // Find the associated label element
                 var rbID = this.id;
                 $("label[for='" + rbID + "']").find('.tool_modal_radio_button_appearance').removeClass('radio_button_focus');
             });
 
-            $(".tool_modal_register_button").click(function () {
+            $(".tool_modal_register_button").click(function(event) {
                 utils.startProcessingSpinner('add_edit_processing');
 
                 var clientData = __getClientRegistrationData();
@@ -286,7 +286,7 @@ var clientInputDialog = (function() {
                 });                      
             });
 
-            $(".tool_modal_update_button").click(function () {
+            $(".tool_modal_update_button").click(function(event) {
                 utils.startProcessingSpinner('add_edit_processing');
 
                 var clientId = $('input#client_id').val();
@@ -360,7 +360,7 @@ var clientInputDialog = (function() {
                 });              
             });
 
-            $(".tool_modal_field_copy_button").click(function (event) {
+            $(".tool_modal_field_copy_button").click(function(event) {
                 event.preventDefault();
                 utils.copyToClipboard(this, function() {
                     // Place the 'Copy to clipboard' message above the authDiv aligned to the
@@ -655,14 +655,14 @@ var clientInputDialog = (function() {
         // or header element. Our array is a table without a header.
         var label = $row.closest('.tool_modal_array').siblings('label')[0].innerHTML;
         $inputFld.attr('aria-label', label);
-        $inputFld.on("keyup", function() {
+        $inputFld.on("keyup", function(event) {
             // Entries in this field may be long....so keep the title up-to-date with the 
             // current value as it is entered so user can hover to see the whole value
             $(this).prop("title", $(this).val());
         });
 
         var $removeButton = $row.find('.tool_modal_array_remove_ele');
-        $removeButton.click(function() {
+        $removeButton.click(function(event) {
             var $table = $(this).closest('.tool_modal_table');
             var numEntries = $table.find('tbody tr').length;
 
@@ -961,7 +961,7 @@ var clientInputDialog = (function() {
     //     var $requiredInputFields = $('#add_edit_client_modal .tool_modal_body_field_input[requiredField]');
     //     $requiredInputFields.each(function() {
     //         console.log('required is set for ' + this.id);
-    //         $(this).on('input', function(e) {
+    //         $(this).on('input', function(event) {
     //             __validateRequiredInputs();
     //         });
     //     });
