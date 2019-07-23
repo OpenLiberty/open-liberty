@@ -66,27 +66,25 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     private static TraceComponent tc = Tr.register(RegistrationEndpointServices.class);
 
     // Regular expression to detect incoming client registration request pattern
-    private static final String REGEX_REGISTRATION_CLIENTID =
-            "^" + OAuth20RequestFilter.REGEX_COMPONENT_ID + OAuth20RequestFilter.REGEX_REGISTRATION + "$";
+    private static final String REGEX_REGISTRATION_CLIENTID = "^" + OAuth20RequestFilter.REGEX_COMPONENT_ID + OAuth20RequestFilter.REGEX_REGISTRATION + "$";
 
     // Configured GSON (De)Serializer for OidcBaseClient objects (Thread Safe according to documentation)
-    public static final Gson GSON =
-            new GsonBuilder()
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .registerTypeAdapter(OidcBaseClient.class, new OidcBaseClientSerializer())
-                    .create();
+    public static final Gson GSON = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .registerTypeAdapter(OidcBaseClient.class, new OidcBaseClientSerializer())
+            .create();
 
     protected RegistrationEndpointServices() {
     }
 
     /**
      * Main method that routes all the different incoming client registration requests.
-     * 
+     *
      * According to specification, Administrator-Managed OAuth 2.0 Client Registration must be secured.
      * In this implementation, the security validation is managed in the parent services that is delegating
      * to this method.
      * https://w3-connections.ibm.com/wikis/home?lang=en-us#!/wiki/W90ca708d8d15_46d1_b0b9_31a4b4c82d4f/page/Administrator-Managed%20OAuth%202.0%20Client%20Registration%20Protocol
-     * 
+     *
      * @param provider
      * @param request
      * @param response
@@ -185,9 +183,9 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         // Remove empty initialized JSON Arrays
         omitEmptyArrays(clientsAsJSON);
 
-        // If decode client names are done here, the client names going back to the response will still be the 
+        // If decode client names are done here, the client names going back to the response will still be the
         // encoded names. Decoding has to be done in OidcBaseClientValidator first before it converts to a Json array.
-        //decodeClientNames(clientsAsJSON);
+        // decodeClientNames(clientsAsJSON);
 
         // Calculate eTag
         String eTag = computeETag(clientsAsJSON);
@@ -276,7 +274,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         OidcBaseClient savedClientWithDefaults = OidcBaseClientValidator.getInstance(clientProvider.put(validatedClient)).setDefaultsForOmitted();
         // return decoded client name for the response
         decodeClientName(savedClientWithDefaults);
-        
+
         // Remove empty initialized JSON Arrays
         omitEmptyArrays(savedClientWithDefaults);
 
@@ -514,8 +512,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         if ((OidcOAuth20Util.isNullEmpty(client.getTokenEndpointAuthMethod())
                 || client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC)
                 || client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_POST))
-                && OidcOAuth20Util.isNullEmpty(client.getClientSecret()))
-        {
+                && OidcOAuth20Util.isNullEmpty(client.getClientSecret())) {
             client.setClientSecret(OAuthUtil.getRandom(DEFAULT_CLIENT_SECRET_LENGTH));
             return;
         }
@@ -523,8 +520,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         // If token ep auth method is set to none, make sure no secret is specified
         if (!OidcOAuth20Util.isNullEmpty(client.getTokenEndpointAuthMethod())
                 && client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)
-                && !OidcOAuth20Util.isNullEmpty(client.getClientSecret()))
-        {
+                && !OidcOAuth20Util.isNullEmpty(client.getClientSecret())) {
             String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE",
@@ -535,56 +531,13 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         }
     }
 
-    private ClientSecretAction processUpdateClientSecret(OidcBaseClient client, OidcOAuth20Client existingClient) throws OidcServerException {
+    private ClientSecretAction processUpdateClientSecret(OidcBaseClient incomingClient, OidcOAuth20Client existingClient) throws OidcServerException {
         ClientSecretAction action = null;
 
-        if (OidcOAuth20Util.isNullEmpty(client.getClientSecret())) { // If incoming client_secret IS empty
-            if (OidcOAuth20Util.isNullEmpty(client.getTokenEndpointAuthMethod())
-                    || client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC)
-                    || client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_POST)) {
-                // Generating new secret
-                action = ClientSecretAction.NEW;
-                client.setClientSecret(OAuthUtil.getRandom(DEFAULT_CLIENT_SECRET_LENGTH));
-            } else if (client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)) {
-                if (!OidcOAuth20Util.isNullEmpty(existingClient.getClientSecret())) {
-                    action = ClientSecretAction.CLEAR;
-                    // Incoming client secret is already empty, no need to clear it again
-                } else {
-                    action = ClientSecretAction.RETAIN;
-                    // Incoming client secret is empty, client is public, existing client secret is empty
-                }
-            }
+        if (OidcOAuth20Util.isNullEmpty(incomingClient.getClientSecret())) { // If incoming client_secret IS empty
+            action = setSecretAndGetActionForEmptyUpdatedClientSecret(incomingClient, existingClient);
         } else { // If incoming client_secret IS NOT empty
-            if (OidcOAuth20Util.isNullEmpty(client.getTokenEndpointAuthMethod())
-                    || client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC)
-                    || client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_POST)) {
-                if (client.getClientSecret().equals("*")) {
-                    if (OidcOAuth20Util.isNullEmpty(existingClient.getClientSecret())) {
-                        String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
-                                MESSAGE_BUNDLE,
-                                "OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE",
-                                null,
-                                "CWWKS1430E: An update of the client fails.");
-                        Tr.error(tc, errorMsg);
-                        throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
-                    } else {
-                        // Retaining previously set secret
-                        action = ClientSecretAction.RETAIN;
-                        client.setClientSecret(existingClient.getClientSecret());
-                    }
-                } else {
-                    action = ClientSecretAction.NEW;
-                    // Incoming client secret contains new value to be saved
-                }
-            } else if (client.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)) {
-                String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
-                        MESSAGE_BUNDLE,
-                        "OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE",
-                        null,
-                        "CWWKS1431E: An update of the client fails.");
-                Tr.error(tc, errorMsg);
-                throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
-            }
+            action = setSecretAndGetActionForNonEmptyUpdatedClientSecret(incomingClient, existingClient);
         }
 
         if (action == null) {
@@ -598,6 +551,83 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         }
 
         return action;
+    }
+
+    private ClientSecretAction setSecretAndGetActionForEmptyUpdatedClientSecret(OidcBaseClient incomingClient, OidcOAuth20Client existingClient) {
+        ClientSecretAction action = null;
+        if (OidcOAuth20Util.isNullEmpty(incomingClient.getTokenEndpointAuthMethod())
+                || incomingClient.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC)
+                || incomingClient.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_POST)) {
+            // Generating new secret
+            action = ClientSecretAction.NEW;
+            incomingClient.setClientSecret(OAuthUtil.getRandom(DEFAULT_CLIENT_SECRET_LENGTH));
+        } else if (incomingClient.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)) {
+            if (!OidcOAuth20Util.isNullEmpty(existingClient.getClientSecret())) {
+                action = ClientSecretAction.CLEAR;
+                // Incoming client secret is already empty, no need to clear it again
+            } else {
+                action = ClientSecretAction.RETAIN;
+                // Incoming client secret is empty, client is public, existing client secret is empty
+            }
+        }
+        return action;
+    }
+
+    private ClientSecretAction setSecretAndGetActionForNonEmptyUpdatedClientSecret(OidcBaseClient incomingClient, OidcOAuth20Client existingClient) throws OidcServerException {
+        ClientSecretAction action = null;
+        if (OidcOAuth20Util.isNullEmpty(incomingClient.getTokenEndpointAuthMethod())
+                || incomingClient.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_BASIC)
+                || incomingClient.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_POST)) {
+            if (incomingClient.getClientSecret().equals("*")) {
+                if (OidcOAuth20Util.isNullEmpty(existingClient.getClientSecret())) {
+                    String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+                            MESSAGE_BUNDLE,
+                            "OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE",
+                            null,
+                            "CWWKS1430E: An update of the client fails.");
+                    Tr.error(tc, errorMsg);
+                    throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                } else {
+                    // Retaining previously set secret
+                    action = ClientSecretAction.RETAIN;
+                    incomingClient.setClientSecret(existingClient.getClientSecret());
+                }
+            } else {
+                action = ClientSecretAction.NEW;
+                // Incoming client secret contains new value to be saved
+            }
+        } else if (incomingClient.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)) {
+            action = getActionForNonEmptyClientSecretForTokenEndptAuthMethodNone(incomingClient, existingClient);
+        }
+        return action;
+    }
+
+    private ClientSecretAction getActionForNonEmptyClientSecretForTokenEndptAuthMethodNone(OidcBaseClient incomingClient, OidcOAuth20Client existingClient) throws OidcServerException {
+        ClientSecretAction action = null;
+        // OAuth clients whose token endpoint authorization method is "none" are assumed to be public clients and must NOT
+        // have a client secret configured. If the client has a non-empty secret assigned, that's an error.
+        if (incomingClient.getClientSecret().equals("*")) {
+            if (!OidcOAuth20Util.isNullEmpty(existingClient.getClientSecret())) {
+                throwErrorForInvalidPublicClientUpdate();
+            } else {
+                // Retaining previously set secret
+                action = ClientSecretAction.RETAIN;
+                incomingClient.setClientSecret(existingClient.getClientSecret());
+            }
+        } else {
+            throwErrorForInvalidPublicClientUpdate();
+        }
+        return action;
+    }
+
+    private void throwErrorForInvalidPublicClientUpdate() throws OidcServerException {
+        String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+                MESSAGE_BUNDLE,
+                "OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE",
+                null,
+                "CWWKS1431E: An update of the client fails.");
+        Tr.error(tc, errorMsg);
+        throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     public static void processClientRegistationUri(OidcOAuth20Client client, HttpServletRequest request) {
@@ -651,9 +681,9 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
 
     /**
      * Computes the etag for specified client.
-     * 
+     *
      * @param client The client to compute an etag from. Must not be <code>null</code>.
-     * 
+     *
      * @return etag The computed etag. Never <code>null</code>.
      * @throws IOException Thrown on metadata read errors.
      */
@@ -666,7 +696,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
 
     /**
      * Compute an ETag from a list of consumer objects represented as JSON objects.
-     * 
+     *
      * @param results
      *            the list of JSON consumer objects
      * @return the ETag for the list of objects
@@ -779,9 +809,9 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     /**
      * Method to remove initialize empty arrays from JSON
      * by setting them to null.
-     * 
+     *
      * This method is used before returning the response JSON
-     * 
+     *
      * @param client
      */
     public static void omitEmptyArrays(OidcBaseClient client) {
@@ -837,6 +867,6 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
             }
         } catch (UnsupportedEncodingException ex) {
             // keep the existing client name
-        } 
+        }
     }
 }
