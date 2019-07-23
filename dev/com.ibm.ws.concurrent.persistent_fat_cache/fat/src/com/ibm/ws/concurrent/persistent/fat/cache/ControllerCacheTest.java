@@ -85,12 +85,41 @@ public class ControllerCacheTest extends FATServletClient {
      */
     @Test
     public void testBasicUpdatesVisibleAcrossServers() throws Exception {
-        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?source=testBasicUpdatesVisibleAcrossServers" +
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?test=testBasicUpdatesVisibleAcrossServers" +
                          "&keyBasicUpdateVisible=ServerAValue",
                 "putEntries");
 
-        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?source=testBasicUpdatesVisibleAcrossServers" +
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?test=testBasicUpdatesVisibleAcrossServers" +
                          "&keyBasicUpdateVisible=ServerAValue",
                 "getEntries");
+    }
+
+    /**
+     * Verify that cache-entry-created events are sent to both servers.
+     */
+    @Test
+    public void testCacheEntryCreatedListener() throws Exception {
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryCreatedListener&keyCECL1=A1&keyCECL2=A2", "putEntries");
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryCreatedListener&keyCECL3=B1", "putEntries");
+
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryCreatedListener&keyCECL1=A1&keyCECL2=A2&keyCECL3=B1", "waitForCreatedNotifications");
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryCreatedListener&keyCECL1=A1&keyCECL2=A2&keyCECL3=B1", "waitForCreatedNotifications");
+    }
+
+    /**
+     * Verify that cache-entry-expired events are sent to both servers, and that if a cache entry is
+     * re-created after expiry, then it can expire again, with notifications again sent to both servers.
+     */
+    @Test
+    public void testCacheEntryExpiredListener() throws Exception {
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryExpiredListener&keyCEEL1=Aa", "putEntries");
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryExpiredListener&keyCEEL2=Bb", "putEntries");
+
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryExpiredListener&keyCEEL1=Aa&keyCEEL2=Bb", "waitForExpiredNotifications");
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryExpiredListener&keyCEEL1=Aa&keyCEEL2=Bb", "waitForExpiredNotifications");
+
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryExpiredListener&keyCEEL1=Cc", "putEntries");
+        runTest(serverA, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryExpiredListener&keyCEEL1=Cc", "waitForExpiredNotifications");
+        runTest(serverB, APP_NAME + "/ControllerCacheTestServlet?test=testCacheEntryExpiredListener&keyCEEL1=Cc", "waitForExpiredNotifications");
     }
 }
