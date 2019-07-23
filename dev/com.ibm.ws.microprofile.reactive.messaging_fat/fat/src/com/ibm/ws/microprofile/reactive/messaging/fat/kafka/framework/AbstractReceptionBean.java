@@ -60,4 +60,19 @@ public class AbstractReceptionBean {
         return result;
     }
 
+    /**
+     * Return any messages which have been received by the bean, without waiting
+     * 
+     * @return a list of messages, may be empty
+     */
+    public List<Message<String>> getReceivedMessages() {
+        ArrayList<Message<String>> result = new ArrayList<>();
+        synchronized (this) {
+            while (!receivedMessages.isEmpty()) {
+                result.add(receivedMessages.poll());
+            }
+        }
+        return result;
+    }
+
 }
