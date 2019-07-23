@@ -6,11 +6,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
@@ -26,8 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 
@@ -44,10 +43,12 @@ import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorU
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
+import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
+import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
@@ -139,8 +140,13 @@ public class AccessTokenAuthenticator {
                 }
                 if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
                     oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
+                    // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
+                    //bt: we don't have an idToken(??) so might need to adjust a bit.
+                    oidcResult = (new UserInfoHelper(clientConfig)).getUserInfoIfPossible(oidcResult, tokens, sslSocketFactory);
                 } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
                     oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
+                    //todo: set up userinfo here too.
+
                 }
             } else {
                 logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INVALID_VALIDATION_URL", validationEndpointURL);
@@ -789,11 +795,11 @@ public class AccessTokenAuthenticator {
                                                        * || attributeToSubject.
                                                        * checkForNullRealm())
                                                        */ { // TODO enable this
-                                                           // null realm
-                                                           // checking once
-                                                           // userinfo code is
-                                                           // fixed to emit
-                                                           // "iss"
+                                                            // null realm
+                                                            // checking once
+                                                            // userinfo code is
+                                                            // fixed to emit
+                                                            // "iss"
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
 
