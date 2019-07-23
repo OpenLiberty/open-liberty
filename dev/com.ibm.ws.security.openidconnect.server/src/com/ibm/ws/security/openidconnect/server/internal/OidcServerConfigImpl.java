@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
