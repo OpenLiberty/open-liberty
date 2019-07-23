@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCustomSerializerTest;
 
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
@@ -25,8 +26,10 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 @SuiteClasses({
                 BasicReactiveMessagingTest.class,
                 KafkaMessagingTest.class,
-                KafkaAcknowledgementTest.class
+                KafkaAcknowledgementTest.class,
+                KafkaCustomSerializerTest.class
 })
+
 public class FATSuite {
 
     @ClassRule

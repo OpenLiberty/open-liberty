@@ -26,15 +26,15 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  * <p>
  * This reader is very basic, it only reads string messages and it doesn't commit any offsets so each new reader will start reading from the start of the topic.
  */
-public class SimpleKafkaReader implements AutoCloseable {
+public class SimpleKafkaReader<T> implements AutoCloseable {
 
-    private final KafkaConsumer<String, String> kafkaConsumer;
+    private final KafkaConsumer<String, T> kafkaConsumer;
 
     /**
      * @param kafkaConsumer
      * @param topic
      */
-    public SimpleKafkaReader(KafkaConsumer<String, String> kafkaConsumer, String topic) {
+    public SimpleKafkaReader(KafkaConsumer<String, T> kafkaConsumer, String topic) {
         super();
         this.kafkaConsumer = kafkaConsumer;
         kafkaConsumer.subscribe(Collections.singleton(topic));
@@ -49,12 +49,12 @@ public class SimpleKafkaReader implements AutoCloseable {
      * @param timeout the amount of time to wait for the expected number of records to be received
      * @return the list of records received
      */
-    public List<String> waitForMessages(int count, Duration timeout) {
-        ArrayList<String> result = new ArrayList<>();
+    public List<T> waitForMessages(int count, Duration timeout) {
+        ArrayList<T> result = new ArrayList<>();
         Duration remaining = timeout;
         long startTime = System.nanoTime();
         while (!remaining.isNegative() && result.size() < count) {
-            for (ConsumerRecord<String, String> record : kafkaConsumer.poll(remaining)) {
+            for (ConsumerRecord<String, T> record : kafkaConsumer.poll(remaining)) {
                 result.add(record.value());
             }
             Duration elapsed = Duration.ofNanos(System.nanoTime() - startTime);
