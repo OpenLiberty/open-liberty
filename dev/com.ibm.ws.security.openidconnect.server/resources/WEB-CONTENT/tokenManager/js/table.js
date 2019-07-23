@@ -276,7 +276,7 @@ var table = (function() {
         $deleteDlg.find('.tool_modal_delete_button').off('click');
         $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
             utils.startProcessingSpinner('delete_processing');
-           __deletePWorToken(authID, name, type);
+           __deletePWorToken(authID, name, type, userID);
         });
 
         $deleteDlg.removeClass('hidden');
@@ -320,9 +320,10 @@ var table = (function() {
      * @param String authID - unique ID for this app-password/app-token
      * @param String name - given name for this authentication (app-password/app-token)
      * @param String authType - 'app-password' or 'app-token'
+     * @param String userID - owner id of this authentication
      */
-    var __deletePWorToken = function(authID, name, authType) {
-        apiUtils.deleteAcctAppPasswordToken(authID, authType).done(function() {
+    var __deletePWorToken = function(authID, name, authType, userID) {
+        apiUtils.deleteAcctAppPasswordToken(authID, authType, userID).done(function() {
             deleteTableRow(authID);
             // Stop the processing spinner
             utils.stopProcessingSpinner();
@@ -399,7 +400,13 @@ var table = (function() {
         });
     };
 
-    var __deleteSelectedAuthentications = function() {
+    /**
+     * Delete selected app-passwords and app-tokens for this user and remove all
+     * associated rows from the table.
+     * 
+     * @param String userID - owner of the authentications shown in the table.
+     */
+    var __deleteSelectedAuthentications = function(userID) {
         // Get the selected rows
         var $table = $('#' + tableId + ' tbody');
         var $rows = $table.find('tr');
@@ -412,7 +419,7 @@ var table = (function() {
             var name = $(this).find('td.authName').text();
             var authType = $(this).find('td.authType').text();
             
-            delDeferreds.push(apiUtils.deleteSelectedAppPasswordsTokens(authID, authType, name));
+            delDeferreds.push(apiUtils.deleteSelectedAppPasswordsTokens(authID, authType, name, userID));
         });
 
         // $.when executes a callback based on zero or more Thenable objects.  Pass all the deferreds
@@ -528,7 +535,7 @@ var table = (function() {
                 $deleteDlg.find('.tool_modal_delete_button').off('click');
                 $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
                     utils.startProcessingSpinner('delete_processing');
-                    __deleteSelectedAuthentications();
+                    __deleteSelectedAuthentications(userID);
                 });
             }
 
