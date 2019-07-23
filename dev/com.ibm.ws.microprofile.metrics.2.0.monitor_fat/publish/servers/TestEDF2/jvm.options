@@ -1,0 +1,2 @@
+-Xtrace:methods={com/ibm/ws/threading/internal/ExecutorServiceImpl.execute*},iprint=mt,output=blah.trc,trigger=method{com/ibm/ws/threading/internal/ExecutorServiceImpl.execute*,jstacktrace}
+-verbose:class

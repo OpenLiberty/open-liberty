@@ -87,7 +87,7 @@ public class MetricsMonitorTest {
         }
     }
     
-    @Test
+    //@Test
     public void testDisableMpMetricsFeature() throws Exception {
     	
     	String testName = "testDisableMpMetricsFeature";
@@ -109,7 +109,7 @@ public class MetricsMonitorTest {
       	Assert.assertNotNull("No CWPMI2002I message", logMsg);
     }
 
-    @Test
+    //@Test
     public void testDisableMpMetrics20Feature() throws Exception {
     	
     	String testName = "testDisableMpMetricsFeature";
@@ -132,7 +132,7 @@ public class MetricsMonitorTest {
       	Assert.assertNotNull("No CWPMI2004I message", logMsg);
     }
     
-    @Test
+    //@Test
     public void testMpMetrics10Monitor10Feature() throws Exception {
     	
     	String testName = "testMpMetrics10Monitor10Feature";
@@ -151,7 +151,7 @@ public class MetricsMonitorTest {
           	new String[] { "vendor:" });
     }
     
-    @Test
+    //@Test
     public void testMicroProfileMonitor10Feature() throws Exception {
     	
     	String testName = "testMicroProfileMonitor10Feature";
