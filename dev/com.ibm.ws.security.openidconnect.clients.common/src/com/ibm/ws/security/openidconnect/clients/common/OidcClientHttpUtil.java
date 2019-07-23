@@ -21,11 +21,13 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -353,11 +355,14 @@ public class OidcClientHttpUtil {
             } else {
                 connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
             }
-            client = createBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+            RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+            client = createBuilder(useSystemPropertiesForHttpClientConnections)
+                    .setDefaultCredentialsProvider(credentialsProvider)
+                    .setSSLSocketFactory(connectionFactory)
+                    .setDefaultRequestConfig(rcfg)
+                    .build();
         }
-
         return client;
-
     }
 
     static OidcClientHttpUtil instance = null;;
