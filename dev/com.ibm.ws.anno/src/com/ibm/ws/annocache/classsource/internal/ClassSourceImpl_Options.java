@@ -34,18 +34,6 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
 
     //
 
-    private static final Boolean USE_JANDEX_FULL_OVERRIDE;
-    
-    static {
-    	String override = AnnotationCacheServiceImpl_Logging.getProperty(
-                AnnotationCacheServiceImpl_Logging.ANNO_LOGGER,
-                CLASS_NAME, "<static init>",
-                USE_JANDEX_FULL_PROPERTY_NAME, null);
-    	USE_JANDEX_FULL_OVERRIDE = ( override == null ? null : Boolean.valueOf(override) );    	
-    }
-
-    //
-
     private static final boolean HAS_JANDEX_PATH_OVERRIDE =
         AnnotationCacheServiceImpl_Logging.hasProperty(JANDEX_PATH_PROPERTY_NAME);
 
@@ -91,7 +79,6 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     @Trivial
     public ClassSourceImpl_Options() {
         this.useJandex = null;
-        this.useJandexFull = null;
 
         if ( getHasJandexPathOverride() ) {
             this.isSetJandexPath = true;
@@ -117,7 +104,6 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
         return super.toString() +
             "(" +
                 " UseJandex " + useJandex + " - " + USE_JANDEX_OVERRIDE + ", " +
-                " UseJandexFull " + useJandexFull + " - " + USE_JANDEX_FULL_OVERRIDE + ", " +
                 " JandexPath " + ('"' + jandexPath + '"' + (isSetJandexPath ? "[Set]" : "[Unset]")) + ", " +
                 " ScanThreads " + (Integer.toString(scanThreads)+ (isSetScanThreads ? "[Set]" : "[Unset]")) +
             ")";
@@ -158,44 +144,6 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     		return useJandex.booleanValue();
     	} else {
     		return USE_JANDEX_DEFAULT_VALUE;
-    	}
-    }
-
-    //
-
-    @Override
-    @Trivial
-    public boolean getUseJandexFullDefault() {
-        return USE_JANDEX_FULL_DEFAULT_VALUE;
-    }
-
-    private Boolean useJandexFull;
-
-    @Override
-    @Trivial
-    public boolean getIsSetUseJandexFull() {
-        return ( useJandexFull != null );
-    }
-
-    @Override
-    public void setUseJandexFull(boolean useJandexFull) {
-        this.useJandexFull = Boolean.valueOf(useJandexFull);
-    }
-
-    @Override
-    public void unsetUseJandexFull() {
-        this.useJandexFull = null;
-    }
-
-    @Override
-    @Trivial
-    public boolean getUseJandexFull() {
-    	if ( USE_JANDEX_FULL_OVERRIDE != null ) {
-    		return USE_JANDEX_FULL_OVERRIDE.booleanValue();
-    	} else if ( useJandexFull != null ) {
-    		return useJandexFull.booleanValue();
-    	} else {
-    		return USE_JANDEX_FULL_DEFAULT_VALUE;
     	}
     }
 

@@ -124,14 +124,6 @@ public interface TargetCache_Options {
     int getWriteLimit();
     void setWriteLimit(int writeLimit);
 
-    // Whether to write component data which was read from Jandex.
-
-    boolean OMIT_JANDEX_WRITE_DEFAULT = true;
-    String OMIT_JANDEX_WRITE_PROPERTY_NAME = "anno.cache.omitJandexWrite";
-
-    boolean getOmitJandexWrite();
-    void setOmitJandexWrite(boolean omitJandexWrite);
-
     // Whether to write container data as multiple files.
 
     boolean SEPARATE_CONTAINERS_DEFAULT = false;
@@ -163,12 +155,6 @@ public interface TargetCache_Options {
 
     boolean getUseJandexFormat();
     void setUseJandexFormat(boolean useJandexFormat);
-
-    boolean READ_JANDEX_FULL_DEFAULT = false;
-    String READ_JANDEX_FULL_PROPERTY_NAME = "anno.cache.readjandexFull";
-
-    boolean getReadJandexFull();
-    void setReadJandexFull(boolean useReadJandexFull);
 
     //
 

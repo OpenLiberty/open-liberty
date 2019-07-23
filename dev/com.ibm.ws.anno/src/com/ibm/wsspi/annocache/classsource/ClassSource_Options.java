@@ -40,19 +40,6 @@ public interface ClassSource_Options extends com.ibm.wsspi.anno.classsource.Clas
 
     //
 
-    boolean USE_JANDEX_FULL_DEFAULT_VALUE = false;
-    String USE_JANDEX_FULL_PROPERTY_NAME = "com.ibm.ws.jandex.enable.full";
-
-    boolean getUseJandexFullDefault();
-
-    boolean getIsSetUseJandexFull();
-    boolean getUseJandexFull();
-
-    void setUseJandexFull(boolean useJandexFull);
-    void unsetUseJandexFull();
-
-    //
-
     String JANDEX_PATH_DEFAULT_VALUE = "META-INF/jandex.idx";
     String JANDEX_PATH_PROPERTY_NAME = "com.ibm.ws.jandex.path";
 

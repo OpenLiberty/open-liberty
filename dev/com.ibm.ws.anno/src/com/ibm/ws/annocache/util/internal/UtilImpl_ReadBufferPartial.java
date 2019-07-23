@@ -36,8 +36,8 @@ public final class UtilImpl_ReadBufferPartial implements UtilImpl_ReadBuffer {
 
     @Trivial
     public String getPath() {
-		return path;
-	}
+        return path;
+    }
 
     private final RandomAccessFile file;
     private final int fileLength;
@@ -54,17 +54,31 @@ public final class UtilImpl_ReadBufferPartial implements UtilImpl_ReadBuffer {
     private final Charset charset;
 
     @Trivial
-	public String getEncoding() {
-		return encoding;
-	}
+    public String getEncoding() {
+        return encoding;
+    }
 
     //
 
     public static final String UTF_8 = UtilImpl_WriteBuffer.UTF_8;
 
+    public UtilImpl_ReadBufferPartial(String path, int bufferSize)
+        throws IOException {
+        this(path, bufferSize, UTF_8);
+    }
+
     public UtilImpl_ReadBufferPartial(String path, RandomAccessFile file, int bufferSize)
         throws IOException {
         this(path, file, bufferSize, UTF_8);
+    }
+
+    public UtilImpl_ReadBufferPartial(String path, int bufferSize, String encoding)
+        throws IOException {
+
+        this( path,
+              new RandomAccessFile(path, "r"), // throws IOException
+              bufferSize,
+              encoding);
     }
 
     /**
@@ -294,11 +308,11 @@ public final class UtilImpl_ReadBufferPartial implements UtilImpl_ReadBuffer {
 
     @Trivial
     public int getFileLength() {
-    	return fileLength;
+        return fileLength;
     }
 
     public void seekEnd(int offset) throws IOException {
-    	seek( getFileLength() + offset );
+        seek( getFileLength() + offset );
     }
 
     public void seek(int offset) throws IOException {

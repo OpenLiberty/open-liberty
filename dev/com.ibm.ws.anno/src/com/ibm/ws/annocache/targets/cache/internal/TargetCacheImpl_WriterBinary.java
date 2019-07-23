@@ -133,6 +133,22 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
 
     //
 
+    public static final int BEGIN_SIZE = 4;
+    public static final int END_SIZE = 4;
+
+    public static final int STAMP_PREFIX_SIZE = 1 + (HEADER_WIDTH * 4);
+    public static final int STAMP_NAME_SIZE = 1 + 2 + UtilImpl_WriteBuffer.MAX_STRING;
+    public static final int STAMP_SUFFIX_SIZE = HEADER_WIDTH;
+
+    /** Maximum required size for buffering a read of the stamp table. */
+    public static final int STAMP_SIZE =
+        BEGIN_SIZE +
+        STAMP_PREFIX_SIZE +
+        STAMP_NAME_SIZE +
+        STAMP_SUFFIX_SIZE;
+
+    //
+
     public void writeBegin() throws IOException {
         bufOutput.write(MAGIC_BEGIN_BYTES, 0, 4);
     }
@@ -140,6 +156,7 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
     public void writeEnd() throws IOException {
         bufOutput.write(MAGIC_END_BYTES, 0, 4);
     }
+
 
     public void writeHeader(String tableTag, String tableVersion) throws IOException {
         bufOutput.write(HEADER_BYTE);

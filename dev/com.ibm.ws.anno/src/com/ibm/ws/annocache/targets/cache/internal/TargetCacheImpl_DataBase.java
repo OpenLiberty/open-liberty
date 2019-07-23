@@ -344,14 +344,14 @@ public abstract class TargetCacheImpl_DataBase {
     }
 
     public boolean readBinary(
-        File inputFile, boolean readStrings,
+        File inputFile, boolean readStrings, boolean readFull,
         Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction) {
 
         IOException boundException = null;
 
         try {
             TargetCacheImpl_ReaderBinary reader =
-                createBinaryReader(inputFile, readStrings); // throws IOException
+                createBinaryReader( inputFile.getPath(), readStrings, readFull ); // throws IOException
 
             if ( reader != null ) {
                 try {
@@ -374,7 +374,7 @@ public abstract class TargetCacheImpl_DataBase {
 
     @SuppressWarnings("null")
     public String basicValidCombinedBinary(
-        File inputFile, boolean readStrings,
+        File inputFile, boolean readStrings, boolean readFull,
         Util_Function<TargetCacheImpl_ReaderBinary, IOException, String> readAction) {
 
         IOException boundException = null;
@@ -382,7 +382,7 @@ public abstract class TargetCacheImpl_DataBase {
 
         try {
             TargetCacheImpl_ReaderBinary reader =
-                createBinaryReader(inputFile, readStrings); // throws IOException
+                createBinaryReader( inputFile.getPath(), readStrings, readFull ); // throws IOException
 
             if ( reader != null ) {
                 try {
@@ -431,36 +431,12 @@ public abstract class TargetCacheImpl_DataBase {
     }
 
     //
-    
-    @Trivial
-    public TargetCacheImpl_ReaderBinary createBinaryReader(File inputFile, boolean readStrings)
-        throws IOException {
-
-        String inputPath = inputFile.getName();
-
-        // TODO: Should this be tuned to the size of the input file?
-
-        // RandomAccessFile randomInputFile = openRandomInputFile(inputFile); // throws IOException
-        //
-        // return createBinaryReader(inputPath, randomInputFile, readStrings); // throws IOException
-
-        return createBinaryReader(inputPath, readStrings); // throws IOException
-    }
 
     @Trivial
     public TargetCacheImpl_ReaderBinary createBinaryReader(
-        String inputPath, RandomAccessFile inputFile,
-        boolean readStrings) throws IOException {
+        String inputPath, boolean readStrings, boolean readFull) throws IOException {
 
-        return getFactory().createBinaryReader(inputPath, inputFile, readStrings);
-        // 'createBinaryReader' throws IOException
-    }
-
-    @Trivial
-    public TargetCacheImpl_ReaderBinary createBinaryReader(
-        String inputPath, boolean readStrings) throws IOException {
-
-        return getFactory().createBinaryReader(inputPath, readStrings);
+        return getFactory().createBinaryReader(inputPath, readStrings, readFull);
         // 'createBinaryReader' throws IOException
     }
 

@@ -78,17 +78,11 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     /** Control parameter: Is this data for a result bucket? */
     public static final boolean IS_RESULT = false;
 
-    /**
-     * Local copy of binary read control parameter: The target file
-     * contains a compact string table.
-     */
+    /** Local copy of binary read control parameter: Read a compact string table. */
     public static final boolean DO_READ_STRINGS = TargetCacheImpl_ReaderBinary.DO_READ_STRINGS;
 
-    /**
-     * Local copy of binary read control parameter: The target file
-     * does not contain a compact string table.
-     */
-    public static final boolean DO_NOT_READ_STRINGS = TargetCacheImpl_ReaderBinary.DO_NOT_READ_STRINGS;
+    /** Local copy of binary read control parameter: Read the target file fully. */
+    public static final boolean DO_READ_FULL = TargetCacheImpl_ReaderBinary.DO_READ_FULL;
 
     public TargetCacheImpl_DataCon(
         TargetCacheImpl_DataBase parentCache,
@@ -110,7 +104,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
             // Write a time stamp file and either a jandex file or a classes file and
             // an annotation targets file.
 
-            this.combinedFileData = null;            
+            this.combinedFileData = null;
 
             this.stampDataFile = createFileData(TargetCache_ExternalConstants.TIMESTAMP_NAME);
 
@@ -257,11 +251,6 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     }
 
     @Trivial
-    public boolean getReadJandexFull() {
-        return getCacheOptions().getReadJandexFull();
-    }
-
-    @Trivial
     public boolean getAlwaysValid() {
         return getCacheOptions().getAlwaysValid();
     }
@@ -271,12 +260,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         return getCacheOptions().getUseBinaryFormat();
     }
 
-    @Trivial
-    public boolean getOmitJandexWrite() {
-        return getCacheOptions().getOmitJandexWrite();
-    }
-
-    @Trivial
+@Trivial
     public int getWriteLimit() {
         return getCacheOptions().getWriteLimit();
     }
@@ -320,31 +304,24 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
      */
     public void basicWriteData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         if ( !shouldWrite("Full data") ) {
-            // System.out.println("Write [ " + targetData.getName() + " ] [ Disabled write ]");
             return;
-        }
-
-        if ( getWriteLimit() > targetData.getClassNames().size() ) {
-            // System.out.println("Write [ " + targetData.getName() + " ] [ Too few classes]");
-        } else if ( getOmitJandexWrite() && targetData.getUsedJandex() ) {
-            // System.out.println("Write [ " + targetData.getName() + " ] [ Omit Jandex ]");
+        } else if ( getWriteLimit() > targetData.getClassNames().size() ) {
+            return;
+        } else if ( targetData.getUsedJandex() ) {
             return;
         }
 
         if ( getUseJandexFormat() ) {
             basicWriteStamp( modData, targetData.getStampTable() );
             basicWriteJandex( modData, targetData.consumeJandexIndex() );
-            // System.out.println("Write [ " + targetData.getName() + " ] [ Write Stamp and Jandex ]");
 
         } else if ( getUseSeparateCaches() ) {
             basicWriteStamp( modData, targetData.getStampTable() );
             basicWriteClasses( modData, targetData.getClassTable() );
             basicWriteTargets( modData, targetData.getAnnotationTable() );
-            // System.out.println("Write [ " + targetData.getName() + " ] [ Write Stamp and Classes and Targets ]");
 
         } else {
             basicWriteDataCombined(modData, targetData);
-            // System.out.println("Write [ " + targetData.getName() + " ] [ Write combined ]");
         }
     }
 
@@ -381,7 +358,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useStampFile, DO_NOT_READ_STRINGS,
+                useStampFile, !DO_READ_STRINGS, !DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(useStampTable);
                 } );
@@ -391,8 +368,6 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Stamp");
-
-        // System.out.println("Stamp read [ " + getName() + " ] [ " + readDuration + " ]");
 
         return didRead;
     }
@@ -501,7 +476,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useTargetsFile, DO_READ_STRINGS,
+                useTargetsFile, DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(targetTable);
                 } );
@@ -583,7 +558,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useClassRefsFile, DO_READ_STRINGS,
+                useClassRefsFile, DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(classesTable);
                 } );
@@ -667,7 +642,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useCombinedFile, DO_READ_STRINGS,
+                useCombinedFile, DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(
                         targetData.getStampTable(),
@@ -777,13 +752,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         boolean didRead;
 
         try {
-            if ( getReadJandexFull() ) {
-                Index index = Jandex_Utils.basicReadIndex(useJandexPath);
-                targetData.transfer(index);
-            } else {
-                SparseIndex sparseIndex = Jandex_Utils.basicReadSparseIndex(useJandexPath);
-                targetData.transfer(sparseIndex);
-            }
+            SparseIndex sparseIndex = Jandex_Utils.basicReadSparseIndex(useJandexPath);
+            targetData.transfer(sparseIndex);
             didRead = true;
 
         } catch ( IOException e ) {
@@ -955,104 +925,59 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     public String isValid(TargetsScannerOverallImpl scanner, String classSourceName, String currentStamp) {
         boolean useAlwaysValid = getAlwaysValid();
 
+        // If the current stamp is non-comparable, unless validity is forced,
+        // the answer is forced to non-valid.
+
         if ( currentStamp.equals(ClassSource.UNRECORDED_STAMP) ||
              currentStamp.equals(ClassSource.UNAVAILABLE_STAMP) ) {
             if ( !useAlwaysValid ) {
-                // System.out.println("DataCon.isValid [ Stamp unavailable ]");
                 return "Stamp unavailable";
             }
         }
 
-        TargetsTableImpl useTargets = getTargetsTable();
-        if ( useTargets != null ) {
-            if ( useAlwaysValid || useTargets.getStamp().equals(currentStamp) ) {
-                // System.out.println("DataCon.isValid [ Valid ]");
-                return null; // Same stamp
+        // If a table is stored to the container data, check it for
+        // a container difference.
+
+        TargetsTableImpl useTable = getTargetsTable();
+        if ( useTable != null ) {
+            if ( useAlwaysValid ) {
+                return null;
+            } else if ( currentStamp.equals( useTable.getStamp() ) ) {
+                return null;
             } else {
-                // System.out.println("DataCon.isValid [ Stamp difference ]");
-                return "Stamp difference";
-            }
-        }
-
-        if ( !hasRequiredFiles() ) {
-            return "Absent or incomplete save";
-        }
-
-        TargetsTableImpl useTargetsTable =
-            scanner.createIsolatedTargetsTable(classSourceName, currentStamp);
-
-        boolean useJandex = getUseJandexFormat();
-        if ( useJandex || getUseSeparateCaches() ) {
-            TargetsTableTimeStampImpl useStampTable = useTargetsTable.getStampTable();
-            if ( !basicReadStamp(useStampTable) ) {
-                // System.out.println("DataCon.isValid [ Stamp read failure ]");
-                return "Stamp read failure";
-            } else if ( !useAlwaysValid && !useStampTable.getStamp().equals(currentStamp) ) {
-                // System.out.println("DataCon.isValid [ Stamp change ]");
                 return "Stamp change";
             }
-
-            if ( useJandex ) {
-                if ( !basicReadJandex(useTargetsTable) ) {
-                    // System.out.println("DataCon.isValid [ Jandex read failure ]");
-                    return "Jandex read failure";
-                }
-            } else {
-                if ( !basicReadClasses( useTargetsTable.getClassTable() ) ) {
-                    // System.out.println("DataCon.isValid [ Class table read failure ]");
-                    return "Class table read failure";
-                } else if ( !basicReadTargets( useTargetsTable.getAnnotationTable() ) ) {
-                    // System.out.println("DataCon.isValid [ Annotation table read failure ]");
-                    return "Annotation table read failure";
-                }
-            }
-
-        } else {
-            String isValidReason = basicIsValidCombined(useTargetsTable, currentStamp);
-            if ( isValidReason != null ) {
-                // System.out.println("DataCon.isValid [ " + isValidReason + " ]");
-                return isValidReason;
-            }
         }
 
-        setTargetsTable(useTargetsTable);
+        // If no table is stored to the container, and if no data
+        // is stored to cache, then the result must be non-valid.
 
-        // System.out.println("DataCon.isValid [ IsValid ]");
-        return null;
-    }
-
-    private String basicIsValidCombined(TargetsTableImpl targetData, String currentStamp) {
-        long readStart = System.nanoTime();
-
-        File combinedFile = getCombinedFile();
-
-        String readReason;
-
-        if ( getUseBinaryFormat() ) {
-            readReason = basicValidCombinedBinary(
-                combinedFile, DO_READ_STRINGS,
-                (TargetCacheImpl_ReaderBinary reader) -> {
-                    return reader.readEntire(
-                        targetData.getStampTable(),
-                        targetData.getClassTable(),
-                        targetData.getAnnotationTable(),
-                        currentStamp);
-                } );
-
-        } else {
-            readReason = basicValidCombined(
-                combinedFile,
-                currentStamp,
-                targetData.getStampTable(),
-                targetData.getClassTable(),
-                targetData.getAnnotationTable() );
+        if ( !hasRequiredFiles() ) {
+            return "No cache data";
         }
 
-        @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Together");
+        // Data is available in the cache and validity is forced.
 
-        // System.out.println("Combined read [ " + getName() + " ] [ " + readDuration + " ]");
+        if ( useAlwaysValid ) {
+            return null;
+        }
 
-        return readReason;
+        // Actually check the cached stamp value.
+        // The current stamp must be comparable.
+        // If the stamp could not be read, or is different, the result
+        // is non-valid.
+        //
+        // Otherwise, the result is valid.
+
+        TargetsTableTimeStampImpl useStampTable =
+            new TargetsTableTimeStampImpl(classSourceName);
+
+        if ( !basicReadStamp(useStampTable) ) {
+            return "Stamp read failure";
+        } else if ( !useStampTable.getStamp().equals(currentStamp) ) {
+            return "Stamp change";
+        } else {
+            return null;
+        }
     }
 }

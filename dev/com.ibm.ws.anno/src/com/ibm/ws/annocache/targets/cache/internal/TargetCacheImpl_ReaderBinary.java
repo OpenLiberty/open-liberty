@@ -11,7 +11,6 @@
 package com.ibm.ws.annocache.targets.cache.internal;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,67 +40,32 @@ public class TargetCacheImpl_ReaderBinary implements TargetCache_BinaryConstants
 
     //
 
-    /** The size of the buffer used to read binary cache files. */
-    private static final int READ_BUFFER_SIZE = 64 * 1024;
-
     /** Control parameter: Indicates that a cache file has a compact strings table. */
     public static final boolean DO_READ_STRINGS = true;
 
-    /** Control parameter: Indicates that a cache file does not have a compact strings table. */
-    public static final boolean DO_NOT_READ_STRINGS = false;
+    /** Control parameter: Tells if the the entire file be read into a buffer. */
+    public static final boolean DO_READ_FULL = true;
 
     //
 
     public TargetCacheImpl_ReaderBinary(
         TargetCacheImpl_Factory factory,
-        String path, String encoding, boolean readStrings) throws IOException {
+        String path, String encoding,
+        boolean readStrings, boolean readFull) throws IOException {
 
         this.factory = factory;
-        this.bufInput = new UtilImpl_ReadBufferFull(path, encoding);
-        // The input starts at offset 0.
 
-        if ( readStrings ) {
-            this.strings = readStrings();
-            // 'readStrings' finishes by seeking to offset 0.
+        if ( readFull ) {
+            this.bufInput = new UtilImpl_ReadBufferFull(path, encoding);
+            if ( readStrings ) {
+                this.strings = readStrings();
+                // 'readStrings' finishes by seeking to offset 0.
+            } else {
+                this.strings = null;
+            }
         } else {
-            this.strings = null;
-        }
-
-        // Make sure the file is a cache storage file.
-        requireBegin();
-    }
-
-    /**
-     * Create a cache reader on a specified file.
-     *
-     * Validate that the file has initial magic bytes.
-     * 
-     * If a string read is requested, validate that the file
-     * has final magic bytes, and read the strings table.
-     *
-     * @param factory The factory used to create the reader.
-     * @param path The path to the file.
-     * @param file The file which is to be read.
-     * @param encoding The encoding used to read strings from the file.
-     * @param readStrings Control parameter: Tell if the file has a strings table.
-     *
-     * @throws IOException Thrown if the reader could not be created.
-     */
-    public TargetCacheImpl_ReaderBinary(
-        TargetCacheImpl_Factory factory,
-        String path, RandomAccessFile file,
-        String encoding,
-        boolean readStrings) throws IOException {
-
-        this.factory = factory;
-        this.bufInput = new UtilImpl_ReadBufferPartial(path, file, READ_BUFFER_SIZE, encoding);
-        // The input starts at offset 0.
-
-        if ( readStrings ) {
-            this.strings = readStrings();
-            // 'readStrings' finishes by seeking to offset 0.
-        } else {
-            this.strings = null;
+            this.bufInput = new UtilImpl_ReadBufferPartial(path, TargetCacheImpl_WriterBinary.STAMP_SIZE, encoding);
+            this.strings = null; // Do not read strings unless doing a fully buffered read.
         }
 
         // Make sure the file is a cache storage file.

@@ -73,10 +73,9 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     public static final boolean DO_READ_STRINGS = TargetCacheImpl_ReaderBinary.DO_READ_STRINGS;
 
     /**
-     * Local copy of binary read control parameter: The target file
-     * does not contain a compact string table.
+     * Local copy of binary read control parameter: The target file is to be read fully.
      */
-    public static final boolean DO_NOT_READ_STRINGS = TargetCacheImpl_ReaderBinary.DO_NOT_READ_STRINGS;
+    public static final boolean DO_READ_FULL = TargetCacheImpl_ReaderBinary.DO_READ_FULL;
 
     //
 
@@ -167,7 +166,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useContainersFile, DO_READ_STRINGS,
+                useContainersFile, DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(containerTable);
                 } );
@@ -389,7 +388,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                refsFile, DO_NOT_READ_STRINGS,
+                refsFile, !DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntireUnresolvedRefs(i_unresolvedClassNames, classNameInternMap);
                 } );
@@ -498,7 +497,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                refsFile, DO_NOT_READ_STRINGS,
+                refsFile, !DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntireResolvedRefs(i_resolvedClassNames, classNameInternMap);
                 } );
@@ -591,7 +590,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useClassesFile, DO_READ_STRINGS,
+                useClassesFile, DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(classesTable);
                 } );

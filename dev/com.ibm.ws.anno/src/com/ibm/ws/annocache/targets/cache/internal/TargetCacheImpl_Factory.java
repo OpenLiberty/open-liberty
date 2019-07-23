@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Level;
@@ -94,10 +93,8 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
 
         int writeThreads      = getSystemProperty(TargetCache_Options.WRITE_THREADS_PROPERTY_NAME, TargetCache_Options.WRITE_THREADS_DEFAULT);
         int writeLimit        = getSystemProperty(TargetCache_Options.WRITE_LIMIT_PROPERTY_NAME, TargetCache_Options.WRITE_LIMIT_DEFAULT);
-        boolean omitJandexWrite    = getSystemProperty(TargetCache_Options.OMIT_JANDEX_WRITE_PROPERTY_NAME, TargetCache_Options.OMIT_JANDEX_WRITE_DEFAULT);
         boolean separateContainers = getSystemProperty(TargetCache_Options.SEPARATE_CONTAINERS_PROPERTY_NAME, TargetCache_Options.SEPARATE_CONTAINERS_DEFAULT);
         boolean useJandexFormat    = getSystemProperty(TargetCache_Options.USE_JANDEX_FORMAT_PROPERTY_NAME, TargetCache_Options.USE_JANDEX_FORMAT_DEFAULT);
-        boolean readJandexFull     = getSystemProperty(TargetCache_Options.READ_JANDEX_FULL_PROPERTY_NAME, TargetCache_Options.READ_JANDEX_FULL_DEFAULT);
         boolean useBinaryFormat    = getSystemProperty(TargetCache_Options.USE_BINARY_FORMAT_PROPERTY_NAME, TargetCache_Options.USE_BINARY_FORMAT_DEFAULT);
 
         boolean logQueries = getSystemProperty(TargetCache_Options.LOG_QUERIES_PROPERTY_NAME, TargetCache_Options.LOG_QUERIES_DEFAULT);
@@ -108,9 +105,8 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
             readOnly, alwaysValid,
             // validate,
             writeThreads, writeLimit,
-            omitJandexWrite, separateContainers,
-            useJandexFormat, readJandexFull,
-            useBinaryFormat,
+            separateContainers,
+            useJandexFormat, useBinaryFormat,
             logQueries);
     }
 
@@ -124,10 +120,8 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
              // TargetCache_Options.VALIDATE_DEFAULT,
              TargetCache_Options.WRITE_THREADS_DEFAULT,
              TargetCache_Options.WRITE_LIMIT_DEFAULT,
-             TargetCache_Options.OMIT_JANDEX_WRITE_DEFAULT,
              TargetCache_Options.SEPARATE_CONTAINERS_DEFAULT,
              TargetCache_Options.USE_JANDEX_FORMAT_DEFAULT,
-             TargetCache_Options.READ_JANDEX_FULL_DEFAULT,
              TargetCache_Options.USE_BINARY_FORMAT_DEFAULT,
              TargetCache_Options.LOG_QUERIES_DEFAULT );
     }
@@ -174,10 +168,8 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
              // finer(methodName, "  Validate            [ {0} ]", Boolean.valueOf(options.getValidate()));
                 finer(methodName, "  Write Threads       [ {0} ]", Integer.valueOf(options.getWriteThreads()));
                 finer(methodName, "  Write Limit         [ {0} ]", Integer.valueOf(options.getWriteLimit()));
-                finer(methodName, "  Omit Jandex Write   [ {0} ]", Boolean.valueOf(options.getOmitJandexWrite()));
                 finer(methodName, "  Separate Containers [ {0} ]", Boolean.valueOf(options.getSeparateContainers()));
                 finer(methodName, "  Use Jandex Format   [ {0} ]", Boolean.valueOf(options.getUseJandexFormat()));
-                finer(methodName, "  Read Jandex Full    [ {0} ]", Boolean.valueOf(options.getReadJandexFull()));
                 finer(methodName, "  Use Binary Format   [ {0} ]", Boolean.valueOf(options.getUseBinaryFormat()));
             }
         }
@@ -278,8 +270,8 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
     protected TargetCacheImpl_Writer createWriter(String path, OutputStream stream) {
         try {
             return new TargetCacheImpl_Writer(this,
-            	path, stream,
-            	TargetCache_InternalConstants.SERIALIZATION_ENCODING);
+                path, stream,
+                TargetCache_InternalConstants.SERIALIZATION_ENCODING);
 
         } catch ( UnsupportedEncodingException e ) {
             return null; // FFDC
@@ -288,30 +280,20 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
 
 
     protected TargetCacheImpl_ReaderBinary createBinaryReader(
-    	String path, boolean readStrings) throws IOException {
+        String path, boolean readStrings, boolean readFull) throws IOException {
 
-    	return new TargetCacheImpl_ReaderBinary(this,
-    		path,
-    		TargetCache_InternalConstants.SERIALIZATION_ENCODING,
-    		readStrings); // throws IOException
-    }
-
-    protected TargetCacheImpl_ReaderBinary createBinaryReader(
-    	String path, RandomAccessFile inputFile,
-    	boolean readStrings) throws IOException {
-
-    	return new TargetCacheImpl_ReaderBinary(this,
-    		path, inputFile,
-    		TargetCache_InternalConstants.SERIALIZATION_ENCODING,
-    		readStrings); // throws IOException
+        return new TargetCacheImpl_ReaderBinary(this,
+            path,
+            TargetCache_InternalConstants.SERIALIZATION_ENCODING,
+            readStrings, readFull); // throws IOException
     }
 
     protected TargetCacheImpl_WriterBinary createBinaryWriter(String path, OutputStream stream)
-    	throws IOException {
+        throws IOException {
 
-    	return new TargetCacheImpl_WriterBinary(this,
-    		path, stream,
-    		TargetCache_InternalConstants.SERIALIZATION_ENCODING); // throws IOException
+        return new TargetCacheImpl_WriterBinary(this,
+            path, stream,
+            TargetCache_InternalConstants.SERIALIZATION_ENCODING); // throws IOException
     }
 
     //

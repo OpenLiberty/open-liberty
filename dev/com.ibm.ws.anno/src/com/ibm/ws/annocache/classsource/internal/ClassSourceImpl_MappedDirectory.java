@@ -11,7 +11,6 @@
 
 package com.ibm.ws.annocache.classsource.internal;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

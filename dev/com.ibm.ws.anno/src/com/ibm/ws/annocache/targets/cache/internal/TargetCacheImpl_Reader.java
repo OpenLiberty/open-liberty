@@ -21,11 +21,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jboss.jandex.Index;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.annocache.jandex.internal.Jandex_Utils;
-import com.ibm.ws.annocache.jandex.internal.SparseIndex;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
 import com.ibm.ws.annocache.targets.TargetsTableAnnotations;
 import com.ibm.ws.annocache.targets.TargetsTableClasses;

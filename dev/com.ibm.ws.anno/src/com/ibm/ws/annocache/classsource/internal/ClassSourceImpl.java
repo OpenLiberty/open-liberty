@@ -314,11 +314,6 @@ public abstract class ClassSourceImpl implements ClassSource {
         return getOptions().getUseJandex();
     }
 
-    @Trivial
-    public boolean getUseJandexFull() {
-        return getOptions().getUseJandexFull();
-    }
-
     /**
      * <p>Answer the path to JANDEX index files.</p>
      *
@@ -546,14 +541,6 @@ public abstract class ClassSourceImpl implements ClassSource {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Processing [ {1} ] Initial classes [ {2} ]",
                 new Object[] { getHashText(), getCanonicalName(), Integer.valueOf(initialClasses) });
         }
-
-        // For now, creation of jandex indexes requires that jandex indexes not be rewritten to the cache.
-        //
-        // Rewrites of jandex data would require that the jandex index be wholly loaded, or would require
-        // that the jandex data be copied from the class source to the cache.  Code to do that processing
-        // is currently not provided.
-        //
-        // The consequence for the process steps is that if processing was performed by 'processUsingJandex' 
 
         String scanTag;
 
@@ -940,11 +927,6 @@ public abstract class ClassSourceImpl implements ClassSource {
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: jandex is not enabled");
             }
             return false;
-        } else if ( !getUseJandexFull() ) {
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: full reads are not enabled");
-            }
-            return false;
         }
 
         Index index = getJandexIndex();
@@ -998,11 +980,6 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( !getUseJandex() ) {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: jandex is not enabled");
-            }
-            return false;
-        } else if ( getUseJandexFull() ) {
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: full reads are enabled");
             }
             return false;
         }
