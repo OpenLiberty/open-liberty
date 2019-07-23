@@ -42,12 +42,12 @@ public class KeyStoreManagerTest {
     public void testKeyStoreCount() throws Exception {
         KeyStoreManager ksMgr = KeyStoreManager.getInstance();
         int before = ksMgr.getKeyStoreCount();
-        WSKeyStore wsks = new WSKeyStore();
-        ksMgr.addKeyStoreToMap("testKeyStore", wsks);
+        WSKeyStore wsks = new WSKeyStore("unique");
+        ksMgr.addKeyStoreToMap("UniquetestKeyStore", wsks);
         int after = ksMgr.getKeyStoreCount();
-        assertTrue("before " + before + "after: " + after, after - before == 1);
+        assertTrue("expect 1,2 but got: before " + before + " after: " + after, after - before == 1);
         //remove the keystore
-        ksMgr.clearKeyStoreFromMap("testKeyStore");
+        ksMgr.clearKeyStoreFromMap("UniquetestKeyStore");
         assertTrue(ksMgr.getKeyStoreCount() == before);
 
     }

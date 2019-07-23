@@ -136,6 +136,11 @@ public class WSKeyStore extends Properties {
         setProperty(Constants.SSLPROP_KEY_STORE_CREATE_CMS_STASH, Constants.TRUE);
     }
 
+    WSKeyStore(String _name) { // for testing
+        this.name = _name;
+        this.cfgSvc = null;
+    }
+
     /**
      * Constructor using a provided name and array of properties.
      *
