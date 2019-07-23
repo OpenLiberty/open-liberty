@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/mapEnvVarApp/src"/>
+	<classpathentry kind="src" path="test-applications/hotAddMPConfigApp/src"/>
 	<classpathentry kind="src" path="test-applications/serverXMLApp/src"/>
 	<classpathentry kind="src" path="test-applications/serverXMLApp/resources"/>
 	<classpathentry kind="src" path="test-applications/variableServerXMLApp/src"/>

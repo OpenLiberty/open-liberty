@@ -71,3 +71,4 @@ Subsystem-Category: JavaEE8Application
 Subsystem-Name: Java Servlets 4.0
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

@@ -8,8 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = true
-}
+/**
+ * Utilities for tests which need to talk to Kafka
+ * <p>
+ * This package can be included and used within a test application.
+ */
+package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework;

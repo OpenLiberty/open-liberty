@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static java.time.Duration.ZERO;
 import static org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams.fromIterable;
 
@@ -100,16 +101,19 @@ public class KafkaInput<K, V> {
             runAction((c) -> {
                 c.commitAsync(offsets, (o, e) -> {
                     if (e != null) {
-                        Tr.warning(tc, "Failed to commit read offsets to kafka broker: {}", e);
+                        Tr.warning(tc, "kafka.read.offsets.commit.warning.CWMRX1001W", e);
                         result.completeExceptionally(e);
                     } else {
+                        if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Committed offsets successfully", o);
+                        }
                         result.complete(null);
                     }
                 });
             });
             return result;
         } catch (Throwable t) {
-            Tr.warning(tc, "Failed to commit read offsets to kafka broker: {}", t);
+            Tr.warning(tc, "kafka.read.offsets.commit.warning.CWMRX1001W", t);
             result.completeExceptionally(t);
             return result;
         }
@@ -117,7 +121,7 @@ public class KafkaInput<K, V> {
 
     private static <T> Void logPollFailure(T result, Throwable t) {
         if (t != null) {
-            Tr.error(tc, "Failed to poll Kafka: {}", t);
+            Tr.error(tc, "kafka.poll.error.CWMRX1002E", t);
         }
         return null;
     }
@@ -126,7 +130,7 @@ public class KafkaInput<K, V> {
         try {
             return Message.of(record.value(), this.ackTracker.trackRecord(record));
         } catch (Throwable t) {
-            Tr.error(tc, "Unexpected error: {}", t);
+            Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
             throw t;
         }
     }
@@ -250,7 +254,7 @@ public class KafkaInput<K, V> {
                     try {
                         task.run(this.kafkaConsumer);
                     } catch (Throwable t) {
-                        Tr.error(tc, "Unexpected error: {}", t);
+                        Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
                         throw t;
                     }
                 }

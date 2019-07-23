@@ -2501,7 +2501,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             try {
                 sci.onStartup(setOfClasses, ctx);
             } catch (ServletException e) {
-                logger.logp(Level.WARNING, CLASS_NAME,"initializeServletContainerInitializers", "exception.occurred.while.running.ServletContainerInitializers.onStartup", new Object[] {sci, this.config.getDisplayName()});;
+                logger.logp(Level.WARNING, CLASS_NAME,"initializeServletContainerInitializers", "exception.occurred.while.running.ServletContainerInitializers.onStartup", new Object[] {sci, e, this.config.getDisplayName()});;
             }
         }
 

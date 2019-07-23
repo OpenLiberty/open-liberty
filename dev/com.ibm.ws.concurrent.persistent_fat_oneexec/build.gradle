@@ -6,7 +6,22 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "REACTIVEMESSAGE")
-package com.ibm.ws.microprofile.reactive.messaging.kafka.classloader;
+
+addRequiredLibraries.dependsOn addDerby
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.concurrent.persistent')
+}
+
+task copyFeatureBundle(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'test.feature.ejb.singleton.jar'
+}
+
+autoFVT {
+  dependsOn copyFeatureBundle
+}
+

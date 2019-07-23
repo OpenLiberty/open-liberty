@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>jndi-1.0</feature>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>persistentExecutor-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>singletonTestFeature-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <persistentExecutor id="executorA" jndiName="concurrent/executorA" taskStoreRef="DBTaskStore" enableTaskExecution="false"/>
+  <persistentExecutor id="executorB" jndiName="concurrent/executorB" taskStoreRef="DBTaskStore" enableTaskExecution="false"/>
+  <persistentExecutor id="executorC" jndiName="concurrent/executorC" taskStoreRef="DBTaskStore" pollInterval="3s500ms"/>
+  <databaseStore id="DBTaskStore" dataSourceRef="SchedDB"/>
+
+  <!-- database for scheduled tasks -->
+  <dataSource id="SchedDB">
+    <jdbcDriver libraryRef="FATJDBCLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:persistoneexecdb"/>
+  </dataSource>
+  <library id="FATJDBCLib">
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  </library>
+  
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+
+  <variable name="onError" value="FAIL"/>
+</server>

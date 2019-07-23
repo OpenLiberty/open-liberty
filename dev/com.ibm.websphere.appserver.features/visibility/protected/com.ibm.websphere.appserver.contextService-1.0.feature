@@ -7,3 +7,4 @@ IBM-API-Package: com.ibm.ws.context.service.serializable; type="internal"
  com.ibm.ws.context
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

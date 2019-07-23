@@ -118,7 +118,7 @@ public class DataSourceValidator implements Validator {
                 try {
                     boolean isValid = con.isValid(120); // TODO better ideas for timeout value?
                     if (!isValid)
-                        result.put(FAILURE, "FALSE returned by JDBC driver's Connection.isValid operation");
+                        result.put(FAILURE, "java.sql.Connection.isValid: false");
                 } catch (SQLFeatureNotSupportedException x) {
                 }
             } finally {

@@ -16,10 +16,10 @@ import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
 
 /**
  * OIDC Discovery Service Bean
- * 
+ *
  * Properties based off Draft 21:
  * http://openid.bitbucket.org/openid-connect-discovery-1_0.html
- * 
+ *
  * Note that several properties have been commented out because they are currently not being utilized.
  */
 public abstract class OIDCAbstractDiscoveryModel {
@@ -45,6 +45,7 @@ public abstract class OIDCAbstractDiscoveryModel {
     private boolean require_request_uri_registration;
     private String check_session_iframe;
     private String end_session_endpoint;
+    private String revocation_endpoint;
 
     /**
      * OIDC Properties not utilized in implementation
@@ -58,14 +59,15 @@ public abstract class OIDCAbstractDiscoveryModel {
     //private String[] request_object_signing_alg_values_supported;
     //private String[] request_object_encryption_alg_values_supported;
     //private String[] request_object_encryption_enc_values_supported;
-    //private String[] token_endpoint_auth_signing_alg_values_supported;    
+    //private String[] token_endpoint_auth_signing_alg_values_supported;
     //private String service_documentation;
     //private String[] claims_locales_supported;
     //private String[] ui_locales_supported;
     //private String op_policy_uri;
     //private String op_tos_uri;
 
-    protected OIDCAbstractDiscoveryModel() {}
+    protected OIDCAbstractDiscoveryModel() {
+    }
 
     /**
      * @return the issuer
@@ -373,6 +375,20 @@ public abstract class OIDCAbstractDiscoveryModel {
      */
     public void setEndSessionEndpoint(String endSessionEndpoint) {
         this.end_session_endpoint = endSessionEndpoint;
+    }
+
+    /**
+     * @return the revocationEndpoint
+     */
+    public String getRevocationEndpoint() {
+        return revocation_endpoint;
+    }
+
+    /**
+     * @param revocationEndpoint the revocationEndpoint to set
+     */
+    public void setRevocationEndpoint(String revocationEndpoint) {
+        this.revocation_endpoint = revocationEndpoint;
     }
 
     private String[] defensiveCopy(String[] strArr) {

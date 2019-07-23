@@ -9,8 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.apache.tools.ant.filters.HeadFilter
-
 audit {
     failOnError = false
 }
@@ -21,14 +19,6 @@ configurations {
 
 dependencies {
     cxfJar 'org.apache.cxf:cxf-rt-ws-security:2.6.2-ibm-s20180529-1900'
-}
-
-task prepareMessages(type: Copy) {
-    from "resources"
-    include '**/*.nlsprops'
-    into "build/tmp"
-    rename '^(.*).nlsprops$', '$1.properties'
-    filter(HeadFilter, lines:-1, skip:8)
 }
 
 task extractInjectedClasses(type: Copy) {
@@ -43,7 +33,6 @@ task extractInjectedClasses(type: Copy) {
    into compileJava.destinationDir
 }
 
-compileJava.dependsOn prepareMessages
 compileJava.dependsOn extractInjectedClasses
 
 task instrument {

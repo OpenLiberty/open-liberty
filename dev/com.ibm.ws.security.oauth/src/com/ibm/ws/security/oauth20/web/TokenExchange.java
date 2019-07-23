@@ -732,7 +732,8 @@ public class TokenExchange {
      * i.e. app_name and user_id, possibly others
      */
     private String escapeIllegalCharacters(String in) {
-        return in.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        return in.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replace("'", "&#39;")
+                .replaceAll("\"", "&quot;");
     }
 
     /**
@@ -1119,9 +1120,9 @@ public class TokenExchange {
         String appId = getAppIdFromToken(token);
         sb.append("{");
         sb.append("\"user\":\"");
-        sb.append(token.getUsername());
+        sb.append(EndpointUtils.escapeQuotesForJson(token.getUsername()));
         sb.append("\",\"name\":\"");
-        sb.append(token.getAppName());
+        sb.append(EndpointUtils.escapeQuotesForJson(token.getAppName()));
         sb.append("\"");
         if (appId != null) {
             sb.append(",\"app_id\":\"");

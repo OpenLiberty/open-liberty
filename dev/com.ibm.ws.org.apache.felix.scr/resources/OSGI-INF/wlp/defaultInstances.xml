@@ -10,6 +10,6 @@
  -->
 <server>
 
-	<org.apache.felix.scr.ScrService ds.info.service="true" />	
+	<org.apache.felix.scr.ScrService ds.info.service="true" ds.cache.metadata="true" />	
 
 </server>

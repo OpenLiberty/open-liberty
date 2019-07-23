@@ -21,10 +21,10 @@
         org/apache/cxf/ws/security/wss4j/WSS4JOutInterceptor.class, \
     META-INF/cxf/bus-extensions.txt=override/META-INF/cxf/bus-extensions.txt, \
     cxf-ehcache.xml=resources/cxf-ehcache.xml, \
-    org/apache/cxf/ws/security/policy/interceptors/Messages.properties=build/tmp/org/apache/cxf/ws/security/policy/interceptors/Messages.properties, \
-    org/apache/cxf/ws/security/policy/model/Messages.properties=build/tmp/org/apache/cxf/ws/security/policy/model/Messages.properties, \
-    org/apache/cxf/ws/security/trust/Messages.properties=build/tmp/org/apache/cxf/ws/security/trust/Messages.properties, \
-    org/apache/cxf/ws/security/wss4j/Messages.properties=build/tmp/org/apache/cxf/ws/security/wss4j/Messages.properties
+    org/apache/cxf/ws/security/policy/interceptors/Messages.properties=resources/org/apache/cxf/ws/security/policy/interceptors/Messages.nlsprops, \
+    org/apache/cxf/ws/security/policy/model/Messages.properties=resources/org/apache/cxf/ws/security/policy/model/Messages.nlsprops, \
+    org/apache/cxf/ws/security/trust/Messages.properties=resources/org/apache/cxf/ws/security/trust/Messages.nlsprops, \
+    org/apache/cxf/ws/security/wss4j/Messages.properties=resources/org/apache/cxf/ws/security/wss4j/Messages.nlsprops
 
 globalize: false
 instrument.ffdc: true
