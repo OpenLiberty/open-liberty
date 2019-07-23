@@ -498,7 +498,7 @@ var clientInputDialog = (function() {
                 "               <div class='tool_multiSelect_menuItem_option'>" +
                 "                   <div class='tool_checkbox_wrapper'>" +
                 "                       <input id='" + optionId + "' class='tool_checkbox' type='checkbox' value='" + option.value + "'>" +
-                "                       <label class='tool_checkbox_label' for='" + optionId + "'>" + option.label + "</label>" +
+                "                       <label class='tool_checkbox_label' for='" + optionId + "'>" + option.value + "</label>" +
                 "                   </div>" +
                 "               </div>" + 
                 "           </div>";
@@ -534,7 +534,7 @@ var clientInputDialog = (function() {
                 "       <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + "></input>" +
                 "       <label for='" + optionId + "' class='tool_modal_radio_button_label'>" +
                 "           <span class='tool_modal_radio_button_appearance'></span>" + 
-                "           " + option.label + 
+                "           " + option.value + 
                 "       </label>";
         }
 
