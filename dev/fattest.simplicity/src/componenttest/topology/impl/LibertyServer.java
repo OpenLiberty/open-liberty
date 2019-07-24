@@ -229,7 +229,7 @@ public class LibertyServer implements LogMonitorClient {
 
     // Allow configuration updates to wait for messages in the log longer than other log
     // searches. Configuration updates may take some time on slow test systems.
-    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = (FAT_TEST_LOCALRUN ? 12 : 180) * 1000;
+    protected static int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = (FAT_TEST_LOCALRUN ? 12 : 180) * 1000;
 
     protected Set<String> installedApplications;
 
@@ -1196,7 +1196,7 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
-        if (info.VENDOR == Vendor.IBM ) {
+        if (info.VENDOR == Vendor.IBM) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
         }
@@ -1582,6 +1582,14 @@ public class LibertyServer implements LogMonitorClient {
 
     public int getAppStartTimeout() {
         return APP_START_TIMEOUT;
+    }
+
+    public void setConfigUpdateTimeout(int timeout) {
+        LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = timeout;
+    }
+
+    public int getConfigUpdateTimeout() {
+        return LOG_SEARCH_TIMEOUT_CONFIG_UPDATE;
     }
 
     public void validateAppLoaded(String appName) throws Exception {
