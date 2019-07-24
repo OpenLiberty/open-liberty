@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,53 +10,54 @@
  *******************************************************************************/
 package com.ibm.ws.testing.opentracing.test;
 
+import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.MvnUtils;
 
 /**
- * <p>The open tracing FAT suite.</p>
- *
- * <p>This class *must* be named "FATSuite", since the test code is hard coded
- * to look for just that class.</p>
+ * This is a test class that runs a whole Maven TCK as one test FAT test.
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-    TestSpanUtils.class,
-    FATOpentracing.class,
-    FATOpentracingHelloWorld.class,
-    FATMPOpenTracing.class,
-    MicroProfileNoTracer.class,
-    OpentracingTCKLauncher.class,
-    OpentracingTCKLauncherMicroProfile.class,
-    OpentracingRestClientTCKLauncher.class
-})
-public class FATSuite implements FATOpentracingConstants {
-    private static final Class<? extends FATSuite> CLASS = FATSuite.class;
+@RunWith(FATRunner.class)
+public class OpentracingTCKLauncherMicroProfile {
+
     private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.3.mf";
     private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.3.jar";
 
-    private static void info(String methodName, String text) {
-        FATLogging.info(CLASS, methodName, text);
-    }
+    @Server("OpentracingTCKServerMicroProfile")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String methodName = "setUp";
-        info(methodName, "ENTER / RETURN");
-        LibertyServer server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
+        setUpServer();
+        server.startServer();
+    }
+    
+    private static void setUpServer() throws Exception {
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
     }
 
+
     @AfterClass
     public static void tearDown() throws Exception {
-        String methodName = "tearDown";
-        info(methodName, "ENTER / RETURN");
+        server.stopServer();
+    }
+
+    @Test
+    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
+    public void launchOpentracingTck() throws Exception {
+        // Use default tck-suite.xml
+        
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
+
     }
 }
