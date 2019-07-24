@@ -87,6 +87,10 @@ public class Discovery {
 
         discoveryObj.setRevocationEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_REVOKE_EP_QUAL));
 
+        discoveryObj.setAppPasswordsEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_APP_PASSWORDS_EP_QUAL));
+
+        discoveryObj.setAppTokensEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_APP_TOKENS_EP_QUAL));
+
         String discoverJSONString = discoveryObj.toJSONString();
 
         if (tc.isDebugEnabled()) {

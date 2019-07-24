@@ -46,6 +46,8 @@ public abstract class OIDCAbstractDiscoveryModel {
     private String check_session_iframe;
     private String end_session_endpoint;
     private String revocation_endpoint;
+    private String app_passwords_endpoint;
+    private String app_tokens_endpoint;
 
     /**
      * OIDC Properties not utilized in implementation
@@ -389,6 +391,34 @@ public abstract class OIDCAbstractDiscoveryModel {
      */
     public void setRevocationEndpoint(String revocationEndpoint) {
         this.revocation_endpoint = revocationEndpoint;
+    }
+
+    /**
+     * @return the appPasswordsEndpoint
+     */
+    public String getAppPasswordsEndpoint() {
+        return app_passwords_endpoint;
+    }
+
+    /**
+     * @param appPasswordsEndpoint the appPasswordsEndpoint to set
+     */
+    public void setAppPasswordsEndpoint(String appPasswordsEndpoint) {
+        this.app_passwords_endpoint = appPasswordsEndpoint;
+    }
+
+    /**
+     * @return the appTokensEndpoint
+     */
+    public String getAppTokensEndpoint() {
+        return app_tokens_endpoint;
+    }
+
+    /**
+     * @param appTokensEndpoint the appTokensEndpoint to set
+     */
+    public void setAppTokensEndpoint(String appTokensEndpoint) {
+        this.app_tokens_endpoint = appTokensEndpoint;
     }
 
     private String[] defensiveCopy(String[] strArr) {
