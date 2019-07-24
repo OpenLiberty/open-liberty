@@ -69,6 +69,10 @@
             required="false" type="Boolean"
             default="false" />
             
+         <AD id="addCookieToResponseForProgrammaticJaasLogin" name="%addCookieToResponseForProgrammaticJaasLogin" description="%addCookieToResponseForProgrammaticJaasLogin.desc"
+            required="false" type="Boolean"
+            default="false" />
+            
         <AD id="autoGenSsoCookieName" name="internal" description="internal user only"
             required="false" type="Boolean"
             default="false" />

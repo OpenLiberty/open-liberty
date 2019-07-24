@@ -50,6 +50,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     private String cookieName = null;
 
     protected final WebAppSecurityConfig config;
+    public static final String SSO_COOKIE_ADDED = "sso_cookie_added";
 
     public SSOCookieHelperImpl(WebAppSecurityConfig config) {
         this(config, (String) null);
@@ -212,6 +213,15 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             }
             return false;
         }
+
+        if ((String) req.getAttribute(SSO_COOKIE_ADDED) != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "SSO cookie is already added. ");
+            }
+            req.removeAttribute(SSO_COOKIE_ADDED);
+            return false;
+        }
+
         return true;
     }
 
@@ -266,6 +276,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void createLogoutCookies(HttpServletRequest req, HttpServletResponse res) {
         createLogoutCookies(req, res, true);
     }
+
     /** {@inheritDoc} */
     /*
      * 1) If we have the custom cookie name, then delete just the custom cookie name

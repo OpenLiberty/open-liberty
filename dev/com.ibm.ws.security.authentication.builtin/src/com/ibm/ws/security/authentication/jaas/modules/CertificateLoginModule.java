@@ -315,6 +315,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
             return false;
         }
         setUpSubject();
+        addCookieToResponseForProgrammaticJaasLogin();
         return true;
     }
 

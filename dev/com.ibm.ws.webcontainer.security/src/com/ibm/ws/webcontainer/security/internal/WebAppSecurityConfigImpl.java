@@ -68,6 +68,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthMethod";
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
+    public static final String CFG_KEY_ADD_COOKIE_TO_RESPONSE_FOR_PROGRAMMATIC_JAAS_LOGIN = "addCookieToResponseForProgrammaticJaasLogin ";
 
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
@@ -98,6 +99,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String overrideHttpAuthMethod;
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
+    private final Boolean addCookieToResponseForProgrammaticJaasLogin ;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -134,6 +136,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_OVERRIDE_HAM, "overrideHttpAuthMethod");
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
+            put(CFG_KEY_ADD_COOKIE_TO_RESPONSE_FOR_PROGRAMMATIC_JAAS_LOGIN, "addCookieToResponseForProgrammaticJaasLogin ");
         }
     };
 
@@ -170,6 +173,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         overrideHttpAuthMethod = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
+        addCookieToResponseForProgrammaticJaasLogin  = (Boolean) newProperties.get(CFG_KEY_ADD_COOKIE_TO_RESPONSE_FOR_PROGRAMMATIC_JAAS_LOGIN);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
 
@@ -404,6 +408,11 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public String getBasicAuthRealmName() {
         return basicAuthRealmName;
+    }
+
+    @Override
+    public boolean isAddCookieToResponseForProgrammaticJaasLogin () {
+        return addCookieToResponseForProgrammaticJaasLogin ;
     }
 
     /**
