@@ -12,6 +12,8 @@ package concurrent.mp.fat.cdi.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -44,6 +46,7 @@ import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -209,21 +212,30 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     }
 
     /**
-     * Propagate CDI context across completion stages. Access (and modify) a request scoped bean
-     * within the stages, but not before.
+     * Propagate CDI context to a completion stage. Access (and modify) a request scoped bean
+     * within the stage, but not before the context snapshot is taken. Lazily enlisting CDI beans
+     * should be rejected.
      */
     @Test
-    public void testCDIContextPropagationAcrossMultipleStagesBeanFirstUsedInCompletionStage() throws Exception {
-        CompletableFuture<Void> cf = appCDIExecutor.runAsync(() -> {
-            requestBean.setState(requestBean.getState() + ",A");
-        }).thenRunAsync(() -> {
-            requestBean.setState(requestBean.getState() + ",B");
-        }).thenRunAsync(() -> {
-            requestBean.setState(requestBean.getState() + ",C");
-        });
-        cf.join();
+    @ExpectedFFDC("java.lang.IllegalStateException")
+    public void testCDIContextPropagationBeanFirstUsedInCompletionStage() throws Exception {
+        sessionBean.setState("foo");
 
-        assertEquals("UNINITIALIZED", requestBean.getState()); // TODO change to: UNINITIALIZED,A,B,C ?
+        CompletableFuture<Void> cf = appCDIExecutor.runAsync(() -> {
+            requestBean.setState("A");
+        });
+        try {
+            cf.join();
+            fail("Should not be able to lazily enlist a CDI bean when CDI context is propagated.");
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof IllegalStateException && x.getCause().getMessage().contains("CWWKC1158E")) {
+                System.out.println("Caught expected IllegalStateException");
+            } else {
+                throw x;
+            }
+        }
+        assertTrue("CompletableFuture should have been marked done", cf.isDone());
+        assertTrue("CompletableFuture should have been marked as completex exceptionally", cf.isCompletedExceptionally());
     }
 
     /**

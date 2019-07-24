@@ -51,6 +51,6 @@ public class MPConcurrentCDITest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKC1158E"); // expected by testCDIContextPropagationBeanFirstUsedInCompletionStage
     }
 }
