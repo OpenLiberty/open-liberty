@@ -36,6 +36,7 @@ public class JwtData {
 
 	private static final String SIGNATURE_ALG_HS256 = "HS256";
 	private static final String SIGNATURE_ALG_RS256 = "RS256";
+	private static final String SIGNATURE_ALG_NONE = "none";
 
 	// public static final String TYPE_ID_TOKEN = "ID Token";
 	public static final String TYPE_JWT_TOKEN = "Json Web Token";
@@ -69,6 +70,7 @@ public class JwtData {
 
 	public JwtData(JwtDataConfig config) throws JwtTokenException {
 		tokenType = config.tokenType;
+		jwtDataConfig = config;
 		signatureAlgorithm = config.signatureAlgorithm;
 		bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
 		initSigningKey(config);
@@ -110,7 +112,7 @@ public class JwtData {
 						Tr.debug(tc, "hs256 Signing key type is " + keyType);
 					}
 					String sharedKey = config.sharedKey;
-					if (!JwtUtils.isNullEmpty(sharedKey)) {
+					if (!(sharedKey == null || sharedKey.isEmpty())) {
 						_signingKey = new HmacKey(sharedKey.getBytes("UTF-8"));
 					} else {
 						_signingKey = null;
@@ -169,9 +171,11 @@ public class JwtData {
 			jte.initCause(e);
 			throw jte;
 		}
-		if (_signingKey == null) {
-			Object[] objs = new Object[] { signatureAlgorithm, jwtConfig.isJwkEnabled(), "" }; // let JWTTokenException
-																								// handle the exception
+		if (_signingKey == null && !signatureAlgorithm.equals(SIGNATURE_ALG_NONE)) {
+			Object[] objs = new Object[] { signatureAlgorithm, jwtDataConfig.isJwkEnabled, "" }; // let
+																									// JWTTokenException
+																									// handle the
+																									// exception
 			throw JwtTokenException.newInstance(true, "JWT_NO_SIGNING_KEY_WITH_ERROR", objs);
 		}
 	}
