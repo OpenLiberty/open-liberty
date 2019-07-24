@@ -40,6 +40,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 import org.postgresql.PGConnection;
+import org.postgresql.jdbc.AutoSave;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import componenttest.app.FATServlet;
@@ -446,6 +447,26 @@ public class PostgreSQLTestServlet extends FATServlet {
             // Now check prepareThreshold to make sure it was reset properly to the original value
             PGConnection pgCon = con.unwrap(PGConnection.class);
             assertEquals(defaultPrepareThreshold, pgCon.getPrepareThreshold());
+        }
+    }
+
+    // Verify PostgreSQL vendor-specific Connection property autoSave can be set and is reset properly
+    @Test
+    public void testPropertyCleanup_postgre_autoSave() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        try (Connection con = ds.getConnection()) {
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            assertEquals("Initial value of connection AutoSave was not correct", AutoSave.NEVER, pgCon.getAutosave());
+
+            pgCon.setAutosave(AutoSave.ALWAYS);
+            assertEquals("Connection did not honor setAutoSave(ALWYAS) call", AutoSave.ALWAYS, pgCon.getAutosave());
+        }
+        try (Connection con = ds.getConnection()) {
+            // Now check autoSave to make sure it was reset properly to the original value
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            assertEquals("Connection did not have its AutoSave value reset to NEVER after being closed", AutoSave.NEVER, pgCon.getAutosave());
         }
     }
 

@@ -138,6 +138,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
          */
         VENDOR_PROPERTY_SETTERS.add("setDefaultFetchSize");
         VENDOR_PROPERTY_SETTERS.add("setPrepareThreshold");
+        VENDOR_PROPERTY_SETTERS.add("setAutosave");
     }
 
     /**

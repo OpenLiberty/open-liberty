@@ -211,10 +211,10 @@ public abstract class WSJdbcProxyMethod
         //  oracle.jdbc.internal.OracleConnection.unwrap()
         
         //// PostgreSQL methods
-        // These methods were breifly blocked during 19.0.0.7
+        // These methods were briefly blocked during 19.0.0.7
         //unsafeMethods.add("getLargeObjectAPI"); // org.postgresql.PGConnection.getLargeObjectAPI()
         //unsafeMethods.add("getFastpathAPI"); // org.postgresql.PGConnection.getFastpathAPI()
-        unsafeMethods.add("setAutosave"); // org.postgresql.PGConnection.setAutosave(AutoSave)
+        //unsafeMethods.add("setAutosave"); // org.postgresql.PGConnection.setAutosave(AutoSave)
 
         // "setQueryTimeout" and "setLongDataCacheSize" are not permitted on the data source
         // because they complicate default values for statement pooling. 

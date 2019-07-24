@@ -4126,25 +4126,11 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
 
         return super.invoke(proxy, method, args);
     }
-    
-    /**
-     *  Proxy method for org.postgresql.PGConnection.getLargeObjectAPI()
-     *  During 19.0.0.7 this method was blocked because it closed the underlying connection on some code paths.
-     *  However, we later realized that by overriding this method and constructing the LargeObjectManager using
-     *  a proxied instance of this class, we can maintain control of the connection that the LargeObjectAPI uses.
-     */
+
+    // PostgreSQL only
     public Object getLargeObjectAPI() throws SQLException {
-        ClassLoader pgLoader = priv.getClassLoader(connImpl.getClass());
-        
         activate();
-        try {
-            Class<?> LargeObjectManager = priv.loadClass(pgLoader, "org.postgresql.largeobject.LargeObjectManager");
-            Class<?> BaseConnection = priv.loadClass(pgLoader, "org.postgresql.core.BaseConnection");
-            Object selfProxy = this.unwrap(BaseConnection);
-            return LargeObjectManager.getConstructor(BaseConnection).newInstance(selfProxy);
-        } catch (Exception e) {
-            throw new SQLException(e);
-        }
+        return mcf.getHelper().getLargeObjectAPI(this);
     }
 
     public void abort(Executor executor) throws SQLException {
