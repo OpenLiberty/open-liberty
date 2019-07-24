@@ -7,7 +7,7 @@
     	<feature>monitor-1.0</feature>
     </featureManager>
 
-    <logging traceSpecification="*=audit:com.ibm.websphere.monitor.meters.*=all:com.ibm.ws.monitor.internal.ProbeFilter=all:com.ibm.ws.monitor.internal.ProbeImpl=all:com.ibm.ws.monitor.internal.ProbeListener=all:com.ibm.ws.monitor.internal.ProbeManagerImpl=all:com.ibm.ws.monitor.internal.MonitoringFrameworkExtender=all:com.ibm.ws.monitors.*=all"/>
+    <logging traceSpecification="com.ibm.ws.microprofile.metrics.2.0.monitor.MonitorMetricsHandler*=all:*=audit:com.ibm.websphere.monitor.meters.*=all:com.ibm.ws.monitor.internal.ProbeFilter=all:com.ibm.ws.monitor.internal.ProbeImpl=all:com.ibm.ws.monitor.internal.ProbeListener=all:com.ibm.ws.monitor.internal.ProbeManagerImpl=all:com.ibm.ws.monitor.internal.MonitoringFrameworkExtender=all:com.ibm.ws.monitors.*=all"/>
 
     <include location="../fatTestPorts.xml"/>
     <include location="serverJDBCConfig.xml"/>
