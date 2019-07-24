@@ -101,7 +101,7 @@ var utils = (function() {
         if (showTryAgain) {
             $tryAgainButton.removeClass('hidden');
             if (actionCallback) {
-                $tryAgainButton.on('click', function(event) {
+                $tryAgainButton.on('click', function() {
                     actionCallback();
                 });
             }
@@ -170,7 +170,7 @@ var utils = (function() {
      */
     var initLogout = function() {
         $('.tool_logout_div').removeClass('hidden');
-        $('.tool_logout_button').on('click', function(event){
+        $('.tool_logout_button').on('click', function(){
             startProcessingSpinner('ca_loader');
 
             logoutUser().done(function (response) {
@@ -217,7 +217,7 @@ var utils = (function() {
      */
     var initModalDialogKeystrokes = function() {
         // Close the dialog with the buttons
-        $(".tool_modal_close").click(function(event) {
+        $(".tool_modal_close").click(function() {
             $(".tool_modal_container").addClass('hidden');
             returnFocus();
         });

@@ -70,7 +70,7 @@ var tableUtils = (function() {
             tableUtils.filterRows(table.tableId, searchValue);
         });
         //         Clear filter input when requested
-        $('#' + filterClearButton).click(function(event) {      // 'x' in filter field
+        $('#' + filterClearButton).click(function() {      // 'x' in filter field
             var $searchInputField = $(this).siblings(".tool_filter_input");
             $searchInputField.val("").focus().trigger({ type : 'keyup', which : 13 });
         });
@@ -81,12 +81,12 @@ var tableUtils = (function() {
      */
     var initTablePaging = function() {
         // Paging selection on table footer
-        $('select.tool_table_page_select_input').on('change', function(event) {
+        $('select.tool_table_page_select_input').on('change', function() {
             var pageSelected = $(this).find(":selected").val();
             tableUtils.switchPage(table.tableId, parseInt(pageSelected));
         });
         // Paging forward and backward buttons
-        $('.tool_table_pagination_button').on('click', function(event) {
+        $('.tool_table_pagination_button').on('click', function() {
             // Get the current page from the value of the select box
             var currentPage = tableUtils.currentPage();
             if ($(this).hasClass('tool_table_pagination_button_backward') && currentPage > 1) {

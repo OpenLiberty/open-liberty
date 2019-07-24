@@ -258,7 +258,7 @@ var table = (function() {
         // Enable the correct actions
         $regenerateDlg.find('.tool_modal_cancel_button').removeClass('hidden');   
         $regenerateDlg.find('.tool_modal_generate_button').prop('disabled', false).off('click');
-        $regenerateDlg.find('.tool_modal_generate_button').on('click', function(event) {
+        $regenerateDlg.find('.tool_modal_generate_button').on('click', function() {
             utils.startProcessingSpinner('add_regen_processing');
             regeneratePWorToken(authID, name, type); 
         }).removeClass('hidden');
@@ -379,7 +379,7 @@ var table = (function() {
 
         // Remove any previous onclick handler for delete button
         $deleteDlg.find('.tool_modal_delete_button').off('click');
-        $deleteDlg.find('.tool_modal_delete_button').on('click', function(event) {
+        $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
                 utils.startProcessingSpinner('delete_processing');
                 __deletePWorToken(authID, name, type);
         });

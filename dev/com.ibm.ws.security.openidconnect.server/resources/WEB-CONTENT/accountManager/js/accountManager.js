@@ -179,7 +179,7 @@ var acctMgr = (function() {
             tableUtils.initTablePaging();
 
             // Add registration onClick event
-            $("#add_new_authentication").click(function(event) {
+            $("#add_new_authentication").click(function() {
                 utils.saveFocus($(this));   // Save off button to return focus
                                             // to it when dialog is dismissed.
 
@@ -241,7 +241,7 @@ var acctMgr = (function() {
                 $addNewDlg.find('.tool_modal_cancel_button').removeClass('hidden');
                 $addNewDlg.find('.tool_modal_generate_button').off('click');
                 if (window.globalAppPasswordsAllowed || window.globalAppTokensAllowed) {
-                    $addNewDlg.find('.tool_modal_generate_button').on('click', function(event) {
+                    $addNewDlg.find('.tool_modal_generate_button').on('click', function() {
                         utils.startProcessingSpinner('add_regen_processing');
                         generateNewAuthentication();
                     }).removeClass('hidden').prop('disabled', true);
@@ -257,7 +257,7 @@ var acctMgr = (function() {
             });
 
             // Validate input prior to enabling Generate button
-            $('input#name').on('input', function(event) {
+            $('input#name').on('input', function() {
                 var fldValue = $(this).val();
                 // One of the Authentication Type radio buttons should be selected.
                 var rbselected = $("input[name='authType']:checked").length > 0;
@@ -268,7 +268,7 @@ var acctMgr = (function() {
                 }
             });
 
-            $('.tool_modal_radio_button').on('click', function(event) {
+            $('.tool_modal_radio_button').on('click', function() {
                 var $selectedrb = $(this);
                 $selectedrb.prop("checked", true).attr('aria-checked', true);
                 if ($selectedrb.val() === 'app-password') {
@@ -276,11 +276,11 @@ var acctMgr = (function() {
                 } else {
                     $('#rb_app_password').prop("checked", false).attr('aria-checked', false);
                 }    
-            }).on('focus', function(event) {
+            }).on('focus', function() {
                 // Find the associated label element
                 var rbID = this.id;
                 $("label[for='" + rbID + "']").find('.tool_modal_radio_button_appearance').addClass('radio_button_focus');
-            }).on('blur', function(event) {
+            }).on('blur', function() {
                 // Find the associated label element
                 var rbID = this.id;
                 $("label[for='" + rbID + "']").find('.tool_modal_radio_button_appearance').removeClass('radio_button_focus');

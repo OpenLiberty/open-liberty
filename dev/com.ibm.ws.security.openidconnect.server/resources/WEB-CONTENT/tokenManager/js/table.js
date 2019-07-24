@@ -33,7 +33,7 @@ var table = (function() {
         $tableToolbar.find('#batch_selected_msg').text(utils.formatString(messages.ITEMS_SELECTED, [0]));
 
         // Initialize the batch action buttons
-        $tableToolbar.find('#delete_batch_selection').on('click', function(event) {
+        $tableToolbar.find('#delete_batch_selection').on('click', function() {
             utils.saveFocus($(this));   // Save off button to return focus
                                         // to it when dialog is dismissed.
 
@@ -274,7 +274,7 @@ var table = (function() {
 
         // Remove any previous onclick handler for delete button
         $deleteDlg.find('.tool_modal_delete_button').off('click');
-        $deleteDlg.find('.tool_modal_delete_button').on('click', function(event) {
+        $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
             utils.startProcessingSpinner('delete_processing');
            __deletePWorToken(authID, name, type);
         });
@@ -508,7 +508,7 @@ var table = (function() {
 
                 // Remove any previous onclick handler for delete button
                 $deleteDlg.find('.tool_modal_delete_button').off('click');
-                $deleteDlg.find('.tool_modal_delete_button').on('click', function(event) {
+                $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
                     utils.startProcessingSpinner('delete_processing');
                     __deleteAllAuthentications(userID);
                 });                    
@@ -526,7 +526,7 @@ var table = (function() {
     
                 // Remove any previous onclick handler for delete button
                 $deleteDlg.find('.tool_modal_delete_button').off('click');
-                $deleteDlg.find('.tool_modal_delete_button').on('click', function(event) {
+                $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
                     utils.startProcessingSpinner('delete_processing');
                     __deleteSelectedAuthentications();
                 });
