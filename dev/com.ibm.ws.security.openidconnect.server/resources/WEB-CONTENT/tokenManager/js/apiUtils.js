@@ -74,13 +74,13 @@ var apiUtils = (function() {
         return deferred;
     };
 
-    var deleteAcctAppPasswordToken = function(authID, authType) {
+    var deleteAcctAppPasswordToken = function(authID, authType, userID) {
         __initOauthProvider(); 
         var deferred = new $.Deferred();
         var authTypes = authType + 's';
 
         $.ajax({
-            url: "/oidc/endpoint/" + oauthProvider + "/" + authTypes + "/" + authID,
+            url: "/oidc/endpoint/" + oauthProvider + "/" + authTypes + "/" + authID + "?user_id=" + encodeURIComponent(userID),
             type: "DELETE",
             contentType: "application/x-www-form-urlencoded",
             headers: {
@@ -122,14 +122,14 @@ var apiUtils = (function() {
         return deferred;
     };
 
-    var deleteSelectedAppPasswordsTokens = function(authID, authType, name) {
+    var deleteSelectedAppPasswordsTokens = function(authID, authType, name, userID) {
         __initOauthProvider();
 
         var deferred = new $.Deferred();
         var authTypes = authType + 's';
 
         $.ajax({
-            url: "/oidc/endpoint/" + oauthProvider + "/" + authTypes + "/" + authID,
+            url: "/oidc/endpoint/" + oauthProvider + "/" + authTypes + "/" + authID + "?user_id=" + encodeURIComponent(userID),
             type: "DELETE",
             contentType: "application/x-www-form-urlencoded",
             headers: {
