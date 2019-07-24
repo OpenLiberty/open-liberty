@@ -38,7 +38,7 @@ public class HashUtils {
      * generate hash code by using specified algorithm
      * If there is some error, log the error.
      */
-    protected static String digest(String input, String algorithm) {
+    public static String digest(String input, String algorithm) {
         return digest(input, algorithm, DEFAULT_CHARSET);
     }
 

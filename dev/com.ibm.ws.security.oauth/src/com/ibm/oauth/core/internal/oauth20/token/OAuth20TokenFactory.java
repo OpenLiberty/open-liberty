@@ -206,7 +206,11 @@ public class OAuth20TokenFactory {
             if (stateId == null) {
                 stateId = OAuth20Util.generateUUID();
             }
-
+            String code_challenge = OAuth20Util.getValueFromMap(
+                    OAuth20Constants.CODE_CHALLENGE, tokenMap);
+            String code_challenge_method = OAuth20Util.getValueFromMap(
+                    OAuth20Constants.CODE_CHALLENGE_METHOD, tokenMap);
+            
             Map<String, String[]> externalClaims = OAuth20TokenHelper.getExternalClaims(tokenMap);
 
             String tokenString = OAuth20Util.getRandom(length);
