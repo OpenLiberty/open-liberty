@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,10 +89,15 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
 
     /**
      * Service reference to the default container managed auth alias (if any).
+     * Must use the read/write lock when accessing and updating this value.
      */
     private ServiceReference<?> containerAuthDataRef;
 
-    protected String jaasLoginContextEntryName;
+    /**
+     * Service reference to the configured jaasLoginContextEntry (if any).
+     * Must use the read/write lock when accessing and updating this value.
+     */
+    private ServiceReference<?> jaasLoginContextEntryRef;
 
     /**
      * Indicates if the ConnectionFactoryService is initialized.
@@ -265,7 +270,23 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
         return null;
     }
 
+    /**
+     * Returns the name attribute from the configured JAAS login context entry.
+     *
+     * @return the name attribute from the configured JAAS login context entry.
+     */
     public String getJaasLoginContextEntryName() {
+        String jaasLoginContextEntryName = null;
+        lock.readLock().lock();
+        try {
+            if (jaasLoginContextEntryRef != null)
+                jaasLoginContextEntryName = (String) jaasLoginContextEntryRef.getProperty("name");
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "JAAS login context entry name", jaasLoginContextEntryName);
         return jaasLoginContextEntryName;
     }
 
@@ -520,6 +541,20 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
     }
 
     /**
+     * Declarative services method to set the JAASLoginContextEntry.
+     */
+    protected void setJaasLoginContextEntry(ServiceReference<?> ref) { // com.ibm.ws.security.jaas.common.JAASLoginContextEntry
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setJaasLoginContextEntry", ref);
+        lock.writeLock().lock();
+        try {
+            jaasLoginContextEntryRef = ref;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    /**
      * Declarative Services method for setting the recovery auth data service reference
      *
      * @param ref reference to the service
@@ -547,6 +582,21 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
         try {
             if (containerAuthDataRef == ref)
                 containerAuthDataRef = null;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    /**
+     * Declarative services method to unset the JAASLoginContextEntry.
+     */
+    protected void unsetJaasLoginContextEntry(ServiceReference<?> ref) { // com.ibm.ws.security.jaas.common.JAASLoginContextEntry
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "unsetJaasLoginContextEntry", ref);
+        lock.writeLock().lock();
+        try {
+            if (jaasLoginContextEntryRef == ref)
+                jaasLoginContextEntryRef = null;
         } finally {
             lock.writeLock().unlock();
         }
