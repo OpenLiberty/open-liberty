@@ -143,15 +143,13 @@ public class ConnectionFactoryValidator implements Validator {
                 config.setResAuthType(authType);
                 if (authAlias != null)
                     config.addLoginProperty("DefaultPrincipalMapping", authAlias); // set provided auth alias
-                if (loginConfig != null) {
-                    // Add custom login module name and properties
+                if (loginConfig != null)
                     config.setLoginConfigurationName(loginConfig);
-                    if (loginConfigProps != null)
-                        for (Entry<String, String> entry : loginConfigProps.entrySet()) {
-                            Object value = entry.getValue();
-                            config.addLoginProperty(entry.getKey(), value == null ? null : value.toString());
-                        }
-                }
+                if (loginConfigProps != null)
+                    for (Entry<String, String> entry : loginConfigProps.entrySet()) {
+                        Object value = entry.getValue();
+                        config.addLoginProperty(entry.getKey(), value == null ? null : value.toString());
+                    }
             }
 
             Object cf = ((ResourceFactory) instance).createResource(config);
