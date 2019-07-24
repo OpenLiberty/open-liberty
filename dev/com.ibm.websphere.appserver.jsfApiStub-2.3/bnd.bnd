@@ -17,6 +17,10 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.myfaces.2.3
 Bundle-Version: ${bVersion}.${libertyBundleMicroVersion}.apistub
 Eclipse-ExtensibleAPI: true
 
+javac.source: 1.8
+javac.target: 1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 publish.wlp.jar.suffix: dev/api/third-party
 
 -exportcontents: \
