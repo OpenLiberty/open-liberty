@@ -48,7 +48,17 @@ public class SimpleKafkaWriter<T> implements AutoCloseable {
 
     public RecordMetadata sendMessage(T message, Duration timeout) {
         try {
-            ProducerRecord<String, T> record = new ProducerRecord<String, T>(topic, message);
+            ProducerRecord<String, T> record = new ProducerRecord<>(topic, message);
+            Future<RecordMetadata> ack = kafkaProducer.send(record);
+            return ack.get(timeout.toMillis(), MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException("Error sending Kafka message", e);
+        }
+    }
+
+    public RecordMetadata sendMessage(T message, int partition, Duration timeout) {
+        try {
+            ProducerRecord<String, T> record = new ProducerRecord<>(topic, partition, null, message);
             Future<RecordMetadata> ack = kafkaProducer.send(record);
             return ack.get(timeout.toMillis(), MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {

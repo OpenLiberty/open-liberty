@@ -34,4 +34,11 @@
        <actions>connect</actions>
      </permission>
      
+     <!-- Kafka client loads serializers and deserializers by name -->
+     <permission>
+       <class-name>java.lang.RuntimePermission</class-name>
+       <name>getClassLoader</name>
+       <actions>*</actions>
+     </permission>
+     
 </permissions>

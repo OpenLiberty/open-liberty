@@ -67,7 +67,35 @@ public class KafkaTestClient {
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(consumerConfig, new StringDeserializer(), new StringDeserializer());
+        return readerFor(consumerConfig, topicName);
+    }
+
+    /**
+     * Obtain a SimpleKafkaReader configured with the given consumer config
+     *
+     * @param config    the consumer config
+     * @param topicName the topic to subscribe to
+     * @return the reader
+     */
+    public SimpleKafkaReader<String> readerFor(Map<String, Object> config, String topicName) {
+        // Defensive copy, avoid modifying parameter
+        HashMap<String, Object> localConfig = new HashMap<>(config);
+
+        // Default bootstrap servers if not set
+        if (!localConfig.containsKey(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG)) {
+            localConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        }
+
+        // Default to String deserializers if not set
+        if (!localConfig.containsKey(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG)) {
+            localConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        }
+
+        if (!localConfig.containsKey(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG)) {
+            localConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        }
+
+        KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(localConfig);
         SimpleKafkaReader<String> reader = new SimpleKafkaReader<String>(kafkaConsumer, topicName);
         openClients.add(reader);
         return reader;
@@ -124,6 +152,21 @@ public class KafkaTestClient {
     }
 
     /**
+     * Get the current committed offset for the given partition and consumer group
+     *
+     * @param topicName       the topic name
+     * @param partitionId     the partition id
+     * @param consumerGroupId the consumer group id
+     * @return the current committed offset
+     */
+    public long getTopicOffset(String topicName, int partitionId, String consumerGroupId) {
+        try (KafkaConsumer<?, ?> kafka = getKafkaTopicOffsetConsumer(consumerGroupId)) {
+            TopicPartition topicPartition = new TopicPartition(topicName, partitionId);
+            return getOffset(kafka, topicPartition);
+        }
+    }
+
+    /**
      * Get the partition for a topic which only has one partition
      * <p>
      * Throws an assertion error if the topic does not have one partition.
@@ -165,9 +208,28 @@ public class KafkaTestClient {
      * @throws InterruptedException if a thread interruption occurs
      */
     public void assertTopicOffsetAdvancesTo(long newOffset, Duration timeout, String topicName, String consumerGroupId) throws InterruptedException {
+        assertTopicOffsetAdvancesTo(newOffset, timeout, topicName, -1, consumerGroupId);
+    }
 
+    /**
+     * Assert that the committed offset for the given partition advances to the given point with the timeout
+     *
+     * @param newOffset       the expected new offset
+     * @param timeout         the timeout
+     * @param topicName       the topic name
+     * @param partitionId     the partition ID, or {@code -1} to indicate that there is only one partition and the ID should be looked up automatically
+     * @param consumerGroupId the consumer group id
+     * @throws InterruptedException if a thread interruption occurs
+     */
+
+    public void assertTopicOffsetAdvancesTo(long newOffset, Duration timeout, String topicName, int partitionId, String consumerGroupId) throws InterruptedException {
         try (KafkaConsumer<?, ?> kafka = getKafkaTopicOffsetConsumer(consumerGroupId)) {
-            TopicPartition topicPartition = getTopicPartition(kafka, topicName);
+            TopicPartition topicPartition;
+            if (partitionId == -1) {
+                topicPartition = getTopicPartition(kafka, topicName);
+            } else {
+                topicPartition = new TopicPartition(topicName, partitionId);
+            }
             Duration remaining = timeout;
             long startTime = System.nanoTime();
 

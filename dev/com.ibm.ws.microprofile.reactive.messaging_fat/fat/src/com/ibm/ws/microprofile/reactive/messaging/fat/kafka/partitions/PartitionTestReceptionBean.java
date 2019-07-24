@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
+package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions;
 
 import java.util.concurrent.CompletionStage;
 
@@ -22,9 +22,9 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractReceptionBean;
 
 @ApplicationScoped
-public class KafkaReceptionBean extends AbstractReceptionBean {
+public class PartitionTestReceptionBean extends AbstractReceptionBean {
 
-    public final static String CHANNEL_NAME = "reception-test-input";
+    public static final String CHANNEL_NAME = "partition-test-incoming-topic";
 
     @Incoming(CHANNEL_NAME)
     @Acknowledgment(Strategy.MANUAL)

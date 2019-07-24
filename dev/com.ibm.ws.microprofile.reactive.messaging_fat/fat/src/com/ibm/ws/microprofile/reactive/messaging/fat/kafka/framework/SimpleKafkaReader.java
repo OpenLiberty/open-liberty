@@ -64,6 +64,15 @@ public class SimpleKafkaReader<T> implements AutoCloseable {
         return result;
     }
 
+    /**
+     * Get the underlying Kafka Consumer
+     *
+     * @return the consumer
+     */
+    public KafkaConsumer<String, T> getConsumer() {
+        return kafkaConsumer;
+    }
+
     @Override
     public void close() throws Exception {
         kafkaConsumer.close();
