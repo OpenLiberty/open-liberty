@@ -129,7 +129,7 @@ public class MonitorMetricsHandler {
 			try {
 				mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
 				Tr.info(tc, "1 mBeanObject=", mBeanObjectInstanceSet);
-				System.out.println("2 mBeanObject=" + mBeanObjectInstanceSet);
+				System.out.println("2 mBeanObject=" + mBeanObjectInstanceSet + "sName=" + sName);
 		        for (ObjectInstance objInstance : mBeanObjectInstanceSet) {
 		            String objectName = objInstance.getObjectName().toString();
 		            String[][] data = mappingTable.getData(objectName);
