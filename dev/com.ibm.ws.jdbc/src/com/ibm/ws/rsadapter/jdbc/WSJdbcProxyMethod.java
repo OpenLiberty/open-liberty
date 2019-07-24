@@ -211,8 +211,9 @@ public abstract class WSJdbcProxyMethod
         //  oracle.jdbc.internal.OracleConnection.unwrap()
         
         //// PostgreSQL methods
-        unsafeMethods.add("getLargeObjectAPI"); // org.postgresql.PGConnection.getLargeObjectAPI() -- LargeObject API is not allowed because it has operations that can commit transactions on the underlying PG connection
-        unsafeMethods.add("getFastpathAPI"); // org.postgresql.PGConnection.getFastpathAPI() -- this is deprecated anyway on the PG API
+        // These methods were breifly blocked during 19.0.0.7
+        //unsafeMethods.add("getLargeObjectAPI"); // org.postgresql.PGConnection.getLargeObjectAPI()
+        //unsafeMethods.add("getFastpathAPI"); // org.postgresql.PGConnection.getFastpathAPI()
         unsafeMethods.add("setAutosave"); // org.postgresql.PGConnection.setAutosave(AutoSave)
 
         // "setQueryTimeout" and "setLongDataCacheSize" are not permitted on the data source

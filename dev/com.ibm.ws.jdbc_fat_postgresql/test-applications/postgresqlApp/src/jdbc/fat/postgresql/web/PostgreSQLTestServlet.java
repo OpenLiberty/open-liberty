@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Objects;
@@ -41,6 +40,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 import org.postgresql.PGConnection;
+import org.postgresql.largeobject.LargeObjectManager;
 
 import componenttest.app.FATServlet;
 
@@ -450,21 +450,30 @@ public class PostgreSQLTestServlet extends FATServlet {
     }
 
     @Test
-    public void testPostgresApiUsability() throws Exception {
+    public void testPostgresCopyApiUsability() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
         try (Connection con = ds.getConnection()) {
             PGConnection pgCon = con.unwrap(PGConnection.class);
 
             // CopyAPI is allowed
             pgCon.getCopyAPI();
+        }
+    }
 
-            // LargeObject API is not allowed because it has operations that can commit transactions on the underlying PG connection
-            try {
-                pgCon.getLargeObjectAPI();
-                fail("Expected to get a SQLFeatureNotSupportedException on calling PGConnection.getLargeObjectAPI() but did not.");
-            } catch (SQLFeatureNotSupportedException expected) {
-                System.out.println("Caught expected exception: " + expected);
-            }
+    @Test
+    public void testPostgresLargeObjectApiUsability() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
+        try (Connection con = ds.getConnection()) {
+            con.setAutoCommit(false); // Large Objects may not be used in auto-commit mode
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+
+            LargeObjectManager lom = pgCon.getLargeObjectAPI();
+
+            long oid = lom.createLO();
+            lom.open(oid).close();
+            lom.open(oid, false).close();
+
+            con.commit();
         }
     }
 
