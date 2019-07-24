@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -32,7 +31,6 @@ import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
-import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 import com.unboundid.ldap.sdk.Entry;
 
@@ -349,21 +347,14 @@ public class LDAPReferralTest {
 
         /*
          * This test can be removed after the ApacheDS referral issue has been fixed. Currently just
-         * check that instead of getting a continuation reference, that we get an error.
+         * check that we don't get a groupDisplayName from the referral reference (it doesn't have a cn).
+         *
+         * We will get "null" trying to get 'cn' from the "referral" entity (not a "Group" entity). This occurs
+         * b/c ignoring referrals results in us receiving the referral LDAP entity itself (even though
+         * it doesn't match the filter). Again, this should go away when we are not using the referral
+         * itself as the search base.
          */
-        try {
-            servlet.getGroupDisplayName(SUBORDINATE_DN);
-            fail("Excected RegistryException.");
-        } catch (RegistryException e) {
-            /*
-             * We will get an error trying to convert the "referral" entity into a "Group" entity. This occurs
-             * b/c ignoring referrals results in us receiving the referral LDAP entity itself (even though
-             * it doesn't match the filter). Again, this should go away when we are not using the referral
-             * itself as the search base.
-             */
-            Log.info(c, "assertIgnoreResults", "Exception is " + e.getMessage());
-            assertNotNull("Exception should have an error message", e.getMessage());
-        }
+        assertEquals("null", servlet.getGroupDisplayName(SUBORDINATE_DN));
 
 //      assertEquals(DELEGATE_USER_DN, servlet.checkPassword(DELEGATE_USER_DN, "password"));
 //      assertNull("Should not be able to bind with user from referral.", servlet.checkPassword(SUBORDINATE_USER_DN, "password"));
