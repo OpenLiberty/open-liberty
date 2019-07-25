@@ -16,11 +16,11 @@
 
     <OCD id="com.ibm.ws.messaging.comms.wasJmsOutbound" ibm:alias="wasJmsOutbound" name="%wasJmsOutbound" description="%wasJmsOutbound.desc" >
 
-         <AD id="id" name="%wasJmsOutboundId" description="%wasJmsOutboundId.desc" required="true" type="String"/>
+        <AD id="id" name="%wasJmsOutboundId" description="%wasJmsOutboundId.desc" required="true" type="String"/>
          
-         <AD name="%useSSL" description="%useSSL.desc" id="useSSL" required="false" type="Boolean" default="false" />
+        <AD name="%useSSL" description="%useSSL.desc" id="useSSL" required="false" type="Boolean" default="false" />
 
-         <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc"
+        <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc"
             ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid" cardinality="1"
             type="String" required="false" default="defaultTCPOptions" />               
 
@@ -36,6 +36,15 @@
             ibm:final="true" required="false" type="String" 
             default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.messaging.comms.wasJmsOutbound-${id}/*)(id=defaultSSLOptions))))" />
 
+        <AD id="anySSLOptionsRef" name="internal" description="internal use only"
+            required="false" type="String" cardinality="1"
+            ibm:final="true" ibm:type="pid" ibm:reference="com.ibm.ws.sslchannel.options"
+            default="*" />
+
+<!--        If any sslOptions are present then sslSupport must be present  -->
+        <AD id="sslSupport.cardinality.minimum" name="internal" description="internal use only"
+            type="String" required="false"
+            default="${count(anySSLOptionsRef)}" />
    </OCD>
 
    <Designate factoryPid="com.ibm.ws.messaging.comms.wasJmsOutbound">
