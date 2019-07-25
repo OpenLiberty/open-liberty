@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "刪除",
     "DONE": "完成",
     "EDIT": "編輯",
+    "FALSE": "False",
     "GENERATE": "產生",
     "LOADING": "正在載入",
     "LOGOUT": "登出",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "重新產生",
     "REGISTER": "登錄",
     "TABLE_BATCH_BAR": "表格動作列",
+    "TABLE_FIELD_SORT_ASC": "表格依據 {0} 升冪排序。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表格依據 {0} 降冪排序。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "重試...",
     "UPDATE": "更新",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "刪除記號",
     "TOKEN_MGR_DESC": "刪除指定使用者的 app-password 和 app-token。",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "輸入使用者 ID",
-    "DELETE_SELECTED": "刪除選取的 app-password 和 app-token",
+    "TABLE_FILLED_WITH": "已更新表格以顯示屬於 {1} 的 {0} 個鑑別。",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "刪除選取的 app-password 和 app-token。",
     "DELETE_ARIA": "刪除名為 {1} 的 {0}",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "刪除這個 app-password",
     "DELETE_TOKEN": "刪除這個 app-token",
@@ -58,15 +63,15 @@ var messages = {
     "DELETE_WARNING_TOKEN": "這個動作會移除目前指派的 app-token。",
     "DELETE_MANY": "刪除 App-Password/App-Token",
     "DELETE_MANY_FOR": "指派給 {0}",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "這個動作會刪除選取的 app-password/app-token",
+    "DELETE_ONE_MESSAGE": "這個動作會刪除選取的 app-password/app-token。",
     "DELETE_MANY_MESSAGE": "這個動作會刪除 {0} 個選取的 app-password/app-token。",  // 0 - number
     "DELETE_ALL_MESSAGE": "這個動作會刪除屬於 {0} 的所有 app-password/app-token。", // 0 - user id
     "DELETE_NONE": "選取以進行刪除",
     "DELETE_NONE_MESSAGE": "選取勾選框，指出應刪除哪些 app-password 或 app-token。",
     "SINGLE_ITEM_SELECTED": "選取了 1 個項目",
     "ITEMS_SELECTED": "選取了 {0} 個項目",            // 0 - number
-    "SELECT_ALL_AUTHS": "選取這個使用者的所有 app-password 和 app-token",
-    "SELECT_SPECIFIC": "選取 {0}（名為 {1}）來刪除",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "選取這個使用者的所有 app-password 和 app-token。",
+    "SELECT_SPECIFIC": "選取 {0}（名為 {1}）來刪除。",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "正在尋找嗎？請輸入使用者 ID，以檢視其 app-password 和 app-token。",
     "GENERIC_FETCH_FAIL": "擷取 {0} 時發生錯誤",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "無法取得屬於 {1} 的 {0} 清單。", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

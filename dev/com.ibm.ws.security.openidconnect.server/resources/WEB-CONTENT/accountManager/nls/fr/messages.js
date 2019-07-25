@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Supprimer",
     "DONE": "Terminé",
     "EDIT": "Editer",
+    "FALSE": "False",
     "GENERATE": "Générer",
     "LOADING": "En cours de chargement",
     "LOGOUT": "Déconnexion",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "Traitement en cours",
     "REGENERATE": "Régénérer",
     "REGISTER": "Enregistrer",
+    "TABLE_FIELD_SORT_ASC": "La table est triée en fonction de {0} suivant l'ordre croissant.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "La table est triée en fonction de {0} suivant l'ordre décroissant.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "Réessayez...",
     "UPDATE": "Mettre à jour",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Gérer les jetons personnels",
     "ACCT_MGR_DESC": "Créez, supprimez et régénérez des éléments app-password et app-token.",
-    "ADD_NEW_AUTHENTICATION": "Ajouter un nouvel élément app-password ou app-token",
+    "ADD_NEW_AUTHENTICATION": "Ajoutez un nouvel élément app-password ou app-token. ",
     "NAME_IDENTIFIER": "Nom : {0}",
     "ADD_NEW_TITLE": "Enregistrer une nouvelle authentification",
     "NOT_GENERATED_PLACEHOLDER": "Non généré",
+    "AUTHENTICAION_GENERATED": "Authentification générée",
+    "GENERATED_APP_PASSWORD": "Elément app-password généré",
+    "GENERATED_APP_TOKEN": "Elément app-token généré",
+    "COPY_APP_PASSWORD": "Copier l'élément app-password dans le presse-papiers",
+    "COPY_APP_TOKEN": "Copier l'élément app-token dans le presse-papiers",
     "REGENERATE_APP_PASSWORD": "Régénérer l'élément app-password",
     "REGENERATE_PW_WARNING": "Cette action remplace l'élément app-password en cours.",
     "REGENERATE_PW_PLACEHOLDER": "Mot de passe généré précédemment le {0}",        // 0 - date

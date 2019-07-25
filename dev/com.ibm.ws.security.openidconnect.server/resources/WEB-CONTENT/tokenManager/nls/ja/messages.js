@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "削除",
     "DONE": "完了",
     "EDIT": "編集",
+    "FALSE": "False",
     "GENERATE": "生成",
     "LOADING": "ロード中",
     "LOGOUT": "ログアウト",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "再生成",
     "REGISTER": "登録",
     "TABLE_BATCH_BAR": "テーブル・アクション・バー",
+    "TABLE_FIELD_SORT_ASC": "表は {0} によって昇順でソートされます。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表は {0} によって降順でソートされます。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "再試行してください...",
     "UPDATE": "更新",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "トークンの削除",
     "TOKEN_MGR_DESC": "指定されたユーザーの app-password と app-token を削除します。",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "ユーザー ID の入力",
-    "DELETE_SELECTED": "選択した app-password と app-token の削除",
+    "TABLE_FILLED_WITH": "{1} に属している {0} 認証を表示するように表が更新されました。",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "選択した app-password と app-token を削除します。",
     "DELETE_ARIA": "名前が {1} の {0} の削除",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "この app-password の削除",
     "DELETE_TOKEN": "この app-token の削除",
@@ -65,8 +70,8 @@ var messages = {
     "DELETE_NONE_MESSAGE": "削除する必要がある app-password または app-token を示すチェック・ボックスを選択します。",
     "SINGLE_ITEM_SELECTED": "1 項目が選択されました",
     "ITEMS_SELECTED": "{0} 項目が選択されました",            // 0 - number
-    "SELECT_ALL_AUTHS": "このユーザーのすべての app-password と app-token を選択",
-    "SELECT_SPECIFIC": "名前が {1} の {0} を削除対象に選択",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "このユーザーのすべての app-password と app-token を選択します。",
+    "SELECT_SPECIFIC": "名前が {1} の {0} を削除対象に選択します。",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "何かをお探しですか? app-password と app-token を表示するには、ユーザー IDを入力してください。",
     "GENERIC_FETCH_FAIL": "{0} の取得エラー",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "{1} に属している {0} のリストを取得できません。", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

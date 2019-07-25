@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Ştergere",
     "DONE": "Gata",
     "EDIT": "Editare",
+    "FALSE": "Fals",
     "GENERATE": "Generare",
     "LOADING": "Încărcare",
     "LOGOUT": "Delogare",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "Regenerare",
     "REGISTER": "Înregistrare",
     "TABLE_BATCH_BAR": "Bară de acţiune tabel",
+    "TABLE_FIELD_SORT_ASC": "Tabelul este sortat după {0} în ordine crescătoare.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabelul este sortat după {0} în ordine descrescătoare.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Adevărat",
     "TRY_AGAIN": "Reîncercare...",
     "UPDATE": "Actualizare",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "Ştergere jetoane",
     "TOKEN_MGR_DESC": "Ştergeţi app-password-uri şi app-token-uri pentru un utilizator specificat.",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "Introduceţi ID-ul de utilizator",
-    "DELETE_SELECTED": "Ştergere app-password-uri şi app-token-uri selectate",
+    "TABLE_FILLED_WITH": "Tabelul a fost actualizat pentru a arăta autentificările {0} care îi aparţin lui {1}.",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "Ştergeţi app-password-uri şi app-token-uri selectate . ",
     "DELETE_ARIA": "Ştergere {0} numit(ă) {1}",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "Ştergere acest app-password.",
     "DELETE_TOKEN": "Ştergere acest app-token.",
@@ -58,7 +63,7 @@ var messages = {
     "DELETE_WARNING_TOKEN": "Această acţiune va înlătura app-token alocat curent.",
     "DELETE_MANY": "Ştergere app-password-uri/app-token-uri",
     "DELETE_MANY_FOR": "Alocat la {0}",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "Această acţiune va şterge app-password/app-token selectat",
+    "DELETE_ONE_MESSAGE": "Această acţiune va şterge app-password-urile/app-token-urile selectate.",
     "DELETE_MANY_MESSAGE": "Această acţiune va şterge app-password-urile/app-token-urile {0} selectate",  // 0 - number
     "DELETE_ALL_MESSAGE": "Această acţiune va şterge app-password-urile/app-token-urile aparţinând lui {0}.", // 0 - user id
     "DELETE_NONE": "Selectare pentru ştergere",
@@ -66,7 +71,7 @@ var messages = {
     "SINGLE_ITEM_SELECTED": "1 articol selectat",
     "ITEMS_SELECTED": "{0} articole selectate",            // 0 - number
     "SELECT_ALL_AUTHS": "Selectaţi toate app-password-urile şi app-token-urile pentru acest utilizator.",
-    "SELECT_SPECIFIC": "Selectaţi {0} cu numele {1} pentru ştergere",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_SPECIFIC": "Selectaţi {0} cu numele {1} pentru ştergere.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Căutaţi ceva? Introduceţi un ID de utilizator pentru a vizualiza app-password-urile şi app-token-urile lor.",
     "GENERIC_FETCH_FAIL": "Eroare la extragerea {0}",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "Nu s-a putut obţine lista de {0} aparţinând lui {1}.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

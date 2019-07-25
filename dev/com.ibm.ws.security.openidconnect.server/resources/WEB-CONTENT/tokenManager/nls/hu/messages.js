@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Törlés",
     "DONE": "Kész",
     "EDIT": "Szerkesztés",
+    "FALSE": "False",
     "GENERATE": "Előállítás",
     "LOADING": "Betöltés",
     "LOGOUT": "Kijelentkezés",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "Újragenerálás",
     "REGISTER": "Regisztrálás",
     "TABLE_BATCH_BAR": "Táblázat műveletsor",
+    "TABLE_FIELD_SORT_ASC": "A tábla {0} szerint növekvő sorrendben van rendezve.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "A tábla {0} szerint csökkenő sorrendben van rendezve.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "Próbálkozzon újra...",
     "UPDATE": "Frissítés",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "Tokenek törlése",
     "TOKEN_MGR_DESC": "Megadott felhasználó app-password és app-token elemeinek törlése",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "Adja meg a felhasználói azonosítót",
-    "DELETE_SELECTED": "Kijelölt app-password és app-token elemek törlése",
+    "TABLE_FILLED_WITH": "A tábla {1} hitelesítéseire vonatkozóan {0} hitelesítés megjelenítésére lett frissítve.",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "Törölje a kijelölt app-password és app-token elemeket. ",
     "DELETE_ARIA": "Törölje a(z) {0} elemet (név: {1})",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "Az app-password törlése",
     "DELETE_TOKEN": "Az app-token törlése",
@@ -58,15 +63,15 @@ var messages = {
     "DELETE_WARNING_TOKEN": "Ez a művelet el fogja távolítani a jelenleg hozzárendelt app-token elemet.",
     "DELETE_MANY": "App-Password/App-Token elemek törlése",
     "DELETE_MANY_FOR": "Hozzárendelve ehhez: {0}.",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "Ez a művelet törli a kijelölt app-password/app-token elemet",
+    "DELETE_ONE_MESSAGE": "Ez a művelet törli a kijelölt app-password/app-token elemet. ",
     "DELETE_MANY_MESSAGE": "Ez a művelet törli a kijelölt {0} app-password/app-token elemet",  // 0 - number
     "DELETE_ALL_MESSAGE": "Ez a művelet a következőhöz tartozó összes app-password/app-token elemet törölni fogja: {0}.", // 0 - user id
     "DELETE_NONE": "Kijelölés törlésre",
     "DELETE_NONE_MESSAGE": "Jelölőnégyzet kiválasztásával jelezze, hogy mely app-password vagy app-token elemeket kell törölni.",
     "SINGLE_ITEM_SELECTED": "1 elem lett kijelölve",
     "ITEMS_SELECTED": "{0} kiválasztott elem",            // 0 - number
-    "SELECT_ALL_AUTHS": "A felhasználó összes app-password és app-token elemének kijelölése",
-    "SELECT_SPECIFIC": "A(z) {0} (név: {1}) kijelölése törlésre",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "Válassza ki a felhasználóhoz tartozó összes app-password és app-token elemet. ",
+    "SELECT_SPECIFIC": "A(z) {0} (név: {1}) kijelölése törlésre.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Keres valamit? Adjon meg egy felhasználói azonosítót, és így megtekintheti azok  app-password és app-token elemeit.",
     "GENERIC_FETCH_FAIL": "Hiba a következő beolvasásakor: {0}",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "Nem lehet lekérdezni a következőhöz tartozó {0} elemek listáját: {1}.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

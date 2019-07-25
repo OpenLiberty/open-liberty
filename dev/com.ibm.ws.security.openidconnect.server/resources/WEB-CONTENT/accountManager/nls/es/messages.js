@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Suprimir",
     "DONE": "Hecho",
     "EDIT": "Editar",
+    "FALSE": "Falso",
     "GENERATE": "Generar",
     "LOADING": "Cargando",
     "LOGOUT": "Cierre de sesión",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "Procesando",
     "REGENERATE": "Volver a generar",
     "REGISTER": "Registrar",
+    "TABLE_FIELD_SORT_ASC": "La tabla está ordenada por {0} en orden ascendente.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "La tabla está ordenada por {0} en orden descendente.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Verdadero",
     "TRY_AGAIN": "Vuelva a intentarlo...",
     "UPDATE": "Actualizar",
 
@@ -49,6 +53,11 @@ var messages = {
     "NAME_IDENTIFIER": "Nombre: {0}",
     "ADD_NEW_TITLE": "Registrar nueva autenticación",
     "NOT_GENERATED_PLACEHOLDER": "No se ha generado",
+    "AUTHENTICAION_GENERATED": "Autenticación generada",
+    "GENERATED_APP_PASSWORD": "Contraseña de aplicación generada",
+    "GENERATED_APP_TOKEN": "Señal de aplicación generada",
+    "COPY_APP_PASSWORD": "Copiar contraseña de aplicación en el portapapeles",
+    "COPY_APP_TOKEN": "Copiar señal de aplicación en el portapapeles",
     "REGENERATE_APP_PASSWORD": "Volver a generar contraseña de aplicación",
     "REGENERATE_PW_WARNING": "Esta acción sobrescribirá la contraseña de aplicación actual.",
     "REGENERATE_PW_PLACEHOLDER": "Contraseña generada anteriormente el {0}",        // 0 - date

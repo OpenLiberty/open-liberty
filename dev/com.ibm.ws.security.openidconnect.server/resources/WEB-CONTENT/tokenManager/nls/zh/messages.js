@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "删除",
     "DONE": "完成",
     "EDIT": "编辑",
+    "FALSE": "False",
     "GENERATE": "生成",
     "LOADING": "正在加载",
     "LOGOUT": "注销",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "重新生成",
     "REGISTER": "注册",
     "TABLE_BATCH_BAR": "表操作栏",
+    "TABLE_FIELD_SORT_ASC": "表按 {0} 以升序进行排序。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表按 {0} 以降序进行排序。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "请重试...",
     "UPDATE": "更新",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "删除令牌",
     "TOKEN_MGR_DESC": "删除所指定用户的应用程序密码和应用程序令牌。",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "输入用户标识",
-    "DELETE_SELECTED": "删除所选应用程序密码和应用程序令牌",
+    "TABLE_FILLED_WITH": "表已更新，将显示属于 {1} 的 {0} 项认证。",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "删除所选应用程序密码和应用程序令牌。",
     "DELETE_ARIA": "删除名为 {1} 的 {0}",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "删除此应用程序密码",
     "DELETE_TOKEN": "删除此应用程序令牌",
@@ -65,8 +70,8 @@ var messages = {
     "DELETE_NONE_MESSAGE": "选中复选框以指示应删除的应用程序密码或应用程序令牌。",
     "SINGLE_ITEM_SELECTED": "已选择 1 项",
     "ITEMS_SELECTED": "已选择 {0} 项",            // 0 - number
-    "SELECT_ALL_AUTHS": "选择对应此用户的所有应用程序密码和应用程序令牌",
-    "SELECT_SPECIFIC": "选择删除名为 {1} 的 {0}",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "选择此用户的所有应用程序密码和应用程序令牌。",
+    "SELECT_SPECIFIC": "选择删除名为 {1} 的 {0}。",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "想查找某些内容？输入用户标识以查看其应用程序密码和应用程序令牌。",
     "GENERIC_FETCH_FAIL": "检索 {0} 时出错",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "无法获取属于 {1} 的 {0} 列表。", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

@@ -243,9 +243,12 @@ error.unique.value.conflict=CWWKG0031E: Warto\u015b\u0107 {1} okre\u015blona dla
 error.unique.value.conflict.explanation=Warto\u015b\u0107 okre\u015blonego atrybutu musi by\u0107 unikalna, ale jest ju\u017c u\u017cywana.
 error.unique.value.conflict.useraction=Zmie\u0144 warto\u015b\u0107 atrybutu w taki spos\u00f3b, aby by\u0142a unikalna.
 
-warn.config.invalid.value=CWWKG0032W: Okre\u015blono nieoczekiwan\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci [{0}], warto\u015b\u0107 = [{1}]. Oczekiwano nast\u0119puj\u0105cych warto\u015bci: {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: Okre\u015blono nieoczekiwan\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci [{0}], warto\u015b\u0107 = [{1}]. Oczekiwano nast\u0119puj\u0105cych warto\u015bci: {2}. {3} 
 warn.config.invalid.value.explanation=Nie mo\u017cna u\u017cywa\u0107 okre\u015blonej warto\u015bci w\u0142a\u015bciwo\u015bci.
 warn.config.invalid.value.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci na oczekiwan\u0105.
+
+default.value.in.use=Domy\u015blna u\u017cywana warto\u015b\u0107: {0}.
 
 warning.pid.not.found=CWWKG0033W: Warto\u015b\u0107 [{1}] okre\u015blona dla atrybutu odniesienia [{0}] nie zosta\u0142a znaleziona w konfiguracji.
 warning.pid.not.found.explanation=Okre\u015blona warto\u015b\u0107 musi by\u0107 elementem w konfiguracji.
@@ -435,44 +438,10 @@ error.factoryOnly=CWWKG0061E: Utrwalona to\u017csamo\u015b\u0107 {0} nie jest ut
 error.factoryOnly.explanation=Atrybut ibm:extends mo\u017cna zastosowa\u0107 tylko w przypadku utrwalonej to\u017csamo\u015bci fabryki.
 error.factoryOnly.useraction=Zmie\u0144 konfiguracj\u0119 utrwalonej to\u017csamo\u015bci, tak aby by\u0142a u\u017cywana utrwalona to\u017csamo\u015b\u0107 fabryki, albo usu\u0144 atrybut ibm:extends z definicji komponentu obiektu. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: Utrwalona \
-to\u017csamo\u015b\u0107 {0} nie jest utrwalon\u0105 to\u017csamo\u015bci\u0105 fabryki, wi\u0119c nie mo\u017ce mie\u0107 \
-atrybutu ibm:extendsAlias o warto\u015bci {1}. Zmie\u0144 konfiguracj\u0119 utrwalonej to\u017csamo\u015bci tak, aby by\u0142a u\u017cywana utrwalona \
-to\u017csamo\u015b\u0107 fabryki, albo usu\u0144 atrybut ibm:extendsAlias z utrwalonej to\u017csamo\u015bci.
-error.factoryOnly.extendsAlias.explanation=Atrybut \
-ibm:extendsAlias mo\u017cna zastosowa\u0107 tylko w przypadku utrwalonych to\u017csamo\u015bci \
-fabryki, kt\u00f3re rozszerzaj\u0105 inn\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107 fabryki.
-error.factoryOnly.extendsAlias.useraction=Zmie\u0144 konfiguracj\u0119 \
-utrwalonej to\u017csamo\u015bci tak, aby by\u0142a u\u017cywana utrwalona to\u017csamo\u015b\u0107 fabryki, albo \
-usu\u0144 atrybut ibm:extendsAlias z utrwalonej to\u017csamo\u015bci.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: Utrwalona to\u017csamo\u015b\u0107 {0} nie jest utrwalon\u0105 to\u017csamo\u015bci\u0105 fabryki, wi\u0119c nie mo\u017ce by\u0107 rozszerzana przez utrwalon\u0105 to\u017csamo\u015b\u0107 {1}.
 error.superFactoryOnly.explanation=Atrybut ibm:extends mo\u017cna zastosowa\u0107 tylko w przypadku utrwalonej to\u017csamo\u015bci fabryki.
 error.superFactoryOnly.useraction=Zmie\u0144 konfiguracj\u0119 utrwalonej to\u017csamo\u015bci, tak aby by\u0142a u\u017cywana utrwalona to\u017csamo\u015b\u0107 fabryki, albo usu\u0144 atrybut ibm:extends z definicji komponentu obiektu. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: Utrwalona \
-to\u017csamo\u015b\u0107 {0} okre\u015bla atrybut ibm:extendsAlias o warto\u015bci {1} i dlatego musi \
-okre\u015bla\u0107 atrybut ibm:extends.
-error.ExtendsAliasMustExtend.explanation=W przypadku \
-podania atrybutu ibm:extendsAlias nale\u017cy poda\u0107 atrybut ibm:extends.
-error.ExtendsAliasMustExtend.useraction=Podaj atrybut \
-ibm:extends.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: Utrwalona \
-to\u017csamo\u015b\u0107 {0} okre\u015bla atrybut {1} o warto\u015bci {2} i dlatego musi okre\u015bla\u0107 \
-atrybut {3}.
-error.parentpid.and.childalias.explanation=Metatyp \
-wskazuje, \u017ce element zagnie\u017cd\u017cony, kt\u00f3ry jest pierwszym elementem potomnym, \
-zosta\u0142 okre\u015blony cz\u0119\u015bciowo. Elementy zagnie\u017cd\u017cone, kt\u00f3re s\u0105 pierwszymi \
-elementami potomnymi, musz\u0105 okre\u015bla\u0107 zar\u00f3wno atrybut ibm:parentPid, jak i \
-atrybut ibm:childAlias.
-error.parentpid.and.childalias.useraction=Je\u015bli ten metatyp \
-jest przeznaczony dla elementu zagnie\u017cd\u017conego b\u0119d\u0105cego pierwszym elementem \
-potomnym, podaj brakuj\u0105cy atrybut. W przeciwnym razie usu\u0144 podany atrybut. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Nie mo\u017cna zmieni\u0107 nazwy definicji atrybutu {1} okre\u015blonej przez atrybut ibm:rename {2} w utrwalonej to\u017csamo\u015bci {0}.
@@ -642,6 +611,40 @@ warning.unrecognized.merge.behavior.useraction=Zaktualizuj konfiguracj\u0119 ser
 error.missing.required.attribute.singleton=CWWKG0095E: Brak wymaganego atrybutu {1} w elemencie {0}.
 error.missing.required.attribute.singleton.explanation=Brakuj\u0105cy atrybut jest wymagany w pliku konfiguracyjnym server.xml lub w jednym z przywo\u0142ywanych przez niego plik\u00f3w konfiguracyjnych.
 error.missing.required.attribute.singleton.useraction=Dodaj atrybut do pliku konfiguracyjnego server.xml lub do jednego z przywo\u0142ywanych przez niego plik\u00f3w konfiguracyjnych.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: Utrwalona \
+to\u017csamo\u015b\u0107 {0} nie jest utrwalon\u0105 to\u017csamo\u015bci\u0105 fabryki, wi\u0119c nie mo\u017ce mie\u0107 \
+atrybutu ibm:extendsAlias o warto\u015bci {1}. Zmie\u0144 konfiguracj\u0119 utrwalonej to\u017csamo\u015bci tak, aby by\u0142a u\u017cywana utrwalona \
+to\u017csamo\u015b\u0107 fabryki, albo usu\u0144 atrybut ibm:extendsAlias z utrwalonej to\u017csamo\u015bci.
+error.factoryOnly.extendsAlias.explanation=Atrybut \
+ibm:extendsAlias mo\u017cna zastosowa\u0107 tylko w przypadku utrwalonych to\u017csamo\u015bci \
+fabryki, kt\u00f3re rozszerzaj\u0105 inn\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107 fabryki.
+error.factoryOnly.extendsAlias.useraction=Zmie\u0144 konfiguracj\u0119 \
+utrwalonej to\u017csamo\u015bci tak, aby by\u0142a u\u017cywana utrwalona to\u017csamo\u015b\u0107 fabryki, albo \
+usu\u0144 atrybut ibm:extendsAlias z utrwalonej to\u017csamo\u015bci.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: Utrwalona \
+to\u017csamo\u015b\u0107 {0} okre\u015bla atrybut ibm:extendsAlias o warto\u015bci {1} i dlatego musi \
+okre\u015bla\u0107 atrybut ibm:extends.
+error.ExtendsAliasMustExtend.explanation=W przypadku \
+podania atrybutu ibm:extendsAlias nale\u017cy poda\u0107 atrybut ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Podaj atrybut \
+ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: Utrwalona \
+to\u017csamo\u015b\u0107 {0} okre\u015bla atrybut {1} o warto\u015bci {2} i dlatego musi okre\u015bla\u0107 \
+atrybut {3}.
+error.parentpid.and.childalias.explanation=Metatyp \
+wskazuje, \u017ce element zagnie\u017cd\u017cony, kt\u00f3ry jest pierwszym elementem potomnym, \
+zosta\u0142 okre\u015blony cz\u0119\u015bciowo. Elementy zagnie\u017cd\u017cone, kt\u00f3re s\u0105 pierwszymi \
+elementami potomnymi, musz\u0105 okre\u015bla\u0107 zar\u00f3wno atrybut ibm:parentPid, jak i \
+atrybut ibm:childAlias.
+error.parentpid.and.childalias.useraction=Je\u015bli ten metatyp \
+jest przeznaczony dla elementu zagnie\u017cd\u017conego b\u0119d\u0105cego pierwszym elementem \
+potomnym, podaj brakuj\u0105cy atrybut. W przeciwnym razie usu\u0144 podany atrybut. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: Atrybut ibm:extendsAlias {2} jest duplikowany w pojedynczej hierarchii rozszerze\u0144. Identyfikatory PID to {0} i {1}. Dokonaj takiej zmiany, aby ka\u017cdy atrybut \
