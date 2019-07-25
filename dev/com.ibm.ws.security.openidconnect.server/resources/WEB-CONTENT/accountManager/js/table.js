@@ -321,6 +321,8 @@ var table = (function() {
                 // Get the replaced row in the table.
                 $currentTableRow = __getTableRowByName(name, authType);
                 $currentTableRow.addClass("rowMatched");
+                // Row elements were replaced ... so reset the key traversing event handlers.
+                tableUtils.initTableKeyTraversing(tableId, $currentTableRow);
                 __enableRowActions(authData.authID);
 
                 // Row was replaced so switch out the return focus button to the
