@@ -10,15 +10,30 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls.KafkaTlsTest;
+
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+
+/**
+ * Suite for tests which run against a TLS enabled kafka broker
+ */
 @RunWith(Suite.class)
-@SuiteClasses({
-                PlaintextTests.class,
-                TlsTests.class,
+@SuiteClasses({ KafkaTlsTest.class,
 })
-public class FATSuite {
+public class TlsTests {
+
+    @ClassRule
+    public static KafkaTlsContainer kafkaContainer = new KafkaTlsContainer();
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+    }
 
 }
