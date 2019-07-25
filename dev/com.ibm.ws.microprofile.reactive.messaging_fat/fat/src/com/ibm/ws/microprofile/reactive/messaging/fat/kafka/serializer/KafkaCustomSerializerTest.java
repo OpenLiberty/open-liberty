@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleOutgoingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.FATSuite.kafkaContainer;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
@@ -28,6 +27,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PropertiesAsset;
 
 import componenttest.annotation.Server;
@@ -49,14 +49,14 @@ public class KafkaCustomSerializerTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ConnectorProperties outgoingProperties = simpleOutgoingChannel(kafkaContainer, MyDataMessagingBean.OUT_CHANNEL);
+        ConnectorProperties outgoingProperties = simpleOutgoingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean.OUT_CHANNEL);
         outgoingProperties.addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MyDataSerializer.class.getName());
 
-        ConnectorProperties incomingProperties = simpleIncomingChannel(kafkaContainer, MyDataMessagingBean.IN_CHANNEL, MyDataMessagingBean.GROUP_ID);
+        ConnectorProperties incomingProperties = simpleIncomingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean.IN_CHANNEL, MyDataMessagingBean.GROUP_ID);
         incomingProperties.addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MyDataDeserializer.class.getName());
 
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, kafkaContainer.getBootstrapServers())
+                        .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
                         .include(incomingProperties)
                         .include(outgoingProperties);
 

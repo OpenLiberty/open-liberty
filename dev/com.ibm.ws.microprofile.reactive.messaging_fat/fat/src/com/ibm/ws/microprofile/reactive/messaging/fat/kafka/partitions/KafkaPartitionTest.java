@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.FATSuite.kafkaContainer;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,8 +30,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.FATSuite;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PropertiesAsset;
 
 import componenttest.annotation.Server;
@@ -53,7 +52,7 @@ public class KafkaPartitionTest {
     public static void setup() throws Exception {
         // Create a topic with two partitions
         Map<String, Object> adminClientProps = new HashMap<>();
-        adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, FATSuite.kafkaContainer.getBootstrapServers());
+        adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, PlaintextTests.kafkaContainer.getBootstrapServers());
         AdminClient adminClient = AdminClient.create(adminClientProps);
 
         NewTopic newTopic = new NewTopic(PartitionTestReceptionBean.CHANNEL_NAME, 2, (short) 1);
@@ -61,8 +60,9 @@ public class KafkaPartitionTest {
 
         // Create and deploy the app
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(kafkaContainer, PartitionTestReceptionBean.CHANNEL_NAME, KafkaPartitionTestServlet.APP_GROUPID));
+                        .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.kafkaContainer, PartitionTestReceptionBean.CHANNEL_NAME,
+                                                                           KafkaPartitionTestServlet.APP_GROUPID));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(KafkaTestClient.class.getPackage())
