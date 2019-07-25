@@ -208,13 +208,11 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
     }
 
     public void writeEntire(
-        TargetsTableTimeStampImpl stampTable,
         TargetsTableClassesImpl classTable,
         TargetsTableAnnotationsImpl targetTable) throws IOException {
 
         writeBegin();
 
-        writeFragment(stampTable);
         writeFragment(classTable);
         writeFragment(targetTable);
         writeStrings();

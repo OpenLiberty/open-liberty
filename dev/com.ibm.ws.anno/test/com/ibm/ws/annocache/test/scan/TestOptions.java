@@ -15,14 +15,13 @@ public class TestOptions {
 
     public TestOptions(
         String title, String description,
-        boolean useJandex, boolean useJandexFull, int scanThreads,
+        boolean useJandex, int scanThreads,
         boolean ignoreMissingPackages, boolean ignoreMissingInterfaces) {
 
         this.title = title;
         this.description = description;
 
-        this.scanOptions = new TestOptions_Scan(
-            useJandex, useJandexFull, scanThreads);
+        this.scanOptions = new TestOptions_Scan(useJandex, scanThreads);
         this.cacheOptions = null;
 
         this.ignoreMissingPackages = ignoreMissingPackages;
@@ -31,26 +30,21 @@ public class TestOptions {
 
     public TestOptions(
         String title, String description,
-        boolean useJandex, boolean useJandexFull, int scanThreads,
+        boolean useJandex, int scanThreads,
         String storageSuffix, boolean cleanStorage, int writeThreads,
-        boolean omitJandexWrite, boolean separateContainers,
-        boolean useJandexFormat, boolean readJandexFull,
-        boolean useBinaryFormat,
+        boolean useJandexFormat, boolean useBinaryFormat,
         boolean ignoreMissingPackages, boolean ignoreMissingInterfaces,
         boolean readOnly, boolean alwaysValid) {
 
         this.title = title;
         this.description = description;
 
-        this.scanOptions = new TestOptions_Scan(
-            useJandex, useJandexFull, scanThreads);
+        this.scanOptions = new TestOptions_Scan(useJandex, scanThreads);
         this.cacheOptions = new TestOptions_Cache(
             storageSuffix, cleanStorage,
             readOnly, alwaysValid,
             writeThreads,
-            omitJandexWrite, separateContainers,
-            useJandexFormat, readJandexFull,
-            useBinaryFormat);
+            useJandexFormat, useBinaryFormat);
 
         this.ignoreMissingPackages = ignoreMissingPackages;
         this.ignoreMissingInterfaces = ignoreMissingInterfaces;
@@ -58,25 +52,20 @@ public class TestOptions {
 
     public TestOptions(
         String title, String description,
-        boolean useJandex, boolean useJandexFull, int scanThreads,
+        boolean useJandex, int scanThreads,
         String storageSuffix, boolean cleanStorage,
         boolean readOnly, boolean alwaysValid, int writeThreads,
-        boolean omitJandexWrite, boolean separateContainers,
-        boolean useJandexFormat, boolean readJandexFull, 
-        boolean useBinaryFormat,
+        boolean useJandexFormat, boolean useBinaryFormat,
         boolean ignoreMissingPackages, boolean ignoreMissingInterfaces) {
 
         this.title = title;
         this.description = description;
 
-        this.scanOptions = new TestOptions_Scan(
-            useJandex, useJandexFull, scanThreads);
+        this.scanOptions = new TestOptions_Scan(useJandex, scanThreads);
         this.cacheOptions = new TestOptions_Cache(
            storageSuffix, cleanStorage,
            readOnly, alwaysValid, writeThreads,
-           omitJandexWrite, separateContainers,
-           useJandexFormat, readJandexFull,
-           useBinaryFormat);
+           useJandexFormat, useBinaryFormat);
 
         this.ignoreMissingPackages = ignoreMissingPackages;
         this.ignoreMissingInterfaces = ignoreMissingInterfaces;

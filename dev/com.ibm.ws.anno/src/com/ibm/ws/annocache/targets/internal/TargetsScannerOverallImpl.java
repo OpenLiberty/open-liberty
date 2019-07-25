@@ -262,9 +262,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     @Trivial
     public TargetsTableImpl getTargetsTable(String classSourceName) {
-    	synchronized ( getTargetsControl() ) {
-    		return super.getTargetsTable(classSourceName);
-    	}
+        synchronized ( getTargetsControl() ) {
+            return super.getTargetsTable(classSourceName);
+        }
     }
 
     /**
@@ -497,33 +497,33 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
 
     protected void setChangedTargetsTable(String classSourceName, String reason, boolean isChanged) {
-    	synchronized( getTargetsControl() ) {
-    		getChangedTargetsTableReasons().put(classSourceName, reason);
+        synchronized( getTargetsControl() ) {
+            getChangedTargetsTableReasons().put(classSourceName, reason);
 
-    		if ( isChanged ) {
-    			getChangedTargetsTable().add(classSourceName);
-    		}
-    	}
+            if ( isChanged ) {
+                getChangedTargetsTable().add(classSourceName);
+            }
+        }
     }
 
     public String getChangedTargetsTableReason(String classSourceName) {
-    	synchronized( getTargetsControl() ) {    	
-    		return getChangedTargetsTableReasons().get(classSourceName);
-    	}
+        synchronized( getTargetsControl() ) {        
+            return getChangedTargetsTableReasons().get(classSourceName);
+        }
     }
 
     public boolean isChangedTargetsTable(String classSourceName) {
-    	synchronized( getTargetsControl() ) {
-    		return getChangedTargetsTable().contains(classSourceName);
-    	}
+        synchronized( getTargetsControl() ) {
+            return getChangedTargetsTable().contains(classSourceName);
+        }
     }
 
     protected void putTargetsTable(String classSourceName, TargetsTableImpl targetsTable,
                                   String reason, boolean isChanged) {
-    	synchronized ( getTargetsControl() ) {
-    		putTargetsTable(classSourceName, targetsTable);
-    		setChangedTargetsTable(classSourceName, reason, isChanged);
-    	}
+        synchronized ( getTargetsControl() ) {
+            putTargetsTable(classSourceName, targetsTable);
+            setChangedTargetsTable(classSourceName, reason, isChanged);
+        }
     }
 
     // Summary for the targets tables.
@@ -707,15 +707,15 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
 
         synchronized ( conData ) {
-        	TargetsTableImpl priorTargetsTable = getTargetsTable(classSourceName);
-        	if ( priorTargetsTable != null ) {
-        		boolean priorIsChanged = isChangedTargetsTable(classSourceName);
-        		if ( useHash != null ) {
-            		String priorIsChangedReason = getChangedTargetsTableReason(classSourceName);
-        			logger.logp(Level.FINER, CLASS_NAME, methodName,
-        				priorResult("Internal class source " + classSourceName, priorIsChangedReason, priorIsChanged));
-        		}
-        		return !priorIsChanged;
+            TargetsTableImpl priorTargetsTable = getTargetsTable(classSourceName);
+            if ( priorTargetsTable != null ) {
+                boolean priorIsChanged = isChangedTargetsTable(classSourceName);
+                if ( useHash != null ) {
+                    String priorIsChangedReason = getChangedTargetsTableReason(classSourceName);
+                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        priorResult("Internal class source " + classSourceName, priorIsChangedReason, priorIsChanged));
+                }
+                return !priorIsChanged;
             }
 
             String currentStamp = classSource.getStamp();
@@ -758,9 +758,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             TargetsTableImpl priorTargets = createIsolatedTargetsTable(classSourceName, currentStamp);
 
             String isValidReason;
-            if ( !conData.hasRequiredFiles() ) {
+            if ( !conData.hasCoreDataFile() ) {
                 isValidReason = "New data";
-            } else if ( !conData.basicReadData(priorTargets) ) {
+            } else if ( !conData.read(priorTargets) ) {
                 isValidReason = "Read failure";
             } else if ( !newTargets.getClassTable().sameAs( priorTargets.getClassTable(), HAVE_DIFFERENT_INTERN_MAPS ) ) {
                 isValidReason = "Change to classes";
@@ -785,21 +785,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                     new Object[] { useHash, classSourceName, isValid, isValidReason });
             }
 
-            if ( isValid ) {
-                conData.rewriteStamp( modData, newTargets.getStampTable() );
-            } else {
-                conData.basicWriteData(modData, newTargets);
+            conData.writeStamp(modData, newTargets);
+            if ( !isValid ) {
+                conData.writeData(modData, newTargets);
             }
-
-            // Has to be different than the locally stored targets:
-            // The data on the targets table is shared between scanners.
-
             conData.setTargetsTable(newTargets);
 
             putTargetsTable(
-            	classSourceName,
-            	internTargetsTable(newTargets),
-            	isValidReason, !isValid);
+                classSourceName,
+                internTargetsTable(newTargets),
+                isValidReason, !isValid);
 
             if ( useHash != null ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -937,14 +932,15 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
 
             synchronized ( conData ) {
-            	conData.basicWriteData(modData, newTargets);
-            	conData.setTargetsTable(newTargets);
+                conData.writeStamp(modData, newTargets);
+                conData.writeData(modData, newTargets);
+                conData.setTargetsTable(newTargets);
             }
 
             putTargetsTable(
-            	classSourceName,
-            	internTargetsTable(newTargets),
-            	"New data", false);
+                classSourceName,
+                internTargetsTable(newTargets),
+                "New data", false);
         }
 
         if ( useHashText != null ) {
@@ -1018,8 +1014,11 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             Runnable validator = new Runnable() {
                 @Override
                 public void run() {
-                    validContainers[useSourceNo] = validInternalContainer(childClassSource, childScanPolicy);
-                    validatorPool.completeExecution();
+                    try {
+                        validContainers[useSourceNo] = validInternalContainer(childClassSource, childScanPolicy);
+                    } finally {
+                        validatorPool.completeExecution();
+                    }
                 }
             };
 
@@ -1106,36 +1105,41 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             Runnable validator = new Runnable() {
                 @Override
                 public void run() {
-                    String classSourceStamp = childClassSource.getStamp();
+                    try {
+                        String classSourceStamp = childClassSource.getStamp();
 
-                    TargetsTableImpl newTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);
+                        TargetsTableImpl newTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);
 
-                    scanInternal(childClassSource,
-                        TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
-                        TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                        newTargets);
+                        scanInternal(childClassSource,
+                            TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
+                            TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
+                            newTargets);
 
-                    TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+                        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
 
-                    synchronized ( conData ) {
-                    	conData.basicWriteData(modData, newTargets);
-                    	conData.setTargetsTable(newTargets);
+                        synchronized ( conData ) {
+                            conData.writeStamp(modData, newTargets);
+                            conData.writeData(modData, newTargets);
+
+                            conData.setTargetsTable(newTargets);
+                        }
+
+                        putTargetsTable(
+                            classSourceName,
+                            internTargetsTable(newTargets),
+                            "New data", false);
+
+                    } finally {
+                        completionPool.completeExecution();
                     }
-
-                    putTargetsTable(
-                    	classSourceName,
-                    	internTargetsTable(newTargets),
-                    	"New data", false);
-
-                    validatorPool.completeExecution();
                 }
             };
 
-            validatorPool.execute(validator);
+            completionPool.execute(validator);
         }
 
         try {
-            validatorPool.waitForCompletion(); // throws InterruptedException
+            completionPool.waitForCompletion(); // throws InterruptedException
         } catch ( InterruptedException e ) {
             // CWWKC00??W 
             logger.logp(Level.WARNING, CLASS_NAME, methodName,
@@ -1576,7 +1580,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             if ( getPolicyCount(scanPolicy) == 0 ) {
                 continue;
             }
-            
+
             try {
                 readThreads[scanPolicy.ordinal()].join(); // throws InterruptedException
             } catch ( InterruptedException e ) {
@@ -1624,12 +1628,12 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         TargetsTableImpl cachedResultData;
 
         synchronized( resultCon ) {
-            if ( !resultCon.exists() || !resultCon.hasRequiredFiles() ) {
+            if ( !resultCon.exists() || !resultCon.hasCoreDataFile() ) {
                 return null;
             }
 
             cachedResultData = createResultTargetsTable(scanPolicy, resultCon);
-            if ( !resultCon.basicReadData(cachedResultData) ) {
+            if ( !resultCon.read(cachedResultData) ) {
                 return null;
             }
         }
@@ -1879,33 +1883,4 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                     "Result [ {0} ] [ {1} ]",
                     new Object[] { ScanPolicy.EXTERNAL.name(), Integer.valueOf(totalAnnotations) });
     }
-
-//
-//            if ( !packageAnnotationNames.isEmpty() ) {
-//                logger.logp(Level.FINER, CLASS_NAME, methodName, "Package annotations [ {0} ]", Integer.valueOf( packageAnnotationNames.size()));
-//                for ( String annotationName : packageAnnotationNames ) {
-//                    logger.logp(Level.FINER, CLASS_NAME, methodName, "  [ {0} ]", annotationName);
-//                }
-//            }
-//
-//            if ( !classAnnotationNames.isEmpty() ) {
-//                logger.logp(Level.FINER, CLASS_NAME, methodName, "Class annotations [ {0} ]", Integer.valueOf(classAnnotationNames.size()));
-//                for ( String annotationName : classAnnotationNames ) {
-//                    logger.logp(Level.FINER, CLASS_NAME, methodName, "  [ {0} ]", annotationName);
-//                }
-//            }
-//
-//            if ( !fieldAnnotationNames.isEmpty() ) {
-//                logger.logp(Level.FINER, CLASS_NAME, methodName, "Field annotations [ {0} ]", Integer.valueOf(fieldAnnotationNames.size()));
-//                for ( String annotationName : fieldAnnotationNames ) {
-//                    logger.logp(Level.FINER, CLASS_NAME, methodName, "  [ {0} ]", annotationName);
-//                }
-//            }
-//
-//            if ( !methodAnnotationNames.isEmpty() ) {
-//                logger.logp(Level.FINER, CLASS_NAME, methodName, "Method annotations [ {0} ]", Integer.valueOf(methodAnnotationNames.size()));
-//                for ( String annotationName : methodAnnotationNames ) {
-//                    logger.logp(Level.FINER, CLASS_NAME, methodName, "  [ {0} ]", annotationName);
-//                }
-//            }
 }

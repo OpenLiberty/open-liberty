@@ -85,11 +85,6 @@ public class SCITest_SCIAbsolute_war_Test extends Test_Base {
     }
 
     @Test
-    public void testSCI_SCIAbsolute_SINGLE_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_JANDEX_FULL); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
     public void testSCI_SCIAbsolute_MULTI() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI); // 'runSuiteTest' throws Exception
     }
@@ -98,12 +93,6 @@ public class SCITest_SCIAbsolute_war_Test extends Test_Base {
     public void testSCI_SCIAbsolute_MULTI_JANDEX() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX); // 'runSuiteTest' throws Exception
     }
-
-    @Test
-    public void testSCI_SCIAbsolute_MULTI_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX_FULL); // 'runSuiteTest' throws Exception
-    }
-
 
     @Test
     public void testSCI_SCIAbsolute_SINGLE_WRITE() throws Exception {
@@ -134,50 +123,4 @@ public class SCITest_SCIAbsolute_war_Test extends Test_Base {
     public void testSCI_SCIAbsolute_MULTI_WRITE_ASYNC() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_WRITE_ASYNC); // 'runSuiteTest' throws Exception
     }
-
-    //
-
-    @Test
-    public void testSCI_SCI_Absolute_SINGLE_WRITE_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }
-    
-    @Test
-    public void testSCI_SCI_Absolute_SINGLE_READ_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }    
-
-    @Test
-    public void testSCI_SCI_Absolute_MULTI_WRITE_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_WRITE_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }
-    
-    @Test
-    public void testSCI_SCI_Absolute_MULTI_READ_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_READ_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }
-
-    //
-
-    @Test
-    public void testSCI_SCI_Absolute_SINGLE_WRITE_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_SEPARATE); // 'runSuiteTest' throws Exception
-    }
-    
-    @Test
-    public void testSCI_SCI_Absolute_SINGLE_READ_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_SEPARATE); // 'runSuiteTest' throws Exception
-    }    
-
-    @Test
-    public void testSCI_SCI_Absolute_MULTI_WRITE_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_WRITE_SEPARATE); // 'runSuiteTest' throws Exception
-    }
-    
-    @Test
-    public void testSCI_SCI_Absolute_MULTI_READ_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_READ_SEPARATE); // 'runSuiteTest' throws Exception
-    }
-    
-
 }

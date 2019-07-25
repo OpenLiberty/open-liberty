@@ -60,11 +60,6 @@ public class JPATest_JPATest_jar_Test extends Test_Base {
     }
 
     // @Test
-    public void testJPATest_JPATest_jar_SINGLE_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_JANDEX_FULL); // 'runSuiteTest' throws Exception
-    }
-
-    // @Test
     public void testJPATest_JPATest_jar_MULTI() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI); // 'runSuiteTest' throws Exception
     }
@@ -72,11 +67,6 @@ public class JPATest_JPATest_jar_Test extends Test_Base {
     // @Test
     public void testJPATest_JPATest_jar_MULTI_JANDEX() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX); // 'runSuiteTest' throws Exception
-    }
-
-    // @Test
-    public void testJPATest_JPATest_jar_MULTI_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX_FULL); // 'runSuiteTest' throws Exception
     }
 
     // @Test

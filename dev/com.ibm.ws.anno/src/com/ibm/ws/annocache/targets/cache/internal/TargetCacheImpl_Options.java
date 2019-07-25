@@ -20,7 +20,6 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         String dir,
         boolean readOnly, boolean alwaysValid, // boolean validate,
         int writeThreads, int writeLimit,
-        boolean separateContainers,
         boolean useJandexFormat, boolean useBinaryFormat,
         boolean logQueries) {
 
@@ -34,7 +33,6 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         this.writeThreads = writeThreads;
         this.writeLimit = writeLimit;
 
-        this.separateContainers = separateContainers;
         this.useJandexFormat = useJandexFormat;
         this.useBinaryFormat = useBinaryFormat;
 
@@ -54,7 +52,6 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
                 " AlwaysValid " + Boolean.toString(alwaysValid) + "," +
                 " WriteThreads " + Integer.toString(writeThreads) + "," +
                 " WriteLimit " + Integer.toString(writeLimit) + "," +
-                " SeparateContainers " + Boolean.toString(separateContainers) +
                 " UseJandexFormat " + Boolean.toString(useJandexFormat) +
                 " UseBinaryFormat " + Boolean.toString(useBinaryFormat) +
                 " LogQueries " + Boolean.toString(logQueries) +
@@ -164,21 +161,6 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
     @Override
     public void setWriteLimit(int writeLimit) {
         this.writeLimit = writeLimit;
-    }
-
-    //
-
-    private boolean separateContainers;
-
-    @Override
-    public void setSeparateContainers(boolean separateContainers) {
-        this.separateContainers = separateContainers;
-    }
-
-    @Override
-    @Trivial
-    public boolean getSeparateContainers() {
-        return separateContainers;
     }
 
     //

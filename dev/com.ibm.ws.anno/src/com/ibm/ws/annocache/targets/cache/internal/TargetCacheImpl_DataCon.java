@@ -21,8 +21,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.jandex.internal.Jandex_Utils;
 import com.ibm.ws.annocache.jandex.internal.SparseIndex;
 import com.ibm.ws.annocache.targets.internal.TargetsScannerOverallImpl;
-import com.ibm.ws.annocache.targets.internal.TargetsTableAnnotationsImpl;
-import com.ibm.ws.annocache.targets.internal.TargetsTableClassesImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableTimeStampImpl;
 import com.ibm.wsspi.annocache.classsource.ClassSource;
@@ -57,7 +55,9 @@ import com.ibm.wsspi.annocache.util.Util_Consumer;
  *
  * Each part of the container has its own table.
  */
-public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
+public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
+    implements TargetCache_ExternalConstants {
+
     private static final String CLASS_NAME = TargetCacheImpl_DataCon.class.getSimpleName();
 
     //
@@ -85,75 +85,27 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     public static final boolean DO_READ_FULL = TargetCacheImpl_ReaderBinary.DO_READ_FULL;
 
     public TargetCacheImpl_DataCon(
-        TargetCacheImpl_DataBase parentCache,
+        TargetCacheImpl_DataBase parentData,
         String conName, String e_conName, File conFile,
         boolean isSource) {
 
-        super( parentCache.getFactory(), conName, e_conName, conFile );
+        super( parentData.getFactory(), conName, e_conName, conFile );
 
         // (new Throwable("DataCon [ " + conName + " : " + ((conFile == null) ? "*** NULL ***" : conFile.getAbsolutePath()) + " ]")).printStackTrace(System.out);
 
         String methodName = "<init>";
 
-        this.parentData = parentCache;
+        this.parentData = parentData;
 
         this.isSource = isSource;
 
-        if ( this.getUseSeparateCaches() ) {
-            // When separating container data, do not write to the component file.
-            // Write a time stamp file and either a jandex file or a classes file and
-            // an annotation targets file.
+        this.stampLink = createPeerLink(TIMESTAMP_NAME, TIMESTAMP_PREFIX);
 
-            this.combinedFileData = null;
-
-            this.stampDataFile = createFileData(TargetCache_ExternalConstants.TIMESTAMP_NAME);
-
-            if ( this.getUseJandexFormat() ) {
-                this.jandexFileData = createFileData(TargetCache_ExternalConstants.JANDEX_NAME);
-                this.classesFileData = null;
-                this.targetsFileData = null;
-            } else {
-                this.jandexFileData = null;
-                this.classesFileData = createFileData(TargetCache_ExternalConstants.CLASSES_NAME);
-                this.targetsFileData = createFileData(TargetCache_ExternalConstants.ANNO_TARGETS_NAME);
-            }
-
+        // !isSource forces !useJandexFormat.
+        if ( this.getUseJandexFormat() ) {
+            this.coreDataLink = createPeerLink(JANDEX_NAME, JANDEX_PREFIX);
         } else {
-            // When combining container data, if jandex formatting is being used,
-            // write to a stamp file and to a jandex data file.  But if jandex formatting
-            // is not being used, write to a component file.  In either case, do not
-            // write to a classes file or to a targets file.
-
-            if ( this.getUseJandexFormat() ) {
-                this.combinedFileData = null;
-
-                this.stampDataFile = createFileData( TargetCache_ExternalConstants.TIMESTAMP_NAME, getDataFile() );
-
-                // Put on a jandex prefix: The first character cannot be "C_".
-
-                File stampFile = this.stampDataFile.getFile();
-
-                File jandexFile;
-                if ( stampFile == null ) {
-                    jandexFile = null;
-                } else {
-                    String jandexName =
-                        TargetCache_ExternalConstants.JANDEX_PREFIX +
-                        stampFile.getName();
-                    jandexFile = new File( stampFile.getParentFile(), jandexName );
-                }
-
-                this.jandexFileData = createFileData(TargetCache_ExternalConstants.JANDEX_NAME, jandexFile);
-
-            } else {
-                this.combinedFileData = createFileData( TargetCache_ExternalConstants.COMPONENT_NAME, getDataFile() );
-
-                this.stampDataFile = null;
-                this.jandexFileData = null;
-            }
-
-            this.classesFileData = null;
-            this.targetsFileData= null;
+            this.coreDataLink = createPeerLink(COMBINED_NAME, COMBINED_PREFIX);
         }
 
         this.targetsTable = null;
@@ -161,11 +113,11 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "Container [ {0} ] of [ {1} ]",
-                new Object[] { getName(), parentCache.getName() });
+                new Object[] { getName(), parentData.getName() });
 
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "IsComponent [ {0} ] Separate [ {1} ]",
-                    new Object[] { this.isSource, getUseSeparateCaches() });
+                    "IsComponent [ {0} ]", new Object[] { this.isSource });
+
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "Use Jandex Format [ {0} ] Use Binary Format [ {1} ]",
                     new Object[] { getUseJandexFormat(), getUseBinaryFormat() });
@@ -173,32 +125,28 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
                     "Write Threshold [ {0} ]",
                     new Object[] { getWriteLimit() });
 
-            if ( this.combinedFileData != null ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.combinedFileData);
-            }
-            if ( this.stampDataFile != null ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.stampDataFile);
-            }
-            if ( this.jandexFileData != null ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.jandexFileData);
-            }
-            if ( this.classesFileData != null ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.classesFileData);
-            }
-            if ( this.targetsFileData != null ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.targetsFileData);
-            }
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.stampLink);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.coreDataLink);
         }
     }
 
     //
 
-    protected TargetCacheImpl_DataFile createFileData(String cacheName) {
-        return new TargetCacheImpl_DataFile(cacheName, getDataFile(cacheName) );
-    }
+    /**
+     * Create a file as a peer of the data file.
+     *
+     * @param cacheName A name to associate with the file.
+     * @param cachePrefix The prefix to use for the file.
+     *
+     * @return A peer of the data file that has the supplied prefix.
+     */
+    protected TargetCacheImpl_DataFile createPeerLink(String cacheName, String cachePrefix) {
+        File useDataFile = getDataFile();
 
-    protected TargetCacheImpl_DataFile createFileData(String cacheName, File cacheFile) {
-        return new TargetCacheImpl_DataFile(cacheName, cacheFile);
+        String peerName = cachePrefix + useDataFile.getName();
+        File peerFile = new File(useDataFile, peerName);
+
+        return new TargetCacheImpl_DataFile(cacheName, peerFile);
     }
 
     // DataApp for simple container data; DataMod for policy container data.
@@ -220,13 +168,6 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     @Trivial
     public boolean getIsResult() {
         return !isSource;
-    }
-
-    //
-
-    @Trivial
-    public boolean getUseSeparateCaches() {
-        return getCacheOptions().getSeparateContainers();
     }
 
     /**
@@ -275,16 +216,11 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
      *
      * @return True or false telling if the read was successful.
      */
-    public boolean basicReadData(TargetsTableImpl targetData) {
+    public boolean read(TargetsTableImpl targetData) {
         if ( getUseJandexFormat() ) {
-            return ( basicReadStamp( targetData.getStampTable() ) &&
-                     basicReadJandex(targetData) );
-        } else if ( getUseSeparateCaches() ) {
-            return ( basicReadStamp( targetData.getStampTable() ) &&
-                     basicReadClasses( targetData.getClassTable() ) && 
-                     basicReadTargets( targetData.getAnnotationTable() ) );
+            return ( readJandex(targetData) );
         } else {
-            return ( basicReadDataCombined(targetData) );
+            return ( readCoreData(targetData) );
         }
     }
 
@@ -302,68 +238,61 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
      * @param modData The module which will perform the write.
      * @param targetData The data which is to be written.
      */
-    public void basicWriteData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
+    public void writeData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         if ( !shouldWrite("Full data") ) {
             return;
-        } else if ( getWriteLimit() > targetData.getClassNames().size() ) {
-            return;
-        } else if ( targetData.getUsedJandex() ) {
+        }
+
+        if ( getWriteLimit() > targetData.getClassNames().size() ) {
             return;
         }
 
         if ( getUseJandexFormat() ) {
-            basicWriteStamp( modData, targetData.getStampTable() );
-            basicWriteJandex( modData, targetData.consumeJandexIndex() );
-
-        } else if ( getUseSeparateCaches() ) {
-            basicWriteStamp( modData, targetData.getStampTable() );
-            basicWriteClasses( modData, targetData.getClassTable() );
-            basicWriteTargets( modData, targetData.getAnnotationTable() );
-
+            writeJandex( modData, targetData.consumeJandexIndex() );
         } else {
-            basicWriteDataCombined(modData, targetData);
+            writeCoreData(modData, targetData);
         }
     }
 
     // File structure for time stamp data.
     // Only used when data is separate or when jandex format is being used. 
 
-    private final TargetCacheImpl_DataFile stampDataFile;
+    private final TargetCacheImpl_DataFile stampLink;
  
     @Trivial
-    protected TargetCacheImpl_DataFile getStampFileData() {
-        return stampDataFile;
+    protected TargetCacheImpl_DataFile getStampLink() {
+        return stampLink;
     }
 
     @Trivial
     public File getStampFile() {
-        return stampDataFile.getFile();
+        return stampLink.getFile();
     }
 
     @Trivial
     public boolean getHasStampFile() {
-        return stampDataFile.getHasFile();
+        return stampLink.getHasFile();
     }
 
     protected void setHasStampFile(boolean hasStampFile) {
-        stampDataFile.setHasFile(hasStampFile);
+        stampLink.setHasFile(hasStampFile);
     }
 
-    private boolean basicReadStamp(TargetsTableTimeStampImpl useStampTable) {
+    private boolean readStamp(TargetsTableTimeStampImpl useStampTable) {
         long readStart = System.nanoTime();
 
         boolean didRead;
 
-        File useStampFile = getStampFile();
+        File stampFile = getStampFile();
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useStampFile, !DO_READ_STRINGS, !DO_READ_FULL,
+                stampFile, !DO_READ_STRINGS, !DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(useStampTable);
                 } );
         } else {
-            didRead = read(useStampFile, useStampTable);
+            didRead = read(stampFile, useStampTable);
         }
 
         @SuppressWarnings("unused")
@@ -372,13 +301,13 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         return didRead;
     }
 
-    private void basicWriteStamp(
+    private void writeStamp(
         TargetCacheImpl_DataMod modData,
         TargetsTableTimeStampImpl useStampTable) {
 
         String description;
         if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] TimeStamp [ " + getStampFileData() + " ]";
+            description = "Container [ " + getName() + " ] TimeStamp [ " + getStampLink() + " ]";
         } else {
             description = null;
         }
@@ -405,263 +334,59 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
             writeAction, writeActionBinary);
     }
 
-    /**
-     * Write the stamp table to an existing targets table.
-     *
-     * @param modData The module which will perform the write.
-     * @param useStampTable The data which is to be written.
-     */
-    private void basicRewriteStamp(
-        TargetCacheImpl_DataMod modData,
-        TargetsTableTimeStampImpl useStampTable) {
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Container file [ " + getStampFileData() + " ]";
-        } else {
-            description = null;
-        }
-
-        Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
-        Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary;
-        
-        if ( getUseBinaryFormat() ) {
-            writeAction = null;
-            writeActionBinary =
-                (TargetCacheImpl_WriterBinary useWriter) -> {
-                    useWriter.rewrite(useStampTable);
-                };
-        } else {
-            writeAction =
-                (TargetCacheImpl_Writer useWriter) -> {
-                    useWriter.write(useStampTable);
-                };
-            writeActionBinary = null;
-        }
-
-        modData.scheduleWrite(
-            description, getCombinedFile(), DO_NOT_TRUNCATE,
-            writeAction, writeActionBinary);
-    }
-
-    // File structure for annotation targets data.
-    // Only used when data is separate and jandex format is not being used.
-
-    private final TargetCacheImpl_DataFile targetsFileData;
-
-    @Trivial
-    protected TargetCacheImpl_DataFile getTargetsFileData() {
-        return targetsFileData;
-    }
-
-    public File getTargetsFile() {
-        return targetsFileData.getFile();
-    }
-
-    @Trivial
-    public boolean getHasTargetsFile() {
-        return targetsFileData.getHasFile();
-    }
-
-    protected void setHasTargetsFile(boolean hasTargetsFile) {
-        targetsFileData.setHasFile(hasTargetsFile);
-    }
-
-    private boolean basicReadTargets(TargetsTableAnnotationsImpl targetTable) {
-        long readStart = System.nanoTime();
-
-        File useTargetsFile = getTargetsFile();
-
-        boolean didRead;
-
-        if ( getUseBinaryFormat() ) {
-            didRead = readBinary(
-                useTargetsFile, DO_READ_STRINGS, DO_READ_FULL,
-                (TargetCacheImpl_ReaderBinary reader) -> {
-                    reader.readEntire(targetTable);
-                } );
-        } else {
-            didRead = read(useTargetsFile, targetTable);
-        }
-
-        @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Targets");
-
-        // System.out.println("Read targets [ " + getName() + " ] [ " + readDuration + " ]");
-        
-        return didRead;
-    }
-
-    private void basicWriteTargets(
-        TargetCacheImpl_DataMod modData,
-        TargetsTableAnnotationsImpl targetTable) {
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Targets [ " + getTargetsFileData() + " ]";
-        } else {
-            description = null;
-        }
-
-        Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
-        Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary;
-
-        if ( getUseBinaryFormat() ) {
-            writeAction = null;
-            writeActionBinary =
-                (TargetCacheImpl_WriterBinary useWriter) -> {
-                    useWriter.writeEntire(targetTable);
-                };
-        } else {
-            writeAction =
-                (TargetCacheImpl_Writer useWriter) -> {
-                    useWriter.write(targetTable);
-                };
-            writeActionBinary = null;
-        }
-
-        modData.scheduleWrite(
-            description, getTargetsFile(), DO_TRUNCATE,
-            writeAction, writeActionBinary);
-    }
-
-    // File structure for classes data.
-    // Only used when data is separate and jandex format is not being used.
-
-    private final TargetCacheImpl_DataFile classesFileData;
-
-    @Trivial
-    protected TargetCacheImpl_DataFile getClassesFileData() {
-        return classesFileData;
-    }
-
-    @Trivial
-    public File getClassesFile() {
-        return classesFileData.getFile();
-    }
-
-    @Trivial
-    public boolean getHasClassesFile() {
-        return classesFileData.getHasFile();
-    }
-
-    protected void setHasClassesFile(boolean hasClassesFile) {
-        classesFileData.setHasFile(hasClassesFile);
-    }
-
-    private boolean basicReadClasses(TargetsTableClassesImpl classesTable) {
-        long readStart = System.nanoTime();
-
-        File useClassRefsFile = getClassesFile();
-
-        boolean didRead;
-
-        if ( getUseBinaryFormat() ) {
-            didRead = readBinary(
-                useClassRefsFile, DO_READ_STRINGS, DO_READ_FULL,
-                (TargetCacheImpl_ReaderBinary reader) -> {
-                    reader.readEntire(classesTable);
-                } );
-        } else {
-            didRead = read(useClassRefsFile, classesTable);
-        }
-
-        @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Classes");
-
-        // System.out.println("Read classes [ " + getName() + " ] [ " + readDuration + " ]");
-
-        return didRead;
-    }
-
-    private void basicWriteClasses(
-        TargetCacheImpl_DataMod modData,
-        TargetsTableClassesImpl classesTable) {
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Class references [ " + getClassesFileData() + " ]";
-        } else {
-            description = null;
-        }
-
-        Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
-        Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary;
-            
-        if ( getUseBinaryFormat() ) {
-            writeAction = null;
-            writeActionBinary =
-                (TargetCacheImpl_WriterBinary useWriter) -> {
-                    useWriter.writeEntire(classesTable);
-                };
-        } else {
-            writeAction =
-                (TargetCacheImpl_Writer useWriter) -> {
-                    useWriter.write(classesTable);
-                };
-            writeActionBinary = null;
-        }
-
-        modData.scheduleWrite(
-            description, getClassesFile(), DO_NOT_TRUNCATE,
-            writeAction, writeActionBinary);
-    }
-
     // File structure for combined data (stamp plus classes plus annotation
     // targets).
     //
     // Only used when data is separate and jandex format is not being used.
 
-    private final TargetCacheImpl_DataFile combinedFileData;
+    private final TargetCacheImpl_DataFile coreDataLink;
  
     @Trivial
-    protected TargetCacheImpl_DataFile getCombinedFileData() {
-        return combinedFileData;
+    protected TargetCacheImpl_DataFile getCoreDataLink() {
+        return coreDataLink;
     }
 
     @Trivial
-    public File getCombinedFile() {
-        return combinedFileData.getFile();
+    public File getCoreDataFile() {
+        return coreDataLink.getFile();
     }
 
     @Trivial
-    public boolean getHasCombinedFile() {
-        return combinedFileData.getHasFile();
+    public boolean getHasCoreDataFile() {
+        return coreDataLink.getHasFile();
     }
 
-    protected void setHasCombinedFile(boolean hasCombinedFile) {
-        combinedFileData.setHasFile(hasCombinedFile);
+    protected void setHasCoreDataFile(boolean hasCombinedFile) {
+        coreDataLink.setHasFile(hasCombinedFile);
     }
 
-    public boolean basicReadDataCombined(TargetsTableImpl targetData) {
+    public boolean readCoreData(TargetsTableImpl targetData) {
         long readStart = System.nanoTime();
 
-        File useCombinedFile = getCombinedFile();
+        File coreDataFile = getCoreDataFile();
 
         boolean didRead;
 
         if ( getUseBinaryFormat() ) {
             didRead = readBinary(
-                useCombinedFile, DO_READ_STRINGS, DO_READ_FULL,
+                coreDataFile, DO_READ_STRINGS, DO_READ_FULL,
                 (TargetCacheImpl_ReaderBinary reader) -> {
                     reader.readEntire(
-                        targetData.getStampTable(),
                         targetData.getClassTable(),
                         targetData.getAnnotationTable() );
                 } );
 
         } else {
             didRead = read(
-                useCombinedFile,
-                targetData.getStampTable(),
+                coreDataFile,
                 targetData.getClassTable(),
                 targetData.getAnnotationTable() );
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Together");
+        long readDuration = addReadTime(readStart, "Read Core Data");
 
-        // System.out.println("Read combined [ " + getName() + " ] [ " + readDuration + " ]");
+        // System.out.println("Read Core Data [ " + getName() + " ] [ " + readDuration + " ]");
 
         return didRead;
     }
@@ -677,30 +402,28 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
      * @param modData The module which will perform the write.
      * @param targetData The data which is to be written.
      */
-    private void basicWriteDataCombined(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
+    private void writeCoreData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         String description;
         if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Container file [ " + getStampFileData() + " ]";
+            description = "Container [ " + getName() + " ] [ " + getCoreDataLink() + " ]";
         } else {
             description = null;
         }
 
         Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
         Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary;
-        
+
         if ( getUseBinaryFormat() ) {
             writeAction = null;
             writeActionBinary =
                 (TargetCacheImpl_WriterBinary useWriter) -> {
                     useWriter.writeEntire(
-                        targetData.getStampTable(),
                         targetData.getClassTable(),
                         targetData.getAnnotationTable() );
                 };
         } else {
             writeAction =
                 (TargetCacheImpl_Writer useWriter) -> {
-                    useWriter.write( targetData.getStampTable() );
                     useWriter.write( targetData.getClassTable() );
                     useWriter.write( targetData.getAnnotationTable() );
                 };
@@ -708,56 +431,32 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         }
 
         modData.scheduleWrite(
-            description, getCombinedFile(), DO_TRUNCATE,
+            description, getCoreDataFile(), DO_TRUNCATE,
             writeAction, writeActionBinary);
     }
 
-    // File structure for jandex data.
-    // Only used when jandex format is being used.
-
-    private final TargetCacheImpl_DataFile jandexFileData;
-
-    @Trivial
-    protected TargetCacheImpl_DataFile getJandexFileData() {
-        return jandexFileData;
-    }
-
-    @Trivial
-    public File getJandexFile() {
-        return jandexFileData.getFile();
-    }
-
-    @Trivial
-    public boolean getHasJandexFile() {
-        return jandexFileData.getHasFile();
-    }
-
-    protected void setHasJandexFile(boolean hasJandexFile) {
-        jandexFileData.setHasFile(hasJandexFile);
-    }
-
-    private boolean basicReadJandex(TargetsTableImpl targetData) {
+    private boolean readJandex(TargetsTableImpl targetData) {
         String methodName = "readJandex";
 
         long readStart = System.nanoTime();
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                "Container [ " + getName() + " ] Jandex File [ " + getJandexFileData() + " ]");
+                "Container [ " + getName() + " ] Jandex File [ " + getCoreDataLink() + " ]");
         }
 
-        File useJandexFile = getJandexFile();
-        String useJandexPath = useJandexFile.getPath();
+        File coreDataFile = getCoreDataFile();
+        String coreDataPath = coreDataFile.getPath();
   
         boolean didRead;
 
         try {
-            SparseIndex sparseIndex = Jandex_Utils.basicReadSparseIndex(useJandexPath);
+            SparseIndex sparseIndex = Jandex_Utils.basicReadSparseIndex(coreDataPath);
             targetData.transfer(sparseIndex);
             didRead = true;
 
         } catch ( IOException e ) {
-            readError( useJandexFile, e, Collections.emptyList() );
+            readError( coreDataFile, e, Collections.emptyList() );
             didRead = false;
         }
 
@@ -769,13 +468,13 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         return didRead;
     }
 
-    private void basicWriteJandex(
+    private void writeJandex(
         TargetCacheImpl_DataMod modData,
         Index jandexIndex) {
 
         String description;
         if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Jandex File [ " + getJandexFileData() + " ]";
+            description = "Container [ " + getName() + " ] Jandex File [ " + getCoreDataLink() + " ]";
         } else {
             description = null;
         }
@@ -785,7 +484,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
                 useWriter.write(jandexIndex);
             };
 
-        modData.scheduleWrite(description, getJandexFile(), DO_TRUNCATE, writeAction, null);
+        modData.scheduleWrite(description, getCoreDataFile(), DO_TRUNCATE, writeAction, null);
     }
 
     // Cache of the combined targets data.
@@ -848,35 +547,15 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     @SuppressWarnings("unused")
     private void clearFiles() {
-        // useJandexFormat only if isSource
-
-        if ( combinedFileData != null ) { // !useJandexFormat && !useSeparateCaches 
-            combinedFileData.setHasFile(false);
-        }
-        if ( stampDataFile != null ) { // useJandexFormat || useSeparateCaches
-            stampDataFile.setHasFile(false);
-        }
-        if ( targetsFileData != null ) { // !useJandexFormat && useSeparateCaches
-            targetsFileData.setHasFile(false);
-        }
-        if ( classesFileData != null ) { // !useJandexFormat && useSeparateCaches
-            classesFileData.setHasFile(false);
-        }
-        if ( jandexFileData != null ) { // useJandexFormat
-            jandexFileData.setHasFile(false);
-        }
+    	stampLink.setHasFile(false);
+    	coreDataLink.setHasFile(false);
     }
 
-    public boolean hasRequiredFiles() {
+    public boolean hasCoreDataFile() {
         if ( !shouldRead("Full read") ) {
             return false;
-
-        } else if ( getUseJandexFormat() ) {
-            return ( getHasStampFile() && getHasJandexFile() );
-        } else if ( getUseSeparateCaches() ) {
-            return ( getHasStampFile() && getHasTargetsFile() && getHasClassesFile() );
         } else {
-            return ( getHasCombinedFile() );
+            return ( getHasCoreDataFile() );
         }
     }
 
@@ -892,16 +571,12 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
      * @param modData The module which will perform the write.
      * @param stampData The stamp data which is to be written.
      */
-    public void rewriteStamp(TargetCacheImpl_DataMod modData, TargetsTableTimeStampImpl stampData) {
+    public void writeStamp(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         if ( !shouldWrite("Time stamp") ) {
             return;
         }
 
-        if ( getUseSeparateCaches() || getUseJandexFormat() ) {
-            basicWriteStamp(modData, stampData);
-        } else {
-            basicRewriteStamp(modData, stampData);
-        }
+        writeStamp( modData, targetData.getStampTable() );
     }
 
     //
@@ -925,18 +600,12 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     public String isValid(TargetsScannerOverallImpl scanner, String classSourceName, String currentStamp) {
         boolean useAlwaysValid = getAlwaysValid();
 
-        // If the current stamp is non-comparable, unless validity is forced,
-        // the answer is forced to non-valid.
-
         if ( currentStamp.equals(ClassSource.UNRECORDED_STAMP) ||
              currentStamp.equals(ClassSource.UNAVAILABLE_STAMP) ) {
             if ( !useAlwaysValid ) {
                 return "Stamp unavailable";
             }
         }
-
-        // If a table is stored to the container data, check it for
-        // a container difference.
 
         TargetsTableImpl useTable = getTargetsTable();
         if ( useTable != null ) {
@@ -949,30 +618,18 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
             }
         }
 
-        // If no table is stored to the container, and if no data
-        // is stored to cache, then the result must be non-valid.
-
-        if ( !hasRequiredFiles() ) {
-            return "No cache data";
+        if ( !getHasStampFile() ) {
+            return "No stamp file";
         }
-
-        // Data is available in the cache and validity is forced.
 
         if ( useAlwaysValid ) {
             return null;
         }
 
-        // Actually check the cached stamp value.
-        // The current stamp must be comparable.
-        // If the stamp could not be read, or is different, the result
-        // is non-valid.
-        //
-        // Otherwise, the result is valid.
-
         TargetsTableTimeStampImpl useStampTable =
             new TargetsTableTimeStampImpl(classSourceName);
 
-        if ( !basicReadStamp(useStampTable) ) {
+        if ( !readStamp(useStampTable) ) {
             return "Stamp read failure";
         } else if ( !useStampTable.getStamp().equals(currentStamp) ) {
             return "Stamp change";

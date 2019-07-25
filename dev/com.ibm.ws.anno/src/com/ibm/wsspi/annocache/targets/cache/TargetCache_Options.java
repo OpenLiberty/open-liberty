@@ -124,14 +124,6 @@ public interface TargetCache_Options {
     int getWriteLimit();
     void setWriteLimit(int writeLimit);
 
-    // Whether to write container data as multiple files.
-
-    boolean SEPARATE_CONTAINERS_DEFAULT = false;
-    String SEPARATE_CONTAINERS_PROPERTY_NAME = "anno.cache.separateContainers";
-
-    boolean getSeparateContainers();
-    void setSeparateContainers(boolean separateContainers);
-
     // Whether to manage container data using jandex indexes.
     //
     // Jandex format is meaningful only if caching is enabled

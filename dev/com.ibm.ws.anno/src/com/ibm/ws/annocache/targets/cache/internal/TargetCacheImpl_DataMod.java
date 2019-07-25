@@ -353,7 +353,10 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     }
 
     public void writeResultCon(ScanPolicy scanPolicy, TargetsTableImpl resultData) {
-        getResultCon(scanPolicy).basicWriteData(this, resultData);
+        TargetCacheImpl_DataCon resultCon = getResultCon(scanPolicy);
+
+        resultCon.writeStamp(this, resultData);
+        resultCon.writeData(this, resultData);
     }
 
     //

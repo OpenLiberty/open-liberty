@@ -78,7 +78,7 @@ public class BigAppTest extends AnnoCachingTest {
         ENABLED_POPULATED_BINARY(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary Format"),
         ENABLED_POPULATED_JANDEX(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Using Jandex Format"),
         ENABLED_POPULATED_BINARY_JANDEX(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary and Jandex Format"),
-        ENABLED_POPULATED_BINARY_JANDEX_FULL(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary and Jandex Full Format"),        
+        // ENABLED_POPULATED_BINARY_JANDEX_FULL(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary and Jandex Full Format"),        
         
         ENABLED_POPULATED_VALID(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Assumed Valid"),
         ENABLED_POPULATED_BINARY_VALID(CacheSetting.POST_BETA_ENABLED, "Enabled Populated Binary Format Assumed Valid"),
@@ -298,7 +298,7 @@ public class BigAppTest extends AnnoCachingTest {
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_BINARY);
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_JANDEX);
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_BINARY_JANDEX);
-        logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_BINARY_JANDEX_FULL);
+        // logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_BINARY_JANDEX_FULL);
 
         info(THIN_BANNER);
         logDifference(StartCase.ENABLED_POPULATED, StartCase.ENABLED_POPULATED_VALID);
@@ -464,12 +464,12 @@ public class BigAppTest extends AnnoCachingTest {
         collect(StartCase.ENABLED_POPULATED_BINARY_JANDEX);
     }
 
-    @Test
-    public void bigApp_testEnabledPopulatedBinaryJandexFull() throws Exception {
-        populateServer(PopulateCase.BINARY_JANDEX);
-        installJvmOptions("JvmOptions_Enabled_Binary_Jandex_Full.txt");
-        collect(StartCase.ENABLED_POPULATED_BINARY_JANDEX_FULL);
-    }
+//    @Test
+//    public void bigApp_testEnabledPopulatedBinaryJandexFull() throws Exception {
+//        populateServer(PopulateCase.BINARY_JANDEX);
+//        installJvmOptions("JvmOptions_Enabled_Binary_Jandex_Full.txt");
+//        collect(StartCase.ENABLED_POPULATED_BINARY_JANDEX_FULL);
+//    }
 
     //
 

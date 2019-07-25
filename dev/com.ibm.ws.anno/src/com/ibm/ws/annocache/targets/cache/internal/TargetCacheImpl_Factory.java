@@ -93,7 +93,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
 
         int writeThreads      = getSystemProperty(TargetCache_Options.WRITE_THREADS_PROPERTY_NAME, TargetCache_Options.WRITE_THREADS_DEFAULT);
         int writeLimit        = getSystemProperty(TargetCache_Options.WRITE_LIMIT_PROPERTY_NAME, TargetCache_Options.WRITE_LIMIT_DEFAULT);
-        boolean separateContainers = getSystemProperty(TargetCache_Options.SEPARATE_CONTAINERS_PROPERTY_NAME, TargetCache_Options.SEPARATE_CONTAINERS_DEFAULT);
         boolean useJandexFormat    = getSystemProperty(TargetCache_Options.USE_JANDEX_FORMAT_PROPERTY_NAME, TargetCache_Options.USE_JANDEX_FORMAT_DEFAULT);
         boolean useBinaryFormat    = getSystemProperty(TargetCache_Options.USE_BINARY_FORMAT_PROPERTY_NAME, TargetCache_Options.USE_BINARY_FORMAT_DEFAULT);
 
@@ -105,7 +104,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
             readOnly, alwaysValid,
             // validate,
             writeThreads, writeLimit,
-            separateContainers,
             useJandexFormat, useBinaryFormat,
             logQueries);
     }
@@ -120,7 +118,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
              // TargetCache_Options.VALIDATE_DEFAULT,
              TargetCache_Options.WRITE_THREADS_DEFAULT,
              TargetCache_Options.WRITE_LIMIT_DEFAULT,
-             TargetCache_Options.SEPARATE_CONTAINERS_DEFAULT,
              TargetCache_Options.USE_JANDEX_FORMAT_DEFAULT,
              TargetCache_Options.USE_BINARY_FORMAT_DEFAULT,
              TargetCache_Options.LOG_QUERIES_DEFAULT );
@@ -168,7 +165,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
              // finer(methodName, "  Validate            [ {0} ]", Boolean.valueOf(options.getValidate()));
                 finer(methodName, "  Write Threads       [ {0} ]", Integer.valueOf(options.getWriteThreads()));
                 finer(methodName, "  Write Limit         [ {0} ]", Integer.valueOf(options.getWriteLimit()));
-                finer(methodName, "  Separate Containers [ {0} ]", Boolean.valueOf(options.getSeparateContainers()));
                 finer(methodName, "  Use Jandex Format   [ {0} ]", Boolean.valueOf(options.getUseJandexFormat()));
                 finer(methodName, "  Use Binary Format   [ {0} ]", Boolean.valueOf(options.getUseBinaryFormat()));
             }

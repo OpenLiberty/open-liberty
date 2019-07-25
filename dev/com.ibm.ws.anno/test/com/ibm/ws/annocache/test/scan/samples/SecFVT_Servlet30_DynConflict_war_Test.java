@@ -64,11 +64,6 @@ public class SecFVT_Servlet30_DynConflict_war_Test extends Test_Base {
     }
 
     @Test
-    public void testSecFVT_Servlet30_DynConflict_SINGLE_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_JANDEX_FULL); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
     public void testSecFVT_Servlet30_DynConflict_MULTI() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI); // 'runSuiteTest' throws Exception
     }
@@ -76,11 +71,6 @@ public class SecFVT_Servlet30_DynConflict_war_Test extends Test_Base {
     @Test
     public void testSecFVT_Servlet30_DynConflict_MULTI_JANDEX() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testSecFVT_Servlet30_DynConflict_MULTI_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX_FULL); // 'runSuiteTest' throws Exception
     }
 
     @Test

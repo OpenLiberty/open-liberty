@@ -305,29 +305,19 @@ public class TargetCacheImpl_ReaderBinary implements TargetCache_BinaryConstants
     }
 
     public void readEntire(
-        TargetsTableTimeStampImpl stampTable,
         TargetsTableClassesImpl classTable,
         TargetsTableAnnotationsImpl targetTable)
         throws IOException {
 
-        // the begin magic bytes are read when the reader was initialized
-        readFragment(stampTable);
         readFragment(classTable);
         readFragment(targetTable);
     }
 
     public String readEntire(
-        TargetsTableTimeStampImpl stampTable,
         TargetsTableClassesImpl classTable,
         TargetsTableAnnotationsImpl targetTable,
         String currentStamp)
         throws IOException {
-
-        // the begin magic bytes are read when the reader was initialized
-        readFragment(stampTable);
-        if ( !currentStamp.equals(stampTable.getStamp()) ) {
-            return "Stamp difference";
-        }
 
         readFragment(classTable);
         readFragment(targetTable);
@@ -336,7 +326,6 @@ public class TargetCacheImpl_ReaderBinary implements TargetCache_BinaryConstants
     }
 
     public void readEntire(TargetsTableAnnotationsImpl targetTable) throws IOException {
-        // the begin magic bytes are read when the reader was initialized
         readFragment(targetTable);
     }
 
@@ -563,12 +552,7 @@ public class TargetCacheImpl_ReaderBinary implements TargetCache_BinaryConstants
     public void readEntire(TargetsTableClassesMultiImpl classTable) throws IOException {
         // the begin magic bytes are read when the reader was initialized
 
-        readFragment(classTable);
-    }
-
-    public void readFragment(TargetsTableClassesMultiImpl classTable) throws IOException {
-
-        requireModuleClassesHeader();
+    	requireModuleClassesHeader();
 
         bufInput.requireByte(DATA_BYTE);
         readPackages(classTable);

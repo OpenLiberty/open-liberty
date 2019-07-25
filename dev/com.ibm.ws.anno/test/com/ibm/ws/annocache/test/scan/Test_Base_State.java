@@ -337,7 +337,6 @@ public class Test_Base_State {
 
         println("Scan Options:");
         println("  Use Jandex      [ " + Boolean.valueOf(useScanOptions.useJandex) + " ]");
-        println("  Use Jandex Full [ " + Boolean.valueOf(useScanOptions.useJandexFull) + " ]");
         println("  Scan Threads    [ " + Integer.valueOf(useScanOptions.scanThreads) + " ]");        
 
         TestOptions_Cache useCacheOptions = useOptions.getCacheOptions();
@@ -353,8 +352,6 @@ public class Test_Base_State {
             println("  Always Valid [ " + Boolean.valueOf(useCacheOptions.alwaysValid) + " ]");
             println("  Read Only [ " + Boolean.valueOf(useCacheOptions.readOnly) + " ]");
             println("  Write Threads [ " + Integer.valueOf(useCacheOptions.writeThreads) + " ]");
-            println("  Omit Jandex Write [ " + Boolean.valueOf(useCacheOptions.omitJandexWrite) + " ]");
-            println("  Separate Containers [ " + Boolean.valueOf(useCacheOptions.separateContainers) + " ]");
             println("  Use Jandex Format [ " + Boolean.valueOf(useCacheOptions.useJandexFormat) + " ]");
             println("  Use Binary Format [ " + Boolean.valueOf(useCacheOptions.useBinaryFormat) + " ]");
         }
@@ -415,7 +412,6 @@ public class Test_Base_State {
         ClassSourceImpl_Options rawScanOptions = getClassSourceFactory().createOptions();
 
         rawScanOptions.setUseJandex(testScanOptions.useJandex);
-        rawScanOptions.setUseJandexFull(testScanOptions.useJandexFull);
         rawScanOptions.setScanThreads(testScanOptions.scanThreads);
         return rawScanOptions;
     }
@@ -450,8 +446,6 @@ public class Test_Base_State {
             rawCacheOptions.setReadOnly(testCacheOptions.readOnly);
             rawCacheOptions.setAlwaysValid(testCacheOptions.alwaysValid);
             rawCacheOptions.setWriteThreads(testCacheOptions.writeThreads);
-            rawCacheOptions.setOmitJandexWrite(testCacheOptions.omitJandexWrite);
-            rawCacheOptions.setSeparateContainers(testCacheOptions.separateContainers);
             rawCacheOptions.setUseJandexFormat(testCacheOptions.useJandexFormat);
             rawCacheOptions.setUseBinaryFormat(testCacheOptions.useBinaryFormat);
         }

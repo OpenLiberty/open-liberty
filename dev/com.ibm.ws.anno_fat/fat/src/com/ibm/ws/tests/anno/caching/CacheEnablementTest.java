@@ -178,16 +178,9 @@ public class CacheEnablementTest extends AnnoCachingTest {
         // Part 2: Cache reuse.
         //         Verify that cache data is reused on a non-clean startup.
 
-        // When component data is merged:
-        //
         // wlp/usr/servers/annoFat_server/workarea/
         //   org.eclipse.osgi/43/data/anno/
-        //     A_TestServlet40_A/M_%2FTestServlet40.war_M/C_seed_C
-
-        // When component data is separate:
-        // wlp/usr/servers/annoFat_server/workarea/
-        //   org.eclipse.osgi/43/data/anno/
-        //     A_TestServlet40_A/M_%2FTestServlet40.war_M/C_seed_C/targets
+        //     A_TestServlet40_A/M_%2FTestServlet40.war_M/D_seed_D
 
         String targetsPath = selectSeedTargets(EAR_CACHE_NAME, WAR_NAME);
 
@@ -245,7 +238,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
         String targetsMerged =
                 getAnnoCacheAppRoot(EAR_CACHE_NAME).getAbsolutePath() +
                 "/M_%2F" + WAR_NAME + "_M" +
-                "/C_seed_C";
+                "/D_seed_D";
         
         File targetsFileMerged = new File(targetsMerged);
 
@@ -253,22 +246,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
             "Seed results [ " + targetsFileMerged.getAbsolutePath() + " ] should exist",
             targetsFileMerged.exists());
 
-        if ( !targetsFileMerged.isDirectory() ) {
-            return targetsMerged;
-        }
-
-        String targetsSeparate =
-                getAnnoCacheAppRoot(EAR_CACHE_NAME).getAbsolutePath() +
-                "/M_%2F" + WAR_NAME + "_M" +
-                "/C_seed_C/targets";
-
-        File targetsFileSeparate= new File(targetsSeparate);
-
-        Assert.assertTrue(
-            "Seed results [ " + targetsFileSeparate.getAbsolutePath() + " ] should exist",
-            targetsFileSeparate.exists());
-
-        return targetsSeparate;
+        return targetsMerged;
     }
 
     /**

@@ -66,6 +66,9 @@ public interface TargetCache_ExternalConstants {
     String CON_PREFIX = "C_";
     String CON_SUFFIX = "_C";
 
+    /** Named used for the module classes file. */
+	String CLASSES_NAME = "classes";
+
     /** Name of the resolved class references file. */
     String RESOLVED_REFS_NAME = "resolved";
     /** Name of the unresolved class references file. */
@@ -92,28 +95,21 @@ public interface TargetCache_ExternalConstants {
 
     // Third / container detail level
 
-    /** Name for combined component data.  Used only for logging. */
-    String COMPONENT_NAME = "component";
-
     /** Name of the container time stamp file. */
     String TIMESTAMP_NAME = "stamp";
-    /** Name of the container (and module) classes file. */
-    String CLASSES_NAME = "classes";
-    /** Name of the container annotation targets file. */
-    String ANNO_TARGETS_NAME = "targets";
+    // The prefix to use when writing stamp data to the application folder.
+    String TIMESTAMP_PREFIX = "S";
 
-    // Name of the container annotation details file.
-    // String ANNO_DETAILS_NAME = "anno.details";
+    // The name for the jandex file as a child of a component folder.
+    String JANDEX_NAME = "jandex.idx";
+    // The prefix to use when writing component data to the application folder.
+    String JANDEX_PREFIX = "J";
+
+    String COMBINED_NAME = "data";
+    // The prefix to use when writing combined component data to the application folder.
+    String COMBINED_PREFIX = "D";
 
     // Fourth / query log
 
     String QUERIES_NAME = "queries";
-
-    // Alternate third: When using JANDEX as the cache format.
-
-    // The name for the jandex file as a child of a component folder.
-    String JANDEX_NAME = "jandex.idx";
-
-    // The prefix to use when writing component data to the application folder.
-    String JANDEX_PREFIX = "J";
 }

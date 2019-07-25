@@ -61,11 +61,6 @@ public class AppDeployBench_GSEJB_jar_Test extends Test_Base {
     }
 
     @Test
-    public void testAppDeployBench_GSEJB_jar_SINGLE_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_JANDEX_FULL); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
     public void testAppDeployBench_GSEJB_jar_MULTI() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI); // 'runSuiteTest' throws Exception
     }
@@ -73,11 +68,6 @@ public class AppDeployBench_GSEJB_jar_Test extends Test_Base {
     @Test
     public void testAppDeployBench_GSEJB_jar_MULTI_JANDEX() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_MULTI_JANDEX_FULL() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX_FULL); // 'runSuiteTest' throws Exception
     }
 
     @Test
@@ -113,48 +103,6 @@ public class AppDeployBench_GSEJB_jar_Test extends Test_Base {
     //
 
     @Test
-    public void testAppDeployBench_GSEJB_jar_SINGLE_WRITE_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_SINGLE_READ_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_MULTI_WRITE_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_WRITE_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_MULTI_READ_JANDEX_NOWRITE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_READ_JANDEX_NOWRITE); // 'runSuiteTest' throws Exception
-    }
-
-    //
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_SINGLE_WRITE_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_SEPARATE); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_SINGLE_READ_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_SEPARATE); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_MULTI_WRITE_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_WRITE_SEPARATE); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_MULTI_READ_SEPARATE() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.MULTI_READ_SEPARATE); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
     public void testAppDeployBench_GSEJB_jar_SINGLE_WRITE_JANDEX_FORMAT() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_JANDEX_FORMAT); // 'runSuiteTest' throws Exception
     }
@@ -162,11 +110,6 @@ public class AppDeployBench_GSEJB_jar_Test extends Test_Base {
     @Test
     public void testAppDeployBench_GSEJB_jar_SINGLE_READ_JANDEX_FORMAT() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_FORMAT); // 'runSuiteTest' throws Exception
-    }
-
-    @Test
-    public void testAppDeployBench_GSEJB_jar_SINGLE_READ_JANDEX_FULL_FORMAT() throws Exception {
-        runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_FULL_FORMAT); // 'runSuiteTest' throws Exception
     }
 
     @Test

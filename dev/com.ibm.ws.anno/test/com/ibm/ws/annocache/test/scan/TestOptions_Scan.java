@@ -17,26 +17,16 @@ public class TestOptions_Scan {
 
     public static final boolean DO_USE_JANDEX = true;
     public static final boolean DO_NOT_USE_JANDEX = false;
-    
-    public static final boolean DO_USE_JANDEX_FULL = true;
-    public static final boolean DO_NOT_USE_JANDEX_FULL = false;
 
     public static final int SCAN_THREADS_UNBOUNDED = ClassSource_Options.SCAN_THREADS_UNBOUNDED;
     public static final int SCAN_THREADS_MAX = ClassSource_Options.SCAN_THREADS_MAX;
     public static final int SCAN_THREADS_DEFAULT = ClassSource_Options.SCAN_THREADS_DEFAULT_VALUE;
 
-    public TestOptions_Scan(
-        boolean useJandex, boolean useJandexFull,
-        int scanThreads) {
-
+    public TestOptions_Scan(boolean useJandex, int scanThreads) {
         this.useJandex = useJandex;
-        this.useJandexFull = useJandexFull;
-
         this.scanThreads = scanThreads;
     }
 
     public final boolean useJandex;
-    public final boolean useJandexFull;
-
     public final int scanThreads;
 }

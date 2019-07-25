@@ -15,29 +15,14 @@ import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 
 public class TestOptions_Cache {
 	public static final boolean DO_CLEAN_STORAGE = true;
-	public static final boolean DO_NOT_CLEAN_STORAGE = false;
-
-    public static final boolean IS_READ_ONLY = true;
-    public static final boolean IS_NOT_READ_ONLY = false;    
-
+	public static final boolean IS_READ_ONLY = true;
     public static final boolean IS_ALWAYS_VALID = true;
-    public static final boolean IS_NOT_ALWAYS_VALID = false;    
-
-    public static final boolean DO_OMIT_JANDEX_WRITE = true;
-    public static final boolean DO_NOT_OMIT_JANDEX_WRITE = false;
-
-    public static final boolean DO_SEPARATE_CONTAINERS = true;
-    public static final boolean DO_NOT_SEPARATE_CONTAINERS = false;
 
     public static final int WRITE_THREADS_UNBOUNDED = TargetCache_Options.WRITE_THREADS_UNBOUNDED;
     public static final int WRITE_THREADS_MAX = TargetCache_Options.WRITE_THREADS_MAX;
     public static final int WRITE_THREADS_DEFAULT = TargetCache_Options.WRITE_THREADS_DEFAULT;
 
     public static final boolean DO_USE_JANDEX_FORMAT = true;
-    public static final boolean DO_NOT_USE_JANDEX_FORMAT = false;
-
-    public static final boolean DO_READ_JANDEX_FULL = true;
-    public static final boolean DO_NOT_READ_JANDEX_FULL = false;
 
     public TestOptions_Cache(
         String storageSuffix,
@@ -48,10 +33,7 @@ public class TestOptions_Cache {
 
         int writeThreads,
 
-        boolean omitJandexWrite,
-        boolean separateContainers,
         boolean useJandexFormat,
-        boolean readJandexFull,
         boolean useBinaryFormat) {
 
         this.storageSuffix = storageSuffix;
@@ -62,10 +44,7 @@ public class TestOptions_Cache {
 
         this.writeThreads = writeThreads;
 
-        this.omitJandexWrite = omitJandexWrite;
-        this.separateContainers = separateContainers;
         this.useJandexFormat = useJandexFormat;
-        this.readJandexFull = readJandexFull;
         this.useBinaryFormat = useBinaryFormat;
     }
 
@@ -77,9 +56,6 @@ public class TestOptions_Cache {
 
     public final int writeThreads;
 
-    public final boolean omitJandexWrite;
-    public final boolean separateContainers;
     public final boolean useJandexFormat;
-    public final boolean readJandexFull;
     public final boolean useBinaryFormat;
 }

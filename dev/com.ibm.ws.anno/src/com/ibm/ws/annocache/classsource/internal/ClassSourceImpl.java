@@ -859,6 +859,14 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     //
 
+
+//  } else if ( processJandexFull(streamer) ) {
+//      processedUsingJandex = true;
+//      if ( logger.isLoggable(Level.FINER) ) {
+//          logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ true ]: using full index");
+//      }
+//      return true;
+
     /**
      * <p>Attempt to process this class source using cache data.</p>
      *
@@ -867,52 +875,36 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return True or false telling if the class was successfully
      *     processed using cache data.
      */
-    @Trivial
     protected boolean processUsingJandex(ClassSource_Streamer streamer) {
         String methodName = "processUsingJandex";
 
         if ( streamer == null ) {
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: Null streamer");
-            }
             return false;
         }
 
-        if ( processJandexSparse(streamer) ) {
-            processedUsingJandex = true;
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ true ]: using sparse index");
+        if ( getUseJandex() ) {
+            if ( processJandexSparse(streamer) ) {
+                processedUsingJandex = true;
+                return true;
+            } else {
+                return false;
             }
-            return true;
-
-        } else if ( processJandexFull(streamer) ) {
-            processedUsingJandex = true;
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ true ]: using full index");
-            }
-            return true;
 
         } else {
-            if ( !getUseJandex() ) {
-                boolean doLog = logger.isLoggable(Level.FINER);
-                boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
-                if ( doLog || doJandexLog ) {
-                    if ( basicHasJandexIndex() ) {
-                        String msg = MessageFormat.format(
-                            "[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
-                            getHashText(), getJandexIndexPath());
-                        if ( doLog ) {
-                            logger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
-                        }
-                        if ( doJandexLog ) {
-                            jandexLogger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
-                        }
+            boolean doLog = logger.isLoggable(Level.FINER);
+            boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
+            if ( doLog || doJandexLog ) {
+                if ( basicHasJandexIndex() ) {
+                    String msg = MessageFormat.format(
+                        "[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
+                        getHashText(), getJandexIndexPath());
+                    if ( doLog ) {
+                        logger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
+                    }
+                    if ( doJandexLog ) {
+                        jandexLogger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
                     }
                 }
-            }
-
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: no index or read failure");
             }
             return false;
         }
@@ -976,13 +968,6 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     protected boolean processJandexSparse(ClassSource_Streamer streamer) {
         String methodName = "processJandexSparse";
-
-        if ( !getUseJandex() ) {
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: jandex is not enabled");
-            }
-            return false;
-        }
 
         SparseIndex sparseIndex = getSparseJandexIndex();
         if ( sparseIndex == null ) {
