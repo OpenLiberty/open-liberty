@@ -63,7 +63,7 @@ import com.ibm.wsspi.validator.Validator;
 @Component(name = "com.ibm.ws.rest.handler.validator",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
-           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation", RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
+           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation/{element}", RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
 public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
 
@@ -471,10 +471,8 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             return;
         }
 
-        //Throw 404 for /ibm/api/validation with no element name.
-        if ("/validation".equals(request.getPath()) ||
-            "/validation/".equals(request.getPath()) ||
-            "/validation//".equals(request.getPath())) {
+        //Throw 404 for /ibm/api/validation with an empty string element.
+        if (request.getPath().startsWith("/validation//")) {
             response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1553_HANDLER_NOT_FOUND", request.getContextPath() + request.getPath()));
             return;
         }
