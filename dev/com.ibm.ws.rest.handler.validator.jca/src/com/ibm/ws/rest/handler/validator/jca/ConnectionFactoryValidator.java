@@ -69,10 +69,10 @@ public class ConnectionFactoryValidator implements Validator {
      * Utility method that attempts to construct a ConnectionSpec impl of the specified name,
      * which might or might not exist in the resource adapter.
      *
-     * @param cciConFactory    the connection factory class
+     * @param cciConFactory the connection factory class
      * @param conSpecClassName possible connection spec impl class name to try
-     * @param userName         user name to set on the connection spec
-     * @param password         password to set on the connection spec
+     * @param userName user name to set on the connection spec
+     * @param password password to set on the connection spec
      * @return ConnectionSpec instance if successful. Otherwise null.
      */
     @FFDCIgnore(Throwable.class)
@@ -172,11 +172,11 @@ public class ConnectionFactoryValidator implements Validator {
                 if (interfaces.contains("javax.jms.ConnectionFactory")) { // also covers QueueConnectionFactory and TopicConnectionFactory
                     jmsValidator = getJMSValidator();
                     if (jmsValidator == null)
-                        result.put(FAILURE, Tr.formatMessage(tc, "CWWKO1561_JMS_NOT_ENABLED"));
+                        result.put(FAILURE, Tr.formatMessage(tc, locale, "CWWKO1561_JMS_NOT_ENABLED"));
                     else
                         jmsValidator.validate(cf, user, password, result);
                 } else
-                    result.put(FAILURE, Tr.formatMessage(tc, "CWWKO1560_VALIDATION_NOT_IMPLEMENTED", cf.getClass().getName(), interfaces));
+                    result.put(FAILURE, Tr.formatMessage(tc, locale, "CWWKO1560_VALIDATION_NOT_IMPLEMENTED", cf.getClass().getName(), interfaces));
             }
         } catch (Throwable x) {
             ArrayList<String> sqlStates = new ArrayList<String>();
@@ -212,11 +212,11 @@ public class ConnectionFactoryValidator implements Validator {
     /**
      * Validate a connection factory that implements javax.resource.cci.ConnectionFactory.
      *
-     * @param cf       connection factory instance.
-     * @param cfSvc    connection factory service.
-     * @param user     user name, if any, that is specified in the header of the validation request.
+     * @param cf connection factory instance.
+     * @param cfSvc connection factory service.
+     * @param user user name, if any, that is specified in the header of the validation request.
      * @param password password, if any, that is specified in the header of the validation request.
-     * @param result   validation result to which this method appends info.
+     * @param result validation result to which this method appends info.
      * @throws ResourceException if an error occurs.
      */
     private void validateCCIConnectionFactory(ConnectionFactory cf, ConnectionFactoryService cfSvc,
@@ -302,10 +302,10 @@ public class ConnectionFactoryValidator implements Validator {
     /**
      * Validate a connection factory that implements javax.sql.DataSource.
      *
-     * @param ds       data source instance.
-     * @param user     user name, if any, that is specified in the header of the validation request.
+     * @param ds data source instance.
+     * @param user user name, if any, that is specified in the header of the validation request.
      * @param password password, if any, that is specified in the header of the validation request.
-     * @param result   validation result to which this method appends info.
+     * @param result validation result to which this method appends info.
      * @throws SQLException if an error occurs.
      */
     private void validateDataSource(DataSource ds, String user, @Sensitive String password,

@@ -282,8 +282,11 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 }
             }
 
-        Object result;
-        if (uid == null) { // apply to all instances of element type
+        Object result = null;
+
+        if (configMap.isEmpty()) {
+            result = null;
+        } else if (uid == null) { // apply to all instances of element type
             ArrayList<Object> results = new ArrayList<Object>();
             for (Map.Entry<String, Dictionary<String, Object>> entry : configMap.entrySet()) {
                 // Filter out entries for nested configurations that we aren't trying to return. Example: dataSource[ds1]/connectionManager[default-0]
@@ -296,20 +299,12 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                     Object r = handleSingleInstance(request, uniqueId, id == null || isGenerated(id) ? null : id, configProps);
                     if (r != null) {
                         results.add(r);
-                    } else if ("".equals(elementName)) {
-                        // Skip displaying error messages to user for generic ibm/api/validation endpoint.
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "One or more dependencies not satisfied, or feature that enables the "
-                                               + "resource is not enabled, or it is not possible to validate this type of resource");
-                    } else {
-                        results.add(handleError(request, uniqueId, "One or more dependencies not satisfied, or feature that enables the "
-                                                                   + "resource is not enabled, or it is not possible to validate this type of resource"));
                     }
                 }
             }
-            result = results;
-        } else if (configMap.isEmpty()) {
-            result = null;
+            if (!results.isEmpty()) {
+                result = results;
+            }
         } else if (configMap.size() == 1) {
             Map.Entry<String, Dictionary<String, Object>> entry = configMap.firstEntry();
             String configDisplayId = entry.getKey();
@@ -319,21 +314,18 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 String id = (String) configProps.get("id");
                 result = handleSingleInstance(request, uid, id == null || isGenerated(id) ? null : id, entry.getValue());
             } else
-                result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1501_INVALID_IDENTIFIER", uid, uniqueId));
-                // if (result == null) {
-                    // result = handleError(request, uniqueId, "One or more dependencies not satisfied, or feature that enables the "
-                   //                                          + "resource is not enabled, or it is not possible to validate this type of resource");
-                // }
-            // } else // TODO need correct error message
-                // result = handleError(request, null, "Unique identifier " + uid + " is not valid. Expected: " + uniqueId);
+                result = handleError(request, null, Tr.formatMessage(tc, request.getLocale(), "CWWKO1501_INVALID_IDENTIFIER", uid, uniqueId));
         } else {
-            result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1502_MULTIPLE_FOUND", uid));
+            result = handleError(request, null, Tr.formatMessage(tc, request.getLocale(), "CWWKO1502_MULTIPLE_FOUND", uid));
         }
 
-        if (result == null)
-            result = handleError(request, uid, Tr.formatMessage(tc, "CWWKO1500_NOT_FOUND", elementName));
-
-        // TODO use client's locale for above 3 messages
+        if (result == null) {
+            if (uid != null)
+                response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName + "(uid: " + uid + ")"));
+            else
+                response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName));
+            return;
+        }
 
         populateResponse(response, result);
 
