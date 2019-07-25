@@ -233,8 +233,24 @@ public class HttpsRequest {
                     return type.cast(out.toString("UTF-8"));
                 } else
                     throw new IllegalArgumentException(type.getName());
-            } else
-                return null;
+            } else {
+                if (JsonArray.class.equals(type))
+                    return type.cast(Json.createReader(con.getErrorStream()).readArray());
+                else if (JsonObject.class.equals(type))
+                    return type.cast(Json.createReader(con.getErrorStream()).readObject());
+                else if (JsonStructure.class.equals(type))
+                    return type.cast(Json.createReader(con.getErrorStream()).read());
+                else if (String.class.equals(type)) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    InputStream in = con.getErrorStream();
+                    int numBytesRead;
+                    for (byte[] b = new byte[8192]; (numBytesRead = in.read(b)) != -1;)
+                        out.write(b, 0, numBytesRead);
+                    in.close();
+                    return type.cast(out.toString("UTF-8"));
+                } else
+                    throw new IllegalArgumentException(type.getName());
+            }
         } finally {
             con.disconnect();
         }
