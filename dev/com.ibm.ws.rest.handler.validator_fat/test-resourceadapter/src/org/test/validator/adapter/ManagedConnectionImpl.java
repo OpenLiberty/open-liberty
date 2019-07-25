@@ -30,6 +30,7 @@ import javax.resource.spi.LocalTransaction;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionMetaData;
 import javax.resource.spi.ResourceAdapterInternalException;
+import javax.resource.spi.ResourceAllocationException;
 import javax.resource.spi.SecurityException;
 import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
@@ -63,7 +64,7 @@ public class ManagedConnectionImpl implements ManagedConnection {
 
     @Override
     public Object getConnection(Subject subject, ConnectionRequestInfo cri) throws ResourceException {
-        boolean isJDBC = (Boolean) ((ConnectionRequestInfoImpl) cri).getOrDefault("JDBC", Boolean.FALSE);
+        String conClass = (String) ((ConnectionRequestInfoImpl) cri).get("ConnectionClass");
         String userName = mcf.getUserName();
         String password = mcf.getPassword();
         if (subject == null) {
@@ -88,9 +89,10 @@ public class ManagedConnectionImpl implements ManagedConnection {
         }
 
         // Accept some user/password combinations and reject others
-        if ("DefaultUserName".equals(userName) && "DefaultPassword".equals(password) ||
+        if ("DefaultUserName".equals(userName) && "DefaultPassword".equals(password) || // resource adapter defaults
+            "dbuser".equals(userName) && "dbpass".contentEquals(password) && conClass.contains("jmsadapter") || // custom login module defaults
             userName != null && password != null && userName.charAt(userName.length() - 1) == password.charAt(0))
-            if (isJDBC)
+            if (JDBCConnectionImpl.class.getName().equals(conClass))
                 try {
                     InvocationHandler handler = new JDBCConnectionImpl(mostRecentUser = userName);
                     return AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> {
@@ -105,8 +107,26 @@ public class ManagedConnectionImpl implements ManagedConnection {
                     else
                         throw new ResourceException(cause);
                 }
-            else
+            else if (ConnectionImpl.class.getName().equals(conClass))
                 return new ConnectionImpl(mostRecentUser = userName);
+            else if ("org.test.validator.jmsadapter.JMSConnectionImpl".equals(conClass))
+                try {
+                    final String user = userName;
+                    return AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> {
+                        Class<?> JMSConnectionImpl = getClass().getClassLoader().loadClass("org.test.validator.jmsadapter.JMSConnectionImpl");
+                        Object con = JMSConnectionImpl.getConstructor(String.class).newInstance(user);
+                        mostRecentUser = user;
+                        return con;
+                    });
+                } catch (PrivilegedActionException x) {
+                    Throwable cause = x.getCause();
+                    if (cause instanceof ResourceException)
+                        throw (ResourceException) cause;
+                    else
+                        throw new ResourceException(cause);
+                }
+            else
+                throw new ResourceAllocationException(conClass);
         else
             throw new SecurityException("Unable to authenticate with " + userName, "ERR_AUTH");
     }
