@@ -141,16 +141,16 @@ OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Client id {0} already exis
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=The operation failed as the client id already exists.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: An update of the client fails.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=The update request indicates that the client secret be preserved, but the existing registration has no secret set.  
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: An update of the client fails. The update request indicates that the client secret should be preserved, but the existing registration has no secret set.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=The update request indicates that the client secret be preserved, but the existing registration has no secret set.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: An update of the client fails.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=An update request for a public client must not specify a client secret.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: An update of the client fails. An update request for a public client must not specify a client secret.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=An update request for a public client must not specify a client secret.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: An update of the client fails.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=The request cannot be completed because it specifies an invalid configuration given the current state of the client's registration.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: An update of the client fails. The client secret cannot be updated because the request specifies an invalid configuration given the current state of the client’s registration.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=The request cannot be completed because it specifies an invalid configuration given the current state of the client's registration.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: The HTTP method {0} is not supported for the service {1}.
