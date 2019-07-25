@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,10 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'org.testcontainers:testcontainers:1.11.1',
-               'org.testcontainers:database-commons:1.11.1',
-               'org.testcontainers:jdbc:1.11.1',
+  requiredLibs 'org.testcontainers:testcontainers:1.12.0',
+               'org.testcontainers:database-commons:1.12.0',
+               'org.testcontainers:db2:1.12.0',
+               'org.testcontainers:jdbc:1.12.0',
                'org.apache.commons:commons-compress:1.18',
                'org.rnorth.duct-tape:duct-tape:1.0.7',
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
