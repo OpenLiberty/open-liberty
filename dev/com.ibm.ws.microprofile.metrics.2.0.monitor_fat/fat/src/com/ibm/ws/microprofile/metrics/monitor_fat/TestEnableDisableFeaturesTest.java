@@ -362,6 +362,7 @@ public class TestEnableDisableFeaturesTest {
     	serverEDF10.startServer();
     	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF10.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, "------- Remove JAX-WS application ------");
+    	Thread.sleep(4000);
     	boolean rc1 = serverEDF10.removeAndStopDropinsApplications("testJaxWsApp.war");
     	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
     	Assert.assertNotNull("CWWKT0017I NOT FOUND",serverEDF10.waitForStringInLogUsingMark(".*CWWKT0017I.*testJaxWsApp.*"));
