@@ -58,10 +58,7 @@ class ContextualRunnable implements Runnable, ContextualAction<Runnable> {
             if (threadContextDescriptor != null)
                 contextApplied = threadContextDescriptor.taskStarting();
             action.run();
-        } catch (Error x) {
-            failure = x;
-            throw x;
-        } catch (RuntimeException x) {
+        } catch (Error | RuntimeException x) {
             failure = x;
             throw x;
         } finally {
@@ -69,11 +66,8 @@ class ContextualRunnable implements Runnable, ContextualAction<Runnable> {
                 if (contextApplied != null)
                     threadContextDescriptor.taskStopping(contextApplied);
             } catch (RuntimeException x) {
-                // prioritize surfacing an actual task failure over a failure clearing context
-                if (failure == null) {
-                    failure = x;
-                    throw x;
-                }
+                failure = x;
+                throw x;
             } finally {
                 if (completableFuture != null)
                     if (failure == null)

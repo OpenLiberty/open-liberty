@@ -235,7 +235,7 @@ public class MPConcurrentCDITestServlet extends FATServlet {
             }
         }
         assertTrue("CompletableFuture should have been marked done", cf.isDone());
-        assertTrue("CompletableFuture should have been marked as completex exceptionally", cf.isCompletedExceptionally());
+        assertTrue("CompletableFuture should have been marked as completed exceptionally", cf.isCompletedExceptionally());
     }
 
     /**
