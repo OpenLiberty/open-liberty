@@ -168,8 +168,8 @@ var table = (function() {
     var __enableRowActions = function(authID) {
         var $table = $('#' + tableId + ' tbody');
 
-        $(".delete_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".delete_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 

@@ -135,8 +135,8 @@ var table = (function() {
      * @param {*} authID - unique ID for this app-password or app-token
      */
     var __enableRowActions = function(authID) {
-        $(".regenerate_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".regenerate_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -151,8 +151,8 @@ var table = (function() {
             __regenerateAuthMechanism(authID, name, type, issueDate);                        
         });
 
-        $(".delete_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".delete_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
