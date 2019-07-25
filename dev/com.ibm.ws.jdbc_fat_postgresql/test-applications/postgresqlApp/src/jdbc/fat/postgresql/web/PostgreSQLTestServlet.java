@@ -461,7 +461,7 @@ public class PostgreSQLTestServlet extends FATServlet {
             assertEquals("Initial value of connection AutoSave was not correct", AutoSave.NEVER, pgCon.getAutosave());
 
             pgCon.setAutosave(AutoSave.ALWAYS);
-            assertEquals("Connection did not honor setAutoSave(ALWYAS) call", AutoSave.ALWAYS, pgCon.getAutosave());
+            assertEquals("Connection did not honor setAutoSave(ALWAYS) call", AutoSave.ALWAYS, pgCon.getAutosave());
         }
         try (Connection con = ds.getConnection()) {
             // Now check autoSave to make sure it was reset properly to the original value
