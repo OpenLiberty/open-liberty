@@ -447,11 +447,12 @@ org.springframework:spring-webmvc:4.3.13.RELEASE
 org.springframework:spring-webmvc:5.0.8.RELEASE
 org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework:spring-websocket:5.0.8.RELEASE
-org.testcontainers:database-commons:1.11.1
-org.testcontainers:jdbc:1.11.1
-org.testcontainers:kafka:1.11.1
-org.testcontainers:postgresql:1.11.1
-org.testcontainers:testcontainers:1.11.1
+org.testcontainers:database-commons:1.12.0
+org.testcontainers:db2:1.12.0
+org.testcontainers:jdbc:1.12.0
+org.testcontainers:kafka:1.12.0
+org.testcontainers:postgresql:1.12.0
+org.testcontainers:testcontainers:1.12.0
 org.yaml:snakeyaml:1.18
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.1
