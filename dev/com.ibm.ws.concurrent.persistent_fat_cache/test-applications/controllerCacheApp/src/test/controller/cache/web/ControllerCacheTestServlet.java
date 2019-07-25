@@ -146,7 +146,7 @@ public class ControllerCacheTestServlet extends FATServlet {
             if (paramName.startsWith("key")) {
                 paramName = paramName.substring(3);
                 System.out.println("Waiting for created notification: " + paramName);
-                for (; created.get(paramName) == null && System.nanoTime() - start < TIMEOUT_NS;)
+                while (created.get(paramName) == null && System.nanoTime() - start < TIMEOUT_NS)
                     Thread.sleep(200);
                 String val = created.get(paramName);
                 if (val == null)
@@ -187,7 +187,7 @@ public class ControllerCacheTestServlet extends FATServlet {
                     hazelcastExpiryWorkaroundKeys.add(key);
                     String search = key + ':' + req.getParameter(paramName);
                     System.out.println("Waiting for expired notification: " + search);
-                    for (; !expired.contains(search) && System.nanoTime() - start < TIMEOUT_NS;)
+                    while (!expired.contains(search) && System.nanoTime() - start < TIMEOUT_NS)
                         Thread.sleep(200);
                     if (!expired.contains(search))
                         throw new RuntimeException("Did not find " + search + " in " + expired);
