@@ -14,6 +14,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.codec.binary.Base64;
+
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
@@ -38,7 +41,7 @@ public class HashUtils {
      * generate hash code by using specified algorithm
      * If there is some error, log the error.
      */
-    public static String digest(String input, String algorithm) {
+    protected static String digest(String input, String algorithm) {
         return digest(input, algorithm, DEFAULT_CHARSET);
     }
 
@@ -67,5 +70,36 @@ public class HashUtils {
             }
         }
         return output;
+    }
+    
+    /**
+     * generate hash code by using specified algorithm and character set.
+     * If there is some error, log the error.
+     */
+    public static String encodedDigest(String input, String algorithm, String charset) {
+        MessageDigest md;
+        String output = null;
+        if (input != null && input.length() > 0) {
+            try {
+                md = MessageDigest.getInstance(algorithm);
+                md.update(input.getBytes(charset));
+                output = convertToBase64(md.digest());
+            } catch (NoSuchAlgorithmException nsae) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception instanciating MessageDigest. The algorithm is " + algorithm + nsae);
+                }
+                throw new RuntimeException("Exception instanciating MessageDigest : " + nsae);
+            } catch (UnsupportedEncodingException uee) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception converting String object : " + uee);
+                }
+                throw new RuntimeException("Exception converting String object : " + uee);
+            }
+        }
+        return output;
+    }
+    
+    public static String convertToBase64(byte[] source) {
+        return org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(source);
     }
 }

@@ -116,55 +116,13 @@ public class OAuth20GrantTypeHandlerCodeImpl implements OAuth20GrantTypeHandler 
                         }
                     }
                     // ...validated
-                    
-                    // if code has code_challenge, then we expect that the request will have code_verifier 
-                    // it is error 1) if the code_verifier is missing or 2) if the code_verifier does not match with the verifier that we derive from the code_challenge
-                    //if (code.getClientId())
-                    // handlePKCEVerification(code, attributeList);
                 }
             }
         } finally {
             _log.exiting(CLASS, methodName);
         }
     }
-
-    /**
-     * @param code
-     * @throws OAuth20AuthorizationCodeInvalidClientException 
-     */
-    private void handlePKCEVerification(OAuth20Token code, AttributeList attributeList) throws OAuth20AuthorizationCodeInvalidClientException {
         
-        String methodName = "handlePKCEVerification";
-        _log.entering(CLASS, methodName);
-        String code_challenge = null;
-        String code_challenge_method = null;
-        if (code instanceof OAuth20AuthorizationGrantCodeImpl) {
-            code_challenge = code.getCodeChallenge();
-            code_challenge_method = code.getCodeChallengeMethod();
-        }
-        
-        if (code_challenge != null && code_challenge_method != null) {
-            String code_verifier = attributeList
-                    .getAttributeValueByName(OAuth20Constants.CODE_VERIFIER);
-            if (code_verifier == null) {
-                throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
-                        code.getTokenString(), code.getClientId());
-            } else {
-                if (OAuth20Constants.CODE_CHALLENGE_METHOD_PLAIN.equals(code_challenge_method) && !code_challenge.equals(code_verifier)) {
-                    throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
-                            code.getTokenString(), code.getClientId());
-                } else if (OAuth20Constants.CODE_CHALLENGE_METHOD_S256.equals(code_challenge_method)) {
-                    String derived_code_challenge = HashUtils.digest(code_verifier, OAuth20Constants.CODE_CHALLENGE_ALG_METHOD_SHA256);
-                    if (!code_challenge.equals(derived_code_challenge)) {
-                        throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
-                                code.getTokenString(), code.getClientId());
-                    }
-                }              
-            }
-        }  
-        _log.exiting(CLASS, methodName);
-    }
-
     public List<OAuth20Token> buildTokensGrantType(AttributeList attributeList,
             OAuth20TokenFactory tokenFactory, List<OAuth20Token> tokens) {
         String methodName = "buildTokensGrantType";

@@ -343,9 +343,16 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
     private void checkForPKCEAndUpdateAttributeList(HttpServletRequest request, OAuth20Client client, AttributeList attributeList) throws OAuth20DuplicateParameterException, OAuth20BadParameterFormatException, OAuth20MissingParameterException {
         String code_challenge = null;
         String code_challenge_method = null;
-        code_challenge = request.getParameter(OAuth20Constants.CODE_CHALLENGE);
-        code_challenge_method = request.getParameter(OAuth20Constants.CODE_CHALLENGE_METHOD);
-
+        if (request != null) {
+            code_challenge = request.getParameter(OAuth20Constants.CODE_CHALLENGE);
+            code_challenge_method = request.getParameter(OAuth20Constants.CODE_CHALLENGE_METHOD);
+            if ((code_challenge_method != null && code_challenge_method.length() > 0) && (code_challenge == null || code_challenge.length() == 0)) {
+                throw new OAuth20MissingParameterException("security.oauth20.error.missing.parameter", OAuth20Constants.CODE_CHALLENGE, null);
+            }
+            if ((code_challenge != null && code_challenge.length() > 0) && (code_challenge_method == null || code_challenge_method.length() == 0)) {
+                code_challenge_method = OAuth20Constants.CODE_CHALLENGE_METHOD_PLAIN;
+            }
+        }        
         if ((code_challenge != null && code_challenge.length() > 0) && (code_challenge_method != null && code_challenge_method.length() > 0)) {
             addParameterToAttributeList(OAuth20Constants.CODE_CHALLENGE,
                     OAuth20Constants.ATTRTYPE_PARAM_QUERY, code_challenge, attributeList);
@@ -594,11 +601,14 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                 throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
                         code.getTokenString(), code.getClientId());
             } else if (OAuth20Constants.CODE_CHALLENGE_METHOD_S256.equals(code_challenge_method)) {
-                String derived_code_challenge = HashUtils.digest(code_verifier, OAuth20Constants.CODE_CHALLENGE_ALG_METHOD_SHA256);
+                String derived_code_challenge = HashUtils.encodedDigest(code_verifier, OAuth20Constants.CODE_CHALLENGE_ALG_METHOD_SHA256, OAuth20Constants.CODE_VERIFIER_ASCCI);
                 if (!code_challenge.equals(derived_code_challenge)) {
                     throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
                             code.getTokenString(), code.getClientId());
                 }
+            } else {
+                throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
+                        code.getTokenString(), code.getClientId());
             }
         }
 
