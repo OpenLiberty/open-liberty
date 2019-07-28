@@ -181,6 +181,10 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         connectionFactorySvcProps.put(UNIQUE_JNDI_NAME, connectionFactoryID);
         connectionFactorySvcProps.put(TARGET_CONNECTION_MANAGER, conManagerFilter);
 
+        // jaasLoginContextEntryRef is not supported in app-defined connection factory. Avoid matching a random jaasLoginContextEntry
+        connectionFactorySvcProps.put("jaasLoginContextEntry.target", "(service.pid=unbound)");
+        connectionFactorySvcProps.put("jaasLoginContextEntry.cardinality.minimum", 0);
+
         if (application != null) {
             connectionFactorySvcProps.put(AppDefinedResource.APPLICATION, application);
             if (module != null) {
