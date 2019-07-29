@@ -54,29 +54,29 @@ public class AcmeAnnuityWeb_AcmeAnnuityWeb_war_Test extends Test_Base {
         runSuiteTest( getBaseCase() ); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_JANDEX() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_JANDEX); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_WRITE() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_READ() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_READ); // 'runSuiteTest' throws Exception
     }
 
     //
 
-    @Test
+    //@Test
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_WRITE_JANDEX_FORMAT() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_JANDEX_FORMAT); // 'runSuiteTest' throws Exception
     }
 
-    @Test
+    //@Test
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_READ_JANDEX_FORMAT() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_READ_JANDEX_FORMAT); // 'runSuiteTest' throws Exception
     }
@@ -98,32 +98,32 @@ public class AcmeAnnuityWeb_AcmeAnnuityWeb_war_Test extends Test_Base {
     
     //
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_MULTI_WRITE() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_WRITE); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_MULTI_READ() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_READ); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_SINGLE_WRITE_ASYNC() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_WRITE_ASYNC); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_MULTI_WRITE_ASYNC() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_WRITE_ASYNC); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_MULTI() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI); // 'runSuiteTest' throws Exception
     }
 
-    // @Test 
+    // //@Test 
     public void testAcmeAnnuityWeb_AcmeAnnuityWeb_war_MULTI_JANDEX() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI_JANDEX); // 'runSuiteTest' throws Exception
     }

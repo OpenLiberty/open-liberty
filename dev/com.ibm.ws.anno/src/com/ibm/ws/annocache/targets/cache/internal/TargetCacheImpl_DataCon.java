@@ -99,13 +99,13 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
 
         this.isSource = isSource;
 
-        this.stampLink = createPeerLink(TIMESTAMP_NAME, TIMESTAMP_PREFIX);
+        this.stampLink = createPeerLink(TIMESTAMP_NAME, TIMESTAMP_NAME);
 
         // !isSource forces !useJandexFormat.
         if ( this.getUseJandexFormat() ) {
-            this.coreDataLink = createPeerLink(JANDEX_NAME, JANDEX_PREFIX);
+            this.coreDataLink = createPeerLink(DATA_NAME_JANDEX, DATA_NAME_JANDEX);
         } else {
-            this.coreDataLink = createPeerLink(COMBINED_NAME, COMBINED_PREFIX);
+            this.coreDataLink = createPeerLink(DATA_NAME_INTERNAL, DATA_NAME_INTERNAL);
         }
 
         this.targetsTable = null;
@@ -136,15 +136,15 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
      * Create a file as a peer of the data file.
      *
      * @param cacheName A name to associate with the file.
-     * @param cachePrefix The prefix to use for the file.
+     * @param cacheExt The extension to use for the file.
      *
      * @return A peer of the data file that has the supplied prefix.
      */
-    protected TargetCacheImpl_DataFile createPeerLink(String cacheName, String cachePrefix) {
+    protected TargetCacheImpl_DataFile createPeerLink(String cacheName, String cacheExt) {
         File useDataFile = getDataFile();
 
-        String peerName = cachePrefix + useDataFile.getName();
-        File peerFile = new File(useDataFile, peerName);
+        String peerName = useDataFile.getName() + "." + cacheExt;
+        File peerFile = new File( useDataFile.getParentFile(), peerName );
 
         return new TargetCacheImpl_DataFile(cacheName, peerFile);
     }
@@ -278,7 +278,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         stampLink.setHasFile(hasStampFile);
     }
 
-    private boolean readStamp(TargetsTableTimeStampImpl useStampTable) {
+    public boolean readStamp(TargetsTableTimeStampImpl useStampTable) {
         long readStart = System.nanoTime();
 
         boolean didRead;

@@ -95,21 +95,15 @@ public interface TargetCache_ExternalConstants {
 
     // Third / container detail level
 
-    /** Name of the container time stamp file. */
+    /** Extension of time stamp files. */
     String TIMESTAMP_NAME = "stamp";
-    // The prefix to use when writing stamp data to the application folder.
-    String TIMESTAMP_PREFIX = "S";
-
-    // The name for the jandex file as a child of a component folder.
-    String JANDEX_NAME = "jandex.idx";
-    // The prefix to use when writing component data to the application folder.
-    String JANDEX_PREFIX = "J";
-
-    String COMBINED_NAME = "data";
-    // The prefix to use when writing combined component data to the application folder.
-    String COMBINED_PREFIX = "D";
+    /** The extension for jandex format cache data files. */
+    String DATA_NAME_JANDEX = "jandex.idx";
+    /** The extension for internal format cache data files. */
+    String DATA_NAME_INTERNAL = "data";
 
     // Fourth / query log
 
+    /** Name of the a queries log file. */
     String QUERIES_NAME = "queries";
 }
