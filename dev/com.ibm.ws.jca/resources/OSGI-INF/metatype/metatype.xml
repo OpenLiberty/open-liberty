@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2014 IBM Corporation and others.
+    Copyright (c) 2011, 2019 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -55,6 +55,9 @@
   <AD id="containerAuthDataRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config" cardinality="1" name="%cntrAuth" description="%cntrAuth.desc"/>
   <AD id="containerAuthData.target"              type="String"  default="(service.pid=${containerAuthDataRef})" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="containerAuthData.cardinality.minimum" type="String"  default="${count(containerAuthDataRef)}" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="jaasLoginContextEntryRef"              type="String"  ibm:beta="true" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.internal.jaas.jaasLoginContextEntry" cardinality="1" name="%jaasLoginContextEntry" description="%jaasLoginContextEntry.desc"/>
+  <AD id="jaasLoginContextEntry.target"          type="String"  ibm:final="true" default="(service.pid=${jaasLoginContextEntryRef})" name="internal" description="internal use only"/>
+  <AD id="jaasLoginContextEntry.cardinality.minimum" type="String" ibm:final="true" default="${count(jaasLoginContextEntryRef)}" name="internal" description="internal use only"/>
   <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
   <AD id="recoveryAuthDataRef"                   type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config" cardinality="1" name="%recoveryAuth" description="%recoveryAuth.desc"/>
   <AD id="recoveryAuthData.target"               type="String"  default="(service.pid=${recoveryAuthDataRef})" ibm:final="true" name="internal" description="internal use only"/>
