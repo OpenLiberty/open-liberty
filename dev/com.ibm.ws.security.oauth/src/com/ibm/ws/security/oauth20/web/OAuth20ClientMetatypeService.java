@@ -127,9 +127,9 @@ public class OAuth20ClientMetatypeService {
                 return;
             }
             response.setHeader("Content-Type", "application/json");
-            response.setCharacterEncoding(StandardCharsets.UTF_16.toString());
+            response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
             PrintWriter writer = response.getWriter();
-            writer.println(metadataJson.toString());
+            writer.println(new String(metadataJson.toString().getBytes(StandardCharsets.UTF_16.toString()), StandardCharsets.UTF_16));
             writer.flush();
             writer.close();
         } catch (IOException e) {
