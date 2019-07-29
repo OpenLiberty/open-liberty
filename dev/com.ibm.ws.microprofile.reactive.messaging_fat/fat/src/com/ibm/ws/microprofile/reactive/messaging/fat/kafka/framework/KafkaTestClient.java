@@ -62,38 +62,36 @@ public class KafkaTestClient {
      * @return the reader
      */
     public SimpleKafkaReader<String> readerFor(String topicName) {
-        Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
-        consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
-        consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-
-        return readerFor(consumerConfig, topicName);
+        return readerFor(Collections.emptyMap(), topicName);
     }
 
     /**
      * Obtain a SimpleKafkaReader configured with the given consumer config
+     * <p>
+     * The following properties will be added with default values if they are not set in {@code config}
+     * <ul>
+     * <li>{@value ConsumerConfig#BOOTSTRAP_SERVERS_CONFIG} = the test kafka broker</li>
+     * <li>{@value ConsumerConfig#KEY_DESERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * <li>{@value ConsumerConfig#VALUE_DESERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * <li>{@value ConsumerConfig#GROUP_ID_CONFIG} = {@value #TEST_GROUPID}</li>
+     * <li>{@value ConsumerConfig#AUTO_OFFSET_RESET_CONFIG} = earliest</li>
+     * </ul>
      *
      * @param config    the consumer config
      * @param topicName the topic to subscribe to
      * @return the reader
      */
     public SimpleKafkaReader<String> readerFor(Map<String, Object> config, String topicName) {
-        // Defensive copy, avoid modifying parameter
+        // Set up defaults
         HashMap<String, Object> localConfig = new HashMap<>(config);
+        localConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        localConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        localConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        localConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
+        localConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        // Default bootstrap servers if not set
-        if (!localConfig.containsKey(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG)) {
-            localConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
-        }
-
-        // Default to String deserializers if not set
-        if (!localConfig.containsKey(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG)) {
-            localConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        }
-
-        if (!localConfig.containsKey(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG)) {
-            localConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        }
+        // Add in provided config (which will overwrite any defaults)
+        localConfig.putAll(config);
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(localConfig);
         SimpleKafkaReader<String> reader = new SimpleKafkaReader<String>(kafkaConsumer, topicName);
@@ -110,10 +108,33 @@ public class KafkaTestClient {
      * @return the writer
      */
     public SimpleKafkaWriter<String> writerFor(String topicName) {
-        Map<String, Object> producerConfig = new HashMap<>();
-        producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        return writerFor(Collections.emptyMap(), topicName);
+    }
 
-        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(producerConfig, new StringSerializer(), new StringSerializer());
+    /**
+     * Obtain a SimpleKafkaWriter configured with the given producer config
+     * <p>
+     * The following properties will be added with default values if they are not set in {@code config}
+     * <ul>
+     * <li>{@value ProducerConfig#BOOTSTRAP_SERVERS_CONFIG} = the test kafka broker</li>
+     * <li>{@value ProducerConfig#KEY_SERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * <li>{@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * </ul>
+     *
+     * @param config    the producer config
+     * @param topicName the topic to write to
+     * @return the writer
+     */
+    public SimpleKafkaWriter<String> writerFor(Map<String, Object> config, String topicName) {
+        Map<String, Object> localConfig = new HashMap<>();
+        localConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        localConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        localConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // Add in provided config (which will overwrite any defaults)
+        localConfig.putAll(config);
+
+        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(localConfig);
         SimpleKafkaWriter<String> writer = new SimpleKafkaWriter<String>(kafkaProducer, topicName);
         openClients.add(writer);
         return writer;
