@@ -287,6 +287,12 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
     	                                                                                   Type.getType(String.class)}), false);
     	} else {
     	
+                String traceOptionName = getClassAdapter().getClassName();
+                if (traceOptionName != null) {
+                    visitLdcInsn(traceOptionName);
+                } else {
+                    visitInsn(ACONST_NULL);
+                }
     	
 		        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
 		
@@ -309,6 +315,7 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
 		                        TR_TYPE.getInternalName(),
 		                        "register",
 		                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+		                                                                                   Type.getType(String.class),
 		                                                                                   Type.getType(Class.class),
 		                                                                                   Type.getType(String.class),
 		                                                                                   Type.getType(String.class) }), false);
