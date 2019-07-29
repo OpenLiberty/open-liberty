@@ -22,8 +22,9 @@ src: \
 	test-bundles/test.feature.provisioner/src, \
 	test-bundles/test.service.consumer/src, \
 	test-bundles/test.service.provider/src, \
-	test-bundles/test.activation.type/src
-	
+	test-bundles/test.activation.type/src, \
+	test-bundles/test.origin.bundle/src
+
 fat.project: true
 
 tested.features: featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-1.0, featuree-1.0, productauto:pfeaturel-1.0, featureg-1.0, productauto:pfeaturef-1.0, productauto:pfeatureg-1.0, productauto:pfeaturee-1.0, capabilityc-1.0, badpathtool-1.0, emptyiconheader-1.0, goldenpathtool-1.0, icondirectivestool-1.0, noheadertool-1.0, missingiconstool-1.0, jwt-1.0, servlet-3.1

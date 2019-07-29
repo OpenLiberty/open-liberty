@@ -2016,16 +2016,18 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
         if (servletConfig != null) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
                 logger.logp(Level.FINE, CLASS_NAME, "isDefaultServlet", " : mappings:" + servletConfig.getMappings());
-            ;
+            
             for (String curMapping:servletConfig.getMappings()){
-                if (curMapping.equals("/"))
-                    return true;
+                if (curMapping.equals("/")) {
+                    result = true;
+                    break;
+                }
             }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() & logger.isLoggable(Level.FINE))
             logger.logp(Level.FINE, CLASS_NAME, "isDefaultServlet", " result=" + result);
 
-        return false;
+        return result;
     }
 
     // PK80340 End

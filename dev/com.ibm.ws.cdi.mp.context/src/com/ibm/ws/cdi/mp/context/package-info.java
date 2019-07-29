@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 @Version("1.0.0")
-@TraceOptions(traceGroup = "JCDI")
+@TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.mp.context.resources.CDI_MP_CONTEXT")
 package com.ibm.ws.cdi.mp.context;
 
 import org.osgi.annotation.versioning.Version;

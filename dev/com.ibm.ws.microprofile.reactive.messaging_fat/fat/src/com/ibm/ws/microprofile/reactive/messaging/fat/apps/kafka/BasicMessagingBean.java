@@ -18,8 +18,11 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 @ApplicationScoped
 public class BasicMessagingBean {
 
-    @Incoming("test-in")
-    @Outgoing("test-out")
+    public static final String CHANNEL_IN = "test-in";
+    public static final String CHANNEL_OUT = "test-out";
+
+    @Incoming(CHANNEL_IN)
+    @Outgoing(CHANNEL_OUT)
     public String reverseString(String in) {
         StringBuilder sb = new StringBuilder(in);
         System.out.println("Processing message " + in);

@@ -13,3 +13,4 @@ Subsystem-Name: Internal Apache CXF 3.2 Common Feature for JAX-RS and JAX-WS
  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

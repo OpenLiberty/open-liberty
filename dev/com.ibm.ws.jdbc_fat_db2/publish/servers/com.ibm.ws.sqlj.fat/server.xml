@@ -1,0 +1,44 @@
+<server>
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>jndi-1.0</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>eventLogging-1.0</feature>
+      <feature>concurrent-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <eventLogging minDuration="0" logMode="entryExit"/>
+
+    <application location="sqljapp.war" >
+        <classloader commonLibraryRef="DBLib"/>
+    </application>
+    
+    <osgiLibrary libraryRef="DBLib"/>
+    <library id="DBLib">
+    	<fileset dir="${shared.resource.dir}/db2"/>
+    </library>
+    
+    <dataSource id="DefaultDataSource">
+        <connectionManager maxPoolSize="2"/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    	<properties.db2.jcc serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}" databaseName="${DB2_DBNAME}" 
+    	                    user="${DB2_USER}" password="${DB2_PASS}"/>
+    </dataSource>
+
+    <dataSource id="SQLJContextDS" jndiName="jdbc/SQLJContextDS" enableConnectionCasting="true">
+        <connectionManager maxPoolSize="1"/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    	<properties.db2.jcc serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}" databaseName="${DB2_DBNAME}" 
+    	                    user="${DB2_USER}" password="${DB2_PASS}"/>
+    </dataSource>
+
+    <variable name="onError" value="FAIL"/>
+    
+    <javaPermission className="java.util.PropertyPermission" name="sqlj.runtime" actions="read"/>
+    <javaPermission className="java.sql.SQLPermission" name="setNetworkTimeout"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}db2/*" className="java.security.AllPermission"/>
+</server>

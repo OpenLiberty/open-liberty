@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -571,10 +571,6 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
           logger.entering(CLASS_NAME, "getRealPath", new Object[]{path, checkDocRoot});
       
-      //if (webAppInfo != null)
-      //{
-          // return "bundleresource:";
-      //}
        
     String basePath = null;
 
@@ -661,7 +657,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                             } else {
                                 // to be TWAS compliant, return container path if we are not checking EDRs and can't find the real path
                                 //if the app was extracted, we could return the physical path
-                                if (WCCustomProperties.CHECK_EDR_IN_GET_REAL_PATH == false) {
+                                if (!WCCustomProperties.CHECK_EDR_IN_GET_REAL_PATH || WCCustomProperties.GET_REAL_PATH_RETURNS_QUALIFIED_PATH) {
                                     basePath = container.getPhysicalPath();
                                 }
                             }
@@ -685,7 +681,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
 
             // to be TWAS compliant, return container path if we are not checking EDRs and can't find the real path
             // but return null if we are checking EDRs and can't find the real path
-            if (WCCustomProperties.CHECK_EDR_IN_GET_REAL_PATH) {
+            if (!WCCustomProperties.GET_REAL_PATH_RETURNS_QUALIFIED_PATH) {
                  return null;
             }
             //if the app was extracted, we could return this...
@@ -712,7 +708,9 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
     } else {
         realPath = basePath + File.separatorChar + path;
     }
-    
+    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+        logger.logp(Level.INFO, CLASS_NAME, "getRealPath", "returning path: " + realPath);
+    }
     return realPath;
   }
 

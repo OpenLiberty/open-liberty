@@ -56,6 +56,7 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.ibm.websphere.ras.Tr;
@@ -78,39 +79,37 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig;
 
-
 /**
  * Generate the appropriate plugin configuration XML file for the current
  * webcontainer applications.
  */
 public class PluginGenerator {
 
-    private static final TraceComponent tc = Tr.register(PluginGenerator.class,com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants.TR_GROUP,
+    private static final TraceComponent tc = Tr.register(PluginGenerator.class, com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants.TR_GROUP,
                                                          com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants.NLS_PROPS);
-    private static final String styleSheet =
-        " <xsl:stylesheet version=\"1.0\"                                   \n" +
-        "     xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">           \n" +
-        "   <xsl:output method=\"xml\"/>                                    \n" +
-        "   <xsl:param name=\"indent-increment\" select=\"'   '\" />        \n" +
-        "   <xsl:template match=\"*\">                                      \n" +
-        "      <xsl:param name=\"indent\" select=\"'&#xA;'\"/>              \n" +
-        "      <xsl:value-of select=\"$indent\"/>                           \n" +
-        "      <xsl:copy>                                                   \n" +
-        "        <xsl:copy-of select=\"@*\" />                              \n" +
-        "        <xsl:apply-templates>                                      \n" +
-        "          <xsl:with-param name=\"indent\"                          \n" +
-        "               select=\"concat($indent, $indent-increment)\"/>     \n" +
-        "        </xsl:apply-templates>                                     \n" +
-        "        <xsl:if test=\"*\">                                        \n" +
-        "          <xsl:value-of select=\"$indent\"/>                       \n" +
-        "        </xsl:if>                                                  \n" +
-        "      </xsl:copy>                                                  \n" +
-        "   </xsl:template>                                                 \n" +
-        "   <xsl:template match=\"comment()|processing-instruction()\">     \n" +
-        "      <xsl:copy />                                                 \n" +
-        "   </xsl:template>                                                 \n" +
-        "   <xsl:template match=\"text()[normalize-space(.)='']\"/>         \n" +
-        " </xsl:stylesheet>                                                 \n";
+    private static final String styleSheet = " <xsl:stylesheet version=\"1.0\"                                   \n" +
+                                             "     xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">           \n" +
+                                             "   <xsl:output method=\"xml\"/>                                    \n" +
+                                             "   <xsl:param name=\"indent-increment\" select=\"'   '\" />        \n" +
+                                             "   <xsl:template match=\"*\">                                      \n" +
+                                             "      <xsl:param name=\"indent\" select=\"'&#xA;'\"/>              \n" +
+                                             "      <xsl:value-of select=\"$indent\"/>                           \n" +
+                                             "      <xsl:copy>                                                   \n" +
+                                             "        <xsl:copy-of select=\"@*\" />                              \n" +
+                                             "        <xsl:apply-templates>                                      \n" +
+                                             "          <xsl:with-param name=\"indent\"                          \n" +
+                                             "               select=\"concat($indent, $indent-increment)\"/>     \n" +
+                                             "        </xsl:apply-templates>                                     \n" +
+                                             "        <xsl:if test=\"*\">                                        \n" +
+                                             "          <xsl:value-of select=\"$indent\"/>                       \n" +
+                                             "        </xsl:if>                                                  \n" +
+                                             "      </xsl:copy>                                                  \n" +
+                                             "   </xsl:template>                                                 \n" +
+                                             "   <xsl:template match=\"comment()|processing-instruction()\">     \n" +
+                                             "      <xsl:copy />                                                 \n" +
+                                             "   </xsl:template>                                                 \n" +
+                                             "   <xsl:template match=\"text()[normalize-space(.)='']\"/>         \n" +
+                                             " </xsl:stylesheet>                                                 \n";
     private static final String NOT_DEFINED = "NOT_DEFINED";
     private static final String DEFAULT_VIRTUAL_HOST = "default_host";
     private static final String PLUGIN_CFG_ALIAS = "pluginConfiguration";
@@ -121,7 +120,9 @@ public class PluginGenerator {
 
     private static final Object transformerLock = new Object();
 
-    protected enum Role { PRIMARY, SECONDARY }
+    protected enum Role {
+        PRIMARY, SECONDARY
+    }
 
     private final PluginConfigData pcd;
     private final BundleContext context;
@@ -159,7 +160,7 @@ public class PluginGenerator {
             newPcd = new PluginConfigData(config);
 
             newPcd.print(tc);
-        }  catch (Throwable t) {
+        } catch (Throwable t) {
             FFDCFilter.processException(t, PluginGenerator.class.getName(), "processConfig");
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Error process Config: " + t.getMessage());
@@ -173,8 +174,7 @@ public class PluginGenerator {
         if (cachedFile.exists()) {
             try {
                 Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cachedFile);
-                NodeList list = doc.getElementsByTagName("*");
-                previousConfigHash = nodeListHashValue(list);
+                previousConfigHash = getHashValue(doc);
             } catch (Exception e) {
                 // Do nothing we are just trying to avoid doing xml serialization twice.
             }
@@ -190,16 +190,16 @@ public class PluginGenerator {
      * Generate the XML configuration with the current container information.
      *
      * @param container
-     * @param root install location of plugin; overrides configured values for root install and log path
+     * @param root      install location of plugin; overrides configured values for root install and log path
      * @param name
      */
     protected synchronized void generateXML(String rootLoc, String serverName,
-                               WebContainer container,
-                               SessionManager smgr,
-                               DynamicVirtualHostManager vhostMgr,
-                               WsLocationAdmin locationService,
-                               boolean utilityReq,
-                               File writeDirectory) {
+                                            WebContainer container,
+                                            SessionManager smgr,
+                                            DynamicVirtualHostManager vhostMgr,
+                                            WsLocationAdmin locationService,
+                                            boolean utilityReq,
+                                            File writeDirectory) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "generateXML", "server = " + serverName + ", Framework is stopping = " + FrameworkState.isStopping() + ", pcd = " + pcd + ", this = " + this);
@@ -237,12 +237,12 @@ public class PluginGenerator {
 
             String root = rootLoc;
             boolean userOverrideLocation = true;
-            if(root == null){
+            if (root == null) {
                 root = pcd.PluginInstallRoot;
                 userOverrideLocation = false;
             }
             //String root = (null == rootLoc) ? pcd.PluginInstallRoot : rootLoc;
-            Map<String,Map<String,Set<URIData>>> clusterUriGroups = new HashMap<String,Map<String,Set<URIData>>>();
+            Map<String, Map<String, Set<URIData>>> clusterUriGroups = new HashMap<String, Map<String, Set<URIData>>>();
 
             Document output = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 
@@ -256,9 +256,8 @@ public class PluginGenerator {
             Element rootElement = output.createElement("Config");
 
             // add in hardcoded properties and any extra properties from the user configuration
-            if (!pcd.extraConfigProperties.isEmpty())
-            {
-                if(pcd.TrustedProxyEnable != null) {
+            if (!pcd.extraConfigProperties.isEmpty()) {
+                if (pcd.TrustedProxyEnable != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Overriding TrustedProxyEnable from extra config properties with the specified value");
                     }
@@ -266,7 +265,7 @@ public class PluginGenerator {
                 }
 
                 for (String key : pcd.extraConfigProperties.keySet()) {
-                    String value = (String)pcd.extraConfigProperties.get(key);
+                    String value = (String) pcd.extraConfigProperties.get(key);
                     rootElement.setAttribute(key, value);
                 }
             }
@@ -278,11 +277,11 @@ public class PluginGenerator {
 
             // If user provided install root as argument, use that to generate the log location
             String name = null;
-            if(userOverrideLocation){
+            if (userOverrideLocation) {
                 name = root + addSlash(root)
-                                + "logs" + File.separatorChar
-                                + webServerName + File.separatorChar + pcd.LogFile;;
-            }  // otherwise use configured value, with LogFileName taking precedence over LogDirLocation
+                       + "logs" + File.separatorChar
+                       + webServerName + File.separatorChar + pcd.LogFile;;
+            } // otherwise use configured value, with LogFileName taking precedence over LogDirLocation
             else {
                 if (pcd.LogFileName != null)
                     name = pcd.LogFileName;
@@ -290,7 +289,7 @@ public class PluginGenerator {
                     name = pcd.LogDirLocation + addSlash(pcd.LogDirLocation) + pcd.LogFile;
             }
 
-            if(name.charAt(1) == ':') //check if path specified is a windows path or not and replace File.separatorChar with correct separators
+            if (name.charAt(1) == ':') //check if path specified is a windows path or not and replace File.separatorChar with correct separators
                 name = name.replace('/', '\\');
             else
                 name = name.replace('\\', '/');
@@ -336,17 +335,17 @@ public class PluginGenerator {
             Set<DynamicVirtualHost> virtualHostSet = processVirtualHosts(vhostMgr, vhostAliasData, httpEndpointInfo, rootElement);
 
             // Create the VirtualHostGroup and VirtualHost elements
-            for( DynamicVirtualHost vh : virtualHostSet ) {
+            for (DynamicVirtualHost vh : virtualHostSet) {
                 // Create the VirtualHostGroup in the plugin xml
                 Element vhElem = output.createElement("VirtualHostGroup");
                 vhElem.setAttribute("Name", vh.getName());
                 rootElement.appendChild(vhElem);
 
-                if(!vhostAliasData.containsKey(vh.getName())){
+                if (!vhostAliasData.containsKey(vh.getName())) {
                     continue;
                 }
                 // Create a VirtualHost element for each alias
-                for ( VHostData vh_aliasData : vhostAliasData.get(vh.getName())) {
+                for (VHostData vh_aliasData : vhostAliasData.get(vh.getName())) {
                     Element aliasElem = output.createElement("VirtualHost");
                     // The IPv6 is already has the [] in alias
                     aliasElem.setAttribute("Name", vh_aliasData.host + ":" + vh_aliasData.port);
@@ -365,13 +364,13 @@ public class PluginGenerator {
                     Element tproxyElem = output.createElement("TrustedProxy");
                     if (trustedProxy.indexOf(":") != -1) {
                         // IPV6
-                        tproxyElem.setAttribute("Name", "[" + trustedProxy.trim() + "]" );
+                        tproxyElem.setAttribute("Name", "[" + trustedProxy.trim() + "]");
                     } else {
-                        tproxyElem.setAttribute("Name", trustedProxy.trim() );
+                        tproxyElem.setAttribute("Name", trustedProxy.trim());
                     }
                     tproxyGroupElem.appendChild(tproxyElem);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Added proxy server " + trustedProxy + " TrustedProxyGroup element" );
+                        Tr.debug(tc, "Added proxy server " + trustedProxy + " TrustedProxyGroup element");
                     }
                 }
             } // end-trusted-proxy
@@ -380,21 +379,22 @@ public class PluginGenerator {
             // config of server clusters
             String serverID = smgr.getCloneID();
             boolean singleServerConfig = true;
-            if(serverID==null) {
+            if (serverID == null) {
                 serverID = "";
             }
-            if(serverID.length()>0) {
+            if (serverID.length() > 0) {
                 // if the clone ID is defined, assume that session affinity matters
                 singleServerConfig = false;
             }
             char cloneSep = smgr.getCloneSeparator();
             Boolean cloneSeparatorChange = null;
-            if(':'==cloneSep) {
+            if (':' == cloneSep) {
                 cloneSeparatorChange = Boolean.FALSE;
-            } else if('+'==cloneSep) {
+            } else if ('+' == cloneSep) {
                 cloneSeparatorChange = Boolean.TRUE;
             } else {
-                throw new IllegalStateException("The session manager is configured to use '"+cloneSep+"' as the clone separator, but "+pcd.PluginConfigFileName+" only supports ':' and '+'.");
+                throw new IllegalStateException("The session manager is configured to use '" + cloneSep + "' as the clone separator, but " + pcd.PluginConfigFileName
+                                                + " only supports ':' and '+'.");
             }
             pcd.cloneSeparatorChange = cloneSeparatorChange;
 
@@ -402,7 +402,6 @@ public class PluginGenerator {
             Element bServersElem = null;
             int numberOfPrimaryServers = 0;
             int numberOfBackupServers = 0;
-
 
             // ------------- SERVER CLUSTER ---------------------
             // A Liberty server can only belong to one cluster
@@ -439,10 +438,10 @@ public class PluginGenerator {
                 bServersElem = output.createElement("BackupServers");
             }
 
-            if ( !httpEndpointInfo.isValid() ) {
+            if (!httpEndpointInfo.isValid()) {
                 // We couldn't find a matching endpoint -- there will be bits missing from
                 // the generated plugin config as a result
-                comment = output.createComment( " The configured endpoint could not be found. httpEndpointRef=" + httpEndpointInfo.getEndpointId());
+                comment = output.createComment(" The configured endpoint could not be found. httpEndpointRef=" + httpEndpointInfo.getEndpointId());
                 rootElement.appendChild(comment);
             } else {
                 // This is unique to liberty: we put the endpoint (http/https) in its
@@ -462,7 +461,7 @@ public class PluginGenerator {
 
                     // create a server element for the server
                     Element serverElem = output.createElement("Server");
-                    serverElem.setAttribute("Name", sd.nodeName+"_"+sd.serverName);
+                    serverElem.setAttribute("Name", sd.nodeName + "_" + sd.serverName);
 
                     // add weight and clone id if multi server generation
                     if (false == scd.singleServerConfig.booleanValue()) {
@@ -477,9 +476,9 @@ public class PluginGenerator {
                     // Could not find the best match values in liberty now, so just use the default value of metatype
                     serverElem.setAttribute("ConnectTimeout", sd.connectTimeout.toString());
                     serverElem.setAttribute("ServerIOTimeout", sd.serverIOTimeout.toString());
-                    if (sd.wsServerIOTimeout!=null)
+                    if (sd.wsServerIOTimeout != null)
                         serverElem.setAttribute("wsServerIOTimeout", sd.wsServerIOTimeout.toString());
-                    if (sd.wsServerIdleTimeout!=null)
+                    if (sd.wsServerIdleTimeout != null)
                         serverElem.setAttribute("wsServerIdleTimeout", sd.wsServerIdleTimeout.toString());
                     serverElem.setAttribute("WaitForContinue", sd.waitForContinue.toString());
                     serverElem.setAttribute("MaxConnections", sd.maxConnections.toString());
@@ -532,7 +531,6 @@ public class PluginGenerator {
                     // append the server cluster element to the root
                     rootElement.appendChild(sgElem);
 
-
                     // add the server to the primary servers if this is a multi
                     // server gen
                     if (false == scd.singleServerConfig.booleanValue()) {
@@ -554,9 +552,9 @@ public class PluginGenerator {
             // append the primary servers if this is a multi server gen
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Number of primary servers: "
-                                + numberOfPrimaryServers
-                                + " Number of backup servers: "
-                                + numberOfBackupServers);
+                             + numberOfPrimaryServers
+                             + " Number of backup servers: "
+                             + numberOfBackupServers);
             }
 
             if (false == scd.singleServerConfig.booleanValue()) {
@@ -575,18 +573,18 @@ public class PluginGenerator {
             String affinityUrlIdentifier = smgr.getAffinityUrlIdentifier();
 
             // all virtual hosts are in the same cluster
-            for(DynamicVirtualHost vhost : virtualHostSet) {
-                for(Iterator<?> apps = vhost.getWebApps(); apps.hasNext(); ) {
+            for (DynamicVirtualHost vhost : virtualHostSet) {
+                for (Iterator<?> apps = vhost.getWebApps(); apps.hasNext();) {
                     WebApp app = (WebApp) apps.next();
                     // a timing window is possible where a wepp app of "null" is in the list.
-                    if (app!=null) {
-                         DeployedModuleData dmd = new DeployedModuleData(app, defaultAffinityCookie, affinityUrlIdentifier);
-                         scd.deployedModules.add(dmd);
+                    if (app != null) {
+                        DeployedModuleData dmd = new DeployedModuleData(app, defaultAffinityCookie, affinityUrlIdentifier);
+                        scd.deployedModules.add(dmd);
                     }
                 }
             }
 
-            Map<String,Set<URIData>> uriGroups = new HashMap<String,Set<URIData>>();
+            Map<String, Set<URIData>> uriGroups = new HashMap<String, Set<URIData>>();
             List<String> webGroupIDs = new LinkedList<String>();
             // Check if any applications are deployed on the cluster
             if (!scd.deployedModules.isEmpty()) {
@@ -622,7 +620,7 @@ public class PluginGenerator {
                                 Tr.debug(tc, "duplicate.context.root", contextRoot);
                             }
                         } else
-                        Tr.warning(tc, "duplicate.context.root", contextRoot);
+                            Tr.warning(tc, "duplicate.context.root", contextRoot);
                     }
 
                     // add index for future reference
@@ -651,14 +649,14 @@ public class PluginGenerator {
             // output the uri group and route elements for each cluster
             Set<ClusterUriGroup> cUgsSet = new HashSet<ClusterUriGroup>();
 
-            for(Map.Entry<String, Map<String, Set<URIData>>> entry : clusterUriGroups.entrySet()) {
+            for (Map.Entry<String, Map<String, Set<URIData>>> entry : clusterUriGroups.entrySet()) {
                 String clusterName = entry.getKey();
                 uriGroups = entry.getValue();
 
                 String lvh = null;
                 Set<URIData> uriList = null;
                 // iterate through the uri groups
-                for(Map.Entry<String , Set<URIData>> ugEntry : uriGroups.entrySet()) {
+                for (Map.Entry<String, Set<URIData>> ugEntry : uriGroups.entrySet()) {
                     lvh = ugEntry.getKey();
                     uriList = ugEntry.getValue();
 
@@ -694,9 +692,9 @@ public class PluginGenerator {
 
             // ------------------------------------------
             // Create Routes
-            for(DynamicVirtualHost vhost : virtualHostSet) {
-                for(ClusterUriGroup cug : cUgsSet) {
-                    if(vhost.getName().equals(cug.vhostName)) {
+            for (DynamicVirtualHost vhost : virtualHostSet) {
+                for (ClusterUriGroup cug : cUgsSet) {
+                    if (vhost.getName().equals(cug.vhostName)) {
                         Element routeElem = output.createElement("Route");
                         routeElem.setAttribute("VirtualHostGroup", vhost.getName());
                         routeElem.setAttribute("UriGroup", cug.uriGroupName);
@@ -712,20 +710,20 @@ public class PluginGenerator {
             // create the plugin config output file
             // Location of plugin-cfg.xml is the server.output.dir/logs/state for implicit requests, server.output.dir for direct mbean requests
 
-            Boolean fileExists=false;
-            if(writeDirectory == null) {
-                String outputDirectory="";
+            Boolean fileExists = false;
+            if (writeDirectory == null) {
+                String outputDirectory = "";
                 if (utilityRequest) {
                     // If utilityRequest is true and there was no writeDirectory then write to the server.output.dir/logs/state/ directory
-                    outputDirectory ="logs"+File.separatorChar+"state"+File.separatorChar;
+                    outputDirectory = "logs" + File.separatorChar + "state" + File.separatorChar;
                 }
-                fileExists = locationService.getServerOutputResource(outputDirectory+pcd.PluginConfigFileName).exists();
-                outFile = locationService.getServerOutputResource(outputDirectory+pcd.TempPluginConfigFileName);
+                fileExists = locationService.getServerOutputResource(outputDirectory + pcd.PluginConfigFileName).exists();
+                outFile = locationService.getServerOutputResource(outputDirectory + pcd.TempPluginConfigFileName);
             } else {
                 // Otherwise a writeDirectory was specified
                 // Add a trailing slash if one is not present
                 String path = writeDirectory.getPath();
-                if(path.charAt(path.length()-1) != File.separatorChar) {
+                if (path.charAt(path.length() - 1) != File.separatorChar) {
                     path += File.separatorChar;
                 }
                 File pluginFile = new File(path + pcd.PluginConfigFileName);
@@ -750,29 +748,36 @@ public class PluginGenerator {
                 // If writeFile is false and the cachedFile doesn't exist write to the cache file and copy from there
                 // If writeFile is false and cachedFile exists copy from there
                 // If writeFile is false and cachedFile doesn't exist write to cachedFile and copy from there
-                if (!cachedFile.exists() || writeFile) {
-                  fOutputStream = new FileOutputStream(cachedFile);
-                  pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, "ISO-8859-1"));
+                try {
+                    if (!cachedFile.exists() || writeFile) {
+                        fOutputStream = new FileOutputStream(cachedFile);
+                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, "ISO-8859-1"));
 
-                  // Write the plugin config file
-                  // Create a style sheet to indent the output
-                  StreamSource xsltSource = new StreamSource(new StringReader(styleSheet));
+                        // Write the plugin config file
+                        // Create a style sheet to indent the output
+                        StreamSource xsltSource = new StreamSource(new StringReader(styleSheet));
 
-                  // Use transform apis to do generic serialization
-                  TransformerFactory tfactory = getTransformerFactory();
-                  Transformer serializer = tfactory.newTransformer(xsltSource);
-                  Properties oprops = new Properties();
-                  oprops.put(OutputKeys.METHOD, "xml");
-                  oprops.put(OutputKeys.OMIT_XML_DECLARATION, "no");
-                  oprops.put(OutputKeys.VERSION, "1.0");
-                  oprops.put(OutputKeys.INDENT, "yes");
-                  serializer.setOutputProperties(oprops);
-                  serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
+                        // Use transform apis to do generic serialization
+                        TransformerFactory tfactory = getTransformerFactory();
+                        Transformer serializer = tfactory.newTransformer(xsltSource);
+                        Properties oprops = new Properties();
+                        oprops.put(OutputKeys.METHOD, "xml");
+                        oprops.put(OutputKeys.OMIT_XML_DECLARATION, "no");
+                        oprops.put(OutputKeys.VERSION, "1.0");
+                        oprops.put(OutputKeys.INDENT, "yes");
+                        serializer.setOutputProperties(oprops);
+                        serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
+                    }
+                } finally {
+                    if (pluginCfgWriter != null) {
+                        pluginCfgWriter.flush();
+                        // Ensure data is physically written to disk
+                        fOutputStream.getFD().sync();
+                        pluginCfgWriter.close();
+                    }
+                    Files.copy(cachedFile.toPath(), outFile.asFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
-
-                Files.copy(cachedFile.toPath(), outFile.asFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-            else {
+            } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "A new plugin configuration file was not written: the configuration did not change.");
                 }
@@ -783,40 +788,32 @@ public class PluginGenerator {
                 Tr.event(tc, "Error creating plugin config xml; " + t.getMessage());
             }
         } finally {
-                try {
-                    if (pluginCfgWriter != null) {
-                        pluginCfgWriter.flush();
-    
-                        // Ensure data is physically written to disk
-                        fOutputStream.getFD().sync();
-    
-                        pluginCfgWriter.close();
-                    }
+            try {
 
-                    // Verify that the temp plugin file exists
-                    if (! outFile.exists()) {
-                        throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() +  " could not be found");
-                    }
-                    // Construct the actual plugin file path
-                    File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
-
-                    if (pluginFile.exists()) {
-                        FileUtils.forceDelete(pluginFile);
-                    }
-
-                    outFile.asFile().renameTo(pluginFile);
-
-                    // tell the user where the file is - quietly for implicit requests
-                    String fullFilePath = pluginFile.getAbsolutePath();
-                    if (utilityRequest)
-                        Tr.info(tc, "plugin.file.generated.info",fullFilePath);
-                    else
-                        Tr.audit(tc, "plugin.file.generated.audit",fullFilePath);
-                } catch (Throwable t) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(tc, "Error renaming the plugin config xml; " + t.getMessage());
-                    }
+                // Verify that the temp plugin file exists
+                if (!outFile.exists()) {
+                    throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
                 }
+                // Construct the actual plugin file path
+                File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
+
+                if (pluginFile.exists()) {
+                    FileUtils.forceDelete(pluginFile);
+                }
+
+                outFile.asFile().renameTo(pluginFile);
+
+                // tell the user where the file is - quietly for implicit requests
+                String fullFilePath = pluginFile.getAbsolutePath();
+                if (utilityRequest)
+                    Tr.info(tc, "plugin.file.generated.info", fullFilePath);
+                else
+                    Tr.audit(tc, "plugin.file.generated.audit", fullFilePath);
+            } catch (Throwable t) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Error renaming the plugin config xml; " + t.getMessage());
+                }
+            }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "generateXML");
@@ -824,11 +821,11 @@ public class PluginGenerator {
     }
 
     private static TransformerFactory getTransformerFactory() {
-       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getTransformerFactory","CHANGE_TRANSORMER = " + CHANGE_TRANSFORMER);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getTransformerFactory", "CHANGE_TRANSORMER = " + CHANGE_TRANSFORMER);
         }
 
-        TransformerFactory tf=null;
+        TransformerFactory tf = null;
 
         if (CHANGE_TRANSFORMER) {
 
@@ -843,7 +840,8 @@ public class PluginGenerator {
                 final String defaultTransformerFactory = getJVMProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "JDK = " + JavaInfo.vendor() + ", JDK level = " + JavaInfo.majorVersion() + "." + JavaInfo.minorVersion() +", current TF jvm property value = " + defaultTransformerFactory);
+                    Tr.debug(tc, "JDK = " + JavaInfo.vendor() + ", JDK level = " + JavaInfo.majorVersion() + "." + JavaInfo.minorVersion() + ", current TF jvm property value = "
+                                 + defaultTransformerFactory);
                 }
 
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -865,7 +863,8 @@ public class PluginGenerator {
                     public Object run() {
                         if (defaultTransformerFactory != null)
                             System.setProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME, defaultTransformerFactory);
-                        else  System.clearProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);
+                        else
+                            System.clearProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);
                         return null;
                     }
                 });
@@ -889,7 +888,6 @@ public class PluginGenerator {
 
     }
 
-
     private static String getJVMProperty(final String propertyName) {
         String propValue = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
@@ -900,10 +898,10 @@ public class PluginGenerator {
         return propValue;
     }
 
-
     /**
      * Check to see if the current config has the same information as the previously
-     * written config.  If this config has no new information, return false.
+     * written config. If this config has no new information, return false.
+     * 
      * @param newConfig the current config information document to be compared
      * @return true if there is new or updated config information
      */
@@ -914,12 +912,29 @@ public class PluginGenerator {
         // Either this is the first time checking the config or there has been some change
         if (this.previousConfigHash == null || currentHash != this.previousConfigHash) {
             this.previousConfigHash = currentHash;
+            storeHashValue(newConfig, previousConfigHash);
             return true;
         }
         // No config changes
         else {
             return false;
         }
+    }
+
+    /**
+     * @param newConfig
+     * @param previousConfigHash2
+     */
+    private void storeHashValue(Document newConfig, Integer configHashValue) {
+
+        Element root = newConfig.getDocumentElement();
+        Node configHash = newConfig.getElementsByTagName("ConfigHash").item(0);
+        if (configHash == null) {
+            configHash = newConfig.createElement("ConfigHash");
+            root.appendChild(configHash);
+        } else
+            configHash.removeChild(configHash.getFirstChild());
+        configHash.appendChild(newConfig.createTextNode(configHashValue.toString()));
     }
 
     /**
@@ -940,14 +955,31 @@ public class PluginGenerator {
 
             // Iterate over all Attributes in this node
             // and sum their hashCode()s
-            for (int i = 0; i < numAttrs; i++){
-               Attr attr = (Attr) map.item(i);
-               int hash1 = attr.getNodeName().hashCode();
-               int hash2 = attr.getNodeValue().hashCode();
-               currentHash += hash1 + hash2;
+            for (int i = 0; i < numAttrs; i++) {
+                Attr attr = (Attr) map.item(i);
+                int hash1 = attr.getNodeName().hashCode();
+                int hash2 = attr.getNodeValue().hashCode();
+                currentHash += hash1 + hash2;
             }
         }
         return currentHash;
+    }
+
+    /**
+     * Return the hash value stored in the cached document
+     */
+    private Integer getHashValue(Document doc) {
+        if (doc == null) {
+            return null;
+        }
+        Node hashElement = doc.getElementsByTagName("ConfigHash").item(0);
+        if (hashElement != null) {
+            String hash = hashElement.getTextContent();
+            if (hash != null)
+                return new Integer(hash);
+        }
+        return null;
+
     }
 
     Set<DynamicVirtualHost> processVirtualHosts(DynamicVirtualHostManager vhostMgr,
@@ -972,19 +1004,19 @@ public class PluginGenerator {
         boolean findVirtualHosts = true;
         ServiceReference<?> defaultHost = vhostConfigRefs.get(DEFAULT_VIRTUAL_HOST);
         boolean defaultHostIsCatchAll = true;
-        if ( defaultHost == null || defaultHost.getProperty("hostAlias") != null ) {
+        if (defaultHost == null || defaultHost.getProperty("hostAlias") != null) {
             defaultHostIsCatchAll = false;
         }
 
         // IF there is only one virtual host defined, and there are no aliases configured
         // by the user for the default_host, it will function as the catch-all, and
         // we can generate a simplified plugin-cfg.cml file.
-        if ( vhostConfigRefs.size() == 1 && defaultHostIsCatchAll) {
+        if (vhostConfigRefs.size() == 1 && defaultHostIsCatchAll) {
             Iterator<DynamicVirtualHost> vHosts = vhostMgr.getVirtualHosts();
             DynamicVirtualHost vh = vHosts.hasNext() ? vHosts.next() : null;
 
             // Now check for an endpoint restriction.
-            if ( blockedByRestrictions(defaultHost.getProperty(HTTP_ALLOWED_ENDPOINT)) ) {
+            if (blockedByRestrictions(defaultHost.getProperty(HTTP_ALLOWED_ENDPOINT))) {
                 // There is only one virtual host, and the endpoint that the plugin is configured
                 // to use can't talk to it. We're DOA. A comment is added down below because
                 // the virtual host set will be empty..
@@ -994,7 +1026,7 @@ public class PluginGenerator {
                     Tr.warning(tc, "warn.check.applications");
 
                 Comment comment = doc.createComment(String.format(" No Virtual Hosts were found, possibly because no applications are defined. %n\t"
-                                +" Verify that at least one application is defined in the server configuration. "));
+                                                                  + " Verify that at least one application is defined in the server configuration. "));
                 rootElement.appendChild(comment);
                 return Collections.emptySet();
             } else {
@@ -1008,21 +1040,21 @@ public class PluginGenerator {
                 // match the configured endpoint.
                 // If we have a usable endpoint ref, get the pretty id.
                 Comment comment = doc.createComment(String.format(" The default_host contained only aliases for endpoint %s.%n\t"
-                                +" The generated VirtualHostGroup will contain only configured web server ports:%n\t\t%s%s%s ",
-                                httpEndpointInfo.getEndpointId(),
-                                (pcd.webServerHttpPort > 0 ? "webserverPort="+pcd.webServerHttpPort : ""),
-                                (pcd.webServerHttpPort > 0 && pcd.webServerHttpsPort > 0 ? "\n\t\t" : ""),
-                                (pcd.webServerHttpsPort > 0 ? "webserverSecurePort="+pcd.webServerHttpsPort : "")));
+                                                                  + " The generated VirtualHostGroup will contain only configured web server ports:%n\t\t%s%s%s ",
+                                                                  httpEndpointInfo.getEndpointId(),
+                                                                  (pcd.webServerHttpPort > 0 ? "webserverPort=" + pcd.webServerHttpPort : ""),
+                                                                  (pcd.webServerHttpPort > 0 && pcd.webServerHttpsPort > 0 ? "\n\t\t" : ""),
+                                                                  (pcd.webServerHttpsPort > 0 ? "webserverSecurePort=" + pcd.webServerHttpsPort : "")));
                 rootElement.appendChild(comment);
 
                 List<VHostData> vh_aliasData = new ArrayList<VHostData>();
-                if ( pcd.webServerHttpPort > 0 ) {
+                if (pcd.webServerHttpPort > 0) {
                     VHostData webServerHttpPort = new VHostData("*", pcd.webServerHttpPort);
                     vh_aliasData.add(webServerHttpPort);
                     mapPortUsage(portToVHostNameMap, DEFAULT_VIRTUAL_HOST, webServerHttpPort);
                 }
 
-                if ( pcd.webServerHttpsPort > 0 ) {
+                if (pcd.webServerHttpsPort > 0) {
                     VHostData webServerHttpsPort = new VHostData("*", pcd.webServerHttpsPort);
                     vh_aliasData.add(webServerHttpsPort);
                     mapPortUsage(portToVHostNameMap, DEFAULT_VIRTUAL_HOST, webServerHttpsPort);
@@ -1033,17 +1065,17 @@ public class PluginGenerator {
             }
         }
 
-        if ( findVirtualHosts ) {
+        if (findVirtualHosts) {
             boolean foundWildcardWebserverHttp = false;
             boolean foundWildcardWebserverHttps = false;
 
             // identify virtual hosts based on virtual hosts used by applications
-            for (Iterator<DynamicVirtualHost> i = vhostMgr.getVirtualHosts(); i.hasNext(); ) {
+            for (Iterator<DynamicVirtualHost> i = vhostMgr.getVirtualHosts(); i.hasNext();) {
                 DynamicVirtualHost vh = i.next();
                 String vh_name = vh.getName();
                 ServiceReference<?> vhostConfig = vhostConfigRefs.get(vh_name);
 
-                if ( vhostConfig == null ) {
+                if (vhostConfig == null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(tc, "Virtual host " + vh.getName() + " has no configuration");
                     }
@@ -1052,7 +1084,7 @@ public class PluginGenerator {
 
                 // If there is an endpoint restriction on the virtual host, see if the endpoint the
                 // plugin will use is permitted
-                if ( blockedByRestrictions(vhostConfig.getProperty(HTTP_ALLOWED_ENDPOINT)) ) {
+                if (blockedByRestrictions(vhostConfig.getProperty(HTTP_ALLOWED_ENDPOINT))) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(tc, "Virtual host " + vh.getName() + " is not accessible from configured endpoint",
                                  "plugin endpoint = " + pcd.httpEndpointPid,
@@ -1089,10 +1121,10 @@ public class PluginGenerator {
                         vh_aliasData.add(vh_alias);
                         mapPortUsage(portToVHostNameMap, vh_name, vh_alias);
 
-                        if ( vh_alias.host.equals("*") ) {
-                            if ( vh_alias.port == pcd.webServerHttpPort )
+                        if (vh_alias.host.equals("*")) {
+                            if (vh_alias.port == pcd.webServerHttpPort)
                                 foundWildcardWebserverHttp = true;
-                            if ( vh_alias.port == pcd.webServerHttpsPort )
+                            if (vh_alias.port == pcd.webServerHttpsPort)
                                 foundWildcardWebserverHttps = true;
                         }
                     }
@@ -1104,26 +1136,26 @@ public class PluginGenerator {
 
             // If we can, make sure we have aliases for the web server ports..
             List<VHostData> vh_aliasData = vhostAliasData.get(DEFAULT_VIRTUAL_HOST);
-            if ( pcd.webServerHttpPort > 0 && !foundWildcardWebserverHttp ) {
-                if ( defaultHostIsCatchAll
-                                && vh_aliasData != null
-                                && !blockedByRestrictions(defaultHost.getProperty(HTTP_ALLOWED_ENDPOINT)) ) {
+            if (pcd.webServerHttpPort > 0 && !foundWildcardWebserverHttp) {
+                if (defaultHostIsCatchAll
+                    && vh_aliasData != null
+                    && !blockedByRestrictions(defaultHost.getProperty(HTTP_ALLOWED_ENDPOINT))) {
                     VHostData vhostData = new VHostData("*", pcd.webServerHttpPort);
                     vh_aliasData.add(vhostData);
                     mapPortUsage(portToVHostNameMap, DEFAULT_VIRTUAL_HOST, vhostData);
                 } else {
                     // the http port was configured, but there are no virtual hosts that can accept requests for that alias
                     Comment comment = doc.createComment(String.format(" No virtual hosts are configured to accept requests from the webserver http port (*:%s).%n\t "
-                                    + "Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. ",
-                                    pcd.webServerHttpPort));
+                                                                      + "Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. ",
+                                                                      pcd.webServerHttpPort));
                     rootElement.appendChild(comment);
                 }
             }
 
-            if ( pcd.webServerHttpsPort > 0  && !foundWildcardWebserverHttps ) {
-                if ( defaultHostIsCatchAll
-                                && vh_aliasData != null
-                                && !blockedByRestrictions(defaultHost.getProperty(HTTP_ALLOWED_ENDPOINT))) {
+            if (pcd.webServerHttpsPort > 0 && !foundWildcardWebserverHttps) {
+                if (defaultHostIsCatchAll
+                    && vh_aliasData != null
+                    && !blockedByRestrictions(defaultHost.getProperty(HTTP_ALLOWED_ENDPOINT))) {
                     VHostData vhostData = new VHostData("*", pcd.webServerHttpsPort);
                     vh_aliasData.add(vhostData);
                     mapPortUsage(portToVHostNameMap, DEFAULT_VIRTUAL_HOST, vhostData);
@@ -1131,8 +1163,8 @@ public class PluginGenerator {
                 } else {
                     // the http port was configured, but there are no virtual hosts that can accept requests for that alias
                     Comment comment = doc.createComment(String.format(" No virtual hosts are configured to accept requests from the webserver https port (*:%s).%n\t "
-                                    + "Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. ",
-                                    pcd.webServerHttpsPort));
+                                                                      + "Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. ",
+                                                                      pcd.webServerHttpsPort));
                     rootElement.appendChild(comment);
                 }
             }
@@ -1142,11 +1174,11 @@ public class PluginGenerator {
             }
         }
 
-        if ( virtualHostSet.isEmpty() ) {
+        if (virtualHostSet.isEmpty()) {
             // If we have a usable endpoint ref, get the pretty id.
             Comment comment = doc.createComment(String.format(" No virtual hosts are accessible from the configured endpoint (%s).%n\t "
-                            + "Verify the allowed endpoints for the virtualHost elements in server.xml. ",
-                            httpEndpointInfo.getEndpointId()));
+                                                              + "Verify the allowed endpoints for the virtualHost elements in server.xml. ",
+                                                              httpEndpointInfo.getEndpointId()));
             rootElement.appendChild(comment);
         }
 
@@ -1158,10 +1190,10 @@ public class PluginGenerator {
     }
 
     private boolean blockedByRestrictions(Object restrictions) {
-        if ( restrictions == null )
+        if (restrictions == null)
             return false;
         List<String> endpoints = getList((String[]) restrictions);
-        if ( endpoints.isEmpty() )
+        if (endpoints.isEmpty())
             return false;
 
         return !endpoints.contains(pcd.httpEndpointPid);
@@ -1169,17 +1201,17 @@ public class PluginGenerator {
 
     private void mapPortUsage(Map<Integer, List<String>> portToVHostNameMap,
                               String vh_name,
-                              VHostData vh_alias)  throws UnknownHostException {
+                              VHostData vh_alias) throws UnknownHostException {
         // Add this vhost to the list that use this port
         List<String> port_vhostName = portToVHostNameMap.get(vh_alias.port);
-        if (port_vhostName == null ) {
+        if (port_vhostName == null) {
             port_vhostName = new ArrayList<String>();
             portToVHostNameMap.put(vh_alias.port, port_vhostName);
         }
         port_vhostName.add(vh_name);
     }
 
-    Map<String, ServiceReference<?>> getVirtualHostRefs() throws Exception{
+    Map<String, ServiceReference<?>> getVirtualHostRefs() throws Exception {
 
         // The default_host can not be disabled.. but we should ignore any others
         // that have been disabled.
@@ -1188,19 +1220,19 @@ public class PluginGenerator {
         // find all registered/enabled virtual hosts.. (the original registered configuration)
         ServiceReference<?> refs[] = context.getAllServiceReferences(null, filter);
 
-        if( refs == null ) {
-            if( TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+        if (refs == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "getVirtualHostRefs -- no configured virtual hosts found");
             }
             return Collections.emptyMap();
         }
 
         Map<String, ServiceReference<?>> result = new HashMap<String, ServiceReference<?>>();
-        for(ServiceReference<?> ref : refs) {
+        for (ServiceReference<?> ref : refs) {
             String id = (String) ref.getProperty("id");
             result.put(id, ref);
 
-            if( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "getVirtualHostRefs", id, ref);
             }
         }
@@ -1214,7 +1246,6 @@ public class PluginGenerator {
         return Arrays.asList(property);
     }
 
-
     void buildServerTransportData(String appServerName,
                                   String serverID,
                                   HttpEndpointInfo httpEndpointInfo,
@@ -1226,14 +1257,14 @@ public class PluginGenerator {
         String host = (String) httpEndpointInfo.getProperty("host");
 
         Integer httpPort = (Integer) httpEndpointInfo.getProperty("httpPort"); //start 146189
-        if( httpPort == null)
+        if (httpPort == null)
             httpPort = -1;
 
         Integer httpsPort = (Integer) httpEndpointInfo.getProperty("httpsPort");
-        if(httpsPort == null)
+        if (httpsPort == null)
             httpsPort = -1; //end 146189
 
-        if( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "buildServerTransportData: adding " + httpEndpointInfo.getEndpointId(),
                      host, defaultHostName, httpPort, httpsPort);
         }
@@ -1246,14 +1277,13 @@ public class PluginGenerator {
         // hostName is returned in lower case
         sd.hostName = tryDetermineHostName(host, defaultHostName, preferIPv6);
         if (!(utilityRequest) && sd.hostName.equals("localhost"))
-                Tr.warning(tc, "collocated.appserver", sd.nodeName, sd.serverName);
+            Tr.warning(tc, "collocated.appserver", sd.nodeName, sd.serverName);
 
-        if ( httpPort > 0 )
+        if (httpPort > 0)
             sd.addTransportData(sd.hostName, httpPort, false);
-        if ( httpsPort > 0 )
+        if (httpsPort > 0)
             sd.addTransportData(sd.hostName, httpsPort, true);
     }
-
 
     private static String appendWildCardString(String rootURI) {
         String rc = rootURI;
@@ -1312,6 +1342,7 @@ public class PluginGenerator {
         };
 
     }
+
     protected static class VHostData {
         protected final String host;
         protected final int port;
@@ -1324,11 +1355,11 @@ public class PluginGenerator {
         protected VHostData(String alias) throws UnknownHostException {
             int lastIndex = alias.lastIndexOf(':');
             this.host = alias.substring(0, lastIndex);
-            this.port = Integer.valueOf(alias.substring(lastIndex+1));
+            this.port = Integer.valueOf(alias.substring(lastIndex + 1));
         }
 
         public String toString() {
-            return "vhost(http="+host+':'+port+")";
+            return "vhost(http=" + host + ':' + port + ")";
         }
 
         @Override
@@ -1443,7 +1474,7 @@ public class PluginGenerator {
         protected Integer webServerHttpsPort = 343;
         protected String KeyringLocation = null;
         protected String StashfileLocation = null;
-        protected String CertLabel = null;  // no default
+        protected String CertLabel = null; // no default
         protected Boolean IPv6Preferred = null;
         protected String httpEndpointPid = null;
         protected Long serverIOTimeout = null;
@@ -1490,49 +1521,47 @@ public class PluginGenerator {
             serverIOTimeoutRetry = (Integer) config.get("serverIOTimeoutRetry");
             loadBalanceWeight = (Integer) config.get("loadBalanceWeight");
             //config.get("serverRole") in a server should not return null; sanity check since we are using equals.
-            roleKind = (config.get("serverRole") != null && ((String) config.get("serverRole")).equals("BACKUP"))?Role.SECONDARY:Role.PRIMARY;
+            roleKind = (config.get("serverRole") != null && ((String) config.get("serverRole")).equals("BACKUP")) ? Role.SECONDARY : Role.PRIMARY;
             // PI76699 if the following ESI values are set in server.xml they will override default values.
-            if(config.get("ESIEnable") != null){
+            if (config.get("ESIEnable") != null) {
                 ESIEnable = (Boolean) config.get("ESIEnable");
             }
-            if(config.get("ESIMaxCacheSize") != null){
+            if (config.get("ESIMaxCacheSize") != null) {
                 ESIMaxCacheSize = (Integer) config.get("ESIMaxCacheSize");
             }
-            if(config.get("ESIInvalidationMonitor") != null){
+            if (config.get("ESIInvalidationMonitor") != null) {
                 ESIInvalidationMonitor = (Boolean) config.get("ESIInvalidationMonitor");
             }
-            if(config.get("ESIEnableToPassCookies") != null){
-                ESIEnableToPassCookies =  (Boolean) config.get("ESIEnableToPassCookies");
-            }// PI76699 End
+            if (config.get("ESIEnableToPassCookies") != null) {
+                ESIEnableToPassCookies = (Boolean) config.get("ESIEnableToPassCookies");
+            } // PI76699 End
             TrustedProxyEnable = (Boolean) config.get("trustedProxyEnable");
             String proxyList = (String) config.get("trustedProxyGroup");
-            if(proxyList != null) {
+            if (proxyList != null) {
                 TrustedProxyGroup = proxyList.split(",");
             }
 
-
             // populate extra properties map with default values but allow override from user config
             extraConfigProperties.put("ASDisableNagle", "false");
-            extraConfigProperties.put("AcceptAllContent","false");
-            extraConfigProperties.put("AppServerPortPreference","HostHeader");
-            extraConfigProperties.put("ChunkedResponse","false");
-            extraConfigProperties.put("FIPSEnable","false");
-            extraConfigProperties.put("IISDisableNagle","false");
+            extraConfigProperties.put("AcceptAllContent", "false");
+            extraConfigProperties.put("AppServerPortPreference", "HostHeader");
+            extraConfigProperties.put("ChunkedResponse", "false");
+            extraConfigProperties.put("FIPSEnable", "false");
+            extraConfigProperties.put("IISDisableNagle", "false");
             //
-            extraConfigProperties.put("IISPluginPriority","High");
-            extraConfigProperties.put("IgnoreDNSFailures","false");
-            extraConfigProperties.put("RefreshInterval","60");
-            extraConfigProperties.put("ResponseChunkSize","64");
-            extraConfigProperties.put("SSLConsolidate","false");
-            extraConfigProperties.put("TrustedProxyEnable","false");
-            extraConfigProperties.put("VHostMatchingCompat","false");
-
+            extraConfigProperties.put("IISPluginPriority", "High");
+            extraConfigProperties.put("IgnoreDNSFailures", "false");
+            extraConfigProperties.put("RefreshInterval", "60");
+            extraConfigProperties.put("ResponseChunkSize", "64");
+            extraConfigProperties.put("SSLConsolidate", "false");
+            extraConfigProperties.put("TrustedProxyEnable", "false");
+            extraConfigProperties.put("VHostMatchingCompat", "false");
 
             // check for any extra properties (may be specified by IBM Support to address Plug-in issues)
             if (config.get("extraConfigProperties.0.config.referenceType") != null) {
                 for (Map.Entry<String, Object> entry : config.entrySet()) {
                     if (entry.getKey().startsWith("extraConfigProperties.0") && !entry.getKey().equals("extraConfigProperties.0.config.referenceType")) {
-                        String value = (String)config.get(entry.getKey());
+                        String value = (String) config.get(entry.getKey());
                         // remove the key prefix of extraConfigProperties.0.
                         String key = entry.getKey().substring(24);
                         extraConfigProperties.put(key, value);
@@ -1543,14 +1572,14 @@ public class PluginGenerator {
 
         protected ServerClusterData createServerCluster(String cName, boolean singleServerConfig) {
             ServerClusterData scd = new ServerClusterData(cName, singleServerConfig);
-            scd.loadBalance           = this.loadBalance;
-            scd.retryInterval         = this.retryInterval;
-            scd.serverIOTimeoutRetry  = this.serverIOTimeoutRetry;
-            scd.removeSpecialHeaders  = this.removeSpecialHeaders;
-            scd.cloneSeparatorChange  = this.cloneSeparatorChange;
-            scd.postSizeLimit         = this.postSizeLimit;
-            scd.postBufferSize        = this.postBufferSize;
-            scd.GetDWLMTable          = this.GetDWLMTable;
+            scd.loadBalance = this.loadBalance;
+            scd.retryInterval = this.retryInterval;
+            scd.serverIOTimeoutRetry = this.serverIOTimeoutRetry;
+            scd.removeSpecialHeaders = this.removeSpecialHeaders;
+            scd.cloneSeparatorChange = this.cloneSeparatorChange;
+            scd.postSizeLimit = this.postSizeLimit;
+            scd.postBufferSize = this.postBufferSize;
+            scd.GetDWLMTable = this.GetDWLMTable;
             return scd;
         }
 
@@ -1598,7 +1627,7 @@ public class PluginGenerator {
         }
 
         private String traceList(String[] list) {
-            if ( list == null || list.length == 0 )
+            if (list == null || list.length == 0)
                 return "none";
 
             StringBuilder sb = new StringBuilder();
@@ -1666,8 +1695,8 @@ public class PluginGenerator {
                                                  final boolean preferIPv6) {
 
         String hostName = null;
-        if ( "*".equals(host) && !LOCALHOST.equals(defaultHostName) && !defaultHostName.isEmpty()) {
-            if ( HostNameUtils.validLocalHostName(defaultHostName, preferIPv6)) {
+        if ("*".equals(host) && !LOCALHOST.equals(defaultHostName) && !defaultHostName.isEmpty()) {
+            if (HostNameUtils.validLocalHostName(defaultHostName, preferIPv6)) {
                 hostName = defaultHostName;
             } else {
                 hostName = LOCALHOST;
@@ -1682,18 +1711,16 @@ public class PluginGenerator {
 
     /**
      * Returns a File.pathSeparator if the input String does not end in / or \\
+     * 
      * @param input - The String to test
      * @return A String containing a File.pathSeparator if the input String doesn't end in / or \\
      */
     @Trivial
-    private String addSlash(String input){
-        if(input.endsWith("/") || input.endsWith("\\"))
+    private String addSlash(String input) {
+        if (input.endsWith("/") || input.endsWith("\\"))
             return "";
         return File.separator;
     }
-
-
-
 
     // contains data for each configured server
     protected static class ServerData {
@@ -1725,7 +1752,7 @@ public class PluginGenerator {
          */
         public ServerData(String name, String serverID, PluginConfigData pcd) {
             this.serverName = name;
-            if(serverID!=null) {
+            if (serverID != null) {
                 this.serverID = serverID;
             }
             this.nodeName = null;
@@ -1827,9 +1854,8 @@ public class PluginGenerator {
             return host.hashCode() + port;
         }
 
-
         public String toString() {
-            return "transportData(host="+host+", port="+port+", isSSL="+isSslEnabled+")";
+            return "transportData(host=" + host + ", port=" + port + ", isSSL=" + isSslEnabled + ")";
         }
     }
 
@@ -1852,7 +1878,7 @@ public class PluginGenerator {
                 // ignore this exception, app is initializing so too early to get a cokkie config name
                 // and default can be assumed.
             }
-            if(cookieConfig==null) {
+            if (cookieConfig == null) {
                 /*-
                  * The SessionCookieConfig is not available if
                  * the ServletContext for the application has not been initialized.
@@ -1863,18 +1889,19 @@ public class PluginGenerator {
                  * Use the default (server-level) cookie name when this occurs.
                  */
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The application named " + application.getName() + " has not been initialized yet, so the plugin configuration will use the default (server-level) affinity cookie. If this application programmatically modifies the affinity cookie's name during initialization, that change will not be reflected in the plugin configuration unless the plugin configuration is regenerated after application initialization.");
+                    Tr.debug(tc, "The application named " + application.getName()
+                                 + " has not been initialized yet, so the plugin configuration will use the default (server-level) affinity cookie. If this application programmatically modifies the affinity cookie's name during initialization, that change will not be reflected in the plugin configuration unless the plugin configuration is regenerated after application initialization.");
                 }
-                if(defaultAffinityCookie!=null) {
+                if (defaultAffinityCookie != null) {
                     this.cookieName = defaultAffinityCookie;
                 }
             } else {
                 String cookieName = cookieConfig.getName();
-                if(cookieName!=null) {
+                if (cookieName != null) {
                     this.cookieName = cookieName;
                 }
             }
-            if(affinityUrlIdentifier!=null) {
+            if (affinityUrlIdentifier != null) {
                 this.urlCookieName = affinityUrlIdentifier;
             }
         }
@@ -1909,15 +1936,15 @@ public class PluginGenerator {
             // First pass at finding the http endpoint reference based on the pid parameter
             String idFilter = "(service.pid=" + pid + ")";
 
-            if ( pid == null ) {
-                if( TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            if (pid == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "HttpEndpointInfo -- no endpoint specified in config");
                 }
                 idFilter = "(id=defaultHttpEndpoint)";
             }
 
-            String filter = "(&(enabled=true)(|(httpPort>=1)(httpsPort>=1))"+idFilter+")";
-            if( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String filter = "(&(enabled=true)(|(httpPort>=1)(httpsPort>=1))" + idFilter + ")";
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpEndpointInfo -- looking for configured endpoints matching " + filter);
             }
 
@@ -1928,11 +1955,11 @@ public class PluginGenerator {
                 // it just must not be listening or enabled (didn't match the rest of the filter).
                 // Look for just the idFilter so we can find the service to at least give a better
                 // indication of why that one wasn't used.
-                if( TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "HttpEndpointInfo -- no enabled/listening endpoints found");
                 }
                 ServiceReference<?> ref = getService(context, idFilter);
-                if ( ref != null ) {
+                if (ref != null) {
                     String id = (String) ref.getProperty("id");
                     Comment comment = doc.createComment(String.format(" The endpoint %s was not found or is not enabled",
                                                                       id));
@@ -1945,22 +1972,22 @@ public class PluginGenerator {
             }
 
             // Second pass, if needed: the specified pid wasn't enabled/listening
-            if ( serviceRef == null ) {
+            if (serviceRef == null) {
                 // first, lets see if we can find one with both ports listening
                 serviceRef = getService(context, "(&(enabled=true)(httpPort>=1)(httpsPort>=1))");
-                if ( serviceRef == null ) {
+                if (serviceRef == null) {
                     // otherwise, try for one with at least one port listening
                     serviceRef = getService(context, "(&(enabled=true)(|(httpPort>=1)(httpsPort>=1)))");
                 }
             }
 
-            if ( serviceRef != null ) {
+            if (serviceRef != null) {
                 httpEndpointRef = serviceRef;
                 httpEndpointId = (String) serviceRef.getProperty("id");
                 Comment comment = doc.createComment(" Configuration generated using httpEndpointRef=" + httpEndpointId);
                 doc.getDocumentElement().appendChild(comment);
             } else {
-                if( TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "HttpEndpointInfo -- could not find a valid endpoint");
                 }
                 httpEndpointRef = null;
@@ -1968,13 +1995,12 @@ public class PluginGenerator {
             }
         }
 
-
         /**
          * @param key Service property to retrieve
          * @return
          */
         public Object getProperty(String key) {
-            if ( httpEndpointRef != null )
+            if (httpEndpointRef != null)
                 return httpEndpointRef.getProperty(key);
             return null;
         }
@@ -2000,7 +2026,7 @@ public class PluginGenerator {
                 refs = context.getAllServiceReferences(null, filter);
             } catch (InvalidSyntaxException e) {
             }
-            if ( refs == null || refs.length == 0 )
+            if (refs == null || refs.length == 0)
                 return null;
             return refs[0];
         }

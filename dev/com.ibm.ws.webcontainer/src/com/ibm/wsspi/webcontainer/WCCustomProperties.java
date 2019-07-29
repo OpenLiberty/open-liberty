@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -310,6 +310,9 @@ public class WCCustomProperties {
     //18.0.0.3
     public static String SERVLET_PATH_FOR_DEFAULT_MAPPING;
 
+    //19.0.0.8
+    public static boolean GET_REAL_PATH_RETURNS_QUALIFIED_PATH;
+
     static {
         setCustomPropertyVariables(); //initilizes all the variables
     }
@@ -401,6 +404,8 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("useoriginalqsinforwardifnull", "com.ibm.ws.webcontainer.useoriginalqsinforwardifnull"); //PI81569
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletdestroywaittime", "com.ibm.ws.webcontainer.servletdestroywaittime");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletpathfordefaultmapping", "com.ibm.ws.webcontainer.servletpathfordefaultmapping");     //4666
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("getrealpathreturnsqualifiedPath", "com.ibm.ws.webcontainer.getrealpathreturnsqualifiedPath");
+
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -780,9 +785,11 @@ public class WCCustomProperties {
         //Start 17.0.0.4
         USE_ORIGINAL_QS_IN_FORWARD_IF_NULL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.useoriginalqsinforwardifnull")).booleanValue(); //PI81569
 
-	//18.0.0.3
-	SERVLET_PATH_FOR_DEFAULT_MAPPING = customProps.getProperty("com.ibm.ws.webcontainer.servletpathfordefaultmapping"); //4666
+        //18.0.0.3
+        SERVLET_PATH_FOR_DEFAULT_MAPPING = customProps.getProperty("com.ibm.ws.webcontainer.servletpathfordefaultmapping"); //4666
 
+        // 19.0.0.8
+        GET_REAL_PATH_RETURNS_QUALIFIED_PATH = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.getrealpathreturnsqualifiedpath", "true")).booleanValue();
     }
 
     private static void setCustomizedDefaultValues(){

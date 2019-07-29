@@ -160,7 +160,9 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "builder", j.getString("uid"));
         assertEquals(err, "builder", j.getString("id"));
         assertNull(err, j.get("jndiName"));
-        assertEquals(err, "Check that the spelling is correct and that the right features are enabled for this configuration.", j.getString("error"));
+        String error;
+        error = j.getString("error");
+        assertTrue(err, error.startsWith("CWWKO1531E") && error.contains("mongo"));
         assertEquals(err, "DerbyLib", j.getString("libraryRef"));
         assertEquals(err, "pwd1", j.getString("password")); //TODO Don't reveal password here
         assertEquals(err, "u1", j.getString("user"));
@@ -170,7 +172,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "MongoDBNotEnabled", j.getString("uid"));
         assertEquals(err, "MongoDBNotEnabled", j.getString("id"));
         assertEquals(err, "mongo/db", j.getString("jndiName"));
-        assertEquals(err, "Check that the spelling is correct and that the right features are enabled for this configuration.", j.getString("error"));
+        error = j.getString("error");
+        assertTrue(err, error.startsWith("CWWKO1531E") && error.contains("mongoDB"));
         assertEquals(err, "builder", j.getString("mongoRef"));
         assertEquals(err, "testdb", j.getString("databaseName"));
     }
@@ -925,7 +928,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         String err = "unexpected response: " + json;
         assertNotNull(err, json);
         assertEquals(err, "dataSource[NestedElementCase]/JdBcDrIvEr[default-0]", json.getString("uid"));
-        assertEquals(err, "Did not find any configured instances of jdbcDriver matching the request", json.getString("error"));
+        String error = json.getString("error");
+        assertTrue(err, error.startsWith("CWWKO1500E") && error.contains("jdbcDriver"));
 
         json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
         err = "unexpected response: " + json;

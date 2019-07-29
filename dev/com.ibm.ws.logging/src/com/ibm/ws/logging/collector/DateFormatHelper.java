@@ -41,19 +41,43 @@ public class DateFormatHelper {
             // Append milliseconds and timezone after seconds
             patternLength = pattern.length();
             endOfSecsIndex = pattern.lastIndexOf('s') + 1;
-            String newPattern = pattern.substring(0, endOfSecsIndex) + ":SSS z";
+            StringBuilder newPattern = new StringBuilder(pattern.substring(0, endOfSecsIndex) + ":SSS z");
             if (endOfSecsIndex < patternLength)
-                newPattern += pattern.substring(endOfSecsIndex, patternLength);
+                newPattern.append(pattern.substring(endOfSecsIndex, patternLength));
             // 0-23 hour clock (get rid of any other clock formats and am/pm)
-            newPattern = newPattern.replace('h', 'H');
-            newPattern = newPattern.replace('K', 'H');
-            newPattern = newPattern.replace('k', 'H');
-            newPattern = newPattern.replace('a', ' ');
-            newPattern = newPattern.trim();
-            localeDatePattern = newPattern;
+            localeDatePattern = removeClockFormat(newPattern);
         } else {
             localeDatePattern = "dd/MMM/yyyy HH:mm:ss:SSS z";
         }
+    }
+
+    /**
+     * Return the localeDatePattern without clock formats and am/pm as a trimmed String
+     *
+     * @param sb
+     *            A StringBuilder holding the pre-formatted localeDatePattern
+     * @return
+     *         The formatted localeDatePattern
+     */
+    private static final String removeClockFormat(StringBuilder sb) {
+        int start = 0;
+        int end = sb.length() - 1;
+        char letter;
+        // trim left side
+        while (start <= end && ((letter = sb.charAt(start)) == ' ' || letter == 'a'))
+            start++;
+        // trim right side
+        while (end > start && ((letter = sb.charAt(end)) == ' ' || letter == 'a'))
+            end--;
+        // replace characters 'h', 'k', and 'K' to 'H' and 'a' to ' '
+        for (int i = start; i <= end; i++) {
+            letter = sb.charAt(i);
+            if (letter == 'h' || letter == 'k' || letter == 'K')
+                sb.setCharAt(i, 'H');
+            else if (letter == 'a')
+                sb.setCharAt(i, ' ');
+        }
+        return sb.substring(start, end + 1);
     }
 
     /**
@@ -72,8 +96,9 @@ public class DateFormatHelper {
      */
     public static final String formatTime(long timestamp, boolean useIsoDateFormat) {
         BurstDateFormat[] dfs = dateformats.get();
+        int index = useIsoDateFormat ? 1 : 0;
         if (dfs == null) {
-            dfs = new BurstDateFormat[useIsoDateFormat ? 2 : 1];
+            dfs = new BurstDateFormat[index + 1];
             dateformats.set(dfs);
         } else if (useIsoDateFormat && dfs.length == 1) {
             BurstDateFormat[] newDfs = new BurstDateFormat[2];
@@ -82,12 +107,10 @@ public class DateFormatHelper {
             dateformats.set(dfs);
         }
 
-        int index = useIsoDateFormat ? 1 : 0;
-        BurstDateFormat df = dfs[index];
-        if (df == null) {
-            df = dfs[index] = new BurstDateFormat(new SimpleDateFormat(useIsoDateFormat ? "yyyy-MM-dd'T'HH:mm:ss.SSSZ" : localeDatePattern));
+        if (dfs[index] == null) {
+            dfs[index] = new BurstDateFormat(new SimpleDateFormat(useIsoDateFormat ? "yyyy-MM-dd'T'HH:mm:ss.SSSZ" : localeDatePattern));
         }
 
-        return df.format(timestamp);
+        return dfs[index].format(timestamp);
     }
 }

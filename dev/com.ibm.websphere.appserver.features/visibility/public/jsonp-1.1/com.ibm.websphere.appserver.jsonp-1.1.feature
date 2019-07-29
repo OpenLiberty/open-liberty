@@ -10,3 +10,4 @@ Subsystem-Name: JavaScript Object Notation Processing 1.1
 -features=com.ibm.websphere.appserver.jsonpInternal-1.1
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

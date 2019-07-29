@@ -217,13 +217,13 @@ var utils = (function() {
      */
     var initModalDialogKeystrokes = function() {
         // Close the dialog with the buttons
-        $(".tool_modal_close").click(function () {
+        $(".tool_modal_close").click(function() {
             $(".tool_modal_container").addClass('hidden');
             returnFocus();
         });
 
         // ESC in a dialog will close the dialog
-        $(document).keydown(function (event) {
+        $(document).keydown(function(event) {
             var key = event.which || event.keyCode;
             if (key === 27) {   // ESC key
                 $(".tool_modal_container").addClass('hidden');

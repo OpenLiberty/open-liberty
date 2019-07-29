@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -189,16 +188,7 @@ public class FeatureManagerTest {
                     //allow mock calls from the BundleInstallOriginBundleListener <init>
                     allowing(mockBundleContext).getBundle();
                     will(returnValue(mockBundle));
-                    one(mockBundle).getDataFile("bundle.origin.cache");
-                    //allow the BundleInstallOriginBundleListener to get a ScheduledExecutorService
-                    //and schedule a purge for the future
-                    one(mockBundleContext).getServiceReference(ScheduledExecutorService.class);
-                    will(returnValue(mockScheduledExecutorService));
-                    one(mockBundleContext).getService(mockScheduledExecutorService);
-                    will(returnValue(mockScheduledExecutorService.getService()));
-                    one(mockScheduledExecutorService.getService()).schedule(with(any(BundleInstallOriginBundleListener.class)), with(any(Integer.class)),
-                                                                            with(any(TimeUnit.class)));
-                    one(mockBundleContext).ungetService(mockScheduledExecutorService);
+                    one(mockBundleContext).getDataFile("bundle.origin.cache");
 
                     allowing(mockBundleContext).addBundleListener(with(any(BundleListener.class)));
 
@@ -480,16 +470,7 @@ public class FeatureManagerTest {
                     //allow mock calls from the BundleInstallOriginBundleListener <init>
                     allowing(mockBundleContext).getBundle();
                     will(returnValue(mockBundle));
-                    one(mockBundle).getDataFile("bundle.origin.cache");
-                    //allow the BundleInstallOriginBundleListener to get a ScheduledExecutorService
-                    //and schedule a purge for the future
-                    one(mockBundleContext).getServiceReference(ScheduledExecutorService.class);
-                    will(returnValue(mockScheduledExecutorService));
-                    one(mockBundleContext).getService(mockScheduledExecutorService);
-                    will(returnValue(mockScheduledExecutorService.getService()));
-                    one(mockScheduledExecutorService.getService()).schedule(with(any(BundleInstallOriginBundleListener.class)), with(any(Integer.class)),
-                                                                            with(any(TimeUnit.class)));
-                    one(mockBundleContext).ungetService(mockScheduledExecutorService);
+                    one(mockBundleContext).getDataFile("bundle.origin.cache");
 
                 }
             });

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+            http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+        version="7">
+     
+     <!-- Kafka client registers MBeans -->
+     <permission>
+       <class-name>javax.management.MBeanServerPermission</class-name>
+       <name>createMBeanServer</name>
+     </permission>
+     <permission>
+       <class-name>javax.management.MBeanPermission</class-name>
+       <name>*</name>
+       <actions>*</actions>
+     </permission>
+     <permission>
+       <class-name>javax.management.MBeanTrustPermission</class-name>
+       <name>register</name>
+     </permission>
+     
+     <!-- Kafka client reads system properties -->
+     <permission>
+       <class-name>java.util.PropertyPermission</class-name>
+       <name>*</name>
+       <actions>read</actions>
+     </permission>
+     
+     <!-- Kafka client connects to the kafka broker server -->
+     <permission>
+       <class-name>java.net.SocketPermission</class-name>
+       <name>*</name>
+       <actions>connect</actions>
+     </permission>
+     
+     <!-- Kafka client loads serializers and deserializers by name -->
+     <permission>
+       <class-name>java.lang.RuntimePermission</class-name>
+       <name>getClassLoader</name>
+       <actions>*</actions>
+     </permission>
+     
+     <!-- Kafka reads truststores -->
+     <permission>
+        <class-name>java.io.FilePermission</class-name>
+        <name>*</name> <!-- all files in the current directory (i.e. the server directory) -->
+        <actions>read</actions>
+     </permission>
+     
+</permissions>

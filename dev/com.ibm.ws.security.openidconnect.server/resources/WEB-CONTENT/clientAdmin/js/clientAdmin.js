@@ -49,7 +49,7 @@ var clientAdmin = (function() {
             });
 
             // Add registration client onclick event
-            $("#add_new_client").click(function () {
+            $("#add_new_client").click(function() {
                 utils.saveFocus($(this));   // Save off button to return focus
                                             // to it when dialog is dismissed.
                 clientInputDialog.setupNewClientDialog();
@@ -61,7 +61,7 @@ var clientAdmin = (function() {
             tableUtils.initTableFilter('filter_client_name', 'clear_client_name_filter');
             tableUtils.initTablePaging();
 
-            $(".tool_modal_delete_button").click(function () {
+            $(".tool_modal_delete_button").click(function() {
                 utils.startProcessingSpinner('delete_processing');
                 var clientId = $(this).prop("client_id");
                 var client_name = table.getTableRowClientNameCell(clientId).text();

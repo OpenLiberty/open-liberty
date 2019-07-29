@@ -10,36 +10,32 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Constants;
 import org.osgi.framework.startlevel.BundleStartLevel;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * This class listens for {@link Bundle}.INSTALLED and {@link Bundle}.UNINSTALLED events.
@@ -63,137 +59,90 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * be adjusted so as to avoid starting the installee bundle that should no longer be present. Later server
  * starts will attempt to uninstall the bundle again.
  */
-public class BundleInstallOriginBundleListener implements BundleListener, Callable<Void> {
+public class BundleInstallOriginBundleListener implements BundleListener {
 
     private static final TraceComponent tc = Tr.register(BundleInstallOriginBundleListener.class);
 
     private static final String storagePath = "bundle.origin.cache";
-    private final Bundle featureManager;
+
     private final BundleContext ctx;
     private final File bundleOriginCache;
 
-    //stores the location of a bundle that has installed other bundles as a key to
-    //the set of the install locations of the bundles it has installed
-    private volatile ConcurrentHashMap<String, Set<String>> bundleOrigins = new ConcurrentHashMap<String, Set<String>>();
+    //stores the ID of a bundle that has installed other bundles as a key to
+    //the set of the install IDs of the bundles it has installed
+    private final Map<Long, Set<Long>> bundleOrigins = Collections.synchronizedMap(new HashMap<Long, Set<Long>>());
+    private final Set<Long> allTracked = new HashSet<>();
 
     /**
      * This constructor reads the persisted bundleOrigins data from disk and tidies it
      * to account for any removed installer bundles before completing.
      */
-
     BundleInstallOriginBundleListener(BundleContext ctx) {
-        this.ctx = ctx;
-        //this class is constructed in the feature manager, so get bundle from the ctx
-        featureManager = ctx.getBundle();
-        bundleOriginCache = featureManager.getDataFile(storagePath);
-        bundleOrigins = loadCacheFromDisk(true);
-        //set a purge up in case there aren't actually any more bundle events
-        delayPurge();
+        bundleOriginCache = ctx.getDataFile(storagePath);
+        // use system bundle context so we can lookup using bundle ID without worrying
+        // about hooks filtering them out.
+        this.ctx = ctx.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getBundleContext();
+        loadCacheFromDisk();
     }
 
-    @SuppressWarnings("unchecked")
-    @FFDCIgnore(IOException.class)
-    private synchronized ConcurrentHashMap<String, Set<String>> loadCacheFromDisk(boolean newInstance) {
-        ConcurrentHashMap<String, Set<String>> loadedOrigins = new ConcurrentHashMap<String, Set<String>>();
+    private void loadCacheFromDisk() {
         if (bundleOriginCache != null && bundleOriginCache.exists()) {
             debug("Found existing bundle origin cache", bundleOriginCache.toString(), bundleOriginCache);
             //read the contents of the cache file, which is a map of bundle locations
-            FileInputStream fis = null;
-            ObjectInputStream ois = null;
-            try {
-                ois = new ObjectInputStream((fis = new FileInputStream(bundleOriginCache)));
-                loadedOrigins = (ConcurrentHashMap<String, Set<String>>) ois.readObject();
+            readCacheFile();
 
-                debug("Repopulated origins cache from disk", loadedOrigins);
+            debug("Repopulated origins cache from disk", bundleOriginCache);
 
-                //if we are a new instance we need to clean up bundles that may have been
-                //removed while we weren't listening
-                if (newInstance) {
-                    Set<String> installerBundlesToRemove = new HashSet<String>();
-                    //remove from the loaded cache any bundles that have been removed while the server was down
-                    for (Map.Entry<String, Set<String>> bundleOriginEntry : loadedOrigins.entrySet()) {
-                        String installerBundleLocation = bundleOriginEntry.getKey();
-                        Bundle installerBundle = ctx.getBundle(installerBundleLocation);
-                        if (installerBundle == null) {
-                            debug("Installer bundle has been removed", installerBundleLocation);
-                            installerBundlesToRemove.add(installerBundleLocation);
-                        }
-                    }
-                    for (String installerBundleLocation : installerBundlesToRemove) {
-                        processUninstalledInstallerBundle(installerBundleLocation);
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                //autoFFDC
-            } catch (IOException e) {
-                //manually FFDC here because we are preventing autoFFDC instrumentation for the finally block
-                FFDCFilter.processException(e, getClass().getName(), "118", new Object[] { bundleOriginCache });
-            } catch (ClassNotFoundException e) {
-                //autoFFDC
-            } finally {
-                if (ois != null) {
-                    try {
-                        ois.close();
-                    } catch (IOException e) {
-                        //suppress FFDC
-                    }
-                }
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        //suppress FFDC
+            // we need to clean up bundles that may have been
+            // removed while we weren't listening
+            Set<Long> installerBundlesToRemove = new HashSet<Long>();
+            synchronized (bundleOrigins) {
+                //remove from the loaded cache any bundles that have been removed while the server was down
+                for (Map.Entry<Long, Set<Long>> bundleOriginEntry : bundleOrigins.entrySet()) {
+                    Long installerBundleId = bundleOriginEntry.getKey();
+                    Bundle installerBundle = ctx.getBundle(installerBundleId);
+                    if (installerBundle == null) {
+                        debug("Installer bundle has been removed", installerBundleId);
+                        installerBundlesToRemove.add(installerBundleId);
                     }
                 }
             }
-        }
-        return loadedOrigins;
-    }
-
-    private void loadCacheIfPurged() {
-        if (bundleOrigins == null) {
-            synchronized (this) {
-                //check still null
-                if (bundleOrigins == null)
-                    bundleOrigins = loadCacheFromDisk(false);
+            for (Long installerBundleId : installerBundlesToRemove) {
+                processUninstalledInstallerBundle(installerBundleId);
             }
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore(IOException.class)
     public void bundleChanged(BundleEvent event) {
         boolean store = false;
         switch (event.getType()) {
             case BundleEvent.INSTALLED:
-                Bundle installerBundle = event.getOrigin();
-                if (!featureManager.equals(installerBundle)) {
-                    loadCacheIfPurged();
+                Bundle installedBundle = event.getBundle();
+                if (!installedBundle.getLocation().startsWith(Provisioner.BUNDLE_LOC_FEATURE_TAG)) {
+                    Bundle installerBundle = event.getOrigin();
                     //the bundle was installed by something other than the feature manager
                     //we should associate it with its installer
-                    String installingBundleSN = installerBundle.getLocation();
-                    Set<String> installeeBundles = Collections.synchronizedSet(new HashSet<String>());
-                    Set<String> existingInstalleeBundles;
-                    existingInstalleeBundles = bundleOrigins.putIfAbsent(installingBundleSN, installeeBundles);
-                    if (existingInstalleeBundles == null)
-                        existingInstalleeBundles = installeeBundles;
-                    //add the location of the bundle being installed to the set for the origin bundle
-                    existingInstalleeBundles.add(event.getBundle().getLocation());
+                    debug("Tracking bundle {0} at location {1} installed by {2}.", installedBundle, installedBundle.getLocation(), installerBundle);
+                    synchronized (bundleOrigins) {
+                        Set<Long> existingInstalleeBundles = bundleOrigins.get(installerBundle.getBundleId());
+                        if (existingInstalleeBundles == null) {
+                            existingInstalleeBundles = new HashSet<>();
+                            bundleOrigins.put(installerBundle.getBundleId(), existingInstalleeBundles);
+                        }
+                        //add the ID of the bundle being installed to the set for the origin bundle
+                        existingInstalleeBundles.add(installedBundle.getBundleId());
+                        allTracked.add(installedBundle.getBundleId());
+                    }
                     //flag to store the data
                     store = true;
-                    //delay the purge of the origins cache
-                    delayPurge();
                 }
                 break;
             case BundleEvent.UNINSTALLED:
-                loadCacheIfPurged();
                 Bundle uninstalledBundle = event.getBundle();
                 //set the flag to store data to disk if the uninstall was one of our known installer bundles
-                store = processUninstalledInstallerBundle(uninstalledBundle.getLocation());
-                //delay the purge of the origins cache
-                delayPurge();
+                store = processUninstalledInstallerBundle(uninstalledBundle.getBundleId());
                 break;
             default:
                 break;
@@ -202,86 +151,72 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
         //then we need to persist it to the workarea ready for a subsequent warm start
         if (store == true) {
             //persist the data after each event is processed
-            synchronized (bundleOriginCache) {
-                FileOutputStream fos = null;
-                ObjectOutputStream oos = null;
-                try {
-                    //create if it doesn't exist yet
-                    boolean created = bundleOriginCache.createNewFile();
-                    if (created || bundleOriginCache.exists()) {
-                        oos = new ObjectOutputStream((fos = new FileOutputStream(bundleOriginCache)));
-                        oos.writeObject(bundleOrigins);
-                    }
-                } catch (FileNotFoundException e) {
-                    //autoFFDC
-                } catch (IOException e) {
-                    //manually FFDC here because we are preventing autoFFDC instrumentation for the finally block
-                    FFDCFilter.processException(e, getClass().getName(), "201", new Object[] { bundleOrigins, bundleOriginCache });
-                } finally {
-                    if (oos != null) {
-                        try {
-                            oos.close();
-                        } catch (IOException e) {
-                            //suppress FFDC
-                        }
-                    }
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (IOException e) {
-                            //suppress FFDC
-                        }
-                    }
-                }
-
-            }
+            writeCacheFile();
         }
     }
 
     /**
-     * Determines if the uninstalled bundle location was an installer bundle and calls for the
+     * Determines if the uninstalled bundle ID was an installer bundle and calls for the
      * removal of any installees associated with it if it was.
      *
-     * @param installerBundleLocation
+     * @param installerBundleId
      * @return true if the parameter was an installer bundle
      */
-    private boolean processUninstalledInstallerBundle(String installerBundleLocation) {
-        //find out if the uninstalled bundle location was an installer bundle and remove its installees as well
-        Set<String> bundleLocationsToUninstall = bundleOrigins.remove(installerBundleLocation);
-        if (bundleLocationsToUninstall != null) {
-            debug("Installer bundle at location {0} had installees that need to be uninstalled", installerBundleLocation);
+    private boolean processUninstalledInstallerBundle(long installerBundleId) {
+        //find out if the uninstalled bundle ID was an installer bundle and remove its installees as well
+        Set<Long> bundleIdsToUninstall;
+        boolean tracked;
+        synchronized (bundleOrigins) {
+            bundleIdsToUninstall = bundleOrigins.remove(installerBundleId);
+            // use snapshot to avoid concurrent modification while iterating below
+            if (bundleIdsToUninstall != null) {
+                bundleIdsToUninstall = new HashSet<>(bundleIdsToUninstall);
+            }
+            tracked = allTracked.remove(installerBundleId);
+        }
+
+        boolean uninstalledTracked = bundleIdsToUninstall != null;
+        if (uninstalledTracked) {
+            debug("Installer bundle {0} had installees that need to be uninstalled", installerBundleId);
             //we recognized the bundle being uninstalled as an installer, try to remove its installees
-            Set<String> unsuccessfulUninstallLocations = uninstallInstalleeBundles(bundleLocationsToUninstall);
+            Set<Long> unsuccessfulUninstallLocations = uninstallInstalleeBundles(bundleIdsToUninstall);
             //check if we successfully uninstalled everything
             if (!unsuccessfulUninstallLocations.isEmpty()) {
                 //we weren't able to uninstall every installee
                 //we should update the map with the set of remaining bundle locations
                 //that way we will try to uninstall them again another time when it might work
-                bundleOrigins.put(installerBundleLocation, unsuccessfulUninstallLocations);
+                bundleOrigins.put(installerBundleId, unsuccessfulUninstallLocations);
                 debug("Not all installees were removed", unsuccessfulUninstallLocations);
             }
-            return true;
         }
-        return false;
+        if (tracked) {
+            // may need to clean up the bundle from the sets
+            synchronized (bundleOrigins) {
+                for (Map.Entry<Long, Set<Long>> entry : bundleOrigins.entrySet()) {
+                    uninstalledTracked |= entry.getValue().remove(installerBundleId);
+                }
+            }
+        }
+        return uninstalledTracked;
     }
 
     /**
      * Iterates a set of installee bundles attempting to uninstall them.
      *
-     * @param installeeBundleLocationsToUninstall
-     * @return Set of bundle locations that could not be uninstalled
+     * @param installeeBundleIdsToUninstall
+     * @return Set of bundle IDs that could not be uninstalled
      */
-    private Set<String> uninstallInstalleeBundles(Set<String> installeeBundleLocationsToUninstall) {
-        Set<String> unsuccessfulUninstallLocations = new HashSet<String>();
-        for (String installeeBundleLocation : installeeBundleLocationsToUninstall) {
-            Bundle installeeBundleToUninstall = ctx.getBundle(installeeBundleLocation);
+    private Set<Long> uninstallInstalleeBundles(Set<Long> installeeBundleIdsToUninstall) {
+        Set<Long> unsuccessfulUninstallLocations = new HashSet<>();
+        for (Long installeeBundleId : installeeBundleIdsToUninstall) {
+            Bundle installeeBundleToUninstall = ctx.getBundle(installeeBundleId);
             if (installeeBundleToUninstall != null) {
                 try {
                     installeeBundleToUninstall.uninstall();
                 } catch (BundleException e) {
                     //this will auto FFDC
                     //uninstall failed, track it
-                    unsuccessfulUninstallLocations.add(installeeBundleLocation);
+                    unsuccessfulUninstallLocations.add(installeeBundleId);
                     //we couldn't uninstall the bundle, but we want to stop it starting
                     //set the bundle start level to MAX_INT
                     BundleStartLevel bsl = installeeBundleToUninstall.adapt(BundleStartLevel.class);
@@ -292,63 +227,59 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
         return unsuccessfulUninstallLocations;
     }
 
+    @Trivial
     private void debug(String msg, Object... objs) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, msg, objs);
         }
     }
 
-    private ScheduledFuture<?> futurePurge = null;
-    //if there have been no bundle events for 5 minutes, purge the map from memory
-    //it will be reloaded from disk if necessary
-    private final int purgeDelay = 5;
-
-    @FFDCIgnore(IllegalStateException.class)
-    private synchronized void delayPurge() {
-
-        // if the framework is stopping, dont create the delayed purge
-        if (FrameworkState.isStopping()) {
-            return;
-        }
-
-        //try to cancel any existing task if we can and it isn't running
-        if (futurePurge != null) {
-            futurePurge.cancel(false);
-        }
-
-        //any time this method is called we want to schedule a new purge for the future
-        ServiceReference<ScheduledExecutorService> sesRef = ctx.getServiceReference(ScheduledExecutorService.class);
-        if (sesRef != null) {
-            try {
-                ScheduledExecutorService executorService = ctx.getService(sesRef);
-                futurePurge = executorService.schedule(this, purgeDelay, TimeUnit.MINUTES);
-            } finally {
-                try {
-                    ctx.ungetService(sesRef);
-                } catch (IllegalStateException e) {
-                    // This is highly unlikely, but can happen.
-                    // Rather than do a boolean check, its more efficient in the 99.99% case
-                    // to just handle the exception if it occurs (which is unlikely)
-                    if (tc.isEventEnabled()) {
-                        Tr.event(tc,
-                                 "IllegalStateException while releasing ServiceReference<ScheduledExecutorService> sesRef - the bundle is stopped or in an otherwise invalid so we shouldn't care",
-                                 e);
+    private void writeCacheFile() {
+        // note that cache version is not stored here because we assume
+        // the impl bundle is re-installed if a new version is used which means we
+        // will be starting clean anyway
+        try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(bundleOriginCache)))) {
+            // cache format is as follows:
+            // Int - number of origin bundles being tracked
+            // for each origin bundle ->
+            //   Long - the origin bundle ID
+            //   Int - number of bundles installed by origin bundle
+            //   for each bundle installed ->
+            //      Long - the installed bundle ID
+            synchronized (bundleOrigins) {
+                out.writeInt(bundleOrigins.size());
+                for (Entry<Long, Set<Long>> origin : bundleOrigins.entrySet()) {
+                    out.writeLong(origin.getKey());
+                    out.writeInt(origin.getValue().size());
+                    for (Long installed : origin.getValue()) {
+                        out.writeLong(installed);
                     }
                 }
             }
+        } catch (IOException e) {
+            // auto FFDC is fine here
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.util.concurrent.Callable#call()
-     */
-    @Override
-    public synchronized Void call() throws Exception {
-        //this gets called on schedule to clear the map for garbage collection
-        futurePurge = null;
-        bundleOrigins = null;
-        return null;
+    private void readCacheFile() {
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(bundleOriginCache)))) {
+            synchronized (bundleOrigins) {
+                bundleOrigins.clear();
+                int numOrigins = in.readInt();
+                for (int i = 0; i < numOrigins; i++) {
+                    long installeeId = in.readLong();
+                    int numInstalled = in.readInt();
+                    Set<Long> installed = new HashSet<>(numInstalled);
+                    for (int j = 0; j < numInstalled; j++) {
+                        long id = in.readLong();
+                        installed.add(id);
+                        allTracked.add(id);
+                    }
+                    bundleOrigins.put(installeeId, installed);
+                }
+            }
+        } catch (IOException e) {
+            // auto FFDC is fine here
+        }
     }
 }

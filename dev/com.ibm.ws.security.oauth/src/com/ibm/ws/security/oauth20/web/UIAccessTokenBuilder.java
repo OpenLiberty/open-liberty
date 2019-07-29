@@ -50,19 +50,22 @@ public class UIAccessTokenBuilder {
      * create a token and auth header values and place on request as params for ui to use
      */
     void createHeaderValuesForUI() {
+        OidcBaseClient client = getClient();
         OAuth20Token token = createAccessTokenForAuthenticatedUser();
         String authHeader = createAuthHeaderValueFromClientIdAndSecret();
         if (token != null && authHeader != null) {
             _req.setAttribute("ui_token", token.getId());
             _req.setAttribute("ui_authheader", authHeader);
-            OidcBaseClient client = getClient();
-            _req.setAttribute("ui_app_pw_enabled", client.isAppPasswordAllowed());
-            _req.setAttribute("ui_app_tok_enabled", client.isAppTokenAllowed());
+            _req.setAttribute("ui_app_pw_enabled", (client == null ? false : client.isAppPasswordAllowed()));
+            _req.setAttribute("ui_app_tok_enabled", (client == null ? false : client.isAppTokenAllowed()));
         }
     }
 
     OidcBaseClient getClient() {
         String clientId = _provider.getInternalClientId();
+        if (clientId == null) {
+            return null;
+        }
         OidcBaseClient client = null;
         try {
             client = _provider.getClientProvider().get(clientId);

@@ -81,9 +81,6 @@ public class Krb5Util {
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "SPNEGO request token successfully processed. GSSContext is established");
-        }
         Subject clientSubject = new Subject();
         Subject delegateSubject = new Subject();
 
@@ -100,8 +97,8 @@ public class Krb5Util {
         try {
             preUseSubjectCredsOnly = Krb5Common.setPropertyAsNeeded(Krb5Common.USE_SUBJECT_CREDS_ONLY, currentUseSubjectCredsOnly);
             if (Krb5Common.isOtherSupportJDKs) {
-            previousSpn = Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_PRINCIPAL, currentSpn);
-            Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_NAME, currentSpn);
+                previousSpn = Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_PRINCIPAL, currentSpn);
+                Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_NAME, currentSpn);
             }
             if (SpnegoHelperProxy.isS4U2proxyEnabled()) {
                 // if we got any exception, client subject will not have the client delegate service GSSCredential
@@ -116,7 +113,7 @@ public class Krb5Util {
                 }
                 result = createResult(clientSubject, gssContext, spnegoConfig);
             } else {
-                result = new AuthenticationResult(AuthResult.FAILURE, "There is no GSSCredential for SPN");
+                result = new AuthenticationResult(AuthResult.FAILURE, "GSSContext is not established with a valid SPNEGO token");
             }
             disposeGssContext(gssContext);
         } finally {
@@ -155,7 +152,7 @@ public class Krb5Util {
 
         if (!gssContext.isEstablished()) {
             String responsebytes = Krb5Util.showHex(responseToken);
-            Tr.error(tc, "SPNEGO_CAN_NOT_VALIDATE_TOKEN", new Object[] { responsebytes });
+            Tr.error(tc, "SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN", new Object[] { responsebytes });
         }
 
         if (responseToken != null) {

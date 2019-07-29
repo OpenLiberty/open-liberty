@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client;
 
@@ -44,6 +44,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorU
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
+import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -139,6 +140,8 @@ public class AccessTokenAuthenticator {
                 }
                 if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
                     oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
+                    // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
+                    (new UserInfoHelper(clientConfig)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory);
                 } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
                     oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
                 }
@@ -503,11 +506,11 @@ public class AccessTokenAuthenticator {
 
     protected ProviderAuthenticationResult getUserInfoFromToken(OidcClientConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, OidcClientRequest oidcClientRequest) {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
-
+        Map<String, Object> responseMap = null;
+        JSONObject jobj = null;
         try {
-            Map<String, Object> responseMap = oidcClientUtil.getUserinfo(clientConfig.getValidationEndpointUrl(), accessToken, sslSocketFactory, clientConfig.isHostNameVerificationEnabled(), clientConfig.getUseSystemPropertiesForHttpClientConnections());
+            responseMap = oidcClientUtil.getUserinfo(clientConfig.getValidationEndpointUrl(), accessToken, sslSocketFactory, clientConfig.isHostNameVerificationEnabled(), clientConfig.getUseSystemPropertiesForHttpClientConnections());
 
-            JSONObject jobj = null; // JSONObject.parse(jresponse);
             jobj = handleResponseMap(responseMap, clientConfig, oidcClientRequest);
             if (jobj != null) {
                 if (tc.isDebugEnabled()) {
@@ -532,6 +535,16 @@ public class AccessTokenAuthenticator {
             logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INTERNAL_ERR", e.getLocalizedMessage(), clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
             return oidcResult;
         }
+
+        // if result was good, put userinfo string on the subject as well.
+        try {
+            String userInfoStr = jobj == null ? null : jobj.serialize();
+            if (oidcResult != null && oidcResult.getUserName() != null && userInfoStr != null) {
+                oidcResult.getCustomProperties().put(Constants.USERINFO_STR, userInfoStr);
+            }
+        } catch (IOException e) {
+        } // ffdc
+
         return oidcResult;
     }
 
@@ -789,11 +802,11 @@ public class AccessTokenAuthenticator {
                                                        * || attributeToSubject.
                                                        * checkForNullRealm())
                                                        */ { // TODO enable this
-                                                           // null realm
-                                                           // checking once
-                                                           // userinfo code is
-                                                           // fixed to emit
-                                                           // "iss"
+                                                            // null realm
+                                                            // checking once
+                                                            // userinfo code is
+                                                            // fixed to emit
+                                                            // "iss"
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
 
