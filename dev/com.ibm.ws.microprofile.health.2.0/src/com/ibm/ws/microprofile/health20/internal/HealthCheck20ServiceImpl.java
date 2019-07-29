@@ -114,7 +114,7 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
                         unstartedAppsSet.add(appName);
                     }
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "In performHealthCheck(): unstartedApps after adding the unstarted app : " + unstartedAppsSet);
+                        Tr.debug(tc, "In performHealthCheck(): unstartedAppsSet after adding the unstarted app : " + unstartedAppsSet);
                 } else {
                     // for liveness check
                     hcHttpResponseBuilder.setOverallState(State.UP);
