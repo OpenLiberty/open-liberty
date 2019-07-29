@@ -94,8 +94,8 @@ public class TokenIntrospectTest {
             staticHashtable = new Hashtable(); // Get a new Hashtable each test case
             mock.checking(new Expectations() {
                 {
-                    //allowing(tokenIntrospectProviderRef).isEmpty();
-                    //will(returnValue(true));
+                    allowing(tokenIntrospectProviderRef).isEmpty();
+                    will(returnValue(true));
                     allowing(tokenIntrospectProviderRef).getServices();
                     will(returnValue(it));
                     allowing(accessToken).getTokenString();
