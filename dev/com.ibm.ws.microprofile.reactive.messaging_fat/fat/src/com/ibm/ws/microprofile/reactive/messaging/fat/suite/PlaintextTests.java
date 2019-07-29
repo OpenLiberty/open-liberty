@@ -20,6 +20,7 @@ import org.testcontainers.containers.KafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions.KafkaPartitionTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCustomSerializerTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sharedLib.KafkaSharedLibTest;
 
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
@@ -33,6 +34,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 KafkaAcknowledgementTest.class,
                 KafkaCustomSerializerTest.class,
                 KafkaPartitionTest.class,
+                KafkaSharedLibTest.class,
 })
 public class PlaintextTests {
 
