@@ -40,6 +40,7 @@ import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.Bulkhea
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.ExceptionHandler;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.ExecutionReference;
 
+@SuppressWarnings("restriction") // Unit test accesses non-exported *PolicyImpl classes
 public class AsyncBulkheadStateImplTest {
 
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);

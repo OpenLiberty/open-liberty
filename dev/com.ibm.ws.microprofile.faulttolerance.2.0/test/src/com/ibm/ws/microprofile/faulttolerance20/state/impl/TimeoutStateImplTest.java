@@ -30,6 +30,7 @@ import com.ibm.ws.microprofile.faulttolerance.impl.policy.TimeoutPolicyImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 
+@SuppressWarnings("restriction") // Unit test accesses non-exported *PolicyImpl classes
 public class TimeoutStateImplTest {
 
     private MockScheduledExecutorService scheduledExecutorService;

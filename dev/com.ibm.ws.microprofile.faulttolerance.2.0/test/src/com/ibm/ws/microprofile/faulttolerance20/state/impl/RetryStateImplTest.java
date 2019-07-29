@@ -34,6 +34,7 @@ import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState.RetryResult;
 
+@SuppressWarnings("restriction") // Unit test accesses non-exported *PolicyImpl classes
 public class RetryStateImplTest {
 
     private static MetricRecorder dummyMetrics = DummyMetricRecorder.get();
