@@ -35,7 +35,7 @@ public interface DetectDatabaseType {
     public enum DBType {
         DB2(true, true),
         CLOUDSCAPE(false, true),
-        ORACLE(true, true),
+        ORACLE(false, true),
         MSSQL(true, true),
         DERBY(false, true),
         POSTGRESQL(false, false),
