@@ -180,7 +180,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
 
         // wlp/usr/servers/annoFat_server/workarea/
         //   org.eclipse.osgi/43/data/anno/
-        //     A_TestServlet40_A/M_%2FTestServlet40.war_M/D_seed_D
+        //     A_TestServlet40_A/M_%2FTestServlet40.war_M/C_seed_C.data
 
         String targetsPath = selectSeedTargets(EAR_CACHE_NAME, WAR_NAME);
 
@@ -238,7 +238,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
         String targetsMerged =
                 getAnnoCacheAppRoot(EAR_CACHE_NAME).getAbsolutePath() +
                 "/M_%2F" + WAR_NAME + "_M" +
-                "/D_seed_D";
+                "/C_seed_C.data";
         
         File targetsFileMerged = new File(targetsMerged);
 

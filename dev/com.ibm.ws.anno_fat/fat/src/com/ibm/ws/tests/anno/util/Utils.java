@@ -33,6 +33,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.tests.anno.caching.util.AnnoCacheLocations;
 
@@ -315,7 +316,9 @@ public class Utils {
         String oldPath = oldFile.getAbsolutePath();
         String newPath = newFile.getAbsolutePath();
 
-        LOG.info("rename: Old: " + oldPath + ": New: " + newPath);
+        LOG.info("========================================");
+        LOG.info("rename: Old: " + oldPath);
+        LOG.info("rename: New: " + newPath);
 
         if ( newFile.exists() ) {
             LOG.info("rename: Delete new: " + newPath);
@@ -323,12 +326,32 @@ public class Utils {
             newFile.delete();
             if ( newFile.exists() ) {
                 throw new IOException("Failed to delete " + newPath);
+            } else {
+                LOG.info("rename: Deleted");
             }
+        } else {
+            LOG.info("rename: New does not exist: " + newPath);
         }
 
+        String failureMsg;
         if ( !oldFile.renameTo(newFile) ) {
-            throw new IOException("Failed to rename " + oldPath + " to " + newPath);
+            failureMsg = "Failed to rename " + oldPath + " to " + newPath;
+        } else if ( oldFile.exists() ) {
+            failureMsg = "Old " + oldPath + " exists after rename to " + newPath;
+        } else if ( !newFile.exists() ) {
+            failureMsg = "New " + newPath + " does not exists after rename from " + oldPath;
+        } else {
+            failureMsg = null;
         }
+
+        if ( failureMsg != null ) {
+            LOG.info("rename: Failed: " + failureMsg);
+            throw new IOException(failureMsg);
+        } else {
+            LOG.info("rename: Success");
+        }
+
+        LOG.info("========================================");
     }
 
     public static void unzip(File sourceArchive, String targetPath) throws IOException {

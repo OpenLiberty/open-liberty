@@ -786,6 +786,17 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     // TargetsScannerOverallImpl.validInternalContainers_Concurrent()
     // TargetsScannerOverallImpl.validInternalContainers()
 
+    /**
+     * Validate an internal container.
+     *
+     * Validation of the container may cause the container data to be loaded,
+     * depending on the availability of cached data and the cache validation policy.
+     *
+     * @param classSource The class source which is to be validated.
+     * @param scanPolicy The scan policy of the class source.
+     *
+     * @return True or false telling if the container data is unchanged.
+     */
     protected boolean validInternalContainer(ClassSource classSource, ScanPolicy scanPolicy) {
         String methodName = "validInternalContainer";
 
@@ -826,7 +837,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 if ( conTable != null ) {
                     conTable = internTargetsTable(conTable);
                 }
-                putTargetsTable(classSourceName, conTable, "Valid stamp", true);
+                putTargetsTable(classSourceName, conTable, "Valid stamp", false);
 
                 return true;
             }
@@ -900,6 +911,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     // Control parameter: Force loading of data when validating internal containers.
     protected static final boolean DO_LOAD = true;
 
+    /**
+     * Validate the internal containers.  Choose a threading policy based on the
+     * number of internal containers and the policy setting.
+     *
+     * If any of the container data is changed, all of the container data will be
+     * loaded.  Otherwise, particular container data is loaded depending on the
+     * availability of cached data and the cache validation policy.
+     *
+     * @return True or false telling if none of the container data changed.
+     */
     protected boolean validInternalContainers_Select() {
         String methodName = "validInternalContainers_Select";
 
@@ -941,6 +962,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     // TargetsScannerOverallImpl.validInternalContainers_Select()
 
+    /**
+     * Validate the internal containers.  Process the container data in single
+     * threaded mode.
+     *
+     * If any of the container data is changed, all of the container data will be
+     * loaded.  Otherwise, particular container data is loaded depending on the
+     * availability of cached data and the cache validation policy.
+     *
+     * @return True or false telling if none of the container data changed.
+     */
     @Trivial
     protected void validInternalContainers() {
         String methodName = "validInternalContainers";
@@ -1038,7 +1069,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             putTargetsTable(
                 classSourceName,
                 internTargetsTable(newTargets),
-                "New data", false);
+                "New data", true);
         }
 
         if ( useHashText != null ) {
@@ -1050,7 +1081,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         }
     }
 
-    protected void readInternalContainers_Select() {
+    protected void forceInternalContainers_Select() {
         int numMissingTables = 0;
 
         for ( ClassSource childClassSource : rootClassSource.getClassSources() ) {
@@ -1068,15 +1099,23 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         if ( numMissingTables == 0 ) {
             return;
         } else if ( isScanSingleThreaded() || (numMissingTables == 1) ) {
-            readInternalContainers();
+            forceInternalContainers();
         } else {
-            readInternalContainers_Concurrent();
+            forceInternalContainers_Concurrent();
         }
     }
 
+    /**
+     * Ensure that all internal container data is read.
+     *
+     * Read the internal containers which were not read by prior
+     * processing.  Do not re-read containers which were previous
+     * 
+     * Read the data in single threaded mode.
+     */
     @Trivial
-    protected void readInternalContainers() {
-        String methodName = "readInternalContainers";
+    protected void forceInternalContainers() {
+        String methodName = "forceInternalContainers";
 
         String useHashText = ( logger.isLoggable(Level.FINER) ? getHashText() : null );
         if ( useHashText != null ) {
@@ -1092,44 +1131,55 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             String classSourceName = childClassSource.getName();
             String classSourceStamp = childClassSource.getStamp();
 
-            TargetsTableImpl newTargets = getTargetsTable(classSourceName);
-            if ( newTargets != null ) {
+            TargetsTableImpl priorTargets = getTargetsTable(classSourceName);
+            if ( priorTargets != null ) {
                 continue;
             }
 
-            newTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);
-
-            TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
-
+            TargetsTableImpl conTargets;
             boolean didRead;
             String dataReason;
 
+            TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+
             synchronized ( conData ) {
-                didRead =
-                    conData.readStamp( newTargets.getStampTable() ) && 
-                    conData.readCoreData(newTargets);
+                if ( conData.getHasStampFile() && conData.hasCoreDataFile() ) {
+                    conTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);                    
+                    if ( ! (conData.readStamp( conTargets.getStampTable() ) && 
+                            conData.readCoreData(conTargets)) ) {
+                        conTargets = null;
+                        didRead = false;
+                    } else {
+                        didRead = true;
+                    }
+                } else {
+                    conTargets = null;
+                    didRead = false;
+                }
 
                 if ( didRead ) {
                     dataReason = "Cache read";
 
                 } else {
+                    conTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);
+
                     scanInternal(childClassSource,
                         TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
                         TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                        newTargets);
+                        conTargets);
 
-                    conData.writeStamp(modData, newTargets);
-                    conData.writeData(modData, newTargets);
+                    conData.writeStamp(modData, conTargets);
+                    conData.writeData(modData, conTargets);
 
                     dataReason = "New scan";
                 }
 
-                conData.setTargetsTable(newTargets);
+                conData.setTargetsTable(conTargets);
             }
 
             putTargetsTable(
                 classSourceName,
-                internTargetsTable(newTargets),
+                internTargetsTable(conTargets),
                 dataReason, !didRead);
         }
 
@@ -1150,6 +1200,14 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     //     If the number of containers is 1, the non-concurrent scan
     //     is performed: This code is never reached.
 
+    /**
+     * Create an executor sized for the available class sources.
+     * The executor expects to be completed by calls to
+     * {@link UtilImpl_PoolExecutor#completeExecution}, once for
+     * each class source.
+     *
+     * @return An executor sized for the available class sources.
+     */
     protected UtilImpl_PoolExecutor createSourceExecutor() {
         List<? extends ClassSource> childSources = rootClassSource.getClassSources();
         int numChildSources = childSources.size();
@@ -1171,8 +1229,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         return UtilImpl_PoolExecutor.createBlockingExecutor(corePoolSize, maxPoolSize, numChildSources);
     }
 
-    protected void readInternalContainers_Concurrent() {
-        String methodName = "readInternalContainers_Concurrent";
+    /**
+     * Ensure that all internal container data is read.
+     *
+     * Read the internal containers which were not read by prior
+     * processing.  Do not re-read containers which were previous
+     * 
+     * Read the data using multiple threads.
+     */
+    protected void forceInternalContainers_Concurrent() {
+        String methodName = "forceInternalContainers_Concurrent";
 
         String useHashText = ( logger.isLoggable(Level.FINER) ? getHashText() : null );
         if ( useHashText != null ) {
@@ -1206,38 +1272,50 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 @Override
                 public void run() {
                     try {
-                        TargetsTableImpl newTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);
-
-                        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
-
+                        TargetsTableImpl conTargets;
                         boolean didRead;
                         String dataReason;
 
+                        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+
                         synchronized ( conData ) {
-                            didRead =
-                                conData.readStamp( newTargets.getStampTable() ) && 
-                                conData.readCoreData(newTargets);
+                            if ( conData.getHasStampFile() && conData.hasCoreDataFile() ) {
+                                conTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);                    
+                                if ( ! (conData.readStamp( conTargets.getStampTable() ) && 
+                                        conData.readCoreData(conTargets)) ) {
+                                    conTargets = null;
+                                    didRead = false;
+                                } else {
+                                    didRead = true;
+                                }
+                            } else {
+                                conTargets = null;
+                                didRead = false;
+                            }
 
                             if ( didRead ) {
                                 dataReason = "Cache read";
+
                             } else {
+                                conTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);
+
                                 scanInternal(childClassSource,
                                     TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
                                     TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                                    newTargets);
+                                    conTargets);
 
-                                conData.writeStamp(modData, newTargets);
-                                conData.writeData(modData, newTargets);
+                                conData.writeStamp(modData, conTargets);
+                                conData.writeData(modData, conTargets);
 
                                 dataReason = "New scan";
                             }
 
-                            conData.setTargetsTable(newTargets);
+                            conData.setTargetsTable(conTargets);
                         }
 
                         putTargetsTable(
                             classSourceName,
-                            internTargetsTable(newTargets),
+                            internTargetsTable(conTargets),
                             dataReason, !didRead);
          
                     } finally {
@@ -1267,6 +1345,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     // TargetsScannerOverallImpl.validInternalContainers_Select()
 
+    /**
+     * Validate the internal containers.  Process the container data using
+     * multiple threads.
+     *
+     * If any of the container data is changed, all of the container data will be
+     * loaded.  Otherwise, particular container data is loaded depending on the
+     * availability of cached data and the cache validation policy.
+     *
+     * @return True or false telling if none of the container data changed.
+     */
     protected void validInternalContainers_Concurrent() {
         String methodName = "validInternalContainers_Concurrent";
 
@@ -1446,6 +1534,13 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     //
 
+    /**
+     * Validate the internal unresolved class list.
+     * 
+     * Use cached data when available, and when dependency
+     * data is unchanged.  Otherwise, generate and cache the
+     * data.
+     */
     protected void validInternalUnresolved() {
         String methodName = "validInternalUnresolved";
 
@@ -1469,7 +1564,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             doRead = true;
             didValidate = false;
         } else {
-            doRead = !validInternalContainers_Select();
+            doRead = validInternalContainers_Select();
             didValidate = true;
         }
 
@@ -1527,9 +1622,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         if ( !didRead ) {
             if ( !didValidate ) {
-                validInternalContainers_Select();
+                @SuppressWarnings("unused")
+                boolean isValid = validInternalContainers_Select();
             }
-            readInternalContainers_Select();
+            forceInternalContainers_Select();
 
             UtilImpl_IdentityStringSet i_newResolved = createIdentityStringSet();
             UtilImpl_IdentityStringSet i_newUnresolved = createIdentityStringSet();
@@ -1636,7 +1732,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             doRead = true;
             didValidate = false;
         } else {
-            doRead = !validInternalContainers_Select();
+            doRead = validInternalContainers_Select();
             didValidate = true;
         }
 
@@ -1670,9 +1766,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         if ( !didRead ) {
             if ( !didValidate ) {
-                validInternalContainers_Select();
+                @SuppressWarnings("unused")
+                boolean isValid = validInternalContainers_Select();
             }
-            readInternalContainers_Select();
+            forceInternalContainers_Select();
 
             TargetsTableImpl[] newTables = createResultTables();
 
@@ -1887,7 +1984,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         TargetsTableImpl cachedResultData;
 
         synchronized( resultCon ) {
-            if ( !resultCon.exists() || !resultCon.hasCoreDataFile() ) {
+            if ( !resultCon.hasCoreDataFile() ) {
                 return null;
             }
 
@@ -1919,7 +2016,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             doRead = true;
             didValidate = false;
         } else {
-            doRead = !validInternalContainers_Select();
+            doRead = validInternalContainers_Select();
             didValidate = true;
         }
 
@@ -1955,7 +2052,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 @SuppressWarnings("unused")
                 boolean isValid = validInternalContainers_Select();
             }
-            readInternalContainers_Select();
+            forceInternalContainers_Select();
 
             cachedClassTable = createClassTable();
 
@@ -1977,19 +2074,34 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         return !isChanged;
     }
 
+    //
+
+    /**
+     * Ensure that valid internal results are available.
+     * 
+     * This has three steps: Validating unresolved classes, validating
+     * internal results, and validating internal class and annotations information.
+     */
     protected void validInternal() {
         validInternalUnresolved();
         validInternalResults();
         validInternalClasses();
+
+        displayCoverage();
 
         if ( logger.isLoggable(Level.FINER) ) {
             logInternalResults(logger);
         }
     }
 
-    //
-
-    protected boolean validExternal() {
+    /**
+     * Ensure that valid external results are available.
+     * 
+     * This requires that valid internal unresolved classes be available.
+     * The external results are for unresolved classes and any classes
+     * referenced by unresolved classes.
+     */
+    protected void validExternal() {
         String methodName = "validExternal";
 
         ClassSource externalClassSource = getExternalClassSource();
@@ -2011,7 +2123,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                             priorResult("External source " + classSourceName, isChangedReason, isChanged));
             }
-            return !isChanged;
+            return;
         }
 
         if ( logger.isLoggable(Level.FINER) ) {
@@ -2057,7 +2169,6 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         newResult("External source " + classSourceName, isChangedReason, !isChanged));
         }
-        return !isChanged;
     }
 
     //

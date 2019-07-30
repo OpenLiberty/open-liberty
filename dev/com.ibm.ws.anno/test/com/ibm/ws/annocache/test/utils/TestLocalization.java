@@ -32,8 +32,8 @@ public class TestLocalization {
     public static final String UNLINKED_PROJECT_PATH = "./";
 
     /** Path used to locate linked test resources. */
-    // public static final String LINKED_PROJECT_PATH = null;
-    public static final String LINKED_PROJECT_PATH = "c:/dev/repos-pub/anno-beta/dev/com.ibm.ws.anno";
+    public static final String LINKED_PROJECT_PATH = null;
+    // public static final String LINKED_PROJECT_PATH = "c:/dev/repos-pub/anno-beta/dev/com.ibm.ws.anno";
 
     public static String getEclipseProjectPath() {
         return UNLINKED_PROJECT_PATH;

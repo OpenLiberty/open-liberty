@@ -351,26 +351,20 @@ public class TargetsScannerBaseImpl {
 
         int sourceCount = 0;
         int jandexSourceCount = 0;
-        @SuppressWarnings("unused")
         int cacheSourceCount = 0;
 
         int classCount = 0;
         int jandexClassCount = 0;
-        @SuppressWarnings("unused")
         int cacheClassCount = 0;
 
-        // System.out.println("Coverage: Application [ " + appName + " ]");
-        // System.out.println("Coverage: Module [ " + modName + " ]");
-
-        // logger.logp(Level.INFO, CLASS_NAME, methodName,
-        //        "CWWKC00XXI: Coverage for module {0} in application {1}:",
-        //        new Object[] { modName, appName });
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Coverage for module {0} in application {1}:",
+                new Object[] { modName, appName });
+        }
 
         for ( ClassSource nextClassSource : useRootClassSource.getClassSources() ) {
             ScanPolicy nextScanPolicy = useRootClassSource.getScanPolicy(nextClassSource);
-
-            // System.out.println("Coverage: Source [ " + nextClassSource.getName() + " ] [ " + nextScanPolicy + " ]");
-
             if ( nextScanPolicy == ScanPolicy.EXTERNAL ) {
                 continue;
             }
@@ -380,7 +374,6 @@ public class TargetsScannerBaseImpl {
             int nextClassCount = nextClassSource.getProcessCount();
             classCount += nextClassCount;
 
-            @SuppressWarnings("unused")
             String scanType;
 
             if ( nextClassSource.isProcessedUsingJandex() ) {
@@ -397,9 +390,11 @@ public class TargetsScannerBaseImpl {
                 scanType = "scan";
             }
 
-            // logger.logp(Level.INFO, CLASS_NAME, methodName,
-            //         "CWWKC00XXI: Location {0}: Classes {1}: Scan type {2}",
-            //         new Object[] { nextClassSource.getName(), nextClassCount, scanType });
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "Location {0}: Classes {1}: Scan type {2}",
+                    new Object[] { nextClassSource.getName(), nextClassCount, scanType });
+            }
         }
 
         if ( getUseJandex() ) {
@@ -415,15 +410,15 @@ public class TargetsScannerBaseImpl {
             logger.logp(Level.INFO, CLASS_NAME, methodName, coverageMsg);
         }
 
-        // TODO: Should this be an INFO or a FINER type message?
-
-        // logger.logp(Level.INFO, CLASS_NAME, methodName,
-        //     "CWWKC00XXI: Cache coverage for module {0} in application {1}:" +
-        //      " {2} of {3} module locations were read from cache;" +
-        //      " {4} of {5} module classes were read from cache.",
-        //      new Object[] { modName, appName,
-        //                    cacheSourceCount, sourceCount,
-        //                    cacheClassCount, classCount });
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache coverage for module {0} in application {1}:" +
+                " {2} of {3} module locations were read from cache;" +
+                " {4} of {5} module classes were read from cache.",
+                new Object[] { modName, appName,
+                    cacheSourceCount, sourceCount,
+                    cacheClassCount, classCount });
+        }
     }
 
     //

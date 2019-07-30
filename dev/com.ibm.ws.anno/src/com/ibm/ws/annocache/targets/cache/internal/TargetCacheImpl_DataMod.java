@@ -348,10 +348,6 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
     }
 
-    public boolean hasResultCon(ScanPolicy scanPolicy) {
-        return getResultCon(scanPolicy).exists();
-    }
-
     public void writeResultCon(ScanPolicy scanPolicy, TargetsTableImpl resultData) {
         TargetCacheImpl_DataCon resultCon = getResultCon(scanPolicy);
 
