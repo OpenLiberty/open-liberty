@@ -98,7 +98,8 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
         this.rootContainerFactory = rootContainerFactory;
     }
 
-    protected synchronized void unsetContainerFactory(
+    @SuppressWarnings("hiding")
+	protected synchronized void unsetContainerFactory(
         ArtifactContainerFactory rootContainerFactory) {
 
         if ( this.rootContainerFactory == rootContainerFactory ) {
