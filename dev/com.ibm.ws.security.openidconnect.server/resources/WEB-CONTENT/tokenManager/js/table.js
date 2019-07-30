@@ -69,8 +69,12 @@ var table = (function() {
         var $rowsChecked = $table.find('td.table_column_checkbox input:checkbox:checked');
 
         // Update the message
-        var $tableToolbar = $('.tool_table_toolbar');        
-        $tableToolbar.find('#batch_selected_msg').text(utils.formatString(messages.ITEMS_SELECTED, [$rowsChecked.length]));
+        var $tableToolbar = $('.tool_table_toolbar');
+        if ($rowsChecked.length === 1) {
+            $tableToolbar.find('#batch_selected_msg').text(utils.formatString(messages.SINGLE_ITEM_SELECTED, [$rowsChecked.length]));
+        } else {
+            $tableToolbar.find('#batch_selected_msg').text(utils.formatString(messages.ITEMS_SELECTED, [$rowsChecked.length]));
+        }  
     };
 
     /**
