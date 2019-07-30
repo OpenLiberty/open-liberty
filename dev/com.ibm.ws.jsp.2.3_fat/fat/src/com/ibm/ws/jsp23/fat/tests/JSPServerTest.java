@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
@@ -36,9 +37,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * If a test needs httpunit it should more than likely be placed in the JSPServerHttpUnit test class.
  */
 @RunWith(FATRunner.class)
-public class JSPServerTest extends com.ibm.ws.fat.util.LoggingTest {
+public class JSPServerTest extends LoggingTest {
 
-    //private static final Logger LOG = Logger.getLogger(JSPServerTest.class.getName());
     private static final String JSP23_APP_NAME = "TestJSP2.3";
     private static final String PI44611_APP_NAME = "PI44611";
     private static final String PI59436_APP_NAME = "PI59436";
@@ -67,9 +67,6 @@ public class JSPServerTest extends com.ibm.ws.fat.util.LoggingTest {
                                       PI59436_APP_NAME + ".war");
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(PI59436_APP_NAME);
 
-        // Start the server and use the class name so we can find logs easily.
-        // Many tests use the same server
-        // SHARED_SERVER.getLibertyServer().startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
         SHARED_SERVER.startIfNotStarted();
     }
 

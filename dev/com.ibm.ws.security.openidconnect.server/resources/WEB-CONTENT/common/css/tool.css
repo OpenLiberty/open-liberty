@@ -340,6 +340,12 @@ th.table_sort_column:hover {      /* ....except for the button in the sortable c
     background-color: transparent;   /* for mobile */
 }
 
+.tool_table_button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
 
 /* Table footer ... pagination */
 .tool_table_pagination {

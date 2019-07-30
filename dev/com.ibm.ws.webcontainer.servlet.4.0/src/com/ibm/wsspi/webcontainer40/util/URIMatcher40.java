@@ -42,7 +42,7 @@ public class URIMatcher40 extends URIMatcher {
 
     /**
      * This method is the same as the parent implementation with the exception that it sets the
-     * MappingMatch value for each match on the SRTServletRequestThreadData40.
+     * MappingMatch value for each match on the WebAppDispatcherContext40.
      *
      * @param req
      * @return RequestProcessor
@@ -204,8 +204,8 @@ public class URIMatcher40 extends URIMatcher {
         // hit the defaultNode "/*"
         if (defaultNode != null) {
             // Servlet 4.0: default match
-            // Two possibilities here: 1. /* mapping.  This can be considered a special MappingMatch.PATH where the PATH happens to be just the root /
-            //                    2. / (default servlet) mapping
+            // Two possibilities here:  1. /* mapping.  This can be considered a special MappingMatch.PATH where the PATH happens to be just the root /
+            //                          2. / (default servlet) mapping
 
             if (dispatchContext.hasSlashStarMapping()) {
                 dispatchContext.setMappingMatch(MappingMatch.PATH);

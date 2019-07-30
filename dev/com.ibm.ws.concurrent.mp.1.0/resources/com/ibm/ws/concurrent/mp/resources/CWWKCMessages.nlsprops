@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Update the application to use the method that
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: Propagating transactions to contextual actions and tasks is not supported.
 CWWKC1157.cannot.propagate.tx.explanation=A ManagedExecutor or ThreadContext that is configured to propagate transaction contexts can propagate empty transaction contexts only. Therefore, you cannot create contextual actions and tasks within a transaction.
 CWWKC1157.cannot.propagate.tx.useraction=Create the contextual action or task outside of a transaction. Alternatively, configure the ManagedExecutor or ThreadContext to not propagate transaction contexts.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

@@ -134,7 +134,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
             json.put("uid", uid);
 
         if (!processed.add(configDisplayId)) {
-            json.put("error", "Circular dependency in configuration.");
+            json.put("error", Tr.formatMessage(tc, "CWWKO1530_CIRCULAR_DEPENDENCY", configElementName));
             return json;
         }
 
@@ -258,7 +258,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
             json.put("jndiName", config.get("jndiName"));
 
         if (!registryEntryExists) { //registry entry doesn't exist - config service can't find the specified pid
-            json.put("error", "Check that the spelling is correct and that the right features are enabled for this configuration.");
+            json.put("error", Tr.formatMessage(tc, "CWWKO1531_NOT_FOUND", configElementName));
         }
 
         for (String key : keys) {

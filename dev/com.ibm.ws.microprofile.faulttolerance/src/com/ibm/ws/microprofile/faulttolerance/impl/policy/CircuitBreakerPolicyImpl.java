@@ -58,7 +58,6 @@ public class CircuitBreakerPolicyImpl implements CircuitBreakerPolicy {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     @Override
     public void setFailOn(Class<? extends Throwable>... failOn) {
         this.failOn = failOn;

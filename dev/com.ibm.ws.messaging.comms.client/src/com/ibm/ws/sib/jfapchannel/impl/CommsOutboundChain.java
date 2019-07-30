@@ -11,15 +11,10 @@
 package com.ibm.ws.sib.jfapchannel.impl;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.channelfw.ChainData;
@@ -47,10 +42,11 @@ public class CommsOutboundChain {
     private static final TraceNLS nls = TraceNLS.getTraceNLS(JFapChannelConstants.MSG_BUNDLE);
     private final static String _OutboundChain_ConfigAlias = "wasJmsOutbound";
 
-    // The state of the desired chain, which is the chain that OSGI is or has configured.
-    
     private String _chainName = null;
-    
+    private String _tcpChannelName = null;
+    private String _jfapChannelName = null;
+    private String _sslChannelName = null;
+
     /** use _tcpOptions service direct instead of reference as _tcpOptions is a required service */
     private ChannelConfiguration _tcpOptions = null;
 
@@ -60,69 +56,57 @@ public class CommsOutboundChain {
     /** Optional, dynamic reference to an SSL channel factory provider: could be used to start/stop SSL chains */
     private final AtomicServiceReference<ChannelFactoryProvider> _sslFactoryProvider = new AtomicServiceReference<ChannelFactoryProvider>("sslSupport");
 
-    /** Required, dynamic reference to an executor service to schedule chain operations */
-    private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>("executorService");
-    
     /** use _commsClientService service direct instead of reference as _commsClientService is a required service */
     private CommsClientServiceFacadeInterface _commsClientService = null;
 
-   
+    private volatile boolean _isChainStarted = false;
+    private volatile boolean _isSSLEnabled = false;
     private volatile boolean _isSSLChain = false;
+    //flag to check if activate() is invoked
     private volatile boolean _isActivated = false;
 
-    // The single thread that attempts to create the chain as configured above.
-    
-    private boolean newRequest = false;
-    private Future<?> actionFuture = null;
-    
-    // The state of the current chain (if any)
-    private boolean isCurrentChainStarted = false;
-    private boolean isCurrentChainSSLEnabled = false;
-    private boolean isCurrentChainSSL = false;
-    private boolean isCurrentChainActivated = false;
-    private String currentChainName = null;
-    private String tcpChannelName = null;
-    private String jfapChannelName = null;
-    private String sslChannelName = null;
-        
     /**
-     * Declarative Services (DS) method for setting the required dynamic executor service reference.
-     *
-     * @param bundle
+     * DS method to activate this component.
+     * Best practice: this should be a protected method, not public or private
+     * 
+     * @param properties : Map containing service & config properties
+     *            populated/provided by config admin
      */
-    protected void setExecutorService(ServiceReference<ExecutorService> executorService) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.entry(this, tc, "setExecutorService", executorService);
-        }
-        
-        this.executorService.setReference(executorService);
-        
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.exit(this, tc, "setExecutorService");
-        }
+    protected void activate(Map<String, Object> properties, ComponentContext context) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "activate");
+
+        _sslOptions.activate(context);
+        _sslFactoryProvider.activate(context);
+
+        _isSSLChain = MetatypeUtils.parseBoolean(_OutboundChain_ConfigAlias, "useSSL", properties.get("useSSL"), false);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            SibTr.debug(tc, "Chain is configured for  " + (_isSSLChain ? "Secure " : "Non-Secure"));
+
+        String Outboundname = (String) properties.get("id");
+
+        _chainName = Outboundname;
+        _tcpChannelName = Outboundname + "_JfapTcp";
+        _sslChannelName = Outboundname + "_JfapSsl";
+        _jfapChannelName = Outboundname + "_JfapJfap";
+
+        //if chain is started first destroy then create it freshly
+        if (_isChainStarted)
+            performAction(destroyChainAction);
+        performAction(createChainAction);
+
+        _isActivated = true;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "activate");
     }
 
-    /**
-     * Declarative Services (DS) method for clearing the required dynamic executor service reference.
-     * This is a required reference, but will be called if the dynamic reference is replaced
-     */
-    protected void unsetExecutorService(ServiceReference<ExecutorService> executorService) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.entry(this, tc, "unsetExecutorService", executorService);
-        }
-        
-        this.executorService.unsetReference(executorService);
-        
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.exit(this, tc, "unsetExecutorService");
-        }
-    }
-    
+    @Trivial
     protected void setCommsClientService(CommsClientServiceFacadeInterface service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "setCommsClientService", service);
         }
-    
         _commsClientService = service;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -130,6 +114,7 @@ public class CommsOutboundChain {
         }
     }
 
+    @Trivial
     protected void unsetCommsClientService(CommsClientServiceFacadeInterface service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "unsetCommsClientService", service);
@@ -141,6 +126,7 @@ public class CommsOutboundChain {
         }
     }
 
+    @Trivial
     protected void setTcpOptions(ChannelConfiguration service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "setTcpOptions", service);
@@ -151,13 +137,14 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "setTcpOptions", _tcpOptions);
         }
+
     }
 
+    @Trivial
     protected void unsetTcpOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "unsetTcpOptions", service);
         }
-       
         _tcpOptions = null;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -169,7 +156,6 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "getTcpOptions");
         }
-        
         Map<String, Object> tcpOptions = null;
         if (_tcpOptions == null) {// which should never happen, because its a required service
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -181,7 +167,6 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getTcpOptions", tcpOptions);
         }
-        
         return tcpOptions;
     }
 
@@ -194,9 +179,19 @@ public class CommsOutboundChain {
      * 
      * @param ref
      */
+    @Trivial
     protected void setSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "setSslSupport", new Object[] { ref.getProperty("type"), ref });
+        }
+
+        // If sslsupport is bound then set it to true 
+        _isSSLEnabled = true;
+
+        // bind can get called before unbind for new config/ modify.Hence the precaution
+        if (_sslFactoryProvider.getReference() != null) { // existing chain is still there so destroy 
+            if (_isChainStarted)
+                performAction(destroyChainAction);
         }
 
         _sslFactoryProvider.setReference(ref);
@@ -205,11 +200,15 @@ public class CommsOutboundChain {
         // this is because bind method get called first before activate and without activate we don't have any properties
         // 2) if useSSL is set in config 
         if (_isActivated && _isSSLChain) {
-            performAction();
+            //TODO: when executor service is used for performaction() make sure about sequence of destroy and create chain
+            //Now currently its not threaded
+            if (_isChainStarted)
+                performAction(destroyChainAction);
+            performAction(createChainAction);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "setSslSupport" );
+            Tr.exit(tc, "setSslSupport", _isSSLEnabled);
         }
     }
 
@@ -219,23 +218,41 @@ public class CommsOutboundChain {
      * 
      * @param ref ConfigurationAdmin instance to unset
      */
+    @Trivial
     public void unsetSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "unsetSslSupport", new Object[] { ref.getProperty("type"), ref });
         }
-       
-        _sslFactoryProvider.unsetReference(ref);
+        // see if its for the same service ref, if yes then destroy
+        if (_sslFactoryProvider.getReference() == ref)
+        {
+            if (_isSSLChain) {
+                if (_isChainStarted)
+                    performAction(destroyChainAction);
+            }
+
+        }
+        if (_sslFactoryProvider.unsetReference(ref)) {
+            _isSSLEnabled = false;
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "unsetSslSupport");
+            Tr.exit(tc, "unsetSslSupport", _isSSLEnabled);
         }
 
     }
 
     //SslOption related functions
+    @Trivial
     protected void setSslOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "setSslOptions", service);
+        }
+
+        // bind can get called before unbind for new config/ modify.Hence the precaution
+        if (_sslOptions.getReference() != null) { // existing chain is still there so destroy 
+            if (_isChainStarted)
+                performAction(destroyChainAction);
         }
 
         _sslOptions.setReference(service);
@@ -244,15 +261,19 @@ public class CommsOutboundChain {
         // this is because bind method get called first before activate and without activate we don't have any properties
         // 2) if useSSL is set in config 
         if (_isActivated && _isSSLChain) {
-            performAction();
+            //TODO: when executor service is used for performaction() make sure about sequence of destroy and create chain
+            //Now currently its not threaded
+            if (_isChainStarted)
+                performAction(destroyChainAction);
+            performAction(createChainAction);
         }
-        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "setSslOptions");
         }
 
     }
 
+    @Trivial
     protected void unsetSslOptions(ServiceReference<ChannelConfiguration> unbindServiceRef) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "unsetSslOptions", unbindServiceRef);
@@ -262,12 +283,12 @@ public class CommsOutboundChain {
         if (_sslOptions.getReference() == unbindServiceRef)
         {
             if (_isSSLChain) {
-                performAction();
+                if (_isChainStarted)
+                    performAction(destroyChainAction);
             }
 
         }
         _sslOptions.unsetReference(unbindServiceRef);
-        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "unsetSslOptions");
         }
@@ -296,273 +317,237 @@ public class CommsOutboundChain {
         return sslOptions;
     }
 
-    /**
-     * DS method to activate this component.
-     * Best practice: this should be a protected method, not public or private
-     * 
-     * @param properties : Map containing service & config properties
-     *            populated/provided by config admin
-     */
-    protected void activate(Map<String, Object> properties, ComponentContext context) {
+    private void createJFAPChain() throws ChannelException, ChainException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "activate", new Object[] {properties, context});
+            SibTr.entry(tc, "createJFAPChain", _isChainStarted);
 
-        executorService.activate(context);
-        _sslOptions.activate(context);
-        _sslFactoryProvider.activate(context);
-
-        _isSSLChain = MetatypeUtils.parseBoolean(_OutboundChain_ConfigAlias, "useSSL", properties.get("useSSL"), false);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.debug(tc, "Chain is configured for  " + (_isSSLChain ? "Secure " : "Non-Secure"));
-
-        _chainName = (String) properties.get("id");
-        _isActivated = true;
-
-        performAction();
-      
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "activate", _chainName);
-    }
- 
-   /**
-     * DS method to deactivate this component.
-     * Best practice: this should be a protected method, not public or private
-     * 
-     * @param context
-     */
-    protected void deactivate(ComponentContext context) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(this, tc, "deactive", context);
-
-        _isActivated = false;
-        performAction();
-        executorService.deactivate(context);
-        _sslOptions.deactivate(context);
-        _sslFactoryProvider.deactivate(context);
-              
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(this, tc, "deactive");
-    }
-
-   private void performAction() {
-        ExecutorService exec = executorService.getService();
-        synchronized (actionsRunner) {
-            newRequest = true;
-            if ((actionFuture == null)) {
-                actionFuture = exec.submit(actionsRunner);
-            }
-        }
-    }
-    
-    private final Runnable actionsRunner = new Runnable() {
-        @Override
-        public void run() {        
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.entry(this, tc, "actionsRunner.run",newRequest);
-            
-            for (;;) {
-                synchronized (actionsRunner) {
-                    newRequest = false;
-                }
-                
-                doAction();
-                
-                synchronized (actionsRunner) {
-                    if (newRequest == false) {
-                      actionFuture = null; 
-                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                          SibTr.exit(this, tc, "actionsRunner.run","Channel state caught up.");
-                      return;
-                    }
-                }              
-            }          
-       }
-        
-        private void doAction() {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.entry(this, tc, "actionsRunner.doAction", new Object[] {isCurrentChainStarted, isCurrentChainSSLEnabled, isCurrentChainSSL, isCurrentChainActivated, currentChainName});
-           
-            if(isCurrentChainStarted) { 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                  Tr.debug(this, tc, "Destroy the existing chain.");
-                
-                try {
-                    terminateConnectionsAssociatedWithChain();
-                } catch (Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(this, tc, "Failure in terminating conservations and physical connections while destroying chain : " + currentChainName, e);
-                } finally {
-                    isCurrentChainStarted = false;
-                }              
-            }
-            
-            // Adopt any new state. If we do not observe part of the state here because it is currently being set then another
-            // request to doAction will follow once the new state is set.
-            isCurrentChainSSLEnabled = (_sslFactoryProvider.getReference() != null);
-            isCurrentChainSSL = _isSSLChain;
-            isCurrentChainActivated = _isActivated;
-            currentChainName = _chainName;
-            tcpChannelName = currentChainName + "_JfapTcp";
-            sslChannelName = currentChainName + "_JfapSsl";
-            jfapChannelName = currentChainName + "_JfapJfap";
-            Map<String, Object> sslOptions = getSslOptions();
-            
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "actionsRunner.doAction", new Object[] {isCurrentChainStarted, isCurrentChainSSLEnabled, isCurrentChainSSL, isCurrentChainActivated, currentChainName});
-            
-            try {
-                if (isCurrentChainActivated && currentChainName != null) {
-                    if (!isCurrentChainSSL && !isCurrentChainSSLEnabled && sslOptions == null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Creating a new non SSL chain.");
-                        createJFAPChain(sslOptions);
-
-                    } else if (isCurrentChainSSL && isCurrentChainSSLEnabled && sslOptions != null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Creating a new SSL chain.");
-                        createJFAPChain(sslOptions);
-
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "State not consistent with either SSL or Non SSL chains.");
-                    }
-                }
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    SibTr.debug(tc, "Exception in creating chain", e);
-            }
-            
-            
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.exit(this, tc, "actionsRunner.doAction");
-        }
-        
-        /**
-         * Terminate all the connections associated with the chain
-         * 
-         * @throws Exception
-         */
-        protected void terminateConnectionsAssociatedWithChain() throws Exception {
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "terminateConnectionsAssociatedWithChain");
-            }
-
-            ChannelFramework cfw = CommsClientServiceFacade.getChannelFramewrok();
-            OutboundConnectionTracker oct = ClientConnectionManager.getRef().getOutboundConnectionTracker();
-            if (oct != null) {
-                oct.terminateConnectionsAssociatedWithChain(currentChainName);
-            
-            } else {
-                // if we don't have any oct that means there were no connections established
-                if (cfw.getChain(currentChainName) != null) {// see if chain exist only then destroy
-                    // we have to destroy using vcf because cfw does not allow to destroy outbound 
-                    // chains directly using cfw.destroyChain(chainname)
-                    // as it is valid only for inbound chains as of now
-                    cfw.getOutboundVCFactory(currentChainName).destroy();
-                }
-            }
-            ChainData cd = cfw.getChain(currentChainName);
-            if (cd != null) {
-                cfw.removeChain(cd);
-            }
-            removeChannel(tcpChannelName);
-            if (isCurrentChainSSL)
-                removeChannel(sslChannelName);
-            removeChannel(jfapChannelName);
-
-        }
-        
-        /**
-         * Removes channel from cfw.
-         */
-        private void removeChannel(String channelName) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.entry(tc, "removeChannel", channelName);
-            // Neither of the thrown exceptions are permanent failures: 
-            // they usually indicate that we're the victim of a race.
-            // If the CFW is also tearing down the chain at the same time 
-            // (for example, the SSL feature was removed), then this could
-            // fail.
-            ChannelFramework cfw = CommsClientServiceFacade.getChannelFramewrok();
+        if (!_isChainStarted) {
 
             try {
-                if (cfw.getChannel(channelName) != null)
-                    cfw.removeChannel(channelName);
-            } catch (ChannelException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    SibTr.debug(this, tc, "Error removing channel " + channelName, e);
-                }
-            } catch (ChainException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    SibTr.debug(this, tc, "Error removing channel " + channelName, e);
-                }
-            } finally {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    SibTr.exit(tc, "removeChannel");
-            }
-        }   
-    
-        private void createJFAPChain(Map<String, Object> sslOptions) throws ChannelException, ChainException {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.entry(tc, "createJFAPChain", isCurrentChainStarted);
 
-            try {
                 ChannelFramework cfw = CommsClientServiceFacade.getChannelFramewrok();
                 cfw.registerFactory("JFapChannelOutbound", JFapChannelFactory.class);
 
                 Map<String, Object> tcpOptions = getTcpOptions();
 
-                ChannelData tcpChannel = cfw.getChannel(tcpChannelName);
+                ChannelData tcpChannel = cfw.getChannel(_tcpChannelName);
 
                 if (tcpChannel == null) {
                     String typeName = (String) tcpOptions.get("type");
-                    tcpChannel = cfw.addChannel(tcpChannelName, cfw.lookupFactory(typeName), new HashMap<Object, Object>(tcpOptions));
+                    tcpChannel = cfw.addChannel(_tcpChannelName, cfw.lookupFactory(typeName), new HashMap<Object, Object>(tcpOptions));
                 }
 
                 // SSL Channel
-                if (isCurrentChainSSL) {
-                    ChannelData sslChannel = cfw.getChannel(sslChannelName);
+                if (_isSSLChain) {
+                    Map<String, Object> sslOptions = getSslOptions();
+
+                    // Now we are actually trying to create a ssl channel to the chain.Which requires sslOptions and _isSSLEnabled must be enabled
+                    //without which there is no point in continuing
+                    if (sslOptions == null) { // sslOptions service is not bound yet,so not point continuing
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            SibTr.debug(tc, "_sslOptions service is not bound which is required for secure chain,so no point continuing");
+                        throw new ChainException(new Throwable(nls.getFormattedMessage("missingSslOptions.ChainNotStarted", new Object[] { _chainName }, null)));
+                        //no problem if we exit from here.. even though TcpChannel is added to cfw.
+                    }
+
+                    if (!_isSSLEnabled) { //_sslFactoryProvider service is not bound yet,so not point continuing
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            SibTr.debug(tc, "_sslFactoryProvider service is not bound which is required for secure chain,so no point continuing");
+                        throw new ChainException(new Throwable(nls.getFormattedMessage("missingSslOptions.ChainNotStarted", new Object[] { _chainName }, null)));
+                        //no problem if we exit from here.. even though TcpChannel is added to cfw.
+                    }
+
+                    ChannelData sslChannel = cfw.getChannel(_sslChannelName);
                     if (sslChannel == null) {
-                        sslChannel = cfw.addChannel(sslChannelName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslOptions));
+                        sslChannel = cfw.addChannel(_sslChannelName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslOptions));
                     }
                 }
 
-                ChannelData jfapChannel = cfw.getChannel(jfapChannelName);
+                ChannelData jfapChannel = cfw.getChannel(_jfapChannelName);
                 if (jfapChannel == null)
-                    jfapChannel = cfw.addChannel(jfapChannelName, cfw.lookupFactory("JFapChannelOutbound"), null);
+                    jfapChannel = cfw.addChannel(_jfapChannelName, cfw.lookupFactory("JFapChannelOutbound"), null);
 
                 final String[] chanList;
-                if (isCurrentChainSSL)
-                    chanList = new String[] { jfapChannelName, sslChannelName, tcpChannelName };
+                if (_isSSLChain)
+                    chanList = new String[] { _jfapChannelName, _sslChannelName, _tcpChannelName };
                 else
-                    chanList = new String[] { jfapChannelName, tcpChannelName };
+                    chanList = new String[] { _jfapChannelName, _tcpChannelName };
 
                 ChainData cd = cfw.addChain(_chainName, FlowType.OUTBOUND, chanList);
                 cd.setEnabled(true);
 
                 //if we are here then chain is started
-                isCurrentChainStarted = true;
-                
-                if (isCurrentChainSSL) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(tc, "JFAP Outbound secure chain" + _chainName + " successfully started ");
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                       SibTr.debug(tc, "JFAP Outbound chain" + _chainName + " successfully started ");
-                }
-
-            } catch (ChannelException | ChainException exception) {
-                isCurrentChainStarted = false;
+                _isChainStarted = true;
+            } catch (ChannelException e) {
+                _isChainStarted = false;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    SibTr.debug(tc, "JFAP Outbound chain:" + _chainName + " failed to get started exception:"+exception);
+                    SibTr.debug(tc, "JFAP Outbound chain " + _chainName + " failed to get started");
+                throw e;
+            } catch (ChainException e) {
+                _isChainStarted = false;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(tc, "JFAP Outbound chain " + _chainName + " failed to get started");
+                throw e;
+            } finally {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    SibTr.exit(tc, "createJFAPChain ", isCurrentChainStarted);
-                throw exception;
+                    SibTr.exit(tc, "createJFAPChain ", _isChainStarted);
             }
 
+            if (_isSSLChain) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(tc, "JFAP Outbound secure chain" + _chainName + " successfully started ");
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(tc, "JFAP Outbound chain" + _chainName + " successfully started ");
+            }
+        }
+
+    }
+
+    /**
+     * Removes channel from cfw.
+     */
+    private void removeChannel(String channelName) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "removeChannel", channelName);
+        // Neither of the thrown exceptions are permanent failures: 
+        // they usually indicate that we're the victim of a race.
+        // If the CFW is also tearing down the chain at the same time 
+        // (for example, the SSL feature was removed), then this could
+        // fail.
+        ChannelFramework cfw = CommsClientServiceFacade.getChannelFramewrok();
+
+        try {
+            if (cfw.getChannel(channelName) != null)
+                cfw.removeChannel(channelName);
+        } catch (ChannelException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                SibTr.debug(this, tc, "Error removing channel " + channelName, e);
+            }
+        } catch (ChainException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                SibTr.debug(this, tc, "Error removing channel " + channelName, e);
+            }
+        } finally {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "createJFAPChain ", isCurrentChainStarted);
+                SibTr.exit(tc, "removeChannel");
+        }
+    }
+
+    /**
+     * _chainStartLock is to protect the 'starting' of chain my multiple connection factories </br>
+     */
+    private final Object _chainActionLock = new Object();
+
+    /**
+     * DS method to deactivate this component.
+     * Best practice: this should be a protected method, not public or private
+     * 
+     * @param reason int representation of reason the component is stopping
+     */
+    protected void deactivate(ComponentContext context) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            Tr.event(tc, "CommsClientServiceFacade deactivated, reason=");
+
+        performAction(destroyChainAction);
+        _sslOptions.deactivate(context);
+        _sslFactoryProvider.deactivate(context);
+        _isActivated = false;
+    }
+
+    private void destroyJFAPChain() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "destroyJFAPChain");
+
+        synchronized (_chainActionLock) {
+            try {
+                terminateConnectionsAssociatedWithChain();
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(tc, "Failure in terminating conservations and physical connections while destroying chain : " + _chainName, e);
+            } finally {
+                _isChainStarted = false;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "destroyJFAPChain", _isChainStarted);
+    }
+
+    private void performAction(Runnable action) {
+        action.run();
+    }
+
+    private final Runnable destroyChainAction = new Runnable() {
+        @Override
+        @Trivial
+        public void run() {
+            synchronized (_chainActionLock) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(this, tc, "CommsOutboundChain: Destorying " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
+
+                //Catch any unchecked/uncaught exceptions so that it would not harm the code flow
+                try {
+                    destroyJFAPChain();
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        SibTr.debug(tc, "Exception in destorying chain", e);
+                }
+            }
         }
     };
+
+    private final Runnable createChainAction = new Runnable() {
+        @Override
+        @Trivial
+        public void run() {
+            synchronized (_chainActionLock) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(this, tc, "CommsOutboundChain: Creating " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
+
+                //Catch any unchecked/uncaught exceptions so that it would not harm the code flow
+                try {
+                    createJFAPChain();
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        SibTr.debug(tc, "Exception in creating chain", e);
+                }
+            }
+        }
+    };
+
+    /**
+     * Terminate all the connections associated with the chain
+     * 
+     * @throws Exception
+     */
+    private void terminateConnectionsAssociatedWithChain() throws Exception {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "terminateConnectionsAssociatedWithChain");
+        }
+
+        ChannelFramework cfw = CommsClientServiceFacade.getChannelFramewrok();
+        OutboundConnectionTracker oct = ClientConnectionManager.getRef().getOutboundConnectionTracker();
+        if (oct != null) {
+            oct.terminateConnectionsAssociatedWithChain(_chainName);
+        } else {// if we dont have any oct that means there were no connections established
+
+            if (cfw.getChain(_chainName) != null) {// see if chain exist only then destroy
+                // we have to destroy using vcf because cfw does not allow to destroy outbound 
+                // chains directly using cfw.destroyChain(chainname)
+                // as it is valid only for inbound chains as of now
+                cfw.getOutboundVCFactory(_chainName).destroy();
+            }
+        }
+        ChainData cd = cfw.getChain(_chainName);
+        if (cd != null) {
+            cfw.removeChain(cd);
+        }
+        removeChannel(_tcpChannelName);
+        if (_isSSLChain)
+            removeChannel(_sslChannelName);
+        removeChannel(_jfapChannelName);
+
+    }
 }

@@ -7,3 +7,4 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.globalhandler_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

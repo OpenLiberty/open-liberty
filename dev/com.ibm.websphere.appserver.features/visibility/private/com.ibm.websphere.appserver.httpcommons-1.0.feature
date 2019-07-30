@@ -8,3 +8,4 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

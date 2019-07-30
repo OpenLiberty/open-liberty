@@ -90,15 +90,23 @@ var globalization = (function() {
         // Set the documents's lang code
         document.documentElement.setAttribute("lang", languageCode);
         
+        var enMessages = messages;
+
         var url = (languageCode !== "en") ? "../../WEB-CONTENT/" + toolname + "/nls/" + languageCode + "/messages.js" : "../../WEB-CONTENT/" + toolname + "/nls/messages.js";
             
         var deferred = new $.Deferred();
         
-        // Retrieve the deploy message translations from the correct nls directory
+        // Retrieve the message translations from the correct nls directory
         var ajaxPromise = $.ajax({
             url: url,
             dataType: "script",
             success: function() {
+                if (languageCode !== "en") {
+                    // Assign any non-translated English message to the messages object
+                    // from the English translation.
+                    messages = $.extend({}, enMessages, messages);
+                }
+
                 replaceExternalizedStrings();
                 deferred.resolve();
             },

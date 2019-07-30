@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
@@ -36,6 +37,48 @@ public class UserInfoHelper {
 
     public boolean willRetrieveUserInfo() {
         return (clientConfig.getUserInfoEndpointUrl() != null && clientConfig.isUserInfoEnabled() == true);
+    }
+
+    /**
+     * get userinfo from provider's UserInfo Endpoint if configured and active.
+     * If successful, update properties in the ProviderAuthenticationResult
+     *
+     * @return true if PAR was updated with userInfo
+     *
+     */
+    public boolean getUserInfoIfPossible(ProviderAuthenticationResult oidcResult, Map<String, String> tokens, SSLSocketFactory sslsf) {
+        if (!willRetrieveUserInfo()) {
+            return false;
+        }
+        OidcTokenImplBase idToken = null;
+        if (oidcResult.getCustomProperties() != null) {
+            idToken = (OidcTokenImplBase) oidcResult.getCustomProperties().get(Constants.ID_TOKEN_OBJECT);
+        }
+        String subjFromIdToken = null;
+        if (idToken != null) {
+            subjFromIdToken = idToken.getSubject();
+        }
+        if (subjFromIdToken != null) {
+            return getUserInfoIfPossible(oidcResult, tokens.get(Constants.ACCESS_TOKEN), subjFromIdToken, sslsf);
+        }
+        return false;
+    }
+
+    /**
+     * get userinfo from provider's UserInfo Endpoint if configured and active.
+     * If successful, update properties in the ProviderAuthenticationResult
+     *
+     * @return true if PAR was updated with userInfo
+     *
+     */
+    public boolean getUserInfoIfPossible(ProviderAuthenticationResult oidcResult, String accessToken, String subject, SSLSocketFactory sslsf) {
+        if (!willRetrieveUserInfo()) {
+            return false;
+        }
+        if (subject != null && accessToken != null) {
+            return getUserInfo(oidcResult, sslsf, accessToken, subject);
+        }
+        return false;
     }
 
     /**

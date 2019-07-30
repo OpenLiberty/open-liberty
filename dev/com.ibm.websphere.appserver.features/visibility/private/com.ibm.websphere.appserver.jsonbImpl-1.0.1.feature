@@ -11,3 +11,4 @@ visibility=private
   com.ibm.websphere.javaee.jsonb.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.json.bind:javax.json.bind-api:1.0"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

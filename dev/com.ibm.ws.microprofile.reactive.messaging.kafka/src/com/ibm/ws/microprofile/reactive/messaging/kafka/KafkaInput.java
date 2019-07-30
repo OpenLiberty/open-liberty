@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static java.time.Duration.ZERO;
 import static org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams.fromIterable;
 
@@ -103,6 +104,9 @@ public class KafkaInput<K, V> {
                         Tr.warning(tc, "kafka.read.offsets.commit.warning.CWMRX1001W", e);
                         result.completeExceptionally(e);
                     } else {
+                        if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Committed offsets successfully", o);
+                        }
                         result.complete(null);
                     }
                 });

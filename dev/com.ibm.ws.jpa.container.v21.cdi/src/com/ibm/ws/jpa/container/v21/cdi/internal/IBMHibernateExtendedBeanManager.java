@@ -14,45 +14,34 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Queue;
 
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InjectionTargetFactory;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.ProducerFactory;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class IBMHibernateExtendedBeanManager {
 
     private ClassLoader applicationClassLoader;
-    private BeanManager deligateBeanManager = null;
+    private String earAppId;
+    //Used to filter before shutdown events to the correct app. 
+    //Before shutdown events have very little data to identify apps, but we can check to see it's the
+    //same bean manager as the after bean discovery event, which has more data. 
+    //This memory expensive reference is garbage collected along with this entire object after the
+    //before shutdown event.
+    private BeanManager beanManager; 
     //Actual type is org.hibernate.resource.beans.container.spi.ExtendedBeanManager.LifecycleListener
-    private Set<Object> hibernateLifecycleListeners = new HashSet<Object>(); 
+    private Queue<Object> hibernateLifecycleListeners = new LinkedList<Object>();
 
-    public IBMHibernateExtendedBeanManager(ClassLoader applicationClassLoader){
+    public IBMHibernateExtendedBeanManager(ClassLoader applicationClassLoader, String earAppId){
         this.applicationClassLoader = applicationClassLoader;
+        this.earAppId = earAppId;
     }
 
     //Actual type is org.hibernate.resource.beans.container.spi.ExtendedBeanManager.LifecycleListener
@@ -76,42 +65,57 @@ public class IBMHibernateExtendedBeanManager {
             throw new IllegalArgumentException(errorMsg);
         }
     }
-
-    public void setBaseBeanManager(BeanManager deligateBeanManager) {
-        this.deligateBeanManager = deligateBeanManager;
-    }
-
-    public BeanManager getBaseBeanManager() {
-        return deligateBeanManager;
-    }
     
-    public void notifyHibernateAfterBeanDiscovery(BeanManager deligateBeanManager) throws SecurityException, IllegalArgumentException {
-        if (deligateBeanManager != null && deligateBeanManager.equals(this.deligateBeanManager)) {
-            for (Object o : hibernateLifecycleListeners) {
+    public void notifyHibernateAfterBeanDiscovery(final String baseClassLoaderId, final BeanManager beanManager) throws SecurityException, IllegalArgumentException {
+        if (earAppId.equals(baseClassLoaderId)) {
+            this.beanManager = beanManager;
+            Iterator<Object> it = hibernateLifecycleListeners.iterator();
+            while (it.hasNext()){
+                final Object o = it.next();
                 try {
-                    Method beanManagerInitialized = o.getClass().getMethod("beanManagerInitialized", BeanManager.class);
-                    beanManagerInitialized.invoke(o, deligateBeanManager);
-                } catch (NoSuchMethodException e) {
-                } catch (IllegalAccessException e) {
-                } catch (InvocationTargetException e) {
+                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                        @Override
+                        public Void run() {
+                            try {
+                                Method beanManagerInitialized = o.getClass().getMethod("beanManagerInitialized", BeanManager.class);
+                                beanManagerInitialized.setAccessible(true);
+                                beanManagerInitialized.invoke(o, beanManager);
+                            } catch (NoSuchMethodException e) {
+                            } catch (IllegalAccessException e) {
+                            } catch (InvocationTargetException e) {
+                            }
+                            return null;
+                        }
+                    });    
+                } catch (SecurityException e) {
                 }
             }
         }
     }
 
-    public boolean notifyHibernateBeforeShutdown(BeanManager deligateBeanManager) throws SecurityException, IllegalArgumentException {
+    public boolean notifyHibernateBeforeShutdown(final BeanManager beanManager) throws SecurityException, IllegalArgumentException {
         boolean rightBeanManager = false;
-        if (deligateBeanManager != null && deligateBeanManager.equals(this.deligateBeanManager)) {
+        if (this.beanManager.equals(beanManager)) {
             rightBeanManager = true;
             Iterator<Object> it = hibernateLifecycleListeners.iterator();
-                while (it.hasNext()){
-                Object o = it.next();
+            while (it.hasNext()){
+                final Object o = it.next();
                 try {
-                    Method beanManagerInitialized = o.getClass().getMethod("beforeBeanManagerDestroyed", BeanManager.class);
-                    beanManagerInitialized.invoke(o, deligateBeanManager);
-                } catch (NoSuchMethodException e) {
-                } catch (IllegalAccessException e) {
-                } catch (InvocationTargetException e) {
+                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                        @Override
+                        public Void run() {
+                            try {
+                                Method beforeBeanManagerDestroyed = o.getClass().getMethod("beforeBeanManagerDestroyed", BeanManager.class);
+                                beforeBeanManagerDestroyed.setAccessible(true);
+                                beforeBeanManagerDestroyed.invoke(o, beanManager);
+                            } catch (NoSuchMethodException e) {
+                            } catch (IllegalAccessException e) {
+                            } catch (InvocationTargetException e) {
+                            }
+                            return null;
+                        }
+                    });    
+                } catch (SecurityException e) {
                 } finally {
                     it.remove();
                 }

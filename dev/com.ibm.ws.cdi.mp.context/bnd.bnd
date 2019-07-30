@@ -23,7 +23,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 WS-TraceGroup: JCDI
 
 Private-Package:\
-  com.ibm.ws.cdi.mp.context
+  com.ibm.ws.cdi.mp.context.*
 
 -dsannotations: \
   com.ibm.ws.cdi.mp.context.WeldContextProvider

@@ -31,7 +31,7 @@ var clientInputDialog = (function() {
             $('#add_new_client').prop('disabled', false);
 
             // Array 'Add element' buttons
-            $('.tool_modal_array_add_ele').click(function () {
+            $('.tool_modal_array_add_ele').click(function() {
                 var $array = $(this).closest('.tool_modal_array').find('table');
                 var newRow = __createArrayEntry();
                 $array.append(newRow);
@@ -220,17 +220,17 @@ var clientInputDialog = (function() {
                 var rbName = this.name;
                 $selectedrb.attr('aria-checked', true);
                 $("#add_edit_client_modal .tool_modal_radio_button[name='" + rbName + "']:not(:checked)").attr('aria-checked', false);
-            }).on('focus', function () {
+            }).on('focus', function() {
                 // Find the associated label element
                 var rbID = this.id;
                 $("label[for='" + rbID + "']").find('.tool_modal_radio_button_appearance').addClass('radio_button_focus');
-            }).on('blur', function () {
+            }).on('blur', function() {
                 // Find the associated label element
                 var rbID = this.id;
                 $("label[for='" + rbID + "']").find('.tool_modal_radio_button_appearance').removeClass('radio_button_focus');
             });
 
-            $(".tool_modal_register_button").click(function () {
+            $(".tool_modal_register_button").click(function() {
                 utils.startProcessingSpinner('add_edit_processing');
 
                 var clientData = __getClientRegistrationData();
@@ -286,7 +286,7 @@ var clientInputDialog = (function() {
                 });                      
             });
 
-            $(".tool_modal_update_button").click(function () {
+            $(".tool_modal_update_button").click(function() {
                 utils.startProcessingSpinner('add_edit_processing');
 
                 var clientId = $('input#client_id').val();
@@ -360,7 +360,7 @@ var clientInputDialog = (function() {
                 });              
             });
 
-            $(".tool_modal_field_copy_button").click(function (event) {
+            $(".tool_modal_field_copy_button").click(function(event) {
                 event.preventDefault();
                 utils.copyToClipboard(this, function() {
                     // Place the 'Copy to clipboard' message above the authDiv aligned to the
@@ -498,7 +498,7 @@ var clientInputDialog = (function() {
                 "               <div class='tool_multiSelect_menuItem_option'>" +
                 "                   <div class='tool_checkbox_wrapper'>" +
                 "                       <input id='" + optionId + "' class='tool_checkbox' type='checkbox' value='" + option.value + "'>" +
-                "                       <label class='tool_checkbox_label' for='" + optionId + "'>" + option.label + "</label>" +
+                "                       <label class='tool_checkbox_label' for='" + optionId + "'>" + option.value + "</label>" +
                 "                   </div>" +
                 "               </div>" + 
                 "           </div>";
@@ -534,7 +534,7 @@ var clientInputDialog = (function() {
                 "       <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + "></input>" +
                 "       <label for='" + optionId + "' class='tool_modal_radio_button_label'>" +
                 "           <span class='tool_modal_radio_button_appearance'></span>" + 
-                "           " + option.label + 
+                "           " + option.value + 
                 "       </label>";
         }
 
@@ -961,7 +961,7 @@ var clientInputDialog = (function() {
     //     var $requiredInputFields = $('#add_edit_client_modal .tool_modal_body_field_input[requiredField]');
     //     $requiredInputFields.each(function() {
     //         console.log('required is set for ' + this.id);
-    //         $(this).on('input', function(e) {
+    //         $(this).on('input', function() {
     //             __validateRequiredInputs();
     //         });
     //     });
@@ -979,7 +979,7 @@ var clientInputDialog = (function() {
                 globalization.isBidiEnabled()) {
                 // input value type requires special bidi handling
                 bidiUtils.displayBidiString($(this));
-                $(this).on("keyup", function(event) {
+                $(this).on("keyup", function() {
                     bidiUtils.displayBidiString($(this));
                 });
             }
