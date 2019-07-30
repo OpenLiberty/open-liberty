@@ -26,9 +26,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 
-import com.ibm.ws.security.common.web.WebUtils;
-
-
 /**
  * Utility functions
  * 
