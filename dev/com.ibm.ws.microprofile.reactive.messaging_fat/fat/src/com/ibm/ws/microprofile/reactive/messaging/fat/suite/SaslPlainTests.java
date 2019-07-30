@@ -16,8 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.KafkaTlsContainer;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls.KafkaTlsTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.KafkaSaslPlainContainer;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslPlainTest;
 
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
@@ -25,12 +25,12 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
  * Suite for tests which run against a TLS enabled kafka broker
  */
 @RunWith(Suite.class)
-@SuiteClasses({ KafkaTlsTest.class,
+@SuiteClasses({ KafkaSaslPlainTest.class,
 })
-public class TlsTests {
+public class SaslPlainTests {
 
     @ClassRule
-    public static KafkaTlsContainer kafkaContainer = new KafkaTlsContainer();
+    public static KafkaSaslPlainContainer kafkaContainer = new KafkaSaslPlainContainer();
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

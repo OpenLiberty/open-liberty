@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 PlaintextTests.class,
                 TlsTests.class,
+                SaslPlainTests.class,
 })
 public class FATSuite {
 
