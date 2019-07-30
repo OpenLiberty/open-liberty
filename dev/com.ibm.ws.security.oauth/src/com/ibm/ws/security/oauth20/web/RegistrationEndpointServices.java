@@ -106,13 +106,14 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         } else if (request.getMethod().equalsIgnoreCase(HTTP_METHOD_DELETE)) {
             processDelete(provider, request, response);
         } else {
-            String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+            String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), "Registration Endpoint Service" });
+            String serverErrorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_UNSUPPORTED_METHOD",
                     new Object[] { request.getMethod(), "Registration Endpoint Service" },
                     "CWWKS1433E: The HTTP method {0} is not supported for the service {1}.");
-            Tr.error(tc, errorMsg);
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            Tr.error(tc, serverErrorMsg);
+            throw new OidcServerException(browserErrorMsg, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
     }
 
@@ -415,7 +416,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
 
         // If clientId does not exist in database, return error 404 response
         if (currClient == null) {
-            String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID });
+            String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID, clientId });
             String serverErrorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID",
@@ -449,14 +450,15 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         try {
             return GSON.fromJson(request.getReader(), OidcBaseClient.class);
         } catch (JsonParseException e) {
-            String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+            String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST");
+            String serverErrorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST",
                     null,
                     "CWWKS1428E: The request body is malformed.");
-            Tr.error(tc, errorMsg);
+            Tr.error(tc, serverErrorMsg);
             Tr.error(tc, e.getLocalizedMessage());
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(browserErrorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -592,13 +594,14 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
                 || incomingClient.getTokenEndpointAuthMethod().equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_POST)) {
             if (incomingClient.getClientSecret().equals("*")) {
                 if (OidcOAuth20Util.isNullEmpty(existingClient.getClientSecret())) {
-                    String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+                    String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE");
+                    String serverErrorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                             MESSAGE_BUNDLE,
                             "OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE",
                             null,
                             "CWWKS1430E: An update of the client fails.");
-                    Tr.error(tc, errorMsg);
-                    throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    Tr.error(tc, serverErrorMsg);
+                    throw new OidcServerException(browserErrorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                     // Retaining previously set secret
                     action = ClientSecretAction.RETAIN;
@@ -633,13 +636,14 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     }
 
     private void throwErrorForInvalidPublicClientUpdate() throws OidcServerException {
-        String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+        String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE");
+        String serverErrorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                 MESSAGE_BUNDLE,
                 "OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE",
                 null,
                 "CWWKS1431E: An update of the client fails.");
-        Tr.error(tc, errorMsg);
-        throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+        Tr.error(tc, serverErrorMsg);
+        throw new OidcServerException(browserErrorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     public static void processClientRegistationUri(OidcOAuth20Client client, HttpServletRequest request) {
@@ -659,13 +663,14 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     private OidcOAuth20Client validateClientIdExists(String clientId, OidcOAuth20ClientProvider clientProvider) throws OidcServerException {
         OidcOAuth20Client client = clientProvider.get(clientId);
         if (client == null) {
-            String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+            String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND", new Object[] { clientId });
+            String serverErrorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND",
                     new Object[] { clientId },
                     "CWWKS1424E: The client id {0} was not found.");
-            Tr.error(tc, errorMsg);
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT, HttpServletResponse.SC_NOT_FOUND);
+            Tr.error(tc, serverErrorMsg);
+            throw new OidcServerException(browserErrorMsg, OIDCConstants.ERROR_INVALID_CLIENT, HttpServletResponse.SC_NOT_FOUND);
         }
 
         return client;
@@ -674,13 +679,14 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     private String validateRequestContainsClientId(HttpServletRequest request) throws OidcServerException {
         String clientId = extractClientId(request.getPathInfo());
         if (OidcOAuth20Util.isNullEmpty(clientId)) {
-            String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
+            String browserErrorMsg = Tr.formatMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID });
+            String serverErrorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
                     MESSAGE_BUNDLE,
                     "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID",
                     new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID },
                     "CWWKS1426E: The {0} operation failed as the request did not contain the {1} parameter.");
-            Tr.error(tc, errorMsg);
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+            Tr.error(tc, serverErrorMsg);
+            throw new OidcServerException(browserErrorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
         }
 
         return clientId;
