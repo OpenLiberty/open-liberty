@@ -20,24 +20,20 @@
   <include location="../fatTestPorts.xml"/>
 
   <persistentExecutor id="executor1" jndiName="concurrent/executor1" pollInterval="4s" retryLimit="1" pollSize="100"/>
-
   <persistentExecutor id="executor2" jndiName="concurrent/executor2" taskStoreRef="defaultDatabaseStore" pollInterval="4s" retryLimit="1"/>
 
   <databaseStore id="defaultDatabaseStore" keyGenerationStrategy="SEQUENCE"/>
-
-  <!-- database for scheduled tasks, also accessible to the application -->
-  <dataSource id="DefaultDataSource" fat.modify="true" containerAuthDataRef="authx">
-    <jdbcDriver libraryRef="FATJDBCLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:persistmultidb"/>
-  </dataSource>
-
-  <library id="FATJDBCLib">
-    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  
+  <library id="AnonymousJDBCLib">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
 
-  <authData fat.modify="true" id="authx" user="userx" password="passx"/>
+  <!-- Default datasource, properties created by FATRunner during database rotation. -->
+  <dataSource id="DefaultDataSource" fat.modify="true">
+    <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+  </dataSource>
   
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
   <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
   <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
   <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>

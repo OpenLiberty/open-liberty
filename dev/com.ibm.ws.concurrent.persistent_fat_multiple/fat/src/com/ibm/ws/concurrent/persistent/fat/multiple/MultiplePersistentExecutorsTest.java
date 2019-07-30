@@ -10,21 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.multiple;
 
-import static componenttest.annotation.SkipIfSysProp.DB_Informix;
-
 import java.util.Collections;
 import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -33,24 +32,42 @@ import componenttest.topology.utils.FATServletClient;
  * Tests for multiple persistent scheduled executor instances sharing the same database
  */
 @RunWith(FATRunner.class)
-@SkipIfSysProp(DB_Informix) // persistent executor is not support on Informix
 public class MultiplePersistentExecutorsTest extends FATServletClient {
-
-    private static final String APP_NAME = "persistmultitest";
-    
+	private static final String APP_NAME = "persistmultitest";
+	private static final String DB_NAME = "persistmultidb";
     private static final Set<String> appNames = Collections.singleton(APP_NAME);
-
+    
+	@ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    
     private static ServerConfiguration originalConfig;
-
+    
     private static final LibertyServer server = FATSuite.server;
-
+    
     private static final String TASK_ID_SEARCH_TEXT = "Task ids: ";
-
+    
     @BeforeClass
     public static void setUp() throws Exception {
+    	//Get type
+		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
+		
+    	//Get driver info
+    	String driverName = dbContainerType.getDriverName();
+    	server.addEnvVar("DB_DRIVER", driverName);
+		
+    	//Setup server DataSource properties
+    	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+    	
+		//Initialize database
+		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
+        
+    	//Add application to server
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
-        server.configureForAnyDatabase();
-        originalConfig = server.getServerConfiguration();
+    	
+    	//Set original config
+    	originalConfig = server.getServerConfiguration();
+    	
+    	//Start server
         server.startServer();
     }
 
@@ -62,8 +79,7 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted())
-            server.stopServer("DSRA0174W",
-                              "DSRA1300E" /* Sybase does not implement Connection.getClientInfo */);
+            server.stopServer("DSRA0174W");
     }
 
     private StringBuilder runInServlet(String queryString) throws Exception {

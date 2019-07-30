@@ -19,7 +19,8 @@
 
   <!-- RESOURCE REFERENCES -->
   <resource-ref>
-    <res-ref-name>java:app/env/jdbc/persistMultiDB_RC</res-ref-name>
+  	<description>Default Data Source</description>
+  	<res-ref-name>java:app/env/jdbc/persistMultiDB_RC</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <lookup-name>java:comp/DefaultDataSource</lookup-name>
   </resource-ref>

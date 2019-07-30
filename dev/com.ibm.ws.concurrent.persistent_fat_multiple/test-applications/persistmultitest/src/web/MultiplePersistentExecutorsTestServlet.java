@@ -350,7 +350,8 @@ public class MultiplePersistentExecutorsTestServlet extends FATServlet {
 
         String[][] oldPartitions = (String[][]) obj;
 
-        PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
+        @SuppressWarnings("unused")
+		PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
 
         if (oldPartitions.length != 1)
             throw new Exception("Expecting exactly one match for " + oldExecutorIdentifier + ". Instead " + deepToString(oldPartitions));

@@ -21,9 +21,11 @@ import javax.sql.DataSource;
  * Task that update an entry in the database when it runs.
  */
 public class DBUpdateTask implements Runnable {
+    private static final String resourceRef = "java:app/env/jdbc/persistMultiDB_RC";
+	
     // Get the current count from the database
     static int get() throws Exception {
-        DataSource dataSource = (DataSource) new InitialContext().lookup("java:app/env/jdbc/persistMultiDB_RC");
+        DataSource dataSource = (DataSource) new InitialContext().lookup(resourceRef);
         Connection con = dataSource.getConnection();
         try {
             ResultSet result = con.createStatement().executeQuery("SELECT VAL FROM MYTABLE");
@@ -35,7 +37,7 @@ public class DBUpdateTask implements Runnable {
     }
 
     static void init() throws Exception {
-        DataSource dataSource = (DataSource) new InitialContext().lookup("java:app/env/jdbc/persistMultiDB_RC");
+        DataSource dataSource = (DataSource) new InitialContext().lookup(resourceRef);
         Connection con = dataSource.getConnection();
         try {
             boolean created = false;
@@ -54,7 +56,7 @@ public class DBUpdateTask implements Runnable {
     @Override
     public void run() {
         try {
-            DataSource dataSource = (DataSource) new InitialContext().lookup("java:app/env/jdbc/persistMultiDB_RC");
+            DataSource dataSource = (DataSource) new InitialContext().lookup(resourceRef);
             Connection con = dataSource.getConnection();
             try {
                 con.createStatement().executeUpdate("UPDATE MYTABLE SET VAL=VAL+1");
