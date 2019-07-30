@@ -989,7 +989,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
 
     /*
      * Test that the config endpoint is not accessible to a user who is not assigned the
-     * reader or administrator role
+     * administrator role
      */
     @Test
     public void testConfigUserWithoutRoles() throws Exception {

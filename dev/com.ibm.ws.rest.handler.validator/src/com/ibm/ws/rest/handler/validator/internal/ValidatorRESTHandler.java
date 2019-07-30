@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -371,7 +371,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
      * Populate JSON object for a top level exception or error.
      *
      * @param errorInfo additional information to append to exceptions and causes
-     * @param error     the top level exception or error.
+     * @param error the top level exception or error.
      * @return JSON object representing the Throwable.
      */
     @SuppressWarnings("unchecked")
