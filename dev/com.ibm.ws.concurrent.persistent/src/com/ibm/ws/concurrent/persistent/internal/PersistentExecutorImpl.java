@@ -2233,6 +2233,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                                 Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " already scheduled");
                         }
                     }
+
+                    if (config.lateTaskThreshold > 0) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(PersistentExecutorImpl.this, tc, "Poll for tasks late by " + config.lateTaskThreshold + "s");
+                        // TODO poll
+                    }
                 } finally {
                     // Schedule next poll
                     config = configRef.get();
