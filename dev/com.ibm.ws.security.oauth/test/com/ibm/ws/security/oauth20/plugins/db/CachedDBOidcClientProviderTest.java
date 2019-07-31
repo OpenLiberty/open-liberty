@@ -33,6 +33,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.oauth.core.api.config.OAuthComponentConfiguration;
@@ -91,7 +92,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     final OidcBaseClient baseClient = mockery.mock(OidcBaseClient.class);
 
-    @BeforeClass
+    //@BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
@@ -101,7 +102,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         SAMPLE_CLIENTS = getsampleOidcBaseClients(5, PROVIDER_NAME);
     }
 
-    @AfterClass
+    //@AfterClass
     public static void setUpAfterClass() throws Exception {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.restoreStreams();
@@ -109,7 +110,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         InitialContextFactoryMock.inMemoryDbConn.close();
     }
 
-    @Before
+    //@Before
     public void setupBefore() {
         String methodName = "setupBefore";
         _testName = testName.getMethodName();
@@ -126,7 +127,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @After
+    //@After
     public void tearDown() throws Exception {
         mockery.assertIsSatisfied();
         System.out.println("Exiting test: " + _testName);
@@ -240,6 +241,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     /**
      * Test initialization, loadClients and getAll via the 'initialize' function
      */
+    @Ignore
     @Test
     public void testInitializeAndGetAllClients() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -257,6 +259,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     /**
      * Test initialization, loadClients and getAll via the 'init(OAuthComponentConfiguration)' function
      */
+    @Ignore
     @Test
     public void testInitAndGetAllClients() {
         CachedDBOidcClientProvider oidcBaseClientProvider = new CachedDBOidcClientProvider(PROVIDER_NAME, InitialContextFactoryMock.dsMock, SCHEMA_TABLE_NAME, null, null, EMPTY_STRING_ARR);
@@ -289,6 +292,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testPutAndGet() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -309,6 +313,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testPut_SQLException() {
         try {
@@ -340,6 +345,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testGet() {
         try {
@@ -364,6 +370,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testGet_SQLException() {
         try {
@@ -395,6 +402,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testGetAll() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -406,6 +414,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testGetAll_SQLException() {
         try {
@@ -433,6 +442,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testGetAllRequest() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -472,6 +482,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testGetAllRequest_SQLException() {
         try {
@@ -499,6 +510,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testExists() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -511,6 +523,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testExists_SQLException() {
         try {
@@ -540,6 +553,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testValidateClient() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -553,6 +567,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testValidateClient_SQLException() {
         try {
@@ -583,6 +598,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testUpdate() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -626,6 +642,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testUpdate_SQLException() {
         try {
@@ -657,6 +674,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testDelete() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -676,6 +694,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
+    @Ignore
     @Test
     public void testDelete_SQLException() {
         try {
