@@ -1166,6 +1166,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         return this.allowLtpaToken2Name;
     }
 
+    @Trivial
     String trimIt(String str) {
         if (str == null)
             return null;
@@ -1177,7 +1178,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc,"trimIt("+str+") returns ["+retVal+"]");
         }
-        return str;
+        return retVal;
     }
 
     /** {@inheritDoc} */
