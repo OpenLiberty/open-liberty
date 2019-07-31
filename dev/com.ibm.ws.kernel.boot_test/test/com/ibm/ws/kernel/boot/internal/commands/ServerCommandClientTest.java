@@ -20,6 +20,8 @@ import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.CharsetEncoder;
 import java.text.MessageFormat;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -37,6 +39,7 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.launch.internal.FrameworkManager;
 import com.ibm.ws.kernel.launch.internal.ServerCommandListener;
 
+import junit.framework.Assert;
 import test.common.SharedOutputManager;
 import test.shared.Constants;
 
@@ -50,6 +53,8 @@ public class ServerCommandClientTest {
     private static final String COMM_FAILURE_ERROR_MESSAGE = MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), "stop");
 
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
+    private volatile TestServerCommandListener scl;
 
     @Rule
     public TestRule outputRule = outputMgr;
@@ -69,8 +74,8 @@ public class ServerCommandClientTest {
          * @param uuid
          * @param frameworkManager
          */
-        public TestServerCommandListener(BootstrapConfig bootProps, String uuid, FrameworkManager frameworkManager) {
-            super(bootProps, uuid, frameworkManager);
+        public TestServerCommandListener(BootstrapConfig bootProps, String uuid, FrameworkManager frameworkManager, Thread listenerThread) {
+            super(bootProps, uuid, frameworkManager, listenerThread);
         }
 
         @Override
@@ -150,6 +155,10 @@ public class ServerCommandClientTest {
     public void after() {
         challengeFile.delete();
 
+        if (scl != null) {
+            scl.close();
+            scl = null;
+        }
     }
 
     @Test
@@ -195,9 +204,7 @@ public class ServerCommandClientTest {
             }
         });
 
-        TestServerCommandListener scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW);
-        scl.setTestType(TestType.AUTH_ERROR);
-        scl.startListening();
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.AUTH_ERROR);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -249,9 +256,7 @@ public class ServerCommandClientTest {
             }
         });
 
-        TestServerCommandListener scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW);
-        scl.setTestType(TestType.NOT_NUMBER);
-        scl.startListening();
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.NOT_NUMBER);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -303,9 +308,7 @@ public class ServerCommandClientTest {
             }
         });
 
-        TestServerCommandListener scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW);
-        scl.setTestType(TestType.INVALID_RC);
-        scl.startListening();
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.INVALID_RC);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -356,9 +359,7 @@ public class ServerCommandClientTest {
             }
         });
 
-        TestServerCommandListener scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW);
-        scl.setTestType(TestType.UUID_FAILURE);
-        scl.startListening();
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.UUID_FAILURE);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -410,9 +411,7 @@ public class ServerCommandClientTest {
             }
         });
 
-        TestServerCommandListener scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW);
-        scl.setTestType(TestType.EMPTY_RESPONSE);
-        scl.startListening();
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.EMPTY_RESPONSE);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -464,13 +463,34 @@ public class ServerCommandClientTest {
             }
         });
 
-        TestServerCommandListener scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW);
-        scl.setTestType(TestType.COMM_FAILURE);
-        scl.startListening();
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.COMM_FAILURE);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
         assertEquals(ReturnCode.ERROR_SERVER_STOP, rc);
         assertTrue(outputMgr.checkForStandardOut(COMM_FAILURE_ERROR_MESSAGE));
+    }
+
+    private void createAndListenServerCommandListener(final BootstrapConfig mockBootConfig, final FrameworkManager mockFW, final TestType testType) {
+        final CountDownLatch latch = new CountDownLatch(1);
+        new Thread("test") {
+            @Override
+            public void run() {
+                scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW, this);
+                scl.setTestType(testType);
+                latch.countDown();
+                scl.startListening();
+            }
+        }.start();
+
+        try {
+            latch.await(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        if (scl == null) {
+            Assert.fail("Server command listener was not created");
+        }
     }
 }
