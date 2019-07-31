@@ -75,8 +75,6 @@ public class LibertySseEventSinkImpl implements SseEventSink {
             } finally {
                 ServerProviderFactory.releaseRequestState(message);
             }
-            
-            //TODO: remove from all broadcasters
         }
 
     }
