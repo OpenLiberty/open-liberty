@@ -143,8 +143,13 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
     protected TargetCacheImpl_DataFile createPeerLink(String cacheName, String cacheExt) {
         File useDataFile = getDataFile();
 
-        String peerName = useDataFile.getName() + "." + cacheExt;
-        File peerFile = new File( useDataFile.getParentFile(), peerName );
+        File peerFile;
+        if ( useDataFile != null ) {
+            String peerName = useDataFile.getName() + "." + cacheExt;
+            peerFile = new File( useDataFile.getParentFile(), peerName );
+        } else {
+            peerFile = null;
+        }
 
         return new TargetCacheImpl_DataFile(cacheName, peerFile);
     }
