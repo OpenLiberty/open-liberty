@@ -23,12 +23,10 @@ import com.ibm.ws.security.openidconnect.server.internal.OidcDiscoveryProviderCo
 import com.ibm.ws.security.openidconnect.server.plugins.OIDCWASDiscoveryModel;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
-public class Discovery
-{
+public class Discovery {
     private static TraceComponent tc = Tr.register(Discovery.class);
 
-    public void processRequest(OidcServerConfig provider, HttpServletRequest request, HttpServletResponse response) throws IOException
-    {
+    public void processRequest(OidcServerConfig provider, HttpServletRequest request, HttpServletResponse response) throws IOException {
         OIDCWASDiscoveryModel discoveryObj = new OIDCWASDiscoveryModel();
 
         OidcDiscoveryProviderConfig discoverConfig = new OidcDiscoveryProviderConfig(provider.getProviderId(), request);
@@ -87,14 +85,16 @@ public class Discovery
 
         discoveryObj.setProxyEndpoint(provider.getAuthProxyEndpointUrl());
 
+        discoveryObj.setRevocationEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_REVOKE_EP_QUAL));
+
+        discoveryObj.setAppPasswordsEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_APP_PASSWORDS_EP_QUAL));
+
+        discoveryObj.setAppTokensEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_APP_TOKENS_EP_QUAL));
+
         String discoverJSONString = discoveryObj.toJSONString();
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, (new StringBuffer())
-                            .append("Discover response for provider ")
-                            .append(provider.getProviderId())
-                            .append(" :")
-                            .append(discoverJSONString).toString());
+            Tr.debug(tc, (new StringBuffer()).append("Discover response for provider ").append(provider.getProviderId()).append(" :").append(discoverJSONString).toString());
         }
 
         //Set Headers and Status

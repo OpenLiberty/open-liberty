@@ -21,3 +21,4 @@ IBM-Process-Types: server, \
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.javaeedd_1.3-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

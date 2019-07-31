@@ -30,7 +30,8 @@ public class OidcDiscoveryProviderConfig {
 
     //Disallow default construction
     @SuppressWarnings("unused")
-    private OidcDiscoveryProviderConfig() {}
+    private OidcDiscoveryProviderConfig() {
+    }
 
     public OidcDiscoveryProviderConfig(String providerId, HttpServletRequest request) {
         this.request = request;
@@ -43,7 +44,7 @@ public class OidcDiscoveryProviderConfig {
 
     /**
      * Calculates and returns the calculated endpoint.
-     * 
+     *
      * @param endpointProp is a qualified endpoint property key
      * @return Endpoint for a given provider. Returns calculated value.
      */
@@ -54,19 +55,11 @@ public class OidcDiscoveryProviderConfig {
     private String getCalculatedIssuerId(String providerId) {
         String fullServletPath = HttpUtils.getFullCtxServletPath(this.request);
 
-        return (new StringBuffer())
-                        .append(fullServletPath)
-                        .append((fullServletPath.endsWith("/") ? "" : "/"))
-                        .append(providerId)
-                        .toString();
+        return (new StringBuffer()).append(fullServletPath).append((fullServletPath.endsWith("/") ? "" : "/")).append(providerId).toString();
     }
 
     private String getCalculatedEndpoint(String endpoint) {
-        return (new StringBuffer())
-                        .append(this.issuerId)
-                        .append((this.issuerId.endsWith("/") ? "" : "/"))
-                        .append(endpoint)
-                        .toString();
+        return (new StringBuffer()).append(this.issuerId).append((this.issuerId.endsWith("/") ? "" : "/")).append(endpoint).toString();
     }
 
     static {
@@ -80,5 +73,8 @@ public class OidcDiscoveryProviderConfig {
         endpointMap.put(OIDCConstants.KEY_OIDC_END_SESSION_EP_QUAL, EndpointType.end_session.name());
         endpointMap.put(OIDCConstants.KEY_OIDC_COVERAGE_MAP_EP_QUAL, EndpointType.coverage_map.name());
         endpointMap.put(OIDCConstants.KEY_OIDC_PROXY_EP_QUAL, EndpointType.proxy.name());
+        endpointMap.put(OIDCConstants.KEY_OIDC_REVOKE_EP_QUAL, EndpointType.revoke.name());
+        endpointMap.put(OIDCConstants.KEY_OIDC_APP_PASSWORDS_EP_QUAL, EndpointType.app_password_effective_name);
+        endpointMap.put(OIDCConstants.KEY_OIDC_APP_TOKENS_EP_QUAL, EndpointType.app_token_effective_name);
     }
 }

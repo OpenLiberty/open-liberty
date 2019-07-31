@@ -125,6 +125,9 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String OIDC_DISC_REQUIRE_REQ_URI_REGISTRATION = "require_request_uri_registration";
     public static final String OIDC_DISC_OP_POLICY_URI = "op_policy_uri";
     public static final String OIDC_DISC_OP_TOS_URI = "op_tos_uri";
+    public static final String OIDC_DISC_REVOKE_EP = "revocation_endpoint";
+    public static final String OIDC_DISC_APP_PASSWORDS_EP = "app_passwords_endpoint";
+    public static final String OIDC_DISC_APP_TOKENS_EP = "app_tokens_endpoint";
 
     /* parameters for oidc discovery response with origins from session management */
     public static final String OIDC_SESS_CHECK_SESSION_IFRAME = "check_session_iframe";
@@ -227,6 +230,9 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String KEY_OIDC_COVERAGE_MAP_EP = "coverageMapEndpoint";
     public static final String KEY_OIDC_PROXY_EP = "proxyEndpoint";
     public static final String KEY_OIDC_BACKING_IDP_URI_PREFIX = "backingIdpUriPrefix";
+    public static final String KEY_OIDC_REVOKE_EP = "revocationEndpoint";
+    public static final String KEY_OIDC_APP_PASSWORDS_EP = "appPasswordsEndpoint";
+    public static final String KEY_OIDC_APP_TOKENS_EP = "appTokensEndpoint";
 
     // Server config property for coverageMap
     static final String JSA_QUAL = "jsa.provider.";
@@ -261,6 +267,9 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String KEY_OIDC_COVERAGE_MAP_EP_QUAL = OIDC_QUAL + KEY_OIDC_COVERAGE_MAP_EP;
     public static final String KEY_OIDC_PROXY_EP_QUAL = OIDC_QUAL + KEY_OIDC_PROXY_EP;
     public static final String KEY_OIDC_BACKING_IDP_URI_PREFIX_QUAL = OIDC_QUAL + KEY_OIDC_BACKING_IDP_URI_PREFIX;
+    public static final String KEY_OIDC_REVOKE_EP_QUAL = OIDC_QUAL + KEY_OIDC_REVOKE_EP;
+    public static final String KEY_OIDC_APP_PASSWORDS_EP_QUAL = OIDC_QUAL + KEY_OIDC_APP_PASSWORDS_EP;
+    public static final String KEY_OIDC_APP_TOKENS_EP_QUAL = OIDC_QUAL + KEY_OIDC_APP_TOKENS_EP;
 
     /**
      * Supported OIDC client registration parameter names

@@ -1,0 +1,1607 @@
+package web;
+
+import static junit.framework.Assert.*;
+
+import java.sql.*;
+import javax.sql.*;
+import java.util.*;
+import java.util.concurrent.*;
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+
+import com.ibm.db2.jcc.SQLJContext;
+import sqlj.runtime.ConnectionContext;
+import sqlj.runtime.ExecutionContext;
+import sqlj.runtime.ResultSetIterator;
+import sqlj.runtime.profile.ConnectedProfile;
+import sqlj.runtime.ref.DefaultContext;
+
+// Whenever a new 'context' is added, be sure to add it to the
+// Customizer args in com.ibm.ws.sqlj.fat.SQLJTest.setUpSQLJ() 
+#sql context  MyCtx;
+#sql context  SqljCtx;
+#sql context  SqljDSCtx with (dataSource="java:comp/DefaultDataSource");
+#sql context  WrappedConContext;
+#sql iterator MyIter(String name);
+#sql iterator Value1Iter(String name);
+#sql iterator BasicIter(int, String);
+public class SQLJProcedure
+{
+    // ######################################################################
+    // ###  NOTE: Not a java file!                                        ###
+    // ###  If you are debugging a failure in this bucket line numbers    ###
+    // ###  will not match up to this file because this sqlj file gets    ###
+    // ###  transformed from .sqlj->.java->.class file at runtime.        ###
+    // ###  See autoFVT/test-applications/sqljapp/src/web/SQLJProcedure.java
+    // ###  to look at the java file that this sqlj file turns into       ###
+    // ######################################################################
+	
+	/**
+	 * Code from our Knowledge Center example with the following modifications:
+	 * - lookup default datasource instead of 'jdbc/myDS'
+	 * - table is named 'sqljtest' instead of 'mytable'
+	 * - added junit assertions to make sure we get the correct values
+	 * - inline code comments are exactly how they will appear in the Knowledge Center
+	 */
+	public static void testDocExample() throws Throwable {
+        DataSource ds = (DataSource) new InitialContext().lookup("java:comp/DefaultDataSource");
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        MyCtx ctx = new MyCtx(con);
+        try {
+            // Insert some data into the 'mytable' table. 
+            // Note that the java variables 'key' and 'val' get substituted into the #sql  
+            int key = 1; 
+            String val = "one";
+            #sql [ctx] { INSERT into sqljtest VALUES (:key, :val) };
+            #sql [ctx] { COMMIT };
+            
+            MyIter iter;
+            #sql [ctx] iter = { SELECT name FROM sqljtest WHERE id=1 };
+            assertTrue("No results were returned.", iter.next());
+            System.out.println("Found value: " + iter.name());
+            assertEquals("one", iter.name());
+            iter.close();
+            #sql [ctx] { COMMIT };
+            
+            // Restore auto-commit true so a transaction is not leaked
+            con.setAutoCommit(true);
+        } finally {
+            ctx.close();
+        }
+	}
+    
+    public static void testSQLJSimpleSelect(DataSource ds) throws Throwable {
+        
+        // Insert some data using SQLJ context
+        Connection con = ds.getConnection();
+        SqljCtx ctx = new SqljCtx(con);
+        try {
+	        Map<Integer, String> entriesToInsert = new LinkedHashMap<Integer, String>();
+	        entriesToInsert.put(20, "twenty");
+	        entriesToInsert.put(30, "thirty");
+	        entriesToInsert.put(40, "fourty");
+	        entriesToInsert.put(70, "seventy");
+	        for (Map.Entry<Integer, String> entry : entriesToInsert.entrySet()) {
+	            int key = entry.getKey();
+	            String val = entry.getValue();
+	            #sql [ctx] { INSERT INTO sqljtest VALUES (:key, :val) };
+	        }
+	        #sql [ctx] {COMMIT};
+	
+	        // Select all records with a value above 25
+	        int min = 25;
+	        Value1Iter iter;
+	        #sql [ctx] iter = {SELECT name FROM sqljtest WHERE id > :min};
+	
+	        Set<String> foundValues = new HashSet<String>();
+	        while (iter.next()) {
+	            String val = iter.name();
+	            System.out.println("Found value: " + val);
+	            foundValues.add(val);
+	        }
+	        iter.close();
+	
+	        #sql [ctx] {COMMIT};
+	        
+	        if(!foundValues.contains("thirty") || !foundValues.contains("fourty") || !foundValues.contains("seventy"))
+	            throw new Exception("Did not find all expected values in the result iterator: " + foundValues);
+        } finally {
+        	ctx.close();
+        }
+    }
+    
+    public static void testBasicCreateRead1(DataSource ds) throws Exception {
+
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+
+        // Insert some data in a global tran
+        utx.begin();
+        Connection con = ds.getConnection();
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+        	#sql [cmctx1] {INSERT INTO sqljtest VALUES (0, 'zero')};
+        } finally {
+        	cmctx1.close();
+        }
+        utx.commit();
+
+        // Select the data back with a different SQLJ context in a different global tran
+        utx.begin();
+        con = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=0};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(0, "zero", rs);
+	        rs.close();
+        } finally {
+        	cmctx2.close();
+        }
+        utx.commit();
+    }
+
+    public static void testBasicCreateRead2(DataSource ds) throws Exception {
+        
+        // Insert some data in a local tran
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (2, 'two')};
+	        
+	        con.commit();
+        } finally {
+	        con.setAutoCommit(true);
+	        cmctx1.close();
+        }
+
+        // Select the data back with a different SQLJ context
+        con = ds.getConnection();
+        con.setAutoCommit(false);
+        SqljCtx cmctx2 = new SqljCtx(con);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=2};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(2, "two", rs);
+	
+	        rs.close();
+        } finally {
+	        con.setAutoCommit(true);
+	        cmctx2.close();
+        }
+    }
+
+    // Tests sqlj context that is constructed with a ConnectionContext
+    public static void testBasicCreateReadWithConnectionContext() throws Exception {
+        SqljDSCtx dsctx = new SqljDSCtx();
+        SqljCtx ccctx = new SqljCtx(dsctx);
+        try {
+            int id = 15;
+            String name = "fifteen";
+            #sql [ccctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+
+	        BasicIter cursor;
+	        #sql [ccctx] cursor = {SELECT id, name FROM sqljtest WHERE id=:id};
+
+	        ResultSet result = cursor.getResultSet();
+	        verifyRow(id, name, result);
+	        result.close();
+        } finally {
+            ccctx.close();
+            dsctx.close();
+        }
+    }
+
+    // Tests sqlj context that is constructed with a ConnectionContext wrapper supplied by the application
+    public static void testBasicCreateReadWithConnectionContextWrapper(DataSource ds) throws Exception {
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        ConnectionContextWrapper ccw = new ConnectionContextWrapper(con);
+        SqljCtx ccwctx = new SqljCtx(ccw);
+        try {
+            int id = 28;
+            String name = "twenty-eight";
+            #sql [ccwctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+            ccw.commit();
+
+            id = 29;
+            name = "twenty-nine";
+            #sql [ccwctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+            ccw.rollback();
+
+            ccwctx.getExecutionContext().setMaxRows(2);
+
+	        BasicIter cursor;
+            #sql [ccwctx] cursor = {SELECT id, name FROM sqljtest WHERE id>=28 AND id<=29};
+
+	        ResultSet result = cursor.getResultSet();
+	        verifyRow(28, "twenty-eight", result);
+
+            if (result.next())
+                fail("Second entry should have been rolled back. Instead: " + result.getInt(1) + ',' + result.getString(2));
+
+	        result.close();
+        } finally {
+            if (!ccwctx.isClosed()) {
+                con.setAutoCommit(true);
+                ccwctx.close(ConnectionContext.CLOSE_CONNECTION);
+            }
+        }
+    }
+
+    // Tests sqlj context caching and sqlj context that is constructed with a ConnectionContext wrapper supplied by the application
+    public static void testBasicCreateReadWithConnectionContextWrapperAndCachedSQLJContext(DataSource ds) throws Exception {
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        ConnectionContextWrapper ccw = new ConnectionContextWrapper(con);
+        SqljCtx ccwctx = new SqljCtx(ccw);
+        try {
+            int id = 128;
+            String name = "twenty-eight";
+            #sql [ccwctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+            ccw.commit();
+
+            id = 129;
+            name = "twenty-nine";
+            #sql [ccwctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+            ccw.rollback();
+
+            ccwctx.getExecutionContext().setMaxRows(2);
+
+	        BasicIter cursor;
+            #sql [ccwctx] cursor = {SELECT id, name FROM sqljtest WHERE id>=128 AND id<=129};
+
+	        ResultSet result = cursor.getResultSet();
+	        verifyRow(128, "twenty-eight", result);
+
+            if (result.next())
+                fail("Second entry should have been rolled back. Instead: " + result.getInt(1) + ',' + result.getString(2));
+
+	        result.close();
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+
+    // Tests sqlj context that specifies a data source JNDI name
+    public static void testBasicCreateReadWithDataSource() throws Exception {
+        SqljDSCtx dsctx = new SqljDSCtx();
+        try {
+            int id = 14;
+            String name = "fourteen";
+            #sql [dsctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+
+	        BasicIter cursor;
+	        #sql [dsctx] cursor = {SELECT id, name FROM sqljtest WHERE id=:id};
+
+	        ResultSet result = cursor.getResultSet();
+	        verifyRow(id, name, result);
+	        result.close();
+        } finally {
+            dsctx.close();
+        }
+    }
+
+    // Unwrap connection as SQLJContext before constructing context
+    public static void testBasicCreateReadWithSQLJContext(DataSource ds) throws Exception {
+        SQLJContext con = ds.getConnection().unwrap(SQLJContext.class);
+        try {
+	        SqljCtx sqljctx = new SqljCtx(con);
+	        try {
+	            int id = 16;
+	            String name = "sixteen";
+	            #sql [sqljctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+
+		        BasicIter cursor;
+		        #sql [sqljctx] cursor = {SELECT id, name FROM sqljtest WHERE id=:id};
+
+		        ResultSet result = cursor.getResultSet();
+		        verifyRow(16, "sixteen", result);
+		        result.close();
+	        } finally {
+	            sqljctx.close();
+	        }
+	    } finally {
+	        con.close();
+	    }
+    }
+
+    public static void testBasicCreateUpdateDelete1(DataSource ds) throws Exception {
+        
+        // Insert some data in a local tran
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (3, 'three')};
+	        con.commit();
+	
+	        // Update the data with a new value, then delete it
+	        String name = "newname";
+	        #sql [cmctx1] {UPDATE sqljtest SET name=:name WHERE id=3};
+	        con.commit();
+	        
+	        #sql [cmctx1] {DELETE FROM sqljtest WHERE name=:name};
+	        con.commit();
+	        
+	        // Verify that the data was deleted
+	        BasicIter cursor1;
+	        #sql [cmctx1] cursor1 = {SELECT id, name FROM sqljtest WHERE id=3};
+	        ResultSet rs = cursor1.getResultSet();
+	        if (rs.next()) 
+	            fail("Object exists, DELETE did not happen!");
+        } finally {
+	        con.setAutoCommit(true);
+	        cmctx1.close();
+        }
+    }
+
+    public static void testBasicCreateUpdateDelete2(DataSource ds) throws Exception {
+        
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        
+        // Insert some data in a global tran
+        utx.begin();
+        Connection con = ds.getConnection();
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (4, 'four')};
+	        utx.commit();
+	
+	        // Update the data with a new value and then delete it
+	        utx.begin();
+	        String name = "newname";
+	        #sql [cmctx1] {UPDATE sqljtest SET name=:name WHERE id=4};
+	        utx.commit();
+	        
+	        utx.begin();
+	        #sql [cmctx1] {DELETE FROM sqljtest WHERE name=:name};
+	        utx.commit();
+	        
+	        // Verify that the data was deleted
+	        BasicIter cursor1;
+	        #sql [cmctx1] cursor1 = {SELECT id, name FROM sqljtest WHERE id=4};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        if (rs.next()) 
+	            fail("Object exists, DELETE did not happen!");
+        } finally {
+        	cmctx1.close();
+        }
+    }
+
+    public static void testBasicCreateUpdateRollback1(DataSource ds) throws Exception {
+        
+        // Insert some data in a local tran
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (5, 'five')};
+	        con.commit();
+	
+	        // Update the data, but then rollback
+	        String name = "newname";
+	        #sql [cmctx1] {UPDATE sqljtest SET name=:name WHERE id=5};
+	        con.rollback();
+        } finally {
+	        con.setAutoCommit(true);
+	        cmctx1.close();
+        }
+        
+        // Create a new context and select the data, expect the original value
+        Connection con1 = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con1);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=5};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(5, "five", rs);
+        } finally {
+	        con1.setAutoCommit(true);
+	        cmctx2.close();
+        }
+    }
+
+    public static void testBasicCreateRollback1(DataSource ds) throws Exception {
+        
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        
+        // Insert some data in a global tran, but then rollback
+        utx.begin();
+        Connection con = ds.getConnection();
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (6, 'six')};
+	        utx.rollback();
+        } finally {
+        	cmctx1.close();
+        }
+        
+        // Try to select the rolled back data in a different global tran
+        // with a different SQLJ context.  It should not exist.
+        utx.begin();
+        Connection con1 = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con1);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=6};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        if (rs.next()) 
+	            fail("Object exists, rollback did not happen!");
+	        utx.commit();
+        } finally {
+        	cmctx2.close();
+        }
+    }
+
+    public static void testBasicCreateRollback2(DataSource ds) throws Exception {
+
+        // Insert some data in a local tran, but then rollback
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (7, 'seven')};
+	        con.rollback();
+        } finally {
+	        con.setAutoCommit(true);
+	        cmctx1.close();
+        }
+        
+        // Try to select the data using a different SQLJ context, it should not exist
+        Connection con1 = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con1);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=7};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        if (rs.next()) 
+	            fail("Object exists, rollback did not happen!");
+        } finally {
+        	cmctx2.close();
+        }
+    }
+
+    public static void testBasicUpdateRollback2(DataSource ds) throws Exception {
+        
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        
+        // Insert some data in a global tran
+        utx.begin();
+        Connection con = ds.getConnection();
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (8, 'eight')};
+	        utx.commit();
+	        
+	        // Update the data with a different value, but then rollback
+	        utx.begin();
+	        
+	        String name = "newname";
+	        #sql [cmctx1] {UPDATE sqljtest SET name=:name WHERE id=8};
+	        
+	        utx.rollback();
+        } finally {
+            cmctx1.close();
+        }
+        
+        // Select the data with a different SQLJ context, expect original value
+        utx.begin();
+        Connection con1 = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con1);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=8};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(8, "eight", rs);
+	        utx.commit();
+        } finally {
+        	cmctx2.close();
+        }
+    }
+
+    public static void testBasicDeleteRollback2(DataSource ds) throws Exception {
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        
+        // Insert some data in a global tran
+        utx.begin();
+        Connection con = ds.getConnection();
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (9, 'nine')};
+	        utx.commit();
+	        
+	        // Delete the new data, but then rollback
+	        utx.begin();
+	        #sql [cmctx1] {DELETE FROM sqljtest WHERE id=9};
+	        utx.rollback();
+        } finally {
+        	cmctx1.close();
+        }
+        
+        // Select the data with a new SQLJ context.  
+        // Expect data to exist because the delete was rolled back
+        utx.begin();
+        Connection con1 = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con1);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=9};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(9, "nine", rs);
+	        utx.commit();
+        } finally {
+        	cmctx2.close();
+        }
+    }
+
+    public static void testBasicDeleteRollback1(DataSource ds) throws Exception {
+        // Insert some data in a local tran
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (10, 'ten')};
+	        con.commit();
+	
+	        // Delete the data, but then rollback
+	        #sql [cmctx1] {DELETE FROM sqljtest WHERE id=10};
+	        con.rollback();
+        } finally {
+	        con.setAutoCommit(true);
+	        cmctx1.close();
+        }
+        
+        // Select the data with a new SQLJ context 
+        // Expect data to exist because the delete was rolled back
+        Connection con1 = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con1);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=10};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(10, "ten", rs);
+	        rs.close();
+        } finally {
+	        con1.setAutoCommit(true);
+	        cmctx2.close();
+        }
+    }
+
+    // Test coverage for SQLJ batching to drive the special DB2 addBatch/executeBatch methods
+    public static void testBatching(DataSource ds) throws Exception {
+        Connection con = ds.getConnection();
+        try {
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            con.setAutoCommit(false);
+
+            SqljCtx bctx = new SqljCtx(con);
+            ExecutionContext xctx = bctx.getExecutionContext();
+            xctx.setBatching(true);
+
+            int id = 17;
+            String name = "seventeen";
+            #sql [bctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+
+            id = 18;
+            name = "eighteen";
+            #sql [bctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+
+            name = "EIGHTEEN";
+            #sql [bctx] {UPDATE sqljtest SET name=:name WHERE id=:id};
+
+            int[] updateCounts = xctx.executeBatch();
+            if (!Arrays.equals(updateCounts, new int[] {1, 1, 1}))
+                fail("Unexpected update counts " + Arrays.toString(updateCounts));
+            
+            xctx.setBatching(false);
+
+            con.setAutoCommit(true); // commits the local transaction
+
+            BasicIter cursor;
+            int min = 17;
+            int max = 18;
+            #sql [bctx] cursor = {SELECT id, name FROM sqljtest WHERE id>=:min AND id<=:max ORDER BY id ASC};
+        
+            ResultSet result = cursor.getResultSet();
+            if (!result.next())
+                fail("Did not find any results in the range of 17 to 18");
+            assertEquals(result.getInt("id"), 17);
+            assertEquals(result.getString("name"), "seventeen");
+            if (!result.next())
+                fail("Did not find second result");
+            assertEquals(result.getInt("id"), 18);
+            assertEquals(result.getString("name"), "EIGHTEEN");
+            if (result.next())
+                fail("Too many results. Extra is: " + result.getInt("id") + ',' + result.getString("name"));
+            result.close();
+
+            bctx.close();
+        } finally {
+            con.close();
+        }
+    }
+
+    // Test coverage for BatchUpdateException path in SQLJ
+    public static void testBatchUpdateException(DataSource ds) throws Exception {
+        Connection con = ds.getConnection();
+        try {
+            con.setAutoCommit(false);
+
+            SqljCtx bctx = new SqljCtx(con);
+            ExecutionContext xctx = bctx.getExecutionContext();
+            xctx.setBatching(true);
+
+            int id = 21;
+            String name = "twenty-one";
+            #sql [bctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+
+            name = "twenty-one again";
+            #sql [bctx] {INSERT INTO sqljtest VALUES (:id, :name)};
+
+            try {
+                int[] updateCounts = xctx.executeBatch();
+                fail("not expecting executeBatch to succeed when non-unique primary key is used. Update counts: " + Arrays.toString(updateCounts));
+            } catch (BatchUpdateException x) {
+                int[] updateCounts = x.getUpdateCounts();
+                assertEquals(updateCounts.length, 2);
+                assertEquals(updateCounts[0], 1);
+                assertEquals(updateCounts[1], Statement.EXECUTE_FAILED);
+            }
+            
+            xctx.setBatching(false);
+
+            con.rollback();
+            con.setAutoCommit(true);
+
+            BasicIter cursor;
+            id = 21;
+            #sql [bctx] cursor = {SELECT id, name FROM sqljtest WHERE id=:id};
+        
+            ResultSet result = cursor.getResultSet();
+            if (result.next())
+                fail("Data should have been rolled back: " + result.getInt("id") + ',' + result.getString("name"));
+            result.close();
+
+            bctx.close();
+        } finally {
+            con.close();
+        }
+    }
+
+    // Execute the same SQLJ callable statement 3 times. The second two should reuse the statement from the cache. 
+    public static void testCacheCallableStatement(DataSource ds) throws Exception
+    {
+        Connection con = ds.getConnection();
+        try {
+	        testCacheCallableStatementInsert(con, 22, "twenty-two");
+
+	        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+	        tran.begin();
+	        try {
+	            testCacheCallableStatementInsert(con, 23, "twenty-three");
+	        } finally {
+	            tran.commit();
+	        }
+
+    	    testCacheCallableStatementInsert(con, 24, "twenty-four");
+
+            // Verify all 3 results are in the database
+            SqljCtx ccsctx = new SqljCtx(con);
+            try {
+                int min = 22;
+                int max = 24;
+            	BasicIter cursor;
+            	#sql [ccsctx] cursor = {SELECT id, name FROM sqljtest WHERE id>=:min AND id<=:max ORDER BY id ASC};
+            
+	            ResultSet result = cursor.getResultSet();
+	            if (!result.next())
+	                fail("All records are missing");
+	            assertEquals(result.getInt(1), 22);
+	            assertEquals(result.getString(2), "twenty-two");
+	            if (!result.next())
+	                fail("Second and third records are missing");
+	            assertEquals(result.getInt(1), 23);
+	            assertEquals(result.getString(2), "twenty-three");
+	            if (!result.next())
+	                fail("Third record is missing");
+	            assertEquals(result.getInt(1), 24);
+	            assertEquals(result.getString(2), "twenty-four");
+	            if (result.next())
+	                fail("Too many records returned by query. Extra is: " + result.getInt(1) + ',' + result.getString(2));
+	            result.close();
+	        } finally {
+	            ccsctx.close(ConnectionContext.KEEP_CONNECTION);
+	        }
+    	} finally {
+    	    con.close();
+    	}
+    }
+
+    // With SQLJ context caching enabled, execute the same SQLJ callable statement 3 times. The second two should reuse the statement from the cache.
+    public static void testCacheCallableStatementAndSQLJContext(DataSource ds) throws Exception
+    {
+        Connection con = ds.getConnection();
+        try {
+	        testCacheCallableStatementInsert(con, 122, "twenty-two");
+
+	        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+	        tran.begin();
+	        try {
+	            testCacheCallableStatementInsert(con, 123, "twenty-three");
+	        } finally {
+	            tran.commit();
+	        }
+
+    	    testCacheCallableStatementInsert(con, 124, "twenty-four");
+
+            // Verify all 3 results are in the database
+            SqljCtx ccsctx = new SqljCtx(con);
+
+            int min = 122;
+            int max = 124;
+        	BasicIter cursor;
+        	#sql [ccsctx] cursor = {SELECT id, name FROM sqljtest WHERE id>=:min AND id<=:max ORDER BY id ASC};
+        
+            ResultSet result = cursor.getResultSet();
+            if (!result.next())
+                fail("All records are missing");
+            assertEquals(result.getInt(1), 122);
+            assertEquals(result.getString(2), "twenty-two");
+            if (!result.next())
+                fail("Second and third records are missing");
+            assertEquals(result.getInt(1), 123);
+            assertEquals(result.getString(2), "twenty-three");
+            if (!result.next())
+                fail("Third record is missing");
+            assertEquals(result.getInt(1), 124);
+            assertEquals(result.getString(2), "twenty-four");
+            if (result.next())
+                fail("Too many records returned by query. Extra is: " + result.getInt(1) + ',' + result.getString(2));
+            result.close();
+    	} finally {
+    	    con.close();
+    	}
+    }
+
+    // With SQLJ context caching enabled, execute the same SQLJ callable statement 3 times, but roll back one of them.
+    public static void testCacheCallableStatementAndSQLJContext2(DataSource ds) throws Exception
+    {
+        Connection con = ds.getConnection();
+        try {
+	        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+	        tran.begin();
+	        try {
+	            testCacheCallableStatementInsert(con, 222, "twenty-two");
+	        } finally {
+	            tran.commit();
+	        }
+
+	        tran.begin();
+	        try {
+	            testCacheCallableStatementInsert(con, 223, "twenty-three");
+	        } finally {
+	            tran.rollback();
+	        }
+
+    	    testCacheCallableStatementInsert(con, 224, "twenty-four");
+
+            // Verify the first and last are in the database
+            SqljCtx ccsctx = new SqljCtx(con);
+
+            int min = 222;
+            int max = 224;
+        	BasicIter cursor;
+        	#sql [ccsctx] cursor = {SELECT id, name FROM sqljtest WHERE id>=:min AND id<=:max ORDER BY id ASC};
+        
+            ResultSet result = cursor.getResultSet();
+            if (!result.next())
+                fail("All records are missing");
+            assertEquals(result.getInt(1), 222);
+            assertEquals(result.getString(2), "twenty-two");
+            if (!result.next())
+                fail("Third records is missing");
+            assertEquals(result.getInt(1), 224);
+            assertEquals(result.getString(2), "twenty-four");
+            if (result.next())
+                fail("Too many records returned by query. Extra is: " + result.getInt(1) + ',' + result.getString(2));
+            result.close();
+    	} finally {
+    	    con.close();
+    	}
+    }
+
+    // This is done as a separate method so that SQLJ assigns the same section number so that the cached statement to matches
+    private static void testCacheCallableStatementInsert(Connection con, int id, String name) throws SQLException {
+        SqljCtx ccsictx = new SqljCtx(con);
+        try {
+            // The PUTNAME stored procedure gets registered using JSE JDBC in SQLJTest.setUpSQLJ()
+            #sql [ccsictx] {CALL PUTNAME(:id, :name)};
+        } finally {
+            ccsictx.close(ConnectionContext.KEEP_CONNECTION);
+        }
+    }
+
+    // Execute the same SQLJ prepared statement 3 times. The second two should reuse the statement from the cache. 
+    public static void testCachePreparedStatement(DataSource ds) throws Exception
+    {
+        int[] ids = new int[] { 25, 26, 27 };
+        String[] names = new String[] { "twenty-five", "twenty-six", "twenty-seven" };
+
+        Executor currentThreadExecutor = new Executor() {
+            public void execute(Runnable r) {
+                r.run();
+            }
+        };
+
+        Connection con = ds.getConnection();
+        try {
+        	// Use reflection to invoke this operation, since at runtime we only have Java 6 sometimes:
+        	// con.setNetworkTimeout(currentThreadExecutor, (int) TimeUnit.MINUTES.toMillis(5));
+        	con.getClass().getMethod("setNetworkTimeout", Executor.class, int.class)
+        		.invoke(con, currentThreadExecutor, (int) TimeUnit.MINUTES.toMillis(5));
+
+            for (int i = 0; i < 3; i++) {
+                int id = ids[i];
+                String name = names[i];
+                SqljCtx cpsctx1 = new SqljCtx(con);
+                try {
+                    #sql [cpsctx1] { INSERT INTO sqljtest VALUES (:id, :name) };
+                } finally {
+                    cpsctx1.close(ConnectionContext.KEEP_CONNECTION);
+                }
+            }
+
+            // Verify all 3 results are in the database
+            SqljCtx cpsctx2 = new SqljCtx(con);
+            try {
+                int min = 25;
+                int max = 27;
+            	BasicIter cursor;
+            	#sql [cpsctx2] cursor = {SELECT id, name FROM sqljtest WHERE id>=:min AND id<=:max ORDER BY id ASC};
+            
+	            ResultSet result = cursor.getResultSet();
+	            if (!result.next())
+	                fail("All records are missing");
+	            assertEquals(result.getInt(1), 25);
+	            assertEquals(result.getString(2), "twenty-five");
+	            if (!result.next())
+	                fail("Second and third records are missing");
+	            assertEquals(result.getInt(1), 26);
+	            assertEquals(result.getString(2), "twenty-six");
+	            if (!result.next())
+	                fail("Third record is missing");
+	            assertEquals(result.getInt(1), 27);
+	            assertEquals(result.getString(2), "twenty-seven");
+	            if (result.next())
+	                fail("Too many records returned by query. Extra is: " + result.getInt(1) + ',' + result.getString(2));
+	            result.close();
+	        } finally {
+	            cpsctx2.close(ConnectionContext.KEEP_CONNECTION);
+	        }
+    	} finally {
+    	    con.close();
+    	}
+    }
+
+    // With SQLJ context caching enabled, execute the same SQLJ prepared statement 3 times. The second two should reuse the statement from the cache. 
+    public static void testCachePreparedStatementAndSQLJContext(DataSource ds) throws Exception
+    {
+        int[] ids = new int[] { 125, 126, 127 };
+        String[] names = new String[] { "twenty-five", "twenty-six", "twenty-seven" };
+
+        Connection con = ds.getConnection();
+        try {
+            for (int i = 0; i < 3; i++) {
+                int id = ids[i];
+                String name = names[i];
+                SqljCtx cpsctx1 = new SqljCtx(con);
+                #sql [cpsctx1] { INSERT INTO sqljtest VALUES (:id, :name) };
+            }
+
+            // Verify all 3 results are in the database
+            SqljCtx cpsctx2 = new SqljCtx(con);
+            int min = 125;
+            int max = 127;
+        	BasicIter cursor;
+        	#sql [cpsctx2] cursor = {SELECT id, name FROM sqljtest WHERE id>=:min AND id<=:max ORDER BY id ASC};
+        
+            ResultSet result = cursor.getResultSet();
+            if (!result.next())
+                fail("All records are missing");
+            assertEquals(result.getInt(1), 125);
+            assertEquals(result.getString(2), "twenty-five");
+            if (!result.next())
+                fail("Second and third records are missing");
+            assertEquals(result.getInt(1), 126);
+            assertEquals(result.getString(2), "twenty-six");
+            if (!result.next())
+                fail("Third record is missing");
+            assertEquals(result.getInt(1), 127);
+            assertEquals(result.getString(2), "twenty-seven");
+            if (result.next())
+                fail("Too many records returned by query. Extra is: " + result.getInt(1) + ',' + result.getString(2));
+            result.close();
+    	} finally {
+    	    con.close();
+    	}
+    }
+
+    // With SQLJ context caching enabled, execute the same SQLJ prepared statement 3 times, with different transaction isolation levels. 
+    public static void testCachePreparedStatementAndSQLJContextWithIsolationLevels(DataSource ds) throws Exception
+    {
+        int[] ids = new int[] { 225, 226, 227 };
+        String[] names = new String[] { "twenty-five", "twenty-six", "twenty-seven" };
+        int[] isolationLevels = new int[] { Connection.TRANSACTION_READ_UNCOMMITTED, Connection.TRANSACTION_READ_COMMITTED, Connection.TRANSACTION_SERIALIZABLE };
+
+        Connection con = ds.getConnection();
+        try {
+            for (int i = 0; i < 3; i++) {
+                int id = ids[i];
+                String name = names[i];
+                con.setTransactionIsolation(isolationLevels[i]);
+                SqljCtx cpsctx1 = new SqljCtx(con);
+                #sql [cpsctx1] { INSERT INTO sqljtest VALUES (:id, :name) };
+                assertEquals(cpsctx1.getConnection().getTransactionIsolation(), isolationLevels[i]);
+            }
+            con.close();
+            con = ds.getConnection(); // WAS assigns new DB2 connections a default isolation level of repeatable read
+
+            // Verify all 3 results are in the database
+            SqljCtx cpsctx2 = new SqljCtx(con);
+            int min = 225;
+            int max = 227;
+        	BasicIter cursor;
+        	#sql [cpsctx2] cursor = {SELECT id, name FROM sqljtest WHERE id>=:min AND id<=:max ORDER BY id ASC};
+
+            ResultSet result = cursor.getResultSet();
+            if (!result.next())
+                fail("All records are missing");
+            assertEquals(result.getInt(1), 225);
+            assertEquals(result.getString(2), "twenty-five");
+            if (!result.next())
+                fail("Second and third records are missing");
+            assertEquals(result.getInt(1), 226);
+            assertEquals(result.getString(2), "twenty-six");
+            if (!result.next())
+                fail("Third record is missing");
+            assertEquals(result.getInt(1), 227);
+            assertEquals(result.getString(2), "twenty-seven");
+            if (result.next())
+                fail("Too many records returned by query. Extra is: " + result.getInt(1) + ',' + result.getString(2));
+            assertEquals(result.getStatement().getConnection().getTransactionIsolation(), Connection.TRANSACTION_REPEATABLE_READ);
+            result.close();
+
+        	assertEquals(cpsctx2.getConnection().getTransactionIsolation(), Connection.TRANSACTION_REPEATABLE_READ);
+    	} finally {
+    	    con.close();
+    	}
+    }
+
+    // Verify that ExecutionContext is reset when SQLJ context is cached and reused
+    public static void testResetExecutionContextWhenCachingSQLJContext(DataSource ds) throws Exception {
+        Connection con;
+        boolean batching;
+        int batchLimit;
+        int fetchDirection;
+        int fetchSize;
+        int maxFieldSize;
+        int maxRows;
+        int queryTimeout;
+
+        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        tran.begin();
+        try {
+            con = ds.getConnection();
+            SqljCtx recctx1 = new SqljCtx(con);
+            ExecutionContext execCtx = recctx1.getExecutionContext();
+
+            batching = execCtx.isBatching();
+            batchLimit = execCtx.getBatchLimit();
+            fetchDirection = execCtx.getFetchDirection();
+            fetchSize = execCtx.getFetchSize();
+            maxFieldSize = execCtx.getMaxFieldSize();
+            maxRows = execCtx.getMaxRows();
+            queryTimeout = execCtx.getQueryTimeout();
+
+            execCtx.setBatching(true);
+            execCtx.setBatchLimit(ExecutionContext.AUTO_BATCH);
+            execCtx.setFetchDirection(ResultSetIterator.FETCH_REVERSE);
+            execCtx.setFetchSize(5);
+            execCtx.setMaxFieldSize(70);
+            execCtx.setMaxRows(15);
+            execCtx.setQueryTimeout(210);
+        } finally {
+            tran.commit();
+        }
+
+        tran.begin();
+        try {
+            SqljCtx recctx2 = new SqljCtx(con);
+            ExecutionContext execCtx = recctx2.getExecutionContext();
+
+            assertEquals(execCtx.isBatching(), batching);
+            assertEquals(execCtx.getBatchLimit(), batchLimit);
+            assertEquals(execCtx.getFetchDirection(), fetchDirection);
+            assertEquals(execCtx.getFetchSize(), fetchSize);
+            assertEquals(execCtx.getMaxFieldSize(), maxFieldSize);
+            assertEquals(execCtx.getMaxRows(), maxRows);
+            assertEquals(execCtx.getQueryTimeout(), queryTimeout);
+        } finally {
+            tran.commit();
+        }
+    }
+
+    public static void testSQLJJDBCCombo1(DataSource ds) throws Exception {
+        
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        
+        // Insert some data in a global tran with SQLJ
+        utx.begin();
+        Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+	        #sql [cmctx1] {INSERT INTO sqljtest VALUES (11, 'eleven')};
+	        utx.commit();
+        } finally {
+	        con.setAutoCommit(true);
+	        cmctx1.close();
+        }
+
+        // Verify the data was inserted by selecting with SQLJ
+        utx.begin();
+        Connection con1 = ds.getConnection();
+        SqljCtx cmctx2 = new SqljCtx(con1);
+        try {
+	        BasicIter cursor1;
+	        #sql [cmctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=11};
+	        
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(11, "eleven", rs);
+	        rs.close();
+	        
+	        // Insert some data using JDBC, but with the same connection as the SQLJ context
+	        PreparedStatement ps = con1.prepareStatement("INSERT INTO sqljtest VALUES (?,?)");
+	        ps.setInt(1, 12);
+	        ps.setString(2, "twelve");
+	        ps.executeUpdate();
+	        ps.close();
+	        
+	        // Use JDBC to verify that the data inserted with SQLJ is present
+	        Statement stmt = con1.createStatement();
+	        stmt.execute("SELECT id, name FROM sqljtest WHERE id=12");
+	        rs = stmt.getResultSet();
+	        verifyRow(12, "twelve", rs);
+	        rs.close();
+	        
+	        utx.commit();
+        } finally {
+        	cmctx2.close();
+        }
+    }
+    
+    public static void testBasicCallableStatement(DataSource ds) throws Exception
+    {
+        // Insert some data using a stored procedure 
+        // then select it back with SQLJ using the same context
+        Connection con = ds.getConnection();
+        SqljCtx cmctx1 = new SqljCtx(con);
+        try {
+            // The PUTNAME stored procedure gets registered using JSE JDBC in SQLJTest.setUpSQLJ()
+            #sql [cmctx1] {CALL PUTNAME(13, 'thirteen')};
+            
+            BasicIter cursor1;
+            #sql [cmctx1] cursor1 = {SELECT id, name FROM sqljtest WHERE id=13};
+            
+            ResultSet rs = cursor1.getResultSet();
+            verifyRow(13, "thirteen", rs);
+            rs.close();
+        } finally {
+            cmctx1.close();
+        }
+    }
+    
+    public static void testIsolation_RU(DataSource ds) throws Exception 
+    {
+    	Connection con1 = ds.getConnection();
+    	Connection con2 = ds.getConnection();
+    	con1.setAutoCommit(false);
+    	con2.setAutoCommit(false);
+    	SqljCtx ctx1 = new SqljCtx(con1);
+    	SqljCtx ctx2 = new SqljCtx(con2);
+    	try {
+	    	#sql [ctx1] { INSERT INTO sqljtest VALUES (50, 'fifty') };
+	    	
+	    	assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con2.getTransactionIsolation());
+	    	
+	    	// Should not be able to read uncommitted data with RR isolation
+	        BasicIter cursor1;
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id=50 };
+	        ResultSet rs = cursor1.getResultSet();
+	        if(rs.next())
+	        	fail("Should not be able to read uncommitted data!");
+	        rs.close();
+	        
+	        // Now read uncommitted data
+	        #sql [ctx2] { SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED };
+	        assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
+	        
+	        #sql [ctx2] cursor1 = {SELECT id, name FROM sqljtest WHERE id=50};
+	        rs = cursor1.getResultSet();
+	        verifyRow(50, "fifty", rs);
+	        rs.close();
+    	} finally {
+    		con1.setAutoCommit(true);
+    		con2.setAutoCommit(true);
+    		ctx1.close();
+    		ctx2.close();
+    	}
+    }
+    
+    public static void testIsolation_RC(DataSource ds) throws Exception 
+    {
+    	Connection con1 = ds.getConnection();
+    	Connection con2 = ds.getConnection();
+    	con1.setAutoCommit(false);
+    	con2.setAutoCommit(false);
+    	SqljCtx ctx1 = new SqljCtx(con1);
+    	SqljCtx ctx2 = new SqljCtx(con2);
+    	try {
+	        #sql [ctx2] { SET TRANSACTION ISOLATION LEVEL READ COMMITTED };
+	        assertEquals(Connection.TRANSACTION_READ_COMMITTED, con2.getTransactionIsolation());
+	        
+	    	#sql [ctx1] { INSERT INTO sqljtest VALUES (51, 'fifty-one') };
+	    	#sql [ctx1] { COMMIT };
+	    	
+	    	// Read some committed data in tran 2
+	        BasicIter cursor1;
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id=51 };
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(51, "fifty-one", rs);
+	        rs.close();
+	        
+	        // Update the data in tran 1 
+	        String name = "NEW_VAL";
+	        #sql [ctx1] { UPDATE sqljtest SET name=:name WHERE id=51 };
+	        
+	    	// Attempt a dirty read and see if we get the old or new data here
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id=51 };
+	        rs = cursor1.getResultSet();
+	        verifyRow(51, "fifty-one", rs);
+	        rs.close();
+	        
+	        // Now commit the tran, and verify we can read the committed data
+	        #sql [ctx1] { COMMIT };
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id=51 };
+	        rs = cursor1.getResultSet();
+	        verifyRow(51, "NEW_VAL", rs);
+	        rs.close();
+    	} finally {
+    		con1.setAutoCommit(true);
+    		con2.setAutoCommit(true);
+    		ctx1.close();
+    		ctx2.close();
+    	}
+    }
+    
+    /**
+     * This test uses 2 threads (this thread, and a secondary thread) to produce the following ordering:
+     * [ Thread-A ] ENTER
+	 * [ Thread-A ] first SELECT completed
+	 * [ Thread-B ] ENTER
+	 * [ Thread-B ] attempting to UPDATE...
+	 * [ Thread-A ] Waiting for 3s (to give Thread-B time to reach its lock)
+	 * [ Thread-A ] Done waiting for Thread-B (it appears to be blocked, which is expected)
+	 * [ Thread-A ] second SELECT completed
+	 * [ Thread-A ] EXIT
+	 * [ Thread-B ] UPDATE is complete
+	 * [ Thread-B ] EXIT
+     */
+    public static void testIsolation_RR(final DataSource ds) throws Throwable 
+    {
+    	Future<Void> future = null;
+        System.out.println("[ Thread-A ] ENTER");
+    	Connection con2 = ds.getConnection();
+    	con2.setAutoCommit(false);
+    	SqljCtx ctx2 = new SqljCtx(con2);
+    	try {
+	        assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con2.getTransactionIsolation());
+	        
+	        #sql [ctx2] { INSERT INTO sqljtest VALUES (54, 'fifty-four') };
+	        #sql [ctx2] { COMMIT };
+	        
+	    	// Read row 54
+	        BasicIter cursor1;
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id=54 };
+	        System.out.println("[ Thread-A ] first SELECT completed");
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(54, "fifty-four", rs);
+	        rs.close();
+	        cursor1.close();
+	        
+	        // Start another thread that will attempt an UPDATE in another transaction
+	        final CountDownLatch updateStarted = new CountDownLatch(1);
+	        final CountDownLatch updateFinished = new CountDownLatch(1);
+	        ExecutorService exec = (ExecutorService) new InitialContext().lookup("java:comp/DefaultManagedExecutorService");
+	        future = exec.submit(new Callable<Void>(){
+	            @Override
+	            public Void call() throws Exception {
+                	System.out.println("[ Thread-B ] ENTER");
+                	Connection con1 = ds.getConnection();
+                	con1.setAutoCommit(false);
+                	SqljCtx ctx1 = new SqljCtx(con1);
+                	try {
+                		// Add another row of data in tran 1 with id=54
+                		updateStarted.countDown();
+                		System.out.println("[ Thread-B ] attempting to UPDATE...");
+            	        #sql [ctx1] { UPDATE sqljtest SET name='NEW_VAL' WHERE id=54 };
+            	        #sql [ctx1] { COMMIT };
+            	        System.out.println("[ Thread-B ] UPDATE is complete");
+            	        updateFinished.countDown();
+                	} finally {
+                		con1.setAutoCommit(true);
+                		ctx1.close();
+                		System.out.println("[ Thread-B ] EXIT");
+                	}
+	                return null;
+	            }
+	        });
+	        updateStarted.await(90, TimeUnit.SECONDS);
+	        
+	        // Give Thread-A time to attempt it's INSERT, expect it to block
+	        // we expect that it will block until Thread-B's tran completes
+	        System.out.println("[ Thread-A ] Waiting for 3s (to give Thread-B time to reach its lock)");
+	        if(updateFinished.await(3, TimeUnit.SECONDS))
+	        	fail("Thread-B should not have been able to UPDATE in the middle of A's transaction");
+	        else
+	        	System.out.println("[ Thread-A ] Done waiting for Thread-B (it appears to be blocked, which is expected)");
+	        
+	        // Verify we get a repeatable read of row 54
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id=54 };
+	        System.out.println("[ Thread-A ] second SELECT completed");
+	        rs = cursor1.getResultSet();
+	        verifyRow(54, "fifty-four", rs);
+	        rs.close();
+    	} finally {
+    		con2.setAutoCommit(true);
+    		ctx2.close();
+    		System.out.println("[ Thread-A ] EXIT");
+    	}
+		future.get(90, TimeUnit.SECONDS);
+    }
+    
+    /**
+     * This test uses 2 threads (this thread, and a secondary thread) to produce the following ordering:
+	 * [ Thread-A ] ENTER
+	 * [ Thread-A ] first SELECT completed
+	 * [ Thread-B ] ENTER
+	 * [ Thread-B ] attempting to INSERT...
+	 * [ Thread-A ] Waiting for 3s (to give Thread B time to reach its lock)
+	 * [ Thread-A ] Done waiting for Thread B (it appears to be blocked, which is expected)
+	 * [ Thread-A ] second SELECT completed
+	 * [ Thread-A ] EXIT
+	 * [ Thread-B ] INSERT is complete
+	 * [ Thread-B ] EXIT
+     */
+    public static void testIsolation_SER(final DataSource ds) throws Exception 
+    {
+    	Future<Void> future = null;
+        System.out.println("[ Thread-A ] ENTER");
+    	Connection con2 = ds.getConnection();
+    	con2.setAutoCommit(false);
+    	SqljCtx ctx2 = new SqljCtx(con2);
+    	try {
+	        #sql [ctx2] { SET TRANSACTION ISOLATION LEVEL SERIALIZABLE };
+	        assertEquals(Connection.TRANSACTION_SERIALIZABLE, con2.getTransactionIsolation());
+	        
+	        #sql [ctx2] { INSERT INTO sqljtest VALUES (52, 'fifty-two') };
+	        #sql [ctx2] { COMMIT };
+	        
+	    	// Read data between id 52-53 in tran 1.  Expect to get 1 row back
+	        BasicIter cursor1;
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id>=52 AND id<=53 };
+	        System.out.println("[ Thread-A ] first SELECT completed");
+	        ResultSet rs = cursor1.getResultSet();
+	        verifyRow(52, "fifty-two", rs);
+	        if(rs.next())
+	        	fail("Got too many results: id=" + rs.getInt("id") + " name=" + rs.getString("name"));
+	        rs.close();
+	        cursor1.close();
+	        
+	        // Start another thread that will attempt an INSERT in another transaction
+	        final CountDownLatch insertStarted = new CountDownLatch(1);
+	        final CountDownLatch insertFinished = new CountDownLatch(1);
+	        ExecutorService exec = (ExecutorService) new InitialContext().lookup("java:comp/DefaultManagedExecutorService");
+	        future = exec.submit(new Callable<Void>(){
+	            @Override
+	            public Void call() throws Exception {
+                	System.out.println("[ Thread-B ] ENTER");
+                	Connection con1 = ds.getConnection();
+                	con1.setAutoCommit(false);
+                	SqljCtx ctx1 = new SqljCtx(con1);
+                	try {
+                		// Add another row of data in tran 1 with id=53
+                		insertStarted.countDown();
+                		System.out.println("[ Thread-B ] attempting to INSERT...");
+            	        #sql [ctx1] { INSERT INTO sqljtest VALUES (53, 'fifty-three') };
+            	        #sql [ctx1] { COMMIT };
+            	        System.out.println("[ Thread-B ] INSERT is complete");
+            	        insertFinished.countDown();
+                	} finally {
+                		con1.setAutoCommit(true);
+                		ctx1.close();
+                		System.out.println("[ Thread-B ] EXIT");
+                	}
+	                return null;
+	            }
+	        });
+	        insertStarted.await(90, TimeUnit.SECONDS);
+	        
+	        // Give Thread-A time to attempt it's INSERT, expect it to block
+	        // we expect that it will block until Thread-B's tran completes
+	        System.out.println("[ Thread-A ] Waiting for 3s (to give Thread-B time to reach its lock)");
+	        if(insertFinished.await(3, TimeUnit.SECONDS))
+	        	fail("Thread-B should not have been able to INSERT in the middle of A's transaction");
+	        else
+	        	System.out.println("[ Thread-A ] Done waiting for Thread-B (it appears to be blocked, which is expected)");
+	        
+	        // Verify we do not get a phantom read of row id=53
+	        #sql [ctx2] cursor1 = { SELECT id, name FROM sqljtest WHERE id>=52 AND id<=53 };
+	        System.out.println("[ Thread-A ] second SELECT completed");
+	        rs = cursor1.getResultSet();
+	        verifyRow(52, "fifty-two", rs);
+	        if(rs.next())
+	        	fail("Got too many results: id=" + rs.getInt("id") + " name=" + rs.getString("name"));
+	        rs.close();
+    	} finally {
+    		con2.setAutoCommit(true);
+    		ctx2.close();
+    		System.out.println("[ Thread-A ] EXIT");
+    	}
+    	future.get(90, TimeUnit.SECONDS);
+    }
+    
+    public static void testDefaultContext(final DataSource ds) throws Exception 
+    {
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        
+    	// Should not be able to use the default context initially
+    	try {
+	    	#sql { INSERT INTO sqljtest VALUES (55, 'fifty-five') };
+	        fail("Expected an SQLException for trying to use a null default context.");
+    	} catch(SQLException expected) {}
+        
+    	final DefaultContext dctx = new DefaultContext(ds.getConnection());
+    	DefaultContext.setDefaultContext(dctx);
+    	try {
+    		utx.begin();
+    		try {
+	    		// Basic usage of default context
+		    	#sql { INSERT INTO sqljtest VALUES (55, 'fifty-five') };
+		        
+		        BasicIter cursor1;
+		        #sql cursor1 = { SELECT id, name FROM sqljtest WHERE id=55 };
+		        ResultSet rs = cursor1.getResultSet();
+		        verifyRow(55, "fifty-five", rs);
+		        rs.close();
+		        
+		    	#sql { DELETE FROM sqljtest WHERE id=55 };
+		    	utx.commit();
+    		} catch(Exception e) {
+    			utx.rollback();
+    			throw e;
+    		}
+	        
+	        assertNull("ThreadLocal default context should be null when ThreadLocalStorage is not enabled.",
+	        		   DefaultContext.getThreadLocalContext());
+	        
+	        // The default context should be available from another thread
+	        ExecutorService exec = (ExecutorService) new InitialContext().lookup("java:comp/DefaultManagedExecutorService");
+	        Future<Void> future = exec.submit(new Callable<Void>(){
+	            @Override
+	            public Void call() throws Exception {
+        	    	#sql { INSERT INTO sqljtest VALUES (56, 'fifty-six') };
+        	        
+        	        BasicIter cursor2;
+        	        #sql cursor2 = { SELECT id, name FROM sqljtest WHERE id=56 };
+        	        ResultSet rs2 = cursor2.getResultSet();
+        	        verifyRow(56, "fifty-six", rs2);
+        	        rs2.close();
+        	        
+        	    	#sql { DELETE FROM sqljtest WHERE id=56 };
+        	        
+        	        assertNull("ThreadLocal default context should be null when ThreadLocalStorage is not enabled.",
+     	        		   DefaultContext.getThreadLocalContext());
+        	        
+        	        assertEquals(dctx, DefaultContext.getDefaultContext());
+	                return null;
+	            }
+	        });
+	        future.get(90, TimeUnit.SECONDS);
+
+            // LTC will end and dissociate/clean up the handle asynchronously, which will cause trouble if it overlaps
+            // subsequent usage. A sleep here will reduce the chance of hitting this timing window.
+            Thread.sleep(1000);
+
+	        System.out.println("about to do an insert after the new thread");
+    		utx.begin();
+    		try {
+		    	#sql { INSERT INTO sqljtest VALUES (57, 'fifty-seven') };
+		        
+		        BasicIter cursor1;
+		        #sql cursor1 = { SELECT id, name FROM sqljtest WHERE id=57 };
+		        ResultSet rs = cursor1.getResultSet();
+		        verifyRow(57, "fifty-seven", rs);
+		        rs.close();
+		        
+		    	#sql { DELETE FROM sqljtest WHERE id=57 };
+    			utx.commit();
+    		} catch(Exception e) {
+    			utx.rollback();
+    			throw e;
+    		}
+	        
+	        // Now close the default context and expect an exception when we try to use it
+	        dctx.close();
+	        
+	        try {
+	        	#sql { INSERT INTO sqljtest VALUES (57, 'fifty-seven') };
+	        	fail("Expected an SQLException from trying to use a closed context.");
+	        } catch(SQLException expected) {}
+    	} finally {
+    		// Reset the default context
+    		DefaultContext.setDefaultContext(null);
+    	}
+    }
+    
+    public static void testDefaultContext_threadlocal(final DataSource ds) throws Exception 
+    {
+    	UserTransaction utx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+    	
+    	final DefaultContext dctx = new DefaultContext(ds.getConnection());
+    	DefaultContext.enableThreadLocalStorage();
+    	DefaultContext.setDefaultContext(dctx);
+    	try {
+    		utx.begin();
+    		try {
+	    		// Verify basic usage of default context when thread local storage is enabled
+		    	#sql { INSERT INTO sqljtest VALUES (58, 'fifty-eight') };
+		        
+		        BasicIter cursor1;
+		        #sql cursor1 = { SELECT id, name FROM sqljtest WHERE id=58 };
+		        ResultSet rs = cursor1.getResultSet();
+		        verifyRow(58, "fifty-eight", rs);
+		        rs.close();
+		        
+		    	#sql { DELETE FROM sqljtest WHERE id=58 };
+    			utx.commit();
+    		} catch(Exception e) {
+    			utx.rollback();
+    			throw e;
+    		}
+	        
+	        // The 'normal' and thread local contexts should be equal
+	        final DefaultContext dctx_threadlocal = DefaultContext.getThreadLocalContext().get();
+	        assertNotNull("ThreadLocal default context should not be null when ThreadLocalStorage is enabled.",
+	        		      dctx_threadlocal);
+	        assertEquals(dctx, dctx_threadlocal);
+	        
+	        ExecutorService exec = (ExecutorService) new InitialContext().lookup("java:comp/DefaultManagedExecutorService");
+	        Future<Void> future = exec.submit(new Callable<Void>(){
+	            @Override
+	            public Void call() throws Exception {
+	            	// When thread local storage is enabled, each thread has to establish their own default context
+	            	// At first, this thread will not have any default context
+	            	try {
+	        	    	#sql { INSERT INTO sqljtest VALUES (59, 'fifty-nine') };
+	        	        fail("Should not be able to use default context on a new thread when a ThreadLocal default context has not been set yet.");
+	            	} catch(SQLException expected) {}
+	            	
+	            	DefaultContext callableDefCtx = new DefaultContext(ds.getConnection());
+	            	DefaultContext.setDefaultContext(callableDefCtx);
+        	    	#sql { INSERT INTO sqljtest VALUES (59, 'fifty-nine') };
+        	        
+        	        BasicIter cursor2;
+        	        #sql cursor2 = { SELECT id, name FROM sqljtest WHERE id=59 };
+        	        ResultSet rs2 = cursor2.getResultSet();
+        	        verifyRow(59, "fifty-nine", rs2);
+        	        rs2.close();
+        	        
+        	    	#sql { DELETE FROM sqljtest WHERE id=59 };
+        	        
+        	        // Verify that the 'normal' and thread local default context are the same
+        	        assertEquals(DefaultContext.getDefaultContext(),
+        	        		     DefaultContext.getThreadLocalContext().get());
+        	        assertNotNull("ThreadLocal default context should not be null when ThreadLocalStorage is enabled.",
+     	        		   DefaultContext.getThreadLocalContext().get());
+        	        // Verify that two different threads are not using the same thread local context
+        	        assertNotSame(dctx_threadlocal, DefaultContext.getThreadLocalContext().get());
+        	        
+        	        // Close and clear the default context in case the executor uses this thread again
+        	        callableDefCtx.close();
+        	        DefaultContext.setDefaultContext(null);
+	                return null;
+	            }
+	        });
+	        future.get(90, TimeUnit.SECONDS);
+	        
+	        // After running the task, the default context for this thread should be unchanged
+	        assertEquals(dctx, DefaultContext.getThreadLocalContext().get());
+	        
+	        // Now close the default context and expect an exception
+	        dctx.close();
+	        try {
+	        	#sql { INSERT INTO sqljtest VALUES (60, 'sixty') };
+	        	fail("Expected an SQLException from trying to use a closed context.");
+	        } catch(SQLException expected) {}
+    	} finally {
+    		// Reset the default context
+    		DefaultContext.setDefaultContext(null);
+    	}
+    }
+    
+    private static void verifyRow(int expID, String expName, ResultSet rs) throws Exception {
+        if (rs.next()) {
+            assertEquals(rs.getInt("id"), expID);
+            assertEquals(rs.getString("name"), expName);
+        } else {
+            fail("Did not find a record with id=" + expID);
+        }
+    }
+}
+
+class ConnectionContextWrapper implements ConnectionContext {
+    WrappedConContext wctx;
+    ConnectionContextWrapper(Connection con) throws SQLException {
+        wctx = new WrappedConContext(con);
+    }
+
+    public void close() throws SQLException {
+        wctx.close();
+    }
+
+    public void close(boolean closeConnection) throws SQLException {
+        wctx.close(closeConnection);
+    }
+
+    public void commit() throws SQLException {
+        #sql [wctx] {COMMIT};
+    }
+
+    public ConnectedProfile getConnectedProfile(Object profile) throws SQLException {
+        return wctx.getConnectedProfile(profile);
+    }
+
+    public Connection getConnection() {
+        return wctx.getConnection();
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return wctx.getExecutionContext();
+    }
+
+    public Map<?, ?> getTypeMap() {
+        return wctx.getTypeMap();
+    }
+
+    public boolean isClosed() {
+        return wctx.isClosed();
+    }
+
+    public void rollback() throws SQLException {
+        #sql [wctx] {ROLLBACK};
+    }
+}

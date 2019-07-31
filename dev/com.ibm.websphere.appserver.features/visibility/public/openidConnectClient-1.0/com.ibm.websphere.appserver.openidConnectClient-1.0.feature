@@ -27,6 +27,7 @@ Subsystem-Name: OpenID Connect Client
   com.ibm.ws.com.google.gson.2.2.4, \
   com.ibm.ws.org.jose4j, \
   com.ibm.ws.org.json.simple.1.1.1, \
+  com.ibm.ws.webcontainer.security.provider, \
   com.ibm.websphere.appserver.api.oidc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oidc_1.0-javadoc.zip
 kind=ga

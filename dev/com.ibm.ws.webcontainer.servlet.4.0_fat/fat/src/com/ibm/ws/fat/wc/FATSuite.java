@@ -24,6 +24,7 @@ import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
+import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
@@ -61,7 +62,8 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
                 WCAddJspFileTest.class,
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
-                WCGetMappingSlashStarTest.class
+                WCGetMappingSlashStarTest.class,
+                WCServletContainerInitializerExceptionTest.class
 })
 public class FATSuite {
 

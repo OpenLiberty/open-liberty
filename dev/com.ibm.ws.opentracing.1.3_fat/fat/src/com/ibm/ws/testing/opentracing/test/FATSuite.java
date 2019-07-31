@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServerFactory;
     FATMPOpenTracing.class,
     MicroProfileNoTracer.class,
     OpentracingTCKLauncher.class,
+    OpentracingTCKLauncherMicroProfile.class,
     OpentracingRestClientTCKLauncher.class
 })
 public class FATSuite implements FATOpentracingConstants {

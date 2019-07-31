@@ -5,8 +5,6 @@
 
     <keyStore id="defaultKeyStore" password="Liberty"/>
 	
-	<logging traceSpecification="com.ibm.ws.microprofile.metrics*=all"/>
-	
     <basicRegistry>
         <user name="admin" password="adminpwd" />
         <user name="reader" password="readerpwd" />

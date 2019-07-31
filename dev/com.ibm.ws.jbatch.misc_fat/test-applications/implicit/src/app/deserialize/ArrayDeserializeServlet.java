@@ -38,7 +38,7 @@ public class ArrayDeserializeServlet extends FATServlet {
         Properties params = new Properties();
         params.put("forceFailure", "11");
 
-        new JobWaiter().completeNewJobWithRestart("ArrayCheckpointDeserialize", params, 1);
+        new JobWaiter(60000).completeNewJobWithRestart("ArrayCheckpointDeserialize", params, 1);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ArrayDeserializeServlet extends FATServlet {
         params.put("forceFailure", "11");
         params.put("userDataTest", "true");
 
-        new JobWaiter().completeNewJobWithRestart("ArrayCheckpointDeserialize", params, 1);
+        new JobWaiter(60000).completeNewJobWithRestart("ArrayCheckpointDeserialize", params, 1);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ArrayDeserializeServlet extends FATServlet {
     public void testDeserializeArrayCollectorData() throws Exception {
         logger.fine("Running test = testDeserializeArrayUserData");
 
-        new JobWaiter().completeNewJob("ArrayUserDataDeserialize", null);
+        new JobWaiter(60000).completeNewJob("ArrayUserDataDeserialize", null);
     }
 
 }

@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecord;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecords;
@@ -19,6 +21,9 @@ import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecords;
  *
  */
 public class ConsumerRecordsImpl<K, V> extends AbstractKafkaAdapter<org.apache.kafka.clients.consumer.ConsumerRecords<K, V>> implements ConsumerRecords<K, V> {
+
+    private static final String CLAZZ = ConsumerRecordsImpl.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLAZZ);
 
     /**
      * @param delegateRecords
@@ -63,6 +68,9 @@ public class ConsumerRecordsImpl<K, V> extends AbstractKafkaAdapter<org.apache.k
         @Override
         public ConsumerRecord<K, V> next() {
             org.apache.kafka.clients.consumer.ConsumerRecord<K, V> delegateNext = this.delegate.next();
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLAZZ + ".DelegateIterator", "next", "ConsumerRecord: {0}", delegateNext);
+            }
             ConsumerRecord<K, V> next = new ConsumerRecordImpl<>(delegateNext);
             return next;
         }

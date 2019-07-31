@@ -30,12 +30,19 @@ import org.eclipse.microprofile.reactive.messaging.spi.OutgoingConnectorFactory;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaProducer;
 
 @Connector("io.openliberty.kafka")
 @ApplicationScoped
 public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
+
+    private static final TraceComponent tc = Tr.register(KafkaOutgoingConnector.class);
+
+    //property from config
+    private static final String TOPIC = "topic";
 
     @Inject
     private KafkaAdapterFactory kafkaAdapterFactory;
@@ -49,7 +56,7 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
                                                                   false).collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class)));
 
         KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
-        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(config.getValue("topic", String.class), kafkaProducer);
+        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(config.getValue(TOPIC, String.class), kafkaProducer);
         this.kafkaOutputs.add(kafkaOutput);
 
         return ReactiveStreams.<Message<Object>> builder().to(kafkaOutput.getSubscriber());

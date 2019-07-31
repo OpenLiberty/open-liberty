@@ -23,7 +23,8 @@ IBM-API-Package: javax.faces; type="spec", \
  javax.faces.validator; type="spec", \
  javax.faces.view; type="spec", \
  javax.faces.view.facelets; type="spec", \
- javax.faces.webapp; type="spec"
+ javax.faces.webapp; type="spec", \
+ org.apache.myfaces.*; type="third-party"
 IBM-ShortName: jsf-2.2
 Subsystem-Name: JavaServer Faces 2.2
 -features=com.ibm.websphere.appserver.javax.cdi-1.2, \
@@ -31,6 +32,7 @@ Subsystem-Name: JavaServer Faces 2.2
  com.ibm.websphere.appserver.javax.validation-1.1, \
  com.ibm.websphere.appserver.javax.jsf-2.2, \
  com.ibm.websphere.appserver.jsp-2.3, \
+ com.ibm.websphere.appserver.jsfApiStub-2.2, \
  com.ibm.websphere.appserver.jsfProvider-2.2.0.MyFaces, \
  com.ibm.websphere.appserver.javaeeCompatible-7.0
 -bundles=com.ibm.ws.org.apache.commons.beanutils.1.8.3, \
@@ -41,6 +43,7 @@ Subsystem-Name: JavaServer Faces 2.2
  com.ibm.ws.org.apache.commons.codec.1.3, \
  com.ibm.ws.org.apache.commons.logging.1.0.3, \
  com.ibm.ws.cdi.interfaces, \
- com.ibm.ws.org.apache.commons.digester.1.8
+ com.ibm.ws.org.apache.commons.digester.1.8, \
+ com.ibm.websphere.appserver.thirdparty.jsf-2.2; location:="dev/api/third-party/"
 kind=ga
 edition=core

@@ -108,7 +108,15 @@ var table = (function() {
 
         // Action buttons
         var regenerateAriaLabel = utils.formatString(messages.REGENERATE_ARIA, [authData.authType, authData.name]);
-        var regenerateButton = "<td><input id='regenerate_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button regenerate_auth_button' value=" + messages.REGENERATE + " aria-label='" + regenerateAriaLabel + "'></td>";
+        var regenerateButton = "<td><input id='regenerate_" + authData.authID + "' type='button' authID = " + authData.authID;
+        if ((authData.authType === 'app-password' && window.globalAppPasswordsAllowed) ||
+            (authData.authType === 'app-token' && window.globalAppTokensAllowed)) {
+                regenerateButton += " class='tool_table_button regenerate_auth_button' value=" + messages.REGENERATE + " aria-label='" + regenerateAriaLabel + "'></td>";
+        } else {
+            // Disable the 'Regenerate' button if the OP was not defined with the appPasswordAllowed 
+            // or appTokenAllowed flags.
+                regenerateButton += " class='tool_table_button regenerate_auth_button' disabled value=" + messages.REGENERATE + " aria-label='" + regenerateAriaLabel + "'></td>";
+        }
         var deleteAriaLabel = utils.formatString(messages.DELETE_ARIA, [authData.authType, authData.name]);
         var deleteButton = "<td><input id='edit_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button delete_auth_button' value=" + messages.DELETE + " aria-label='" + deleteAriaLabel + "'></td>";
 
@@ -127,8 +135,8 @@ var table = (function() {
      * @param {*} authID - unique ID for this app-password or app-token
      */
     var __enableRowActions = function(authID) {
-        $(".regenerate_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".regenerate_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -143,8 +151,8 @@ var table = (function() {
             __regenerateAuthMechanism(authID, name, type, issueDate);                        
         });
 
-        $(".delete_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".delete_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -313,6 +321,8 @@ var table = (function() {
                 // Get the replaced row in the table.
                 $currentTableRow = __getTableRowByName(name, authType);
                 $currentTableRow.addClass("rowMatched");
+                // Row elements were replaced ... so reset the key traversing event handlers.
+                tableUtils.initTableKeyTraversing(tableId, $currentTableRow);
                 __enableRowActions(authData.authID);
 
                 // Row was replaced so switch out the return focus button to the

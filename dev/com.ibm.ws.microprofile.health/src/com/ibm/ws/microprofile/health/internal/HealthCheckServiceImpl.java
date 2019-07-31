@@ -55,6 +55,7 @@ public class HealthCheckServiceImpl implements HealthCheckService {
     @Reference(service = AppTracker.class)
     protected void setAppTracker(AppTracker service) {
         this.appTracker = service;
+        appTracker.setHealthCheckService(this);
     }
 
     protected void unsetAppTracker(AppTracker service) {

@@ -20,4 +20,5 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
 @SuiteClasses({
                 DefaultBindingsTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+}

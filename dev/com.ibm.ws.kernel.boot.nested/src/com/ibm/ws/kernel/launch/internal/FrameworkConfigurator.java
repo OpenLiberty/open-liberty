@@ -164,6 +164,7 @@ public class FrameworkConfigurator {
         config.put("org.apache.aries.blueprint.parser.service.ignore.unknown.namespace.handlers", "true");
 
         config.put("ds.global.extender", "true");
+        config.putIfAbsent("ds.cache.metadata", "true");
     }
 
     /**
