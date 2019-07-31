@@ -38,10 +38,6 @@ cp %{_topdir}/SOURCES/scripts/openliberty %{buildroot}/usr/libexec
 #Creating the service
 mkdir -p %{buildroot}/usr/lib/systemd/system
 cp %{_topdir}/SOURCES/scripts/openliberty@.service %{buildroot}/usr/lib/systemd/system
-
-#Moving LICENSE file to doc and license
-# mkdir -p %{buildroot}/usr/share/doc/%{name}
-# cp %{buildroot}/opt/ol/%{name}/LICENSE %{buildroot}/usr/share/doc/%{name}
 exit 0
  
 %files
@@ -80,24 +76,29 @@ if (! id openliberty > /dev/null 2>&1); then
     adduser --system --home-dir /usr/share/openliberty --no-create-home -g openliberty --shell /bin/bash openliberty  
 fi
 
+echo "Setting up the systemd openliberty service"
 if [ -x "/usr/libexec/openliberty" ] && [ -r "/usr/lib/systemd/system/openliberty@.service" ]; then
     systemctl daemon-reload
     systemctl enable openliberty@defaultServer.service
 fi
 
+echo "Moving the LICENSE file to the license directory"
+mkdir -p /usr/share/doc/openliberty
+mv /opt/ol/LICENSE /usr/share/doc/openliberty
+
 echo "Setting up defaultServer for user"
-mkdir -p /var/local/openliberty/usr/servers
-if [ ! -d "/var/local/openliberty/usr/servers/defaultServer" ]; then
-    unzip /usr/share/openliberty/defaultServer.zip -d /var/local/openliberty/usr/servers
-    printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/local/openliberty/usr/servers/defaultServer/server.env
+mkdir -p /var/lib/openliberty/usr/servers
+if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
+    unzip /usr/share/openliberty/defaultServer.zip -d /var/lib/openliberty/usr/servers
+    printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
 fi
 mkdir -p /var/run/openliberty
 mkdir -p /var/log/openliberty
 
 echo "Setting permissions to files/folders"
-chown -R openliberty:openliberty /opt/ol/openliberty/lib
-chown -R openliberty:openliberty /var/local/openliberty
-chmod -R u+w /var/local/openliberty
+chown -R openliberty:openliberty /opt/ol/lib
+chown -R openliberty:openliberty /var/lib/openliberty
+chmod -R u+w /var/lib/openliberty
 chown -R openliberty:openliberty /var/run/openliberty
 chmod -R u+w /var/run/openliberty
 chown -R openliberty:openliberty /var/log/openliberty
@@ -106,7 +107,7 @@ exit 0
 
 %postun
 echo "Removing all leftover jar files"
-if [ -d "/opt/ol/openliberty/lib" ]; then
-    rm -rf /opt/ol/openliberty/lib
+if [ -d "/opt/ol/lib" ]; then
+    rm -rf /opt/ol/lib
 fi
 exit 0

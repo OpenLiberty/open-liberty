@@ -13,23 +13,28 @@ case "$1" in
             adduser --system --home /usr/share/openliberty --no-create-home --ingroup openliberty --disabled-password --shell /bin/bash --quiet openliberty  
         fi
 
-        if [ -x "/usr/libexec/openliberty" ] && [ -r "/lib/systemd/system/openliberty@.service" ]; then
+        echo "Setting up the systemd openliberty service"
+        if [ -x "/etc/init.d/openliberty" ] && [ -r "/lib/systemd/system/openliberty@.service" ]; then
             systemctl daemon-reload
             systemctl enable openliberty@defaultServer.service
         fi
 
+        echo "Moving the LICENSE file to the license directory"
+        mkdir -p /usr/share/doc/openliberty
+        mv /opt/ol/LICENSE /usr/share/doc/openliberty
+
         echo "Setting up defaultServer for user"
-        mkdir -p /var/local/openliberty/usr/servers
-        if [ ! -d "/var/local/openliberty/usr/servers/defaultServer" ]; then
-            unzip /usr/share/openliberty/defaultServer.zip -d /var/local/openliberty/usr/servers
-            printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/local/openliberty/usr/servers/defaultServer/server.env
+        mkdir -p /var/lib/openliberty/usr/servers
+        if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
+            unzip /usr/share/openliberty/defaultServer.zip -d /var/lib/openliberty/usr/servers
+            printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
         fi
         mkdir -p /var/run/openliberty
         mkdir -p /var/log/openliberty
 
         echo "Setting permissions to files/folders"
-        chown -R openliberty:openliberty /var/local/openliberty
-        chmod -R u+w /var/local/openliberty
+        chown -R openliberty:openliberty /var/lib/openliberty
+        chmod -R u+w /var/lib/openliberty
         chown -R openliberty:openliberty /var/run/openliberty
         chmod -R u+w /var/run/openliberty
         chown -R openliberty:openliberty /var/log/openliberty

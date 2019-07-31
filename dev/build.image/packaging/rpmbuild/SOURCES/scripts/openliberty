@@ -31,7 +31,7 @@ stop() {
 
 create() {
     su - openliberty -c '$0/bin/server create $1 --template=$2' -- $iD $serverName $templateOpt
-    su - openliberty -c 'printf "\nLOG_DIR=/var/log/openliberty/$0" >> /var/local/openliberty/usr/servers/$0/server.env' -- $serverName
+    su - openliberty -c 'printf "\nLOG_DIR=/var/log/openliberty/$0" >> /var/lib/openliberty/usr/servers/$0/server.env' -- $serverName
 }
 
 case "$1" in

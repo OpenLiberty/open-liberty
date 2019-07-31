@@ -273,6 +273,23 @@ task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
     }
 }
 
+// Includes all features.
+task zipOpenLibertyAll(type: Zip) {
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    baseName 'openliberty-all'
+    from projectDir
+    include 'wlp/**'
+    exclude 'wlp/usr/servers/**'
+    destinationDir distsDir
+    version releaseVersion
+    doLast {
+        rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyAll
+
 // Includes only kind=ga features.
 task zipOpenLiberty(type: Zip) {
     dependsOn packageOpenLiberty
@@ -341,23 +358,6 @@ task zipOpenLibertyMicroProfile3(type: Zip) {
     }
 }
 publish.dependsOn zipOpenLibertyMicroProfile3
-
-// Includes all features.
-task zipOpenLibertyAll(type: Zip) {
-    dependsOn parent.subprojects.assemble
-    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-    baseName 'openliberty-all'
-    from projectDir
-    include 'wlp/**'
-    destinationDir distsDir
-    version releaseVersion
-    doLast {
-        rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
-        rootProject.storeProps()
-    }
-}
-publish.dependsOn zipOpenLibertyAll
-
 
 clean.doLast {
     file('wlp').deleteDir()
