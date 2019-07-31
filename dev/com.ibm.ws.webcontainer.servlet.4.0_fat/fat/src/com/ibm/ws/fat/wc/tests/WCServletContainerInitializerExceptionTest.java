@@ -68,7 +68,7 @@ public class WCServletContainerInitializerExceptionTest {
         // Create the SCIExceptionTest.war application
         WebArchive sciExceptionTestWar = ShrinkWrap.create(WebArchive.class, appName);
         sciExceptionTestWar.addAsLibrary(sciExceptionTestJar);
-        ShrinkHelper.exportToServer(wcServer, "dropins", sciExceptionTestWar);
+        ShrinkHelper.exportDropinAppToServer(wcServer, sciExceptionTestWar);
 
         // Start the server and use the class name so we can find logs easily.
         wcServer.startServer(WCServletContainerInitializerExceptionTest.class.getSimpleName() + ".log");
@@ -90,14 +90,15 @@ public class WCServletContainerInitializerExceptionTest {
      */
     @Test
     public void testExceptionThrowInSCIOnStartup() throws Exception {
+        // An example of the expected warning message is:
+        //
+        // [WARNING ] CWWWC0001W: The [com.ibm.ws.servlet40.exception.sci.OnStartupExceptionSCI@c054b57] ServletContainerInitializer, located in the following application
+        //      [SCIExceptionTest], produced the following error while invoking the onStartup method: [javax.servlet.ServletException: Test Exception thrown from
+        //      OnStartupExceptionSCI.onStartup
+        //              at com.ibm.ws.servlet40.exception.sci.OnStartupExceptionSCI.onStartup(OnStartupExceptionSCI.java:32)
+        //              at com.ibm.ws.webcontainer.webapp.WebApp.initializeServletContainerInitializers(WebApp.java:2502)
+        assertTrue("The expected messaged CWWWC0001W was not found in the logs.",
+                   !wcServer.waitForStringInLog("CWWWC0001W.*").isEmpty());
 
-        // Ensure that the translation key is not found in the logs.
-        assertTrue("The following translation key is still found in the logs and should not have been: "
-                   + "exception.occurred.while.running.ServletContainerInitializers.onStartup",
-                   wcServer.findStringsInLogs("exception.occurred.while.running.ServletContainerInitializers.onStartup").isEmpty());
-
-        // Ensure that the translated message is found instead with a reference to the actual exception.
-        assertTrue("The expected translated messaged CWWKF0011I was not found in the logs.",
-                   !wcServer.findStringsInLogs("CWWKF0011I").isEmpty());
     }
 }
