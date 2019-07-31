@@ -343,13 +343,16 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
      * @throws OAuth20MissingParameterException 
      */
     public void processPKCEAndUpdateAttributeList(HttpServletRequest request, OAuth20Client client, AttributeList attributeList) throws OAuth20DuplicateParameterException, OAuth20BadParameterFormatException, OAuth20MissingParameterException {
-        String methodName = "checkForPKCEAndUpdateAttributeList";
+        String methodName = "processPKCEAndUpdateAttributeList";
         _log.entering(CLASS, methodName);
         String code_challenge = null;
         String code_challenge_method = null;
         if (request != null) {
             code_challenge = request.getParameter(OAuth20Constants.CODE_CHALLENGE);
             code_challenge_method = request.getParameter(OAuth20Constants.CODE_CHALLENGE_METHOD);
+            if (code_challenge_method != null && code_challenge_method.length() > 0 && isValidCodeChallengeMethod(code_challenge_method) && code_challenge == null) {
+                throw new OAuth20MissingParameterException("security.oauth20.error.missing.parameter", "code_challenge", null);
+            }
             if ((code_challenge != null && code_challenge.length() > 0) && (code_challenge_method == null || code_challenge_method.length() == 0)) {
                 code_challenge_method = OAuth20Constants.CODE_CHALLENGE_METHOD_PLAIN;
             }
