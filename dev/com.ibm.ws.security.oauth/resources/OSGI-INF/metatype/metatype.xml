@@ -385,6 +385,9 @@
 
            <AD id="appTokenAllowed" name="%appTokenAllowed" description="%appTokenAllowed.desc" required="false" type="Boolean" default="false" />
 
+           <AD id="proofKeyForCodeExchange" name="internal" description="internal use only" required="false" type="Boolean" default="false" />
+
+           <AD id="publicClient" name="internal" description="internal use only" required="false" type="Boolean" default="false" />
 
     </OCD>
     

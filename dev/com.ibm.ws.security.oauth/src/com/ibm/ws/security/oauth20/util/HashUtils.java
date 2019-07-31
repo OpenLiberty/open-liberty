@@ -76,19 +76,20 @@ public class HashUtils {
      * generate hash code by using specified algorithm and character set.
      * If there is some error, log the error.
      */
-    public static String encodedDigest(String input, String algorithm, String charset) {
+    public static String encodedDigest(String code_verifier, String algorithm, String charset) {
         MessageDigest md;
         String output = null;
-        if (input != null && input.length() > 0) {
+        if (code_verifier != null && code_verifier.length() > 0) {
             try {
+                
                 md = MessageDigest.getInstance(algorithm);
-                md.update(input.getBytes(charset));
+                md.update(code_verifier.getBytes(charset));
                 output = convertToBase64(md.digest());
             } catch (NoSuchAlgorithmException nsae) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception instanciating MessageDigest. The algorithm is " + algorithm + nsae);
                 }
-                throw new RuntimeException("Exception instanciating MessageDigest : " + nsae);
+                throw new RuntimeException("Exception instantiating MessageDigest : " + nsae);
             } catch (UnsupportedEncodingException uee) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception converting String object : " + uee);
@@ -98,7 +99,7 @@ public class HashUtils {
         }
         return output;
     }
-    
+
     public static String convertToBase64(byte[] source) {
         return org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(source);
     }

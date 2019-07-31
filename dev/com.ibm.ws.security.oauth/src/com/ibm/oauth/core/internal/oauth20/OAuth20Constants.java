@@ -80,6 +80,8 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String CODE_CHALLENGE_METHOD_S256 = "S256";
     public static final String CODE_CHALLENGE_ALG_METHOD_SHA256 = "SHA-256";
     public static final String CODE_VERIFIER_ASCCI = "US-ASCII";
+    public static final int CODE_VERIFIER_MIN_LENGTH = 43;
+    public static final int CODE_VERIFIER_MAX_LENGTH = 128;
 
     public static final String ISSUER_IDENTIFIER = "issuerIdentifier";
     public static final String REFRESH_TOKEN_KEY = "refresh_key";
