@@ -11,6 +11,10 @@
 package com.ibm.wsspi.rest.handler.helper;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -46,6 +50,17 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
            property = { "service.vendor=IBM" })
 public class DefaultAuthorizationHelper {
 
+    /**
+     * The set of roles that is sufficient by default to do most HTTP operations.
+     */
+    private static final Set<String> REQUIRED_ROLES_DEFAULT = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[] { ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME })));
+
+    /**
+     * The set of roles that is sufficient to perform a GET operation.
+     */
+    private static final Set<String> REQUIRED_ROLES_GET = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[] { ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME,
+                                                                                                                                       ManagementSecurityConstants.READER_ROLE_NAME })));
+
     public boolean checkAdministratorRole(RESTRequest request, RESTResponse response) throws IOException {
         boolean isGetMethod = "GET".equals(request.getMethod());
 
@@ -60,6 +75,7 @@ public class DefaultAuthorizationHelper {
         if (!isAuthorized) {
             // Is not authorized, so build the error message.
             response.sendError(403, "Forbidden");
+            response.setRequiredRoles(isGetMethod ? REQUIRED_ROLES_GET : REQUIRED_ROLES_DEFAULT);
         }
 
         return isAuthorized;
