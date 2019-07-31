@@ -136,7 +136,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * container completed global transaction prior to returning to caller of method.
      */
     @Test
-    public void testRequiredAttrib() throws Exception {
+    public void testRequiredAttrib_TxAttrCompView2() throws Exception {
         assertNotNull("Remote bean, bean2, not null", bean2);
 
         boolean global = bean2.txRequired();
@@ -148,7 +148,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testRequiredAttrib for a local interface.
      */
     @Test
-    public void testRequiredAttribOnLocalInt() throws Exception {
+    public void testRequiredAttribOnLocalInt_TxAttrCompView2() throws Exception {
         assertNotNull("Local bean, bean1, not null", bean1);
 
         boolean global = bean1.txRequired();
@@ -162,7 +162,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Verify container does not complete the caller's global transaction prior to returning to caller of method.
      */
     @Test
-    public void testRequiredAttribInGlobalTrans() throws Exception {
+    public void testRequiredAttribInGlobalTrans_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -195,7 +195,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat test 3 for local interface.
      */
     @Test
-    public void testRequiredAttribInGlobalTransLocalInt() throws Exception {
+    public void testRequiredAttribInGlobalTransLocalInt_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -229,7 +229,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * container completes global transaction prior to returning to caller of method. Verify caller's global transaction is still active when container returns to caller.
      */
     @Test
-    public void testRequiresNewAttribIfClientTranExists() throws Exception {
+    public void testRequiresNewAttribIfClientTranExists_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -262,7 +262,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testRequiresNewAttribIfClientTranExists for local interface.
      */
     @Test
-    public void testRequiresNewAttribIfClientTranExistsOnLocalInt() throws Exception {
+    public void testRequiresNewAttribIfClientTranExistsOnLocalInt_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -297,7 +297,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * container completed global transaction prior to returning to caller of method.
      */
     @Test
-    public void testRequiresNewAttribOnGlobalInt() throws Exception {
+    public void testRequiresNewAttribOnGlobalInt_TxAttrCompView2() throws Exception {
         assertNotNull("Remote bean, bean2, not null", bean2);
 
         boolean global = bean2.txRequiresNew();
@@ -309,7 +309,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testRequiresNewAttribOnGlobalInt for a local interface.
      */
     @Test
-    public void testRequiresNewAttribOnLocalInt() throws Exception {
+    public void testRequiresNewAttribOnLocalInt_TxAttrCompView2() throws Exception {
         assertNotNull("Local bean, bean1, not null", bean1);
 
         boolean global = bean1.txRequiresNew();
@@ -323,7 +323,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      */
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRequiredException" })
-    public void testMandatoryAttribThrowsExcp() throws Exception {
+    public void testMandatoryAttribThrowsExcp_TxAttrCompView2() throws Exception {
         try {
             assertNotNull("Remote bean, bean2, not null", bean2);
 
@@ -339,7 +339,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      */
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRequiredException" })
-    public void testMandatoryAttribThrowsExcpOnLocalInt() throws Exception {
+    public void testMandatoryAttribThrowsExcpOnLocalInt_TxAttrCompView2() throws Exception {
         try {
             assertNotNull("Local bean, bean1, not null", bean1);
 
@@ -356,7 +356,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Verify container does not complete the caller's global transaction prior to returning to caller of method.
      */
     @Test
-    public void testMandatoryAttribInGlobalTrans() throws Exception {
+    public void testMandatoryAttribInGlobalTrans_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -389,7 +389,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testMandatoryAttribInGlobalTrans using local interface.
      */
     @Test
-    public void testMandatoryAttribInGlobalTransLocalInt() throws Exception {
+    public void testMandatoryAttribInGlobalTransLocalInt_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -423,7 +423,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * transaction.
      */
     @Test
-    public void testNever() throws Exception {
+    public void testNever_TxAttrCompView2() throws Exception {
         assertNotNull("Remote bean, bean2, not null", bean2);
 
         boolean local = bean2.txNever();
@@ -434,7 +434,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testNever using local interface.
      */
     @Test
-    public void testNeverOnLocalInt() throws Exception {
+    public void testNeverOnLocalInt_TxAttrCompView2() throws Exception {
         assertNotNull("Local bean, bean1, not null", bean1);
 
         boolean local = bean1.txNever();
@@ -449,7 +449,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      */
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSIException" })
-    public void testNeverException() throws Exception {
+    public void testNeverException_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -487,7 +487,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      */
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSIException" })
-    public void testNeverExceptionOnLocalInt() throws Exception {
+    public void testNeverExceptionOnLocalInt_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -525,7 +525,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * transaction.
      */
     @Test
-    public void testNotSupported() throws Exception {
+    public void testNotSupported_TxAttrCompView2() throws Exception {
         assertNotNull("Remote bean, bean2, not null", bean2);
 
         boolean local = bean2.txNotSupported();
@@ -536,7 +536,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testNotSupported using local interface.
      */
     @Test
-    public void testNotSupportedOnLocalInt() throws Exception {
+    public void testNotSupportedOnLocalInt_TxAttrCompView2() throws Exception {
         assertNotNull("Local bean, bean1, not null", bean1);
 
         boolean local = bean1.txNotSupported();
@@ -548,7 +548,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * transaction.
      */
     @Test
-    public void testNotSupportedGlobalTransExists() throws Exception {
+    public void testNotSupportedGlobalTransExists_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -580,7 +580,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testNotSupportedGlobalTransExists using local interface.
      */
     @Test
-    public void testNotSupportedGlobalTransExistsOnLocalInt() throws Exception {
+    public void testNotSupportedGlobalTransExistsOnLocalInt_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
         try {
@@ -612,7 +612,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * transaction.
      */
     @Test
-    public void testSupportsAttrib() throws Exception {
+    public void testSupportsAttrib_TxAttrCompView2() throws Exception {
         assertNotNull("Remote bean, bean2, not null", bean2);
 
         boolean local = bean2.txSupports();
@@ -623,7 +623,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat testSupportsAttrib using local interface.
      */
     @Test
-    public void testSupportsAttribOnLocalInt() throws Exception {
+    public void testSupportsAttribOnLocalInt_TxAttrCompView2() throws Exception {
         assertNotNull("Local bean, bean1, not null", bean1);
 
         boolean local = bean1.txSupports();
@@ -636,7 +636,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Verify container does not complete the caller's global transaction prior to returning to caller of method.
      */
     @Test
-    public void testSupportsAttribOnGlobalTrans() throws Exception {
+    public void testSupportsAttribOnGlobalTrans_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 
@@ -669,7 +669,7 @@ public class TxAttrCompView2Servlet extends FATServlet {
      * Repeat test 23 for local interface.
      */
     @Test
-    public void testSupportsAttribOnGlobalTransUsingLocalInt() throws Exception {
+    public void testSupportsAttribOnGlobalTransUsingLocalInt_TxAttrCompView2() throws Exception {
         byte[] tid = null;
         UserTransaction userTran = null;
 

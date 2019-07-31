@@ -369,7 +369,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvObjFldInjection() throws Exception {
+    public void testSFLCompEnvObjFldInjection_BasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -429,7 +429,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvPrimFldInjection() throws Exception {
+    public void testSFLCompEnvPrimFldInjection_BasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -493,7 +493,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvObjMthdInjection() throws Exception {
+    public void testSFLCompEnvObjMthdInjection_BasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -554,7 +554,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvPrimMthdInjection() throws Exception {
+    public void testSFLCompEnvPrimMthdInjection_BasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------

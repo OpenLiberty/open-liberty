@@ -70,7 +70,7 @@ public class BasicSLEJBInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLEJBFldInjection() throws Exception {
+    public void testSLEJBFldInjection_BasicSLEJBInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -98,7 +98,7 @@ public class BasicSLEJBInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLEJBMthdInjection() throws Exception {
+    public void testSLEJBMthdInjection_BasicSLEJBInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------

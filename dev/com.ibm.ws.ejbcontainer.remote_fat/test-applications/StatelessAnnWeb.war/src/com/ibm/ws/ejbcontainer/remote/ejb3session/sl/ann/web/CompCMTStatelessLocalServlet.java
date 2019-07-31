@@ -88,7 +88,7 @@ public class CompCMTStatelessLocalServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntTxAttribs() throws Exception {
+    public void testCompIntTxAttribs_CompCMTStatelessLocal() throws Exception {
         UserTransaction userTran = null;
 
         try {
@@ -137,7 +137,7 @@ public class CompCMTStatelessLocalServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntBizGetters() throws Exception {
+    public void testCompIntBizGetters_CompCMTStatelessLocal() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------

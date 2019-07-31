@@ -125,7 +125,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the cached state. <p>
      */
     @Test
-    public void testSFREnvObjFldInjection() throws Exception {
+    public void testSFREnvObjFldInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -185,7 +185,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFREnvPrimFldInjection() throws Exception {
+    public void testSFREnvPrimFldInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -249,7 +249,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does no occur from the cached state. <p>
      */
     @Test
-    public void testSFREnvObjMthdInjection() throws Exception {
+    public void testSFREnvObjMthdInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -310,7 +310,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does no occur from the cached state. <p>
      */
     @Test
-    public void testSFREnvPrimMthdInjection() throws Exception {
+    public void testSFREnvPrimMthdInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -373,7 +373,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFRCompEnvObjFldInjection() throws Exception {
+    public void testSFRCompEnvObjFldInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -434,7 +434,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFRCompEnvPrimFldInjection() throws Exception {
+    public void testSFRCompEnvPrimFldInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -499,7 +499,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFRCompEnvObjMthdInjection() throws Exception {
+    public void testSFRCompEnvObjMthdInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -562,7 +562,7 @@ public class BasicSFRemoteEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFRCompEnvPrimMthdInjection() throws Exception {
+    public void testSFRCompEnvPrimMthdInjection_BasicSFRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------

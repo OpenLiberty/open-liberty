@@ -83,7 +83,7 @@ public class EmptyCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntTxAttribs() throws Exception {
+    public void testBizIntTxAttribs_EmptyCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         try {

@@ -129,7 +129,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLREnvObjFldInjection() throws Exception {
+    public void testSLREnvObjFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -198,7 +198,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLREnvPrimFldInjection() throws Exception {
+    public void testSLREnvPrimFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -271,7 +271,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLREnvObjMthdInjection() throws Exception {
+    public void testSLREnvObjMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -341,7 +341,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLREnvPrimMthdInjection() throws Exception {
+    public void testSLREnvPrimMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -413,7 +413,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLRCompEnvObjFldInjection() throws Exception {
+    public void testSLRCompEnvObjFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -485,7 +485,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLRCompEnvPrimFldInjection() throws Exception {
+    public void testSLRCompEnvPrimFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -561,7 +561,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLRCompEnvObjMthdInjection() throws Exception {
+    public void testSLRCompEnvObjMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -634,7 +634,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLRCompEnvPrimMthdInjection() throws Exception {
+    public void testSLRCompEnvPrimMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
