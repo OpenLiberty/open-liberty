@@ -49,6 +49,9 @@ public class OAuthUtil {
      *            Map <String, String[]>
      * @return
      */
+
+    private static final java.util.List<String> sensitives = java.util.Arrays.asList(new String[] {"client_secret", "sharedKey"});
+    
     @Sensitive
     public static String getValueFromMap(String key, Map<String, String[]> m) {
         String result = null;
@@ -59,7 +62,15 @@ public class OAuthUtil {
         }
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "getValueFromMap("+key+") returns ["+result+"]");
+            if (sensitives.contains(key)) {
+              if (result != null) {
+                Tr.debug(tc, "getValueFromMap("+key+") returns [*****]");
+              } else {
+                Tr.debug(tc, "getValueFromMap("+key+") returns [null]");
+              }
+            } else {
+              Tr.debug(tc, "getValueFromMap("+key+") returns ["+result+"]");
+            }
         }
         return result;
     }
