@@ -13,6 +13,8 @@ package com.ibm.ws.jaxrs21.sse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -93,7 +95,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     @FFDCIgnore({WebApplicationException.class, IOException.class, NoSuitableMessageBodyWriterException.class})
     @Override
     public CompletionStage<?> send(OutboundSseEvent event) {
-        final CompletableFuture<?> future = new CompletableFuture<>();
+        final CompletableFuture<?> future = createCompleteableFuture();
 
         if (!closed) {
             if (writer != null) {
@@ -159,5 +161,15 @@ public class LibertySseEventSinkImpl implements SseEventSink {
         }
         future.completeExceptionally(t);
         close();
+    }
+
+    private CompletableFuture<?> createCompleteableFuture() {
+        final SecurityManager sm = System.getSecurityManager();
+        if (sm == null) {
+            return new CompletableFuture<>();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<CompletableFuture<?>>)() -> {
+            return new CompletableFuture<>();
+        });
     }
 }
