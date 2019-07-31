@@ -39,12 +39,14 @@ dependencies {
     binaries "org.apache.ant:ant:1.9.6"
 }
 task downloadOpenLibertyPrerequisites(type:Exec){
-    def authProperties = authArgs.split(",")
-    rsaKeyPath = authProperties[0]
-    scpUsername = authProperties[1]
-    workingDir "../"
-    commandLine "scp"
-    args "-i ${rsaKeyPath} ${scpUsername}@libfsfe01.hursley.ibm.com:/liberty/prereqs/ol_artifacts/wasliberty-open-liberty.zip .".split(" ")
+    if(project.hasProperty("authArgs")){
+        def authProperties = authArgs.split(",")
+        rsaKeyPath = authProperties[0]
+        scpUsername = authProperties[1]
+        workingDir "../"
+        commandLine "scp"
+        args "-i ${rsaKeyPath} ${scpUsername}@libfsfe01.hursley.ibm.com:/liberty/prereqs/ol_artifacts/wasliberty-open-liberty.zip .".split(" ")
+    }
 }
 
 task unzipOpenLiberty(type: Copy){
