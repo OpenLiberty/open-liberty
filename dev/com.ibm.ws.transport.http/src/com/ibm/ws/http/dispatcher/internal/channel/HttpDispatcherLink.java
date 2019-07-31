@@ -36,6 +36,7 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
+import com.ibm.ws.threading.RunnableWithContext;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -56,6 +57,7 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
+import com.ibm.wsspi.threading.WorkContext;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -394,10 +396,31 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * HttpDispatcherLinkWrapHandlerAndExecuteTransformDescriptor.java
      * needs to be updated.
      */
-    private void wrapHandlerAndExecute(Runnable handler) {
+    private void wrapHandlerAndExecute(final Runnable handler) {
         // wrap handler and execute
         TaskWrapper taskWrapper = new TaskWrapper(handler, this);
+        RunnableWithContext handlerWC = null;
+        if (HttpDispatcher.getInterceptorValue()) {
+            final HttpWorkContext wc = new HttpWorkContext();
+            wc.put(WorkContext.INBOUND_PORT, Integer.toString(this.request.getVirtualPort()));
+            wc.put(WorkContext.URI, this.request.getURI());
+            wc.put(WorkContext.METHOD_NAME, this.request.getMethod());
+            wc.put(WorkContext.INBOUND_HOSTNAME, this.request.getVirtualHost());
 
+            handlerWC = new RunnableWithContext() {
+
+                @Override
+                public void run() {
+                    handler.run();
+                }
+
+                @Override
+                public WorkContext getWorkContext() {
+                    return wc;
+                }
+
+            };
+        }
         WorkClassifier workClassifier = HttpDispatcher.getWorkClassifier();
         if (workClassifier != null) {
             // Obtain the Executor from the WorkClassifier
@@ -411,10 +434,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 taskWrapper.setClassifiedExecutor(classifyExecutor);
                 classifyExecutor.execute(taskWrapper);
             } else {
+                if (HttpDispatcher.getInterceptorValue() || handlerWC != null) {
+                    ExecutorService defaultExecutor = HttpDispatcher.getExecutorService();
+                    defaultExecutor.execute(handlerWC);
+                } else {
+                    taskWrapper.run();
+                }
+            }
+
+        } else {
+            if (HttpDispatcher.getInterceptorValue() || handlerWC != null) {
+                ExecutorService defaultExecutor = HttpDispatcher.getExecutorService();
+                defaultExecutor.execute(handlerWC);
+            } else {
                 taskWrapper.run();
             }
-        } else {
-            taskWrapper.run();
         }
     }
 
@@ -583,7 +617,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      *
      * @param code
      * @param failure
-     * @param         message/body
+     * @param message/body
      */
     @FFDCIgnore(IOException.class)
     private void sendResponse(StatusCodes code, String detail, Exception failure, boolean addAddress) {
@@ -651,9 +685,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     // show the host & port that were requested (potentially based on Host header)
                     // if the resource is not found, given that some translation may happen based on
                     // interjection of proxy headers, there has to be some way of showing what
-                    // ended up being requested.
-                    // Scrub the host header before returning it in the error response
-                    msg = encodeDataString(getRequestedHost()).getBytes();
+                    // ended up being requested..
+                    msg = getRequestedHost().getBytes();
                     body.write(msg);
                     body.write(port);
                     body.write(Integer.toString(getRequestedPort()).getBytes());
@@ -997,80 +1030,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         close(getVirtualConnection(), error);
-    }
-
-    /**
-     * Searches the passed in String for any characters that could be
-     * used in a cross site scripting attack (<, >, +, &, ", ', (, ), %, ;)
-     * and converts them to their browser equivalent name or code specification.
-     *
-     * This method should stay in sync with webcontainer ResponseUtils.encodeDataString()
-     *
-     * @param iString contains the String to be encoded
-     *
-     * @return an encoded String
-     */
-    private static String encodeDataString(String iString) {
-        if (iString == null)
-            return "";
-
-        int strLen = iString.length(), i;
-
-        if (strLen < 1)
-            return iString;
-
-        // convert any special chars to their browser equivalent specification
-        StringBuffer retString = new StringBuffer(strLen * 2);
-
-        for (i = 0; i < strLen; i++) {
-            switch (iString.charAt(i)) {
-                case '<':
-                    retString.append("&lt;");
-                    break;
-
-                case '>':
-                    retString.append("&gt;");
-                    break;
-
-                case '&':
-                    retString.append("&amp;");
-                    break;
-
-                case '\"':
-                    retString.append("&quot;");
-                    break;
-
-                case '+':
-                    retString.append("&#43;");
-                    break;
-
-                case '(':
-                    retString.append("&#40;");
-                    break;
-
-                case ')':
-                    retString.append("&#41;");
-                    break;
-
-                case '\'':
-                    retString.append("&#39;");
-                    break;
-
-                case '%':
-                    retString.append("&#37;");
-                    break;
-
-                case ';':
-                    retString.append("&#59;");
-                    break;
-
-                default:
-                    retString.append(iString.charAt(i));
-                    break;
-            }
-        }
-
-        return retString.toString();
     }
 
     private Exception closeStreams() { // This is seperated for Upgrade Servlet3.1 WebConnection
