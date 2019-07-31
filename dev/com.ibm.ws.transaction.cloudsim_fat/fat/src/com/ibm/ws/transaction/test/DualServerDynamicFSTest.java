@@ -25,7 +25,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode
 @RunWith(FATRunner.class)
-public class DualServerDynamicFSTest extends DualServerDynamicTestBase {
+public class DualServerDynamicFSTest extends DualServerDynamicCoreTest {
     @Server("com.ibm.ws.transaction_FSCLOUD001")
     @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer firstServer;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.TreeMap;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /*
  import org.eclipse.core.runtime.Platform;
@@ -602,6 +603,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * @return boolean success
      */
     @Override
+    @FFDCIgnore({ RecoveryFailedException.class })
     public void directInitialization(FailureScope failureScope) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "directInitialization", new Object[] { failureScope, this });
@@ -680,9 +682,51 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     // Notify the listeners we're about to make the call
                     _eventListeners.clientRecoveryInitiated(failureScope, recoveryAgent.clientIdentifier()); /* @MD19638A */
 
-                    recoveryAgent.initiateRecovery(failureScope);
+                    // HADB Peer Locking function is provided in tWAS to handle the case where a network is partitioned
+                    // and transaction recovery logs are stored in an RDBMS.This function, while not strictly required in
+                    // Liberty is included in Liberty in order to maintain compatibility and allow testing.
+                    //
+                    // HADB Peer Locking is enabled through a server.xml enableHADBPeerLocking attribute in the transaction element.
+                    boolean shouldBeRecovered = true;
+                    boolean enableHADBPeerLocking = recoveryAgent.enableHADBPeerLocking();
+                    if (enableHADBPeerLocking) {
+                        RecoveryLog customRecLog = recoveryAgent.getCustomPartnerLog(failureScope);
+                        if (customRecLog != null) {
+                            if (currentFailureScope.equals(failureScope)) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
+                                shouldBeRecovered = recoveryAgent.claimLocalHADBLogs(customRecLog);
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LOCAL RECOVERY, so start heartbeat");
+                                if (shouldBeRecovered) {
+                                    recoveryAgent.startHADBLogAvailabilityHeartbeat(customRecLog);
+                                } else {
+                                    // Cannot recover the home server, throw exception
+                                    RecoveryFailedException rfex = new RecoveryFailedException(new Exception("HADB Peer locking, local recovery failed"));
+
+                                    throw rfex;
+                                }
+
+                            } else {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
+                                shouldBeRecovered = recoveryAgent.claimPeerHADBLogs(customRecLog);
+                                if (!shouldBeRecovered) {
+                                    // Cannot recover peer server, throw exception
+                                    RecoveryFailedException rfex = new RecoveryFailedException(new Exception("HADB Peer locking, peer recovery failed"));
+
+                                    throw rfex;
+                                }
+                            }
+                        }
+                    }
+
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "now initiateRecovery if shouldBeRecovered - " + shouldBeRecovered);
+                    if (shouldBeRecovered)
+                        recoveryAgent.initiateRecovery(failureScope);
                 } catch (RecoveryFailedException exc) {
-                    FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.directInitialization", "410", this);
+
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directInitialization", exc);
                     throw exc;
@@ -1129,7 +1173,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         try {
             directInitialization(_currentFailureScope);
         } catch (RecoveryFailedException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.driveLocalRecovery", "620", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "driveLocalRecovery", exc);
             throw exc;
