@@ -356,7 +356,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
         }        
         if ((code_challenge != null && code_challenge.length() > 0) && (code_challenge_method != null && code_challenge_method.length() > 0)) {
             if (!isValidCodeChallengeMethod(code_challenge_method)) {
-                throw new OAuth20MissingParameterException("security.oauth20.pkce.error.invalid.method", code_challenge_method, null);
+                throw new OAuth20MissingParameterException("security.oauth20.pkce.invalid.method.error", code_challenge_method, null);
             }
             addParameterToAttributeList(OAuth20Constants.CODE_CHALLENGE,
                     OAuth20Constants.ATTRTYPE_PARAM_QUERY, code_challenge, attributeList);
@@ -631,10 +631,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                     String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier");
                     throw new InvalidGrantException(message, null);
                 }
-            } else {
-                String message = Tr.formatMessage(tc, "security.oauth20.pkce.invalid.method.error");
-                throw new InvalidGrantException(message, null);
-            }
+            } 
         }
 
         _log.exiting(CLASS, methodName);

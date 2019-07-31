@@ -98,7 +98,7 @@ public class OAuth20TokenRequestExceptionHandler implements
                      */
                     String error = e2.getError();
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processing exception with OAuthResult: " + error);
+                        Tr.debug(tc, "processing exception with OAuthResult: " + error + " and error message = " + e2.getMessage() + ", localized message = " + e2.getLocalizedMessage());
                     }
                     if (OAuth20Exception.INVALID_CLIENT.equals(error)) {
                         /*
@@ -126,7 +126,13 @@ public class OAuth20TokenRequestExceptionHandler implements
                         /*
                          * Set the response code - 401 Unauthorized
                          */
-                        rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        if (OAuth20Exception.INVALID_GRANT.equals(error) && ((e2.getMessage().contains("CWOAU0080E")) || (e2.getMessage().contains("CWOAU0081E")))) {
+                            
+                            rsp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        } else {
+                            rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        }
+                        
                     } else if (OAuth20Exception.INVALID_SCOPE.equals(error)) {
                         /*
                          * Set the response code - 302
