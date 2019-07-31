@@ -87,7 +87,7 @@ public class ClientSecurityTest {
         ShrinkHelper.addDirectory(jar, "test-applications/JaxWsTransportSecurityClient/resources/");
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, appName + ".ear")
-                        .add(new FileAsset(new File("lib/LibertyFATTestFiles/ear/" + appName + "/META-INF/application.xml")), "/META-INF/application.xml")
+                        .addAsManifestResource(new File("lib/LibertyFATTestFiles/Ear/" + appName + "/META-INF/application.xml"))
                         .addAsModule(jar);
 
         ShrinkHelper.exportAppToClient(client, ear);

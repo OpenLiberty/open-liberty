@@ -300,7 +300,7 @@ public class CommonApi {
         ShrinkHelper.addDirectory(jar, "test-applications/" + appResourcePath + "/resources/");
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, appName + ".ear").addAsModule(jar);
-        ear.addAsManifestResource(new File("lib/LibertyFATTestFiles/ear/" + appXMLPath + "/META-INF/application.xml"));
+        ear.addAsManifestResource(new File("lib/LibertyFATTestFiles/Ear/" + appXMLPath + "/META-INF/application.xml"));
 
         return ear;
     }
