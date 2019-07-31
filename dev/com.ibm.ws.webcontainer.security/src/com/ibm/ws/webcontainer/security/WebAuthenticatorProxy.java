@@ -68,7 +68,7 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
         if ((authResult.getStatus() == AuthResult.CONTINUE)) {
             // if target is unprotected, then check if TAI is enabled and invokeForUnprotectedURI is set as true.
             // if these conditions are met, return SUCCESS.
-            if (webRequest.isUnprotectedURI() && webRequest.isPerformTAIForUnProtectedURI()) {
+            if (webRequest.isPerformTAIForUnProtectedURI()) {
                 authResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, null, null, AuditEvent.OUTCOME_SUCCESS);
                 int statusCode = webRequest.getHttpServletResponse().getStatus();
                 Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
