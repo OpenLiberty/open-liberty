@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Odstranit",
     "DONE": "Hotovo",
     "EDIT": "Upravit",
+    "FALSE": "Ne",
     "GENERATE": "Generovat",
     "LOADING": "Načítání",
     "LOGOUT": "Odhlásit",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "Zpracování",
     "REGENERATE": "Regenerovat",
     "REGISTER": "Registrovat",
+    "TABLE_FIELD_SORT_ASC": "Tabulka je řazena podle {0} vzestupném pořadí.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabulka je řazena podle {0} sestupném pořadí.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Ano",
     "TRY_AGAIN": "Zopakujte akci...",
     "UPDATE": "Aktualizovat",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Správa osobních tokenů",
     "ACCT_MGR_DESC": "Vytvořte, odstraňte a znovu vygenerujte hesla aplikací a tokeny aplikací.",
-    "ADD_NEW_AUTHENTICATION": "Přidat nové heslo aplikace nebo token aplikace",
+    "ADD_NEW_AUTHENTICATION": "Přidejte nové heslo aplikace nebo token aplikace.",
     "NAME_IDENTIFIER": "Název: {0}",
     "ADD_NEW_TITLE": "Registrovat nové ověření",
     "NOT_GENERATED_PLACEHOLDER": "Negenerované",
+    "AUTHENTICAION_GENERATED": "Generované ověření",
+    "GENERATED_APP_PASSWORD": "Generované heslo aplikace",
+    "GENERATED_APP_TOKEN": "Generovaný token aplikace",
+    "COPY_APP_PASSWORD": "Zkopírovat heslo aplikace do schránky",
+    "COPY_APP_TOKEN": "Zkopírovat token aplikace do schránky",
     "REGENERATE_APP_PASSWORD": "Znovu generovat heslo aplikace",
     "REGENERATE_PW_WARNING": "Tato akce přepíše aktuální heslo aplikace.",
     "REGENERATE_PW_PLACEHOLDER": "Heslo dříve generované dne {0}",        // 0 - date

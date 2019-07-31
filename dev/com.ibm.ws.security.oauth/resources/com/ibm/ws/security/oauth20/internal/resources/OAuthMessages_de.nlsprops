@@ -435,6 +435,15 @@ OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: Die an den URI {0} gesendete Anforderu
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Die Client- und Providerattribute m\u00fcssen f\u00fcr den URI festgelegt sein, um Anforderungen zu verarbeiten.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Legen Sie die Client- und Providerattribute korrekt fest, damit der Provider die Anforderung verarbeiten kann.
 
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Die unter dem URI {0} verf\u00fcgbaren Funktionen setzen Java 8 oder h\u00f6her voraus. Die Anforderung wird ignoriert.
+JAVA8_REQUIRED.explanation=Die Java-Version, die momentan verwendet wird, ist nicht Java 8 oder h\u00f6her.
+JAVA8_REQUIRED.useraction=Installieren Sie Java Version 8 oder h\u00f6her.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Der OpenIdConnect-Provider {0} hat das {1}-Attribut f\u00fcr die Verwendung des Algorithmus {2} definiert. Hierf\u00fcr ist Java 8 oder h\u00f6her erforderlich. Der angegebene Provider ignoriert die folgende Einstellung: {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Die Java-Version, die momentan verwendet wird, ist nicht Java 8 oder h\u00f6her.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installieren Sie Java Version 8 oder h\u00f6her, um die genannte Konfigurationsoption zu verwenden.
+
 # html title of logout page
 LOGOUT_PAGE_TITLE=Anmelden
 # html body of logout page

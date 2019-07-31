@@ -170,9 +170,12 @@ error.unique.value.conflict=CWWKG0031E: El valor {1} especificado para el atribu
 error.unique.value.conflict.explanation=El valor del atributo especificado debe ser exclusivo, pero ya se est\u00e1 utilizando.
 error.unique.value.conflict.useraction=Cambie el valor del atributo para que sea exclusivo.
 
-warn.config.invalid.value=CWWKG0032W: Valor inesperado especificado para la propiedad [{0}], valor = [{1}]. Los valores esperados son: {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: Valor inesperado especificado para la propiedad [{0}], valor = [{1}]. Los valores esperados son: {2}. {3} 
 warn.config.invalid.value.explanation=El valor especificado para la propiedad no puede utilizarse.
 warn.config.invalid.value.useraction=Corrija el valor de la propiedad para utilizar un valor esperado.
+
+default.value.in.use=Valor predeterminado en uso: {0}.
 
 warning.pid.not.found=CWWKG0033W: El valor [{1}] especificado para el atributo reference [{0}] no se ha encontrado en la configuraci\u00f3n.
 warning.pid.not.found.explanation=El valor especificado debe ser un elemento de la configuraci\u00f3n.
@@ -292,25 +295,10 @@ error.factoryOnly=CWWKG0061E: La identidad persistente (PID) {0} no es una PID d
 error.factoryOnly.explanation=El atributo ibm:extends s\u00f3lo es aplicable a las PID de f\u00e1brica.
 error.factoryOnly.useraction=Cambie la configuraci\u00f3n para que se utilice una PID de f\u00e1brica o elimine el atributo ibm:extends de la definici\u00f3n de componente de objeto. Se trata de un error interno. Siga los procedimientos de determinaci\u00f3n de problemas de WebSphere est\u00e1ndar.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: La identidad persistente {0} no es una identidad persistente de f\u00e1brica y, por tanto, no puede tener un atributo ibm:extendsAlias de {1}. Vuelva a configurar la identidad persistente para que utilice una identidad persistente de f\u00e1brica o elimine el atributo ibm:extendsAlias de la identidad persistente.
-error.factoryOnly.extendsAlias.explanation=El atributo ibm:extendsAlias s\u00f3lo se aplica a identidades persistentes de f\u00e1brica que se extienden a otra identidad persistente de f\u00e1brica.
-error.factoryOnly.extendsAlias.useraction=Vuelva a configurar la identidad persistente para que utilice una identidad persistente de f\u00e1brica o elimine el atributo ibm:extendsAlias de la identidad persistente.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: La identidad persistente {0} no es una identidad persistente de f\u00e1brica, por lo que la identidad persistente {1} no puede ampliarla.
 error.superFactoryOnly.explanation=El atributo ibm:extends s\u00f3lo es aplicable a las PID de f\u00e1brica.
 error.superFactoryOnly.useraction=Cambie la configuraci\u00f3n para que se utilice una PID de f\u00e1brica o elimine el atributo ibm:extends de la definici\u00f3n de componente de objeto. Se trata de un error interno. Siga los procedimientos de determinaci\u00f3n de problemas de WebSphere est\u00e1ndar.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: La identidad persistente {0} especifica un atributo ibm:extendsAlias de {1} y, por lo tanto, debe especificar el atributo ibm:extends.
-error.ExtendsAliasMustExtend.explanation=Cuando especifique un atributo ibm:extendsAlias, debe especificar un atributo ibm:extends.
-error.ExtendsAliasMustExtend.useraction=Especifique un atributo ibm:extends.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: La identidad persistente {0} especifica el atributo {1} de {2} y, por lo tanto, debe especificar el atributo {3}.
-error.parentpid.and.childalias.explanation=El metatipo indica que se ha especificado parcialmente un elemento anidado hijo de primera clase. Los elementos anidados hijo de primera clase deben especificar ambos atributos: ibm:parentPid e ibm:childAlias.
-error.parentpid.and.childalias.useraction=Si este metatipo va dirigido a un elemento anidado hijo de primera clase, proporcione el atributo que falta. De lo contrario, elimine el atributo que se ha proporcionado. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: No se puede renombrar la definici\u00f3n de atributo {1} seg\u00fan lo especificado por el atributo ibm:rename {2} de la identidad persistente {0}.
@@ -446,6 +434,21 @@ warning.unrecognized.merge.behavior.useraction=Actualice la configuraci\u00f3n d
 error.missing.required.attribute.singleton=CWWKG0095E: El elemento {0} carece del atributo necesario {1}.
 error.missing.required.attribute.singleton.explanation=El atributo que falta es necesario en el archivo de configuraci\u00f3n server.xml o en uno de los archivos de configuraci\u00f3n a los que hace referencia.
 error.missing.required.attribute.singleton.useraction=A\u00f1ada el atributo al archivo de configuraci\u00f3n server.xml o en uno de los archivos de configuraci\u00f3n a los que hace referencia.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: La identidad persistente {0} no es una identidad persistente de f\u00e1brica y, por tanto, no puede tener un atributo ibm:extendsAlias de {1}. Vuelva a configurar la identidad persistente para que utilice una identidad persistente de f\u00e1brica o elimine el atributo ibm:extendsAlias de la identidad persistente.
+error.factoryOnly.extendsAlias.explanation=El atributo ibm:extendsAlias s\u00f3lo se aplica a identidades persistentes de f\u00e1brica que se extienden a otra identidad persistente de f\u00e1brica.
+error.factoryOnly.extendsAlias.useraction=Vuelva a configurar la identidad persistente para que utilice una identidad persistente de f\u00e1brica o elimine el atributo ibm:extendsAlias de la identidad persistente.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: La identidad persistente {0} especifica un atributo ibm:extendsAlias de {1} y, por lo tanto, debe especificar el atributo ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Cuando especifique un atributo ibm:extendsAlias, debe especificar un atributo ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Especifique un atributo ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: La identidad persistente {0} especifica el atributo {1} de {2} y, por lo tanto, debe especificar el atributo {3}.
+error.parentpid.and.childalias.explanation=El metatipo indica que se ha especificado parcialmente un elemento anidado hijo de primera clase. Los elementos anidados hijo de primera clase deben especificar ambos atributos: ibm:parentPid e ibm:childAlias.
+error.parentpid.and.childalias.useraction=Si este metatipo va dirigido a un elemento anidado hijo de primera clase, proporcione el atributo que falta. De lo contrario, elimine el atributo que se ha proporcionado. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: El atributo {2} ibm:extendsAlias est\u00e1 duplicado en una jerarqu\u00eda \u00fanica de ampliaciones. Los PID son {0} y {1}. Haga que cada atributo ibm:extendsAlias sea exclusivo en la jerarqu\u00eda de ampliaciones.

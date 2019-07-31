@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Ştergere",
     "DONE": "Gata",
     "EDIT": "Editare",
+    "FALSE": "Fals",
     "GENERATE": "Generare",
     "LOADING": "Încărcare",
     "LOGOUT": "Delogare",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "Procesare",
     "REGENERATE": "Regenerare",
     "REGISTER": "Înregistrare",
+    "TABLE_FIELD_SORT_ASC": "Tabelul este sortat după {0} în ordine crescătoare.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabelul este sortat după {0} în ordine descrescătoare.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Adevărat",
     "TRY_AGAIN": "Reîncercare...",
     "UPDATE": "Actualizare",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Gestionare jetoane personale",
     "ACCT_MGR_DESC": "Creaţi, ştergeţi şi regeneraţi app-password-uri şi app-token-uri .",
-    "ADD_NEW_AUTHENTICATION": "Adăugare app-password sau app-token nou",
+    "ADD_NEW_AUTHENTICATION": "Adăugaţi un app-password sau app-token nou.",
     "NAME_IDENTIFIER": "Nume: {0}",
     "ADD_NEW_TITLE": "Înregistrare autentificare nouă",
     "NOT_GENERATED_PLACEHOLDER": "Negenerat",
+    "AUTHENTICAION_GENERATED": "Autentificare generată.",
+    "GENERATED_APP_PASSWORD": "App-password generat",
+    "GENERATED_APP_TOKEN": "App-token generat",
+    "COPY_APP_PASSWORD": "Copiaţi app-password la clipboard",
+    "COPY_APP_TOKEN": "Copiaţi app-token la clipboard",
     "REGENERATE_APP_PASSWORD": "Regenerare app-password",
     "REGENERATE_PW_WARNING": "Această acţiune va suprascrie app-password curent.",
     "REGENERATE_PW_PLACEHOLDER": "Parola anterioară a fost generată pe {0}",        // 0 - date

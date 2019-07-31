@@ -385,11 +385,11 @@ OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.explanation=O parol\u0103 de aplica\u016
 OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.useraction=\u015eterge\u0163i parola de aplica\u0163ie sau jetonul de aplica\u0163ie \u00eenainte de a cere unul nou pentru aceast\u0103 aplica\u0163ie sau folosi\u0163i un alt nume de aplica\u0163ie diferit.
 
 # Do not translate user_id or tokenManager
-OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: Cererea {0} trimis\u0103 la URI {1} este invalid\u0103.  Atributul ID de utilizator este specificat, dar utilizatorul autentificat nu are permisiunea s\u0103-l foloseasc\u0103.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: Cererea {0} trimis\u0103 la URI {1} este invalid\u0103. Atributul ID de utilizator este specificat, dar utilizatorul autentificat nu are permisiunea s\u0103-l foloseasc\u0103.
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Numai utilizatorii din rolul tokenManager pot furniza atributul ID de utilizator pentru URI-ul de cerere.
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Lansa\u0163i cererea din nou cu rolul tokenManager necesar \u015fi un ID de utilizator valid.
 
-OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: Cererea {0} care a fost trimis\u0103 la URI {1} este invalid\u0103.  ID-ul de client, secretul de client sau am\u00e2ndou\u0103 lipsesc.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: Cererea {0} care a fost trimis\u0103 la URI {1} este invalid\u0103. ID-ul de client, secretul de client sau am\u00e2ndou\u0103 lipsesc.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=Cererea indicat\u0103 nu este valid\u0103. Un ID valid de client \u015fi secretul de client trebuie s\u0103 fie furnizate \u00een antetul de autorizare pentru cererea care este trimis\u0103 la URI.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Corecta\u0163i cererea. Lansa\u0163i cererea din nou cu un ID de client \u015fi secret de client \u00een antetul de autorizare.
 
@@ -400,7 +400,8 @@ OAUTH_INVALID_REQUEST_AUTHN_FAIL.useraction=Lansa\u0163i cererea din nou cu un I
 # Do not translate appPasswordAllowed
 OAUTH_UNAUTHORIZED_CLIENT=CWWKS1486E: Clientul {0} nu este autorizat s\u0103 utilizeze parole sau jetoane de aplica\u0163ie.
 OAUTH_UNAUTHORIZED_CLIENT.explanation=Clientul nu este configurat s\u0103 utilizeze parole sau jetoane de aplica\u0163ie.
-OAUTH_UNAUTHORIZED_CLIENT.useraction=Corecta\u0163i configura\u0163ia furnizorului OpenID Connect pentru clientul specificat pentru a seta valoarea atributului appPasswordAllowed la true. 
+OAUTH_UNAUTHORIZED_CLIENT.useraction=Corecta\u0163i configura\u0163ia furnizorului OpenID Connect pentru clientul specificat pentru a seta valoarea atributului appPasswordAllowed la true.
+
 # Do not translate userClientTokenLimit
 OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS=CWWKS1487E: Cererea nu este valid\u0103. Utilizatorul [{0}] a atins num\u0103rul maxim de jetoane de aplica\u0163ie sau parole de aplica\u0163ie permis.
 OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.explanation=Cererea de a crea o parol\u0103 nou\u0103 de aplica\u0163ie sau un jeton nou de aplica\u0163ie ar dep\u0103\u015fi num\u0103rul configurat de parole sau jetoane de aplica\u0163ie care sunt permise per utilizator pentru un anumit client \u015fi furnizor.
@@ -434,6 +435,15 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Asigura\u0163i-v\u0103 c\u0103 cerer
 OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: Cererea trimis\u0103 la URI {0} este ignorat\u0103 pentru c\u0103 URI-ul nu este activat. Unul sau mai multe din atributele de client sau furnizor nu sunt setate. Verifica\u0163i c\u0103 atributele de furnizor internalClientId \u015fi internalClientSecret sunt configurate. Verifica\u0163i c\u0103 atributele de client isEnabled, appPasswordAllowed sau appTokenAllowed sunt configurate.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Atributele de client \u015fi de furnizor trebuie s\u0103 fie setate pentru ca URI-ul s\u0103 proceseze cererile.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Seta\u0163i corect atributele de client \u015fi de furnizor pentru ca furnizorul s\u0103 poat\u0103 procesa cererea.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Func\u0163iile disponibile la URI {0} necesit\u0103 Java 8 sau mai nou\u0103. Cererea este ignorat\u0103.
+JAVA8_REQUIRED.explanation=Versiunea Java curent\u0103 nu este 8 sau mai nou\u0103.
+JAVA8_REQUIRED.useraction=Instala\u0163i Java versiunea 8 sau mai nou\u0103
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Furnizorul OpenIdConnect {0} are atributul {1} setat s\u0103 utilizeze algoritmul {2}, ceea ce necesit\u0103 Java 8 sau mai nou\u0103. Furnizorul specificat ignor\u0103 setarea {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Versiunea Java curent\u0103 nu este 8 sau mai nou\u0103.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Instala\u0163i Java versiunea 8 sau mai nou\u0103 pentru a folosi op\u0163iunea de configura\u0163ie men\u0163ionat\u0103.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Delogare

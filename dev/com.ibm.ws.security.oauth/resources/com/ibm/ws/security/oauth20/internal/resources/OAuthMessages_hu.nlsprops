@@ -436,6 +436,14 @@ OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: A(z) {0} URI azonos\u00edt\u00f3ra k\u
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Az \u00fcgyf\u00e9l \u00e9s szolg\u00e1ltat\u00f3 attrib\u00fatumokat be kell \u00e1ll\u00edtani az URI azonos\u00edt\u00f3hoz a k\u00e9r\u00e9sek feldolgoz\u00e1s\u00e1hoz.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=\u00c1ll\u00edtsa be helyesen az \u00fcgyf\u00e9l \u00e9s szolg\u00e1ltat\u00f3 attrib\u00fatumokat, hogy a szolg\u00e1ltat\u00f3 fel tudja dolgozni a k\u00e9r\u00e9st.
 
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: A(z) {0} URI eset\u00e9n el\u00e9rhet\u0151 funkci\u00f3k Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyelnek. A k\u00e9r\u00e9s figyelmen k\u00edv\u00fcl marad.
+JAVA8_REQUIRED.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
+JAVA8_REQUIRED.useraction=Telep\u00edtsen Java 8 vagy \u00fajabb v\u00e1ltozatot.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: A(z) {0} OpenIdConnect szolg\u00e1ltat\u00f3 {1} attrib\u00fatuma {2} algoritmus haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, ami Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel.  A megadott szolg\u00e1ltat\u00f3 figyelmen k\u00edv\u00fcl hagyja a(z) {3} be\u00e1ll\u00edt\u00e1st.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Telep\u00edtse a Java 8 vagy \u00fajabb v\u00e1ltozat\u00e1t az eml\u00edtett konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz.
 # html title of logout page
 LOGOUT_PAGE_TITLE=Kijelentkez\u00e9s
 # html body of logout page
