@@ -17,23 +17,23 @@
  * Do not fall back to Maven Central and IBM DHE when there are Artifactory outages.
  */
 repositories {
-    if(file("unzipped-open-liberty/wasliberty-open-liberty").exists(){
+    if(file("unzipped-open-liberty/wasliberty-open-liberty").exists()){
         maven{
             file("unzipped-open-liberty/wasliberty-open-liberty")
         }
     }
-//    if (isUsingArtifactory) {
-//        maven {
-//            credentials {
-//                username userProps.getProperty("artifactory.download.user")
-//                password userProps.getProperty("artifactory.download.token")
-//            }
-//            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
-//        }
-//    } else {
-//        mavenCentral()
-//        maven {
-//            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
-//        }
-//    }
+    if (isUsingArtifactory) {
+        maven {
+            credentials {
+                username userProps.getProperty("artifactory.download.user")
+                password userProps.getProperty("artifactory.download.token")
+            }
+            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+        }
+    } else {
+        mavenCentral()
+        maven {
+            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+        }
+    }
 }
