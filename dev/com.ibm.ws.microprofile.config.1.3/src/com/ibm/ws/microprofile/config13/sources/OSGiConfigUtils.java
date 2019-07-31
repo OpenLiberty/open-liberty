@@ -108,7 +108,8 @@ public class OSGiConfigUtils {
      *
      * @param bundleContext the bundle context to use to find the service
      * @return the admin service
-     * @throws InvalidFrameworkStateException
+     * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
+     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
     private static ConfigurationAdmin getConfigurationAdmin(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, ConfigurationAdmin.class);
@@ -118,8 +119,9 @@ public class OSGiConfigUtils {
      * Get the CDIService if available
      *
      * @param bundleContext the context to use to find the CDIService
-     * @return the CDIService or null
-     * @throws InvalidFrameworkStateException
+     * @return the CDIService
+     * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
+     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
     private static CDIService getCDIService(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, CDIService.class);
@@ -129,8 +131,9 @@ public class OSGiConfigUtils {
      * Get the Config Variables service if available
      *
      * @param bundleContext the context to use to find the ConfigVariables service
-     * @return the ConfigVariables service or null
-     * @throws InvalidFrameworkStateException
+     * @return the ConfigVariables service
+     * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
+     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
     private static ConfigVariables getConfigVariables(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, ConfigVariables.class);
@@ -141,23 +144,24 @@ public class OSGiConfigUtils {
      *
      * @param bundleContext The context to use to find the service
      * @param serviceClass  The class of the required service
-     * @return the service instance or null
-     * @throws InvalidFrameworkStateException
+     * @return the service instance
+     * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
+     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
     private static <T> T getService(BundleContext bundleContext, Class<T> serviceClass) throws InvalidFrameworkStateException {
-        T service = null;
-        if (FrameworkState.isValid()) {
-            ServiceReference<T> ref = bundleContext.getServiceReference(serviceClass);
-
-            if (ref != null) {
-                service = bundleContext.getService(ref);
-            }
-            if (service == null) {
-                String msg = Tr.formatMessage(tc, "service.not.found.CWMCG0204E", serviceClass.getName());
-                throw new ServiceNotFoundException(msg);
-            }
-        } else {
+        if (!FrameworkState.isValid()) {
             throw new InvalidFrameworkStateException();
+        }
+
+        ServiceReference<T> ref = bundleContext.getServiceReference(serviceClass);
+
+        T service = null;
+        if (ref != null) {
+            service = bundleContext.getService(ref);
+        }
+
+        if (service == null) {
+            throw new ServiceNotFoundException(serviceClass);
         }
         return service;
     }

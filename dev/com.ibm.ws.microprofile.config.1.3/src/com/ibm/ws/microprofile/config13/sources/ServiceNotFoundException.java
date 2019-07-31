@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config13.sources;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 /**
@@ -17,11 +19,10 @@ import com.ibm.ws.microprofile.config.interfaces.ConfigException;
  */
 public class ServiceNotFoundException extends ConfigException {
 
-    /**
-     * @param message
-     */
-    public ServiceNotFoundException(String message) {
-        super(message);
+    private static final TraceComponent tc = Tr.register(ServiceNotFoundException.class);
+
+    public ServiceNotFoundException(Class<?> serviceClass) {
+        super(Tr.formatMessage(tc, "service.not.found.CWMCG0204E", serviceClass.getName()));
     }
 
     /**  */
