@@ -69,4 +69,5 @@ instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
 	com.ibm.ws.org.apache.yoko.core.1.5;version=latest,\
 	com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.threading;version=latest

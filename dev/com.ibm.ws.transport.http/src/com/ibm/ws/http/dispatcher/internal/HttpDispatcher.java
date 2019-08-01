@@ -21,6 +21,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.annotations.Activate;
@@ -31,6 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.ras.Tr;
@@ -63,6 +65,7 @@ import com.ibm.wsspi.timer.QuickApproxTime;
 public class HttpDispatcher {
     /** trace variable */
     private static final TraceComponent tc = Tr.register(HttpDispatcher.class);
+
     /** String encoding utils service reference -- required, make lazy */
     private volatile EncodingUtils encodingSvc = null;
     /** Event service reference -- required */
@@ -73,7 +76,9 @@ public class HttpDispatcher {
     private volatile CHFWBundle chfw = null;
     /** Classification Service -- optional */
     public volatile WorkClassifier workClassifier = null;
+
     private volatile ServiceReference<HttpTransportBehavior> behaviorRef;
+
     private static volatile boolean useEE7Streams = false;
     private static volatile Boolean useIOExceptionBehavior = null;
 
@@ -107,37 +112,52 @@ public class HttpDispatcher {
 
     /** Property name for message string to override default string if the virtual host was not found" **/
     static final String PROP_VHOST_NOT_FOUND = "appOrContextRootMissingMessage";
+
     /** Property to check for in keys of properties for enabling / disabling of welcome page **/
     static final String PROP_ENABLE_WELCOME_PAGE = "enableWelcomePage";
+
     /** Property to check for in keys of properties for enabling / disabling of welcome page **/
     static final String PROP_PAD_VHOST_NOT_FOUND = "padAppOrContextRootMissingMessage";
+
     /**
      * Property that allows the user to restrict using private headers to requests
      * originating from certain hosts.
      */
     static final String PROP_TRUSTED_PRIVATE_HEADER_ORIGIN = "trustedHeaderOrigin";
+
     /**
      * WebContainer configuration for whether or not private headers should be trusted.
      *
      * @see #PROP_TRUSTED_PRIVATE_HEADER_ORIGIN
      */
     static final String PROP_WC_TRUSTED = "trusted";
+
     /**
      * Property that allows the user to restrict using private headers to requests
      * originating from certain hosts.
      */
     static final String PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN = "trustedSensitiveHeaderOrigin";
+
     /**
      * Active HttpDispatcher instance. May be null between deactivate and activate
      * calls.
      */
-    private static final StaticValue<AtomicReference<HttpDispatcher>> instance=StaticValue.createStaticValue(new Callable<AtomicReference<HttpDispatcher>>(){@Override public AtomicReference<HttpDispatcher>call()throws Exception{return new AtomicReference<HttpDispatcher>();}});
+    private static final StaticValue<AtomicReference<HttpDispatcher>> instance = StaticValue.createStaticValue(new Callable<AtomicReference<HttpDispatcher>>() {
+        @Override
+        public AtomicReference<HttpDispatcher> call() throws Exception {
+            return new AtomicReference<HttpDispatcher>();
+        }
+    });
+
     /** appOrContextRootMissingMessage custom property */
     private volatile String appOrContextRootNotFound = null;
+
     /** appOrContextRootMissingMessage custom property */
     private boolean padAppOrContextRootNotFoundMessage = true;
+
     /** Property for enabling/disabling the default welcome page */
     private volatile boolean enableWelcomePage = true;
+
     /** PM97514 - keep original value recieved from config for negotiating between dispatcher & webcontainer settings */
     private volatile String[] origHeaderOrigin = null;
     /** PM97514 - restrict using private headers to specific endpoints */
@@ -146,21 +166,26 @@ public class HttpDispatcher {
     private volatile HashSet<String> restrictPrivateHeaderOrigin = null;
     /** PM97514 - webcontainer trusted attribute */
     private volatile boolean wcTrusted = true;
+
     /** keep original value recieved from config for negotiating between dispatcher & webcontainer settings */
     private volatile String[] origSensitiveHeaderOrigin = null;
     /** restrict using private headers to specific endpoints */
     private volatile boolean useSensitivePrivateHeaders = false;
     private volatile HashSet<String> restrictSensitiveHeaderOrigin = null;
+
     /** private headers defined as sensitive */
     private static final HashSet<String> sensitiveHeaderList = new HashSet<String>(Arrays.asList("$WSCC", "$WSRA", "$WSRH", "$WSAT", "$WSRU"));
-    private static final StaticValue<AtomicInteger> updateCount=StaticValue.createStaticValue(new Callable<AtomicInteger>(){@Override public AtomicInteger call()throws Exception{return new AtomicInteger();}});;
+
+    private static final StaticValue<AtomicInteger> updateCount = StaticValue.createStaticValue(new Callable<AtomicInteger>() {
+        @Override
+        public AtomicInteger call() throws Exception {
+            return new AtomicInteger();
+        }
+    });;
 
     /**
      * Constructor.
      */
-    public HttpDispatcher() {
-    }
-
     public HttpDispatcher() {
     }
 
@@ -172,8 +197,10 @@ public class HttpDispatcher {
     @Activate
     protected void activate(Map<String, Object> properties) {
         modified(properties);
+
         // Set this as the active HttpDispatcher instance
         instance.get().set(this);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "HttpDispatcher activated, id=" + properties.get(ComponentConstants.COMPONENT_ID));
         }
@@ -189,6 +216,7 @@ public class HttpDispatcher {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "HttpDispatcher deactivated, id=" + properties.get(ComponentConstants.COMPONENT_ID) + ",reason=" + reason);
         }
+
         // Clear this as the active HttpDispatcher instance (unless another has already replaced)
         instance.get().compareAndSet(this, null);
     }
@@ -204,25 +232,32 @@ public class HttpDispatcher {
         if (null == config || config.isEmpty()) {
             return;
         }
+
         // config dictionaries are case-insensitive but case preserving per spec.
         // The default value type is String, unless a different type is indicated in metatype.
+
         setContextRootNotFoundMessage((String) config.get(PROP_VHOST_NOT_FOUND));
+
         enableWelcomePage(MetatypeUtils.parseBoolean(CONFIG_ALIAS,
                                                      PROP_ENABLE_WELCOME_PAGE,
                                                      config.get(PROP_ENABLE_WELCOME_PAGE),
                                                      true));
+
         setPadContextRootNotFoundMessage(MetatypeUtils.parseBoolean(CONFIG_ALIAS,
                                                                     PROP_PAD_VHOST_NOT_FOUND,
                                                                     config.get(PROP_PAD_VHOST_NOT_FOUND),
                                                                     false));
+
         origHeaderOrigin = MetatypeUtils.parseStringArray(CONFIG_ALIAS,
                                                           PROP_TRUSTED_PRIVATE_HEADER_ORIGIN,
                                                           config.get(PROP_TRUSTED_PRIVATE_HEADER_ORIGIN),
                                                           new String[] { "*" });
+
         origSensitiveHeaderOrigin = MetatypeUtils.parseStringArray(CONFIG_ALIAS,
                                                                    PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN,
                                                                    config.get(PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN),
                                                                    new String[] { "none" });
+
         parseTrustedPrivateHeaderOrigin(origHeaderOrigin, origSensitiveHeaderOrigin);
     }
 
@@ -230,6 +265,7 @@ public class HttpDispatcher {
         HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.enableWelcomePage;
+
         // In the absence of an Http dispatcher: don't show a welcome page. we're either on the
         // way up or (more likely) on the way down...
         return false;
@@ -247,9 +283,11 @@ public class HttpDispatcher {
     public static String getContextRootNotFoundMessage() {
         // this does not return a default string, since the caller may (and does in our case) choose to build a runtime
         // dependent string.
+
         HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.appOrContextRootNotFound;
+
         return null;
     }
 
@@ -270,13 +308,13 @@ public class HttpDispatcher {
         HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.padAppOrContextRootNotFoundMessage;
+
         // In the absence of an Http dispatcher: pad the error message if necessary
         return true;
     }
 
     /**
      * Parses the three private header config properties we have: trusted, trustedHeaderOrigin, and trustedSensitiveHeaderOrigin.
-     *
      *
      * This class uses these internal flags to keep track of private header behavior:
      * wcTrusted - true if any private headers are allowed; false if no private headers are allowed
@@ -286,18 +324,18 @@ public class HttpDispatcher {
      * restrictSensitiveHeaderOrigin - a list of hosts trusted for sensitive headers; if null, no host is trusted
      *
      * @param trustedPrivateHeaderHosts   String[] of hosts to trust for non-sensitive private headers
-     *
-     * @param trustedPrivateHeaderHosts   String[] of hosts to trust for non-sensitive private headers
      * @param trustedSensitiveHeaderHosts String[] of hosts to trust for sensitive private headers
      */
     private synchronized void parseTrustedPrivateHeaderOrigin(String[] trustedPrivateHeaderHosts, String[] trustedSensitiveHeaderHosts) {
         // bump the updated count every time we call this.
         updateCount.get().incrementAndGet();
+
         // restore defaults
         restrictPrivateHeaderOrigin = null;
         restrictSensitiveHeaderOrigin = null;
         usePrivateHeaders = true;
         useSensitivePrivateHeaders = false;
+
         // If trusted=false (non-default), don't allow private headers from any host, regardless of other settings
         if (!wcTrusted) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -306,6 +344,7 @@ public class HttpDispatcher {
             usePrivateHeaders = false;
             return;
         }
+
         // Parse trustedHeaderOrigin.  The default value is * (any host)
         List<String> addrs = new ArrayList<String>();
         if (trustedPrivateHeaderHosts != null && trustedPrivateHeaderHosts.length > 0) {
@@ -350,6 +389,7 @@ public class HttpDispatcher {
             }
         }
         addrs.clear();
+
         // Parse trustedSensiveHeaderOrigin.  The default value is none (no hosts trusted)
         if (trustedSensitiveHeaderHosts != null && trustedSensitiveHeaderHosts.length > 0) {
             for (String ipaddr : trustedSensitiveHeaderHosts) {
@@ -406,9 +446,11 @@ public class HttpDispatcher {
      */
     public static boolean usePrivateHeaders(String hostAddr, String headerName) {
         HttpDispatcher f = instance.get().get();
+
         if (f != null) {
             return f.isTrusted(hostAddr, headerName);
         }
+
         // we don't know, use the default.
         if (headerName != null && HttpHeaderKeys.isSensitivePrivateHeader(headerName)) {
             return false;
@@ -422,9 +464,6 @@ public class HttpDispatcher {
      *
      * This takes into account the hosts defined in trustedHeaderOrigin and trustedSensitiveHeaderOrigin. Note,
      * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none"
-     *
-     * This takes into account the hosts defined in trustedHeaderOrigin and trustedSensitiveHeaderOrigin. Note,
-     * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none"
      * while trustedSensitiveHeaderOrigin="*", non-sensitive headers will still be trusted for all hosts.
      *
      * @param hostAddr The source host address
@@ -435,7 +474,6 @@ public class HttpDispatcher {
             return false;
         }
         if (hostAddr == null) {
-            // no host address information passed in; return the default value
             // no host address information passed in; return the default value
             return this.usePrivateHeaders;
         }
@@ -525,8 +563,10 @@ public class HttpDispatcher {
         if (f != null) {
             svc = f.encodingSvc;
         }
+
         if (svc == null)
             svc = new EncodingUtilsImpl();
+
         return svc;
     }
 
@@ -559,6 +599,7 @@ public class HttpDispatcher {
         HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.eventSvc;
+
         return null;
     }
 
@@ -600,6 +641,7 @@ public class HttpDispatcher {
             }
             return f.executorService;
         }
+
     }
 
     /**
@@ -663,6 +705,7 @@ public class HttpDispatcher {
         HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.chfw;
+
         return null;
     }
 
@@ -711,7 +754,6 @@ public class HttpDispatcher {
                                                         ref.getProperty(PROP_WC_TRUSTED), true);
 
         if (newTrusted != wcTrusted) {
-        if (newTrusted != wcTrusted) {
             wcTrusted = newTrusted;
 
             // Check the value of trusted headers..
@@ -719,9 +761,6 @@ public class HttpDispatcher {
             // increment updateCount so listeners know the config has updated
             updateCount.get().getAndIncrement();
         }
-    }
-
-    protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {
     }
 
     protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {
@@ -757,6 +796,7 @@ public class HttpDispatcher {
         HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.workClassifier;
+
         return null;
     }
 
