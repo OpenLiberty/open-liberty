@@ -14,9 +14,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -34,7 +33,7 @@ public class Batcher<T> {
     private final int maxBatchSize;
     private final Duration maxBatchTime;
     private final ProcessBatchAction<T> processBatchAction;
-    private final ManagedScheduledExecutorService executor;
+    private final ScheduledExecutorService executor;
 
     private boolean closed;
 
@@ -48,7 +47,7 @@ public class Batcher<T> {
     private Batcher(int maxBatchSize,
                     Duration maxBatchTime,
                     ProcessBatchAction<T> processBatchAction,
-                    ManagedScheduledExecutorService executor) {
+                    ScheduledExecutorService executor) {
         this.maxBatchSize = maxBatchSize;
         this.maxBatchTime = maxBatchTime;
         this.processBatchAction = processBatchAction;
@@ -124,7 +123,7 @@ public class Batcher<T> {
         private int maxBatchSize = -1;
         private Duration maxBatchTime;
         private ProcessBatchAction<T> processBatchAction;
-        private ManagedScheduledExecutorService executor;
+        private ScheduledExecutorService executor;
 
         private BatcherBuilder() {
             // No public constructor, use Batcher.create()
@@ -145,7 +144,7 @@ public class Batcher<T> {
             return this;
         }
 
-        public BatcherBuilder<T> withExecutor(ManagedScheduledExecutorService executor) {
+        public BatcherBuilder<T> withExecutor(ScheduledExecutorService executor) {
             this.executor = executor;
             return this;
         }
