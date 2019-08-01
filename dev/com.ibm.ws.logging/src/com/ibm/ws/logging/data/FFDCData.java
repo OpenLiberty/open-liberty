@@ -284,67 +284,67 @@ public class FFDCData extends GenericData {
         return NAMES1_1[12];
     }
 
-    public String getDatetimeKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(0);
+    public static String getDatetimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[0];
     }
 
-    public String getDateOfFirstOccurenceKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(1);
+    public static String getDateOfFirstOccurenceKeyJSON() {
+        return jsonLoggingNameAliases.aliases[1];
     }
 
-    public String getCountKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(2);
+    public static String getCountKeyJSON() {
+        return jsonLoggingNameAliases.aliases[2];
     }
 
-    public String getMessageKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(3);
+    public static String getMessageKeyJSON() {
+        return jsonLoggingNameAliases.aliases[3];
     }
 
-    public String getClassNameKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(4);
+    public static String getClassNameKeyJSON() {
+        return jsonLoggingNameAliases.aliases[4];
     }
 
-    public String getLabelKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(5);
+    public static String getLabelKeyJSON() {
+        return jsonLoggingNameAliases.aliases[5];
     }
 
-    public String getExceptionNameKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(6);
+    public static String getExceptionNameKeyJSON() {
+        return jsonLoggingNameAliases.aliases[6];
     }
 
-    public String getProbeIdKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(7);
+    public static String getProbeIdKeyJSON() {
+        return jsonLoggingNameAliases.aliases[7];
     }
 
-    public String getSourceIdKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(8);
+    public static String getSourceIdKeyJSON() {
+        return jsonLoggingNameAliases.aliases[8];
     }
 
-    public String getThreadIdKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(9);
+    public static String getThreadIdKeyJSON() {
+        return jsonLoggingNameAliases.aliases[9];
     }
 
-    public String getStacktraceKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(10);
+    public static String getStacktraceKeyJSON() {
+        return jsonLoggingNameAliases.aliases[10];
     }
 
-    public String getObjectDetailsKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(11);
+    public static String getObjectDetailsKeyJSON() {
+        return jsonLoggingNameAliases.aliases[11];
     }
 
-    public String getSequenceKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(12);
+    public static String getSequenceKeyJSON() {
+        return jsonLoggingNameAliases.aliases[12];
     }
 
-    public String getHostJSON() {
-        return jsonLoggingNameAliases.getAlias(13);
+    public static String getHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[13];
     }
 
-    public String getUserDirJSON() {
-        return jsonLoggingNameAliases.getAlias(14);
+    public static String getUserDirKeyJSON() {
+        return jsonLoggingNameAliases.aliases[14];
     }
 
-    public String getServerNameJSON() {
-        return jsonLoggingNameAliases.getAlias(15);
+    public static String getServerNameKeyJSON() {
+        return jsonLoggingNameAliases.aliases[15];
     }
 }

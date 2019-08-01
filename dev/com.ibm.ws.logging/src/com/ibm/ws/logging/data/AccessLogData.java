@@ -301,72 +301,72 @@ public class AccessLogData extends GenericData {
         return NAMES1_1[13];
     }
 
-    public String getRequestStartTimeKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(0);
+    public static String getRequestStartTimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[0];
     }
 
-    public String getUriPathKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(1);
+    public static String getUriPathKeyJSON() {
+        return jsonLoggingNameAliases.aliases[1];
     }
 
-    public String getRequestMethodKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(2);
+    public static String getRequestMethodKeyJSON() {
+        return jsonLoggingNameAliases.aliases[2];
     }
 
-    public String getQueryStringKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(3);
+    public static String getQueryStringKeyJSON() {
+        return jsonLoggingNameAliases.aliases[3];
     }
 
-    public String getRequestHostKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(4);
+    public static String getRequestHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[4];
     }
 
-    public String getRequestPortKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(5);
+    public static String getRequestPortKeyJSON() {
+        return jsonLoggingNameAliases.aliases[5];
     }
 
-    public String getRemoteHostKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(6);
+    public static String getRemoteHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[6];
     }
 
-    public String getUserAgentKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(7);
+    public static String getUserAgentKeyJSON() {
+        return jsonLoggingNameAliases.aliases[7];
     }
 
-    public String getRequestProtocolKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(8);
+    public static String getRequestProtocolKeyJSON() {
+        return jsonLoggingNameAliases.aliases[8];
     }
 
-    public String getBytesReceivedKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(9);
+    public static String getBytesReceivedKeyJSON() {
+        return jsonLoggingNameAliases.aliases[9];
     }
 
-    public String getResponseCodeKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(10);
+    public static String getResponseCodeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[10];
     }
 
-    public String getElapsedTimeKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(11);
+    public static String getElapsedTimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[11];
     }
 
-    public String getDatetimeKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(12);
+    public static String getDatetimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[12];
     }
 
-    public String getSequenceKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(13);
+    public static String getSequenceKeyJSON() {
+        return jsonLoggingNameAliases.aliases[13];
     }
 
-    public String getHostJSON() {
-        return jsonLoggingNameAliases.getAlias(14);
+    public static String getHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[14];
     }
 
-    public String getUserDirJSON() {
-        return jsonLoggingNameAliases.getAlias(15);
+    public static String getUserDirKeyJSON() {
+        return jsonLoggingNameAliases.aliases[15];
     }
 
-    public String getServerNameJSON() {
-        return jsonLoggingNameAliases.getAlias(16);
+    public static String getServerNameKeyJSON() {
+        return jsonLoggingNameAliases.aliases[16];
     }
 
 }

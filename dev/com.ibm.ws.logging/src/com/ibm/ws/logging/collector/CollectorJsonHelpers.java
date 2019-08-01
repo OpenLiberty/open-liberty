@@ -220,60 +220,55 @@ public class CollectorJsonHelpers {
     }
 
     private static void addUnchangingFieldsJSON_Message(StringBuilder sb, String hostName, String wlpUserDir, String serverName, boolean isMessageEvent) {
-        LogTraceData logtracedata = new LogTraceData();
         if (unchangingFieldsJson_Message == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, logtracedata.getHostJSON(isMessageEvent), hostName, false, false, false, false);
-            addToJSON(temp, logtracedata.getUserDirJSON(isMessageEvent), wlpUserDir, false, true, false, false);
-            addToJSON(temp, logtracedata.getServerNameJSON(isMessageEvent), serverName, false, false, false, false);
+            addToJSON(temp, LogTraceData.getHostKeyJSON(isMessageEvent), hostName, false, false, false, false);
+            addToJSON(temp, LogTraceData.getUserDirKeyJSON(isMessageEvent), wlpUserDir, false, true, false, false);
+            addToJSON(temp, LogTraceData.getServerNameKeyJSON(isMessageEvent), serverName, false, false, false, false);
             unchangingFieldsJson_Message = temp.toString();
         }
         sb.append(unchangingFieldsJson_Message);
     }
 
     private static void addUnchangingFieldsJSON_Trace(StringBuilder sb, String hostName, String wlpUserDir, String serverName, boolean isMessageEvent) {
-        LogTraceData logtracedata = new LogTraceData();
         if (unchangingFieldsJson_Trace == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, logtracedata.getHostJSON(isMessageEvent), hostName, false, false, false, false);
-            addToJSON(temp, logtracedata.getUserDirJSON(isMessageEvent), wlpUserDir, false, true, false, false);
-            addToJSON(temp, logtracedata.getServerNameJSON(isMessageEvent), serverName, false, false, false, false);
+            addToJSON(temp, LogTraceData.getHostKeyJSON(isMessageEvent), hostName, false, false, false, false);
+            addToJSON(temp, LogTraceData.getUserDirKeyJSON(isMessageEvent), wlpUserDir, false, true, false, false);
+            addToJSON(temp, LogTraceData.getServerNameKeyJSON(isMessageEvent), serverName, false, false, false, false);
             unchangingFieldsJson_Trace = temp.toString();
         }
         sb.append(unchangingFieldsJson_Trace);
     }
 
     private static void addUnchangingFieldsJSON_AccessLog(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
-        AccessLogData accesslogdata = new AccessLogData();
         if (unchangingFieldsJson_AccessLog == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, accesslogdata.getHostJSON(), hostName, false, false, false, false);
-            addToJSON(temp, accesslogdata.getUserDirJSON(), wlpUserDir, false, true, false, false);
-            addToJSON(temp, accesslogdata.getServerNameJSON(), serverName, false, false, false, false);
+            addToJSON(temp, AccessLogData.getHostKeyJSON(), hostName, false, false, false, false);
+            addToJSON(temp, AccessLogData.getUserDirKeyJSON(), wlpUserDir, false, true, false, false);
+            addToJSON(temp, AccessLogData.getServerNameKeyJSON(), serverName, false, false, false, false);
             unchangingFieldsJson_AccessLog = temp.toString();
         }
         sb.append(unchangingFieldsJson_AccessLog);
     }
 
     private static void addUnchangingFieldsJSON_FFDC(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
-        FFDCData ffdcdata = new FFDCData();
         if (unchangingFieldsJson_FFDC == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, ffdcdata.getHostJSON(), hostName, false, false, false, false);
-            addToJSON(temp, ffdcdata.getUserDirJSON(), wlpUserDir, false, true, false, false);
-            addToJSON(temp, ffdcdata.getServerNameJSON(), serverName, false, false, false, false);
+            addToJSON(temp, FFDCData.getHostKeyJSON(), hostName, false, false, false, false);
+            addToJSON(temp, FFDCData.getUserDirKeyJSON(), wlpUserDir, false, true, false, false);
+            addToJSON(temp, FFDCData.getServerNameKeyJSON(), serverName, false, false, false, false);
             unchangingFieldsJson_FFDC = temp.toString();
         }
         sb.append(unchangingFieldsJson_FFDC);
     }
 
     private static void addUnchangingFieldsJSON_Audit(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
-        AuditData auditData = new AuditData();
         if (unchangingFieldsJson_Audit == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, auditData.getHostJSON(), hostName, false, false, false, false);
-            addToJSON(temp, auditData.getUserDirJSON(), wlpUserDir, false, true, false, false);
-            addToJSON(temp, auditData.getServerNameJSON(), serverName, false, false, false, false);
+            addToJSON(temp, AuditData.getHostKeyJSON(), hostName, false, false, false, false);
+            addToJSON(temp, AuditData.getUserDirKeyJSON(), wlpUserDir, false, true, false, false);
+            addToJSON(temp, AuditData.getServerNameKeyJSON(), serverName, false, false, false, false);
             unchangingFieldsJson_Audit = temp.toString();
         }
         sb.append(unchangingFieldsJson_Audit);

@@ -15,7 +15,7 @@ import java.util.Map;
 public class NameAliases {
 
     private final String[] originalNames;
-    private volatile String[] aliases;
+    public volatile String[] aliases;
 
     public NameAliases(String[] originalNames) {
         this.originalNames = originalNames;
@@ -33,7 +33,4 @@ public class NameAliases {
         aliases = tempAliases;
     }
 
-    public String getAlias(int index) {
-        return aliases[index];
-    }
 }

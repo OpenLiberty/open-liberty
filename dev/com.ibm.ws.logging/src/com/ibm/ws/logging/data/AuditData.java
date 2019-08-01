@@ -46,34 +46,6 @@ public class AuditData extends GenericData {
         super(14);
     }
 
-    private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
-    }
-
-    private void setPair(int index, int i) {
-        setPair(index, NAMES1_1[index], i);
-    }
-
-    private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
-    }
-//
-//    public void setDatetime(long l) {
-//        setPair(12, l);
-//    }
-//
-//    public void setSequence(String s) {
-//        setPair(13, s);
-//    }
-//
-//    public long getDatetime() {
-//        return getLongValue(12);
-//    }
-//
-//    public String getSequence() {
-//        return getStringValue(13);
-//    }
-
     public String getDatetimeKey() {
         return NAMES[0];
     }
@@ -122,28 +94,28 @@ public class AuditData extends GenericData {
         return NAMES1_1[5];
     }
 
-    public String getDatetimeKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(0);
+    public static String getDatetimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[0];
     }
 
-    public String getSequenceKeyJSON() {
-        return jsonLoggingNameAliases.getAlias(1);
+    public static String getSequenceKeyJSON() {
+        return jsonLoggingNameAliases.aliases[1];
     }
 
-    public String getThreadIDJSON() {
-        return jsonLoggingNameAliases.getAlias(2);
+    public static String getThreadIDKeyJSON() {
+        return jsonLoggingNameAliases.aliases[2];
     }
 
-    public String getHostJSON() {
-        return jsonLoggingNameAliases.getAlias(3);
+    public static String getHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[3];
     }
 
-    public String getUserDirJSON() {
-        return jsonLoggingNameAliases.getAlias(4);
+    public static String getUserDirKeyJSON() {
+        return jsonLoggingNameAliases.aliases[4];
     }
 
-    public String getServerNameJSON() {
-        return jsonLoggingNameAliases.getAlias(5);
+    public static String getServerNameKeyJSON() {
+        return jsonLoggingNameAliases.aliases[5];
     }
 
 }
