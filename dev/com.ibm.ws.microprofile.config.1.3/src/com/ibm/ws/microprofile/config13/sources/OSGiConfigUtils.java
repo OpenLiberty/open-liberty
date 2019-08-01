@@ -32,7 +32,6 @@ import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
-import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.Application;
@@ -58,8 +57,10 @@ public class OSGiConfigUtils {
      * Get the j2ee name of the application. If the ComponentMetaData is available on the thread then that can be used, otherwise fallback
      * to asking the CDIService for the name ... the CDI context ID is the same as the j2ee name.
      *
+     * If CDI is not enabled then the CDIService will not be available and this method may return null
+     *
      * @param bundleContext The bundle context to use when looking up the CDIService
-     * @return the application name
+     * @return the application name or null
      */
     static String getApplicationName(BundleContext bundleContext) {
         String applicationName = null;
@@ -68,18 +69,15 @@ public class OSGiConfigUtils {
 
             if (cmd == null) {
                 //if the component metadata is null then we're probably running in the CDI startup sequence so try asking CDI for the application
+                //CDI may not be enabled
                 applicationName = getCDIAppName(bundleContext);
             } else {
                 applicationName = cmd.getJ2EEName().getApplication();
-            }
-
-            if (applicationName == null) {
-                if (cmd == null) {
-                    throw new ConfigStartException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
-                } else {
+                if (applicationName == null) {
                     throw new ConfigException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
                 }
             }
+
         }
         return applicationName;
 
@@ -224,10 +222,12 @@ public class OSGiConfigUtils {
     /**
      * Get the current application name using the CDIService. During CDI startup, the CDIService knows which application it is currently working with so we can ask it!
      *
+     * CDI may not be enabled, in which case the service will not be found and this method will just return null.
+     *
      * @param bundleContext the context to use to find the CDIService
-     * @return The application name
+     * @return The application name or null
      */
-    @FFDCIgnore(InvalidFrameworkStateException.class)
+    @FFDCIgnore({ InvalidFrameworkStateException.class, ServiceNotFoundException.class })
     private static String getCDIAppName(BundleContext bundleContext) {
         String appName = null;
         if (FrameworkState.isValid()) {
@@ -237,6 +237,8 @@ public class OSGiConfigUtils {
                 appName = cdiService.getCurrentApplicationContextID();
             } catch (InvalidFrameworkStateException e) {
                 //ignore ... server is shutting down
+            } catch (ServiceNotFoundException e) {
+                //ignore ... CDI feature may not be enabled
             }
         }
         return appName;
