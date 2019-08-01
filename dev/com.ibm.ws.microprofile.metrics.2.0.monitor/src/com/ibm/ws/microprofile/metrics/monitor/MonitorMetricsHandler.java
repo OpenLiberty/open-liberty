@@ -130,7 +130,7 @@ public class MonitorMetricsHandler {
 				mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
 				if (sName.contains("ThreadPoolStats")) {
 					int maxTimeOut = 0;
-					while (mBeanObjectInstanceSet.isEmpty() || maxTimeOut <= 5000) {
+					while (mBeanObjectInstanceSet.isEmpty() && maxTimeOut <= 5000) {
 						Thread.sleep(50);
 						mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
 						maxTimeOut+=50;
