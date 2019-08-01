@@ -24,6 +24,7 @@ import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,6 +57,12 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
         ShrinkHelper.exportToServer(server, "/", jar);
 
+        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValidationJMSAdapter.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("org.test.validator.adapter")
+                                        .addPackage("org.test.validator.jmsadapter"));
+        ShrinkHelper.exportToServer(server, "dropins", rar);
+
         server.startServer();
 
         // Wait for the API to become available
@@ -65,6 +72,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         messages.add("CWPKI0803A"); // CWPKI0803A: SSL certificate created in # seconds. SSL key file: ...
         messages.add("CWWKO0219I: .* defaultHttpEndpoint-ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
         messages.add("CWWKT0016I"); // CWWKT0016I: Web application available (default_host): http://9.10.111.222:8010/ibm/api/
+        messages.add("J2CA7001I: .* TestValidationJMSAdapter"); // J2CA7001I: Resource adapter TestValidationJMSAdapter installed in # seconds.
         server.waitForStringsInLogUsingMark(messages);
 
         // TODO remove once transactions code is fixed to use container auth for the recovery log dataSource
@@ -197,6 +205,132 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         assertNull(err, json.get("info"));
         assertEquals(err, "java.sql.SQLException", getString(json, "class"));
         assertTrue(err, getString(json, "message").contains("No LoginModules configured for bogus"));
+    }
+
+    /**
+     * Use the validation REST endpoint to validate a single javax.jms.ConnectionFactory
+     * that is configured with a jaasLoginContextEntryRef.
+     */
+    @Test
+    public void testJMSConnectionFactoryWithLoginModule() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1?auth=container").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "jmscf1", json.getString("uid"));
+        assertEquals(err, "jmscf1", json.getString("id"));
+        assertEquals(err, "jms/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidation Messaging Provider", json.getString("jmsProviderName"));
+        assertEquals(err, "60.221.229", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        // The fake resource adapter returns the user id as the clientID so that we can very the login module is used.
+        assertEquals(err, "dbuser", json.getString("clientID"));
+    }
+
+    /**
+     * Use the validation REST endpoint to validate a single javax.jms.ConnectionFactory
+     * that is configured with a jaasLoginContextEntryRef, but isn't used because application authentication is used instead.
+     */
+    @Test
+    public void testJMSConnectionFactoryWithLoginModuleNotUsed() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1?auth=application").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "jmscf1", json.getString("uid"));
+        assertEquals(err, "jmscf1", json.getString("id"));
+        assertEquals(err, "jms/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidation Messaging Provider", json.getString("jmsProviderName"));
+        assertEquals(err, "60.221.229", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        // The fake resource adapter returns the user id as the clientID so that we can very the login module is used.
+        assertEquals(err, "DefaultUserName", json.getString("clientID"));
+    }
+
+    /**
+     * Use the validation REST endpoint to validate a single javax.jms.QueueConnectionFactory
+     * that is configured with a jaasLoginContextEntryRef.
+     */
+    @Test
+    public void testJMSQueueConnectionFactoryWithLoginModule() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf2?auth=container").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "qcf2", json.getString("uid"));
+        assertEquals(err, "qcf2", json.getString("id"));
+        assertEquals(err, "jms/qcf2", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidation Messaging Provider", json.getString("jmsProviderName"));
+        assertEquals(err, "60.221.229", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        // The fake resource adapter returns the user id as the clientID so that we can very the login module is used.
+        assertEquals(err, "dbuser", json.getString("clientID"));
+    }
+
+    /**
+     * Use the validation REST endpoint to validate a single javax.jms.QueueConnectionFactory
+     * that is configured with a jaasLoginContextEntryRef, but isn't used because application authentication is used instead.
+     */
+    @Test
+    public void testJMSQueueConnectionFactoryWithLoginModuleNotUsed() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf2?auth=application").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "qcf2", json.getString("uid"));
+        assertEquals(err, "qcf2", json.getString("id"));
+        assertEquals(err, "jms/qcf2", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidation Messaging Provider", json.getString("jmsProviderName"));
+        assertEquals(err, "60.221.229", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        // The fake resource adapter returns the user id as the clientID so that we can very the login module is used.
+        assertEquals(err, "DefaultUserName", json.getString("clientID"));
+    }
+
+    /**
+     * Use the validation REST endpoint to validate a single javax.jms.TopicConnectionFactory
+     * that is configured with a jaasLoginContextEntryRef.
+     */
+    @Test
+    public void testJMSTopicConnectionFactoryWithLoginModule() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory/tcf3?auth=container").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "tcf3", json.getString("uid"));
+        assertEquals(err, "tcf3", json.getString("id"));
+        assertEquals(err, "jms/tcf3", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidation Messaging Provider", json.getString("jmsProviderName"));
+        assertEquals(err, "60.221.229", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        // The fake resource adapter returns the user id as the clientID so that we can very the login module is used.
+        assertEquals(err, "dbuser", json.getString("clientID"));
+    }
+
+    /**
+     * Use the validation REST endpoint to validate a single javax.jms.TopicConnectionFactory
+     * that is configured with a jaasLoginContextEntryRef, but isn't used because application authentication is used instead.
+     */
+    @Test
+    public void testJMSTopicConnectionFactoryWithLoginModuleNotUsed() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory/tcf3?auth=application").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "tcf3", json.getString("uid"));
+        assertEquals(err, "tcf3", json.getString("id"));
+        assertEquals(err, "jms/tcf3", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidation Messaging Provider", json.getString("jmsProviderName"));
+        assertEquals(err, "60.221.229", json.getString("jmsProviderVersion"));
+        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        // The fake resource adapter returns the user id as the clientID so that we can very the login module is used.
+        assertEquals(err, "DefaultUserName", json.getString("clientID"));
     }
 
     /*

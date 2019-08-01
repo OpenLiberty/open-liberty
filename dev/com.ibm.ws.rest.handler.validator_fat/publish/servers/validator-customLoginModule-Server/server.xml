@@ -7,6 +7,7 @@
     <feature>jdbc-4.2</feature>
     <feature>appSecurity-2.0</feature>
     <feature>jca-1.7</feature>
+    <feature>jms-2.0</feature>
   </featureManager>
 
   <variable name="onError" value="FAIL"/>
@@ -27,6 +28,18 @@
   </jaasLoginModule>
   
   <jaasLoginContextEntry id="customLoginEntry" name="customLoginEntry" loginModuleRef="customLoginModule" />
+
+  <jmsConnectionFactory id="jmscf1" jndiName="jms/cf1" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationJMSAdapter hostName="myhost.openliberty.io" portNumber="1357"/>
+  </jmsConnectionFactory>
+
+  <jmsQueueConnectionFactory id="qcf2" jndiName="jms/qcf2" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationJMSAdapter hostName="myhost.openliberty.io" portNumber="2468"/>
+  </jmsQueueConnectionFactory>
+
+  <jmsTopicConnectionFactory id="tcf3" jndiName="jms/tcf3" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationJMSAdapter hostName="myhost.openliberty.io" portNumber="3579"/>
+  </jmsTopicConnectionFactory>
   
   <dataSource id="customLoginDS" jndiName="jdbc/customLoginDS" jaasLoginContextEntry="customLoginEntry">
     <jdbcDriver libraryRef="Derby"/>
@@ -56,4 +69,13 @@
   
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${server.config.dir}/customLoginModule.jar" className="java.security.AllPermission"/>
+
+  <javaPermission codebase="${server.config.dir}/dropins/TestValidationJMSAdapter.rar"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+  <javaPermission codebase="${server.config.dir}/dropins/TestValidationJMSAdapter.rar"
+                  className="javax.security.auth.PrivateCredentialPermission"
+                  signedBy="javax.resource.spi.security.PasswordCredential"
+                  principalType="*" principalName="*" actions="read"/>
+
 </server>

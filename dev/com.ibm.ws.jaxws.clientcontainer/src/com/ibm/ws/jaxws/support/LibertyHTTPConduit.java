@@ -13,6 +13,7 @@ package com.ibm.ws.jaxws.support;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.security.AccessController;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.message.Message;
@@ -30,7 +31,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
     //save the bus so that we can get classloder from it.
     private final Bus bus;
 
-    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = ThreadContextAccessor.getThreadContextAccessor();
+    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
 
     public LibertyHTTPConduit(Bus b, EndpointInfo ei, EndpointReferenceType t) throws IOException {
         super(b, ei, t);
@@ -64,11 +65,10 @@ public class LibertyHTTPConduit extends HTTPConduit {
         @Override
         protected void handleResponseInternal() throws IOException {
             if (outMessage == null
-                   || outMessage.getExchange() == null
-                   || outMessage.getExchange().isSynchronous()) {
+                || outMessage.getExchange() == null
+                || outMessage.getExchange().isSynchronous()) {
                 super.handleResponseInternal();
             } else {
-                ClassLoader oldCl = THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread());
                 try {
                     // get the classloader from bus
                     ClassLoader cl = bus.getExtension(ClassLoader.class);
@@ -77,6 +77,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
                     }
                     super.handleResponseInternal();
                 } finally {
+                    ClassLoader oldCl = THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread());
                     THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), oldCl);
                 }
             }

@@ -41,4 +41,11 @@
        <actions>*</actions>
      </permission>
      
+     <!-- Kafka reads truststores -->
+     <permission>
+        <class-name>java.io.FilePermission</class-name>
+        <name>*</name> <!-- all files in the current directory (i.e. the server directory) -->
+        <actions>read</actions>
+     </permission>
+     
 </permissions>

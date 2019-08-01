@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxws-2.2
 visibility=public
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-API-Package: \
@@ -30,6 +31,7 @@ IBM-ShortName: jaxws-2.2
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 Subsystem-Name: Java Web Services 2.2
 -features=\
+ com.ibm.websphere.appserver.internal.optional.jaxws-2.2, \
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1, 4.0"; apiJar=false, \
  com.ibm.websphere.appserver.containerServices-1.0, \
@@ -63,7 +65,7 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.cxf.cxf.api.2.6.2, \
  com.ibm.ws.com.sun.xml.messaging.saaj; require-java:="9", \
  com.ibm.ws.org.jvnet.mimepull; require-java:="9"
- 
+
 -files=\
  bin/jaxws/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/jaxws/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

@@ -23,6 +23,7 @@ import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.CircuitBreakerState;
 
+@SuppressWarnings("restriction") // Unit test accesses non-exported *PolicyImpl classes
 public class CircuitBreakerStateImplTest {
 
     private static MetricRecorder dummyMetrics = DummyMetricRecorder.get();

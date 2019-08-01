@@ -45,4 +45,6 @@ Private-Package:\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.bnd.annotations;version=latest,\
   com.ibm.ws.org.apache.felix.scr;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.management.security,\
+  com.ibm.ws.rest.handler

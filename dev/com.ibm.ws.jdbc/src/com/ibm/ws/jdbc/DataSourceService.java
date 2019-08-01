@@ -401,7 +401,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     public final String getJNDIName() {
         return dsConfigRef.get().jndiName;
     }
-
     /**
      * Returns the managed connection factory.
      * 
@@ -911,19 +910,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             Tr.debug(this, tc, "setDriver", ref);
     }
     
-    /**
-     * Declarative services method to set the JAASLoginContextEntry.
-     */
-    protected void setJaasLoginContextEntry(ServiceReference<?> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "setJaasLoginContextEntry", ref);
-        }
-
-        if (ref != null) {
-            jaasLoginContextEntryName = (String) ref.getProperty("name");
-        }
-    }
-
     protected void setJdbcRuntimeVersion(JDBCRuntimeVersion ref) {
         jdbcRuntime = ref;
     }
@@ -1013,16 +999,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             Tr.debug(this, tc, "unsetDriver", ref);
     }
     
-    /**
-     * Declarative services method to unset the JAASLoginContextEntry.
-     */
-    protected void unsetJaasLoginContextEntry(ServiceReference<com.ibm.ws.security.jaas.common.JAASLoginContextEntry> svc) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "unsetJaasLoginContextEntry", svc);
-        }
-        jaasLoginContextEntryName = null;
-    }
-
     protected void unsetJdbcRuntimeVersion(JDBCRuntimeVersion ref) {
         jdbcRuntime = null;
     }

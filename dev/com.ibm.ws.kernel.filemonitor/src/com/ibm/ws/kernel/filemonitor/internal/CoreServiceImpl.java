@@ -122,7 +122,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      *
      * @param schedulerRef ServiceReference for the required/dynamic ScheduledExcecutorService
      */
-    @Reference(policy = ReferencePolicy.DYNAMIC)
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(deferrable=false)")
     protected void setScheduler(ScheduledExecutorService scheduler) {
 
         ScheduledExecutorService oldService = executorService.getAndSet(scheduler);
@@ -144,7 +144,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * unset to unbind the old one.
      *
      * @param scheduler
-     *            the service to remove.
+     *                      the service to remove.
      */
     protected void unsetScheduler(ScheduledExecutorService schedulerRef) {
         executorService.compareAndSet(schedulerRef, null);
@@ -203,7 +203,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * ==> synchronized against unsetMonitor
      *
      * @param monitorRef
-     *            a reference to the FileMonitor instance to update
+     *                       a reference to the FileMonitor instance to update
      */
     @Reference(service = FileMonitor.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, target = "(|(monitor.files=*)(monitor.directories=*))")
     protected void setMonitor(ServiceReference<FileMonitor> monitorRef) {
@@ -248,7 +248,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      *
      *
      * @param monitorRef
-     *            a reference to the FileMonitor instance to update
+     *                       a reference to the FileMonitor instance to update
      */
     protected void updatedMonitor(ServiceReference<FileMonitor> monitorRef) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -262,14 +262,9 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
         // Only initialize and start the monitor if the component has been activated
         if (cContext != null) {
             try {
-                // Create a root cache location for the bundle that registered this service;
-                // there could be multiple monitors associated with a bundle, but all should be destroyed
-                // if/when the bundle is uninstalled, so keep them "together"..
-                //TODO n.b. cacheRoot is unused
-                File cacheRoot = cContext.getBundleContext().getDataFile(Long.toString(monitorRef.getBundle().getBundleId()));
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "CoreServiceImpl updatedMonitor, about to refresh");
-                existing.refresh(cacheRoot);
+                existing.refresh();
             } catch (RuntimeException re) {
                 // Generated FFDC, rethrow to fail the bind
                 fileMonitors.remove(monitorRef);
@@ -284,7 +279,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * from the service registry.
      *
      * @param monitorRef
-     *            a reference to the FileMonitor instance to remove
+     *                       a reference to the FileMonitor instance to remove
      */
     protected void unsetMonitor(ServiceReference<FileMonitor> monitorRef) {
         MonitorHolder holder = fileMonitors.remove(monitorRef);
