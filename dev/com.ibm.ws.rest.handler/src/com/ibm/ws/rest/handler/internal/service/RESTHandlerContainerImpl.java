@@ -12,8 +12,6 @@ package com.ibm.ws.rest.handler.internal.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +31,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.management.security.ManagementSecurityConstants;
 import com.ibm.ws.rest.handler.internal.ExtendedRESTRequestImpl;
 import com.ibm.ws.rest.handler.internal.helper.HandlerPath;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -430,11 +427,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
                 //The first argument will be true if we're routing the call and a corresponding service wasn't present on this controller
                 if (handlerInfo == null || !hasProperty(handlerInfo.handlerRef, RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY)) {
                     //This path is not performing custom security, so check for default authorization
-                    if (!getAuthorizationHelper().checkAdministratorRole(request, response)) {
-                        //We failed the check, so return true, since DefaultAuthorizationHelper would have filled up the response already.
-                        response.setRequiredRoles(new HashSet<String>(Arrays.asList(new String[] { ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME })));
-                        isAuthorized = false;
-                    }
+                    isAuthorized = getAuthorizationHelper().checkAdministratorRole(request, response);
                 }
             }
 
@@ -520,9 +513,9 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
             // TODO AUDIT AUTHORIZATION
             // Note: It appears that WebAppSecurityCollaborator audits some of these:
             // [7/2/19 15:43:31:670 CDT] 00000037 id=00000000 .ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl A CWWKS9104A: Authorization failed for user user:MicroProfileMetrics while invoking com.ibm.ws.management.security.resource on /. The user is not granted access to any of the required roles: [Administrator, Reader].
-            // TODO Remove or externalize when auditing is added? Should perhaps print out like CWWKS9104A (above).
-            Tr.info(tc, "Authorization failed for user '" + request.getUserPrincipal() + "' while invoking " + request.getMethod() + " on " + request.getContextPath()
-                        + request.getPath() + ". The user is not granted any of the required roles: " + response.getRequiredRoles());
+            // TODO Should have a message like CWWKS9104A (above).
+            Tr.debug(tc, "Authorization failed for user '" + request.getUserPrincipal() + "' while invoking " + request.getMethod() + " on " + request.getContextPath()
+                         + request.getPath() + ". The user is not granted any of the required roles: " + response.getRequiredRoles());
         }
     }
 }
