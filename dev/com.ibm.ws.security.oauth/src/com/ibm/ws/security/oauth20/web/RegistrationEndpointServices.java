@@ -65,7 +65,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     public static final String ROLE_REQUIRED = "clientManager"; // Role required to access services
     public static final String UNAUTHORIZED_HEADER_VALUE = "Basic realm=\"" + ROLE_REQUIRED + "\""; // Basic Auth challenge header value
     protected static final String MESSAGE_BUNDLE = "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages";
-    private static TraceComponent tc = Tr.register(RegistrationEndpointServices.class);
+    private static TraceComponent tc = Tr.register(RegistrationEndpointServices.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     private Enumeration<Locale> locales = null;
     // Regular expression to detect incoming client registration request pattern
     private static final String REGEX_REGISTRATION_CLIENTID = "^" + OAuth20RequestFilter.REGEX_COMPONENT_ID + OAuth20RequestFilter.REGEX_REGISTRATION + "$";
