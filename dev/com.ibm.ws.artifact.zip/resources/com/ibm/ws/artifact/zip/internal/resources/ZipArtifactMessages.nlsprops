@@ -72,6 +72,12 @@ extract.primary.untyped=CWWKM0110E: Prior extraction of {0} cannot be typed.
 extract.primary.untyped.explanation=An extraction of a nested archive has detected an untypable file as the prior extracted archive.
 extract.primary.untyped.useraction=Clean then restart the server to ensure no prior cache contents are present.
 
+# # {0} A decimal count of seconds.  For example, "0.701005".
+# # {1} A decomal count of seconds.  For example, "0.020000".
+reaper.stall=CWWKM0120W: An excessive delay occurred while processing pending archive closes: The actual delay was {0} seconds.  The requested delay was {1} seconds.
+reaper.stall.explanation=This message indicates that application archive files were kept open longer than necessary.  As shown by the warning message, archive files should have been kept open no longer than a requested duration, but were kept open for a significantly longer actual duration.  That archive files were kept open longer than necessary can cause errors when attempting to dynamically update application files.  This warning indicates that activity, external or internal, is denying processing time to the server.
+reaper.stall.useraction=Examine the environment to determine if processes other than the server process are consuming an excess proportion of processing time.  Examine the server process by generating thread dumps to determine if particular server threads have excessive activity.
+
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: Cannot open {0}: Archive cache {1} is inactive.
