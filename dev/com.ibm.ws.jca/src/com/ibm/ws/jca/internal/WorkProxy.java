@@ -45,32 +45,34 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.security.JCASecurityContext;
+import com.ibm.ws.threading.RunnableWithContext;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
+
 
 /**
  * A wrapper for Work.
  * This wrapper takes care of execution context handling, work listener notification
  * and startTimeout.
  */
-public class WorkProxy implements Callable<Void>, Runnable {
+public class WorkProxy implements Callable<Void>, RunnableWithContext {
     /**
      * Constructor for WorkProxy.
      *
      * @pre theWork != null
      *
-     * @param theWork the actual Work object that is passed in by the RA.
-     * @param theStartTimeout abort the request after this amount of time has passed
-     *            and the actual Work has not yet started.
-     *            A start timeout occurs when the thread pool is to busy
-     *            to allocate a thread to start the work on.
-     * @param theContext controls what context information is used by the thread to
-     *            establish its context
-     * @param theListener send state changes to the Work to this object.
-     * @param bootstrapContext the bootstrap context.
-     * @param runningWork list of work that is running.
+     * @param theWork             the actual Work object that is passed in by the RA.
+     * @param theStartTimeout     abort the request after this amount of time has passed
+     *                                and the actual Work has not yet started.
+     *                                A start timeout occurs when the thread pool is to busy
+     *                                to allocate a thread to start the work on.
+     * @param theContext          controls what context information is used by the thread to
+     *                                establish its context
+     * @param theListener         send state changes to the Work to this object.
+     * @param bootstrapContext    the bootstrap context.
+     * @param runningWork         list of work that is running.
      * @param applyDefaultContext determines whether or not to apply default context for thread context types that aren't otherwise specified or configured.
      * @throws ResourceException if unable to associate with the resource adapter.
      */
@@ -318,8 +320,8 @@ public class WorkProxy implements Callable<Void>, Runnable {
      * Handle a work context setup failure.
      *
      * @param workContext the work context.
-     * @param errorCode error code from javax.resource.spi.work.WorkContextErrorCodes
-     * @param cause Throwable to chain as the cause. Can be null.
+     * @param errorCode   error code from javax.resource.spi.work.WorkContextErrorCodes
+     * @param cause       Throwable to chain as the cause. Can be null.
      * @return WorkCompletedException to raise the the invoker.
      */
     private WorkCompletedException contextSetupFailure(Object context, String errorCode, Throwable cause) {
@@ -445,10 +447,19 @@ public class WorkProxy implements Callable<Void>, Runnable {
     // now just in case someone else runs into this.
     private static final long fudgeFactor = 100;
 
+    private static com.ibm.wsspi.threading.WorkContext wc = new JCAWorkContext();
+
     /**
      * Work listener for the work.
      * This method is protected because the WorkScheduler may need to
      * obtain the listener.
      */
     protected WorkListener lsnr;
+
+    @Override
+    public com.ibm.wsspi.threading.WorkContext getWorkContext() {
+        // TODO Auto-generated method stub
+        return this.wc;
+    }
+
 }
