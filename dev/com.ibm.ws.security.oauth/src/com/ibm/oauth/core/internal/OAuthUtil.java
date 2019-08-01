@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 /**
@@ -29,6 +31,8 @@ import com.ibm.websphere.ras.annotation.Sensitive;
  * 
  */
 public class OAuthUtil {
+    private static TraceComponent tc = Tr.register(OAuthUtil.class);
+
     static final String JCEPROVIDER_IBM = "IBMJCE";
 
     static final String SECRANDOM_IBM = "IBMSecureRandom";
@@ -45,6 +49,9 @@ public class OAuthUtil {
      *            Map <String, String[]>
      * @return
      */
+
+    private static final java.util.List<String> sensitives = java.util.Arrays.asList(new String[] {"client_secret", "sharedKey"});
+    
     @Sensitive
     public static String getValueFromMap(String key, Map<String, String[]> m) {
         String result = null;
@@ -54,6 +61,17 @@ public class OAuthUtil {
             result = values[0];
         }
 
+        if (tc.isDebugEnabled()) {
+            if (sensitives.contains(key)) {
+              if (result != null) {
+                Tr.debug(tc, "getValueFromMap("+key+") returns [*****]");
+              } else {
+                Tr.debug(tc, "getValueFromMap("+key+") returns [null]");
+              }
+            } else {
+              Tr.debug(tc, "getValueFromMap("+key+") returns ["+result+"]");
+            }
+        }
         return result;
     }
 
@@ -104,7 +122,11 @@ public class OAuthUtil {
             result.append(chars[n]);
         }
 
-        return result.toString();
+        String retVal = result.toString();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "getRandom("+length+") returns ["+retVal+"]");
+        }
+        return retVal;
     }
 
     static Random getRandom() {
@@ -118,11 +140,18 @@ public class OAuthUtil {
         } catch (Exception e) {
             result = new Random();
         }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "getRandom() returns ["+result.getClass().getName()+"]");
+        }
         return result;
     }
 
     public static String generateUUID() {
-        return UUID.randomUUID().toString();
+        String retVal = UUID.randomUUID().toString();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "generateUUID returns ["+retVal+"]");
+        }
+        return retVal;
     }
 
     /**
@@ -148,6 +177,10 @@ public class OAuthUtil {
             valid = false;
         }
 
+        if (tc.isDebugEnabled()) {
+            //inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
+            Tr.debug(tc, "validateUri("+strUri+") returns ["+valid+"]");
+        }
         return valid;
     }
 
@@ -167,6 +200,10 @@ public class OAuthUtil {
             }
         }
 
+        if (tc.isDebugEnabled()) {
+            //inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
+            Tr.debug(tc, "stripQueryAndFragment("+uri+") returns ["+result+"]");
+        }
         return result;
     }
 
@@ -180,7 +217,10 @@ public class OAuthUtil {
         } catch (URISyntaxException e) {
             // invalid uri, return null
         }
-
+        if (tc.isDebugEnabled()) {
+            //inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
+            Tr.debug(tc, "getQuery("+uri+") returns ["+result+"]");
+        }
         return result;
     }
 
@@ -219,7 +259,12 @@ public class OAuthUtil {
         if (rebuiltQuery.length() > 0 && rebuiltQuery.charAt(rebuiltQuery.length() - 1) == '&') {
             rebuiltQuery.deleteCharAt(rebuiltQuery.length() - 1);
         }
-        return rebuiltQuery.toString();
+        String retVal = rebuiltQuery.toString();
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "encodeQuery("+query+") returns ["+retVal+"]");
+        }
+        return retVal;
     }
 
     public static String getCurrentStackTraceString(Exception e) {
