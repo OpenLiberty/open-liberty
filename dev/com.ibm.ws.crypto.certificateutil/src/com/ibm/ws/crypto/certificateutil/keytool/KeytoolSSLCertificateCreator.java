@@ -158,17 +158,20 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
      */
     public String defaultExtInfo() {
         String hostname = getHostName();
-        String ext = "SAN=dns:localhost";
+        String ext = null;
 
         InetAddress addr;
         try {
             addr = InetAddress.getByName(hostname);
             if (addr != null && addr.toString().startsWith("/"))
                 ext = "SAN=ip:" + hostname;
-            else
-                ext = "SAN=dns:" + hostname;
+            else {
+                // If the hostname start with a digit keytool will not create a SAN with the value
+                if (!Character.isDigit(hostname.charAt(0)))
+                    ext = "SAN=dns:" + hostname;
+            }
         } catch (UnknownHostException e) {
-            // use localhost if unknown exception occurs
+            // use return null and not set SAN if there is an exception here
         }
         return ext;
     }
