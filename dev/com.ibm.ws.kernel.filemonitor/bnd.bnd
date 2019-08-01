@@ -15,6 +15,8 @@ Bundle-Name: WebSphere kernel file monitor service
 Bundle-SymbolicName: com.ibm.ws.kernel.filemonitor; singleton:=true
 Bundle-Description: WebSphere kernel file monitor service, version ${bVersion} (for Java 1.6 and lower)
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.kernel.filemonitor.internal.BundleHelper
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.kernel.filemonitor.internal*CoreServiceImpl,\
   com.ibm.ws.kernel.filemonitor.internal.FileNotificationImpl
@@ -41,6 +43,7 @@ Private-Package: \
 instrument.classesExcludes: com/ibm/ws/kernel/filemonitor/internal/resources/*.class
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

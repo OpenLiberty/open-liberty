@@ -47,7 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 @Component(service = ServerSchemaGenerator.class,
            property = { "jmx.objectname=" + ServerSchemaGenerator.OBJECT_NAME,
-                       "service.vendor=IBM" })
+                        "service.vendor=IBM" })
 public class ServerSchemaGeneratorImpl extends StandardMBean implements ServerSchemaGenerator {
 
     private static final TraceComponent tc = Tr.register(ServerSchemaGeneratorImpl.class);
@@ -76,7 +76,7 @@ public class ServerSchemaGeneratorImpl extends StandardMBean implements ServerSc
     }
 
     @Activate
-    protected void activate(ComponentContext ctxt) throws Exception {
+    protected void activate(ComponentContext ctxt) {
         context = ctxt;
         schemaGenRef.activate(ctxt);
         locationAdminRef.activate(ctxt);
@@ -154,7 +154,8 @@ public class ServerSchemaGeneratorImpl extends StandardMBean implements ServerSc
         return commonGenerateInstallSchema(schemaVersion, outputVersion, encoding, locale, compactOutput, true);
     }
 
-    protected Map<String, Object> commonGenerateInstallSchema(String schemaVersion, String outputVersion, String encoding, String locale, boolean compactOutput, boolean isCompact) {
+    protected Map<String, Object> commonGenerateInstallSchema(String schemaVersion, String outputVersion, String encoding, String locale, boolean compactOutput,
+                                                              boolean isCompact) {
 
         Map<String, Object> returnMap;
         try {
@@ -163,13 +164,13 @@ public class ServerSchemaGeneratorImpl extends StandardMBean implements ServerSc
 
             //Get java home
             final String javaHome = AccessController.doPrivileged(
-                            new PrivilegedAction<String>() {
-                                @Override
-                                public String run() {
-                                    return System.getProperty("java.home");
-                                }
+                                                                  new PrivilegedAction<String>() {
+                                                                      @Override
+                                                                      public String run() {
+                                                                          return System.getProperty("java.home");
+                                                                      }
 
-                            });
+                                                                  });
 
             //Build path to schemaGen jar
             final String schemaGenPath = getWsLocationAdmin().resolveString(WsLocationConstants.SYMBOL_INSTALL_DIR + "bin/tools/ws-schemagen.jar");

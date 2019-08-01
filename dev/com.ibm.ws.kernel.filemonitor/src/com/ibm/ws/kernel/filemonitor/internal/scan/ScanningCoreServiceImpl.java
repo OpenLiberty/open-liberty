@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.filemonitor.internal.scan;
 
+import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -21,6 +25,7 @@ import com.ibm.ws.kernel.filemonitor.FileNotification;
 import com.ibm.ws.kernel.filemonitor.internal.CoreServiceImpl;
 import com.ibm.ws.kernel.filemonitor.internal.MonitorHolder;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 /**
@@ -45,4 +50,53 @@ public class ScanningCoreServiceImpl extends CoreServiceImpl {
 
     }
 
+    @Override
+    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+        super.activate(componentContext, properties);
+    }
+
+    @Override
+    protected void deactivate(int reason) {
+        super.deactivate(reason);
+    }
+
+    @Override
+    protected void modified(Map<String, Object> properties) {
+        super.modified(properties);
+    }
+
+    @Override
+    protected void setScheduler(ScheduledExecutorService scheduler) {
+        super.setScheduler(scheduler);
+    }
+
+    @Override
+    protected void unsetScheduler(ScheduledExecutorService scheduler) {
+        super.unsetScheduler(scheduler);
+    }
+
+    @Override
+    protected void setLocation(WsLocationAdmin locRef) {
+        super.setLocation(locRef);
+    }
+
+    @Override
+    protected void unsetLocation(WsLocationAdmin locRef) {
+        super.unsetLocation(locRef);
+    }
+
+    @Override
+    protected void setMonitor(ServiceReference<FileMonitor> monitorRef) {
+        super.setMonitor(monitorRef);
+    }
+
+    @Override
+    protected void unsetMonitor(ServiceReference<FileMonitor> monitorRef) {
+        super.unsetMonitor(monitorRef);
+    }
+
+    @Override
+    protected void updatedMonitor(ServiceReference<FileMonitor> monitorRef) {
+        super.updatedMonitor(monitorRef);
+    }
 }

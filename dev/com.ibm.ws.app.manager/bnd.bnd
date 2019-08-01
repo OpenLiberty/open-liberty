@@ -16,6 +16,8 @@ Bundle-Name: WebSphere Application Manager
 Bundle-SymbolicName: com.ibm.ws.app.manager
 Bundle-Description: WebSphere Application Manager, version ${bVersion}
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.app.manager.internal.BundleHelper
+
 Private-Package: com.ibm.ws.app.manager.internal*
 
 -dsannotations: com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor,\
@@ -47,7 +49,8 @@ instrument.classesExcludes: com/ibm/ws/app/manager/internal/resources/*.class
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.classloading;version=latest, \
     com.ibm.ws.container.service;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.org.apache.felix.scr;version=latest
 
 -testpath: \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \

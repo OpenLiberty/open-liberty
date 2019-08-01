@@ -13,7 +13,6 @@ package com.ibm.wsspi.config.internal;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -130,7 +129,7 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
     }
 
     @Deactivate
-    protected void deactivate(ComponentContext context) throws IOException {
+    protected void deactivate(ComponentContext context) {
         if (filesetRegistration != null) {
             filesetRegistration.unregister();
             filesetRegistration = null;
@@ -180,7 +179,7 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
 
     /**
      * @param dir
-     *                the base dir to set
+     *            the base dir to set
      */
     private void setDir(String basedir) {
         // clean up the basedir to use only / for ease of regex
@@ -196,7 +195,7 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
 
     /**
      * @param caseSensitive
-     *                          boolean to set whether filters are case sensitive
+     *            boolean to set whether filters are case sensitive
      */
     private void setCaseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
@@ -204,7 +203,7 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
 
     /**
      * @param includesAttribute
-     *                              the includesAttribute to set
+     *            the includesAttribute to set
      */
     private void setIncludesAttribute(String includesAttribute) {
         this.includesAttribute = includesAttribute;
@@ -212,7 +211,7 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
 
     /**
      * @param excludesAttribute
-     *                              the excludesAttribute to set
+     *            the excludesAttribute to set
      */
     private void setExcludesAttribute(String excludesAttribute) {
         this.excludesAttribute = excludesAttribute;

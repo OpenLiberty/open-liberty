@@ -15,6 +15,8 @@ Bundle-Name: Java Serialization Filter Server Configuration
 Bundle-SymbolicName: com.ibm.ws.kernel.instrument.serialfilter.serverconfig
 Bundle-Description: Java Serialization Filter Server Configuration, version=${bVersion}
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.kernel.instrument.serialfilter.serverconfig.FilterConfigComponentManager
+
 Private-Package: \
  com.ibm.ws.config.xml.internal.nester, \
  com.ibm.ws.kernel.instrument.serialfilter.serverconfig.internal.resources
@@ -34,6 +36,7 @@ Include-Resource: \
   com.ibm.ws.kernel.instrument.serialfilter.serverconfig.FilterConfigFactory
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.websphere.org.osgi.service.cm;version=latest,\

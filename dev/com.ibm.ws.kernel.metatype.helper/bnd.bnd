@@ -15,6 +15,8 @@ Bundle-Name: WAS common configuration types
 Bundle-SymbolicName: com.ibm.ws.kernel.metatype.helper
 Bundle-Description: Common configuration types that can be shared
 
+SCR-NoReflectionHelper-Class: com.ibm.wsspi.config.internal.FilesetComponentManager
+
 #optional
 WS-TraceGroup: TrTraceGroup
 
@@ -34,6 +36,7 @@ Private-Package: com.ibm.wsspi.config.internal
 -ds-felix-extensions=true
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.filemonitor;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

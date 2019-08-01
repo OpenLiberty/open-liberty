@@ -42,12 +42,16 @@ public class ThreadingIntrospector implements Introspector {
         impl = null;
     }
 
-    @Reference
     private PolicyExecutorProvider provider;
+
+    @Reference
+    protected void setPolicyExecutorProvider(PolicyExecutorProvider provider) {
+        this.provider = provider;
+    }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.Introspector#getIntrospectorName()
      */
     @Override
@@ -57,7 +61,7 @@ public class ThreadingIntrospector implements Introspector {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.Introspector#getIntrospectorDescription()
      */
     @Override
@@ -67,7 +71,7 @@ public class ThreadingIntrospector implements Introspector {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.Introspector#introspect(java.io.PrintWriter)
      */
     @Override

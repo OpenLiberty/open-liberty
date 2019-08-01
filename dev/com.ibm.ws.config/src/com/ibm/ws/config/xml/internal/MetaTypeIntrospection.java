@@ -35,8 +35,12 @@ public class MetaTypeIntrospection implements Introspector {
 
     private final static String NAME = "MetaTypeIntrospection";
     private final static String DESC = "Introspect currently defined metatypes.";
-    @Reference
     private MetaTypeRegistry metaTypeRegistry;
+
+    @Reference
+    protected void setMetaTypeRegistry(MetaTypeRegistry metaTypeRegistry) {
+        this.metaTypeRegistry = metaTypeRegistry;
+    }
 
     @Override
     public String getIntrospectorName() {

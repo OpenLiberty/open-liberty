@@ -15,6 +15,8 @@ Bundle-Name: WAS THREADING
 Bundle-Description: WAS THREADING, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.threading; singleton:=true
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.threading.internal.BundleHelper
+
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
@@ -54,6 +56,7 @@ Service-Component=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl;
 instrument.classesExcludes: com/ibm/ws/threading/internal/resources/*.class
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \

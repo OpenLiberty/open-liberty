@@ -28,7 +28,7 @@ import com.ibm.websphere.metatype.SchemaGenerator;
 import com.ibm.websphere.metatype.SchemaGeneratorOptions;
 
 /**
- * 
+ *
  */
 public class SchemaGeneratorImpl implements SchemaGenerator {
 
@@ -36,7 +36,7 @@ public class SchemaGeneratorImpl implements SchemaGenerator {
 
     ComponentContext ctxt;
 
-    protected void activate(ComponentContext ctxt) throws Exception {
+    protected void activate(ComponentContext ctxt) {
         this.ctxt = ctxt;
     }
 

@@ -16,6 +16,8 @@ Bundle-Description: WAS Config Admin Service version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.config; singleton:=true
 Bundle-Activator: com.ibm.ws.config.internal.WSConfigActivator
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.config.internal.BundleHelper
+
 WS-TraceGroup: config
 
 # For each exported package, create (in that package) a package-info.java
@@ -62,6 +64,7 @@ com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl
 instrument.classesExcludes: com/ibm/ws/config/internal/resources/*.class
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.ws.runtime.update;version=latest,\
 	com.ibm.ws.config.ext;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

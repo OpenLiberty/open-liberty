@@ -16,6 +16,8 @@ Bundle-Description: WebSphere Logging OSGi adapter, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.logging.osgi; singleton:=true
 Bundle-Activator: com.ibm.ws.logging.internal.osgi.Activator
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.logging.internal.osgi.FFDCJanitorComponentManager
+
 Private-Package: \
     com.ibm.ws.ras.instrument.*,\
     com.ibm.ws.logging.internal.osgi.*
@@ -43,6 +45,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 instrument.disabled: true
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\

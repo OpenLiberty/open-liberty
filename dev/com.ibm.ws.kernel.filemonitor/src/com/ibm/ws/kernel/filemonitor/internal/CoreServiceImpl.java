@@ -71,7 +71,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * DS-driven component activation
      */
     @Activate
-    protected void activate(ComponentContext cContext, Map<String, Object> properties) throws Exception {
+    protected void activate(ComponentContext cContext, Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "File monitor service activated", properties);
         }
@@ -144,7 +144,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * unset to unbind the old one.
      *
      * @param scheduler
-     *                      the service to remove.
+     *            the service to remove.
      */
     protected void unsetScheduler(ScheduledExecutorService schedulerRef) {
         executorService.compareAndSet(schedulerRef, null);
@@ -203,7 +203,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * ==> synchronized against unsetMonitor
      *
      * @param monitorRef
-     *                       a reference to the FileMonitor instance to update
+     *            a reference to the FileMonitor instance to update
      */
     @Reference(service = FileMonitor.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, target = "(|(monitor.files=*)(monitor.directories=*))")
     protected void setMonitor(ServiceReference<FileMonitor> monitorRef) {
@@ -248,7 +248,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      *
      *
      * @param monitorRef
-     *                       a reference to the FileMonitor instance to update
+     *            a reference to the FileMonitor instance to update
      */
     protected void updatedMonitor(ServiceReference<FileMonitor> monitorRef) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -279,7 +279,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * from the service registry.
      *
      * @param monitorRef
-     *                       a reference to the FileMonitor instance to remove
+     *            a reference to the FileMonitor instance to remove
      */
     protected void unsetMonitor(ServiceReference<FileMonitor> monitorRef) {
         MonitorHolder holder = fileMonitors.remove(monitorRef);

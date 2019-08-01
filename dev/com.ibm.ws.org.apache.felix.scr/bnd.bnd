@@ -16,9 +16,11 @@
    OSGI-INF=resources/OSGI-INF, \
    @${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.17.ibm20190717-1;EXACT}!/!META-INF/maven/*,\
    @${repo;org.osgi:org.osgi.util.function;1.1.0;EXACT}!/!(OSGI-OPT|META-INF)/*,\
-   @${repo;org.osgi:org.osgi.util.promise;1.1.1;EXACT}!/!(OSGI-OPT|META-INF)/*
+   @${repo;org.osgi:org.osgi.util.promise;1.1.1;EXACT}!/!(OSGI-OPT|META-INF)/*,\
+   org/apache/felix=${bin}/org/apache/felix
 
 -buildpath: \
+	org.eclipse.osgi,\
 	com.ibm.ws.org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.1.17.ibm20190717-1,\
 	org.osgi:org.osgi.util.function;strategy=exact;version=1.1.0,\
 	org.osgi:org.osgi.util.promise;strategy=exact;version=1.1.1

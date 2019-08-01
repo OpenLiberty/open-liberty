@@ -28,6 +28,7 @@ publish.wlp.jar.disabled: true
 -sources: true
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\

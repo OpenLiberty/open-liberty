@@ -17,6 +17,8 @@ Bundle-Description: WebSphere kernel services, version ${bVersion}
 
 Bundle-Activator: com.ibm.ws.kernel.service.location.internal.Activator
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.kernel.server.internal.ServerMBeanComponentManager
+
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
@@ -49,6 +51,7 @@ instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class, \
   com/ibm/ws/kernel/**/internal/resources/*.class
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

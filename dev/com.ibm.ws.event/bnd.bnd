@@ -15,6 +15,8 @@ Bundle-Name: WAS EVENT
 Bundle-Description: WAS EVENT version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.event; singleton:=true
 
+SCR-NoReflectionHelper-Class: com.ibm.ws.event.internal.EventComponentManager
+
 -includeresource: \
     OSGI-INF/permissions.perm=resources/permissions.perm, \
     OSGI-INF=resources/OSGI-INF
@@ -39,6 +41,7 @@ Import-Package: \
   com.ibm.ws.event.internal.ScheduledEventServiceImpl
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.threading;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

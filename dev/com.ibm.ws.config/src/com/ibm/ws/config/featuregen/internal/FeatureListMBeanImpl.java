@@ -40,8 +40,8 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 @Component(service = FeatureListMBean.class,
            property = {
-                       "jmx.objectname=" + FeatureListMBean.OBJECT_NAME,
-                       "service.vendor=IBM" })
+                        "jmx.objectname=" + FeatureListMBean.OBJECT_NAME,
+                        "service.vendor=IBM" })
 public class FeatureListMBeanImpl extends StandardMBean implements FeatureListMBean {
 
     private static final TraceComponent tc = Tr.register(FeatureListMBeanImpl.class);
@@ -61,7 +61,7 @@ public class FeatureListMBeanImpl extends StandardMBean implements FeatureListMB
     }
 
     @Activate
-    protected void activate(ComponentContext ctxt) throws IOException {
+    protected void activate(ComponentContext ctxt) {
         locationAdminRef.activate(ctxt);
     }
 
@@ -91,7 +91,7 @@ public class FeatureListMBeanImpl extends StandardMBean implements FeatureListMB
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see com.ibm.ws.kernel.feature.internal.FeatureListMBean#generate(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
@@ -104,12 +104,12 @@ public class FeatureListMBeanImpl extends StandardMBean implements FeatureListMB
 
             //Get java home
             final String javaHome = AccessController.doPrivileged(
-                            new PrivilegedAction<String>() {
-                                @Override
-                                public String run() {
-                                    return System.getProperty("java.home");
-                                }
-                            });
+                                                                  new PrivilegedAction<String>() {
+                                                                      @Override
+                                                                      public String run() {
+                                                                          return System.getProperty("java.home");
+                                                                      }
+                                                                  });
 
             //Build path to ws-featurelist.jar
             final String featureListGenPath = getWsLocationAdmin().resolveString(WsLocationConstants.SYMBOL_INSTALL_DIR + "bin/tools/ws-featurelist.jar");

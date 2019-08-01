@@ -44,7 +44,6 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = { PolicyExecutorProvider.class, ServerQuiesceListener.class })
 public class PolicyExecutorProvider implements ServerQuiesceListener {
-    @Reference(target = "(component.name=com.ibm.ws.threading)")
     private ExecutorService globalExecutor;
 
     /**
@@ -67,6 +66,11 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
         PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), null, policyExecutors);
         executor.updateConfig(props);
         return executor;
+    }
+
+    @Reference(target = "(component.name=com.ibm.ws.threading)")
+    protected void setGlobalExecutor(ExecutorService executorService) {
+        this.globalExecutor = executorService;
     }
 
     /**

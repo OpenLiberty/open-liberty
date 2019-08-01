@@ -43,6 +43,13 @@ import com.ibm.ws.kernel.launch.service.PauseableComponentControllerRequestFaile
 
 public class ServerEndpointControlMBeanImpl extends StandardMBean implements ServerEndpointControlMBean {
 
+    private PauseableComponentController pauseableComponentController;
+
+    public ServerEndpointControlMBeanImpl() throws NotCompliantMBeanException {
+        super(ServerEndpointControlMBean.class);
+
+    }
+
     /*
      * inject the service that will allow pause and resume control of endpoints
      *
@@ -51,11 +58,14 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
                cardinality = ReferenceCardinality.MANDATORY,
                policy = ReferencePolicy.STATIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    private PauseableComponentController pauseableComponentController;
+    protected void setPauseableComponentController(PauseableComponentController pauseableComponentController) {
+        this.pauseableComponentController = pauseableComponentController;
+    }
 
-    public ServerEndpointControlMBeanImpl() throws NotCompliantMBeanException {
-        super(ServerEndpointControlMBean.class);
-
+    protected void unsetPauseableComponentController(PauseableComponentController pauseableComponentController) {
+        if (this.pauseableComponentController == pauseableComponentController) {
+            this.pauseableComponentController = null;
+        }
     }
 
     /*

@@ -67,7 +67,7 @@ public class MetaTypeFactoryImpl implements MetaTypeFactory {
         IBM_TYPES = Collections.unmodifiableMap(types);
     }
 
-    protected void activate(ComponentContext ctxt) throws Exception {}
+    protected void activate(ComponentContext ctxt) {}
 
     @Override
     public Integer getIBMType(String typeName) {

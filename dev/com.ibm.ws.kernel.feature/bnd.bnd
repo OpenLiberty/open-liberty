@@ -14,6 +14,7 @@ bVersion=1.0
 Bundle-Name: WebSphere kernel feature manager
 Bundle-SymbolicName: com.ibm.ws.kernel.feature; singleton:=true
 Bundle-Description: WebSphere kernel feature manager, version ${bVersion}
+SCR-NoReflectionHelper-Class: com.ibm.ws.kernel.feature.internal.FeatureComponentManager
 
 Export-Package: \
  com.ibm.ws.kernel.feature;provide:=true, \
@@ -42,6 +43,7 @@ Private-Package: \
 instrument.classesExcludes: com/ibm/ws/kernel/feature/internal/resources/*.class
 
 -buildpath: \
+    com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	wlp.lib.extract;version=latest
