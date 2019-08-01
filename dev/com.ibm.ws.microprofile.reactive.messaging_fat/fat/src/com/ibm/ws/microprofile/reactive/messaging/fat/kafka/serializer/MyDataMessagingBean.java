@@ -1,0 +1,36 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
+
+@ApplicationScoped
+public class MyDataMessagingBean {
+
+    public static final String IN_CHANNEL = "data-in";
+    public static final String OUT_CHANNEL = "data-out";
+    public static final String GROUP_ID = "data-consumer";
+
+    @Incoming(IN_CHANNEL)
+    @Outgoing(OUT_CHANNEL)
+    public MyData reverseString(MyData in) {
+        System.out.println("Processing message " + in);
+        StringBuilder sbA = new StringBuilder(in.getDataA());
+        sbA.reverse();
+        StringBuilder sbB = new StringBuilder(in.getDataB());
+        sbB.reverse();
+        return new MyData(sbA.toString(), sbB.toString());
+    }
+
+}

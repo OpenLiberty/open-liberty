@@ -25,5 +25,5 @@ Subsystem-Name: MicroProfile 3.0
   com.ibm.websphere.appserver.mpRestClient-1.3
 -bundles=\
   com.ibm.ws.require.java8
-kind=beta
+kind=ga
 edition=core

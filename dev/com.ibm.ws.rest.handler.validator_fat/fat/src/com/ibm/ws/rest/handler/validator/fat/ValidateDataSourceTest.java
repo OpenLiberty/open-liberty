@@ -190,7 +190,8 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertNull(err, json.get("info"));
         // Is there any way to know that this configuration is unavailable due to being nested under a config element of a feature that is not enabled?
         assertNotNull(err, json = json.getJsonObject("failure"));
-        assertTrue(err, json.getString("message").contains("Did not find any configured instances of dataSource matching the request")); // TODO: "feature"));
+        String message = json.getString("message");
+        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("dataSource"));
     }
 
     @Test
@@ -356,7 +357,8 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertFalse(err, json.getBoolean("successful"));
         assertNull(err, json.get("info"));
         assertNotNull(err, json = json.getJsonObject("failure"));
-        assertTrue(err, json.getString("message").contains("Did not find any configured instances of dataSource matching the request"));
+        String message = json.getString("message");
+        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("dataSource"));
     }
 
     @Test

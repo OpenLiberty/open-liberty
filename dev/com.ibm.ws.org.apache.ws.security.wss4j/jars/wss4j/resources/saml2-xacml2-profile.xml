@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<XMLTooling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xacml-samlp="urn:oasis:xacml:2.0:saml:protocol:schema:os" xmlns:xacml-saml="urn:oasis:xacml:2.0:saml:assertion:schema:os" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns="http://www.opensaml.org/xmltooling-config">
+
+    <!-- XACML 2.0 for SAML 2 Profile Object Providers -->
+	<ObjectProviders>
+    
+		<!-- ReferencedPoliciesType -->
+        <ObjectProvider qualifiedName="xacml-saml:ReferencedPolicies">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.ReferencedPoliciesTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.ReferencedPoliciesTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.ReferencedPoliciesTypeUnmarshaller"/>
+        </ObjectProvider>
+        
+        <!-- ReferencedPoliciesType -->
+        <ObjectProvider qualifiedName="xacml-saml:ReferencedPoliciesType">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.ReferencedPoliciesTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.ReferencedPoliciesTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.ReferencedPoliciesTypeUnmarshaller"/>
+        </ObjectProvider>
+	
+         
+       <!-- XACMLAuthzDecisionStatement -->
+        <ObjectProvider qualifiedName="xacml-saml:XACMLAuthzDecisionStatement">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeUnmarshaller"/>
+        </ObjectProvider>
+        
+        <ObjectProvider qualifiedName="xacml-saml:XACMLAuthzDecisionStatementType">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeUnmarshaller"/>
+        </ObjectProvider>
+        
+        <!-- XACMLPolicyStatement -->
+        <ObjectProvider qualifiedName="xacml-saml:XACMLPolicyStatement">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyStatementTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyStatementTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyStatementTypeUnmarshaller"/>
+        </ObjectProvider>
+        
+        <ObjectProvider qualifiedName="xacml-saml:XACMLPolicyStatementType">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyStatementTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyStatementTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyStatementTypeUnmarshaller"/>
+        </ObjectProvider>
+           
+       <!-- XACMLAuthzDecisionQuery provider -->
+        <ObjectProvider qualifiedName="xacml-samlp:XACMLAuthzDecisionQuery">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionQueryTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionQueryTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionQueryTypeUnmarshaller"/>
+        </ObjectProvider>
+     
+        <ObjectProvider qualifiedName="xacml-samlp:XACMLAuthzDecisionQueryType">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionQueryTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionQueryTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionQueryTypeUnmarshaller"/>
+        </ObjectProvider>
+        
+        <!-- XACMLPolicyQuery provider -->
+        <ObjectProvider qualifiedName="xacml-samlp:XACMLPolicyQuery">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyQueryTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyQueryTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyQueryTypeUnmarshaller"/>
+        </ObjectProvider>
+     
+        <ObjectProvider qualifiedName="xacml-samlp:XACMLPolicyQueryType">
+            <BuilderClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyQueryTypeImplBuilder"/>
+            <MarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyQueryTypeMarshaller"/>
+            <UnmarshallingClass className="org.opensaml.xacml.profile.saml.impl.XACMLPolicyQueryTypeUnmarshaller"/>
+        </ObjectProvider>
+        
+    </ObjectProviders>
+    
+ </XMLTooling>

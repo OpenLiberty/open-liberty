@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1600 - CWWKS1649
+OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID {0} byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OIDC_SERVER_CONFIG_PROCESSED.explanation=Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OIDC_SERVER_CONFIG_PROCESSED.useraction=Nen\u00ed
+
+OIDC_SERVER_CONFIG_MODIFIED=CWWKS1601I: Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID {0} byla \u00fasp\u011b\u0161n\u011b upravena.
+OIDC_SERVER_CONFIG_MODIFIED.explanation=Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID byla \u00fasp\u011b\u0161n\u011b upravena.
+OIDC_SERVER_CONFIG_MODIFIED.useraction=Nen\u00ed.
+
+OIDC_SERVER_CONFIG_EXECTED_ONE=CWWKS1602I: Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID m\u00e1 nakonfigurovanou v\u00edce ne\u017e jednu hodnotu pro vlastnost poskytovatele: {0}.
+OIDC_SERVER_CONFIG_EXECTED_ONE.explanation=O\u010dek\u00e1valo se, \u017ee po\u017eadovan\u00e1 hodnota vlastnosti poskytovatele p\u0159ipojen\u00ed OpenID bude jedna hodnota, ale vr\u00e1tilo se v\u00edce. 
+OIDC_SERVER_CONFIG_EXECTED_ONE.useraction=Zkontrolujte vlastnost poskytovatele p\u0159ipojen\u00ed OpenID v souboru server.xml a ujist\u011bte se, \u017ee je nakonfigurovan\u00e1 pouze jedna hodnota.
+
+OIDC_SERVER_CONFIG_REQUIRES_ONE=CWWKS1603I: Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID nem\u00e1 nakonfigurovanou \u017e\u00e1dnou hodnotu pro vlastnost poskytovatele: {0}.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.explanation=O\u010dek\u00e1valo se, \u017ee po\u017eadovan\u00e1 hodnota vlastnosti poskytovatele p\u0159ipojen\u00ed OpenID bude alespo\u0148 jedna, ale nevr\u00e1tila se \u017e\u00e1dn\u00e1.
+OIDC_SERVER_CONFIG_REQUIRES_ONE.useraction=Zkontrolujte vlastnost poskytovatele p\u0159ipojen\u00ed OpenID v souboru server.xml a ujist\u011bte se, \u017ee je nakonfigurovan\u00e1 alespo\u0148 jedna hodnota.
+
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN=CWWKS1604I: Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID nem\u00e1 nakonfigurovanou \u017e\u00e1dnou logickou hodnotu vlastnosti pro: {0}.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.explanation=O\u010dek\u00e1valo se, \u017ee po\u017eadovan\u00e1 hodnota vlastnosti poskytovatele p\u0159ipojen\u00ed OpenID bude logickou hodnotou 'true' nebo 'false'.
+OIDC_SERVER_CONFIG_EXECTED_BOOLEAN.useraction=Zkontrolujte vlastnost poskytovatele p\u0159ipojen\u00ed OpenID v souboru server.xml a ujist\u011bte se, \u017ee je nakonfigurovan\u00e1 logick\u00e1 hodnota 'true' nebo 'false'.
+
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR=CWWKS1605E: Byl uveden neplatn\u00fd typ ud\u011blen\u00ed {0}. Platn\u00e9 typy ud\u011blen\u00ed jsou {1}.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.explanation=Uveden\u00fd typ ud\u011blen\u00ed nen\u00ed platn\u00fd.
+OIDC_SERVER_INVALID_GRANT_TYPE_ERR.useraction=Zadejte jeden z dostupn\u00fdch typ\u016f ud\u011blen\u00ed.
+
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR=CWWKS1606E: Uveden\u00fd typ ud\u011blen\u00ed {0} nen\u00ed povolen. Povolen\u00e9 typy ud\u011blen\u00ed jsou {1}.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.explanation=Uveden\u00fd typ ud\u011blen\u00ed je neplatn\u00fd, ale poskytovatel p\u0159ipojen\u00ed OpenID ho nedok\u00e1\u017ee zpracovat.
+OIDC_SERVER_GRANT_TYPE_NOT_ALLOWED_ERR.useraction=Zadejte jeden z povolen\u00fdch typ\u016f ud\u011blen\u00ed.
+
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR=CWWKS1607E: \u017d\u00e1dost o autorizaci m\u00e1 neplatn\u00fd typ odezvy {0}, platn\u00e9 typy odezvy jsou {1}.
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.explanation=Uveden\u00fd typ odezvy je neplatn\u00fd. 
+OIDC_SERVER_INVALID_RESPONSE_TYPE_ERR.useraction=\u017d\u00e1dost o autorizaci byste m\u011bli upravit tak, aby obsahovala jeden z platn\u00fdch typ\u016f odezvy.
+
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR=CWWKS1608E: \u017d\u00e1dost o autorizaci nem\u016f\u017ee m\u00edt oba typy odezvy {0} i {1}.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.explanation=\u017d\u00e1dost o autorizaci by m\u011bla m\u00edt pouze jeden typ odezvy.
+OIDC_SERVER_MULTIPLE_RESPONSE_TYPE_ERR.useraction=\u017d\u00e1dost o autorizaci byste m\u011bli upravit tak, aby obsahovala pouze jeden typ odezvy.
+
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR=CWWKS1609E: V po\u017eadavku na p\u0159ipojen\u00ed OpenID chyb\u00ed rozsah openid.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.explanation=Po\u017eadavek na p\u0159ipojen\u00ed OpenID s tokenem ID typu odezva vy\u017eaduje ve sv\u00e9m seznamu rozsah\u016f openid.
+OIDC_SERVER_MISSING_OPENID_SCOPE_ERR.useraction=Ujist\u011bte se, \u017ee rozsah openid je sou\u010d\u00e1st\u00ed po\u017eadavku.
+
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR=CWWKS1610E: V po\u017eadavku na p\u0159ipojen\u00ed OpenID chyb\u00ed po\u017eadovan\u00fd atribut Nonce.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.explanation=Hodnota Nonce je povinn\u00e1 pro po\u017eadavky na p\u0159ipojen\u00ed OpenID pou\u017e\u00edvaj\u00edc\u00ed implicitn\u00ed tok.
+OIDC_SERVER_MISSING_NONCE_ATTR_ERR.useraction=Zadejte hodnotu Nonce do implicitn\u00edch po\u017eadavk\u016f na p\u0159ipojen\u00ed OpenID.
+
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR=CWWKS1611E: Po\u017eadovan\u00e9mu tokenu JWT chyb\u00ed n\u011bkter\u00fd z povinn\u00fdch n\u00e1rok\u016f {0}.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.explanation=Token JWT nem\u00e1 ve sv\u00e9m informa\u010dn\u00edm obsahu v\u0161echny povinn\u00e9 n\u00e1roky.
+OIDC_SERVER_MISSING_REQUIRED_CLAIM_ERR.useraction=Zadejte do informa\u010dn\u00edho obsahu tokenu JWT povinn\u00e9 n\u00e1roky.
+
+OIDC_SERVER_REQUIRED_CLAIM_ERR=CWWKS1612E: Po\u017eadovan\u00fd n\u00e1rok {0} je v informa\u010dn\u00edm obsahu tokenu JWT neplatn\u00fd {1}.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.explanation=Po\u017eadovan\u00fd n\u00e1rok v informa\u010dn\u00edm obsahu tokenu JWT je neplatn\u00fd.
+OIDC_SERVER_REQUIRED_CLAIM_ERR.useraction=Zadejte do informa\u010dn\u00edho obsahu tokenu JWT dobr\u00fd n\u00e1rok.
+
+OIDC_SERVER_CLAIM_ERR=CWWKS1613E: N\u00e1rok {0} v informa\u010dn\u00edm obsahu tokenu JWT je neplatn\u00fd {1}.
+OIDC_SERVER_CLAIM_ERR.explanation=N\u00e1rok v informa\u010dn\u00edm obsahu tokenu JWT je neplatn\u00fd.
+OIDC_SERVER_CLAIM_ERR.useraction=Zadejte do informa\u010dn\u00edho obsahu tokenu JWT dobr\u00fd n\u00e1rok.
+
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR=CWWKS1614E: Token JWT m\u00e1 obsahovat n\u00e1rok 'iat', proto\u017ee konfigurace poskytovatele tokenu JWT m\u00e1 definov\u00e1no 'maxJwtLifetimeMinutesAllowed'.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.explanation=Definice konfigurace poskytovatele tokenu JWT obsahuje 'maxJwtLifetimeMinutesAllowed', p\u0159\u00edchoz\u00ed token JWT mus\u00ed tedy poskytovat n\u00e1rok 'iat'.
+OIDC_SERVER_MISSING_REQUIRED_IAT_ERR.useraction=Odeberte definici 'maxJwtLifetimeMinutesAllowed' z konfigurace nebo zadejte n\u00e1rok 'iat' do informa\u010dn\u00edho obsahu tokenu JWT.
+
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR=CWWKS1615E: Byl ji\u017e vyd\u00e1n jin\u00fd token JWT se stejn\u00fdmi n\u00e1roky vydavatele:{0} a jti:{1}.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.explanation=Byl ji\u017e vyd\u00e1n jin\u00fd token se stejn\u00fdmi n\u00e1roky 'iss' a 'jti'. To znamen\u00e1 potenci\u00e1ln\u00ed \u00fatok p\u0159ehr\u00e1n\u00edm.
+OIDC_SERVER_REPLAY_JWT_TOKEN_ERR.useraction=Ujist\u011bte se, \u017ee vydavatel tokenu JWT vyd\u00e1v\u00e1 ka\u017ed\u00fd token JWT s jedine\u010dn\u00fdm n\u00e1rokem 'jti'.
+
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN=CWWKS1616E: Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli bez p\u0159\u00edstupov\u00e9ho tokenu. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.explanation=Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli bez p\u0159\u00edstupov\u00e9ho tokenu, ale tento p\u0159\u00edstupov\u00fd token je povinn\u00fd.
+OIDC_SERVER_USERINFO_NO_ACCESS_TOKEN.useraction=Zadejte p\u0159\u00edstupov\u00fd token bu\u010f s parametrem po\u017eadavku p\u0159\u00edstupov\u00e9ho tokenu, nebo do z\u00e1hlav\u00ed autorizace.
+
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN=CWWKS1617E: Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem, kter\u00fd nebyl rozpozn\u00e1n. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.explanation=Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem, kter\u00fd nebyl rozpozn\u00e1n. Vy\u017eaduje se platn\u00fd p\u0159\u00edstupov\u00fd token.
+OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN.useraction=Zadejte platn\u00fd p\u0159\u00edstupov\u00fd token bu\u010f s parametrem po\u017eadavku p\u0159\u00edstupov\u00e9ho tokenu, nebo do z\u00e1hlav\u00ed autorizace.
+
+OIDC_SERVER_USERINFO_INVALID_REQUEST=CWWKS1618E: Identifik\u00e1tor URI po\u017eadavku na informace o u\u017eivateli nebyl platn\u00fd. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.explanation=Identifik\u00e1tor URI po\u017eadavku na informace o u\u017eivateli nebyl platn\u00fd, ale platn\u00fd identifik\u00e1tor URI je povinn\u00fd.
+OIDC_SERVER_USERINFO_INVALID_REQUEST.useraction=Zadejte platn\u00fd identifik\u00e1tor URI po\u017eadavku na informace o u\u017eivateli.
+
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN=CWWKS1619E: Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem, kter\u00fd nem\u00e1 rozsah ''openid''. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.explanation=Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem, kter\u00fd nem\u00e1 rozsah 'openid'. 
+OIDC_SERVER_USERINFO_NOT_OIDC_ACCESS_TOKEN.useraction=Zadejte p\u0159\u00edstupov\u00fd token vytvo\u0159en\u00fd s rozsahem 'openid'.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na informace o u\u017eivateli do\u0161lo k intern\u00ed chyb\u011b serveru. Chyba: {0} Identifik\u00e1tor URI po\u017eadavku byl {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na informace o u\u017eivateli do\u0161lo k intern\u00ed chyb\u011b serveru. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Obra\u0165te se na podporu spole\u010dnosti IBM.
+
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS=CWWKS1621E: Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem v parametru po\u017eadavku p\u0159\u00edstupov\u00e9ho tokenu a tak\u00e9 v z\u00e1hlav\u00ed autorizace. Je povolen pouze jeden p\u0159\u00edstupov\u00fd token. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.explanation=Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem v parametru po\u017eadavku p\u0159\u00edstupov\u00e9ho tokenu a tak\u00e9 v z\u00e1hlav\u00ed autorizace. Je povolen pouze jeden p\u0159\u00edstupov\u00fd token.
+OIDC_SERVER_USERINFO_MULTIPLE_ACCESS_TOKENS.useraction=Zadejte p\u0159\u00edstupov\u00fd token bu\u010f do parametru po\u017eadavku p\u0159\u00edstupov\u00e9ho tokenu, nebo do z\u00e1hlav\u00ed autorizace, ale ne do obou.
+
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE=CWWKS1622E: Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s tokenem, kter\u00fd nebyl p\u0159\u00edstupov\u00fdm tokenem. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.explanation=Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s tokenem, kter\u00fd nebyl p\u0159\u00edstupov\u00fdm tokenem. Vy\u017eaduje se platn\u00fd p\u0159\u00edstupov\u00fd token.
+OIDC_SERVER_USERINFO_BAD_TOKEN_TYPE.useraction=Zadejte platn\u00fd p\u0159\u00edstupov\u00fd token bu\u010f s parametrem po\u017eadavku p\u0159\u00edstupov\u00e9ho tokenu, nebo do z\u00e1hlav\u00ed autorizace. 
+
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN=CWWKS1623E: Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem, kter\u00e9mu vypr\u0161ela platnost. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.explanation=Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli spolu s p\u0159\u00edstupov\u00fdm tokenem, kter\u00e9mu vypr\u0161ela platnost. Vy\u017eaduje se platn\u00fd p\u0159\u00edstupov\u00fd token.
+OIDC_SERVER_USERINFO_EXPIRED_ACCESS_TOKEN.useraction=Zadejte platn\u00fd p\u0159\u00edstupov\u00fd token bu\u010f s parametrem po\u017eadavku p\u0159\u00edstupov\u00e9ho tokenu, nebo do z\u00e1hlav\u00ed autorizace.
+
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND=CWWKS1624E: Identifik\u00e1tor URI po\u017eadavku na informace o u\u017eivateli nebyl platn\u00fd. Poskytovatel {0} nebyl nalezen. Identifik\u00e1tor URI po\u017eadavku byl {1}.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.explanation=Identifik\u00e1tor URI po\u017eadavku na informace o u\u017eivateli nebyl platn\u00fd. Poskytovatel uveden\u00fd v identifik\u00e1toru URI nebyl nalezen. Vy\u017eaduje se platn\u00fd identifik\u00e1tor URI.
+OIDC_SERVER_USERINFO_PROVIDER_NOT_FOUND.useraction=Zadejte platn\u00fd identifik\u00e1tor URI po\u017eadavku na informace o u\u017eivateli, kter\u00fd obsahuje platn\u00fd n\u00e1zev poskytovatele.
+
+OIDC_SERVER_IDTOKEN_VERIFY_ERR=CWWKS1625E: Poskytovateli p\u0159ipojen\u00ed OpenID se nezda\u0159ilo ov\u011b\u0159it token ID kv\u016fli [{0}].
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.explanation=Poskytovatel p\u0159ipojen\u00ed OpenID nemohl ov\u011b\u0159it token ID. To mohlo b\u00fdt zp\u016fsobeno nekonzistenc\u00ed v podpisov\u00fdch kl\u00ed\u010d\u00edch mezi tv\u016frcem tokenu ID a t\u00edmto poskytovatelem.
+OIDC_SERVER_IDTOKEN_VERIFY_ERR.useraction=Ujist\u011bte se, \u017ee klient pro p\u0159ipojen\u00ed OpenID (RP) odeslal token ID vygenerovan\u00fd t\u00edmto poskytovatelem. Projd\u011bte si tak\u00e9 akce u\u017eivatele pro tuto chybu, kter\u00e9 jsou uveden\u00e9 za touto chybou.
+
+OIDC_SERVER_USERNAME_MISMATCH_ERR=CWWKS1626E: P\u0159ihla\u0161ovac\u00ed jm\u00e9no u\u017eivatele [{0}] nesouhlas\u00ed se subjektem tokenu ID [{1}].
+OIDC_SERVER_USERNAME_MISMATCH_ERR.explanation=Poskytovatel p\u0159ipojen\u00ed OpenID zjistil, \u017ee identita aktu\u00e1ln\u011b p\u0159ihl\u00e1\u0161en\u00e9ho u\u017eivatele nen\u00ed konzistentn\u00ed s informac\u00ed uvedenou v tokenu ID. To mohlo b\u00fdt zp\u016fsobeno p\u0159epnut\u00edm p\u0159ihl\u00e1\u0161en\u00fdch u\u017eivatel\u016f koncov\u00fdm u\u017eivatelem.
+OIDC_SERVER_USERNAME_MISMATCH_ERR.useraction=Ujist\u011bte se, \u017ee koncov\u00fd u\u017eivatel nep\u0159epnul identitu u\u017eivatele poskytovatele p\u0159ipojen\u00ed OpenID.
+
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM=CWWKS1627E: P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na informace o u\u017eivateli do\u0161lo k intern\u00ed chyb\u011b serveru. Slu\u017eba federovan\u00e9ho \u00falo\u017ei\u0161t\u011b nen\u00ed dostupn\u00e1. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na informace o u\u017eivateli do\u0161lo k intern\u00ed chyb\u011b serveru. Slu\u017eba federovan\u00e9ho \u00falo\u017ei\u0161t\u011b nen\u00ed dostupn\u00e1.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM.useraction=Obra\u0165te se na podporu spole\u010dnosti IBM.
+
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1628E: Do\u0161lo k chyb\u011b konfigurace. Slu\u017eba koncov\u00e9ho bodu p\u0159ipojen\u00ed OpenID nen\u00ed dostupn\u00e1. Ujist\u011bte se, \u017ee m\u00e1te nakonfigurovanou funkci openidConnectServer-1.0. 
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Prost\u0159ednictv\u00edm registru slu\u017eeb OSGi nen\u00ed k dispozici \u017e\u00e1dn\u00e1 slu\u017eba koncov\u00e9ho bodu p\u0159ipojen\u00ed OpenID.
+OIDC_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Zahr\u0148te funkci openidConnectServer-1.0 do sv\u00e9 konfigurace serveru.
+
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS1629E: Slu\u017eba konfigurace p\u0159ipojen\u00ed OpenID nen\u00ed pro poskytovatele {0} k dispozici.
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Slu\u017eba konfigurace p\u0159ipojen\u00ed OpenID nen\u00ed pro tohoto poskytovatele k dispozici. 
+OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Zkontrolujte vlastnost poskytovatele p\u0159ipojen\u00ed OpenID v souboru server.xml a ujist\u011bte se, \u017ee je uveden alespo\u0148 jeden poskytovatel.
+
+OIDC_OAUTH_PROVIDER_OBJECT_NULL=CWWKS1630E: Objekt OAuth20Provider m\u00e1 pro poskytovatele p\u0159ipojen\u00ed OpenID {0} hodnotu null.
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.explanation=Poskytovatel p\u0159ipojen\u00ed OpenID nem\u00e1 \u017e\u00e1dn\u00fd objekt OAuthProvider
+OIDC_OAUTH_PROVIDER_OBJECT_NULL.useraction=Projd\u011bte si vlastnost poskytovatele p\u0159ipojen\u00ed OpenID v souboru server.xml a ujist\u011bte se, \u017ee je uveden alespo\u0148 jeden poskytovatel OAuth.
+
+OIDC_ENDPOINT_SERVICE_ACTIVATED=CWWKS1631I: Slu\u017eba koncov\u00e9ho bodu p\u0159ipojen\u00ed OpenID je aktivov\u00e1na.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.explanation=Slu\u017eba koncov\u00e9ho bodu p\u0159ipojen\u00ed OpenID je aktivov\u00e1na.
+OIDC_ENDPOINT_SERVICE_ACTIVATED.useraction=Nen\u00ed
+
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND=CWWKS1632E: Nebyl nalezen n\u00e1zev poskytovatele OAuth, na kter\u00fd odkazuje poskytovatel p\u0159ipojen\u00ed OpenID {0}.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.explanation=Poskytovatel p\u0159ipojen\u00ed OpenID nem\u00e1 n\u00e1zev poskytovatele OAuth, nebo \u017e\u00e1dn\u00fd poskytovatel OAuth s dan\u00fdm n\u00e1zvem neexistuje.
+OIDC_OAUTH_PROVIDER_NAME_NOT_FOUND.useraction=Zadejte platn\u00fd n\u00e1zev poskytovatele OAuth pro poskytovatele p\u0159ipojen\u00ed OpenID.
+
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER=CWWKS1633E: Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli s nepodporovan\u00fdm parametrem {0}. Identifik\u00e1tor URI po\u017eadavku byl {1}.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.explanation=Byl vyd\u00e1n po\u017eadavek na informace o u\u017eivateli s nepodporovan\u00fdm parametrem.
+OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.useraction=Vyvolejte koncov\u00fd bod informace o u\u017eivateli bez nepodporovan\u00e9ho parametru.
+
+OIDC_REQUEST_ATTRIBUTE_MISSING=CWWKS1634E: Koncov\u00fd bod po\u017eadavku {0} nem\u00e1 atribut {1}.
+OIDC_REQUEST_ATTRIBUTE_MISSING.explanation=Atribut chyb\u00ed v po\u017eadavku.
+OIDC_REQUEST_ATTRIBUTE_MISSING.useraction=Zkontrolujte koncov\u00fd bod po\u017eadavku v souboru server.xml a ujist\u011bte se, \u017ee m\u00e1te spr\u00e1vn\u00e9ho poskytovatele.
+
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS=CWWKS1635W: Pokud m\u00e1 httpsRequired nastavenu hodnotu true, mus\u00ed atribut poskytovatele p\u0159ipojen\u00ed OpenID issuerIdentifier={0} vyu\u017e\u00edvat sch\u00e9ma https. Prov\u00e1d\u00edm reset na v\u00fdchoz\u00ed hodnotu.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.explanation=Je chybn\u011b nastaven\u00fd identifik\u00e1tor issuerIdentifier.
+OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.useraction=Upravte atribut poskytovatele OpenIDConnect issuerIdentifier tak, aby pou\u017e\u00edval sch\u00e9ma https.
+
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH=CWWKS1636E: Parametr post_logout_redirect_uri: {0} nesouhlas\u00ed s hodnotou atributu poskytovatele p\u0159ipojen\u00ed OpenID postLogoutRedirectUris={1} na klientovi s ID: {2}.
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.explanation=Parametr post_logout_redirect_uri, kter\u00fd poslal klient p\u0159ipojen\u00ed OpenID (RP), nen\u00ed v seznamu identifik\u00e1tor\u016f URI uveden\u00e9m atributem postLogoutRedirectUris, nebo nebyla hodnota atributu postLogoutRedirectUris posl\u00e1na. 
+OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH.useraction=Ujist\u011bte se, \u017ee hodnota parametru post_logout_redirect_uri je v seznamu atributu postLogoutRedirectUris, kter\u00fd existuje na registrovan\u00e9m klientovi. D\u00e1le, pokud m\u00e1 ID klienta hodnotu null, nebo nen\u00ed-li parametr id_token_hint platn\u00fd nebo nastaven\u00fd, je vy\u017eadov\u00e1n parametr id_token_hint, aby bylo mo\u017en\u00e9 identifikovat ID klienta.
+
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR=CWWKS1637E: Informace o u\u017eivateli pro {0} vr\u00e1cen\u00e9 u\u017eivatelskou funkc\u00ed Liberty {1} jsou null.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.explanation=Poskytovatel informac\u00ed o u\u017eivateli nainstalovan\u00fd v Liberty vrac\u00ed null pro dan\u00e9ho u\u017eivatele.
+OIDC_SERVER_USERINFO_PROVIDER_INTERNAL_ERROR.useraction=Ujist\u011bte se, \u017ee poskytovatel informac\u00ed o u\u017eivateli vrac\u00ed platn\u00fd objekt JSONObject.
+
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED=CWWKS1638I: Existuje v\u00edce nakonfigurovan\u00fdch poskytovatel\u016f UserinfoProvider.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.explanation=Existuje v\u00edce poskytovatel\u016f UserinfoProvider nakonfigurovan\u00fdch v souboru server.xml.
+OIDC_SERVER_MULTIPLE_USERINFO_PROVIDER_CONFIGURED.useraction=Nen\u00ed
+
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT=CWWKS1639E: Informace o u\u017eivateli pro {0} vr\u00e1cen\u00e9 u\u017eivatelskou funkc\u00ed Liberty {1} jsou neplatn\u00e9.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.explanation=Poskytovatel informac\u00ed o u\u017eivateli nainstalovan\u00fd v Liberty vrac\u00ed neplatn\u00fd objekt JSONObject pro dan\u00e9ho u\u017eivatele.
+OIDC_SERVER_USERINFO_INVALID_JSONOBJECT.useraction=Ujist\u011bte se, \u017ee poskytovatel informac\u00ed o u\u017eivateli vrac\u00ed platn\u00fd objekt JSONObject.
+
+OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Po\u017eadavek na \u0159et\u011bzec JWK JSON nemohl b\u00fdt zpracov\u00e1n. Atributy keyStoreRef nebo keyAliasName poskytovatele OpenID Connect mohou b\u00fdt chybn\u00e9, nebo atribut signatureAlgorithm nemus\u00ed b\u00fdt nastaven na RS256. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Vytvo\u0159en\u00ed \u0159et\u011bzce JWK JSON vy\u017eaduje, aby byl atribut signatureAlgorithm poskytovatele OpenID Connect nastaven na hodnotu RS256. Atributy KeyStoreRef a keyAliasName mus\u00ed b\u00fdt platn\u00e9, pokud jsou ur\u010deny. 
+OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Opravte atributy konfigurace poskytovatele OpenID Connect.
+
+
+IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Verze jazyka Java pou\u017eit\u00e1 t\u00edmto b\u011bhov\u00fdm prost\u0159ed\u00edm [{0}] nen\u00ed podporov\u00e1na rozhran\u00edm poskytovatele slu\u017eeb medi\u00e1tora tokenu ID. Podporovan\u00e1 verze Java je 1.7 nebo vy\u0161\u0161\u00ed.
+IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Verze Java ve zpr\u00e1v\u011b nepodporuje funkci rozhran\u00ed poskytovatele slu\u017eeb medi\u00e1tora tokenu ID. 
+IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Nainstalujte verzi Java 1.7 nebo vy\u0161\u0161\u00ed.
+

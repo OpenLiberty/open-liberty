@@ -16,7 +16,9 @@ src: \
 	test-applications/EJB3BndBean.jar/src, \
 	test-applications/EJB3BndWeb.war/src, \
 	test-applications/EJB3DefBndBean.jar/src, \
-	test-applications/EJB3DefBndWeb.war/src
+	test-applications/EJB3DefBndWeb.war/src, \
+	test-applications/NoInterfaceBndBean.jar/src, \
+	test-applications/NoInterfaceBndWeb.war/src
 
 fat.project: true
 
@@ -28,6 +30,6 @@ tested.features: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
-	com.ibm.websphere.security; version=latest, \
-	com.ibm.ws.ejbcontainer.fat_tools; version=latest
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.ejbcontainer.fat_tools;version=latest

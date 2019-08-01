@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/sso/common/internal/resources/SAMLPropagationMessages.nlsprops
+#COMPONENTPREFIX CWWKS CWTAI
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML PROPAGATION
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5251 - CWWKS5299
+
+no_saml_found_in_subject=CWWKS5251W: The required SAML token is missing from the subject. This problem can occur if the user did not authenticate successfully using SAML, the user logged out earlier, or the SAML includeTokenInSubject configuration attribute is set to false.
+no_saml_found_in_subject.explanation=There was an error extracting the SAML token from the subject or a SAML element was not found in the current subject.
+no_saml_found_in_subject.useraction=If you create the run-as subject, make sure that the SAML token is added to the subject. Otherwise ensure that your server configuration supports adding the SAML token to the subject by checking the includeTokenInSubject attribute in your SAML configuration.
+
+failed_to_extract_saml_token_from_subject=CWWKS5252W: An exception occurred while attempting to extract the SAML token from the subject. The exception was: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=An exception occurred while extracting the SAML token from the subject.
+failed_to_extract_saml_token_from_subject.useraction=Check the server logs for more information about the error.

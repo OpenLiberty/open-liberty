@@ -112,7 +112,7 @@ public class FrameworkManager {
     /**
      * Command listener waiting for stop commands.
      */
-    protected ServerCommandListener sc = null;
+    protected volatile ServerCommandListener sc = null;
 
     /**
      * JVM Shutdown hook: this gets called when the JVM shuts down and attempts
@@ -180,6 +180,8 @@ public class FrameworkManager {
 
     /* A registered service for ClientRunner and only used in a client process. */
     private ClientRunner clientRunner;
+
+    private final CountDownLatch serverListenerLatch = new CountDownLatch(1);
 
     /**
      * Create and launch the OSGi framework
@@ -314,6 +316,11 @@ public class FrameworkManager {
                             // framework without calling our shutdownFramework() method.
                             removeShutdownHook();
 
+                            try {
+                                serverListenerLatch.await(5, TimeUnit.SECONDS);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
                             // Close the command listener port, and stop any of its threads.
                             if (sc != null) {
                                 sc.close();
@@ -754,9 +761,16 @@ public class FrameworkManager {
      * Made a method to allow test to avoid/swap out the listen() behavior
      */
     protected void startServerCommandListener() {
-        String uuid = systemBundleCtx.getProperty("org.osgi.framework.uuid");
-        sc = new ServerCommandListener(config, uuid, this);
-        sc.startListening();
+        final Thread listeningThread = new Thread("kernel-command-listener") {
+            @Override
+            public void run() {
+                String uuid = systemBundleCtx.getProperty("org.osgi.framework.uuid");
+                sc = new ServerCommandListener(config, uuid, FrameworkManager.this, this);
+                serverListenerLatch.countDown();
+                sc.startListening();
+            }
+        };
+        listeningThread.start();
     }
 
     protected class ShutdownHook extends Thread {

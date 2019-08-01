@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Set;
 
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
@@ -143,6 +144,36 @@ public class ServletRESTResponseWithWriter implements RESTResponse {
     @Override
     public void setCharacterEncoding(String charset) {
         this.response.setCharacterEncoding(charset);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.rest.handler.RESTResponse#getStatus()
+     */
+    @Override
+    public int getStatus() {
+        return this.response.getStatus();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.rest.handler.RESTResponse#setRequiredRoles(java.util.Set)
+     */
+    @Override
+    public void setRequiredRoles(Set<String> requiredRoles) {
+        this.response.setRequiredRoles(requiredRoles);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.rest.handler.RESTResponse#getRequiredRoles()
+     */
+    @Override
+    public Set<String> getRequiredRoles() {
+        return this.response.getRequiredRoles();
     }
 
 }

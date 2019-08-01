@@ -12,6 +12,8 @@ package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRebalanceListener;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.TopicPartition;
@@ -20,6 +22,9 @@ import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.TopicPartition;
  *
  */
 public class ConsumerRebalanceListenerImpl implements org.apache.kafka.clients.consumer.ConsumerRebalanceListener {
+
+    private static final String CLAZZ = ConsumerRebalanceListenerImpl.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLAZZ);
 
     private final ConsumerRebalanceListener listener;
 
@@ -33,6 +38,9 @@ public class ConsumerRebalanceListenerImpl implements org.apache.kafka.clients.c
     /** {@inheritDoc} */
     @Override
     public void onPartitionsAssigned(Collection<org.apache.kafka.common.TopicPartition> delegatePartitions) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLAZZ, "onPartitionsAssigned", "TopicPartitions: {0}", delegatePartitions);
+        }
         Collection<TopicPartition> partitions = wrap(delegatePartitions);
         this.listener.onPartitionsAssigned(partitions);
     }
@@ -40,6 +48,9 @@ public class ConsumerRebalanceListenerImpl implements org.apache.kafka.clients.c
     /** {@inheritDoc} */
     @Override
     public void onPartitionsRevoked(Collection<org.apache.kafka.common.TopicPartition> delegatePartitions) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLAZZ, "onPartitionsRevoked", "TopicPartitions: {0}", delegatePartitions);
+        }
         Collection<TopicPartition> partitions = wrap(delegatePartitions);
         this.listener.onPartitionsRevoked(partitions);
     }
@@ -51,7 +62,6 @@ public class ConsumerRebalanceListenerImpl implements org.apache.kafka.clients.c
             TopicPartitionImpl partition = new TopicPartitionImpl(delegatePartition);
             partitions.add(partition);
         }
-
         return partitions;
     }
 

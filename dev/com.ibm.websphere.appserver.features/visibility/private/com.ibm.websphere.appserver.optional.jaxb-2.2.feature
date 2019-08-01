@@ -17,3 +17,4 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.internal.optional.jaxb-2.2
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

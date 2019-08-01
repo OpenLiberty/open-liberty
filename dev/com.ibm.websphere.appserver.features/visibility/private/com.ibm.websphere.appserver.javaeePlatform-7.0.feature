@@ -7,3 +7,4 @@ IBM-Process-Types: client, server
  com.ibm.ws.javaee.version
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

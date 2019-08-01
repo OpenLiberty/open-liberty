@@ -18,11 +18,8 @@ override_dh_auto_install:
 	mkdir -p ${BUILDROOT}/usr/share/${NAME}
 	cp ${TOPDIR}/defaultServer.zip ${BUILDROOT}/usr/share/${NAME}
 	#Creating the scripts
-	mkdir -p ${BUILDROOT}/usr/libexec
-	cp ${TOPDIR}/scripts/openliberty ${BUILDROOT}/usr/libexec
+	mkdir -p ${BUILDROOT}/etc/init.d
+	cp ${TOPDIR}/scripts/openliberty ${BUILDROOT}/etc/init.d
 	#Creating the service
 	mkdir -p ${BUILDROOT}/lib/systemd/system
 	cp ${TOPDIR}/scripts/openliberty@.service ${BUILDROOT}/lib/systemd/system
-	#Moving LICENSE file to doc and license
-	# mkdir -p ${BUILDROOT}/usr/share/doc/${NAME}
-	# cp ${BUILDROOT}/opt/ol/${NAME}/LICENSE ${BUILDROOT}/usr/share/doc/${NAME}

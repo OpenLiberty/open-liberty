@@ -1,0 +1,928 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
+#COMPONENTPREFIX CWSCT
+#COMPONENTNAMEFOR CWSCT WebSphere SIP Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+
+info.container.initialized=CWSCT0001I: Zako\u0144czono inicjowanie kontenera SIP.
+info.container.initialized.explanation=Kontener com.ibm.ws.sip.container SIP jest uruchomiony i gotowy do odbierania komunikat\u00f3w z sieci.
+info.container.initialized.useraction=To jest komunikat informacyjny.  Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+info.container.version=CWSCT0002I: Kontener SIP {0}
+info.container.version.explanation=Numer wersji komponentu kontenera SIP.
+info.container.version.useraction=To jest komunikat informacyjny.  Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+warning.mean.disabled=CWSCT0003W: Nie powiod\u0142a si\u0119 pr\u00f3ba uruchomienia komponentu MBean kontenera SIP.
+warning.mean.disabled.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uruchomienia komponentu MBean kontenera SIP. Operacje JMX nie b\u0119d\u0105 dost\u0119pne w przypadku tego kontenera SIP.
+warning.mean.disabled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception=CWSCT0004E: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy wyj\u0105tek:
+error.exception.explanation=Kontener com.ibm.ws.sip.container SIP wychwyci\u0142 wyj\u0105tek.
+error.exception.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.failover.started=CWSCT0006I: Uruchomiono prze\u0142\u0105czanie awaryjne. W przypadku nazwy logicznej {1} otrzymano nast\u0119puj\u0105c\u0105 liczb\u0119 obiekt\u00f3w: {0}.
+info.failover.started.explanation=Jeden z serwer\u00f3w w klastrze zosta\u0142 wy\u0142\u0105czony i niekt\u00f3re jego nazwy logiczne zosta\u0142y przekazane do tego serwera. Obiekty sesji powi\u0105zane z tymi nazwami logicznymi s\u0105 teraz aktywowane na tym serwerze.
+info.failover.started.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.failover.ended=CWSCT0008I: Zako\u0144czono prze\u0142\u0105czanie awaryjne w przypadku nazwy logicznej {0}.
+info.failover.ended.explanation=Zako\u0144czono aktywowanie obiekt\u00f3w sesji powi\u0105zanych z nazw\u0105 logiczn\u0105. Nazw\u0119 logiczn\u0105 i liczb\u0119 obiekt\u00f3w zawiera nast\u0119puj\u0105cy komunikat: Uruchomiono prze\u0142\u0105czanie awaryjne.
+info.failover.ended.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.parser.configuration=CWSCT0010E: Wyst\u0105pi\u0142 b\u0142\u0105d konfiguracji analizatora sk\u0142adni sip.xml.
+error.parser.configuration.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zainicjowania analizatora sk\u0142adni XML. To nie znaczy, \u017ce wyst\u0105pi\u0142 b\u0142\u0105d w dokumencie sip.xml.
+error.parser.configuration.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.parser.not.available=CWSCT0011E: Analizator sk\u0142adni jest niedost\u0119pny. Nie mo\u017cna za\u0142adowa\u0107 konfiguracji aplikacji.
+error.parser.not.available.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce za\u0142adowa\u0107 aplikacji z pliku sip.xml z powodu braku analizatora sk\u0142adni XML.
+error.parser.not.available.useraction=Znajd\u017a w dzienniku nast\u0119puj\u0105cy wcze\u015bniejszy komunikat o b\u0142\u0119dzie: B\u0142\u0105d konfigurowania analizatora sk\u0142adni sip.xml.
+
+error.parse.exception=CWSCT0012E: Wyj\u0105tek analizowania: Nie powiod\u0142a si\u0119 pr\u00f3ba przeanalizowania pliku sip.xml {0}.
+error.parse.exception.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce za\u0142adowa\u0107 aplikacji z pliku sip.xml z powodu b\u0142\u0119du w dokumencie sip.xml.
+error.parse.exception.useraction=Sprawd\u017a, czy w pliku sip.xml znajduj\u0105 si\u0119 b\u0142\u0119dy. Informacje o standardowym formacie pliku sip.xml mo\u017cna znale\u017a\u0107 w specyfikacji JSR 116 (SIP Servlet API - Interfejs API serwletu SIP) w rozdzia\u0142ach 11 (Mapping Requests to Servlets - Odwzorowywanie \u017c\u0105da\u0144 na serwlety) i 15 (Deployment Descriptor - Deskryptor wdra\u017cania).
+
+error.listener.not.found=CWSCT0013E: Nie znaleziono klasy nas\u0142uchiwania {0} dla aplikacji {1}.
+error.listener.not.found.explanation=Program \u0142aduj\u0105cy klasy nie mo\u017ce znale\u017a\u0107 klasy nas\u0142uchiwania.
+error.listener.not.found.useraction=Sprawd\u017a w pliku sip.xml, czy nazwa klasy nas\u0142uchiwania jest poprawna. Upewnij si\u0119, \u017ce klasa nas\u0142uchiwania jest uwzgl\u0119dniona w \u015bcie\u017cce klasy.
+
+error.init.listener.failed=CWSCT0014E: Pr\u00f3ba utworzenia klasy nas\u0142uchiwania {0} dla aplikacji {1} nie powiod\u0142a si\u0119.
+error.init.listener.failed.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce utworzy\u0107 instancji klasy nas\u0142uchiwania.
+error.init.listener.failed.useraction=Sprawd\u017a w pliku sip.xml, czy nazwa klasy nas\u0142uchiwania jest poprawna. Upewnij si\u0119, \u017ce klasa nas\u0142uchiwania ma publiczny konstruktor bezargumentowy.
+
+error.too.many.timer.listeners=CWSCT0015E: Niepoprawny kod XML. Do aplikacji {0} przypisano wi\u0119cej ni\u017c jedn\u0105 klas\u0119 TimerListener.
+error.too.many.timer.listeners.explanation=Dokument sip.xml definiuje wi\u0119cej ni\u017c jedn\u0105 klas\u0119 TimerListener dla tej samej aplikacji.
+error.too.many.timer.listeners.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce zdefiniowano tylko jedn\u0105 klas\u0119 TimerListener dla aplikacji.
+
+error.parsing.session.ttl=CWSCT0016E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania warto\u015bci czasu \u017cycia (TTL) sesji dla aplikacji SIP: {0}.
+error.parsing.session.ttl.explanation=Dokument sip.xml nie zawiera poprawnej warto\u015bci czasu \u017cycia sekcji dla aplikacji.
+error.parsing.session.ttl.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce ustawienie limitu czasu sesji jest wyra\u017cone w pe\u0142nych minutach.
+
+error.mapping.to.nonexisting.siplet=CWSCT0017E: Znaleziono odwzorowanie nieistniej\u0105cego serwletu SIP {0} (aplikacja: {1}).
+error.mapping.to.nonexisting.siplet.explanation=Dokument sip.xml zawiera odwzorowanie niezdefiniowanego serwletu
+error.mapping.to.nonexisting.siplet.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce wszystkie znaczniki servlet-name zawarte w elemencie servlet-mapping odpowiadaj\u0105 istniej\u0105cym serwletom, i \u017ce okre\u015blono definicj\u0119 wzorca dla odwzorowania serwletu.
+
+error.invalid.condition.type=CWSCT0018E: W pliku sip.xml {0} znaleziono niepoprawny typ warunku.
+error.invalid.condition.type.explanation=Dokument sip.xml nie zawiera poprawnego typu warunku dopasowywania serwletu.
+error.invalid.condition.type.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce regu\u0142y dopasowywania s\u0105 zgodne z informacjami podanymi w specyfikacji JSR 116 (SIP Servlet API - Interfejs API serwletu SIP) w rozdziale 11.3 (Conditions - Warunki).
+
+error.parsing.condition=CWSCT0019E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania warunku {0}. Zmienna: {1}.\t Warto\u015b\u0107: {2}.
+error.parsing.condition.explanation=Dokument sip.xml nie zawiera poprawnej regu\u0142y dopasowywania serwletu.
+error.parsing.condition.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce regu\u0142y dopasowywania s\u0105 zgodne z informacjami podanymi w specyfikacji JSR 116 (SIP Servlet API - Interfejs API serwletu SIP) w rozdziale 11 (Mapping Requests to Servlets - Odwzorowywanie \u017c\u0105da\u0144 na serwlety).
+
+error.parsing.and.condition=CWSCT0020E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania warunku AND. Nie znaleziono podelement\u00f3w.
+error.parsing.and.condition.explanation=Dokument sip.xml zawiera warunek AND bez podelement\u00f3w.
+error.parsing.and.condition.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce znacznik AND zawiera regu\u0142y dopasowywania.
+
+error.parsing.sip.app=CWSCT0021E: B\u0142\u0105d w definicji XML dotycz\u0105cy sekcji sip-app.
+error.parsing.sip.app.explanation=Dokument sip.xml nie zawiera sekcji sip-app lub zawiera wi\u0119cej ni\u017c jedn\u0105 sekcj\u0119 sip-app. Powinien istnie\u0107 tylko jeden taki element.
+error.parsing.sip.app.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce istnieje dok\u0142adnie jedna sekcja sip-app.
+
+error.local.sip.dtd.not.found=CWSCT0022E: B\u0142\u0105d: Nie znaleziono lokalnego dokumentu DTD SIP.
+error.local.sip.dtd.not.found.explanation=Brak lokalnej definicji dla dokumentu /javax/servlet/sip/sip-app_1_0.dtd
+error.local.sip.dtd.not.found.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.server.overload.cleared=CWSCT0023I: Serwer ju\u017c nie jest przeci\u0105\u017cony. Czynnik obci\u0105\u017cenia zosta\u0142 zmniejszony do {0}.
+info.server.overload.cleared.explanation=Kontener com.ibm.ws.sip.container SIP nie jest ju\u017c uwa\u017cany za przeci\u0105\u017cony i jest gotowy do obs\u0142ugiwania nowych sesji.
+info.server.overload.cleared.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.create.stack=CWSCT0025E: Operacja tworzenia stosu SIP nie powiod\u0142a si\u0119.
+error.failed.create.stack.explanation=Nie powiod\u0142a si\u0119 operacja inicjowania wewn\u0119trznego stosu SIP.
+error.failed.create.stack.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sip.stack.exception=CWSCT0026E: Wyst\u0105pi\u0142 wyj\u0105tek w stosie SIP.
+error.sip.stack.exception.explanation=Wychwycono wyj\u0105tek w warstwie stosu SIP. Podj\u0119to pr\u00f3b\u0119 kontynuowania normalnego dzia\u0142ania.
+error.sip.stack.exception.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.listening.point=CWSCT0028I: Punkt nas\u0142uchiwania kontenera SIP {0}:{1}/{2}
+info.listening.point.explanation=To jest komunikat informacyjny generowany dla ka\u017cdego adresu hosta, numeru portu i protoko\u0142u transportowego, na kt\u00f3rym kontener com.ibm.ws.sip.container SIP nas\u0142uchuje przychodz\u0105cego ruchu SIP.
+info.listening.point.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.forward.response=CWSCT0029E: Nie powiod\u0142a si\u0119 pr\u00f3ba przekazania komunikatu SIP. \u017b\u0105danie odpowiedzi: {0}
+error.forward.response.explanation=Przekazanie komunikatu SIP przez kontener com.ibm.ws.sip.container SIP nie powiod\u0142o si\u0119.
+error.forward.response.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.proxying.to.branch=CWSCT0030E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba przekazania \u017c\u0105dania do rozga\u0142\u0119zienia. Identyfikator URI: {0}
+error.proxying.to.branch.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP (dzia\u0142aj\u0105cy jako proxy) pr\u00f3ba przekazania \u017c\u0105dania do jednego z miejsc docelowych.
+error.proxying.to.branch.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.create.record.route.uri=CWSCT0031E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba utworzenia nag\u0142\u00f3wka Record-Route {0}
+error.create.record.route.uri.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP (dzia\u0142aj\u0105cy jako proxy) pr\u00f3ba utworzenia nag\u0142\u00f3wka Record-Route.
+error.create.record.route.uri.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.proxy.set.parallel.illegal.state=CWSCT0032E: Serwlet SIP nie mo\u017ce zmieni\u0107 proxy na proxy r\u00f3wnoleg\u0142e po wywo\u0142aniu metody proxyTo
+error.proxy.set.parallel.illegal.state.explanation=Kod serwletu SIP wywo\u0142a\u0142 metod\u0119 Proxy.setParallel() po metodzie Proxy.proxyTo()
+error.proxy.set.parallel.illegal.state.useraction=Zmie\u0144 kod aplikacji w taki spos\u00f3b, aby metoda Proxy.setParallel() nie by\u0142a wywo\u0142ywana po metodzie Proxy.proxyTo()
+
+error.proxy.set.recourse.illegal.state=CWSCT0033E: W przypadku proxy bezstanowego serwlet SIP nie mo\u017ce stosowa\u0107 rekurencji.
+error.proxy.set.recourse.illegal.state.explanation=Kod serwletu SIP wywo\u0142a\u0142 metod\u0119 Proxy.setRecurse() dla proxy bezstanowego.
+error.proxy.set.recourse.illegal.state.useraction=Zmie\u0144 kod aplikacji w taki spos\u00f3b, aby metoda Proxy.setRecurse() nie by\u0142a wywo\u0142ywana w przypadku proxy bezstanowego.
+
+error.proxy.set.stateful.illegal.state=CWSCT0034E: Po wywo\u0142aniu metody proxyTo serwlet SIP nie mo\u017ce zmieni\u0107 proxy na proxy stanowe
+error.proxy.set.stateful.illegal.state.explanation=Kod serwletu SIP wywo\u0142a\u0142 metod\u0119 Proxy.setStateful() po metodzie Proxy.proxyTo()
+error.proxy.set.stateful.illegal.state.useraction=Zmie\u0144 kod aplikacji w taki spos\u00f3b, aby metoda Proxy.setStateful() nie by\u0142a wywo\u0142ywana po metodzie Proxy.proxyTo()
+
+error.proxy.cancel.request=CWSCT0035E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba wykonania \u017c\u0105dania anulowania w proxy. \u017b\u0105danie anulowania: {0}
+error.proxy.cancel.request.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania \u017c\u0105dania CANCEL.
+error.proxy.cancel.request.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sending.response.upstream=CWSCT0036E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba wys\u0142ania odpowiedzi zwrotnej. Odpowied\u017a: {0}
+error.sending.response.upstream.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania odpowiedzi zwrotnej. Kierunek wysy\u0142ania odpowiedzi zwrotnej odpowiada kierunkowi przep\u0142ywu od serwera agenta u\u017cytkownika (user agent server \u2013 UAS) z powrotem do klienta agenta u\u017cytkownika (user agent client \u2013 UAC).
+error.sending.response.upstream.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.proxy.set.recordroute.illegal.state=CWSCT0037E: Serwlet SIP nie mo\u017ce ustawi\u0107 nag\u0142\u00f3wka Record-Route po wywo\u0142aniu metody proxyTo
+error.proxy.set.recordroute.illegal.state.explanation=Kod serwletu SIP wywo\u0142a\u0142 metod\u0119 Proxy.setRecordRoute() po metodzie Proxy.proxyTo()
+error.proxy.set.recordroute.illegal.state.useraction=Zmie\u0144 kod aplikacji w taki spos\u00f3b, aby metoda Proxy.setRecordRoute() nie by\u0142a wywo\u0142ywana po metodzie Proxy.proxyTo()
+
+error.create.request=CWSCT0040E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba utworzenia \u017c\u0105dania. \u017b\u0105danie: {0}
+error.create.request.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba utworzenia komunikatu \u017c\u0105dania SIP.
+error.create.request.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.parse.route.header=CWSCT0041E: Nie powiod\u0142a si\u0119 pr\u00f3ba pobrania nag\u0142\u00f3wka Route
+error.failed.parse.route.header.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba pobrania nag\u0142\u00f3wka Route z \u017c\u0105dania.
+error.failed.parse.route.header.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.resolving.inet.address=CWSCT0042E: Nie powiod\u0142a si\u0119 pr\u00f3ba przet\u0142umaczenia adresu internetowego.
+error.resolving.inet.address.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba przet\u0142umaczenia adresu internetowego z nazwy hosta na adres IP.
+error.resolving.inet.address.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.proxy.set.recordroute.non.dialog.method=CWSCT0043E: Nie mo\u017cna ustawi\u0107 nag\u0142\u00f3wka Record-Route dla \u017c\u0105dania, kt\u00f3re nie jest dialogiem: {0}
+error.proxy.set.recordroute.non.dialog.method.explanation=Kod serwletu SIP wywo\u0142a\u0142 metod\u0119 Proxy.setRecordRoute() dla \u017c\u0105dania, kt\u00f3re nie tworzy dialogu.
+error.proxy.set.recordroute.non.dialog.method.useraction=Zmie\u0144 kod aplikacji w taki spos\u00f3b, aby metoda Proxy.setRecordRoute() nie by\u0142a wywo\u0142ywana w przypadku \u017c\u0105da\u0144, kt\u00f3re nie tworz\u0105 dialog\u00f3w. Przyk\u0142adowe \u017c\u0105dania, kt\u00f3re nie tworz\u0105 dialog\u00f3w: INVITE, REFER i SUBSCRIBE.
+
+error.call.should.be.invoked=CWSCT0044E: Proxy odebra\u0142o nieoczekiwane wywo\u0142anie funkcji.
+error.call.should.be.invoked.explanation=Kontener com.ibm.ws.sip.container SIP odebra\u0142 komunikat, kt\u00f3rego nie oczekiwa\u0142.
+error.call.should.be.invoked.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.route.header.unavailable=CWSCT0045E: Nie mo\u017cna wykona\u0107 operacji przekazania kolejnych \u017c\u0105da\u0144 bez nag\u0142\u00f3wka Route: {0}
+error.route.header.unavailable.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce wykona\u0107 operacji przekazania kolejnych \u017c\u0105da\u0144 w ramach dialogu, poniewa\u017c przychodz\u0105ce \u017c\u0105danie nie ma nag\u0142\u00f3wka Route.
+error.route.header.unavailable.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+
+error.unkown.uri.type=CWSCT0046E: Nieznany typ identyfikatora URI. Nie mo\u017cna uzyska\u0107 dost\u0119pu do parametr\u00f3w z nag\u0142\u00f3wka: {0}
+error.unkown.uri.type.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce przetworzy\u0107 komunikatu, poniewa\u017c identyfikator URI nie jest identyfikatorem URI SIP ani SIPS.
+error.unkown.uri.type.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.processing.strict.routing=CWSCT0048E: B\u0142\u0105d podczas przetwarzania rygorystycznego routingu (tryb strict). Identyfikator URI \u017c\u0105dania nie zawiera identyfikatora sesji. {0}
+error.processing.strict.routing.explanation=W ramach dialogu pochodz\u0105cego z rygorystycznego routera (tryb strict) kontener com.ibm.ws.sip.container SIP odebra\u0142 \u017c\u0105danie, w kt\u00f3rym w nag\u0142\u00f3wku Request-URI brak parametru identyfikatora sesji lub parametr ten ma niepoprawn\u0105 warto\u015b\u0107.
+error.processing.strict.routing.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sending.response=CWSCT0049E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wysy\u0142ania odpowiedzi
+error.sending.response.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania odpowiedzi.
+error.sending.response.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.default.invoke.siplet.not.found=CWSCT0051E: Nie mo\u017cna znale\u017a\u0107 serwletu SIP do wywo\u0142ania. Domy\u015blna procedura obs\u0142ugi nie jest dost\u0119pna.
+error.default.invoke.siplet.not.found.explanation=Brak zgodnego serwletu SIP do obs\u0142ugi \u017c\u0105dania.
+error.default.invoke.siplet.not.found.useraction=Sprawd\u017a regu\u0142y dopasowywania zainstalowanych aplikacji SIP i upewnij si\u0119, \u017ce co najmniej jedna aplikacja SIP mo\u017ce zosta\u0107 dopasowana do \u017c\u0105dania.
+
+error.handling.request=CWSCT0052E: Nie mo\u017cna znale\u017a\u0107 dialogu dla otrzymanego \u017c\u0105dania BYE. Identyfikator Call-Id: {0}
+error.handling.request.explanation=Kontener com.ibm.ws.sip.container SIP otrzyma\u0142 \u017c\u0105danie BYE, kt\u00f3re nie jest zgodne z \u017cadnym istniej\u0105cym dialogiem.
+error.handling.request.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.invalid.operator.var=CWSCT0053E: Niepoprawna zmienna w operatorze. Zmienna: {0}
+error.invalid.operator.var.explanation=Dokument sip.xml nie zawiera poprawnej zmiennej.
+error.invalid.operator.var.useraction=Sprawd\u017a plik sip.xml, aby upewni\u0107 si\u0119, \u017ce zmienna jest poprawna i zgodna z informacjami podanymi w specyfikacji JSR 116 (SIP Servlet API - Interfejs API serwletu SIP) w rozdziale 11.2 (SIP Request Object Model - Model obiektu \u017c\u0105dania SIP).
+
+error.missing.sub.elements=CWSCT0054E: Nie powiod\u0142a si\u0119 operacja warto\u015bciowania operatora {0}. Podelementy s\u0105 niedost\u0119pne.
+error.missing.sub.elements.explanation=Dokument sip.xml zawiera warunek bez podelement\u00f3w.
+error.missing.sub.elements.useraction=Sprawd\u017a plik sip.xml, aby upewni\u0107 si\u0119, \u017ce dopasowywanie wzorca jest poprawne i zgodne z informacjami podanymi w specyfikacji JSR 116 (SIP Servlet API - Interfejs API serwletu SIP) w rozdziale 11.3 (Conditions - Warunki).
+
+error.ip.parse=CWSCT0055E: Nie powiod\u0142a si\u0119 pr\u00f3ba przeanalizowania konfiguracji przez element uwierzytelniaj\u0105cy adresy IP
+error.ip.parse.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba przeanalizowania listy zaufanych adres\u00f3w IP z konfiguracji.
+error.ip.parse.useraction=Sprawd\u017a w\u0142a\u015bciwo\u015b\u0107 konfiguracyjn\u0105 com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.host=CWSCT0056E: B\u0142\u0105d elementu uwierzytelniaj\u0105cego adresy IP: Nieznany host
+error.ip.host.explanation=Lista zaufanych adres\u00f3w IP podana na potrzeby uwierzytelniania SIP zawiera nazw\u0119 hosta, kt\u00f3rej nie mo\u017cna przet\u0142umaczy\u0107.
+error.ip.host.useraction=Sprawd\u017a list\u0119 zaufanych adres\u00f3w IP podan\u0105 we w\u0142a\u015bciwo\u015bci konfiguracyjnej com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.header.parse=CWSCT0057E: Nie powiod\u0142a si\u0119 pr\u00f3ba przeanalizowania nag\u0142\u00f3wka przez element uwierzytelniaj\u0105cy adresy IP
+error.ip.header.parse.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba przeanalizowania nag\u0142\u00f3wka VIA na potrzeby uwierzytelniania adres\u00f3w IP.
+error.ip.header.parse.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.ip.header.exception=CWSCT0058E: Wyst\u0105pi\u0142 problem dotycz\u0105cy nag\u0142\u00f3wka IPAuthenticator.
+error.ip.header.exception.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba znalezienia w komunikacie nag\u0142\u00f3wka VIA na potrzeby uwierzytelniania adres\u00f3w IP.
+error.ip.header.exception.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.expires=CWSCT0059E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania warto\u015bci parametru expires (czas wa\u017cno\u015bci). U\u017cyto niepoprawnego formatu: {0}
+error.get.expires.explanation=Podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody Address.setExpires() nie powiod\u0142a si\u0119, poniewa\u017c nag\u0142\u00f3wek adresu komunikatu zawiera zniekszta\u0142con\u0105 warto\u015b\u0107 parametru expires (czas wa\u017cno\u015bci).
+error.get.expires.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.display.name=CWSCT0060E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia nazwy wy\u015bwietlanej. Nazwa: {0}
+error.set.display.name.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody Address.setDisplayName().
+error.set.display.name.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce nazwa wy\u015bwietlana jest poprawna i nie ma warto\u015bci NULL.
+
+error.set.expires=CWSCT0061E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia parametru expires (czas wa\u017cno\u015bci). Liczba sekund: {0}
+error.set.expires.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody Address.setExpires().
+error.set.expires.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.parameter=CWSCT0062E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia parametr\u00f3w. Nazwa: {0}, warto\u015b\u0107: {1}
+error.set.parameter.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody Address.setParameter() lub SipURI.setParameter().
+error.set.parameter.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce nazwa i warto\u015b\u0107 parametru s\u0105 poprawne.
+
+error.set.q=CWSCT0063E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia parametru q. Warto\u015b\u0107: {0}
+error.set.q.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody Address.setQ().
+error.set.q.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce warto\u015b\u0107 priorytetu jest poprawna.
+
+error.get.method=CWSCT0064E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania metody z przes\u0142anego \u017c\u0105dania: {0}
+error.get.method.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getMethod().
+error.get.method.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.request.uri=CWSCT0065E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania identyfikatora URI \u017c\u0105dania z przes\u0142anego \u017c\u0105dania: {0}
+error.get.request.uri.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletRequest.getRequestURI().
+error.get.request.uri.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.create.response=CWSCT0066E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba utworzenia odpowiedzi na \u017c\u0105danie: {0}
+error.create.response.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba utworzenia odpowiedzi na \u017c\u0105danie.
+error.create.response.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.send.request=CWSCT0067E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba wys\u0142ania \u017c\u0105dania przy u\u017cyciu interfejsu JAIN. Identyfikator URI: {0}
+error.send.request.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania \u017c\u0105dania.
+error.send.request.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.add.header=CWSCT0069E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba dodania nag\u0142\u00f3wka. Nazwa: {0}, warto\u015b\u0107: {1}
+error.add.header.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba dodania nag\u0142\u00f3wka do komunikatu.
+error.add.header.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.send.response=CWSCT0070E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba wys\u0142ania odpowiedzi ({0})
+error.send.response.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by wys\u0142ania odpowiedzi przez kontener com.ibm.ws.sip.container SIP.
+error.send.response.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.header=CWSCT0071E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia nag\u0142\u00f3wka. Nazwa: {0}, warto\u015b\u0107: {1}
+error.set.header.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba ustawienia warto\u015bci nag\u0142\u00f3wka w komunikacie.
+error.set.header.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.host=CWSCT0072E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia hosta {0}
+error.set.host.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipURI.setHost().
+error.set.host.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce nazwa hosta jest poprawna i nie ma warto\u015bci NULL.
+
+error.set.port=CWSCT0073E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia portu {0}
+error.set.port.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipURI.setPort().
+error.set.port.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.secure=CWSCT0074E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia parametru secure. Warto\u015b\u0107: {0}
+error.set.secure.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipURI.setSecure().
+error.set.secure.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.user=CWSCT0075E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia u\u017cytkownika {0}
+error.set.user.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipURI.setUser().
+error.set.user.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce nazwa u\u017cytkownika jest poprawna i nie ma warto\u015bci NULL.
+
+error.set.user.password=CWSCT0076E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia has\u0142a u\u017cytkownika {0}
+error.set.user.password.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipURI.setUserPassword().
+error.set.user.password.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce has\u0142o u\u017cytkownika jest poprawne i nie ma warto\u015bci NULL.
+
+error.get.accept.language=CWSCT0077E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba pobrania akceptowanego j\u0119zyka ({0})
+error.get.accept.language.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getAcceptLanguage().
+error.get.accept.language.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.accept.languages=CWSCT0078E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba pobrania akceptowanych j\u0119zyk\u00f3w ({0})
+error.get.accept.languages.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getAcceptLanguages().
+error.get.accept.languages.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.address.header=CWSCT0079E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania nag\u0142\u00f3wka adresu. Nazwa: {0}
+error.get.address.header.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getAddressHeader().
+error.get.address.header.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.address.headers=CWSCT0080E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania nag\u0142\u00f3wk\u00f3w adresu. Nazwa: {0}
+error.get.address.headers.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getAddressHeaders().
+error.get.address.headers.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.character.encoding=CWSCT0081E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba pobrania kodowania znak\u00f3w ({0})
+error.get.character.encoding.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getCharacterEncoding().
+error.get.character.encoding.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.content.length=CWSCT0082E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba pobrania d\u0142ugo\u015bci tre\u015bci ({0})
+error.get.content.length.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getContentLength().
+error.get.content.length.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.content.type=CWSCT0083E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba pobrania typu tre\u015bci ({0})
+error.get.content.type.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getContentType().
+error.get.content.type.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.header=CWSCT0084E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania nag\u0142\u00f3wka. Nazwa: {0}
+error.get.header.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getHeader().
+error.get.header.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.header.names=CWSCT0085E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania nag\u0142\u00f3wka. Nazwy: {0}
+error.get.header.names.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getHeaderNames().
+error.get.header.names.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.headers=CWSCT0086E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania nag\u0142\u00f3wk\u00f3w. Nazwa: {0}
+error.get.headers.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getHeaders().
+error.get.headers.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.content=CWSCT0087E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia tre\u015bci. Tre\u015b\u0107: {0}, typ tre\u015bci: {1}
+error.set.content.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.setContent().
+error.set.content.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce tre\u015b\u0107 komunikatu jest poprawna i nie ma warto\u015bci NULL.
+
+error.get.via.headers=CWSCT0088E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania nag\u0142\u00f3wk\u00f3w VIA ({0})
+error.get.via.headers.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getViaHeaders().
+error.get.via.headers.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.contact.header=CWSCT0089E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania nag\u0142\u00f3wka kontaktu ({0})
+error.get.contact.header.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.getContactHeader().
+error.get.contact.header.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.jain.sip.headers=CWSCT0090E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba pobrania nag\u0142\u00f3wk\u00f3w JAIN SIP ({0})
+error.get.jain.sip.headers.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba pobrania jednego lub wielu nag\u0142\u00f3wk\u00f3w z wewn\u0119trznego obiektu komunikatu JAIN.
+error.get.jain.sip.headers.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.max.forwards=CWSCT0091E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania maksymalnej liczby operacji przekazywania ({0})
+error.get.max.forwards.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletRequest.getMaxForwards().
+error.get.max.forwards.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.reason.phrase=CWSCT0092E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania frazy przyczyny ({0})
+error.get.reason.phrase.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletResponse.getReasonPhrase().
+error.get.reason.phrase.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.get.status=CWSCT0093E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba pobrania statusu ({0})
+error.get.status.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletResponse.getStatus().
+error.get.status.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.status=CWSCT0094E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia statusu. Status: {0}, fraza przyczyny: {1}
+error.set.status.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletResponse.setStatus().
+error.set.status.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce warto\u015b\u0107 kodu statusu jest poprawna. Je\u015bli okre\u015blono tak\u017ce fraz\u0119 przyczyny, sprawd\u017a, czy nie ma ona warto\u015bci NULL i czy nie jest pusta.
+
+error.create.address=CWSCT0095E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba utworzenia adresu. Identyfikator URI: {0}, nazwa wy\u015bwietlana: {1}
+error.create.address.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipFactory.createAddress().
+error.create.address.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce identyfikator URI i nazwa wy\u015bwietlana s\u0105 poprawne.
+
+error.create.sip.uri=CWSCT0097E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba utworzenia identyfikatora SIP URI. U\u017cytkownik: {0}, host: {1}
+error.create.sip.uri.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipFactory.createSipURI().
+error.create.sip.uri.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce parametry u\u017cytkownika i hosta s\u0105 poprawne oraz nie maj\u0105 warto\u015bci NULL.
+
+error.create.uri=CWSCT0098E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba utworzenia identyfikatora URI {0}
+error.create.uri.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipFactory.createURI().
+error.create.uri.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce \u0142a\u0144cuch identyfikatora URI jest poprawny.
+
+error.push.route=CWSCT0099E: Nie powiod\u0142a si\u0119 pr\u00f3ba wstawienia trasy. Identyfikator URI: {0}
+error.push.route.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletRequest.pushRoute() lub SipServletRequest.pushRecordRoute().
+error.push.route.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce identyfikator SipURI jest poprawny.
+
+error.set.uri=CWSCT0100E: Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 SIP pr\u00f3ba ustawienia identyfikatora URI {0}
+error.set.uri.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody Address.setURI().
+error.set.uri.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce identyfikator URI jest poprawny.
+
+error.sending.ack=CWSCT0101E: Nie powiod\u0142a si\u0119 pr\u00f3ba wys\u0142ania \u017c\u0105dania ACK.
+error.sending.ack.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania \u017c\u0105dania ACK.
+error.sending.ack.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sending.cancel=CWSCT0102E: Nie powiod\u0142a si\u0119 pr\u00f3ba wys\u0142ania \u017c\u0105dania CANCEL.
+error.sending.cancel.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania \u017c\u0105dania CANCEL.
+error.sending.cancel.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.create.timeout.response=CWSCT0103E: Nie powiod\u0142a si\u0119 pr\u00f3ba wygenerowania odpowiedzi o przekroczeniu limitu czasu.
+error.failed.create.timeout.response.explanation=Przez 32 sekundy nie uzyskano odpowiedzi na \u017c\u0105danie wys\u0142ane z kontenera com.ibm.ws.sip.container SIP i nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wygenerowania dla aplikacji odpowiedzi o przekroczeniu limitu czasu.
+error.failed.create.timeout.response.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.cloning.address=CWSCT0104E: Nie powiod\u0142a si\u0119 pr\u00f3ba sklonowania adresu.
+error.cloning.address.explanation=W kontenerze com.ibm.ws.sip.container SIP wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas klonowania obiektu Address.
+error.cloning.address.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.invalid.tel.url=CWSCT0105E: Niepoprawny adres URL telefonii: {0}
+error.invalid.tel.url.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba utworzenia adresu URL telefonii.
+error.invalid.tel.url.useraction=Sprawd\u017a, czy \u0142a\u0144cuch adresu URL ma co najmniej 4 bajty d\u0142ugo\u015bci (3 bajty dla schematu i 1 bajt dla dwukropka).
+
+error.sending.487.response=CWSCT0106E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wysy\u0142ania odpowiedzi 487 {0}
+error.sending.487.response.explanation=Podczas operacji anulowania \u017c\u0105dania nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania odpowiedzi 487 (zako\u0144czono \u017c\u0105danie) na oryginalne \u017c\u0105danie.
+error.sending.487.response.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.set.character.encoding=CWSCT0108E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas ustawiania kodowania znak\u00f3w: {0}
+error.set.character.encoding.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletMessage.setCharacterEncoding().
+error.set.character.encoding.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce parametr kodowania jest poprawny i nie ma warto\u015bci NULL.
+
+error.setting.tag=CWSCT0109E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas ustawiania warto\u015bci znacznika {0}
+error.setting.tag.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody Address.setTag().
+error.setting.tag.useraction=Sprawd\u017a kod aplikacji i upewnij si\u0119, \u017ce parametr znacznika jest poprawny.
+
+info.sequence.logger.enabled=CWSCT0113I: Program rejestruj\u0105cy dla sekwencji sesji SIP jest w\u0142\u0105czony (poziom: {0})
+info.sequence.logger.enabled.explanation=Program rejestruj\u0105cy dla sekwencji sesji/dialog\u00f3w SIP jest w\u0142\u0105czony.
+info.sequence.logger.enabled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.unexpected.uri.in.route=CWSCT0115E: Oczekiwano identyfikatora SIP URI, ale otrzymano nast\u0119puj\u0105cy \u0142a\u0144cuch: {0}
+error.unexpected.uri.in.route.explanation=
+error.unexpected.uri.in.route.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.standalone.started=CWSCT0116I: Kontener SIP u\u017cywa autonomicznej konfiguracji.
+info.standalone.started.explanation=Kontener com.ibm.ws.sip.container SIP nie dzia\u0142a jako us\u0142uga produktu WebSphere.
+info.standalone.started.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.init.siplet=CWSCT0117E: Nie powiod\u0142a si\u0119 pr\u00f3ba zainicjowania serwletu SIP {0}
+error.init.siplet.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba za\u0142adowania lub utworzenia instancji klasy serwletu SIP.
+error.init.siplet.useraction=Sprawd\u017a plik sip.xml, aby upewni\u0107 si\u0119, \u017ce nazwa klasy jest poprawna i \u017ce klasa ma publiczny konstruktor bezargumentowy.
+
+error.invoke.servlet=CWSCT0118E: B\u0142\u0105d serwletu SIP us\u0142ugi {0}
+error.invoke.servlet.explanation=Kod serwletu SIP utworzy\u0142 wyj\u0105tek.
+error.invoke.servlet.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.servlet.unavailable=CWSCT0119E: Nie powiod\u0142a si\u0119 pr\u00f3ba wywo\u0142ania serwletu SIP. Niedost\u0119pny serwlet: {0}, {1}
+error.servlet.unavailable.explanation=Serwlet SIP nie istnieje.
+error.servlet.unavailable.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce nazwa klasy serwletu jest poprawna.
+
+error.initialize.sip.container=CWSCT0120E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania kontenera com.ibm.ws.sip.container SIP
+error.initialize.sip.container.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania kontenera com.ibm.ws.sip.container SIP. Dodatkowe szczeg\u00f3\u0142y mo\u017cna znale\u017a\u0107 w pliku \u015bledzenia.
+error.initialize.sip.container.useraction=W\u0142\u0105cz \u015bledzenie diagnostyczne dla kontenera com.ibm.ws.sip.container SIP, zrestartuj serwer w celu odtworzenia problemu, a nast\u0119pnie pobierz dziennik \u015bledzenia.
+
+warning.timer.listener.unavailable=CWSCT0122W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas rozsy\u0142ania zdarzenia licznika czasu. Obiekt nas\u0142uchiwania licznika czasu jest niedost\u0119pny dla: {0}
+warning.timer.listener.unavailable.explanation=Wyzwolono licznik czasu serwletu SIP, ale nie jest z nim powi\u0105zany \u017caden obiekt nas\u0142uchiwania.
+warning.timer.listener.unavailable.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warning.timer.unavailable=CWSCT0124W: Implementacja TimerServiceImpl jest niedost\u0119pna.
+warning.timer.unavailable.explanation=Wszystkie liczniki czasu s\u0105 wy\u0142\u0105czone w kontenerze com.ibm.ws.sip.container SIP.
+warning.timer.unavailable.useraction=Sprawd\u017a konfiguracj\u0119 kontenera com.ibm.ws.sip.container SIP i usu\u0144 w\u0142a\u015bciwo\u015b\u0107 enable.timers lub ustaw jej warto\u015b\u0107 na true (prawda).
+
+error.transaction.id.alreay.set=CWSCT0125E: Identyfikator transakcji zosta\u0142 ju\u017c ustawiony dla transakcji. Bie\u017c\u0105cy identyfikator: {0}, nowy identyfikator: {1}
+error.transaction.id.alreay.set.explanation=Transakcja SIP zosta\u0142a ju\u017c zainicjowana przy u\u017cyciu identyfikatora transakcji i nie mo\u017cna go zmieni\u0107.
+error.transaction.id.alreay.set.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.cannot.lookup.host=CWSCT0336E: VirtualHostAlias.init: Nie mo\u017cna wyszuka\u0107 hosta {0}
+error.cannot.lookup.host.explanation=Podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba przet\u0142umaczenia nazwy hosta z aliasu hosta wirtualnego na adres IP nie powiod\u0142a si\u0119.
+error.cannot.lookup.host.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.invoking.request=CWSCT0139E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba wywo\u0142ania \u017c\u0105dania. Komunikat: {0}
+error.invoking.request.explanation=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by wywo\u0142ania \u017c\u0105dania przez kontener com.ibm.ws.sip.container SIP.
+error.invoking.request.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sending.response.from.prepare.for.write=CWSCT0140E: Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener SIP pr\u00f3ba wys\u0142ania odpowiedzi w celu przygotowania nag\u0142\u00f3wk\u00f3w do zapisu.
+error.sending.response.from.prepare.for.write.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba wys\u0142ania odpowiedzi z wywo\u0142ania metody prepareHeadersForWrite().
+error.sending.response.from.prepare.for.write.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.message.dispatcher.invalid.state=CWSCT0142E: Program rozsy\u0142aj\u0105cy b\u0142\u0119dy nie zako\u0144czy\u0142 operacji rozsy\u0142ania poprzedniego komunikatu.
+error.message.dispatcher.invalid.state.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce rozes\u0142a\u0107 komunikatu, poniewa\u017c nie zako\u0144czono jeszcze operacji rozsy\u0142ania poprzedniego komunikatu.
+error.message.dispatcher.invalid.state.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.non.http.request=CWSCT0145E: Zamiast oczekiwanego \u017c\u0105dania javax.servlet.http.HttpServletRequest otrzymano \u017c\u0105danie {0}
+error.non.http.request.explanation=Kontener com.ibm.ws.sip.container SIP otrzyma\u0142 z kontenera com.ibm.ws.sip.container WWW \u017c\u0105danie, kt\u00f3re nie jest \u017c\u0105daniem javax.servlet.http.HttpServletRequest.
+error.non.http.request.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.to.register.collaborator=CWSCT0146E: Nie powiod\u0142a si\u0119 pr\u00f3ba zarejestrowania wsp\u00f3\u0142pracownika {0}.
+error.failed.to.register.collaborator.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba zarejestrowania si\u0119 jako procesu nas\u0142uchuj\u0105cego produktu WebSphere.
+error.failed.to.register.collaborator.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.cnf=CWSCT0188E: B\u0142\u0105d: Wyj\u0105tek ClassNotFoundException (Nie znaleziono klasy). Nie mo\u017cna przekszta\u0142ci\u0107 z postaci szeregowej.
+error.exception.cnf.explanation=Kontener com.ibm.ws.sip.container SIP wychwyci\u0142 wyj\u0105tek typu ClassNotFoundException podczas przekszta\u0142cania obiektu do postaci szeregowej.
+error.exception.cnf.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.io.serialize.deserialize=CWSCT0189E: B\u0142\u0105d: Wyj\u0105tek we/wy. Nie mo\u017cna przekszta\u0142ci\u0107 do/z postaci szeregowej.
+error.exception.io.serialize.deserialize.explanation=Kontener com.ibm.ws.sip.container SIP wychwyci\u0142 wyj\u0105tek typu IOException podczas przekszta\u0142cania obiektu do postaci szeregowej.
+error.exception.io.serialize.deserialize.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.cache.alg=CWSCT0185E: B\u0142\u0105d: Algorytm pami\u0119ci podr\u0119cznej nie istnieje.
+error.exception.cache.alg.explanation=Algorytm pami\u0119ci podr\u0119cznej \u017c\u0105dany przez mened\u017cer sesji kontenera com.ibm.ws.sip.container SIP nie istnieje.
+error.exception.cache.alg.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.replicator=CWSCT0186E: B\u0142\u0105d: Wyj\u0105tek replikatora
+error.exception.replicator.explanation=Mened\u017cer sesji kontenera com.ibm.ws.sip.container SIP wychwyci\u0142 wyj\u0105tek replikacji.
+error.exception.replicator.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sipha.version=CWSCT0187I: Komponent wysokiej dost\u0119pno\u015bci kontenera SIP {0}
+info.sipha.version.explanation=Zainicjowano komponent wysokiej dost\u0119pno\u015bci kontenera com.ibm.ws.sip.container SIP.
+info.sipha.version.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.drs=CWSCT0219E: B\u0142\u0105d: Wyj\u0105tek DRS.
+error.exception.drs.explanation=Wychwycono wyj\u0105tek w kontenerze com.ibm.ws.sip.container SIP podczas replikacji DRS.
+error.exception.drs.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.admin=CWSCT0220E: B\u0142\u0105d: Administracyjny wyj\u0105tek JMX.
+error.exception.admin.explanation=Wychwycono wyj\u0105tek w kontenerze com.ibm.ws.sip.container SIP podczas aktywowania komponentu MBean dla mened\u017cera sesji.
+error.exception.admin.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.drs.broker=CWSCT0222E: B\u0142\u0105d: Wyj\u0105tek multibrokera DRS.
+error.drs.broker.explanation=Wychwycono wyj\u0105tek w kontenerze com.ibm.ws.sip.container SIP podczas u\u017cywania multibrokera DRS.
+error.drs.broker.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.drs.setting.mode=CWSCT0224E: B\u0142\u0105d: Tryb DRS jest inny ni\u017c BOTH_CLIENT_SERVER (tryb r\u00f3wnorz\u0119dny)
+error.drs.setting.mode.explanation=Tryb DRS nie jest odpowiedni dla replikacji danych w kontenerze com.ibm.ws.sip.container SIP.
+error.drs.setting.mode.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.drs.setting.missing=CWSCT0225E: Informacja: Nie ustawiono us\u0142ugi DRS
+info.drs.setting.missing.explanation=Replikacja w kontenerze com.ibm.ws.sip.container SIP jest wy\u0142\u0105czona, poniewa\u017c nie ustawiono us\u0142ugi DRS.
+info.drs.setting.missing.useraction=Upewnij si\u0119, \u017ce mened\u017cera sesji kontenera WWW skonfigurowano w taki spos\u00f3b, aby u\u017cywa\u0142 replikacji z pami\u0119ci do pami\u0119ci.
+
+info.drs.enablefailover.disabled=CWSCT0226I: Informacja: wy\u0142\u0105czono prze\u0142\u0105czanie awaryjne kontenera com.ibm.ws.sip.container SIP.
+info.drs.enablefailover.disabled.explanation=Wy\u0142\u0105czono prze\u0142\u0105czanie awaryjne kontenera com.ibm.ws.sip.container SIP.
+info.drs.enablefailover.disabled.useraction=U\u017cyj w\u0142a\u015bciwo\u015bci niestandardowej enable.replication (dla kontenera com.ibm.ws.sip.container SIP) w celu w\u0142\u0105czenia tej funkcji.
+
+info.drs.enablefailover.enabled=CWSCT0227I: Informacja: w\u0142\u0105czono komponent wysokiej dost\u0119pno\u015bci kontenera com.ibm.ws.sip.container SIP.
+info.drs.enablefailover.enabled.explanation=W\u0142\u0105czono komponent wysokiej dost\u0119pno\u015bci kontenera com.ibm.ws.sip.container SIP na potrzeby r\u00f3wnowa\u017cenia obci\u0105\u017cenia i prze\u0142\u0105czania awaryjnego.
+info.drs.enablefailover.enabled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ha.groupleft=CWSCT0228E: B\u0142\u0105d: Wyj\u0105tek HAGroupLeftException
+error.exception.ha.groupleft.explanation=Kontener com.ibm.ws.sip.container SIP wychwyci\u0142 wyj\u0105tek typu HAGroupLeftException podczas aktywowania go jako elementu grupy.
+error.exception.ha.groupleft.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ha.param.reject=CWSCT0229E: B\u0142\u0105d: Wyj\u0105tek HAParameterRejectedException
+error.exception.ha.param.reject.explanation=Kontener com.ibm.ws.sip.container SIP wychwyci\u0142 wyj\u0105tek typu HAParameterRejectedException podczas aktywowania go jako elementu grupy.
+error.exception.ha.param.reject.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.io.deserialize=CWSCT0231E: B\u0142\u0105d: Wyj\u0105tek we/wy. Nie mo\u017cna przekszta\u0142ci\u0107 z postaci szeregowej.
+error.exception.io.deserialize.explanation=Nie powiod\u0142a si\u0119 operacja przekszta\u0142cania danych do postaci szeregowej w kontenerze com.ibm.ws.sip.container SIP.
+error.exception.io.deserialize.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ha=CWSCT0232E: B\u0142\u0105d: Wyj\u0105tek komponentu wysokiej dost\u0119pno\u015bci
+error.exception.ha.explanation=Wychwycono wyj\u0105tek w komponencie wysokiej dost\u0119pno\u015bci kontenera com.ibm.ws.sip.container SIP.
+error.exception.ha.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ds=CWSCT0233E: B\u0142\u0105d: Wyj\u0105tek stosu danych
+error.exception.ds.explanation=Wychwycono wyj\u0105tek DataStackException w komponencie wysokiej dost\u0119pno\u015bci kontenera com.ibm.ws.sip.container SIP.
+error.exception.ds.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.io=CWSCT0237E: B\u0142\u0105d: Wyj\u0105tek we/wy.
+error.exception.io.explanation=Wychwycono wyj\u0105tek IOException w kontenerze com.ibm.ws.sip.container SIP.
+error.exception.io.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ucf.no_cluster_define=CWSCT0238E: B\u0142\u0105d: Wyj\u0105tek UCF. Nie zdefiniowano klastra.
+error.exception.ucf.no_cluster_define.explanation=Nie mo\u017cna do\u0142\u0105czy\u0107 kontenera com.ibm.ws.sip.container SIP do klastra lub od\u0142\u0105czy\u0107 go od klastra, poniewa\u017c nie zdefiniowano klastra.
+error.exception.ucf.no_cluster_define.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ucf.noclusterservice=CWSCT0240E: B\u0142\u0105d: Brak us\u0142ugi elementu klastra.
+error.exception.ucf.noclusterservice.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce uruchomi\u0107 lub zatrzyma\u0107 komponentu wysokiej dost\u0119pno\u015bci, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania dost\u0119pu do us\u0142ugi klastra.
+error.exception.ucf.noclusterservice.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ucf.no.member.available=CWSCT0241E: B\u0142\u0105d: Wyj\u0105tek UCF. \u017baden element nie jest dost\u0119pny.
+error.exception.ucf.no.member.available.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba pobrania informacji o punkcie ko\u0144cowym proxy SIP ze zunifikowanej us\u0142ugi grupowania (UCF).
+error.exception.ucf.no.member.available.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.class.not.found=CWSCT0243E: B\u0142\u0105d: Wyj\u0105tek ClassNotFoundException (Nie znaleziono klasy).
+error.exception.class.not.found.explanation=Wychwycono wyj\u0105tek ClassNotFoundException w kontenerze com.ibm.ws.sip.container SIP.
+error.exception.class.not.found.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.orb=CWSCT0244E: B\u0142\u0105d: Nie mo\u017cna uzyska\u0107 obiektu brokera ORB
+error.orb.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce publikowa\u0107 swoich nazw logicznych, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas uzyskiwania obiektu brokera ORB.
+error.orb.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.orb.cc=CWSCT0245E: B\u0142\u0105d: Wyj\u0105tek rzutowania klasy brokera ORB
+error.orb.cc.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce publikowa\u0107 swoich nazw logicznych, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek ClassCastException.
+error.orb.cc.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.orb.in=CWSCT0246E: B\u0142\u0105d: Niepoprawne \u017c\u0105danie nazwy brokera ORB
+error.orb.in.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce publikowa\u0107 swoich nazw logicznych, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek InvalidName.
+error.orb.in.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.classnotfound=CWSCT0259E: B\u0142\u0105d: Nie znaleziono klasy
+error.exception.classnotfound.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba zainicjowania modu\u0142u TAI kontenera com.ibm.ws.sip.container SIP, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek ClassNotFoundException.
+error.exception.classnotfound.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.instantiate=CWSCT0260E: B\u0142\u0105d: Wyj\u0105tek tworzenia instancji
+error.exception.instantiate.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba zainicjowania modu\u0142u TAI kontenera com.ibm.ws.sip.container SIP, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek InstantiationException.
+error.exception.instantiate.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.illegalaccess=CWSCT0261E: B\u0142\u0105d: Wyj\u0105tek niedozwolonego dost\u0119pu.
+error.exception.illegalaccess.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba zainicjowania modu\u0142u TAI kontenera com.ibm.ws.sip.container SIP, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek IllegalAccessException.
+error.exception.illegalaccess.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.filenotfound=CWSCT0262E: B\u0142\u0105d: Nie znaleziono pliku.
+error.exception.filenotfound.explanation=Zabezpieczenia kontenera com.ibm.ws.sip.container SIP nie mog\u0105 otworzy\u0107 pliku hase\u0142.
+error.exception.filenotfound.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.login=CWSCT0264E: B\u0142\u0105d: Wyj\u0105tek kontekstu logowania
+error.exception.login.explanation=Modu\u0142 TAI kontenera com.ibm.ws.sip.container SIP wychwyci\u0142 wyj\u0105tek LoginException podczas pobierania podmiotu u\u017cytkownika.
+error.exception.login.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.naming=CWSCT0266E: B\u0142\u0105d: Wyj\u0105tek nazewnictwa
+error.exception.naming.explanation=Wychwycono wyj\u0105tek NamingException w zabezpieczeniach kontenera com.ibm.ws.sip.container SIP.
+error.exception.naming.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.parse=CWSCT0267E: B\u0142\u0105d: Wyj\u0105tek analizowania.
+error.exception.parse.explanation=Wychwycono wyj\u0105tek analizowania w module TAI (Trust Association Interceptor) kontenera com.ibm.ws.sip.container SIP.
+error.exception.parse.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.stack=CWSCT0315E: Wyst\u0105pi\u0142 wyj\u0105tek w stosie SIP.
+error.exception.stack.explanation= Wychwycono wyj\u0105tek podczas inicjowania stosu SIP.
+error.exception.stack.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sipstack.version=CWSCT0316I: Stos SIP {0}
+info.sipstack.version.explanation=Inicjowanie stosu SIP
+info.sipstack.version.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.unknown.host.exception=CWSCT0317E: Nieznany wyj\u0105tek hosta. Nie mo\u017cna przet\u0142umaczy\u0107 nazwy hosta.
+error.unknown.host.exception.explanation=Wychwycono wyj\u0105tek UnknownHostException w stosie SIP podczas pr\u00f3by przet\u0142umaczenia nazwy hosta na adres IP.
+error.unknown.host.exception.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.base64parser.exception=CWSCT0318E: Wyj\u0105tek analizatora sk\u0142adni. Nie powiod\u0142a si\u0119 pr\u00f3ba zapisu do strumienia wyj\u015bciowego
+error.base64parser.exception.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez stos SIP pr\u00f3ba zapisu do strumienia wyj\u015bciowego.
+error.base64parser.exception.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.same.to.tag=CWSCT0319E: Taki sam znacznik Do w dw\u00f3ch lub wi\u0119cej odpowiedziach z wielu ga\u0142\u0119zi proxy
+error.same.to.tag.explanation=Odebrano taki sam znacznik Do w dw\u00f3ch lub wi\u0119cej odpowiedziach z r\u00f3\u017cnych ga\u0142\u0119zi proxy.  Zgodnie ze specyfikacj\u0105 RFC 3261 to dzia\u0142anie jest niepoprawne.
+error.same.to.tag.useraction=Sprawd\u017a, czy instancje odpowiadaj\u0105cego serwera agenta u\u017cytkownik\u00f3w (UAS) generuj\u0105 unikalne znaczniki Do dla ka\u017cdego okna dialogowego zgodnie ze specyfikacj\u0105 3261. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1=CWSCT0321I: Inicjowanie konfiguracji stosu SIP
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.explanation=Trwa inicjowanie konfiguracji stosu SIP.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2=CWSCT0322I: Inicjowanie transportu stosu SIP.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.explanation=Trwa inicjowanie transportu stosu SIP.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3=CWSCT0323I: Zako\u0144czono inicjowanie stosu SIP.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.explanation=Zako\u0144czono inicjowanie stosu SIP.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.stack.timer.b=CWSCT0324I: Licznik czasu B dla stosu SIP ustawiono na {0} ms.
+info.stack.timer.b.explanation=Ustawiono licznik czasu B dla stosu SIP. Wi\u0119cej informacji na temat licznika czasu B mo\u017cna znale\u017a\u0107 w dokumencie RFC 3261.
+info.stack.timer.b.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints=CWSCT0328I: Stos SIP rozpoczyna nas\u0142uchiwanie w punkcie nas\u0142uchiwania {0}.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.explanation=Stos SIP rozpoczyna nas\u0142uchiwanie w okre\u015blonym punkcie nas\u0142uchiwania.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sip.container.launched.but.not.loaded=CWSCT0332I: Kontener SIP zosta\u0142 uruchomiony pomy\u015blnie, ale zostanie zainicjowany po za\u0142adowaniu pierwszej aplikacji SIP.
+info.sip.container.launched.but.not.loaded.explanation=Kontener SIP zostanie zainicjowany po za\u0142adowaniu pierwszej aplikacji SIP.
+info.sip.container.launched.but.not.loaded.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.replication.failed=CWSCT0333E: Replikacja nie powiod\u0142a si\u0119.
+error.replication.failed.explanation=Wyst\u0105pi\u0142 wyj\u0105tek w kontenerze com.ibm.ws.sip.container SIP podczas replikacji.
+error.replication.failed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.to.deserialize.replication=CWSCT0334E: Nie powiod\u0142a si\u0119 pr\u00f3ba przekszta\u0142cenia z postaci szeregowej podczas replikacji.
+error.failed.to.deserialize.replication.explanation=W trakcie replikacji kontenera com.ibm.ws.sip.container SIP wyst\u0105pi\u0142 wyj\u0105tek podczas przekszta\u0142cania obiektu z postaci szeregowej.
+error.failed.to.deserialize.replication.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.to.reactivate.objects.after.failover=CWSCT0335E: Nie powiod\u0142a si\u0119 pr\u00f3ba ponownego aktywowania obiekt\u00f3w po prze\u0142\u0105czeniu awaryjnym.
+error.failed.to.reactivate.objects.after.failover.explanation=Wyst\u0105pi\u0142 wyj\u0105tek w kontenerze com.ibm.ws.sip.container SIP podczas aktywowania sesji po prze\u0142\u0105czeniu awaryjnym.
+error.failed.to.reactivate.objects.after.failover.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warning.display.name.different=CWSCT0337W: Nazwa wy\u015bwietlana podana w pliku sip.xml ({0}) jest inna ni\u017c nazwa wy\u015bwietlana podana w pliku web.xml ({1}).
+warning.display.name.different.explanation=Nazwa wy\u015bwietlana aplikacji podana w pliku sip.xml jest r\u00f3\u017cna od nazwy wy\u015bwietlanej podanej w pliku web.xml. Jest to niezgodne z informacjami podanymi w sekcji 15.2 specyfikacji JSR-116.
+warning.display.name.different.useraction=Zmie\u0144 deskryptory wdra\u017cania w taki spos\u00f3b, aby by\u0142y zgodne z nazw\u0105 wy\u015bwietlan\u0105 aplikacji.
+
+warning.dispatch.failed=CWSCT0338W: Nie powiod\u0142a si\u0119 pr\u00f3ba rozes\u0142ania komunikatu SIP do puli w\u0105tk\u00f3w. Komunikat: {0}, identyfikator wywo\u0142ania: {1}, kod b\u0142\u0119du: {2}.
+warning.dispatch.failed.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez kontener com.ibm.ws.sip.container SIP pr\u00f3ba rozes\u0142ania komunikatu do puli w\u0105tk\u00f3w.
+warning.dispatch.failed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.cannot.identify.object.type=CWSCT0339E: Przekszta\u0142canie z postaci szeregowej: Nie mo\u017cna zidentyfikowa\u0107 typu obiektu.
+error.cannot.identify.object.type.explanation=Kontener com.ibm.ws.sip.container SIP nie mo\u017ce zidentyfikowa\u0107 typu obiektu, kt\u00f3ry ma zosta\u0107 przekszta\u0142cony z postaci szeregowej.
+error.cannot.identify.object.type.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.security.password.retrieve=CWSCT0340E: B\u0142\u0105d: Nie mo\u017cna pobra\u0107 atrybutu has\u0142a.
+error.security.password.retrieve.explanation=Pr\u00f3ba uwierzytelnienia nie powiod\u0142a si\u0119, poniewa\u017c kontener com.ibm.ws.sip.container SIP nie mo\u017ce pobra\u0107 atrybutu userPassword z wpisu osoby w katalogu.
+error.security.password.retrieve.useraction=Zmie\u0144 ustawienia konfiguracji katalogu LDAP tak, aby serwer mia\u0142 dost\u0119p do atrybutu userPassword w katalogu.
+
+warn.server.overloaded=CWSCT0341W: Serwer jest przeci\u0105\u017cony.
+warn.server.overloaded.explanation=Serwer SIP (Session Initiation Protocol) nie mo\u017ce zaakceptowa\u0107 komunikat\u00f3w przychodz\u0105cych, dop\u00f3ki jest przeci\u0105\u017cony.
+warn.server.overloaded.useraction=Zmniejsz liczb\u0119 komunikat\u00f3w przychodz\u0105cych lub usu\u0144 inne mo\u017cliwe \u017ar\u00f3d\u0142a obci\u0105\u017cenia serwera.
+
+warn.server.overloaded.too.many.sessions=CWSCT0342W: Serwer jest przeci\u0105\u017cony, poniewa\u017c uruchomiono zbyt wiele sesji aplikacji. 
+warn.server.overloaded.too.many.sessions.explanation=Serwer SIP nie mo\u017ce zaakceptowa\u0107 komunikat\u00f3w przychodz\u0105cych, dop\u00f3ki jest przeci\u0105\u017cony. Zbyt wiele sesji aplikacji jest aktywnych.
+warn.server.overloaded.too.many.sessions.useraction=Zmniejsz liczb\u0119 tworzonych sesji aplikacji lub ustaw wy\u017csz\u0105 warto\u015b\u0107 dla maksymalnej liczby sesji aplikacji w kontenerze com.ibm.ws.sip.container SIP (Session Initiation Protocol).
+
+warn.server.overloaded.too.many.messages=CWSCT0343W: Serwer jest przeci\u0105\u017cony, poniewa\u017c odebrano zbyt wiele komunikat\u00f3w w okresie u\u015bredniania. 
+warn.server.overloaded.too.many.messages.explanation=Serwer SIP nie mo\u017ce zaakceptowa\u0107 komunikat\u00f3w przychodz\u0105cych, dop\u00f3ki jest przeci\u0105\u017cony. Ruch komunikat\u00f3w jest zbyt du\u017cy.
+warn.server.overloaded.too.many.messages.useraction=Zmniejsz obci\u0105\u017cenie komunikatami lub ustaw wy\u017csz\u0105 warto\u015b\u0107 maksymalnej liczby komunikat\u00f3w na okres u\u015bredniania w kontenerze com.ibm.ws.sip.container SIP (Session Initiation Protocol).
+
+warn.server.overloaded.slow.response=CWSCT0344W: Serwer jest przeci\u0105\u017cony, poniewa\u017c czas odpowiedzi serwera jest zbyt d\u0142ugi.
+warn.server.overloaded.slow.response.explanation=Serwer SIP nie mo\u017ce zaakceptowa\u0107 komunikat\u00f3w przychodz\u0105cych, dop\u00f3ki jest przeci\u0105\u017cony.
+warn.server.overloaded.slow.response.useraction=Zmniejsz ruch komunikat\u00f3w przychodz\u0105cych lub usu\u0144 inne mo\u017cliwe \u017ar\u00f3d\u0142a obci\u0105\u017cenia serwera. Je\u015bli w kontenerze com.ibm.ws.sip.container SIP (Session Initiation Protocol) w\u0142\u0105czono i ustawiono warto\u015b\u0107 maksymalnego czasu odpowiedzi, mo\u017cna j\u0105 zwi\u0119kszy\u0107.
+
+warn.dispatch.queue.overloaded=CWSCT0345W: Maksymalna wielko\u015b\u0107 kolejki rozsy\u0142ania {0} zosta\u0142a przekroczona. Nowe komunikaty zostan\u0105 usuni\u0119te.
+warn.dispatch.queue.overloaded.explanation=Serwer SIP nie mo\u017ce zaakceptowa\u0107 komunikat\u00f3w przychodz\u0105cych, dop\u00f3ki kolejka rozsy\u0142ania jest przeci\u0105\u017cona.
+warn.dispatch.queue.overloaded.useraction=Zmniejsz obci\u0105\u017cenie komunikatami lub ustaw wy\u017csz\u0105 warto\u015b\u0107 maksymalnej wielko\u015bci kolejki rozsy\u0142ania w kontenerze com.ibm.ws.sip.container SIP (Session Initiation Protocol).
+
+error.container.queue.overloaded=CWSCT0346E: Kolejka rozsy\u0142ania jest przeci\u0105\u017cona. Nast\u0119puj\u0105cy komunikat zosta\u0142 odrzucony: {0}
+error.container.queue.overloaded.explanation=W\u0105tki kontenera com.ibm.ws.sip.container SIP nie mog\u0105 obs\u0142u\u017cy\u0107 bie\u017c\u0105cego obci\u0105\u017cenia zadaniami.
+error.container.queue.overloaded.useraction=Usu\u0144 mo\u017cliwe \u017ar\u00f3d\u0142a obci\u0105\u017cenia serwera, a w szczeg\u00f3lno\u015bci zmniejsz ruch komunikat\u00f3w SIP (Session Initiation Protocol). Dodatkowo przejrzyj ilo\u015b\u0107 zasob\u00f3w wykorzystywanych przez kod aplikacji SIP.
+
+info.bootstrap.started=CWSCT0347I: Rozpocz\u0119to replikacj\u0119 programu startowego.
+info.bootstrap.started.explanation=Kontener com.ibm.ws.sip.container SIP (Session Initiation Protocol) replikuje dane sesji na nowo po\u0142\u0105czony w\u0119ze\u0142 sieci.
+info.bootstrap.started.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+info.bootstrap.finished=CWSCT0348I: Zako\u0144czono replikacj\u0119 programu startowego. 
+info.bootstrap.finished.explanation=Kontener com.ibm.ws.sip.container SIP (Session Initiation Protocol) zako\u0144czy\u0142 replikacj\u0119 danych sesji na nowo po\u0142\u0105czony w\u0119ze\u0142 sieci.
+info.bootstrap.finished.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sip.stack.timer=CWSCT0349I: Warto\u015b\u0107 licznika czasu stosu SIP [{0}] zosta\u0142a ustawiona na [{1}]
+info.sip.stack.timer.explanation=Warto\u015b\u0107 licznika czasu zosta\u0142a zmodyfikowana w konfiguracji.
+info.sip.stack.timer.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sip.container.quiesce.on=CWSCT0350I: Wej\u015bcie w tryb wyciszony
+info.sip.container.quiesce.on.explanation=Komponent MBean kontenera com.ibm.ws.sip.container SIP otrzyma\u0142 administracyjn\u0105 komend\u0119 wyciszenia. W tym trybie ta instancja kontenera com.ibm.ws.sip.container nie obs\u0142uguje nowych wywo\u0142a\u0144.
+info.sip.container.quiesce.on.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sip.container.quiesce.off=CWSCT0351I: Wyj\u015bcie z trybu wyciszenia
+info.sip.container.quiesce.off.explanation=Komponent MBean kontenera com.ibm.ws.sip.container SIP otrzyma\u0142 administracyjn\u0105 komend\u0119 zako\u0144czenia wyciszenia.
+info.sip.container.quiesce.off.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sip.get.server.type=CWSCT0352E: Nie powiod\u0142a si\u0119 operacja pobierania typu serwera.   B\u0142\u0105d = {0}.
+error.sip.get.server.type.explanation=Podczas pobierania typu serwera wyst\u0105pi\u0142 wyj\u0105tek.
+error.sip.get.server.type.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sip.get.configuration=CWSCT0353E: Nie powiod\u0142a si\u0119 operacja pobierania konfiguracji podczas uruchamiania.   B\u0142\u0105d = {0}.
+error.sip.get.configuration.explanation=Podczas pobierania konfiguracji wyst\u0105pi\u0142 wyj\u0105tek.
+error.sip.get.configuration.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sip.container.running.stanalone=CWSCT0354I: Element dzia\u0142a na serwerze autonomicznym.
+info.sip.container.running.stanalone.explanation=Kontener com.ibm.ws.sip.container SIP dzia\u0142a w \u015brodowisku autonomicznym. Mened\u017cer wysokiej dost\u0119pno\u015bci nie jest w\u0142\u0105czony.
+info.sip.container.running.stanalone.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sip.cannot.run.on.server=CWSCT0355E: Element nie mo\u017ce dzia\u0142a\u0107 na serwerze tego typu: {0}.
+error.sip.cannot.run.on.server.explanation=Kontener SIP nie mo\u017ce dzia\u0142a\u0107 na podanym typie serwera.
+error.sip.cannot.run.on.server.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.parse.auth.challange=CWSCT0356E: Nie powiod\u0142a si\u0119 operacja analizowania nag\u0142\u00f3wka uwierzytelniania.
+error.parse.auth.challange.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez aplikacj\u0119 pr\u00f3ba wywo\u0142ania metody SipServletResponse.getChallangeRealm().
+error.parse.auth.challange.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.exception.ioeinbody=CWSCT0357E: B\u0142\u0105d: Nie mo\u017cna pobra\u0107 tre\u015bci komunikatu.
+error.exception.ioeinbody.explanation=Wychwycono wyj\u0105tek IOException w kodzie bezpiecze\u0144stwa kontenera com.ibm.ws.sip.container SIP.
+error.exception.ioeinbody.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warn.unsupported.realm=CWSCT0358W: Nieznana dziedzina uwierzytelniania: {0}.
+warn.unsupported.realm.explanation=Odebrano \u017c\u0105danie SIP dotycz\u0105ce nieznanej dziedziny uwierzytelniania. 
+warn.unsupported.realm.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.unhashed.creds=CWSCT0359I: Nie znaleziono atrybut\u00f3w referencji mieszanych.
+info.unhashed.creds.explanation=Nie znaleziono atrybut\u00f3w niezb\u0119dnych do u\u017cywania referencji mieszanych. Na potrzeby uwierzytelniania u\u017cywane jest wyszukanie niemieszanego has\u0142a u\u017cytkownika.
+info.unhashed.creds.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sip.container.quiesce.ended=CWSCT0360I: Pomy\u015blnie zako\u0144czono operacj\u0119 wyciszania serwera
+info.sip.container.quiesce.ended.explanation=Operacja wyciszania kontenera com.ibm.ws.sip.container SIP zosta\u0142a zako\u0144czona i wszystkie sesje aplikacji zosta\u0142y uniewa\u017cnione.
+info.sip.container.quiesce.ended.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.sip.heartbeat.new.proxy=CWSCT0361I: Puls sieci z nowego proxy: {0}. Limit czasu: {1}. Limit: {2}.
+info.sip.heartbeat.new.proxy.explanation=Kontener com.ibm.ws.sip.container SIP wykry\u0142 nowy serwer proxy SIP w klastrze i w\u0142\u0105czono funkcj\u0119 wykrywania wy\u0142\u0105cze\u0144 sieci SIP.
+info.sip.heartbeat.new.proxy.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warn.sip.heartbeat.limit.exceeded=CWSCT0362I: Limit pulsu sieci zosta\u0142 przekroczony w przypadku proxy SIP {0}. Liczba brakuj\u0105cych komunikat\u00f3w puls\u00f3w: {1}.
+warn.sip.heartbeat.limit.exceeded.explanation=Kontener com.ibm.ws.sip.container SIP nie otrzyma\u0142 komunikat\u00f3w pulsu z frontowego serwera proxy w uprzednio skonfigurowanym limicie czasu.
+warn.sip.heartbeat.limit.exceeded.useraction=Sprawd\u017a, czy serwer proxy SIP nadal dzia\u0142a, oraz upewnij si\u0119, \u017ce po\u0142\u0105czenie sieciowe protoko\u0142u SIP mi\u0119dzy serwerem proxy a kontenerem com.ibm.ws.sip.container dzia\u0142a poprawnie.
+
+error.sip.heartbeat.server.restart=CWSCT0363I: Kontener com.ibm.ws.sip.container SIP wykry\u0142, \u017ce sie\u0107 jest wy\u0142\u0105czona, i zrestartuje si\u0119 samoczynnie.
+error.sip.heartbeat.server.restart.explanation=Kontener com.ibm.ws.sip.container SIP utraci\u0142 kontakt ze wszystkimi frontowymi serwerami proxy w klastrze. Teraz restartuje si\u0119 samoczynnie. Aktywne sesje zostan\u0105 zmigrowane do zapasowego kontenera com.ibm.ws.sip.container, je\u015bli istnieje on w domenie replikacji.
+error.sip.heartbeat.server.restart.useraction=Znajd\u017a przyczyn\u0119 wy\u0142\u0105czenia sieci SIP. Zwr\u00f3\u0107 szczeg\u00f3ln\u0105 uwag\u0119 na po\u0142\u0105czenie sieciowe mi\u0119dzy proxy a serwerem aplikacji. W celu prze\u015bledzenia komunikat\u00f3w SIP KEEPALIVE przesy\u0142anych mi\u0119dzy serwerem proxy a kontenerem com.ibm.ws.sip.container mo\u017cna u\u017cy\u0107 programu pods\u0142uchuj\u0105cego sie\u0107.
+
+error.sip.heartbeat.restart.failure=CWSCT0364I: Nie powiod\u0142a si\u0119 operacja restartowania kontenera com.ibm.ws.sip.container SIP.
+error.sip.heartbeat.restart.failure.explanation=Kontener com.ibm.ws.sip.container SIP dokona\u0142 pr\u00f3by samoczynnego restartu z powodu wy\u0142\u0105czenia sieci, ale to dzia\u0142anie zosta\u0142o zako\u0144czone niepowodzeniem. Kontener com.ibm.ws.sip.container wy\u0142\u0105czy si\u0119 bez samoczynnego restartu.
+error.sip.heartbeat.restart.failure.useraction=Zrestartuj serwer aplikacji r\u0119cznie.
+
+error.replication.b2blinkage.failed=CWSCT0365E: Nie mo\u017cna znale\u017a\u0107 sesji SIP dla po\u0142\u0105czenia B2B {0} po prze\u0142\u0105czeniu awaryjnym.
+error.replication.b2blinkage.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w kontenerze com.ibm.ws.sip.container SIP podczas replikacji.
+error.replication.b2blinkage.failed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.dar.init.2=CWSCT0401I: Zainicjowano domy\u015blny router aplikacji.
+info.dar.init.2.explanation=Domy\u015blny router aplikacji wybiera aplikacj\u0119 na podstawie kolejno\u015bci uruchamiania.
+info.dar.init.2.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+info.dar.init.3=CWSCT0403I: Za\u0142adowano zewn\u0119trzny router aplikacji zgodnie ze zdefiniowan\u0105 w\u0142a\u015bciwo\u015bci\u0105 niestandardow\u0105 (javax.servlet.sip.ar.spi.SipApplicationRouterProvider). Nazwa klasy: {0}.
+info.dar.init.3.explanation=Zewn\u0119trzny router aplikacji jest routerem aplikacji zaimplementowanym i za\u0142adowanym jako produkt innej firmy.
+info.dar.init.3.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+info.dar.init.4=CWSCT0404I: Za\u0142adowano plik w\u0142a\u015bciwo\u015bci domy\u015blnego routera aplikacji. Nazwa pliku: {0}.
+info.dar.init.4.explanation=Znaleziono i za\u0142adowano domy\u015blny router aplikacji okre\u015blony przez u\u017cytkownika.
+info.dar.init.4.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+info.dar.init.5=CWSCT0405I: Router aplikacji zosta\u0142 skonfigurowany pod k\u0105tem wybierania aplikacji na podstawie kolejno\u015bci uruchamiania.
+info.dar.init.5.explanation=Domy\u015blny router aplikacji wybiera aplikacj\u0119 na podstawie kolejno\u015bci uruchamiania.
+info.dar.init.5.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+error.dar.repository.create.1=CWSCT0406E: B\u0142\u0105d podczas tworzenia repozytorium domy\u015blnego routera aplikacji: {0}.
+error.dar.repository.create.1.explanation=B\u0142\u0105d wewn\u0119trzny.
+error.dar.repository.create.1.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+error.dar.selector.1=CWSCT0407E: Brak stanu dla domy\u015blnego routera aplikacji.
+error.dar.selector.1.explanation=Gdy router aplikacji otrzymuje \u017c\u0105danie z dyrektyw\u0105 inn\u0105 ni\u017c NEW, \u017c\u0105danie powinno zawiera\u0107 indeks stanu w \u0142a\u0144cuchu aplikacji. 
+error.dar.selector.1.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+error.dar.property.parser.1=CWSCT0408E: Nie powiod\u0142a si\u0119 pr\u00f3ba za\u0142adowania pliku w\u0142a\u015bciwo\u015bci podj\u0119ta przez domy\u015blny router aplikacji (strategia w\u0142a\u015bciwo\u015bci).
+error.dar.property.parser.1.explanation=Plik w\u0142a\u015bciwo\u015bci routera aplikacji ma niepoprawny format.
+error.dar.property.parser.1.useraction=Sprawd\u017a, czy plik w\u0142a\u015bciwo\u015bci routera aplikacji ma poprawny format.
+
+warn.sip.proxy.outboundif.invalid=CWSCT0409W: Proxy s\u0105 skonfigurowane z u\u017cyciem r\u00f3\u017cnych interfejs\u00f3w danych wychodz\u0105cych.
+warn.sip.proxy.outboundif.invalid.explanation=Wszystkie proxy musz\u0105 by\u0107 skonfigurowane z u\u017cyciem tego samego wirtualnego adresu IP.
+warn.sip.proxy.outboundif.invalid.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.create.500.response=CWSCT0410E: Nie powiod\u0142a si\u0119 pr\u00f3ba wygenerowania odpowiedzi routera aplikacji.
+error.failed.create.500.response.explanation=Router aplikacji zg\u0142osi\u0142 nieoczekiwany wyj\u0105tek. Kontener com.ibm.ws.sip.container pr\u00f3bowa\u0142 wygenerowa\u0107 odpowied\u017a 500, ale pr\u00f3ba nie powiod\u0142a si\u0119.
+error.failed.create.500.response.useraction=Skontaktuj si\u0119 z w\u0142a\u015bcicielem routera aplikacji.
+
+warn.sip.custom.property.deprecated=CWSCT0411W: W\u0142a\u015bciwo\u015b\u0107 niestandardowa {0} jest nieaktualna.
+warn.sip.custom.property.deprecated.explanation=Ta w\u0142a\u015bciwo\u015b\u0107 nadal jest akceptowana i jej warto\u015b\u0107 jest u\u017cywana, je\u015bli jest zdefiniowana w konfiguracji, i z powodu kompatybilno\u015bci wstecznej ma pierwsze\u0144stwo przed atrybutem w kolejno\u015bci wykonywania operacji.
+warn.sip.custom.property.deprecated.useraction=Ustaw t\u0119 warto\u015b\u0107 w ustawieniach konfiguracji kontenera SIP w administracyjnym interfejsie u\u017cytkownika.
+
+warn.sip.queue.hung=CWSCT0412W: Zadanie SIP dotycz\u0105ce {0} jest zawieszone. To zadanie zostanie zignorowane.
+warn.sip.queue.hung.explanation= To zadanie przekroczy\u0142o czas okre\u015blony w konfiguracji dla wykrywania zawieszenia w\u0105tk\u00f3w. Przetwarzanie kolejnych komunikat\u00f3w SIP podczas tej sesji mo\u017ce si\u0119 nie powie\u015b\u0107.
+warn.sip.queue.hung.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warn.server.overloaded.message.queue.overloaded=CWSCT0413W: Ten serwer jest przeci\u0105\u017cony, poniewa\u017c kolejki w\u0105tk\u00f3w kontenera com.ibm.ws.sip.container osi\u0105gn\u0119\u0142y maksymaln\u0105 pojemno\u015b\u0107.
+warn.server.overloaded.message.queue.overloaded.explanation=Serwer SIP nie mo\u017ce zaakceptowa\u0107 komunikat\u00f3w przychodz\u0105cych, dop\u00f3ki jest przeci\u0105\u017cony.
+warn.server.overloaded.message.queue.overloaded.useraction=Zmniejsz liczb\u0119 komunikat\u00f3w przychodz\u0105cych lub zwi\u0119ksz warto\u015b\u0107 maksymalnej wielko\u015bci kolejki kontenera com.ibm.ws.sip.container SIP.
+
+info.sip.replication.mode=CWSCT0414I: Tryb replikacji SIP:{0} 
+info.sip.replication.mode.explanation=Cz\u0119stotliwo\u015b\u0107, z kt\u00f3r\u0105 sesje SIP s\u0105 replikowane w domenie replikacji (je\u015bli istnieje).
+info.sip.replication.mode.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.dar.weight=CWSCT0415I: \u0141adowanie domy\u015blnego routera aplikacji u\u017cywaj\u0105cego strategii wykorzystuj\u0105cej wagi.
+info.dar.weight.explanation=Nie podano pliku konfiguracyjnego domy\u015blnego routera aplikacji ani niestandardowego routera aplikacji. Kontener com.ibm.ws.sip.container SIP domy\u015blnie posortuje aplikacje wed\u0142ug wagi.
+info.dar.weight.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.dar.no.config=CWSCT0416E: Nie znaleziono pliku konfiguracyjnego domy\u015blnego routera aplikacji w podanym miejscu: {0}.
+error.dar.no.config.explanation=Nie znaleziono okre\u015blonego przez u\u017cytkownika pliku konfiguracyjnego domy\u015blnego routera aplikacji.
+error.dar.no.config.useraction=Upewnij si\u0119, \u017ce \u015bcie\u017cka podana we w\u0142a\u015bciwo\u015bciach kontenera com.ibm.ws.sip.container SIP (javax.servlet.sip.ar.dar.configuration) jest poprawna.
+
+error.sip.descriptor.wrong.class=CWSCT0417E: Nie znaleziono nazwy klasy serwletu SIP zdefiniowanej w pliku sip.xml. Nazwa klasy: {0}. 
+error.sip.descriptor.wrong.class.explanation=W dokumencie sip.xml zdefiniowano nazw\u0119 klasy serwletu SIP, kt\u00f3rej nie mo\u017cna za\u0142adowa\u0107.
+error.sip.descriptor.wrong.class.useraction=Sprawd\u017a plik sip.xml i upewnij si\u0119, \u017ce nazwa klasy zosta\u0142a zapisana poprawnie.
+
+info.sip.outbound.initialized=CWSCT0418I: Rozszerzenie protoko\u0142u outbound SIP zosta\u0142o pomy\u015blnie zainicjowane.
+info.sip.outbound.initialized.explanation=Kontener com.ibm.ws.sip.container serwletu SIP jest przygotowany do ponownego wykorzystania po\u0142\u0105cze\u0144 zainicjowanych przez klient zgodnie z rozszerzeniem protoko\u0142u wychodz\u0105cego.
+info.sip.outbound.initialized.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Wi\u0119cej informacji o rozszerzeniu protoko\u0142u outbound mo\u017cna znale\u017a\u0107 w temacie Ponowne wykorzystywanie po\u0142\u0105cze\u0144 zainicjowanych przez klient w protokole SIP Centrum informacyjnego serwera WebSphere Application Server.
+
+warn.sip.outbound.no.key.set=CWSCT0419W: Nie okre\u015blono \u017cadnego zestawu kluczy dla rozszerzenia protoko\u0142u outbound SIP.
+warn.sip.outbound.no.key.set.explanation=Kontener com.ibm.ws.sip.container serwletu SIP zarz\u0105dza po\u0142\u0105czeniami zainicjowanymi przez klient zgodnie z rozszerzeniem protoko\u0142u wychodz\u0105cego SIP, ale zabezpieczenia s\u0105 wy\u0142\u0105czone. W takiej sytuacji znaczniki przep\u0142ywu s\u0105 podatne na modyfikacje przez atakuj\u0105cych.
+warn.sip.outbound.no.key.set.useraction=Aby w\u0142\u0105czy\u0107 zabezpieczenia po\u0142\u0105cze\u0144 zainicjowanych przez klient, zapoznaj si\u0119 z informacjami w temacie Ponowne wykorzystywanie po\u0142\u0105cze\u0144 zainicjowanych przez klient w protokole SIP Centrum informacyjnego serwera WebSphere Application Server.
+
+info.sip.outbound.key.set.updated=CWSCT0420I: Zestaw kluczy u\u017cywany na potrzeby rozszerzenia protoko\u0142u outbound SIP zosta\u0142 zaktualizowany.
+info.sip.outbound.key.set.updated.explanation=W zestawie kluczy wygenerowano nowy klucz.
+info.sip.outbound.key.set.updated.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.sip.outbound.failure=CWSCT0421E: Nie powiod\u0142o si\u0119 zainicjowanie rozszerzenia protoko\u0142u outbound SIP przy u\u017cyciu zestawu kluczy {0}.
+error.sip.outbound.failure.explanation=Kontener com.ibm.ws.sip.container serwletu SIP nie mo\u017ce przetworzy\u0107 rozszerzenia protoko\u0142u wychodz\u0105cego, poniewa\u017c podczas pr\u00f3by zainicjowania okre\u015blonego zestawu kluczy wyst\u0105pi\u0142 b\u0142\u0105d.
+error.sip.outbound.failure.useraction=Upewnij si\u0119, \u017ce okre\u015blony zestaw kluczy istnieje w konfiguracji zestawu kluczy. Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w temacie Ponowne wykorzystywanie po\u0142\u0105cze\u0144 zainicjowanych przez klient w protokole SIP Centrum informacyjnego serwera WebSphere Application Server.
+
+warn.sip.invalid.comma.separated.headers=CWSCT0422W: Niepoprawna sk\u0142adnia w\u0142a\u015bciwo\u015bci niestandardowej comma.separated.headers.
+warn.sip.invalid.comma.separated.headers.explanation=W\u0142a\u015bciwo\u015b\u0107 niestandardowa comma.separated.headers kontenera com.ibm.ws.sip.container SIP zawiera niepoprawne ustawienie.
+warn.sip.invalid.comma.separated.headers.useraction=Podaj poprawn\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej comma.separated.headers lub usu\u0144 t\u0119 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 z ustawie\u0144 konfiguracyjnych kontenera com.ibm.ws.sip.container SIP. W\u0142a\u015bciwo\u015bci niestandardowe kontenera com.ibm.ws.sip.container SIP zosta\u0142y opisane w temacie Niestandardowe w\u0142a\u015bciwo\u015bci kontenera com.ibm.ws.sip.container SIP w Centrum informacyjnym produktu WebSphere Application Server.
+
+sip.app.deployment.failed=CWSCT0423E: Wdro\u017cenie aplikacji {0} nie powiod\u0142o si\u0119. Przyczyna: {1}.
+sip.app.deployment.failed.explanation=Wdro\u017cenie nie powiod\u0142o si\u0119 z powodu niepoprawnego deskryptora wdra\u017cania.
+sip.app.deployment.failed.useraction=Upewnij si\u0119, \u017ce adnotacje i plik sip.xml deskryptora wdra\u017cania nie powoduj\u0105 konflikt\u00f3w oraz \u017ce s\u0105 one zgodne ze specyfikacj\u0105.
+
+info.dar.start.order=CWSCT0424I: \u0141adowanie domy\u015blnego routera aplikacji u\u017cywaj\u0105cego strategii korzystaj\u0105cej z kolejno\u015bci uruchamiania.
+info.dar.start.order.explanation=Nie podano pliku konfiguracyjnego domy\u015blnego routera aplikacji ani niestandardowego routera aplikacji. Kontener com.ibm.ws.sip.container SIP domy\u015blnie posortuje aplikacje wed\u0142ug kolejno\u015bci uruchamiania.
+info.dar.start.order.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warn.change.in.endpoints=CWSCT0425W: Konfiguracja kana\u0142u SIP uleg\u0142a zmianie. Wprowadzenie zmian w punktach ko\u0144cowych SIP podczas dzia\u0142ania serwera mo\u017ce spowodowa\u0107 niepowodzenie dzia\u0142aj\u0105cych dialog\u00f3w.
+warn.change.in.endpoints.explanation=Niezawodno\u015b\u0107 stanu dialog\u00f3w SIP opiera si\u0119 na trwa\u0142o\u015bci konfiguracji interfejs\u00f3w SIP.
+warn.change.in.endpoints.useraction=Zaleca si\u0119 zrestartowanie serwera, je\u015bli trwa przetwarzanie istniej\u0105cych dialog\u00f3w SIP.
+
+warn.dar.file.modification=CWSCT0426W: Nie zmieniono tre\u015bci lub po\u0142o\u017cenia pliku domy\u015blnego routera aplikacji SIP.
+warn.dar.file.modification.explanation=Nie mo\u017cna zmieni\u0107 tre\u015bci ani po\u0142o\u017cenia pliku domy\u015blnego routera aplikacji, gdy serwer dzia\u0142a.
+warn.dar.file.modification.useraction=Aby zastosowa\u0107 zmiany, zrestartuj serwer.
+
+error.no.main.serv=CWSCT0427E: W aplikacji zdefiniowano serwlet g\u0142\u00f3wny, kt\u00f3ry nie istnieje: {0}.
+error.no.main.serv.explanation=Serwlet g\u0142\u00f3wny nie jest zgodny z \u017cadnym z istniej\u0105cych serwlet\u00f3w.
+error.no.main.serv.useraction=Sprawd\u017a, czy serwlet g\u0142\u00f3wny zosta\u0142 poprawnie zdefiniowany w deskryptorze wdra\u017cania lub za pomoc\u0105 adnotacji. Ponadto sprawd\u017a, czy odwo\u0142uje si\u0119 on do klasy typu SipServlet.
+
+cant.both.main.serv.mapping=CWSCT0428E: Aplikacja definiuje zar\u00f3wno serwer g\u0142\u00f3wny {0}, jak i regu\u0142y odwzorowania serwletu, co nie jest dozwolone.
+cant.both.main.serv.mapping.explanation=Aplikacja nie mo\u017ce definiowa\u0107 jednocze\u015bnie serwletu g\u0142\u00f3wnego i regu\u0142 odwzorowania serwletu.
+cant.both.main.serv.mapping.useraction=Upewnij si\u0119, \u017ce aplikacja definiuje serwlet g\u0142\u00f3wny albo regu\u0142y odwzorowania serwletu, ale nie oba te elementy jednocze\u015bnie. Serwlet g\u0142\u00f3wny mo\u017cna zdefiniowa\u0107 w deskryptorze wdra\u017cania lub za pomoc\u0105 adnotacji.
+
+must.define.main.serv=CWSCT0429E: Aplikacja nie definiuje serwletu g\u0142\u00f3wnego, ale ma wi\u0119cej ni\u017c jeden serwlet SIP.
+must.define.main.serv.explanation=Je\u015bli aplikacja ma wi\u0119cej ni\u017c jeden serwlet SIP, musi r\u00f3wnie\u017c definiowa\u0107 serwlet g\u0142\u00f3wny.
+must.define.main.serv.useraction=Upewnij si\u0119, \u017ce serwer g\u0142\u00f3wny jest poprawnie zdefiniowany w deskryptorze wdra\u017cania lub za pomoc\u0105 adnotacji. Definicja serwletu g\u0142\u00f3wnego musi odwo\u0142ywa\u0107 si\u0119 do klasy typu SipServlet.
+
+start.sipChain.error=CWSCT0430E: Nie powiod\u0142a si\u0119 pr\u00f3ba uruchomienia \u0142a\u0144cucha SIP.
+start.sipChain.error.explanation=Je\u015bli uruchamianie \u0142a\u0144cucha SIP nie powiod\u0142o si\u0119, mog\u0105 wyst\u0119powa\u0107 problemy z definicjami punkt\u00f3w ko\u0144cowych SIP.
+start.sipChain.error.useraction=Sprawd\u017a, czy punkty ko\u0144cowe SIP s\u0105 poprawnie zdefiniowane.
+
+config.sipChain.error=CWSCT0431E: Inicjowanie \u0142a\u0144cucha SIP nie powiod\u0142o si\u0119.
+config.sipChain.error.explanation=Je\u015bli inicjowanie \u0142a\u0144cucha SIP nie powiod\u0142o si\u0119, w\u00f3wczas kana\u0142 w \u0142a\u0144cuchu nie jest tworzony lub inicjowany albo tworzenie \u0142a\u0144cucha nie powiedzie si\u0119. Obejmuje to niepowodzenia pr\u00f3b powi\u0105zania port\u00f3w.
+config.sipChain.error.useraction=Sprawd\u017a, czy punkty ko\u0144cowe SIP s\u0105 poprawnie zdefiniowane.
+
+error.asynchwork.host.unknown=CWSCT0432E: Wysy\u0142anie pracy asynchronicznej nie powiod\u0142o si\u0119, poniewa\u017c host jest nieznany.
+error.asynchwork.host.unknown.explanation=Kontener SIP pr\u00f3bowa\u0142 wys\u0142a\u0107 prac\u0119 asynchroniczn\u0105, ale pr\u00f3ba nie powiod\u0142a si\u0119, poniewa\u017c host by\u0142 nieznany.
+error.asynchwork.host.unknown.useraction=Sprawd\u017a konfiguracj\u0119 hosta przed wys\u0142aniem pracy asynchronicznej.
+
+info.sip.queue.stats=CWSCT0433I: Tryb drukowania statystyk kolejek kontenera SIP = {0}; 1 = tylko w przypadku przeci\u0105\u017cenia, 2 = zawsze; co {1} ms.
+info.sip.queue.stats.explanation=Tryb drukowania kolejek kontenera SIP.
+info.sip.queue.stats.useraction=To jest komunikat informacyjny.  Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+error.init.loadonstartup.app=CWSCT0435E: Serwer SIP nie mo\u017ce zainicjowa\u0107 aplikacji z atrybutem serwletu loadOnStartup: {0}
+error.init.loadonstartup.app.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania aplikacji SIP z u\u017cyciem okre\u015blonego atrybutu serwletu loadOnStartup.
+error.init.loadonstartup.app.useraction=Przejrzyj plik \u015bledzenia serwera SIP znajduj\u0105cy si\u0119 w katalogu dziennik\u00f3w w folderze SERVER_DIR, aby uzyska\u0107 wi\u0119cej informacji na temat tego b\u0142\u0119du.
+
+warn.sip.resolver.failed.connection=CWSCT0436W: Obiekt t\u0142umacz\u0105cy SIP nie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105czenia, adres zdalny = {0}.
+warn.sip.resolver.failed.connection.explanation=Obiekt t\u0142umacz\u0105cy SIP (Session Initiation Protocol) nie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105czenia z w\u0119z\u0142em zdalnym.
+warn.sip.resolver.failed.connection.useraction=Zdalny serwer nazw mo\u017ce by\u0107 niedost\u0119pny. Sprawd\u017a konfiguracj\u0119 serwera nazw.
+
+warn.sip.resolver.server.not.responding=CWSCT0437W: Serwer nazw nie odpowiada na wyszukiwanie SIP. Adres zdalny = {0}.
+warn.sip.resolver.server.not.responding.explanation=Zdalny serwer nazw nie odpowiada na ostatnie \u017c\u0105danie obiektu t\u0142umacz\u0105cego SIP (Session Initiation Protocol).
+warn.sip.resolver.server.not.responding.useraction=Serwer nazw prawdopodobnie nie dzia\u0142a. Sprawd\u017a dost\u0119pno\u015b\u0107 serwera nazw.
+
+info.sip.resolver.established.connection=CWSCT0438I: Obiekt t\u0142umacz\u0105cy SIP nawi\u0105za\u0142 po\u0142\u0105czenie z = {0}.
+info.sip.resolver.established.connection.explanation=Obiekt t\u0142umacz\u0105cy SIP (Session Initiation Protocol) nawi\u0105za\u0142 po\u0142\u0105czenie TCP ze zdalnym serwerem nazw.
+info.sip.resolver.established.connection.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+info.sip.resolver.initialized=CWSCT0439I: Us\u0142uga obiektu t\u0142umacz\u0105cego SIP zosta\u0142a zainicjowana dla serwera nazw {0}.
+info.sip.resolver.initialized.explanation=Us\u0142uga obiektu t\u0142umacz\u0105cego SIP (Session Initiation Protocol) zosta\u0142a zainicjowana.
+info.sip.resolver.initialized.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+info.sip.resolver.not.initialized=CWSCT0440I: Us\u0142uga obiektu t\u0142umacz\u0105cego SIP nie zosta\u0142a zainicjowana.
+info.sip.resolver.not.initialized.explanation=Us\u0142uga obiektu t\u0142umacz\u0105cego SIP (Session Initiation Protocol) nie skonfigurowa\u0142a serwera nazw.
+info.sip.resolver.not.initialized.useraction=Skonfiguruj ponownie us\u0142ug\u0119 obiektu t\u0142umacz\u0105cego SIP z serwerem nazw.
+
+warning.traditional.enabled=CWSCT0441W: Kontener SIP nie obs\u0142uguje tradycyjnej infrastruktury PMI.
+warning.traditional.enabled.explanation=Atrybut enableTraditionalPMI ma ustawion\u0105 warto\u015b\u0107 true w pliku server.xml. Kontener SIP nie obs\u0142uguje tradycyjnej infrastruktury PMI w profilu Liberty.
+warning.traditional.enabled.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 enableTraditionalPMI z pliku server.xml.

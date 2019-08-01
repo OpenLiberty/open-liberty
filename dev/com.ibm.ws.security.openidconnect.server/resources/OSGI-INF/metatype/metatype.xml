@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.openidconnect.server.oidcServerConfig.metatype" ibm:alias="openidConnectProvider"
+         name="%openidConnectProvider" description="%openidConnectProvider.desc">
+         <AD id="oauthProviderRef" name="%oauthProviderRef" description="%oauthProviderRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.provider"
+            required="true" type="String"  />
+         <AD id="uniqueUserIdentifier" name="internal" description="internal use only"
+            required="false" type="String" default="username" />
+         <AD id="issuerIdentifier" name="%issuerIdentifier" description="%issuerIdentifier.desc"
+            required="false" type="String" />
+         <AD id="allowDefaultSsoCookieName" name="%allowDefaultSsoCookieName" description="%allowDefaultSsoCookieName.desc"
+            required="false" type="Boolean" default="false" />
+         <AD id="audience" name="internal" description="internal use only"
+            required="false" type="String" />
+         <AD id="userIdentity" name="internal" description="internal use only"
+            required="false" type="String" />
+         <AD id="groupIdentifier" name="internal" description="internal use only"
+            required="false" type="String" default="groupIds"/>
+         <AD id="customClaimsEnabled" name="internal" description="internal use only"
+            required="false" type="Boolean" default="true"/>
+         <AD id="customClaims" name="%customClaims" description="%customClaims.desc"
+            required="false" type="String" cardinality="2147483647"/>            
+         <AD id="jtiClaimEnabled" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/>            
+         <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc"
+            required="false" type="Boolean" default="false"/>
+            <AD id="idTokenCacheEnabled" name="%idTokenCacheEnabled" description="%idTokenCacheEnabled.desc"
+            required="false" type="Boolean" default="true"/>  
+         <AD id="jwkRotationTime" name="%jwkRotationTime" description="%jwkRotationTime.desc"
+            required="false" type="String" ibm:type="duration(m)" default="720m" min="60m"/>
+         <AD id="jwkSigningKeySize" name="%jwkSigningKeySize" description="%jwkSigningKeySize.desc"
+            required="false" type="Long" default="2048">
+         	<Option label="%jwkSigningKeySize.1024" value="1024"/>
+            <Option label="%jwkSigningKeySize.2048" value="2048"/>
+            <Option label="%jwkSigningKeySize.4096" value="4096"/>
+         </AD>
+         <AD id="defaultScope" name="internal" description="internal use only"
+            required="false" type="String"  />
+         <AD id="externalClaimNames" name="internal" description="internal use only"
+            required="false" type="String"  />            
+         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc"
+            default="HS256">
+            <Option label="%signatureAlgorithm.NONE" value="none" />
+            <Option label="%signatureAlgorithm.RS256" value="RS256" />
+            <Option label="%signatureAlgorithm.HS256" value="HS256" />
+         </AD>
+         <!--  keystoreRef default value is also hardcoded in OidcServerConfigImpl -->
+         <AD id="keyStoreRef" name="%keyStoreRef" description="%keyStoreRef.desc" required="false" type="String" default="opKeyStore" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+         <AD id="keyAliasName" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" />
+         <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+         <AD id="scopeToClaimMap" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidcs.scopeToClaimMap" 
+             required="false" type="String" ibm:flat="true" />
+            
+         <AD id="claimToUserRegistryMap" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidcs.claimToUserRegistryMap" 
+             required="false" type="String" ibm:flat="true" />
+
+         <AD id="sessionManaged" name="%sessionManaged" description="%sessionManaged.desc" required="false" type="Boolean" default="false"/>
+         <AD id="idTokenLifetime" name="%idTokenLifetime" description="%idTokenLifetime.desc" required="false" type="String" default="2h" ibm:type="duration(s)" /> 
+         <AD id="checkSessionIframeEndpointUrl" name="internal" description="internal use only" required="false" type="String" default="/oidc/sessionMgmt.jsp" />
+         
+         <AD id="discovery" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidcs.discovery" required="false" type="String" />
+         <AD id="protectedEndpoints" name="internal" description="internal use only" required="false" type="String" default="authorize registration app-passwords app-tokens personalTokenManagement usersTokenManagement clientManagement" /> <!-- separated by space -->
+         <AD id="requireOpenidScopeForUserInfo" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+     </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.openidconnect.server.oidcServerConfig">
+        <Object ocdref="com.ibm.ws.security.openidconnect.server.oidcServerConfig.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.oidcs.scopeToClaimMap.metatype" name="%scopeToClaimMap" description="%scopeToClaimMap.desc" 
+         ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype" >
+     	 <AD id="internal.attribute" required="false" type="String" name="internal" description="internal use only" ibm:final="true"/>
+     	 <AD id="profile" name="%profile.scope" description="%profile.scope.desc" 
+     	     type="String" required="false" default="name\, family_name\, given_name\, middle_name\, nickname\, preferred_username\, profile\, picture\, website\, gender\, birthdate\, zoneinfo\, locale\, updated_at" />
+     	 <AD id="email" name="%email.scope" description="%email.scope.desc" 
+     	     type="String" required="false" default="email\, email_verified" />  
+     	 <AD id="address" name="%address.scope" description="%address.scope.desc" 
+     	     type="String" required="false" default="address" />  
+     	 <AD id="phone" name="%phone.scope" description="%phone.scope.desc" 
+     	     type="String" required="false" default="phone_number\, phone_number_verified" /> 
+         <AD id="property" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidcs.property" 
+             required="false" type="String" ibm:flat="true" cardinality="2147483647"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oidcs.scopeToClaimMap">
+        <Object ocdref="com.ibm.ws.security.oidcs.scopeToClaimMap.metatype" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.security.oidcs.property.metatype" name="%property" description="%property.desc">
+        <AD id="name" type="String" required="true" name="%name" description="%name.desc"/>
+        <AD id="value" type="String" required="true" name="%value" description="%value.desc"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.oidcs.property">
+        <Object ocdref="com.ibm.ws.security.oidcs.property.metatype" />
+    </Designate>    
+    
+    <OCD id="com.ibm.ws.security.oidcs.claimToUserRegistryMap.metatype" name="%claimToUserRegistryMap" description="%claimToUserRegistryMap.desc" 
+         ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+     	 <AD id="internal.attribute" required="false" type="String" name="internal" description="internal use only" ibm:final="true"/>
+         <AD id="name" name="%name.claim" description="%name.claim.desc" 
+     	     type="String" required="false" default="displayName" />
+         <AD id="given_name" name="%given_name.claim" description="%given_name.claim.desc" 
+     	     type="String" required="false" default="givenName" />      	      
+         <AD id="picture" name="%picture.claim" description="%picture.claim.desc" 
+     	     type="String" required="false" default="photoURL" /> 
+         <AD id="email" name="%email.claim" description="%email.claim.desc" 
+     	     type="String" required="false" default="mail" />       	     
+         <AD id="address" name="%address.claim" description="%address.claim.desc" 
+     	     type="String" required="false" default="postalAddress" />   
+         <AD id="phone_number" name="%phone_number.claim" description="%phone_number.claim.desc" 
+     	     type="String" required="false" default="telephoneNumber" />
+         <AD id="property" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidcs.property"
+             required="false" type="String" ibm:flat="true" cardinality="2147483647"/>     	             	         	          	           	     
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.oidcs.claimToUserRegistryMap">
+        <Object ocdref="com.ibm.ws.security.oidcs.claimToUserRegistryMap.metatype" />
+    </Designate>
+    
+    <!-- 
+    	OIDC Discovery Configuration Metadata
+    	Properties based off http://openid.net/specs/openid-connect-discovery-1_0-21.html
+	    with additional properties to support Jazz
+	-->
+    <OCD id="com.ibm.ws.security.oidcs.discovery.metatype" name="%discovery" description="%discovery.desc" ibmui:localization="OSGI-INF/l10n/metatype">	
+		<AD id="responseTypesSupported" name="%responseTypesSupported" description="%responseTypesSupported.desc"
+			required="false" type="String" cardinality="3" default="code, token, id_token token">
+			<Option label="%responseTypesSupported.code" value="code" />
+			<Option label="%responseTypesSupported.token" value="token" />
+			<Option label="%responseTypesSupported.idTokenToken" value="id_token token" />
+		</AD>
+										
+		<AD id="subjectTypesSupported" name="internal" description="internal use only"
+			required="false" type="String" cardinality="1" default="public" />
+			
+		<!-- Note that this property should be an array rather than one value, but if liberty
+			implementation requires only 1 mode at a time it will still be compatible -->	
+		<AD id="idTokenSigningAlgValuesSupported" name="%idTokenSigningAlgValuesSupported" description="%idTokenSigningAlgValuesSupported.desc"
+			required="false" type="String" cardinality="1" default="HS256">
+			<Option label="%signatureAlgorithm.NONE" value="none" />
+			<Option label="%signatureAlgorithm.RS256" value="RS256" />
+			<Option label="%signatureAlgorithm.HS256" value="HS256" />
+		</AD>	
+			
+		<AD id="scopesSupported" name="%scopesSupported" description="%scopesSupported.desc"
+			required="false" type="String" cardinality="2147483647" default="openid, general, profile, email, address, phone"/>	
+			
+		<AD id="claimsSupported" name="%claimsSupported" description="%claimsSupported.desc"
+			required="false" type="String" cardinality="2147483647" default="sub, groupIds, name, preferred_username, picture, locale, email, profile"/>	
+			
+		<AD id="responseModesSupported" name="%responseModesSupported" description="%responseModesSupported.desc"
+			required="false" type="String" cardinality="3" default="query, fragment, form_post">
+			<Option label="%responseModesSupported.query" value="query" />
+			<Option label="%responseModesSupported.fragment" value="fragment" />
+		    <Option label="%responseModesSupported.form_post" value="form_post" />	
+		</AD>	
+			
+		<AD id="grantTypesSupported" name="%grantTypesSupported" description="%grantTypesSupported.desc"
+			required="false" type="String" cardinality="6" default="authorization_code, implicit, refresh_token, client_credentials, password, urn:ietf:params:oauth:grant-type:jwt-bearer">
+			<Option label="%grantTypesSupported.authorizationCode" value="authorization_code" />
+			<Option label="%grantTypesSupported.implicit" value="implicit" />
+			<Option label="%grantTypesSupported.refreshToken" value="refresh_token" />
+			<Option label="%grantTypesSupported.clientCredentials" value="client_credentials" />
+			<Option label="%grantTypesSupported.password" value="password" />
+			<Option label="%grantTypesSupported.jwtBearer" value="urn:ietf:params:oauth:grant-type:jwt-bearer" />
+		</AD>
+				
+		<AD id="tokenEndpointAuthMethodsSupported" name="%tokenEndpointAuthMethodsSupported" description="%tokenEndpointAuthMethodsSupported.desc"
+			required="false" type="String" cardinality="3" default="client_secret_post, client_secret_basic">
+			<Option label="%tokenEndpointAuthMethodsSupported.none" value="none" />
+			<Option label="%tokenEndpointAuthMethodsSupported.clientSecretPost" value="client_secret_post" />
+			<Option label="%tokenEndpointAuthMethodsSupported.clientSecretBasic" value="client_secret_basic" />
+		</AD>	
+			
+		<AD id="displayValuesSupported" name="internal" description="internal use only"
+			required="false" type="String" cardinality="1" default="page" />
+				
+		<AD id="claimTypesSupported" name="internal" description="internal use only"
+			required="false" type="String" cardinality="1" default="normal" />
+						
+		<AD id="claimsParameterSupported" name="%claimsParameterSupported" description="%claimsParameterSupported.desc"
+			required="false" type="Boolean" default="false"/>
+				
+		<AD id="requestParameterSupported" name="%requestParameterSupported" description="%requestParameterSupported.desc"
+			required="false" type="Boolean" default="false"/>	
+			
+		<AD id="requestUriParameterSupported" name="%requestUriParameterSupported" description="%requestUriParameterSupported.desc"
+			required="false" type="Boolean" default="false"/>
+				
+		<AD id="requireRequestUriRegistration" name="%requireRequestUriRegistration" description="%requireRequestUriRegistration.desc"
+			required="false" type="Boolean" default="false"/>		 	
+		
+		<AD id="backingIdpUriPrefix" name="internal" description="internal use only"
+            required="false" type="String"/>	
+        
+		<AD id="authProxyEndpointUrl" name="internal" description="internal use only"
+            required="false" type="String"/>        
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.oidcs.discovery">
+        <Object ocdref="com.ibm.ws.security.oidcs.discovery.metatype" />
+    </Designate>    
+
+</metatype:MetaData>

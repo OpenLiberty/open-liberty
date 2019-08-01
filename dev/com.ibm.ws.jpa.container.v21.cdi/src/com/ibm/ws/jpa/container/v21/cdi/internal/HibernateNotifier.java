@@ -14,6 +14,6 @@ import javax.enterprise.inject.spi.BeanManager;
 
 public interface HibernateNotifier {
 
-    public void notifyHibernateAfterBeanDiscovery(BeanManager beanManager);
+    public void notifyHibernateAfterBeanDiscovery(BeanManager beanManager, ClassLoader classLoader);
     public void notifyHibernateBeforeShutdown(BeanManager beanManager); 
 }

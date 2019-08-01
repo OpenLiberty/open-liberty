@@ -11,13 +11,10 @@
 package com.ibm.ws.transaction.test;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -26,7 +23,8 @@ import componenttest.topology.impl.LibertyServerFactory;
                 SimpleFS2PCCloudTest.class,
                 Simple2PCCloudTest.class,
                 DualServerDynamicFSTest.class,
-                DualServerDynamicDBTest.class
+                DualServerDynamicDBTest.class,
+                DualServerPeerLockingTest.class
 })
 public class FATSuite {
 

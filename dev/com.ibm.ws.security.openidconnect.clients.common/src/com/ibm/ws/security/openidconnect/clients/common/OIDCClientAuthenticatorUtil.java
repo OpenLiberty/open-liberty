@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -247,12 +248,24 @@ public class OIDCClientAuthenticatorUtil {
         ProviderAuthenticationResult oidcResult = null;
         oidcResult = verifyResponseState(req, res, responseState, clientConfig);
         if (oidcResult != null) {
-            return oidcResult;
+            return oidcResult; //401
         }
 
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_ID_TOKEN);
 
         oidcResult = jose4jUtil.createResultWithJose4J(responseState, reqParameters, clientConfig, oidcClientRequest);
+
+        // get userinfo if configured and available.
+        if (clientConfig.getUserInfoEndpointUrl() != null) {
+            boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
+            SSLSocketFactory sslSocketFactory = null;
+            try {
+                sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, false, needHttps);
+            } catch (com.ibm.websphere.ssl.SSLException e) {
+                //ffdc
+            }
+            new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory);
+        }
 
         return oidcResult;
     }
@@ -680,7 +693,7 @@ public class OIDCClientAuthenticatorUtil {
      * @param clientId
      *            TODO
      * @param oidcResult
-     * @return
+     * @return null if ok, otherwise log error and set 401.
      */
     public ProviderAuthenticationResult verifyResponseState(HttpServletRequest req, HttpServletResponse res,
             String responseState, ConvergedClientConfig clientConfig) {

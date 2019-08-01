@@ -29,7 +29,8 @@ WS-TraceGroup: REACTIVEMESSAGE
 
 Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka
 
-Private-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.classloader
+Private-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.classloader,\
+                com.ibm.ws.microprofile.reactive.messaging.kafka.resources
 
 Import-Package: *
 

@@ -170,9 +170,12 @@ error.unique.value.conflict=CWWKG0031E: Valoarea {1} specificat\u0103 pentru atr
 error.unique.value.conflict.explanation=Valoarea pentru atributul specificat trebuie s\u0103 fie unic dar este deja utilizat.
 error.unique.value.conflict.useraction=Modifica\u0163i valoarea atributului astfel \u00eenc\u00e2t s\u0103 fie unic.
 
-warn.config.invalid.value=CWWKG0032W: Valoare nea\u015fteptat\u0103 specificat\u0103 pentru proprietatea [{0}], valoare = [{1}]. Valoarea(le) a\u015fteptat\u0103 este: {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: Valoare nea\u015fteptat\u0103 specificat\u0103 pentru proprietatea [{0}], valoare = [{1}]. Valoarea(le) a\u015fteptat\u0103 este: {2}. {3} 
 warn.config.invalid.value.explanation=Valoarea specificat\u0103 pentru proprietatea nu poate fi utilizat\u0103.
 warn.config.invalid.value.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii pentru a utiliza o valoare a\u015fteptat\u0103.
+
+default.value.in.use=Valoarea implicit\u0103 \u00een utilizare: {0}.
 
 warning.pid.not.found=CWWKG0033W: Valoarea [{1}] specificat\u0103 pentru atributul de referin\u0163\u0103 {0}] a fost g\u0103sit\u00ee \u00een configura\u0163ie.
 warning.pid.not.found.explanation=Valoarea specificat\u0103 trebuie s\u0103 fie un element \u00een configura\u0163ie.
@@ -292,25 +295,10 @@ error.factoryOnly=CWWKG0061E: Identitatea persistat\u0103 {0} nu este o identita
 error.factoryOnly.explanation=Atributul ibm:extends este aplicabil numai pentru identit\u0103\u0163ile persistate de fabric\u0103.
 error.factoryOnly.useraction=Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extends din defini\u0163ia componentei de obiect. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: Identitatea persistat\u0103 {0} nu este o identitate persistat\u0103 de fabric\u0103 \u015fi, prin urmare, nu poate avea un atribut ibm:extendsAlias de {1}. Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extendsAlias din identitatea persistent\u0103.
-error.factoryOnly.extendsAlias.explanation=Atributul ibm:extendsAlias este aplicabil numai pentru identit\u0103\u0163ile persistate de fabric\u0103 care extind alt\u0103 identitate persistat\u0103 de fabric\u0103.
-error.factoryOnly.extendsAlias.useraction=Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extendsAlias din identitatea persistent\u0103.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: Identitatea persistat\u0103 {0} nu este o identitate persistat\u0103 de fabric\u0103, prin urmare, nu poate fi extins\u0103 de identitatea persistat\u0103 {1}.
 error.superFactoryOnly.explanation=Atributul ibm:extends este aplicabil numai pentru identit\u0103\u0163ile persistate de fabric\u0103.
 error.superFactoryOnly.useraction=Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extends din defini\u0163ia componentei de obiect. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: Identitatea persistat\u0103 {0} specific\u0103 un atribut ibm:extendsAlias de {1} \u015fi trebuie, prin urmare, s\u0103 specifice atributul ibm:extends.
-error.ExtendsAliasMustExtend.explanation=Atunci c\u00e2nd specifica\u0163i un atribut ibm:extendsAlias, trebuie s\u0103 specifica\u0163i un atribut ibm:extends.
-error.ExtendsAliasMustExtend.useraction=Specifica\u0163i un atribut ibm:extends.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: Identitatea persistat\u0103 {0} specific\u0103 atributul {1} de {2} \u015fi trebuie, prin urmare, s\u0103 specifice atributul {3}.
-error.parentpid.and.childalias.explanation=Metatype-ul indic\u0103 faptul c\u0103 un element imbricat primul-copil a fost specificat par\u0163ial. Elementele imbricate primul-copil trebuie, prin urmare, s\u0103 specifice \u015fi atributul ibm:parentPid \u015fi atributul ibm:childAlias.
-error.parentpid.and.childalias.useraction=Dac\u0103 acest metatype este destinat unui element imbricat primul-copil, furniza\u0163i atributul lips\u0103. Altfel, \u00eenl\u0103tura\u0163i atributul care a fost furnizat. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Nu se poate redenumi defini\u0163ia atributului {1} a\u015fa cum s-a specificat de atributul ibm:rename {2} \u00een identitatea persistat\u0103 {0}.
@@ -462,6 +450,21 @@ warning.unrecognized.merge.behavior.useraction=Actualiza\u0163i configura\u0163i
 error.missing.required.attribute.singleton=CWWKG0095E: Elementului {0} \u00eei lipse\u015fte atributul  necesar {1}.
 error.missing.required.attribute.singleton.explanation=Atributul lips\u0103 este necesar \u00een fi\u015fierul de configurare server.xml sau unul dn fi\u015fierele sale de configurare cu referin\u0163\u0103.
 error.missing.required.attribute.singleton.useraction=Ad\u0103uga\u0163i atributul \u00een fi\u015fierul de configurare server.xml sau unul din fi\u015fierele sale de configurare cu referin\u0163\u0103.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: Identitatea persistat\u0103 {0} nu este o identitate persistat\u0103 de fabric\u0103 \u015fi, prin urmare, nu poate avea un atribut ibm:extendsAlias de {1}. Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extendsAlias din identitatea persistent\u0103.
+error.factoryOnly.extendsAlias.explanation=Atributul ibm:extendsAlias este aplicabil numai pentru identit\u0103\u0163ile persistate de fabric\u0103 care extind alt\u0103 identitate persistat\u0103 de fabric\u0103.
+error.factoryOnly.extendsAlias.useraction=Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extendsAlias din identitatea persistent\u0103.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: Identitatea persistat\u0103 {0} specific\u0103 un atribut ibm:extendsAlias de {1} \u015fi trebuie, prin urmare, s\u0103 specifice atributul ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Atunci c\u00e2nd specifica\u0163i un atribut ibm:extendsAlias, trebuie s\u0103 specifica\u0163i un atribut ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Specifica\u0163i un atribut ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: Identitatea persistat\u0103 {0} specific\u0103 atributul {1} de {2} \u015fi trebuie, prin urmare, s\u0103 specifice atributul {3}.
+error.parentpid.and.childalias.explanation=Metatype-ul indic\u0103 faptul c\u0103 un element imbricat primul-copil a fost specificat par\u0163ial. Elementele imbricate primul-copil trebuie, prin urmare, s\u0103 specifice \u015fi atributul ibm:parentPid \u015fi atributul ibm:childAlias.
+error.parentpid.and.childalias.useraction=Dac\u0103 acest metatype este destinat unui element imbricat primul-copil, furniza\u0163i atributul lips\u0103. Altfel, \u00eenl\u0103tura\u0163i atributul care a fost furnizat. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: Atributul {2} ibm:extendsAlias este duplicat \u00eentr-o singur\u0103 ierarhie de extensii. PID-urile sunt {0} \u015fi {1}. Face\u0163i fiecare atribut ibm:extendsAlias unic \u00een ierarhia extins\u0103.

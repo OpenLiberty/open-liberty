@@ -1,0 +1,108 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security OpenID Connect Client 1.0
+Bundle-SymbolicName: com.ibm.ws.security.openidconnect.client
+Bundle-Description: WAS Security OpenID Connect Client, version=${bVersion}
+
+# in whiteboard project, we have: Web-ContextPath: @httpWhiteboard
+
+#Web-ContextPath: /oidcclient
+Web-ContextPath: @oidcClientWebapp
+
+IBM-Authorization-Roles: com.ibm.ws.security.oidcclient10
+
+WS-TraceGroup: \
+  OPENIDCONNECT
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+
+Export-Package: \
+        com.ibm.ws.security.openidconnect.client;provide:=true, \
+        com.ibm.ws.security.openidconnect.client.jose4j
+
+Private-Package: \
+        com.ibm.ws.security.openidconnect.client.internal.*, \
+        com.ibm.ws.security.openidconnect.client.web
+
+Import-Package: \
+    com.ibm.ws.security.openidconnect.common.internal.*, \
+    org.jose4j.*;version="[0.6,1)", \
+    *
+
+Service-Component: \
+  com.ibm.ws.security.openidconnect.client; \
+    implementation:=com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl; \
+    provide:='com.ibm.ws.webcontainer.security.openidconnect.OidcClient,\
+              com.ibm.ws.webcontainer.security.UnprotectedResourceService'; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modify; \
+    deactivate:=deactivate; \
+    configuration-policy:=ignore; \
+    oidcClientConfig=com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig; \
+    userResolver=com.ibm.wsspi.security.oauth20.UserCredentialResolver; \
+    sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
+    authFilter='com.ibm.ws.security.authentication.filter.AuthenticationFilter(id=*)'; \
+    authCacheService=com.ibm.ws.security.authentication.cache.AuthCacheService; \
+    dynamic:='oidcClientConfig,sslSupport,authFilter'; \
+    optional:='sslSupport,authFilter,userResolver'; \
+    multiple:='oidcClientConfig,authFilter,userResolver';\
+    greedy:='authFilter'; \
+    properties:="service.vendor=IBM"
+
+Include-Resource: \
+    WEB-INF=resources/WEB-INF, \
+    OSGI-INF=resources/OSGI-INF
+
+-dsannotations=com.ibm.ws.security.openidconnect.client.internal.OidcClientWebappConfigImpl,\
+    com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.api.json;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.app.manager.wab;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.security.openidconnect.common;version=latest,\
+	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
+	com.ibm.ws.security.common.jsonwebkey;version=latest,\
+	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.webcontainer.security.provider;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.security.oauth.2.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.authentication.filter;version=latest,\
+	com.ibm.ws.security.common;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+instrument.classesExcludes: com/ibm/ws/security/openidconnect/client/internal/resources/OidcClientMessages*.class

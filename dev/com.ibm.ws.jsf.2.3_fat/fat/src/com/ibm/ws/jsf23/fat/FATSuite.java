@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,12 +34,12 @@ import com.ibm.ws.jsf23.fat.tests.JSF23JPA22Test;
 import com.ibm.ws.jsf23.fat.tests.JSF23JSF22SingletonFeatureTest;
 import com.ibm.ws.jsf23.fat.tests.JSF23MapSupportTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23SelectOneRadioGroupTests;
+import com.ibm.ws.jsf23.fat.tests.JSF23ThirdPartyApiTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UIRepeatConditionTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UISelectManyTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewParametersTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewResourceTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
-import com.ibm.ws.jsf23.fat.tests.JSFDummyTest;
 
 /**
  * JSF 2.3 Tests
@@ -67,7 +67,6 @@ import com.ibm.ws.jsf23.fat.tests.JSFDummyTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                JSFDummyTest.class,
                 JSF23FaceletVDLTests.class,
                 JSF23CDIGeneralTests.class,
                 JSF23GeneralTests.class,
@@ -90,7 +89,8 @@ import com.ibm.ws.jsf23.fat.tests.JSFDummyTest;
                 CDIInjectionTests.class,
                 CDIFacesInMetaInfTests.class,
                 CDIFacesInWebXMLTests.class,
-                CDIConfigByACPTests.class
+                CDIConfigByACPTests.class,
+                JSF23ThirdPartyApiTests.class
 })
 public class FATSuite {
 

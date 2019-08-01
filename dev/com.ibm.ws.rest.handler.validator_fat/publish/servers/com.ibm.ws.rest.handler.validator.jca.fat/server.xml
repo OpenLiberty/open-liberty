@@ -48,6 +48,10 @@
     <properties.TestValidationAdapter.DataSource hostName="myhost.openliberty.io" portNumber="2345"/>
   </connectionFactory>
 
+  <connectionFactory id="jaasLoginCF" jndiName="eis/cf6" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationAdapter.ConnectionFactory hostName="myhost.openliberty.io" portNumber="6543"/>
+  </connectionFactory>
+
   <jaasLoginContextEntry id="customLoginEntry" name="customLoginEntry" loginModuleRef="customLoginModule" />
   <jaasLoginModule id="customLoginModule" className="com.ibm.ws.rest.handler.validator.loginmodule.TestLoginModule" controlFlag="REQUIRED">
     <library>

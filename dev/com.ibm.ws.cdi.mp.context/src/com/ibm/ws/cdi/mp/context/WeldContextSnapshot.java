@@ -11,10 +11,13 @@
 package com.ibm.ws.cdi.mp.context;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.microprofile.context.spi.ThreadContextController;
 import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
+import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.bound.BoundConversationContext;
 import org.jboss.weld.context.bound.BoundLiteral;
 import org.jboss.weld.context.bound.BoundRequestContext;
@@ -31,11 +34,13 @@ public class WeldContextSnapshot implements ThreadContextSnapshot {
 
     private static final TraceComponent tc = Tr.register(WeldContextSnapshot.class);
 
+    private final boolean propagate;
     private final WeldManager manager;
     private final ContextualInstanceSnapshot contextToApply;
 
     public WeldContextSnapshot(boolean propagate, WeldManager manager) {
         this.manager = manager;
+        this.propagate = propagate;
         contextToApply = propagate ? new ContextualInstanceSnapshot(manager) : ContextualInstanceSnapshot.EMPTY_SNAPSHOT;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Snapshotted contextual instances to apply:", contextToApply);
@@ -84,7 +89,9 @@ public class WeldContextSnapshot implements ThreadContextSnapshot {
         }
 
         return () -> {
-            // This will run after a task has executed and will clean up the CDI context
+            // This will run after a task has executed and will restore the CDI context that was originally on the thread
+            ContextualInstanceSnapshot afterTaskContexts = propagate ? new ContextualInstanceSnapshot(manager) : null;
+
             if (existingContexts.reqCtx != null)
                 existingContexts.reqCtx.clearAndSet(existingContexts.reqInstances);
             else
@@ -99,6 +106,19 @@ public class WeldContextSnapshot implements ThreadContextSnapshot {
                 existingContexts.conCtx.clearAndSet(existingContexts.conInstances);
             else
                 conversationCtx.deactivate();
+
+            if (propagate && contextToApply.getBeanCount() != afterTaskContexts.getBeanCount()) {
+                Set<ContextualInstance<?>> lazilyRegisteredBeans = new HashSet<>();
+                lazilyRegisteredBeans.addAll(afterTaskContexts.reqInstances);
+                lazilyRegisteredBeans.addAll(afterTaskContexts.sesInstances);
+                lazilyRegisteredBeans.addAll(afterTaskContexts.conInstances);
+                lazilyRegisteredBeans.removeAll(contextToApply.reqInstances);
+                lazilyRegisteredBeans.removeAll(contextToApply.sesInstances);
+                lazilyRegisteredBeans.removeAll(contextToApply.conInstances);
+
+                Tr.error(tc, "CWWKC1158.cannot.lazy.enlist.beans", lazilyRegisteredBeans);
+                throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1158.cannot.lazy.enlist.beans", lazilyRegisteredBeans));
+            }
         };
     }
 }

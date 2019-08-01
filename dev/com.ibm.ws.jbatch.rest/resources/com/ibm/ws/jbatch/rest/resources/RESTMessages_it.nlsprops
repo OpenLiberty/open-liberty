@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.rest/resources/com/ibm/ws/jbatch/rest/resources/RestMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains:
+# 0151 - 0199: com.ibm.ws.jbatch.rest
+# 
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.instance.not.found=CWWKY0151E: Nessuna istanza lavoro trovata per l''id istanza {0}.
+job.instance.not.found.explanation=Questo messaggio di errore viene emesso quando viene utilizzato un id istanza non valido nella richiesta REST.
+job.instance.not.found.useraction=Controllare la richiesta REST inoltrata per verificare che l'id istanza sia valido.
+
+in.memory.search.not.supported=CWWKY0152E: L'URL di richiamo dell'API REST della gestione batch non \u00e8 supportato per la persistenza batch in memoria.
+in.memory.search.not.supported.explanation=L'API REST di gestione batch \u00e8 stata richiamata con una combinazione di parametri percorso e query riconosciuta dal server ma non supportata durante l'utilizzo della persistenza batch in memoria. Questo URL \u00e8 supportato quando si utilizza l'opzione database per la persistenza batch.
+in.memory.search.not.supported.useraction=Utilizzare la versione "v1" dell'API REST batch, che supporta la persistenza batch in memoria.
+
+db.tables.not.created.for.jobparm.search=CWWKY0153E: Il database di repository dei lavori non supporta la ricerca o l'eliminazione per parametri lavoro perch\u00e9 nel database non esiste una tabella JOBPARAMETER.
+db.tables.not.created.for.jobparm.search.explanation=L'API REST di gestione batch \u00e8 stata richiamata con parametri di query che cercano le istanze lavoro in base al pattern del parametro lavoro, utilizzando un'operazione di ricerca (GET) o di ripulitura (DELETE). Tuttavia, questo specifico parametro di ricerca \u00e8 supportato solo quando il repository lavori contiene la tabella JOBPARAMETER, che \u00e8 stata aggiunta nel fix pack dei livelli 16.0.0.4 o successivi. Se l'archivio di database utilizzato dalla persistenza batch \u00e8 stato configurato con l'impostazione predefinita 'createTables=true', questa tabella viene creata automaticamente quando il componente batch viene avviato in un server che utilizza il fix pack di livello 16.0.0.4 o successivi. Tuttavia, se l'archivio di database \u00e8 configurato con 'createTables=false', l'amministratore WebSphere o il DBA devono creare separatamente la nuova tabella prima di poter eseguire una ricerca per parametro lavoro.
+db.tables.not.created.for.jobparm.search.useraction=Consultare la documentazione del fix pack per istruzioni sulla migrazione del database utilizzato dalla persistenza batch.
+
+ssl.connection.unavailable=CWWKY0154I: Una connessione all''endpoint batch in {0} ha rilevato un errore di handshake SSL. Questa e le future richieste tenteranno di utilizzare un reindirizzamento HTTP per instradare all''endpoint corretto.
+ssl.connection.unavailable.explanation=Alcune azioni disponibili tramite la API REST Batch devono essere eseguite sullo stesso server su cui \u00e8 stato eseguito il lavoro corrispondente. Se l'azione \u00e8 iniziata su un altro server, tale server deve tentare di creare una nuova connessione per inoltrare la richiesta alla destinazione desiderata. Questo server non \u00e8 riuscito a completare un handshake SSL con il server di destinazione. Pertanto, questa e le future richieste tenteranno di utilizzare il reindirizzamento della richiesta invece di nuove connessioni.
+ssl.connection.unavailable.useraction=Non sono richieste azioni.
+
+http.options.received=CWWKY0155W: Una richiesta HTTP OPTIONS \u00e8 stata ricevuta sulla API REST Batch da un Liberty Server in {0}. \u00c8 il risultato di un tentativo di connessione da un altro Liberty Server che sta ospitando il centro di gestione. Per risolvere il problema, configurare CORS su questo server per accettare le richieste dal server che sta ospitando il centro di gestione.
+http.options.received.explanation=Alcune azioni disponibili tramite la API REST Batch devono essere eseguite sullo stesso server su cui \u00e8 stato eseguito il lavoro corrispondente. Se l'azione \u00e8 iniziata su un altro server, tale server deve tentare di creare una nuova connessione per inoltrare la richiesta alla destinazione desiderata. CORS (Cross-Origin Resource Sharing) non \u00e8  configurato per permettere che venga eseguito questo tipo di connessione da un server all'altro. Pertanto, la richiesta non pu\u00f2 essere completata.
+http.options.received.useraction=Configurare CORS per consentire le connessioni per l'API REST Batch dal server che ospita il centro di gestione a questo server.

@@ -1,0 +1,928 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
+#COMPONENTPREFIX CWSCT
+#COMPONENTNAMEFOR CWSCT WebSphere SIP Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+
+info.container.initialized=CWSCT0001I: Inizializzazione del contenitore SIP completata.
+info.container.initialized.explanation=Il contenitore SIP \u00e8 attivo e pronto per ricevere messaggi dalla rete.
+info.container.initialized.useraction=Questo \u00e8 un messaggio informativo.  Non \u00e8 necessaria alcuna azione da parte dell'utente.
+
+info.container.version=CWSCT0002I: Contenitore SIP {0}
+info.container.version.explanation=Numero di versione del componente contenitore SIP.
+info.container.version.useraction=Questo \u00e8 un messaggio informativo.  Non \u00e8 necessaria alcuna azione da parte dell'utente.
+
+warning.mean.disabled=CWSCT0003W: Impossibile avviare l'MBean del contenitore SIP.
+warning.mean.disabled.explanation=Impossibile avviare l'MBean del contenitore SIP. Le operazioni JMX non saranno disponibili per il contenitore SIP.
+warning.mean.disabled.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception=CWSCT0004E: Si \u00e8 verificata la seguente eccezione:
+error.exception.explanation=\u00c8 stata rilevata un'eccezione dal contenitore SIP.
+error.exception.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.failover.started=CWSCT0006I: Failover avviato. Il numero di oggetti ricevuti {0} per il nome logico {1}.
+info.failover.started.explanation=Uno dei server nel cluster \u00e8 stato terminato e alcuni dei nomi logici sono trasferiti a questo server. Gli oggetti sessione associati a questi nomi logici ora vengono attivati su questo server.
+info.failover.started.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.failover.ended=CWSCT0008I: Failover terminato per nome logico {0}
+info.failover.ended.explanation=Attivazione terminata degli oggetti sessione associati al nome logico. Consultare "Failover avviato" per il nome logico e il numero di oggetti.
+info.failover.ended.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.parser.configuration=CWSCT0010E: Errore durante la configurazione del parser sip.xml.
+error.parser.configuration.explanation=Si \u00e8 verificato un errore durante il tentativo di inizializzare il parser XML. Ci\u00f2 non indica un errore nel documento sip.xml.
+error.parser.configuration.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.parser.not.available=CWSCT0011E: Parser non disponibile; impossibile caricare la configurazione dell'applicazione.
+error.parser.not.available.explanation=Il contenitore SIP non riesce a caricare un'applicazione dal file sip.xml in quanto non \u00e8 presente un parser XML.
+error.parser.not.available.useraction=Ricercare il messaggio di errore precedente nel log "Errore durante la configurazione del parser sip.xml".
+
+error.parse.exception=CWSCT0012E: Eccezione di analisi; impossibile analizzare sip.xml {0}.
+error.parse.exception.explanation=Il contenitore SIP  non riesce a caricare un'applicazione dal file sip.xml a causa di un errore nel documento sip.xml.
+error.parse.exception.useraction=Controllare nel file sip.xml se sono presenti eventuali errori. Informazioni sul formato sip.xml standard sono contenute in JSR 116 - API servlet SIP (SIP Servlet API) - nel capitolo 11, relativo all'associazione di richieste ai servlet (Mapping Requests to Servlets) e nel capitolo 15, relativo al descrittore di distribuzione (Deployment Descriptor).
+
+error.listener.not.found=CWSCT0013E: Classe listener: {0} non trovata per l''applicazione: {1}.
+error.listener.not.found.explanation=Il programma di caricamento classe non \u00e8 riuscito a trovare la classe listener.
+error.listener.not.found.useraction=Controllare il file sip.xml e verificare che il nome della classe listener sia corretto. Verificare che la classe listener sia inclusa nel percorso di classe.
+
+error.init.listener.failed=CWSCT0014E: Impossibile creare la classe listener: {0} per l''applicazione: {1}.
+error.init.listener.failed.explanation=Il contenitore SIP non \u00e8 riuscito a creare l'istanza della classe listener.
+error.init.listener.failed.useraction=Controllare il file sip.xml e verificare che il nome della classe listener sia corretto. Verificare che la classe listener disponga di un costruttore pubblico che non prevede argomenti.
+
+error.too.many.timer.listeners=CWSCT0015E: XML non valido - pi\u00f9 di un listener timer assegnato all''applicazione {0}.
+error.too.many.timer.listeners.explanation=Il documento sip.xml definisce pi\u00f9 di un TimerListener per la stessa applicazione.
+error.too.many.timer.listeners.useraction=Controllare il file sip.xml e verificare che esista solo una classe TimerListener per l'applicazione.
+
+error.parsing.session.ttl=CWSCT0016E: Errore durante l''analisi del TTL della sessione per l''applicazione Sip: {0}.
+error.parsing.session.ttl.explanation=Il documento sip.xml non contiene un valore di timeout di sessione dell'applicazione valido.
+error.parsing.session.ttl.useraction=Controllare il file sip.xml per verificare che l'impostazione di timeout di sessione sia espressa interamente in minuti.
+
+error.mapping.to.nonexisting.siplet=CWSCT0017E: Associazione per siplet non esistente: {0}, Applicazione: {1}.
+error.mapping.to.nonexisting.siplet.explanation=Il documento sip.xml contiene un'associazione servlet per un servlet non definito
+error.mapping.to.nonexisting.siplet.useraction=Controllare il file sip.xml e verificare che tutti i tag del nome servlet nell'associazione servlet corrispondano ad un servlet esistente e che esista una definizione di pattern per l'associazione servlet.
+
+error.invalid.condition.type=CWSCT0018E: Tipo di condizione non valido in sip.xml: {0}.
+error.invalid.condition.type.explanation=Il documento sip.xml non contiene un tipo valido di condizione di corrispondenza al servlet.
+error.invalid.condition.type.useraction=Controllare il file sip.xml per verificare che le regole di corrispondenza siano conformi a JSR 116 - API servlet SIP (SIP Servlet API) - 11.3, condizioni (Conditions).
+
+error.parsing.condition=CWSCT0019E: Errore durante l''analisi della condizione {0}, var: {1}\t, valore: {2}.
+error.parsing.condition.explanation=Il documento sip.xml non contiene una regola di corrispondenza al servlet valida.
+error.parsing.condition.useraction=Controllare il file sip.xml per verificare che le regole di corrispondenza siano conformi a JSR 116 - API servlet SIP (SIP Servlet API) - capitolo 11, relativo all'associazione di richieste ai servlet (Mapping Requests to Servlets).
+
+error.parsing.and.condition=CWSCT0020E: Errore durante l'analisi della condizione AND; sottoelementi non trovati.
+error.parsing.and.condition.explanation=Il documento sip.xml contiene una condizione AND senza sottoelementi.
+error.parsing.and.condition.useraction=Controllare il file sip.xml per verificare che esistano regole di corrispondenza nel tag AND.
+
+error.parsing.sip.app=CWSCT0021E: Errore nella definizione xml per l'app-sip.
+error.parsing.sip.app.explanation=Il documento sip.xml contiene zero o pi\u00f9 sezioni app-sip. Pu\u00f2 esserne presente solo una.
+error.parsing.sip.app.useraction=Controllare il file sip.xml per verificare che esista solo una sezione app-sip.
+
+error.local.sip.dtd.not.found=CWSCT0022E: Errore - documento locale SIP DTD non trovato.
+error.local.sip.dtd.not.found.explanation=Non esiste alcuna definizione per /javax/servlet/sip/sip-app_1_0.dtd
+error.local.sip.dtd.not.found.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.server.overload.cleared=CWSCT0023I: Il server non \u00e8 pi\u00f9 sovraccaricato. Il fattore di caricamento \u00e8 ridotto a {0}
+info.server.overload.cleared.explanation=Il contenitore SIP non \u00e8 pi\u00f9 considerato sovraccaricato e ora \u00e8 pronto per gestire nuove sessioni
+info.server.overload.cleared.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.create.stack=CWSCT0025E: Impossibile creare lo stack SIP.
+error.failed.create.stack.explanation=Impossibile inizializzare lo stack SIP interno.
+error.failed.create.stack.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.sip.stack.exception=CWSCT0026E: Eccezione nello stack SIP.
+error.sip.stack.exception.explanation=\u00c8 stata rilevata un'eccezione nel livello stack SIP. Lo stack tenter\u00e0 di continuare l'esecuzione normalmente.
+error.sip.stack.exception.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.listening.point=CWSCT0028I: Punto di ascolto del contenitore SIP {0}:{1}/{2}
+info.listening.point.explanation=Questo \u00e8 un messaggio informativo emesso per ogni indirizzo host, numero della porta e protocollo di trasporto di ascolto del contenitore SIP per il traffico SIP in entrata.
+info.listening.point.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.forward.response=CWSCT0029E: Inoltro SIP non riuscito; la richiesta della risposta \u00e8 {0}
+error.forward.response.explanation=Il contenitore SIP non \u00e8 riuscito a inoltrare un messaggio SIP.
+error.forward.response.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.proxying.to.branch=CWSCT0030E: SIP non \u00e8 riuscito ad eseguire l''invio attraverso un proxy al ramo; l''URI \u00e8 {0}
+error.proxying.to.branch.explanation=Il contenitore SIP, che funziona come un proxy, non \u00e8 riuscito a inoltrare una richiesta ad una delle destinazioni.
+error.proxying.to.branch.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.create.record.route.uri=CWSCT0031E: SIP non \u00e8 riuscito a creare l''instradamento record {0}
+error.create.record.route.uri.explanation=Il contenitore SIP, che funziona come un proxy, non \u00e8 riuscito a creare un'intestazione di instradamento record.
+error.create.record.route.uri.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.proxy.set.parallel.illegal.state=CWSCT0032E: SIP non pu\u00f2 modificare il proxy in parallelo dopo proxyTo
+error.proxy.set.parallel.illegal.state.explanation=Il codice servlet SIP ha richiamato Proxy.setParallel() dopo Proxy.proxyTo()
+error.proxy.set.parallel.illegal.state.useraction=Modificare il codice dell'applicazione in modo che Proxy.setParallel() non sia richiamato dopo Proxy.proxyTo()
+
+error.proxy.set.recourse.illegal.state=CWSCT0033E: Ricorsivit\u00e0 SIP impossibile con il proxy senza stato.
+error.proxy.set.recourse.illegal.state.explanation=Il codice servlet SIP ha richiamato Proxy.setRecurse() su un proxy senza stato.
+error.proxy.set.recourse.illegal.state.useraction=Modificare il codice dell'applicazione in modo che non richiami Proxy.setRecurse() su un proxy senza stato.
+
+error.proxy.set.stateful.illegal.state=CWSCT0034E: SIP non pu\u00f2 modificare il proxy in proxy con stato dopo proxyTo
+error.proxy.set.stateful.illegal.state.explanation=Il codice servlet SIP ha richiamato Proxy.setStateful() dopo Proxy.proxyTo()
+error.proxy.set.stateful.illegal.state.useraction=Modificare il codice dell'applicazione in modo che Proxy.setStateful() non sia richiamato dopo Proxy.proxyTo()
+
+error.proxy.cancel.request=CWSCT0035E: SIP non \u00e8 riuscito ad eseguire la richiesta di annullamento nel proxy; richiesta di annullamento: {0}
+error.proxy.cancel.request.explanation=Il contenitore SIP non \u00e8 riuscito ad inviare una richiesta CANCEL.
+error.proxy.cancel.request.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.sending.response.upstream=CWSCT0036E: SIP non \u00e8 riuscito ad inviare un upstream di risposta; risposta: {0}
+error.sending.response.upstream.explanation=Il contenitore SIP non \u00e8 riuscito ad inviare un upstream di risposta (l'upstream \u00e8 la direzione delle risposte che provengono da UAS e inviate di nuovo a UAC)
+error.sending.response.upstream.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.proxy.set.recordroute.illegal.state=CWSCT0037E: SIP non \u00e8 riuscito a impostare l'instradamento record dopo proxyTo
+error.proxy.set.recordroute.illegal.state.explanation=Il codice servlet SIP ha richiamato Proxy.setRecordRoute() dopo Proxy.proxyTo()
+error.proxy.set.recordroute.illegal.state.useraction=Modificare il codice dell'applicazione in modo che Proxy.setRecordRoute() non sia richiamato dopo Proxy.proxyTo()
+
+error.create.request=CWSCT0040E: SIP non \u00e8 riuscito a creare le richieste; richiesta: {0}
+error.create.request.explanation=Il contenitore SIP non \u00e8 riuscito a creare un messaggio di richiesta SIP.
+error.create.request.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.parse.route.header=CWSCT0041E: Impossibile acquisire l'intestazione di instradamento.
+error.failed.parse.route.header.explanation=Il contenitore SIP non \u00e8 riuscito ad ottenere un'intestazione di instradamento in una richiesta.
+error.failed.parse.route.header.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.resolving.inet.address=CWSCT0042E: Impossibile risolvere l'indirizzo internet.
+error.resolving.inet.address.explanation=Impossibile risolvere un indirizzo Internet dal nome host in un indirizzo IP.
+error.resolving.inet.address.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.proxy.set.recordroute.non.dialog.method=CWSCT0043E: Impossibile impostare un instradamento record per una richiesta non appartenente alla finestra di dialogo: {0}
+error.proxy.set.recordroute.non.dialog.method.explanation=Il codice servlet SIP ha richiamato Proxy.setRecordRoute() su una richiesta che non crea una finestra di dialogo.
+error.proxy.set.recordroute.non.dialog.method.useraction=Modificare il codice dell'applicazione in modo che non richiami Proxy.setRecordRoute() sulle richieste che non creano una finestra di dialogo. Esempi di richieste che creano finestre di dialogo sono INVITE, REFER e SUBSCRIBE.
+
+error.call.should.be.invoked=CWSCT0044E: Il proxy ha raggiunto una chiamata funzione non prevista.
+error.call.should.be.invoked.explanation=Il contenitore SIP ha ricevuto un messaggio in un punto non previsto.
+error.call.should.be.invoked.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.route.header.unavailable=CWSCT0045E: Impossibile inviare le richieste successive attraverso un proxy senza l''intestazione di instradamento: {0}
+error.route.header.unavailable.explanation=Il contenitore SIP non riesce ad inviare la richiesta successiva attraverso un proxy su una finestra di dialogo, in quanto la richiesta in entrata non dispone di una intestazione di instradamento.
+error.route.header.unavailable.useraction=Non \u00e8 richiesta alcuna azione.
+
+
+error.unkown.uri.type=CWSCT0046E: Tipo di URI sconosciuto; impossibile accedere ai parametri dall''intestazione: {0}
+error.unkown.uri.type.explanation=Il contenitore SIP non riesce ad elaborare un messaggio in quanto l'URI non \u00e8 un URI sip o sips.
+error.unkown.uri.type.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.processing.strict.routing=CWSCT0048E: Errore durante l''elaborazione dell''instradamento limitato; l''URI di richiesta non contiene l''ID sessione. {0}
+error.processing.strict.routing.explanation=Il contenitore SIP ha ricevuto una richiesta su una finestra di dialogo da un instradamento limitato e il parametro ID sessione nell'URI di richiesta risulta mancante o dispone di un valore non corretto.
+error.processing.strict.routing.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.sending.response=CWSCT0049E: Errore durante l'invio della risposta
+error.sending.response.explanation=Il contenitore SIP non \u00e8 riuscito ad inviare una risposta.
+error.sending.response.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.default.invoke.siplet.not.found=CWSCT0051E: Impossibile trovare un siplet per la chiamata; il gestore predefinito non \u00e8 disponibile.
+error.default.invoke.siplet.not.found.explanation=Non esiste un servlet SIP di corrispondenza per gestire una richiesta.
+error.default.invoke.siplet.not.found.useraction=Controllare le regole di corrispondenza delle applicazioni SIP installate e verificare che almeno una di esse possa essere associata alla richiesta.
+
+error.handling.request=CWSCT0052E: Impossibile trovare la finestra di dialogo per la richiesta BYE ricevuta. L''Id di chiamata \u00e8 {0}
+error.handling.request.explanation=Il contenitore SIP ha ricevuto una richiesta BYE che non corrisponde a nessuna finestra di dialogo esistente.
+error.handling.request.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.invalid.operator.var=CWSCT0053E: Variabile non valida nell''operatore; var: {0}
+error.invalid.operator.var.explanation=Il documento sip.xml non contiene una variabile valida.
+error.invalid.operator.var.useraction=Controllare il file sip.xml per verificare che la variabile sia valida come illustrato in JSR 116 - API servlet SIP (SIP Servlet API) - 11.2, modello oggetto di richiesta SIP (SIP Request Object Model)
+
+error.missing.sub.elements=CWSCT0054E: Impossibile valutare l''operatore {0}; sottoelementi non disponibili.
+error.missing.sub.elements.explanation=Il documento sip.xml contiene una condizione senza sottoelementi.
+error.missing.sub.elements.useraction=Controllare il file sip.xml per verificare che il pattern di corrispondenza sia valido come illustrato in JSR 116 - API servlet SIP (SIP Servlet API) - 11.3, condizioni (Conditions).
+
+error.ip.parse=CWSCT0055E: IPAuthenticator non \u00e8 riuscito ad analizzare la configurazione
+error.ip.parse.explanation=Il contenitore SIP non \u00e8 riuscito ad analizzare l'elenco di indirizzi IP sicuri dalla configurazione.
+error.ip.parse.useraction=Controllare la propriet\u00e0 di configurazione com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.host=CWSCT0056E: IPAuthenticator non riuscito, host sconosciuto
+error.ip.host.explanation=L'elenco di indirizzi IP sicuri per l'autenticazione SIP contiene un nome host impossibile da risolvere.
+error.ip.host.useraction=Controllare l'elenco di indirizzi IP sicuri nella propriet\u00e0 di configurazione com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.header.parse=CWSCT0057E: IPAuthenticator non \u00e8 riuscito ad analizzare l'intestazione
+error.ip.header.parse.explanation=Il contenitore SIP non \u00e8 riuscito ad analizzare un'intestazione Via per un'autenticazione IP.
+error.ip.header.parse.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.ip.header.exception=CWSCT0058E: Problema di intestazione IPAuthenticator.
+error.ip.header.exception.explanation=Il contenitore SIP non \u00e8 riuscito a trovare un'intestazione Via nel messaggio per l'autenticazione IP.
+error.ip.header.exception.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.expires=CWSCT0059E: SIP non \u00e8 riuscito ad ottenere le scadenze; formattazione non corretta: {0}
+error.get.expires.explanation=La chiamata dell'applicazione a Address.setExpires() non \u00e8 riuscita in quanto l'intestazione dell'indirizzo del messaggio contiene un valore del parametro delle scadenze non corretto.
+error.get.expires.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.display.name=CWSCT0060E: SIP non \u00e8 riuscito ad impostare il nome di visualizzazione; nome: {0}
+error.set.display.name.explanation=La chiamata dell'applicazione a Address.setDisplayName() non \u00e8 riuscita.
+error.set.display.name.useraction=Controllare il codice dell'applicazione per verificare che il nome di visualizzazione sia valido e non null.
+
+error.set.expires=CWSCT0061E: SIP non \u00e8 riuscito ad impostare le scadenze: {0}
+error.set.expires.explanation=La chiamata dell'applicazione a Address.setExpires() non \u00e8 riuscita.
+error.set.expires.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.parameter=CWSCT0062E: SIP non \u00e8 riuscito ad impostare i parametri; nome: {0}, valore: {1}
+error.set.parameter.explanation=La chiamata dell'applicazione a Address.setParameter() o SipURI.setParameter() non \u00e8 riuscita.
+error.set.parameter.useraction=Controllare il codice dell'applicazione per verificare che il nome del parametro e il valore siano validi.
+
+error.set.q=CWSCT0063E: SIP non \u00e8 riuscito ad impostare q; valore: {0}
+error.set.q.explanation=La chiamata dell'applicazione a Address.setQ() non \u00e8 riuscita.
+error.set.q.useraction=Controllare il codice dell'applicazione per verificare che il valore di priorit\u00e0 sia valido.
+
+error.get.method=CWSCT0064E: SIP non \u00e8 riuscito ad ottenere il metodo dalla richiesta inoltrata: {0}
+error.get.method.explanation=La chiamata dell'applicazione a SipServletMessage.getMethod() non \u00e8 riuscita.
+error.get.method.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.request.uri=CWSCT0065E: SIP non \u00e8 riuscito ad ottenere l''URI della richiesta dalla richiesta inoltrata: {0}
+error.get.request.uri.explanation=La chiamata dell'applicazione a SipServletRequest.getRequestURI() non \u00e8 riuscita.
+error.get.request.uri.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.create.response=CWSCT0066E: SIP non \u00e8 riuscito a creare la risposta alla richiesta: {0}
+error.create.response.explanation=Il contenitore SIP non \u00e8 riuscito a creare una risposta alla richiesta.
+error.create.response.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.send.request=CWSCT0067E: SIP non \u00e8 riuscito ad inviare la richiesta utilizzando JAIN; URI: {0}
+error.send.request.explanation=Il contenitore SIP non \u00e8 riuscito ad inviare una richiesta.
+error.send.request.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.add.header=CWSCT0069E: SIP non \u00e8 riuscito ad aggiungere l''intestazione; nome: {0}, valore: {1}
+error.add.header.explanation=Il contenitore SIP non \u00e8 riuscito ad aggiungere un'intestazione al messaggio.
+error.add.header.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.send.response=CWSCT0070E: SIP non \u00e8 riuscito ad inviare la risposta, {0}
+error.send.response.explanation=Si \u00e8 verificato un errore mentre il contenitore SIP tentava di inviare una risposta.
+error.send.response.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.header=CWSCT0071E: SIP non \u00e8 riuscito ad impostare l''intestazione; nome: {0}, valore: {1}
+error.set.header.explanation=Il contenitore SIP non \u00e8 riuscito ad impostare un valore di intestazione nel messaggio.
+error.set.header.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.host=CWSCT0072E: SIP non \u00e8 riuscito ad impostare l''host; host: {0}
+error.set.host.explanation=La chiamata dell'applicazione a SipURI.setHost() non \u00e8 riuscita.
+error.set.host.useraction=Controllare il codice dell'applicazione per verificare che il nome host sia valido e non null.
+
+error.set.port=CWSCT0073E: SIP non \u00e8 riuscito ad impostare la porta; porta: {0}
+error.set.port.explanation=La chiamata dell'applicazione a SipURI.setPort() non \u00e8 riuscita.
+error.set.port.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.secure=CWSCT0074E: SIP non \u00e8 riuscito ad impostare la sicurezza; valore: {0}
+error.set.secure.explanation=La chiamata dell'applicazione a SipURI.setSecure() non \u00e8 riuscita.
+error.set.secure.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.user=CWSCT0075E: SIP non \u00e8 riuscito ad impostare l''utente; utente: {0}
+error.set.user.explanation=La chiamata dell'applicazione a SipURI.setUser() non \u00e8 riuscita.
+error.set.user.useraction=Controllare il codice dell'applicazione per verificare che il nome utente sia valido e non null.
+
+error.set.user.password=CWSCT0076E: SIP non \u00e8 riuscito ad impostare la password utente; password: {0}
+error.set.user.password.explanation=La chiamata dell'applicazione a SipURI.setUserPassword() non \u00e8 riuscita.
+error.set.user.password.useraction=Controllare il codice dell'applicazione per verificare che la password utente sia valida e non null.
+
+error.get.accept.language=CWSCT0077E: SIP non \u00e8 riuscito ad acquisire la lingua accettata, {0}
+error.get.accept.language.explanation=La chiamata dell'applicazione a SipServletMessage.getAcceptLanguage() non \u00e8 riuscita.
+error.get.accept.language.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.accept.languages=CWSCT0078E: SIP non \u00e8 riuscito ad acquisire le lingue accettate, {0}
+error.get.accept.languages.explanation=La chiamata dell'applicazione a SipServletMessage.getAcceptLanguages() non \u00e8 riuscita.
+error.get.accept.languages.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.address.header=CWSCT0079E: SIP non \u00e8 riuscito ad acquisire l''intestazione dell''indirizzo; nome: {0}
+error.get.address.header.explanation=La chiamata dell'applicazione a SipServletMessage.getAddressHeader() non \u00e8 riuscita.
+error.get.address.header.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.address.headers=CWSCT0080E: SIP non \u00e8 riuscito ad acquisire le intestazioni degli indirizzi; nome: {0}
+error.get.address.headers.explanation=La chiamata dell'applicazione a SipServletMessage.getAddressHeaders() non \u00e8 riuscita.
+error.get.address.headers.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.character.encoding=CWSCT0081E: SIP non \u00e8 riuscito ad acquisire la codifica caratteri {0}
+error.get.character.encoding.explanation=La chiamata dell'applicazione a SipServletMessage.getCharacterEncoding() non \u00e8 riuscita.
+error.get.character.encoding.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.content.length=CWSCT0082E: SIP non \u00e8 riuscito ad acquisire la lunghezza del contenuto {0}
+error.get.content.length.explanation=La chiamata dell'applicazione a SipServletMessage.getContentLength() non \u00e8 riuscita.
+error.get.content.length.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.content.type=CWSCT0083E: SIP non \u00e8 riuscito ad acquisire il tipo di contenuto {0}
+error.get.content.type.explanation=La chiamata dell'applicazione a SipServletMessage.getContentType() non \u00e8 riuscita.
+error.get.content.type.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.header=CWSCT0084E: SIP non \u00e8 riuscito ad acquisire l''intestazione; nome: {0}
+error.get.header.explanation=La chiamata dell'applicazione a SipServletMessage.getHeader() non \u00e8 riuscita.
+error.get.header.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.header.names=CWSCT0085E: SIP non \u00e8 riuscito ad acquisire l''intestazione; nomi: {0}
+error.get.header.names.explanation=La chiamata dell'applicazione a SipServletMessage.getHeaderNames() non \u00e8 riuscita.
+error.get.header.names.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.headers=CWSCT0086E: SIP non \u00e8 riuscito ad acquisire le intestazioni; nome: {0}
+error.get.headers.explanation=La chiamata dell'applicazione a SipServletMessage.getHeaders() non \u00e8 riuscita.
+error.get.headers.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.content=CWSCT0087E: SIP non \u00e8 riuscito ad impostare il contenuto; contenuto: {0}, tipo di contenuto: {1}
+error.set.content.explanation=La chiamata dell'applicazione a SipServletMessage.setContent() non \u00e8 riuscita.
+error.set.content.useraction=Controllare il codice dell'applicazione per verificare che il contenuto del messaggio sia valido e non null.
+
+error.get.via.headers=CWSCT0088E: SIP non \u00e8 riuscito ad acquisire tramite le intestazioni {0}
+error.get.via.headers.explanation=La chiamata dell'applicazione a SipServletMessage.getViaHeaders() non \u00e8 riuscita.
+error.get.via.headers.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.contact.header=CWSCT0089E: SIP non \u00e8 riuscito ad acquisire l''intestazione contatto {0}
+error.get.contact.header.explanation=La chiamata dell'applicazione a SipServletMessage.getContactHeader() non \u00e8 riuscita.
+error.get.contact.header.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.jain.sip.headers=CWSCT0090E: SIP non \u00e8 riuscito ad acquisire le intestazioni SIP JAIN {0}
+error.get.jain.sip.headers.explanation=Il contenitore SIP non \u00e8 riuscito ad acquisire una o pi\u00f9 intestazioni dall'oggetto messaggio JAIN interno.
+error.get.jain.sip.headers.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.max.forwards=CWSCT0091E: SIP non \u00e8 riuscito ad acquisire il numero massimo di inoltri {0}
+error.get.max.forwards.explanation=La chiamata dell'applicazione a SipServletRequest.getMaxForwards() non \u00e8 riuscita.
+error.get.max.forwards.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.reason.phrase=CWSCT0092E: SIP non \u00e8 riuscito ad acquisire la frase motivo {0}
+error.get.reason.phrase.explanation=La chiamata dell'applicazione a SipServletResponse.getReasonPhrase() non \u00e8 riuscita.
+error.get.reason.phrase.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.get.status=CWSCT0093E: SIP non \u00e8 riuscito ad acquisire lo stato {0}
+error.get.status.explanation=La chiamata dell'applicazione a SipServletResponse.getStatus() non \u00e8 riuscita.
+error.get.status.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.status=CWSCT0094E: SIP non \u00e8 riuscito ad impostare lo stato; stato: {0}, frase motivo: {1}
+error.set.status.explanation=La chiamata dell'applicazione a SipServletResponse.setStatus() non \u00e8 riuscita.
+error.set.status.useraction=Controllare il codice dell'applicazione per verificare che il codice stato sia valido. Se \u00e8 stata fornita anche una frase motivo, verificare che non sia null e che non sia vuota.
+
+error.create.address=CWSCT0095E: SIP non \u00e8 riuscito a creare l''indirizzo; URI: {0}, nome di visualizzazione: {1}
+error.create.address.explanation=La chiamata dell'applicazione a SipFactory.createAddress() non \u00e8 riuscita.
+error.create.address.useraction=Controllare il codice dell'applicazione per verificare che l'URI e il nome di visualizzazione siano validi.
+
+error.create.sip.uri=CWSCT0097E: SIP non \u00e8 riuscito a creare l''URI SIP; utente: {0}, host: {1}
+error.create.sip.uri.explanation=La chiamata dell'applicazione a SipFactory.createSipURI() non \u00e8 riuscita.
+error.create.sip.uri.useraction=Controllare il codice dell'applicazione per verificare che i parametri utente e host siano validi e non null.
+
+error.create.uri=CWSCT0098E: SIP non \u00e8 riuscito a creare l''URI; URI: {0}
+error.create.uri.explanation=La chiamata dell'applicazione a SipFactory.createURI() non \u00e8 riuscita.
+error.create.uri.useraction=Controllare il codice dell'applicazione per verificare che la stringa URI rappresenti un URI valido.
+
+error.push.route=CWSCT0099E: Impossibile richiamare l''instradamento; URI: {0}
+error.push.route.explanation=La chiamata dell'applicazione a SipServletRequest.pushRoute() o SipServletRequest.pushRecordRoute() non \u00e8 riuscita.
+error.push.route.useraction=Controllare il codice dell'applicazione per verificare che SipURI sia valido.
+
+error.set.uri=CWSCT0100E: SIP non \u00e8 riuscito a impostare l''URI; URI: {0}
+error.set.uri.explanation=La chiamata dell'applicazione a Address.setURI() non \u00e8 riuscita.
+error.set.uri.useraction=Controllare il codice dell'applicazione per verificare che l'URI sia valido.
+
+error.sending.ack=CWSCT0101E: Impossibile inviare una richiesta ACK.
+error.sending.ack.explanation=Il contenitore SIP non \u00e8 riuscito ad inviare una richiesta ACK.
+error.sending.ack.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.sending.cancel=CWSCT0102E: Impossibile inviare una richiesta CANCEL.
+error.sending.cancel.explanation=Il contenitore SIP non \u00e8 riuscito ad inviare una richiesta CANCEL.
+error.sending.cancel.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.create.timeout.response=CWSCT0103E: Impossibile creare una risposta di timeout.
+error.failed.create.timeout.response.explanation=Una richiesta inviata dal contenitore SIP non ha ricevuto risposta per 32 secondi e il contenitore SIP non \u00e8 riuscito a generare una risposta di timeout per l'applicazione.
+error.failed.create.timeout.response.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.cloning.address=CWSCT0104E: Impossibile clonare l'indirizzo.
+error.cloning.address.explanation=Errore interno nel contenitore SIP durante la clonazione di un oggetto Indirizzo.
+error.cloning.address.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.invalid.tel.url=CWSCT0105E: URL di telefonia non valido: {0}
+error.invalid.tel.url.explanation=Il contenitore SIP non \u00e8 riuscito a creare un URL di telefonia.
+error.invalid.tel.url.useraction=Controllare che la lunghezza della stringa URL grezza sia di almeno 4 byte (3 per lo schema pi\u00f9 uno per il carattere due punti).
+
+error.sending.487.response=CWSCT0106E: Errore durante l''invio di una risposta 487 {0}
+error.sending.487.response.explanation=Durante l'annullamento di una richiesta, il contenitore SIP non \u00e8 riuscito ad inviare la risposta 487 (richiesta terminata) alla richiesta originale.
+error.sending.487.response.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.set.character.encoding=CWSCT0108E: Errore durante l''impostazione della codifica caratteri: {0}
+error.set.character.encoding.explanation=La chiamata dell'applicazione a SipServletMessage.setCharacterEncoding() non \u00e8 riuscita.
+error.set.character.encoding.useraction=Controllare il codice dell'applicazione per verificare che il parametro di codifica sia valido e non null.
+
+error.setting.tag=CWSCT0109E: Errore durante l''impostazione del valore di tag: {0}
+error.setting.tag.explanation=La chiamata dell'applicazione a Address.setTag() non \u00e8 riuscita.
+error.setting.tag.useraction=Controllare il codice dell'applicazione per verificare che il parametro tag sia valido.
+
+info.sequence.logger.enabled=CWSCT0113I: Il programma di registrazione di sequenza sessione SIP \u00e8 abilitato, livello: {0}
+info.sequence.logger.enabled.explanation=Il programma di registrazione per la sequenza finestra/sessione SIP \u00e8 abilitato.
+info.sequence.logger.enabled.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.unexpected.uri.in.route=CWSCT0115E: Previsto URI SIP, ma ricevuto: {0}
+error.unexpected.uri.in.route.explanation=
+error.unexpected.uri.in.route.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.standalone.started=CWSCT0116I: Il contenitore SIP sta utilizzando una configurazione autonoma.
+info.standalone.started.explanation=Il contenitore SIP non \u00e8 in esecuzione come un servizio Websphere.
+info.standalone.started.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.init.siplet=CWSCT0117E: Impossibile inizializzare siplet {0}
+error.init.siplet.explanation=Il contenitore SIP non \u00e8 riuscito a caricare o creare l'istanza di una classe servlet SIP.
+error.init.siplet.useraction=Controllare il file sip.xml per verificare che il nome classe sia corretto e disponga di un costruttore pubblico che non prevede argomenti.
+
+error.invoke.servlet=CWSCT0118E: Siplet servizio non riuscito {0}
+error.invoke.servlet.explanation=\u00c8 stata creata un'eccezione dal codice del servlet SIP.
+error.invoke.servlet.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.servlet.unavailable=CWSCT0119E: Siplet di richiamo non riuscito; servlet non disponibile: {0}, {1}
+error.servlet.unavailable.explanation=Il servlet SIP non esiste.
+error.servlet.unavailable.useraction=Controllare il file sip.xml per verificare che il nome della classe servlet sia corretto.
+
+error.initialize.sip.container=CWSCT0120E: Errore durante l'inizializzazione del contenitore SIP
+error.initialize.sip.container.explanation=Errore durante l'inizializzazione del contenitore SIP; ulteriori dettagli sono contenuti nel file di traccia.
+error.initialize.sip.container.useraction=Abilitare la traccia della diagnostica per il contenitore SIP, riavviare il server per ricreare il problema e, quindi, estrarre il log di traccia.
+
+warning.timer.listener.unavailable=CWSCT0122W: Errore durante l''invio dell''evento timer; listener timer non disponibile per: {0}
+warning.timer.listener.unavailable.explanation=Il timer del servlet SIP \u00e8 stato attivato, ma non esiste alcun listener associato ad esso.
+warning.timer.listener.unavailable.useraction=Non \u00e8 richiesta alcuna azione.
+
+warning.timer.unavailable=CWSCT0124W: TimerServiceImpl non \u00e8 disponibile
+warning.timer.unavailable.explanation=Tutti i timer sono disabilitati nel contenitore SIP
+warning.timer.unavailable.useraction=Controllare la configurazione del contenitore SIP e rimuovere la propriet\u00e0 "enable.timers" o impostare il valore su "true".
+
+error.transaction.id.alreay.set=CWSCT0125E: ID transazione gi\u00e0 impostato per la transazione; corrente {0}, nuovo {1}
+error.transaction.id.alreay.set.explanation=La transazione SIP \u00e8 gi\u00e0 inizializzata con un ID transazione e non pu\u00f2 essere modificata.
+error.transaction.id.alreay.set.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.cannot.lookup.host=CWSCT0336E: VirtualHostAlias.init: impossibile ricercare l''host {0}
+error.cannot.lookup.host.explanation=Il contenitore SIP non \u00e8 riuscito a risolvere il nome host di un alias host virtuale in un indirizzo IP.
+error.cannot.lookup.host.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.invoking.request=CWSCT0139E: SIP non \u00e8 riuscito a richiamare la richiesta; il messaggio \u00e8 {0}
+error.invoking.request.explanation=\u00c8 stata creata un'eccezione mentre il contenitore SIP tentava di richiamare una richiesta.
+error.invoking.request.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.sending.response.from.prepare.for.write=CWSCT0140E: SIP non \u00e8 riuscito ad inviare la risposta per la preparazione alla scrittura.
+error.sending.response.from.prepare.for.write.explanation=Il contenitore SIP non \u00e8 riuscito ad inviare la risposta dalla chiamata a prepareHeadersForWrite().
+error.sending.response.from.prepare.for.write.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.message.dispatcher.invalid.state=CWSCT0142E: Errore: il dispatcher non ha completato la distribuzione del messaggio precedente.
+error.message.dispatcher.invalid.state.explanation=Il contenitore SIP non \u00e8 in grado di inviare un messaggio in quanto la distribuzione del messaggio precedente non \u00e8 stata ancora completata.
+error.message.dispatcher.invalid.state.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.non.http.request=CWSCT0145E: Ricevuta una richiesta {0} mentre era prevista javax.servlet.http.HttpServletRequest
+error.non.http.request.explanation=Il contenitore SIP ha ricevuto una richiesta dal contenitore Web che non \u00e8 una javax.servlet.http.HttpServletRequest.
+error.non.http.request.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.to.register.collaborator=CWSCT0146E: Impossibile registrare il collaboratore {0}
+error.failed.to.register.collaborator.explanation=Il contenitore SIP non \u00e8 riuscito a registrarsi come listener in Websphere.
+error.failed.to.register.collaborator.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.cnf=CWSCT0188E: Errore - eccezione classe non trovata; impossibile deserializzare.
+error.exception.cnf.explanation=Il contenitore SIP ha rilevato un'eccezione di tipo ClassNotFoundException durante la serializzazione dell'oggetto.
+error.exception.cnf.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.io.serialize.deserialize=CWSCT0189E: Errore - eccezione IO; impossibile serializzare/deserializzare.
+error.exception.io.serialize.deserialize.explanation=Il contenitore SIP ha rilevato un'eccezione di tipo IOException durante la serializzazione dell'oggetto.
+error.exception.io.serialize.deserialize.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.cache.alg=CWSCT0185E: Errore - l'algoritmo cache non esiste.
+error.exception.cache.alg.explanation=L'algoritmo cache richiesto dal gestore sessione del contenitore SIP non esiste.
+error.exception.cache.alg.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.replicator=CWSCT0186E: Errore - eccezione replicatore
+error.exception.replicator.explanation=\u00c8 stata rilevata un'eccezione di replica dal gestore sessione del contenitore SIP.
+error.exception.replicator.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.sipha.version=CWSCT0187I: HA SIP {0}
+info.sipha.version.explanation=Inizializzato il componente HA (high availability) del contenitore SIP.
+info.sipha.version.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.drs=CWSCT0219E: Errore - eccezione drs
+error.exception.drs.explanation=Eccezione rilevata nel contenitore SIP durante la replica DRS.
+error.exception.drs.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.admin=CWSCT0220E: Errore - eccezione JMX admin
+error.exception.admin.explanation=Eccezione rilevata nel contenitore SIP durante l'attivazione dell'MBean per il gestore sessione.
+error.exception.admin.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.drs.broker=CWSCT0222E: Errore - eccezione multibroker DRS.
+error.drs.broker.explanation=Eccezione rilevata nel contenitore SIP utilizzando il multibroker DRS.
+error.drs.broker.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.drs.setting.mode=CWSCT0224E: Errore - la modalit\u00e0 DRS non \u00e8 BOTH_CLIENT_SERVER (peer to peer)
+error.drs.setting.mode.explanation=La modalit\u00e0 DRS non \u00e8 appropriata per la replica dati nel contenitore SIP.
+error.drs.setting.mode.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.drs.setting.missing=CWSCT0225E: Informazioni - DRS non impostato
+info.drs.setting.missing.explanation=Le replica nel contenitore SIP \u00e8 disabilitata in quanto DRS non \u00e8 impostato.
+info.drs.setting.missing.useraction=Verificare di configurare WebContainer SessionManager per utilizzare la replica da memoria a memoria.
+
+info.drs.enablefailover.disabled=CWSCT0226I: Informazioni - failover del contenitore SIP disabilitato.
+info.drs.enablefailover.disabled.explanation=Failover del contenitore SIP disabilitato.
+info.drs.enablefailover.disabled.useraction=Utilizzare la propriet\u00e0 personalizzata "enable.replication" (per il contenitore SIP) per l'abilitazione.
+
+info.drs.enablefailover.enabled=CWSCT0227I: Informazioni - componente HA (high availability) del contenitore SIP abilitato.
+info.drs.enablefailover.enabled.explanation=Il componente HA (high availability) del contenitore SIP \u00e8 abilitato per il bilanciamento del carico e il failover.
+info.drs.enablefailover.enabled.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ha.groupleft=CWSCT0228E: Errore - HAGroupLeftException
+error.exception.ha.groupleft.explanation=Il contenitore SIP ha rilevato un'eccezione di tipo HAGroupLeftException durante l'attivazione come membro del gruppo.
+error.exception.ha.groupleft.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ha.param.reject=CWSCT0229E: Errore - HAParameterRejectedException
+error.exception.ha.param.reject.explanation=Il contenitore SIP ha rilevato un'eccezione di tipo HAParameterRejectedException durante l'attivazione come membro del gruppo.
+error.exception.ha.param.reject.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.io.deserialize=CWSCT0231E: Errore - eccezione IO; impossibile deserializzare.
+error.exception.io.deserialize.explanation=Serializzazione dati non riuscita nel contenitore SIP.
+error.exception.io.deserialize.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ha=CWSCT0232E: Errore - eccezione HA
+error.exception.ha.explanation=\u00c8 stata rilevata un'eccezione nel componente HA (high availability) del contenitore SIP.
+error.exception.ha.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ds=CWSCT0233E: Errore - eccezione datastack
+error.exception.ds.explanation=\u00c8 stata rilevata un'eccezione DataStackException nel componente HA (high availability) del contenitore SIP.
+error.exception.ds.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.io=CWSCT0237E: Errore - eccezione IO
+error.exception.io.explanation=\u00c8 stata rilevata un'eccezione IOException nel contenitore SIP.
+error.exception.io.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ucf.no_cluster_define=CWSCT0238E: Errore - eccezione UCF; nessun cluster definito.
+error.exception.ucf.no_cluster_define.explanation=Il contenitore SIP non pu\u00f2 essere unito o disgiunto dal cluster in quanto nessun cluster \u00e8 definito.
+error.exception.ucf.no_cluster_define.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ucf.noclusterservice=CWSCT0240E: Errore - nessun servizio membro del cluster.
+error.exception.ucf.noclusterservice.explanation=Il contenitore SIP non pu\u00f2 avviare o arrestare il componente HA (high availability) in quanto si \u00e8 verificata un'eccezione durante il tentativo di accesso al servizio cluster.
+error.exception.ucf.noclusterservice.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ucf.no.member.available=CWSCT0241E: Errore - eccezione UCF - nessun membro disponibile.
+error.exception.ucf.no.member.available.explanation=Il contenitore SIP non \u00e8 riuscito ad ottenere le informazioni endpoint del proxy SIP da UCF.
+error.exception.ucf.no.member.available.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.class.not.found=CWSCT0243E: Errore - eccezione classe non trovata.
+error.exception.class.not.found.explanation=\u00c8 stata rilevata un'eccezione ClassNotFoundException nel contenitore SIP.
+error.exception.class.not.found.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.orb=CWSCT0244E: Errore - impossibile ottenere l'oggetto ORB
+error.orb.explanation=Il contenitore SIP non riesce a pubblicare i nomi logici a causa di un errore nell'acquisizione dell'oggetto ORB.
+error.orb.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.orb.cc=CWSCT0245E: Errore - eccezione cast classe ORB
+error.orb.cc.explanation=Il contenitore SIP non riesce a pubblicare i nomi logici a causa di un'eccezione ClassCastException.
+error.orb.cc.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.orb.in=CWSCT0246E: Errore - richiesta nome ORB non valida
+error.orb.in.explanation=Il contenitore SIP non riesce a pubblicare i nomi logici causa di un'eccezione InvalidName.
+error.orb.in.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.classnotfound=CWSCT0259E: Errore - classe non trovata
+error.exception.classnotfound.explanation=L'inizializzazione del TAI del contenitore SIP non \u00e8 riuscita a causa di un'eccezione ClassNotFoundException.
+error.exception.classnotfound.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.instantiate=CWSCT0260E: Errore - eccezione relativa alla creazione di istanza
+error.exception.instantiate.explanation=L'inizializzazione del TAI del contenitore SIP non \u00e8 riuscita a causa di un'eccezione InstantiationException.
+error.exception.instantiate.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.illegalaccess=CWSCT0261E: Errore - eccezione accesso non consentito.
+error.exception.illegalaccess.explanation=L'inizializzazione del TAI del contenitore SIP non \u00e8 riuscita causa di un'eccezione IllegalAccessException.
+error.exception.illegalaccess.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.filenotfound=CWSCT0262E: Errore - file non trovato.
+error.exception.filenotfound.explanation=La sicurezza del contenitore SIP non \u00e8 riuscita ad aprire il file di password.
+error.exception.filenotfound.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.login=CWSCT0264E: Errore - contesto login - non riuscito
+error.exception.login.explanation=\u00c8 stata rilevata un'eccezione LoginException dal TAI del contenitore SIP durante l'acquisizione del soggetto utente.
+error.exception.login.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.naming=CWSCT0266E: Errore - eccezione di denominazione
+error.exception.naming.explanation=\u00c8 stata rilevata un'eccezione NamingException nella sicurezza del contenitore SIP.
+error.exception.naming.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.parse=CWSCT0267E: Errore - eccezione di analisi.
+error.exception.parse.explanation=\u00c8 stata rilevata un'eccezione di analisi nel TAI (Trust Association Interceptor) del contenitore SIP.
+error.exception.parse.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.stack=CWSCT0315E: Eccezione nello stack SIP.
+error.exception.stack.explanation= \u00c8 stata rilevata un'eccezione durante l'inizializzazione dello stack SIP.
+error.exception.stack.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.sipstack.version=CWSCT0316I: Stack SIP {0}
+info.sipstack.version.explanation=Lo stack SIP \u00e8 in fase di inizializzazione
+info.sipstack.version.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.unknown.host.exception=CWSCT0317E: Eccezione host sconosciuto; impossibile risolvere il nome host.
+error.unknown.host.exception.explanation=\u00c8 stata rilevata un'eccezione UnknownHostException nello stack SIP durante il tentativo di risolvere un nome host in un indirizzo IP.
+error.unknown.host.exception.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.base64parser.exception=CWSCT0318E: Eccezione parser; impossibile scrivere nel flusso di output.
+error.base64parser.exception.explanation=Lo stack SIP non \u00e8 riuscito a scrivere nel flusso di output.
+error.base64parser.exception.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.same.to.tag=CWSCT0319E: Stessa tag di destinazione (To) in due o pi\u00f9 risposte da pi\u00f9 rami proxy
+error.same.to.tag.explanation=\u00c8 stata ricevuta la stessa tag di destinazione in due o pi\u00f9 risposte da rami proxy differenti.  Questa azione non \u00e8 valida in base alla specifica RFC 3261.
+error.same.to.tag.useraction=Assicurarsi che le istanze dell'UAS (user agent server) di risposta generino tag di destinazione (To) univoche per ogni finestra, per essere conformi alla specifica RFC 3261. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1=CWSCT0321I: Configurazione inizializzazione dello stack SIP
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.explanation=La configurazione dello stack SIP \u00e8 stata inizializzata.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2=CWSCT0322I: Trasporto inizializzazione stack SIP.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.explanation=Il trasporto dello stack SIP \u00e8 stato inizializzato.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3=CWSCT0323I: Inizializzazione stack SIP terminata.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.explanation=L'inizializzazione dello stack SIP \u00e8 stata completata.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.stack.timer.b=CWSCT0324I: Stack SIP, timer B impostato su {0} millisecondi.
+info.stack.timer.b.explanation=Il timer B dello stack SIP \u00e8 stato impostato. Ulteriori informazioni sul timer B sono contenute in RFC 3261.
+info.stack.timer.b.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints=CWSCT0328I: SIP ha iniziato l''ascolto su {0}.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.explanation=Lo stack SIP ha iniziato l'ascolto sul punto di ascolto specificato.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.sip.container.launched.but.not.loaded=CWSCT0332I: Il contenitore SIP \u00e8 stato avviato correttamente, ma verr\u00e0 inizializzato solo quando viene caricata la prima applicazione SIP.
+info.sip.container.launched.but.not.loaded.explanation=Il contenitore SIP verr\u00e0 inizializzato quando viene caricata la prima applicazione SIP.
+info.sip.container.launched.but.not.loaded.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.replication.failed=CWSCT0333E: Replica non riuscita.
+error.replication.failed.explanation=Si \u00e8 verificata un'eccezione nel contenitore SIP durante la replica.
+error.replication.failed.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.to.deserialize.replication=CWSCT0334E: Impossibile deserializzare la replica.
+error.failed.to.deserialize.replication.explanation=Si \u00e8 verificata un'eccezione nella replica del contenitore SIP durante la deserializzazione dell'oggetto.
+error.failed.to.deserialize.replication.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.to.reactivate.objects.after.failover=CWSCT0335E: Impossibile riattivare gli oggetti dopo il failover.
+error.failed.to.reactivate.objects.after.failover.explanation=Si \u00e8 verificata un'eccezione nel contenitore SIP durante l'attivazione della sessione dopo il failover.
+error.failed.to.reactivate.objects.after.failover.useraction=Non \u00e8 richiesta alcuna azione.
+
+warning.display.name.different=CWSCT0337W: Il nome di visualizzazione in sip.xml ({0}) \u00e8 diverso da quello in web.xml ({1}).
+warning.display.name.different.explanation=Il nome di visualizzazione dell'applicazione in sip.xml \u00e8 diverso da quello in web.xml. Non \u00e8 conforme a JSR-116 sezione 15.2.
+warning.display.name.different.useraction=Modificare i descrittori di distribuzione per la corrispondenza con il nome di visualizzazione dell'applicazione.
+
+warning.dispatch.failed=CWSCT0338W: Impossibile inviare il messaggio SIP al pool di thread. Messaggio= {0}, ID chiamata= {1}, Codice di errore= {2}.
+warning.dispatch.failed.explanation=Il contenitore SIP non \u00e8 riuscito a inviare un messaggio al pool di thread.
+warning.dispatch.failed.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.cannot.identify.object.type=CWSCT0339E: Deserializzare: impossibile identificare il tipo di oggetto.
+error.cannot.identify.object.type.explanation=Il contenitore SIP non \u00e8 riuscito ad identificare il tipo di oggetto per la deserializzazione.
+error.cannot.identify.object.type.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.security.password.retrieve=CWSCT0340E: Errore - impossibile richiamare l'attributo password.
+error.security.password.retrieve.explanation=Autenticazione non riuscita in quanto il contenitore SIP non riesce a richiamare l'attributo userPassword dalla voce persona nella directory.
+error.security.password.retrieve.useraction=Modificare le impostazioni della configurazione LDAP in modo che il server disponga dell'accesso all'attributo userPassword nella directory.
+
+warn.server.overloaded=CWSCT0341W: Il server \u00e8 sovraccaricato.
+warn.server.overloaded.explanation=Il server SIP (Session Initiation Protocol) non pu\u00f2 accettare ulteriori messaggi in entrata quando \u00e8 sovraccaricato.
+warn.server.overloaded.useraction=Diminuire i messaggi in entrata o ogni altra possibile origine di sovraccarico sulla macchina server.
+
+warn.server.overloaded.too.many.sessions=CWSCT0342W: Il server \u00e8 sovraccaricato in quanto esistono troppe sessioni dell'applicazione. 
+warn.server.overloaded.too.many.sessions.explanation=Il server SIP non pu\u00f2 accettare ulteriori messaggi in entrata quando \u00e8 sovraccaricato. Sono attive troppe sessioni dell'applicazione.
+warn.server.overloaded.too.many.sessions.useraction=Ridurre il numero di sessioni dell'applicazione create o impostare un valore superiore per il limite massimo di sessioni dell'applicazione nel contenitore SIP (Session Initiation Protocol).
+
+warn.server.overloaded.too.many.messages=CWSCT0343W: Il server \u00e8 sovraccaricato in quanto sono stati ricevuti troppi messaggi durante un periodo medio. 
+warn.server.overloaded.too.many.messages.explanation=Il server SIP non pu\u00f2 accettare ulteriori messaggi in entrata quando \u00e8 sovraccaricato. Il traffico di messaggi \u00e8 troppo elevato.
+warn.server.overloaded.too.many.messages.useraction=Ridurre il carico di messaggi o impostare il limite massimo di messaggi per il valore del periodo medio su un valore superiore nel contenitore SIP (Session Initiation Protocol).
+
+warn.server.overloaded.slow.response=CWSCT0344W: Il server \u00e8 sovraccaricato in quanto il tempo di risposta del server \u00e8 troppo lento.
+warn.server.overloaded.slow.response.explanation=Il server SIP non pu\u00f2 accettare ulteriori messaggi in entrata quando \u00e8 sovraccaricato.
+warn.server.overloaded.slow.response.useraction=Diminuire il traffico di messaggi in entrata o ogni altra possibile origine di sovraccarico sulla macchina server. Se \u00e8 abilitato il valore massimo del tempo di risposta ed \u00e8 impostato sul contenitore SIP (Session Initiation Protocol), \u00e8 possibile modificarlo su un valore superiore.
+
+warn.dispatch.queue.overloaded=CWSCT0345W: La dimensione massima della coda di invio {0} \u00e8 stata superata. I nuovi messaggi verranno eliminati.
+warn.dispatch.queue.overloaded.explanation=Il server SIP non pu\u00f2 accettare ulteriori messaggi in entrata quando la coda di invio \u00e8 sovraccaricata.
+warn.dispatch.queue.overloaded.useraction=Ridurre il carico di messaggi o impostare il valore della dimensione massima della coda di invio su un valore superiore nel contenitore SIP (Session Initiation Protocol).
+
+error.container.queue.overloaded=CWSCT0346E: La coda di invio \u00e8 sovraccaricata. Il messaggio seguente \u00e8 stato rifiutato: {0}
+error.container.queue.overloaded.explanation=I thread del contenitore SIP non riescono a gestire il carico corrente di attivit\u00e0.
+error.container.queue.overloaded.useraction=Diminuire ogni possibile origine di sovraccarico sulla macchina server, specialmente il traffico di messaggi SIP (Session Initiation Protocol). Inoltre, rivedere la quantit\u00e0 di risorse utilizzate dal codice dell'applicazione SIP.
+
+info.bootstrap.started=CWSCT0347I: La replica di avvio \u00e8 stata iniziata.
+info.bootstrap.started.explanation=Il contenitore SIP (Session Initiation Protocol) sta replicando i dati delle sessioni in un peer appena connesso.
+info.bootstrap.started.useraction=Non \u00e8 richiesta alcuna azione. 
+
+info.bootstrap.finished=CWSCT0348I: La replica di avvio \u00e8 terminata. 
+info.bootstrap.finished.explanation=SIP (Session Initiation Protocol) Il contenitore ha completato la replica dei dati delle sessioni nel peer appena connesso.
+info.bootstrap.finished.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.sip.stack.timer=CWSCT0349I: Il valore del timer dello stack SIP [{0}] \u00e8 impostato su [{1}]
+info.sip.stack.timer.explanation=Il valore del timer viene modificato nella configurazione
+info.sip.stack.timer.useraction=Non \u00e8 richiesta alcuna azione
+
+info.sip.container.quiesce.on=CWSCT0350I: Passaggio alla modalit\u00e0 di esecuzione del quiesce
+info.sip.container.quiesce.on.explanation=L'MBean del contenitore SIP ha ricevuto un comando di esecuzione del quiesce di gestione. In questa modalit\u00e0, le nuove chiamate non vengono eseguite su questa istanza del contenitore.
+info.sip.container.quiesce.on.useraction=Non \u00e8 richiesta alcuna azione
+
+info.sip.container.quiesce.off=CWSCT0351I: Uscita in corso dalla modalit\u00e0 di esecuzione del quiesce
+info.sip.container.quiesce.off.explanation=L'MBean del contenitore SIP ha ricevuto un comando di interruzione del quiesce di gestione.
+info.sip.container.quiesce.off.useraction=Non \u00e8 richiesta alcuna azione
+
+error.sip.get.server.type=CWSCT0352E: Impossibile acquisire il tipo di server.   Errore = {0}.
+error.sip.get.server.type.explanation=Si \u00e8 verificata un'eccezione durante l'acquisizione del tipo di server.
+error.sip.get.server.type.useraction=Non \u00e8 richiesta alcuna azione
+
+error.sip.get.configuration=CWSCT0353E: Impossibile acquisire la configurazione all''avvio.   Errore = {0}.
+error.sip.get.configuration.explanation=Si \u00e8 verificata un'eccezione durante l'acquisizione della configurazione.
+error.sip.get.configuration.useraction=Non \u00e8 richiesta alcuna azione
+
+info.sip.container.running.stanalone=CWSCT0354I: Esecuzione su server autonomo
+info.sip.container.running.stanalone.explanation=Il contenitore SIP \u00e8 in esecuzione in un ambiente autonomo. Il gestore HA (High Availability) non \u00e8 abilitato.
+info.sip.container.running.stanalone.useraction=Non \u00e8 richiesta alcuna azione
+
+error.sip.cannot.run.on.server=CWSCT0355E: Esecuzione impossibile su questo tipo di server: {0}.
+error.sip.cannot.run.on.server.explanation=Impossibile eseguire SipContainer sul tipo di server specificato.
+error.sip.cannot.run.on.server.useraction=Non \u00e8 richiesta alcuna azione
+
+error.parse.auth.challange=CWSCT0356E: Impossibile analizzare l'intestazione dell'autenticazione.
+error.parse.auth.challange.explanation=La chiamata dell'applicazione a SipServletResponse.getChallangeRealm() non \u00e8 riuscita.
+error.parse.auth.challange.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.exception.ioeinbody=CWSCT0357E: Errore - impossibile acquisire il corpo del messaggio.
+error.exception.ioeinbody.explanation=\u00c8 stata rilevata un'eccezione IOException nel codice di sicurezza del contenitore SIP.
+error.exception.ioeinbody.useraction=Non \u00e8 richiesta alcuna azione.
+
+warn.unsupported.realm=CWSCT0358W: Realm di autenticazione sconosciuto {0}
+warn.unsupported.realm.explanation=\u00c8 stata ricevuta una richiesta SIP per un realm di autenticazione sconosciuto 
+warn.unsupported.realm.useraction=Non \u00e8 richiesta alcuna azione
+
+info.unhashed.creds=CWSCT0359I: Attributi credenziali hash non trovati.
+info.unhashed.creds.explanation=Gli attributi necessari per utilizzare le credenziali hash non sono stati trovati. Utilizzo della ricerca della password utente non-hash per l'autenticazione.
+info.unhashed.creds.useraction=Non \u00e8 richiesta alcuna azione
+
+info.sip.container.quiesce.ended=CWSCT0360I: L'esecuzione del quiesce del server \u00e8 terminata correttamente
+info.sip.container.quiesce.ended.explanation=L'operazione di quiesce del contenitore SIP \u00e8 terminata e tutte le sessioni dell'applicazione sono state invalidate.
+info.sip.container.quiesce.ended.useraction=Non \u00e8 richiesta alcuna azione
+
+info.sip.heartbeat.new.proxy=CWSCT0361I: Heartbeat di rete da un nuovo proxy {0} timeout {1} limite {2}
+info.sip.heartbeat.new.proxy.explanation=Il contenitore SIP ha rilevato un nuovo proxy SIP nel cluster ed \u00e8 abilitato il rilevamento dell'interruzione di rete SIP.
+info.sip.heartbeat.new.proxy.useraction=Non \u00e8 richiesta alcuna azione
+
+warn.sip.heartbeat.limit.exceeded=CWSCT0362I: Limite di heartbeat di rete superato con proxy SIP {0}. {1} heartbeat persi.
+warn.sip.heartbeat.limit.exceeded.explanation=Il contenitore SIP non ha ricevuto messaggi heartbeat dal proxy front-end all'interno del valore di timeout preconfigurato.
+warn.sip.heartbeat.limit.exceeded.useraction=Verificare che il proxy SIP sia ancora in esecuzione e che la linea di rete SIP tra il proxy e il contenitore sia funzionante.
+
+error.sip.heartbeat.server.restart=CWSCT0363I: Il contenitore SIP ha rilevato un'interruzione di rete ed eseguir\u00e0 il riavvio.
+error.sip.heartbeat.server.restart.explanation=Il contenitore SIP ha perso contatto con tutti i proxy front-end nel cluster. Ora \u00e8 in fase di riavvio. Le sessioni attive migreranno in un contenitore di backup, se ne \u00e8 presente uno nel dominio di replica.
+error.sip.heartbeat.server.restart.useraction=Determinare la causa dell'interruzione di rete SIP. Concentrarsi sulla linea di rete tra il proxy e il server delle applicazioni. \u00c8 possibile utilizzare uno sniffer di rete per tracciare i messaggi SIP KEEPALIVE tra il proxy e il contenitore.
+
+error.sip.heartbeat.restart.failure=CWSCT0364I: Impossibile riavviare il contenitore SIP
+error.sip.heartbeat.restart.failure.explanation=Il contenitore SIP ha tentato il riavvio in seguito all'interruzione di rete, ma questa operazione ha avuto esito negativo. Il contenitore verr\u00e0 chiuso senza eseguire il riavvio.
+error.sip.heartbeat.restart.failure.useraction=Riavviare il server delle applicazioni manualmente.
+
+error.replication.b2blinkage.failed=CWSCT0365E: Impossibile trovare la sessione Sip per il collegamento B2B {0} dopo il failover
+error.replication.b2blinkage.failed.explanation=Si \u00e8 verificato un errore nel contenitore SIP durante la replica.
+error.replication.b2blinkage.failed.useraction=Non \u00e8 richiesta alcuna azione.
+
+info.dar.init.2=CWSCT0401I: Il router dell'applicazione predefinito \u00e8 stato inizializzato.
+info.dar.init.2.explanation=Il router dell'applicazione predefinito seleziona l'applicazione in base all'ordine di avvio.
+info.dar.init.2.useraction=Non \u00e8 richiesta alcuna azione 
+
+info.dar.init.3=CWSCT0403I: Il router dell''applicazione esterno \u00e8 stato caricato in base alla propriet\u00e0 personalizzata definita - javax.servlet.sip.ar.spi.SipApplicationRouterProvider, nome classe - {0}.
+info.dar.init.3.explanation=Il router dell'applicazione esterno \u00e8 il router dell'applicazione implementato e caricato come terza parte.
+info.dar.init.3.useraction=Non \u00e8 richiesta alcuna azione 
+
+info.dar.init.4=CWSCT0404I: Il file DAR (Default Application Router) \u00e8 stato caricato, nome file - {0}.
+info.dar.init.4.explanation=Il file DAR (Default Application Router) fornito dall'utente \u00e8 stato individuato e caricato
+info.dar.init.4.useraction=Non \u00e8 richiesta alcuna azione 
+
+info.dar.init.5=CWSCT0405I: Il router dell'applicazione \u00e8 configurato per selezionare le applicazioni in base all'avvio.
+info.dar.init.5.explanation=Il router dell'applicazione predefinito seleziona l'applicazione in base all'ordine di avvio.
+info.dar.init.5.useraction=Non \u00e8 richiesta alcuna azione 
+
+error.dar.repository.create.1=CWSCT0406E: Errore durante la creazione del repository del router dell''applicazione predefinito: {0}.
+error.dar.repository.create.1.explanation=Si sono verificati errori interni.
+error.dar.repository.create.1.useraction=Non \u00e8 richiesta alcuna azione 
+
+error.dar.selector.1=CWSCT0407E: Nessuno stato per il router dell'applicazione predefinito.
+error.dar.selector.1.explanation=Quando il router dell'applicazione riceve richieste con una direttiva diversa da NEW, deve contenere un indice di stato nella catena di applicazioni. 
+error.dar.selector.1.useraction=Non \u00e8 richiesta alcuna azione 
+
+error.dar.property.parser.1=CWSCT0408E: Il router dell'applicazione predefinito, la strategia della propriet\u00e0, non sono riusciti a caricare il file delle propriet\u00e0.
+error.dar.property.parser.1.explanation=Il file delle propriet\u00e0 del router dell'applicazione \u00e8 in formato non corretto.
+error.dar.property.parser.1.useraction=Verificare che il file delle propriet\u00e0 del router dell'applicazione sia in formato corretto.
+
+warn.sip.proxy.outboundif.invalid=CWSCT0409W: I proxy sono configurati con interfacce in uscita diverse.
+warn.sip.proxy.outboundif.invalid.explanation=Tutti i proxy devono essere configurati con lo stesso IP virtuale.
+warn.sip.proxy.outboundif.invalid.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.create.500.response=CWSCT0410E: Impossibile creare una risposta del router dell'applicazione.
+error.failed.create.500.response.explanation=Il router dell'applicazione ha generato un'eccezione non prevista; il contenitore ha tentato di generare la risposta 500, ma l'operazione ha avuto esito negativo.
+error.failed.create.500.response.useraction=Rivolgersi al proprietario del router dell'applicazione.
+
+warn.sip.custom.property.deprecated=CWSCT0411W: La propriet\u00e0 personalizzata [{0}] \u00e8 obsoleta.
+warn.sip.custom.property.deprecated.explanation=\u00c8 ancora rispettata, ma il valore relativo viene utilizzato se \u00e8 definito nella configurazione, ha una precedenza superiore rispetto all'attributo - per motivi di compatibilit\u00e0 con le versioni precedenti.
+warn.sip.custom.property.deprecated.useraction=Impostare questo valore mediante le impostazioni di configurazione del contenitore Sip dell'UI Admin.
+
+warn.sip.queue.hung=CWSCT0412W: Un''attivit\u00e0 SIP relativa {0} risulta sospesa. Questa attivit\u00e0 verr\u00e0 ignorata.
+warn.sip.queue.hung.explanation= L'attivit\u00e0 ha superato il tempo di configurazione per il rilevamento della sospensione del thread. I messaggi SIP successivi in questa sessione potrebbero avere esito negativo.
+warn.sip.queue.hung.useraction=Non \u00e8 richiesta alcuna azione.
+
+warn.server.overloaded.message.queue.overloaded=CWSCT0413W: Il server \u00e8 sovraccaricato poich\u00e9 le code di thread del contenitore hanno raggiunto la capacit\u00e0 massima.
+warn.server.overloaded.message.queue.overloaded.explanation=Il server SIP non pu\u00f2 accettare ulteriori messaggi in entrata quando \u00e8 sovraccaricato.
+warn.server.overloaded.message.queue.overloaded.useraction=Ridurre il traffico di messaggi in entrata o impostare la dimensione massima della coda del contenitore SIP (Session Initiation Protocol) su un valore pi\u00f9 alto.
+
+info.sip.replication.mode=CWSCT0414I: La modalit\u00e0 di replica SIP \u00e8: {0} 
+info.sip.replication.mode.explanation=La frequenza in cui le sessioni SIP sono replicate nel dominio di repliche (se esistente).
+info.sip.replication.mode.useraction=Non \u00e8 richiesta alcuna azione
+
+info.dar.weight=CWSCT0415I: Caricamento del router applicazione predefinito, strategia peso.
+info.dar.weight.explanation=Non \u00e8 stato fornito alcun router applicazione personalizzato o file di configurazione DAR, il contenitore SIP utilizzer\u00e0 la funzionalit\u00e0 predefinita, vale a dire ordiner\u00e0 le applicazioni in base al peso.
+info.dar.weight.useraction=Non \u00e8 richiesta alcuna azione
+
+error.dar.no.config=CWSCT0416E: Il file di configurazione DAR (Default Application Router) non \u00e8 stato individuato al percorso fornito {0}.
+error.dar.no.config.explanation=Il file di configurazione DAR (Default Application Router) fornito dall'utente non \u00e8 stato trovato
+error.dar.no.config.useraction=Controllare che il percorso fornito nelle propriet\u00e0 del contenitore SIP "javax.servlet.sip.ar.dar.configuration" sia corretto
+
+error.sip.descriptor.wrong.class=CWSCT0417E: Nome classe siplet definito in sip.xml non trovato, nome classe: {0}. 
+error.sip.descriptor.wrong.class.explanation=Il documento sip.xml definisce un nome classe siplet che non \u00e8 possibile caricare.
+error.sip.descriptor.wrong.class.useraction=Controllare il file sip.xml e verificare che il nome classe sia stato scritto correttamente.
+
+info.sip.outbound.initialized=CWSCT0418I: l'estensione del protocollo "in uscita" SIP \u00e8 stata inizializzata correttamente.
+info.sip.outbound.initialized.explanation=Il contenitore servlet SIP \u00e8 predisposto per il riutilizzo di connessioni inizializzate dal server, in base all'estensione del protocollo "in uscita".
+info.sip.outbound.initialized.useraction=Non \u00e8 richiesta alcuna azione. Per ulteriori informazioni sull'estensione del protocollo "in uscita", consultare il topic relativo al riutilizzo di connessioni inizializzate dal client SIP nel centro informazioni di Websphere Application Server.
+
+warn.sip.outbound.no.key.set=CWSCT0419W: Nessuna serie di chiavi specificata per l'estensione del protocollo "in uscita" SIP.
+warn.sip.outbound.no.key.set.explanation=Il contenitore servlet SIP sta gestendo le connessioni inizializzate dal client, in base all'estensione del protocollo "in uscita" SIP, ma la sicurezza \u00e8 disabilitata. In tale situazione, i token di flusso sono esposti a modifiche da parte di utenti non autorizzati.
+warn.sip.outbound.no.key.set.useraction=Per abilitare la sicurezza delle connessioni inizializzate dal client, consultare il topic relativo al riutilizzo di connessioni inizializzate dal client SIP nel centro informazioni di Websphere Application Server.
+
+info.sip.outbound.key.set.updated=CWSCT0420I: la serie di chiavi utilizzata per l'estensione del protocollo "in uscita" SIP \u00e8 stata aggiornata.
+info.sip.outbound.key.set.updated.explanation=\u00c8 stata creata una nuova chiave nella serie di chiavi.
+info.sip.outbound.key.set.updated.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.sip.outbound.failure=CWSCT0421E: impossibile inizializzare l''estensione del protocollo "in uscita" SIP con la serie di chiavi {0}.
+error.sip.outbound.failure.explanation=Il contenitore servlet SIP non \u00e8 in grado di elaborare l'estensione del protocollo "in uscita", poich\u00e9 si \u00e8 verificato un errore durante il tentativo di inizializzare la serie di chiavi specificata.
+error.sip.outbound.failure.useraction=Accertarsi che nella configurazione della serie di chiavi sia presente la serie di chiavi specificata. Per ulteriori informazioni, consultare il topic relativo al riutilizzo di connessioni inizializzate dal client SIP nel centro informazioni di Websphere Application Server.
+
+warn.sip.invalid.comma.separated.headers=CWSCT0422W: Sintassi non valida nella propriet\u00e0 personalizzata "comma.separated.headers".
+warn.sip.invalid.comma.separated.headers.explanation=La propriet\u00e0 personalizzata del contenitore SIP "comma.separated.headers" contiene una impostazione non valida.
+warn.sip.invalid.comma.separated.headers.useraction=Specificare un valore valido per la propriet\u00e0 personalizzata "comma.separated.headers" oppure rimuovere questa propriet\u00e0 personalizzata dalle impostazioni di configurazione del contenitore SIP. Le propriet\u00e0 personalizzate del contenitore SIP sono descritte nel topic del centro informazioni di WebSphere Application Server "Propriet\u00e0 personalizzate contenitore SIP".
+
+sip.app.deployment.failed=CWSCT0423E: Impossibile distribuire l''applicazione {0}, causa {1}.
+sip.app.deployment.failed.explanation=La distribuzione ha avuto esito negativo a causa di un descrittore di distribuzione non valido.
+sip.app.deployment.failed.useraction=Controllare che il descrittore di distribuzione sip.xml o le annotazioni non siano in conflitto e che siano validi in base alla specifica.
+
+info.dar.start.order=CWSCT0424I: Caricamento del router applicazione predefinito, strategia ordine avvio.
+info.dar.start.order.explanation=Non \u00e8 stato fornito alcun router applicazione personalizzato o file di configurazione DAR, il contenitore SIP utilizzer\u00e0 la funzionalit\u00e0 predefinita, vale a dire ordiner\u00e0 le applicazioni in base all'ordine di avvio.
+info.dar.start.order.useraction=Non \u00e8 richiesta alcuna azione
+
+warn.change.in.endpoints=CWSCT0425W: La configurazione del canale SIP \u00e8 stata modificata. Le modifiche negli endpoint SIP mentre il server \u00e8 in esecuzione possono provocare l'esito negativo dei dialoghi in corso.
+warn.change.in.endpoints.explanation=L'affidabilit\u00e0 dello stato dei dialoghi SIP dipende dalla persistenza della configurazione delle interfacce SIP.
+warn.change.in.endpoints.useraction=\u00c8 consigliato il riavvio del server se esistono dialoghi SIP in corso.
+
+warn.dar.file.modification=CWSCT0426W: L'ubicazione del file DAR (Default SIP Application Router) o il contenuto non sono stati cambiati.
+warn.dar.file.modification.explanation=L'ubicazione del file DAR o il contenuto non possono essere modificati mentre il server \u00e8 in esecuzione.
+warn.dar.file.modification.useraction=Per applicare le modifiche, riavviare il server.
+
+error.no.main.serv=CWSCT0427E: L''applicazione ha definito un servlet principale che non esiste: {0}.
+error.no.main.serv.explanation=Il servlet principale non corrisponde ad alcun servlet esistente.
+error.no.main.serv.useraction=Assicurarsi che il servlet principale sia definito correttamente nel descrittore di distribuzione o dall'annotazione e che faccia riferimento a una classe di tipo SipServlet.
+
+cant.both.main.serv.mapping=CWSCT0428E: L''applicazione definisce regole di associazione servlet e servlet principale {0}, ci\u00f2 non \u00e8 consentito.
+cant.both.main.serv.mapping.explanation=L'applicazione non pu\u00f2 definire sia regole di associazione servlet che un servlet principale.
+cant.both.main.serv.mapping.useraction=Assicurarsi che l'applicazione definisca o un servlet principale o le regole di associazione servlet, ma non entrambi. \u00c8 possibile definire il servlet principale nel descrittore di distribuzione o tramite annotazione.
+
+must.define.main.serv=CWSCT0429E: L'applicazione non definisce un servlet principale ma ha pi\u00f9 di un siplet.
+must.define.main.serv.explanation=Se l'applicazione ha pi\u00f9 di un siplet, deve anche definire un servlet principale.
+must.define.main.serv.useraction=Assicurarsi che il servlet principale sia definito correttamente nel descrittore di distribuzione o tramite annotazione. La definizione del servlet principale deve fare riferimento a una classe di tipo SipServlet.
+
+start.sipChain.error=CWSCT0430E: Non \u00e8 stato possibile avviare la catena SIP.
+start.sipChain.error.explanation=Se non \u00e8 stato possibile avviare la catena SIP potrebbero esserci problemi con le definizioni degli endpoint SIP endpoints definitions.
+start.sipChain.error.useraction=Verificare che gli endpoint SIP siano definiti correttamente.
+
+config.sipChain.error=CWSCT0431E: Impossibile inizializzare una catena SIP.
+config.sipChain.error.explanation=Se non \u00e8 possibile inizializzare una catena SIP, un canale nella catena non \u00e8 stato creato o inizializzato oppure la creazione della catena ha  avuto esito negativo. Ci\u00f2 include tentativi non riusciti di collegare le porte.
+config.sipChain.error.useraction=Verificare che gli endpoint SIP siano definiti correttamente.
+
+error.asynchwork.host.unknown=CWSCT0432E: Impossibile inviare lavoro asincrono perch\u00e9 l'host \u00e8 sconosciuto.
+error.asynchwork.host.unknown.explanation=Il contenitore SIP ha tentato di inviare del lavoro asincrono ma non \u00e8 riuscito a causa di un host sconosciuto.
+error.asynchwork.host.unknown.useraction=Verificare la configurazione dell'host prima di inviare lavoro asincrono.
+
+info.sip.queue.stats=CWSCT0433I: Modalit\u00e0 stampa stats code contenitore SIP= {0}. 1 = solo quando sovraccarico, 2 = sempre. una volta ogni {1} msec.
+info.sip.queue.stats.explanation=Modalit\u00e0 di stampa delle code contenitore SIP.
+info.sip.queue.stats.useraction=Questo \u00e8 un messaggio informativo.  Non \u00e8 necessaria alcuna azione da parte dell'utente.
+
+error.init.loadonstartup.app=CWSCT0435E: Il server SIP non \u00e8 riuscito ad inizializzare l''applicazione con un attributo servlet loadOnStartup: {0}
+error.init.loadonstartup.app.explanation=Si \u00e8 verificato un errore quando l'applicazione SIP \u00e8 stata inizializzata con l'attributo servlet loadOnStartup specificato.
+error.init.loadonstartup.app.useraction=Per maggiori dettagli su questo errore, esaminare il file di traccia del server SIP ubicato nella directory logs nella cartella SERVER_DIR.
+
+warn.sip.resolver.failed.connection=CWSCT0436W: Connessione al resolver SIP non riuscita, indirizzo remoto = {0}.
+warn.sip.resolver.failed.connection.explanation=Il resolver SIP (Session Initiation Protocol) non \u00e8 riuscito a connettersi a un nodo remoto.
+warn.sip.resolver.failed.connection.useraction=Il server nomi remoto potrebbe non essere disponibile. Verificare la configurazione del server dei nomi.
+
+warn.sip.resolver.server.not.responding=CWSCT0437W: Il server dei nomi non risponde alla ricerca SIP. Indirizzo remoto = {0}.
+warn.sip.resolver.server.not.responding.explanation=Il server dei nomi remoto non risponde all'ultima richiesta del resolver SIP (Session Initiation Protocol).
+warn.sip.resolver.server.not.responding.useraction=Il server nomi potrebbe non essere funzionante. Verificare la disponibilit\u00e0 del server dei nomi.
+
+info.sip.resolver.established.connection=CWSCT0438I: Il resolver SIP ha stabilito una connessione a = {0}.
+info.sip.resolver.established.connection.explanation=Il resolver SIP (Session Initiation Protocol) ha stabilito una connessione TCP a un server dei nomi remoto
+info.sip.resolver.established.connection.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
+
+info.sip.resolver.initialized=CWSCT0439I: Servizio del resolver SIP inizializzato con il server dei nomi {0}.
+info.sip.resolver.initialized.explanation=Il servizio del resolver SIP (Session Initiation Protocol) \u00e8 stato inizializzato.
+info.sip.resolver.initialized.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
+
+info.sip.resolver.not.initialized=CWSCT0440I: Il servizio del resolver SIP non \u00e8 stato inizializzato.
+info.sip.resolver.not.initialized.explanation=Il servizio del resolver SIP (Session Initiation Protocol) non ha configurato un server nomi.
+info.sip.resolver.not.initialized.useraction=Riconfigurare il servizio resolver SIP (Session Initiation Protocol) con un server dei nomi.
+
+warning.traditional.enabled=CWSCT0441W: Il contenitore SIP non supporta PMI tradizionale.
+warning.traditional.enabled.explanation=L'attributo enableTraditionalPMI \u00e8 impostato su true nel file server.xml. Il contenitore SIP non supporta PMI tradizionale in Liberty.
+warning.traditional.enabled.useraction=Rimuovere la propriet\u00e0\u00a0enableTraditionalPMI dal file server.xml.

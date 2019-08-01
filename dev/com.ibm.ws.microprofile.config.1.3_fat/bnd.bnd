@@ -16,6 +16,7 @@ src: \
 	test-applications/serverXMLApp/src,\
 	test-applications/serverXMLApp/resources,\
 	test-applications/mapEnvVarApp/src,\
+	test-applications/hotAddMPConfigApp/src,\
 	test-applications/variableServerXMLApp/src,\
 	test-applications/duplicateInServerXMLApp/src
 

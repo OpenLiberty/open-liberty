@@ -771,4 +771,16 @@ public class KeyStoreServiceImplTest {
 
         keyStoreService.addCertificateToKeyStore(keyStoreName, alias, cert);
     }
+
+    @Test
+    public void testKeyStoreCount() {
+        mock.checking(new Expectations() {
+            {
+                allowing(ksMgr).getKeyStoreCount();
+                will(returnValue(45));
+            }
+        });
+
+        assertTrue("count was:" + keyStoreService.getKeyStoreCount(), keyStoreService.getKeyStoreCount() == 45);
+    }
 }

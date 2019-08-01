@@ -310,6 +310,13 @@ public class DatabaseHelper {
     }
 
     /**
+     * For PostgreSQL only
+     */
+    public Object getLargeObjectAPI(Connection con) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    /**
      * Returns a trace component for supplemental JDBC driver level trace.
      * If supplemental JDBC driver level trace is not wanted, this method should return NULL.
      * 

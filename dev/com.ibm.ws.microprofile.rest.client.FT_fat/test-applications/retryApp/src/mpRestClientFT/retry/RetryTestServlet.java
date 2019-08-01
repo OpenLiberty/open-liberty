@@ -81,4 +81,9 @@ public class RetryTestServlet extends FATServlet {
     public void testDefaultFallbackMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         assertEquals("defaultFallback", client.useDefaultFallbackMethod());
     }
+
+    @Test
+    public void testFallbackHandlerClass(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        assertEquals("MyFallbackClass", client.useDefaultFallbackClass());
+    }
 }

@@ -1,0 +1,78 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.opensaml.xmltooling
+Bundle-Description: org.opensaml xmltooling
+Bundle-SymbolicName: com.ibm.ws.org.opensaml.xmltooling.1.4.4
+
+WS-TraceGroup: SAML20
+
+Export-Package: \
+   org.opensaml.xml;version="1.0.16", \
+   org.opensaml.xml.encryption;version="1.0.16", \
+   org.opensaml.xml.encryption.impl;version="1.0.16", \
+   org.opensaml.xml.io;version="1.0.16", \
+   org.opensaml.xml.parse;version="1.0.16", \
+   org.opensaml.xml.schema;version="1.0.16", \
+   org.opensaml.xml.schema.impl;version="1.0.16", \
+   org.opensaml.xml.security;version="1.0.16", \
+   org.opensaml.xml.security.credential;version="1.0.16", \
+   org.opensaml.xml.security.criteria;version="1.0.16", \
+   org.opensaml.xml.security.trust;version="1.0.16", \
+   org.opensaml.xml.security.x509;version="1.0.16", \
+   org.opensaml.xml.security.x509.tls;version="1.0.16", \
+   org.opensaml.xml.util;version="1.0.16", \
+   org.opensaml.xml.validation;version="1.0.16", \
+   org.opensaml.xml.security.keyinfo;version="1.0.16", \
+   org.opensaml.xml.security.keyinfo.provider;version="1.0.16", \
+   org.opensaml.xml.signature;version="1.0.16", \
+   org.opensaml.xml.signature.impl;version="1.0.16"
+
+Private-Package: \
+   schema,\
+   org.opensaml.ws.soap.soap12,\
+   org.opensaml.ws.wspolicy.impl,\
+   org.opensaml.ws.wspolicy,\
+   org.opensaml.ws.wstrust.impl,\
+   org.opensaml.ws.soap.util,\
+   org.opensaml.ws,\
+   org.opensaml.ws.wstrust,\
+   org.opensaml.ws.soap.client
+
+Import-Package: \
+ !net.jcip.annotations,\
+ !org.apache.commons.ssl,\
+ !org.bouncycastle.*,\
+ org.joda.time;version="[1.6,2)", \
+ org.joda.time.chrono;version="[1.6,2)", \
+ org.joda.time.format;version="[1.6,2)", \
+ *
+
+DynamicImport-Package: \
+  org.opensaml.saml1.*, \
+  org.opensaml.saml2.*, \
+  org.opensaml.samlext.*, \
+  org.opensaml.xacml.*, \
+  org.opensaml.ws.soap.soap11.*, \
+  org.opensaml.ws.wsfed.*, \
+  org.opensaml.ws.wsaddressing.*, \
+  org.opensaml.ws.wssecurity.*, \
+  com.ibm.websphere.ras
+
+Include-Resource: \
+  @${repo;org.opensaml:xmltooling;1.4.4}!/!META-INF/MANIFEST.MF|META-INF/maven/*|org/opensaml/xml/security/x509/X509Util*
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Main-Class:

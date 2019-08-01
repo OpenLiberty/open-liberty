@@ -21,7 +21,7 @@ javac.target: 1.8
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
+Service-Component: com.ibm.ws.jaxws23.webcontainer.jaxWsWebContainerManager; \
      implementation:=com.ibm.ws.jaxws23.webcontainer.JaxWsWebContainerManagerImpl; \
      provide:=com.ibm.ws.jaxws.support.JaxWsWebContainerManager; \
      webModuleHandler='com.ibm.ws.app.manager.module.internal.ModuleHandler(type=web)'; \
@@ -33,7 +33,7 @@ Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
      implementation:=com.ibm.ws.jaxws23.webcontainer.JaxWsExtensionFactory; \
      provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
      endpointPublisherManager=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
-     jaxWsWebAppConfigurator=com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator*; \
+     jaxWsWebAppConfigurator=com.ibm.ws.jaxws23.webcontainer.JaxWsWebAppConfigurator*; \
      properties:="service.vendor=IBM", \
   com.ibm.ws.jaxws.webcontainer.webEndpointPublisher; \
      implementation:=com.ibm.ws.jaxws23.webcontainer.WebEndpointPublisher; \
@@ -46,20 +46,20 @@ Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
      provide:=javax.servlet.ServletContainerInitializer; \
      immediate:=true;\
      properties:="service.vendor=IBM"\
-  
+
 
 Export-Package: com.ibm.ws.jaxws23.webcontainer
 
 Import-Package: \
-   javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   javax.xml.ws.*;version="[2.3,3)", \
+   org.apache.cxf.*;version="[3.2,4)", \
    *
 
 Private-Package:\
    com.ibm.ws.jaxws23.webcontainer.*
-   
+
 Include-Resource: OSGI-INF=resources/OSGI-INF
-    
+
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.classesExcludes: com/ibm/ws/jaxws23/webcontainer/internal/resources/*.class
@@ -79,7 +79,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws23/webcontainer/internal/resources/*
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

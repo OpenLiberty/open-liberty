@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -44,7 +45,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 // No need to run against cdi-2.0 since these tests don't use CDI at all.
 @SkipForRepeat("CDI-2.0")
 @RunWith(FATRunner.class)
-public class JSP23JSP22ServerTest extends com.ibm.ws.fat.util.LoggingTest {
+public class JSP23JSP22ServerTest extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(JSP23JSP22ServerTest.class.getName());
     private static final String APP_NAME = "TestJspFeatureChange";
 
@@ -58,9 +59,6 @@ public class JSP23JSP22ServerTest extends com.ibm.ws.fat.util.LoggingTest {
         ShrinkHelper.defaultDropinApp(SHARED_SERVER.getLibertyServer(),
                                       APP_NAME + ".war");
 
-        // Start the server and use the class name so we can find logs easily.
-        // Many tests use the same server
-        // SHARED_SERVER.getLibertyServer().startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation(APP_NAME);
         SHARED_SERVER.startIfNotStarted();
     }
@@ -68,7 +66,7 @@ public class JSP23JSP22ServerTest extends com.ibm.ws.fat.util.LoggingTest {
     @AfterClass
     public static void testCleanup() throws Exception {
         /**
-         * RTC 200245. Stopping the server before changing the server features
+         * Stopping the server before changing the server features
          * makes CWWKZ0014W to not happen.
          */
         SHARED_SERVER.getLibertyServer().stopServer();

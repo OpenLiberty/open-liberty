@@ -1,0 +1,928 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
+#COMPONENTPREFIX CWSCT
+#COMPONENTNAMEFOR CWSCT WebSphere SIP Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+
+info.container.initialized=CWSCT0001I: A SIP t\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa befejez\u0151d\u00f6tt.
+info.container.initialized.explanation=A SIP com.ibm.ws.sip.container telep\u00edtve van, \u00e9s k\u00e9szen \u00e1ll \u00fczenetek fogad\u00e1s\u00e1ra a h\u00e1l\u00f3zatb\u00f3l.
+info.container.initialized.useraction=Ez egy inform\u00e1ci\u00f3s \u00fczenet.  Nincs felhaszn\u00e1l\u00f3i teend\u0151.
+
+info.container.version=CWSCT0002I: SIP t\u00e1rol\u00f3 {0}
+info.container.version.explanation=Az SIP t\u00e1rol\u00f3 \u00f6sszetev\u0151 verzi\u00f3sz\u00e1ma.
+info.container.version.useraction=Ez egy inform\u00e1ci\u00f3s \u00fczenet.  Nincs felhaszn\u00e1l\u00f3i teend\u0151.
+
+warning.mean.disabled=CWSCT0003W: A SIP t\u00e1rol\u00f3 MBean nem k\u00e9pes elindulni.
+warning.mean.disabled.explanation=Az SIP t\u00e1rol\u00f3 MBean nem k\u00e9pes elindulni. A JMX m\u0171veletek nem lesznek el\u00e9rhet\u0151ek az SIP t\u00e1rol\u00f3 sz\u00e1m\u00e1ra.
+warning.mean.disabled.useraction=Nincs teend\u0151. 
+
+error.exception=CWSCT0004E: A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt:
+error.exception.explanation=A SIP com.ibm.ws.sip.container egy kiv\u00e9telt kapott el.
+error.exception.useraction=Nincs teend\u0151. 
+
+info.failover.started=CWSCT0006I: \u00c1t\u00e1ll\u00e1s elkezd\u0151d\u00f6tt. A(z) {1} logikai n\u00e9vhez a fogadott objektumok sz\u00e1ma: {0}.
+info.failover.started.explanation=A f\u00fcrt egyik kiszolg\u00e1l\u00f3ja lez\u00e1rult \u00e9s a logikai neveinek egy r\u00e9sz \u00e1tvitelre ker\u00fclt ehhez a kiszolg\u00e1l\u00f3hoz. Ehhez a logikai n\u00e9vhez tartoz\u00f3 szekci\u00f3 objektum ezen a kiszolg\u00e1l\u00f3n ker\u00fclnek aktiv\u00e1l\u00e1sra.
+info.failover.started.useraction=Nincs teend\u0151. 
+
+info.failover.ended=CWSCT0008I: A(z) {0} logikai n\u00e9v \u00e1t\u00e1ll\u00e1sa v\u00e9get \u00e9rt.
+info.failover.ended.explanation=Egy logikai n\u00e9vhez tartoz\u00f3 szekci\u00f3 objektumok aktiv\u00e1l\u00e1sa befejez\u0151d\u00f6tt. Tekintse meg az "\u00c1t\u00e1ll\u00e1s elkezd\u0151d\u00f6tt" r\u00e9szt a logikai n\u00e9vhez \u00e9s az objektumok sz\u00e1m\u00e1hoz.
+info.failover.ended.useraction=Nincs teend\u0151. 
+
+error.parser.configuration=CWSCT0010E: Hiba a sip.xml \u00e9rtelmez\u0151 be\u00e1ll\u00edt\u00e1s\u00e1n\u00e1l.
+error.parser.configuration.explanation=Hiba t\u00f6rt\u00e9nt az XML \u00e9rtelmez\u0151 inicializ\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Ez nem az sip.xml dokumentum hib\u00e1j\u00e1t jelenti.
+error.parser.configuration.useraction=Nincs teend\u0151. 
+
+error.parser.not.available=CWSCT0011E: Az \u00e9rtelmez\u0151 nem el\u00e9rhet\u0151; nem siker\u00fclt az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t bet\u00f6lteni.
+error.parser.not.available.explanation=A SIP com.ibm.ws.sip.container nem k\u00e9pes alkalmaz\u00e1st bet\u00f6lteni a sip.xml f\u00e1jlb\u00f3l, mert nincs XML \u00e9rtelmez\u0151.
+error.parser.not.available.useraction=Keresse meg a k\u00f6vetkez\u0151, kor\u00e1bbi hiba\u00fczenetet a napl\u00f3ban: "Hiba az sip.xml \u00e9rtelmez\u0151 be\u00e1ll\u00edt\u00e1s\u00e1n\u00e1l".
+
+error.parse.exception=CWSCT0012E: \u00c9rtelmez\u00e9si kiv\u00e9tel; Nem siker\u00fclt a sip.xml \u00e9rtelmez\u00e9se {0}.
+error.parse.exception.explanation=A SIP com.ibm.ws.sip.container nem k\u00e9pes alkalmaz\u00e1st bet\u00f6lteni a sip.xml f\u00e1jlb\u00f3l, mert hiba van a sip.xml f\u00e1jlban.
+error.parse.exception.useraction=Keressen hib\u00e1kat az sip.xml f\u00e1jlban. Inform\u00e1ci\u00f3kat a szabv\u00e1nyos sip.xml form\u00e1tumr\u00f3l a JSR 116 (SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s API) 11. fejezet\u00e9ben (K\u00e9r\u00e9sek lek\u00e9pez\u00e9se kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sokra) \u00e9s 15. fejezet\u00e9ben (Telep\u00edt\u00e9sle\u00edr\u00f3) tal\u00e1lhat.
+
+error.listener.not.found=CWSCT0013E: A(z) {0} figyel\u0151oszt\u00e1ly nem tal\u00e1lhat\u00f3 a(z) {1} alkalmaz\u00e1shoz.
+error.listener.not.found.explanation=Az oszt\u00e1lybet\u00f6lt\u0151 nem tal\u00e1lja a figyel\u0151oszt\u00e1lyt.
+error.listener.not.found.useraction=Ellen\u0151rizze az sip.xml f\u00e1jlt \u00e9s ellen\u0151rizze, hogy a figyel\u0151oszt\u00e1ly helyes-e. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a figyel\u0151oszt\u00e1lyt tartalmazza az el\u00e9r\u00e9si \u00fat.
+
+error.init.listener.failed=CWSCT0014E: Nem siker\u00fclt a(z) {0} figyel\u0151oszt\u00e1ly l\u00e9trehoz\u00e1sa a(z) {1} alkalmaz\u00e1shoz.
+error.init.listener.failed.explanation=A SIP com.ibm.ws.sip.container nem tudta p\u00e9ld\u00e1nyos\u00edtani a figyel\u0151oszt\u00e1lyt.
+error.init.listener.failed.useraction=Ellen\u0151rizze az sip.xml f\u00e1jlt \u00e9s ellen\u0151rizze, hogy a figyel\u0151oszt\u00e1ly helyes-e. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a figyel\u0151oszt\u00e1lynak nyilv\u00e1nos konstruktora van, amely nem v\u00e1r argumentumokra.
+
+error.too.many.timer.listeners=CWSCT0015E: \u00c9rv\u00e9nytelen XML - t\u00f6bb id\u0151m\u00e9r\u0151 figyel\u0151 lett a(z) {0} alkalmaz\u00e1shoz hozz\u00e1rendelve.
+error.too.many.timer.listeners.explanation=Az sip.xml dokumentum t\u00f6bb TimerListener oszt\u00e1lyt hat\u00e1roz meg ugyanazon alkalmaz\u00e1shoz.
+error.too.many.timer.listeners.useraction=Ellen\u0151rizze az sip.xml f\u00e1jlt \u00e9s bizonyosodjon meg r\u00f3la, hogy csak egy TimerListener oszt\u00e1ly van megadva az alkalmaz\u00e1shoz.
+
+error.parsing.session.ttl=CWSCT0016E: Hiba a TTL szekci\u00f3 \u00e9rtelmez\u00e9s\u00e9vel a Sip alkalmaz\u00e1shoz: {0}.
+error.parsing.session.ttl.explanation=Az sip.xml dokumentum nem tartalmaz \u00e9rv\u00e9nyes alkalmaz\u00e1sszekci\u00f3 id\u0151korl\u00e1t \u00e9rt\u00e9ket.
+error.parsing.session.ttl.useraction=Ellen\u0151rizze az sip.xml dokumentumot, hogy meggy\u0151z\u0151dj\u00f6n arr\u00f3l, hogy a szekci\u00f3 id\u0151korl\u00e1t be\u00e1ll\u00edt\u00e1sok teljes percekben vannak kifejezve.
+
+error.mapping.to.nonexisting.siplet=CWSCT0017E: Lek\u00e9pez\u00e9s nem l\u00e9tez\u0151 SIP szervlethez: {0}, Alkalmaz\u00e1s: {1}.
+error.mapping.to.nonexisting.siplet.explanation=Az sip.xml dokumentum tartalmaz egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9st egy meghat\u00e1rozatlan kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1shoz
+error.mapping.to.nonexisting.siplet.useraction=Ellen\u0151rizze az sip.xml dokumentumot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9s alatt minden kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s n\u00e9v c\u00edmke egyezik egy l\u00e9tez\u0151 kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1ssal \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy l\u00e9tezik egy minta meghat\u00e1roz\u00e1s a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9shez.
+
+error.invalid.condition.type=CWSCT0018E: \u00c9rv\u00e9nytelen felt\u00e9telt\u00edpus a sip.xml f\u00e1jlban: {0}.
+error.invalid.condition.type.explanation=Az sip.xml dokumentum nem tartalmaz \u00e9rv\u00e9nyes kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s megfelel\u00e9si felt\u00e9tel t\u00edpust.
+error.invalid.condition.type.useraction=Ellen\u0151rizze az sip.xml dokumentumot, hogy meggy\u0151z\u0151dj\u00f6n r\u00f3la, hogy megfelel\u00e9si szab\u00e1lyok megfelelnek a JSR 116 (SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s API) 11.3 (felt\u00e9telek) szabv\u00e1nynak.
+
+error.parsing.condition=CWSCT0019E: Hiba a(z) {0} \u00e9rtelmez\u00e9s\u00e9ben, v\u00e1ltoz\u00f3: {1}\t, \u00e9rt\u00e9k: {2}.
+error.parsing.condition.explanation=Az sip.xml dokumentum nem tartalmaz \u00e9rv\u00e9nyes kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s megfelel\u00e9si szab\u00e1lyt.
+error.parsing.condition.useraction=Ellen\u0151rizze az sip.xml dokumentumot, hogy meggy\u0151z\u0151dj\u00f6n r\u00f3la, hogy megfelel\u00e9si szab\u00e1lyok megfelelnek a JSR 116 (SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s API) 11. fejezet (K\u00e9r\u00e9sek \u00e9s kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sok lek\u00e9pez\u00e9se).
+
+error.parsing.and.condition=CWSCT0020E: Hiba az AND felt\u00e9tel \u00e9rtelmez\u00e9s\u00e9n\u00e9l; nem tal\u00e1lhat\u00f3k alelemek.
+error.parsing.and.condition.explanation=Az sip.xml dokumentum egy AND felt\u00e9telt tartalmaz alelemek n\u00e9lk\u00fcl.
+error.parsing.and.condition.useraction=Ellen\u0151rizze az sip.xml dokumentumot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy vannak megfeleltet\u00e9si szab\u00e1lyok az AND c\u00edmke alatt.
+
+error.parsing.sip.app=CWSCT0021E: Hiba a sip-app xml meghat\u00e1roz\u00e1s\u00e1ban.
+error.parsing.sip.app.explanation=Az sip.xml dokumentum nulla vagy t\u00f6bb sip-app r\u00e9szt tartalmaz. Lehet, hogy csak egy van.
+error.parsing.sip.app.useraction=Ellen\u0151rizze az sip.xml dokumentumot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy pontosan egy sip-app r\u00e9sz van.
+
+error.local.sip.dtd.not.found=CWSCT0022E: Hiba - helyi SIP DTD dokumentum nem tal\u00e1lhat\u00f3.
+error.local.sip.dtd.not.found.explanation=Nincs helyi meghat\u00e1roz\u00e1s a k\u00f6vetkez\u0151h\u00f6z: /javax/servlet/sip/sip-app_1_0.dtd
+error.local.sip.dtd.not.found.useraction=Nincs teend\u0151. 
+
+info.server.overload.cleared=CWSCT0023I: A kiszolg\u00e1l\u00f3 m\u00e1r nem t\u00falterhelt. A terhel\u00e9si t\u00e9nyez\u0151 cs\u00f6kkentve a k\u00f6vetkez\u0151 \u00e9rt\u00e9kre: {0}
+info.server.overload.cleared.explanation=A SIP com.ibm.ws.sip.container m\u00e1r nem tekinthet\u0151 t\u00falterheltnek \u00e9s most m\u00e1r k\u00e9szen \u00e1ll \u00faj munkamenetek kezel\u00e9s\u00e9re
+info.server.overload.cleared.useraction=Nincs teend\u0151. 
+
+error.failed.create.stack=CWSCT0025E: Nem siker\u00fclt a SIP verem l\u00e9trehoz\u00e1sa.
+error.failed.create.stack.explanation=A bels\u0151 SIP verem inicializ\u00e1l\u00e1sa nem siker\u00fclt.
+error.failed.create.stack.useraction=Nincs teend\u0151. 
+
+error.sip.stack.exception=CWSCT0026E: Kiv\u00e9tel a SIP veremben.
+error.sip.stack.exception.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az SIP verem r\u00e9tegben. A verem megpr\u00f3b\u00e1l tov\u00e1bbra is norm\u00e1lisan futni.
+error.sip.stack.exception.useraction=Nincs teend\u0151. 
+
+info.listening.point=CWSCT0028I: SIP t\u00e1rol\u00f3 figyel\u0151pont {0}:{1}/{2}
+info.listening.point.explanation=Ez egy inform\u00e1ci\u00f3s \u00fczenet, amely minden hoszt c\u00edmhez, portsz\u00e1mhoz \u00e9s sz\u00e1ll\u00edt\u00e1si protokollhoz nyomtat\u00e1sra ker\u00fcl, amelyeken a SIP com.ibm.ws.sip.container figyeli a bej\u00f6v\u0151 SIP forgalmat.
+info.listening.point.useraction=Nincs teend\u0151. 
+
+error.forward.response=CWSCT0029E: SIP tov\u00e1bb\u00edt\u00e1sa nem siker\u00fclt; v\u00e1lasz k\u00e9r\u00e9s a k\u00f6vetkez\u0151: {0}
+error.forward.response.explanation=A SIP com.ibm.ws.sip.container nem tudta tov\u00e1bb\u00edtani a SIP \u00fczenetet.
+error.forward.response.useraction=Nincs teend\u0151. 
+
+error.proxying.to.branch=CWSCT0030E: A SIP nem tudta az \u00e1gat t\u00e1rolni; az URI azonos\u00edt\u00f3: {0}
+error.proxying.to.branch.explanation=A SIP com.ibm.ws.sip.container, proxyk\u00e9nt m\u0171k\u00f6dve, nem tudta tov\u00e1bb\u00edtani a k\u00e9r\u00e9st az egyik c\u00e9lhoz.
+error.proxying.to.branch.useraction=Nincs teend\u0151. 
+
+error.create.record.route.uri=CWSCT0031E: A SIP t\u00e1rolnak nem siker\u00fclt l\u00e9trehoznia a(z) {0} rekord \u00fatvonalat
+error.create.record.route.uri.explanation=A SIP com.ibm.ws.sip.container, proxyk\u00e9nt m\u0171k\u00f6dve, nem tudott l\u00e9trehozni egy Record-Route fejl\u00e9cet.
+error.create.record.route.uri.useraction=Nincs teend\u0151. 
+
+error.proxy.set.parallel.illegal.state=CWSCT0032E: A SIP nem k\u00e9pes m\u00f3dos\u00edtani a proxyt p\u00e1rhuzamosra a proxyTo ut\u00e1n
+error.proxy.set.parallel.illegal.state.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s k\u00f3d a Proxy.setParallel() met\u00f3dust h\u00edvta meg a Proxy.proxyTo() h\u00edv\u00e1sa ut\u00e1n
+error.proxy.set.parallel.illegal.state.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot \u00fagy, hogy a Proxy.setParallel() ne legyen megh\u00edvva a Proxy.proxyTo() ut\u00e1n
+
+error.proxy.set.recourse.illegal.state=CWSCT0033E: A SIP nem tud visszat\u00e9rni az \u00e1llapotn\u00e9lk\u00fcli proxyval.
+error.proxy.set.recourse.illegal.state.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s k\u00f3d a Proxy.setRecurse() met\u00f3dust h\u00edvta meg egy \u00e1llapotn\u00e9lk\u00fcli proxyn.
+error.proxy.set.recourse.illegal.state.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot \u00fagy, hogy ne h\u00edvja meg a Proxy.setRecurse() met\u00f3dust egy \u00e1llapotn\u00e9lk\u00fcli proxyra.
+
+error.proxy.set.stateful.illegal.state=CWSCT0034E: A SIP nem k\u00e9pes m\u00f3dos\u00edtani a proxyt \u00e1llapotmeg\u0151rz\u0151re a proxyTo ut\u00e1n
+error.proxy.set.stateful.illegal.state.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s k\u00f3d a Proxy.setStateful() met\u00f3dust h\u00edvta meg a Proxy.proxyTo() h\u00edv\u00e1sa ut\u00e1n
+error.proxy.set.stateful.illegal.state.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot \u00fagy, hogy a Proxy.setStateful() ne legyen megh\u00edvva a Proxy.proxyTo() ut\u00e1n
+
+error.proxy.cancel.request=CWSCT0035E: A SIP nem hajtotta v\u00e9gre a megszak\u00edt\u00e1si k\u00e9r\u00e9st a proxyban; megszak\u00edt\u00e1si k\u00e9r\u00e9s: {0}
+error.proxy.cancel.request.explanation=A SIP com.ibm.ws.sip.container nem tudott kik\u00fcldeni egy CANCEL k\u00e9r\u00e9st.
+error.proxy.cancel.request.useraction=Nincs teend\u0151. 
+
+error.sending.response.upstream=CWSCT0036E: A SIP protokollnak nem siker\u00fclt a v\u00e1lasz fels\u0151bb szintre k\u00fcld\u00e9se; v\u00e1lasz: {0}
+error.sending.response.upstream.explanation=A SIP com.ibm.ws.sip.container nem tudott elk\u00fcldeni egy v\u00e1laszt fels\u0151bb szintre (a fels\u0151bb szint ir\u00e1nya az, amely ir\u00e1nyba a v\u00e1laszok haladnak az UAS kiszolg\u00e1l\u00f3t\u00f3l vissza az UAC \u00fcgyf\u00e9lhez)
+error.sending.response.upstream.useraction=Nincs teend\u0151. 
+
+error.proxy.set.recordroute.illegal.state=CWSCT0037E: A SIP nem k\u00e9pes be\u00e1ll\u00edtani a rekord \u00fatvonalat a proxyTo ut\u00e1n
+error.proxy.set.recordroute.illegal.state.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s k\u00f3d a Proxy.setRecordRoute() met\u00f3dust h\u00edvta meg a Proxy.proxyTo() h\u00edv\u00e1sa ut\u00e1n
+error.proxy.set.recordroute.illegal.state.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot \u00fagy, hogy a Proxy.setRecordRoute() ne legyen megh\u00edvva a Proxy.proxyTo() ut\u00e1n
+
+error.create.request=CWSCT0040E: SIP protokollnak nem siker\u00fclt l\u00e9trehoznia a k\u00e9r\u00e9st; k\u00e9r\u00e9s: {0}
+error.create.request.explanation=A SIP com.ibm.ws.sip.container nem tudta l\u00e9trehozni a SIP k\u00e9r\u00e9si \u00fczenetet.
+error.create.request.useraction=Nincs teend\u0151. 
+
+error.failed.parse.route.header=CWSCT0041E: Nem siker\u00fclt a route fejl\u00e9c megszerz\u00e9se.
+error.failed.parse.route.header.explanation=A SIP com.ibm.ws.sip.container nem tudta megszerezni a Route fejl\u00e9cet egy k\u00e9r\u00e9sben.
+error.failed.parse.route.header.useraction=Nincs teend\u0151. 
+
+error.resolving.inet.address=CWSCT0042E: Internet c\u00edm felold\u00e1sa nem siker\u00fclt.
+error.resolving.inet.address.explanation=Nem siker\u00fclt feloldani egy internet c\u00edmet hosztn\u00e9vr\u0151l IP c\u00edmre.
+error.resolving.inet.address.useraction=Nincs teend\u0151. 
+
+error.proxy.set.recordroute.non.dialog.method=CWSCT0043E: Nem siker\u00fclt be\u00e1ll\u00edtani a rekord \u00fatvonalat egy nem p\u00e1rbesz\u00e9dablak k\u00e9r\u00e9shez: {0}
+error.proxy.set.recordroute.non.dialog.method.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s k\u00f3d megh\u00edvta a Proxy.setRecordRoute() met\u00f3dust egy olyan k\u00e9r\u00e9sen, amely nem hoz l\u00e9tre p\u00e1rbesz\u00e9dablakot.
+error.proxy.set.recordroute.non.dialog.method.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot \u00fagy, hogy ne h\u00edvja meg a Proxy.setRecordRoute() met\u00f3dust olyan k\u00e9r\u00e9sekn\u00e9l, amelyek nem hoznak l\u00e9tre p\u00e1rbesz\u00e9dablakot. A p\u00e1rbesz\u00e9dablakot l\u00e9trehoz\u00f3 k\u00e9r\u00e9sek p\u00e9ld\u00e1i a k\u00f6vetkez\u0151k: INVITE, REFER \u00e9s SUBSCRIBE.
+
+error.call.should.be.invoked=CWSCT0044E: A proxy egy v\u00e1ratlan f\u00fcggv\u00e9nyh\u00edv\u00e1shoz \u00e9rt.
+error.call.should.be.invoked.explanation=A SIP com.ibm.ws.sip.container nem v\u00e1rt helyen kapott \u00fczenetet.
+error.call.should.be.invoked.useraction=Nincs teend\u0151. 
+
+error.route.header.unavailable=CWSCT0045E: Nem lehet a soron k\u00f6vetkez\u0151 k\u00e9r\u00e9seket t\u00e1rolni route fejl\u00e9c n\u00e9lk\u00fcl: {0}
+error.route.header.unavailable.explanation=A SIP com.ibm.ws.sip.container nem tudja t\u00e1rolni a soron k\u00f6vetkez\u0151 k\u00e9r\u00e9st egy p\u00e1rbesz\u00e9dablakon, mert a bej\u00f6v\u0151 k\u00e9r\u00e9snek nincs route fejl\u00e9ce.
+error.route.header.unavailable.useraction=Nincs teend\u0151. 
+
+
+error.unkown.uri.type=CWSCT0046E: Ismeretlen URI t\u00edpus; nem lehets\u00e9ges a param\u00e9terek el\u00e9r\u00e9se a fejl\u00e9cb\u0151l: {0}
+error.unkown.uri.type.explanation=A SIP com.ibm.ws.sip.container nem tud feldolgozni egy \u00fczenetet, mert az URI nem sip vagy sips URI.
+error.unkown.uri.type.useraction=Nincs teend\u0151. 
+
+error.processing.strict.routing=CWSCT0048E: Hiba a Szigor\u00fa \u00fatv\u00e1laszt\u00e1s feldolgoz\u00e1s\u00e1n\u00e1l; a k\u00e9r\u00e9s URI nem tartalmazza a munkamenet-azonos\u00edt\u00f3t. {0}
+error.processing.strict.routing.explanation=A SIP com.ibm.ws.sip.container egy k\u00e9r\u00e9st kapott egy p\u00e1rbesz\u00e9dablakon egy szigor\u00fa \u00fatv\u00e1laszt\u00f3t\u00f3l \u00e9s hi\u00e1nyzott a munkamenet-azonos\u00edt\u00f3 param\u00e9ter a K\u00e9r\u00e9s-URI-ban, vagy rossz \u00e9rt\u00e9ke volt.
+error.processing.strict.routing.useraction=Nincs teend\u0151. 
+
+error.sending.response=CWSCT0049E: Hiba a v\u00e1lasz k\u00fcld\u00e9s\u00e9ben
+error.sending.response.explanation=A SIP com.ibm.ws.sip.container nem tudott kik\u00fcldeni egy v\u00e1laszt.
+error.sending.response.useraction=Nincs teend\u0151. 
+
+error.default.invoke.siplet.not.found=CWSCT0051E: Nem siker\u00fclt SIP szervletet tal\u00e1lni a h\u00edv\u00e1shoz; az alap\u00e9rtelmezett kezel\u0151 nem el\u00e9rhet\u0151.
+error.default.invoke.siplet.not.found.explanation=Nincs megfeleltethet\u0151 kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s a k\u00e9r\u00e9s kezel\u00e9s\u00e9hez.
+error.default.invoke.siplet.not.found.useraction=Ellen\u0151rizze a telep\u00edtett SIP alkalmaz\u00e1sok megfelel\u0151 szab\u00e1lyait \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb az egyik megfeleltethet\u0151 a k\u00e9r\u00e9snek.
+
+error.handling.request=CWSCT0052E: Nem siker\u00fclt p\u00e1rbesz\u00e9dablakot tal\u00e1lni a fogadott BYE k\u00e9r\u00e9shez. A h\u00edv\u00e1sazonos\u00edt\u00f3: {0}
+error.handling.request.explanation=A SIP com.ibm.ws.sip.container egy olyan BYE k\u00e9r\u00e9st fogadott, amely nem feleltethet\u0151 meg egyetlen l\u00e9tez\u0151 p\u00e1rbesz\u00e9dablakkal.
+error.handling.request.useraction=Nincs teend\u0151. 
+
+error.invalid.operator.var=CWSCT0053E: \u00c9rv\u00e9nytelen v\u00e1ltoz\u00f3 az oper\u00e1torban; v\u00e1ltoz\u00f3: {0}
+error.invalid.operator.var.explanation=Az sip.xml dokumentum nem tartalmaz \u00e9rv\u00e9nyes v\u00e1ltoz\u00f3t.
+error.invalid.operator.var.useraction=Ellen\u0151rizze az sip.xml dokumentumot, hogy meggy\u0151z\u0151dj\u00f6n r\u00f3la, hogy az \u00e9rv\u00e9nyes a JSR 116 (SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s API) 11.2 (SIP k\u00e9r\u00e9s objektummodell) szerint
+
+error.missing.sub.elements=CWSCT0054E: A(z) {0} oper\u00e1tor ki\u00e9rt\u00e9kel\u00e9se nem siker\u00fclt; nem \u00e9rhet\u0151k el alelemek.
+error.missing.sub.elements.explanation=Az sip.xml dokumentum egy alelemek n\u00e9lk\u00fcli felt\u00e9telt tartalmaz.
+error.missing.sub.elements.useraction=Ellen\u0151rizze az sip.xml f\u00e1jlt, hogy meggy\u0151z\u0151dj\u00f6n r\u00f3la, hogy megfelel\u0151 minta megfelel a JSR 116 (SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s API) 11.3 (felt\u00e9telek) szabv\u00e1nynak.
+
+error.ip.parse=CWSCT0055E: Az IPAuthenticator nem tudta a be\u00e1ll\u00edt\u00e1st \u00e9rtelmezni
+error.ip.parse.explanation=A SIP com.ibm.ws.sip.container nem tudta \u00e9rtelmezni a konfigur\u00e1ci\u00f3t\u00f3l kapott megb\u00edzhat\u00f3 IP c\u00edmek list\u00e1j\u00e1t.
+error.ip.parse.useraction=Ellen\u0151rizze a com.ibm.ws.sip.security.trusted.iplist be\u00e1ll\u00edt\u00e1si tulajdons\u00e1got
+
+error.ip.host=CWSCT0056E: IPAuthenticator nem siker\u00fclt, ismeretlen hoszt
+error.ip.host.explanation=Az SIP hiteles\u00edt\u00e9shez fenntartott megb\u00edzhat\u00f3 IP c\u00edmek list\u00e1ja egy olyan hosztnevet tartalmaz, amit nem siker\u00fclt feloldani.
+error.ip.host.useraction=Ellen\u0151rizze a megb\u00edzhat\u00f3 IP c\u00edmek list\u00e1j\u00e1t a com.ibm.ws.sip.security.trusted.iplist konfigur\u00e1ci\u00f3s tulajdons\u00e1gban
+
+error.ip.header.parse=CWSCT0057E: IPAuthenticator modulnak nem siker\u00fclt a fejl\u00e9c \u00e9rtelmez\u00e9se
+error.ip.header.parse.explanation=A SIP com.ibm.ws.sip.container nem tudta \u00e9rtelmezni a Via fejl\u00e9cet az IP hiteles\u00edt\u00e9shez.
+error.ip.header.parse.useraction=Nincs teend\u0151. 
+
+error.ip.header.exception=CWSCT0058E: IPAuthenticator fejl\u00e9c probl\u00e9ma.
+error.ip.header.exception.explanation=A SIP com.ibm.ws.sip.container nem tudta megtal\u00e1lni a Via fejl\u00e9cet az IP hiteles\u00edt\u00e9shez k\u00fcld\u00f6tt \u00fczenetben.
+error.ip.header.exception.useraction=Nincs teend\u0151. 
+
+error.get.expires=CWSCT0059E: A SIP nem tudta megszerezni a lej\u00e1ratokat; nem megfelel\u0151en form\u00e1zott: {0}
+error.get.expires.explanation=Az alkalmaz\u00e1s Address.setExpires() h\u00edv\u00e1sa nem siker\u00fclt, mert az \u00fczenet c\u00edm\u00e9nek fejl\u00e9ce egy rossz form\u00e1tum\u00fa lej\u00e1rati param\u00e9tert tartalmaz.
+error.get.expires.useraction=Nincs teend\u0151. 
+
+error.set.display.name=CWSCT0060E: A SIP nem tudta be\u00e1ll\u00edtani a megjelen\u0151 nevet; n\u00e9v: {0}
+error.set.display.name.explanation=Az alkalmaz\u00e1s Address.setDisplayName() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.display.name.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megjelen\u0151 n\u00e9v \u00e9rv\u00e9nyes \u00e9s nem null.
+
+error.set.expires=CWSCT0061E: SIP nem tudta be\u00e1ll\u00edtani a lej\u00e1ratokat; m\u00e1sodpercek: {0}
+error.set.expires.explanation=Az alkalmaz\u00e1s Address.setExpires() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.expires.useraction=Nincs teend\u0151. 
+
+error.set.parameter=CWSCT0062E: A SIP nem tudta be\u00e1ll\u00edtani a param\u00e9tereket; n\u00e9v: {0}, \u00e9rt\u00e9k: {1}
+error.set.parameter.explanation=Az alkalmaz\u00e1s Address.setParameter() vagy SipURI.setParameter() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.parameter.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a param\u00e9ter neve \u00e9s \u00e9rt\u00e9ke \u00e9rv\u00e9nyes.
+
+error.set.q=CWSCT0063E: SIP nem tudta be\u00e1ll\u00edtani a q-t; \u00e9rt\u00e9k: {0}
+error.set.q.explanation=Az alkalmaz\u00e1s Address.setQ() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.q.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a priorit\u00e1s \u00e9rt\u00e9k \u00e9rv\u00e9nyes.
+
+error.get.method=CWSCT0064E: SIP nem tudta megszerezni a met\u00f3dust az elk\u00fcld\u00f6tt k\u00e9r\u00e9sb\u0151l: {0}
+error.get.method.explanation=Az alkalmaz\u00e1s SipServletMessage.getMethod() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.method.useraction=Nincs teend\u0151. 
+
+error.get.request.uri=CWSCT0065E: A SIP nem tudta megszerezni a k\u00e9r\u00e9s URI azonos\u00edt\u00f3t az elk\u00fcld\u00f6tt k\u00e9r\u00e9sb\u0151l: {0}
+error.get.request.uri.explanation=Az alkalmaz\u00e1s SipServletRequest.getRequestURI() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.request.uri.useraction=Nincs teend\u0151. 
+
+error.create.response=CWSCT0066E: A SIP nem tudta l\u00e9trehozni a v\u00e1laszt a k\u00e9r\u00e9sre: {0}
+error.create.response.explanation=A SIP com.ibm.ws.sip.container nem tudta l\u00e9trehozni a v\u00e1laszt a k\u00e9r\u00e9sre.
+error.create.response.useraction=Nincs teend\u0151. 
+
+error.send.request=CWSCT0067E: A SIP nem tudott k\u00e9r\u00e9st k\u00fcldeni a JAIN haszn\u00e1lat\u00e1val; URI: {0}
+error.send.request.explanation=A SIP com.ibm.ws.sip.container nem tudott kik\u00fcldeni egy k\u00e9r\u00e9st.
+error.send.request.useraction=Nincs teend\u0151. 
+
+error.add.header=CWSCT0069E: SIP nem tudott fejl\u00e9cet hozz\u00e1adni; n\u00e9v: {0}, \u00e9rt\u00e9k: {1}
+error.add.header.explanation=A SIP com.ibm.ws.sip.container nem tudta hozz\u00e1adni a fejl\u00e9cet az \u00fczenethez.
+error.add.header.useraction=Nincs teend\u0151. 
+
+error.send.response=CWSCT0070E: A SIP nem tudott v\u00e1laszt k\u00fcldeni, {0}
+error.send.response.explanation=Hiba t\u00f6rt\u00e9nt, mik\u00f6zben a SIP com.ibm.ws.sip.container megpr\u00f3b\u00e1lt egy v\u00e1laszt k\u00fcldeni.
+error.send.response.useraction=Nincs teend\u0151. 
+
+error.set.header=CWSCT0071E: A SIP nem tudta be\u00e1ll\u00edtani a fejl\u00e9cet; n\u00e9v: {0}, \u00e9rt\u00e9k: {1}
+error.set.header.explanation=A SIP com.ibm.ws.sip.container nem tudta be\u00e1ll\u00edtania a fejl\u00e9c \u00e9rt\u00e9ket az \u00fczenetben.
+error.set.header.useraction=Nincs teend\u0151. 
+
+error.set.host=CWSCT0072E: SIP nem tudta be\u00e1ll\u00edtani a hosztot; hoszt: {0}
+error.set.host.explanation=Az alkalmaz\u00e1s SipURI.setHost() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.host.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hoszt n\u00e9v \u00e9rv\u00e9nyes \u00e9s nem null.
+
+error.set.port=CWSCT0073E: A SIP nem tudta be\u00e1ll\u00edtani a portot; port: {0}
+error.set.port.explanation=Az alkalmaz\u00e1s SipURI.setPort() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.port.useraction=Nincs teend\u0151. 
+
+error.set.secure=CWSCT0074E: A SIP nem tudott biztons\u00e1gosan be\u00e1ll\u00edtani; \u00e9rt\u00e9k: {0}
+error.set.secure.explanation=Az alkalmaz\u00e1s SipURI.setSecure() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.secure.useraction=Nincs teend\u0151. 
+
+error.set.user=CWSCT0075E: A SIP nem tudta be\u00e1ll\u00edtani a felhaszn\u00e1l\u00f3t; felhaszn\u00e1l\u00f3: {0}
+error.set.user.explanation=Az alkalmaz\u00e1s SipURI.setUser() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.user.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i n\u00e9v \u00e9rv\u00e9nyes \u00e9s nem null.
+
+error.set.user.password=CWSCT0076E: A SIP nem tudta be\u00e1ll\u00edtani a felhaszn\u00e1l\u00f3i jelsz\u00f3t; jelsz\u00f3: {0}
+error.set.user.password.explanation=Az alkalmaz\u00e1s SipURI.setUserPassword() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.user.password.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i jelsz\u00f3 \u00e9rv\u00e9nyes \u00e9s nem null.
+
+error.get.accept.language=CWSCT0077E: A SIP nem tudta megszerezni az elfogadott nyelvet, {0}
+error.get.accept.language.explanation=Az alkalmaz\u00e1s SipServletMessage.getAcceptLanguage() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.accept.language.useraction=Nincs teend\u0151. 
+
+error.get.accept.languages=CWSCT0078E: A SIP nem tudta megszerezni az elfogadott nyelveket, {0}
+error.get.accept.languages.explanation=Az alkalmaz\u00e1s SipServletMessage.getAcceptLanguages() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.accept.languages.useraction=Nincs teend\u0151. 
+
+error.get.address.header=CWSCT0079E: A SIP nem tudta megszerezni a c\u00edm fejl\u00e9cet; n\u00e9v: {0}
+error.get.address.header.explanation=Az alkalmaz\u00e1s SipServletMessage.getAddressHeader() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.address.header.useraction=Nincs teend\u0151. 
+
+error.get.address.headers=CWSCT0080E: A SIP nem tudta megszerezni a c\u00edm fejl\u00e9ceket; n\u00e9v: {0}
+error.get.address.headers.explanation=Az alkalmaz\u00e1s SipServletMessage.getAddressHeaders() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.address.headers.useraction=Nincs teend\u0151. 
+
+error.get.character.encoding=CWSCT0081E: A SIP nem tudta megszerezni a(z) {0} karakterk\u00f3dol\u00e1st
+error.get.character.encoding.explanation=Az alkalmaz\u00e1s SipServletMessage.getCharacterEncoding() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.character.encoding.useraction=Nincs teend\u0151. 
+
+error.get.content.length=CWSCT0082E: A SIP nem tudta megszerezni a(z) {0} tartalomhosszt
+error.get.content.length.explanation=Az alkalmaz\u00e1s SipServletMessage.getContentLength() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.content.length.useraction=Nincs teend\u0151. 
+
+error.get.content.type=CWSCT0083E: A SIP nem tudta megszerezni a(z) {0} tartalom t\u00edpust
+error.get.content.type.explanation=Az alkalmaz\u00e1s SipServletMessage.getContentType() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.content.type.useraction=Nincs teend\u0151. 
+
+error.get.header=CWSCT0084E: A SIP nem tudta megszerezni a fejl\u00e9cet; n\u00e9v: {0}
+error.get.header.explanation=Az alkalmaz\u00e1s SipServletMessage.getHeader() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.header.useraction=Nincs teend\u0151. 
+
+error.get.header.names=CWSCT0085E: A SIP nem tudta megszerezni a fejl\u00e9cet; nevek: {0}
+error.get.header.names.explanation=Az alkalmaz\u00e1s SipServletMessage.getHeaderNames() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.header.names.useraction=Nincs teend\u0151. 
+
+error.get.headers=CWSCT0086E: A SIP nem tudta megszerezni a fejl\u00e9ceket; n\u00e9v: {0}
+error.get.headers.explanation=Az alkalmaz\u00e1s SipServletMessage.getHeaders() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.headers.useraction=Nincs teend\u0151. 
+
+error.set.content=CWSCT0087E: A SIP nem tudta be\u00e1ll\u00edtani a tartalmat; tartalom: {0}, tartalom t\u00edpusa: {1}
+error.set.content.explanation=Az alkalmaz\u00e1s SipServletMessage.setContent() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.content.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet tartalma \u00e9rv\u00e9nyes \u00e9s nem null.
+
+error.get.via.headers=CWSCT0088E: A SIP nem tudta megszerezni a(z) {0} via fejl\u00e9ceket
+error.get.via.headers.explanation=Az alkalmaz\u00e1s SipServletMessage.getViaHeaders() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.via.headers.useraction=Nincs teend\u0151. 
+
+error.get.contact.header=CWSCT0089E: A SIP nem tudta megszerezni a(z) {0} kapcsolati fejl\u00e9cet
+error.get.contact.header.explanation=Az alkalmaz\u00e1s SipServletMessage.getContactHeader() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.contact.header.useraction=Nincs teend\u0151. 
+
+error.get.jain.sip.headers=CWSCT0090E: A SIP nem tudta megszerezni a(z) {0} JAIN SIP fejl\u00e9ceket
+error.get.jain.sip.headers.explanation=A SIP com.ibm.ws.sip.container nem tudott megszerezni legal\u00e1bb egy fejl\u00e9cet a bels\u0151 JAIN \u00fczenetobjektumt\u00f3l.
+error.get.jain.sip.headers.useraction=Nincs teend\u0151. 
+
+error.get.max.forwards=CWSCT0091E: A SIP nem tudta megszerezni a(z) {0} maxim\u00e1lis tov\u00e1bb\u00edt\u00e1sokat
+error.get.max.forwards.explanation=Az alkalmaz\u00e1s SipServletRequest.getMaxForwards() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.max.forwards.useraction=Nincs teend\u0151. 
+
+error.get.reason.phrase=CWSCT0092E: A SIP nem tudta megszerezni a(z) {0} okkifejez\u00e9st
+error.get.reason.phrase.explanation=Az alkalmaz\u00e1s SipServletResponse.getReasonPhrase() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.reason.phrase.useraction=Nincs teend\u0151. 
+
+error.get.status=CWSCT0093E: A SIP nem tudta megszerezni a(z) {0} \u00e1llapotot
+error.get.status.explanation=Az alkalmaz\u00e1s SipServletResponse.getStatus() h\u00edv\u00e1sa nem siker\u00fclt.
+error.get.status.useraction=Nincs teend\u0151. 
+
+error.set.status=CWSCT0094E: A SIP nem tudta be\u00e1ll\u00edtani az \u00e1llapotot; \u00e1llapot: {0}, okkifejez\u00e9s: {1}
+error.set.status.explanation=Az alkalmaz\u00e1s SipServletResponse.setStatus() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.status.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1llapotk\u00f3d \u00e9rv\u00e9nyes. Ha megadott egy okkifejez\u00e9st, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy nem null \u00e9s nem \u00fcres.
+
+error.create.address=CWSCT0095E: A SIP nem tudta l\u00e9trehozni a c\u00edmet; URI: {0}, megjelen\u00edt\u00e9si n\u00e9v: {1}
+error.create.address.explanation=Az alkalmaz\u00e1s SipFactory.createAddress() h\u00edv\u00e1sa nem siker\u00fclt.
+error.create.address.useraction=Ellen\u0151rizze az alkalmaz\u00e1sk\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URI \u00e9s a megjelen\u0151 n\u00e9v \u00e9rv\u00e9nyesek.
+
+error.create.sip.uri=CWSCT0097E: A SIP nem tudta l\u00e9trehozni a SIP URI azonos\u00edt\u00f3t; felhaszn\u00e1l\u00f3: {0}, hoszt: {1}
+error.create.sip.uri.explanation=Az alkalmaz\u00e1s SipFactory.createSipURI() h\u00edv\u00e1sa nem siker\u00fclt.
+error.create.sip.uri.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 \u00e9s hoszt param\u00e9terek \u00e9rv\u00e9nyesek \u00e9s nem null.
+
+error.create.uri=CWSCT0098E: SIP protokollnak nem siker\u00fclt l\u00e9trehoznia az URI azonos\u00edt\u00f3t; URI: {0}
+error.create.uri.explanation=Az alkalmaz\u00e1s SipFactory.createURI() h\u00edv\u00e1sa nem siker\u00fclt.
+error.create.uri.useraction=Ellen\u0151rizze az alkalmaz\u00e1sk\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URI karaktersorozat egy \u00e9rv\u00e9nyes URI azonos\u00edt\u00f3t k\u00e9pvisel.
+
+error.push.route=CWSCT0099E: Nem siker\u00fclt az \u00fatvonal foganatos\u00edt\u00e1sa; URI: {0}
+error.push.route.explanation=Az alkalmaz\u00e1s SipServletRequest.pushRoute() vagy SipServletRequest.pushRecordRoute() h\u00edv\u00e1sa nem siker\u00fclt.
+error.push.route.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SIPURI \u00e9rv\u00e9nyes.
+
+error.set.uri=CWSCT0100E: A SIP nem tudta be\u00e1ll\u00edtani az URI azonos\u00edt\u00f3t; URI: {0}
+error.set.uri.explanation=Az alkalmaz\u00e1s Address.setURI() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.uri.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URI \u00e9rv\u00e9nyes.
+
+error.sending.ack=CWSCT0101E: Nem siker\u00fclt ACK k\u00e9r\u00e9st k\u00fcldeni.
+error.sending.ack.explanation=A SIP com.ibm.ws.sip.container nem tudott kik\u00fcldeni egy ACK k\u00e9r\u00e9st.
+error.sending.ack.useraction=Nincs teend\u0151. 
+
+error.sending.cancel=CWSCT0102E: Nem siker\u00fclt CANCEL k\u00e9r\u00e9st k\u00fcldeni.
+error.sending.cancel.explanation=A SIP com.ibm.ws.sip.container nem tudott kik\u00fcldeni egy CANCEL k\u00e9r\u00e9st.
+error.sending.cancel.useraction=Nincs teend\u0151. 
+
+error.failed.create.timeout.response=CWSCT0103E: Nem siker\u00fclt egy id\u0151korl\u00e1t v\u00e1lasz el\u0151\u00e1ll\u00edt\u00e1sa.
+error.failed.create.timeout.response.explanation=A SIP com.ibm.ws.sip.container t\u00e1rol\u00f3b\u00f3l kik\u00fcld\u00f6tt k\u00e9r\u00e9sre nem \u00e9rkezett v\u00e1lasz 32 m\u00e1sodpercen bel\u00fcl \u00e9s a SIP com.ibm.ws.sip.container nem tudott id\u0151korl\u00e1t v\u00e1laszt el\u0151\u00e1ll\u00edtani az alkalmaz\u00e1snak.
+error.failed.create.timeout.response.useraction=Nincs teend\u0151. 
+
+error.cloning.address=CWSCT0104E: C\u00edm kl\u00f3noz\u00e1sa nem siker\u00fclt.
+error.cloning.address.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban egy C\u00edm objektum kl\u00f3noz\u00e1sakor.
+error.cloning.address.useraction=Nincs teend\u0151. 
+
+error.invalid.tel.url=CWSCT0105E: \u00c9rv\u00e9nytelen Telephony URL: {0}
+error.invalid.tel.url.explanation=A SIP com.ibm.ws.sip.container nem tudott l\u00e9trehozni egy tel URL c\u00edmet.
+error.invalid.tel.url.useraction=Ellen\u0151rizze, hogy az eredeti URL karaktersorozat legal\u00e1bb 4 byte hossz\u00fa (3 byte a s\u00e9m\u00e1hoz \u00e9s egy a kett\u0151spont karakterhez).
+
+error.sending.487.response=CWSCT0106E: Hiba egy 487 v\u00e1lasz k\u00fcld\u00e9sekor {0}
+error.sending.487.response.explanation=Egy k\u00e9r\u00e9s megszak\u00edt\u00e1sa k\u00f6zben a SIP com.ibm.ws.sip.container nem tudta a 487 (K\u00e9r\u00e9s lez\u00e1rva) v\u00e1laszt elk\u00fcldeni az eredeti k\u00e9r\u00e9snek.
+error.sending.487.response.useraction=Nincs teend\u0151. 
+
+error.set.character.encoding=CWSCT0108E: Hiba a karakterk\u00f3dol\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1n\u00e1l: {0}
+error.set.character.encoding.explanation=Az alkalmaz\u00e1s SipServletMessage.setCharacterEncoding() h\u00edv\u00e1sa nem siker\u00fclt.
+error.set.character.encoding.useraction=Ellen\u0151rizze az alkalmaz\u00e1sk\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f3dol\u00f3 param\u00e9ter \u00e9rv\u00e9nyes \u00e9s nem null.
+
+error.setting.tag=CWSCT0109E: Hiba a c\u00edmke\u00e9rt\u00e9k be\u00e1ll\u00edt\u00e1s\u00e1n\u00e1l: {0}
+error.setting.tag.explanation=Az alkalmaz\u00e1s Address.setTag() h\u00edv\u00e1sa nem siker\u00fclt.
+error.setting.tag.useraction=Ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dot \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a c\u00edmkeparam\u00e9ter \u00e9rv\u00e9nyes.
+
+info.sequence.logger.enabled=CWSCT0113I: A SIP szekci\u00f3 sorozat napl\u00f3z\u00f3 enged\u00e9lyezett, szint: {0}
+info.sequence.logger.enabled.explanation=Az SIP szekci\u00f3/p\u00e1rbesz\u00e9d sorozatnapl\u00f3z\u00f3ja enged\u00e9lyezett.
+info.sequence.logger.enabled.useraction=Nincs teend\u0151. 
+
+error.unexpected.uri.in.route=CWSCT0115E: A rendszer SIP URI azonos\u00edt\u00f3ra v\u00e1rt, de a k\u00f6vetkez\u0151t kapta: {0}
+error.unexpected.uri.in.route.explanation=
+error.unexpected.uri.in.route.useraction=Nincs teend\u0151. 
+
+info.standalone.started=CWSCT0116I: A SIP t\u00e1rol\u00f3 \u00f6n\u00e1ll\u00f3 be\u00e1ll\u00edt\u00e1st haszn\u00e1l.
+info.standalone.started.explanation=A SIP com.ibm.ws.sip.container nem Websphere szolg\u00e1ltat\u00e1sk\u00e9nt fut.
+info.standalone.started.useraction=Nincs teend\u0151. 
+
+error.init.siplet=CWSCT0117E: A(z) {0} siplet inicializ\u00e1l\u00e1sa nem siker\u00fclt.
+error.init.siplet.explanation=A SIP com.ibm.ws.sip.container nem tudott bet\u00f6lteni vagy p\u00e9ld\u00e1nyos\u00edtani egy SIP szervlet oszt\u00e1lyt.
+error.init.siplet.useraction=Ellen\u0151rizze az sip.xml f\u00e1jlt \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1lyn\u00e9v helyes \u00e9s egy nyilv\u00e1nos konstruktora van, amely nem v\u00e1r argumentumot.
+
+error.invoke.servlet=CWSCT0118E: A szolg\u00e1ltat\u00e1s siplet meghi\u00fasult: {0}
+error.invoke.servlet.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s k\u00f3dja kiv\u00e9telt hozott l\u00e9tre.
+error.invoke.servlet.useraction=Nincs teend\u0151. 
+
+error.servlet.unavailable=CWSCT0119E: SIP szervlet megh\u00edv\u00e1sa nem siker\u00fclt; szervlet nem \u00e9rhet\u0151 el: {0}, {1}
+error.servlet.unavailable.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s nem l\u00e9tezik.
+error.servlet.unavailable.useraction=Ellen\u0151rizze az sip.xml f\u00e1jlt \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s oszt\u00e1lyneve helyes.
+
+error.initialize.sip.container=CWSCT0120E: Hiba t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container inicializ\u00e1l\u00e1sakor
+error.initialize.sip.container.explanation=Hiba a SIP com.ibm.ws.sip.container inicializ\u00e1l\u00e1sakor; tov\u00e1bbi r\u00e9szletek tal\u00e1lhat\u00f3k a nyomk\u00f6vet\u00e9si f\u00e1jlban.
+error.initialize.sip.container.useraction=Enged\u00e9lyezze a SIP com.ibm.ws.sip.container diagnosztikai nyomk\u00f6vet\u00e9s\u00e9t, ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a probl\u00e9ma ism\u00e9telt l\u00e9trehoz\u00e1s\u00e1hoz, majd vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9si napl\u00f3t.
+
+warning.timer.listener.unavailable=CWSCT0122W: Hiba az id\u0151m\u00e9r\u0151 esem\u00e9ny elind\u00edt\u00e1s\u00e1n\u00e1l; az id\u0151m\u00e9r\u0151 figyel\u0151 nem \u00e1ll rendelkez\u00e9sre a k\u00f6vetkez\u0151h\u00f6z: {0}
+warning.timer.listener.unavailable.explanation=Az SIP kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s id\u0151m\u00e9r\u0151 aktiv\u00e1lva lett, de nincs figyel\u0151 t\u00e1rs\u00edtva hozz\u00e1.
+warning.timer.listener.unavailable.useraction=Nincs teend\u0151. 
+
+warning.timer.unavailable=CWSCT0124W: A TimerServiceImpl nem \u00e9rhet\u0151 el
+warning.timer.unavailable.explanation=A SIP com.ibm.ws.sip.container \u00f6sszes id\u0151m\u00e9r\u0151je le van tiltva
+warning.timer.unavailable.useraction=Ellen\u0151rizze a SIP com.ibm.ws.sip.container be\u00e1ll\u00edt\u00e1st \u00e9s t\u00e1vol\u00edtsa el a "enable.timers" tulajdons\u00e1got, vagy \u00e1ll\u00edtsa be az \u00e9rt\u00e9k\u00e9t "igazra".
+
+error.transaction.id.alreay.set=CWSCT0125E: A tranzakci\u00f3 tranzakci\u00f3 azonos\u00edt\u00f3ja m\u00e1r be van \u00e1ll\u00edtva; aktu\u00e1lis: {0}, \u00faj: {1}
+error.transaction.id.alreay.set.explanation=Az SIP tranzakci\u00f3 m\u00e1r inicializ\u00e1lva lett a tranzakci\u00f3s azonos\u00edt\u00f3val, \u00e9s nem m\u00f3dos\u00edthat\u00f3.
+error.transaction.id.alreay.set.useraction=Nincs teend\u0151. 
+
+error.cannot.lookup.host=CWSCT0336E: VirtualHostAlias.init: a(z) {0} hoszt kikeres\u00e9se nem siker\u00fclt
+error.cannot.lookup.host.explanation=A SIP com.ibm.ws.sip.container nem tudta feloldani a virtu\u00e1lis hoszt \u00e1ln\u00e9v hosztnev\u00e9t IP c\u00edmre.
+error.cannot.lookup.host.useraction=Nincs teend\u0151. 
+
+error.invoking.request=CWSCT0139E: A SIP nem tudta a k\u00e9r\u00e9st megh\u00edvni; az \u00fczenet: {0}
+error.invoking.request.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a SIP com.ibm.ws.sip.container megpr\u00f3b\u00e1lt megh\u00edvni egy k\u00e9r\u00e9st.
+error.invoking.request.useraction=Nincs teend\u0151. 
+
+error.sending.response.from.prepare.for.write=CWSCT0140E: A SIP nem tudott v\u00e1laszt k\u00fcldeni az \u00edr\u00e1s el\u0151k\u00e9sz\u00fclet\u00e9hez.
+error.sending.response.from.prepare.for.write.explanation=A SIP com.ibm.ws.sip.container nem tudta kik\u00fcldeni a v\u00e1laszt a prepareHeadersForWrite() h\u00edv\u00e1sb\u00f3l.
+error.sending.response.from.prepare.for.write.useraction=Nincs teend\u0151. 
+
+error.message.dispatcher.invalid.state=CWSCT0142E: A hibair\u00e1ny\u00edt\u00f3nak nem siker\u00fclt elind\u00edtania az el\u0151z\u0151 \u00fczenetet.
+error.message.dispatcher.invalid.state.explanation=A SIP com.ibm.ws.sip.container nem tud elind\u00edtani egy \u00fczenetet, mert az el\u0151z\u0151 \u00fczenet ind\u00edt\u00e1sa m\u00e9g nem lett befejezve.
+error.message.dispatcher.invalid.state.useraction=Nincs teend\u0151. 
+
+error.non.http.request=CWSCT0145E: Egy {0} k\u00e9r\u00e9s \u00e9rkezett a javax.servlet.http.HttpServletRequest k\u00e9r\u00e9sre v\u00e1rakoz\u00e1s k\u00f6zben
+error.non.http.request.explanation=A SIP com.ibm.ws.sip.container egy olyan k\u00e9r\u00e9st kapott a web com.ibm.ws.sip.container t\u00e1rol\u00f3t\u00f3l, ami nem javax.servlet.http.HttpServletRequest.
+error.non.http.request.useraction=Nincs teend\u0151. 
+
+error.failed.to.register.collaborator=CWSCT0146E: A(z) {0} k\u00f6zrem\u0171k\u00f6d\u0151 bejegyz\u00e9se nem siker\u00fclt
+error.failed.to.register.collaborator.explanation=A SIP com.ibm.ws.sip.container nem tudta mag\u00e1t figyel\u0151k\u00e9nt bejegyezni a Websphere programba.
+error.failed.to.register.collaborator.useraction=Nincs teend\u0151. 
+
+error.exception.cnf=CWSCT0188E: Hiba - Oszt\u00e1ly nem tal\u00e1lhat\u00f3 kiv\u00e9tel; nem siker\u00fclt a soros\u00edt\u00e1s megsz\u00fcntet\u00e9se.
+error.exception.cnf.explanation=A SIP com.ibm.ws.sip.container egy ClassNotFoundException kiv\u00e9telt fogott objektum sorba rendez\u00e9s k\u00f6zben.
+error.exception.cnf.useraction=Nincs teend\u0151. 
+
+error.exception.io.serialize.deserialize=CWSCT0189E: Hiba - IO kiv\u00e9tel; nem siker\u00fclt soros\u00edtani / soros\u00edt\u00e1st megsz\u00fcntetni.
+error.exception.io.serialize.deserialize.explanation=A SIP com.ibm.ws.sip.container egy IOException kiv\u00e9telt fogott objektum sorba rendez\u00e9s k\u00f6zben.
+error.exception.io.serialize.deserialize.useraction=Nincs teend\u0151. 
+
+error.exception.cache.alg=CWSCT0185E: Hiba - az ideiglenes t\u00e1rol\u00f3 algoritmus nem l\u00e9tezik.
+error.exception.cache.alg.explanation=A SIP com.ibm.ws.sip.container munkamenet-kezel\u0151 \u00e1ltal k\u00e9rt ideiglenes t\u00e1rol\u00f3 algoritmus nem l\u00e9tezik.
+error.exception.cache.alg.useraction=Nincs teend\u0151. 
+
+error.exception.replicator=CWSCT0186E: Hiba - T\u00f6bbsz\u00f6r\u00f6z\u0151 kiv\u00e9tel
+error.exception.replicator.explanation=A SIP com.ibm.ws.sip.container munkamenet-kezel\u0151 egy replik\u00e1ci\u00f3s kiv\u00e9telt kapott el.
+error.exception.replicator.useraction=Nincs teend\u0151. 
+
+info.sipha.version=CWSCT0187I: SIP HA {0}
+info.sipha.version.explanation=A SIP com.ibm.ws.sip.container magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1si \u00f6sszetev\u0151 inicializ\u00e1lva van.
+info.sipha.version.useraction=Nincs teend\u0151. 
+
+error.exception.drs=CWSCT0219E: Hiba - drs kiv\u00e9tel
+error.exception.drs.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban a DRS replik\u00e1ci\u00f3 sor\u00e1n.
+error.exception.drs.useraction=Nincs teend\u0151. 
+
+error.exception.admin=CWSCT0220E: Hiba - admin JMX kiv\u00e9tel
+error.exception.admin.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban az MBean aktiv\u00e1l\u00e1sa k\u00f6zben a szekci\u00f3kezel\u0151h\u00f6z.
+error.exception.admin.useraction=Nincs teend\u0151. 
+
+error.drs.broker=CWSCT0222E: Hiba - DRS t\u00f6bbk\u00f6zvet\u00edt\u0151 kiv\u00e9tel
+error.drs.broker.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban DRS t\u00f6bbk\u00f6zvet\u00edt\u0151 haszn\u00e1lata k\u00f6zben.
+error.drs.broker.useraction=Nincs teend\u0151. 
+
+error.drs.setting.mode=CWSCT0224E: Hiba - a DRS m\u00f3d nem BOTH_CLIENT_SERVER (peer-to-peer)
+error.drs.setting.mode.explanation=A DRS m\u00f3d nem alkalmas adatt\u00f6bbsz\u00f6r\u00f6z\u00e9sre a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban.
+error.drs.setting.mode.useraction=Nincs teend\u0151. 
+
+info.drs.setting.missing=CWSCT0225E: Info - DRS nincs be\u00e1ll\u00edtva
+info.drs.setting.missing.explanation=A replik\u00e1ci\u00f3 a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban tiltott, mert a DRS nincs be\u00e1ll\u00edtva.
+info.drs.setting.missing.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy be\u00e1ll\u00edtotta a Webt\u00e1rol\u00f3 szekci\u00f3kezel\u0151j\u00e9t \u00fagy, hogy mem\u00f3ri\u00e1b\u00f3l mem\u00f3ri\u00e1ba t\u00f6bbsz\u00f6r\u00f6z\u00e9st haszn\u00e1ljon.
+
+info.drs.enablefailover.disabled=CWSCT0226I: Info - SIP com.ibm.ws.sip.container failover disabled.
+info.drs.enablefailover.disabled.explanation=A SIP com.ibm.ws.sip.container \u00e1t\u00e1ll\u00e1s le van tiltva.
+info.drs.enablefailover.disabled.useraction=Az enged\u00e9lyez\u00e9shez haszn\u00e1lja az "enable.replication" egy\u00e9ni tulajdons\u00e1got (sip com.ibm.ws.sip.container eset\u00e9n).
+
+info.drs.enablefailover.enabled=CWSCT0227I: Info - A SIP com.ibm.ws.sip.container magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa \u00f6sszetev\u0151 enged\u00e9lyezve van.
+info.drs.enablefailover.enabled.explanation=A SIP com.ibm.ws.sip.container magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa \u00f6sszetev\u0151je enged\u00e9lyezett terhel\u00e9skiegyenl\u00edt\u00e9shez \u00e9s \u00e1t\u00e1ll\u00e1shoz.
+info.drs.enablefailover.enabled.useraction=Nincs teend\u0151. 
+
+error.exception.ha.groupleft=CWSCT0228E: Hiba - HAGroupLeftException
+error.exception.ha.groupleft.explanation=A SIP com.ibm.ws.sip.container egy HAGroupLeftException t\u00edpus\u00fa kiv\u00e9telt fogott mik\u00f6zben csoporttagk\u00e9nt volt aktiv\u00e1lva.
+error.exception.ha.groupleft.useraction=Nincs teend\u0151. 
+
+error.exception.ha.param.reject=CWSCT0229E: Hiba - HAParameterRejectedException
+error.exception.ha.param.reject.explanation=A SIP com.ibm.ws.sip.container egy HAParameterRejectedException t\u00edpus\u00fa kiv\u00e9telt fogott mik\u00f6zben csoporttagk\u00e9nt volt aktiv\u00e1lva.
+error.exception.ha.param.reject.useraction=Nincs teend\u0151. 
+
+error.exception.io.deserialize=CWSCT0231E: Hiba - IO kiv\u00e9tel; nem siker\u00fclt a soros\u00edt\u00e1st megsz\u00fcntetni.
+error.exception.io.deserialize.explanation=Az adatok soros\u00edt\u00e1sa meghi\u00fasult a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban.
+error.exception.io.deserialize.useraction=Nincs teend\u0151. 
+
+error.exception.ha=CWSCT0232E: Hiba - HA kiv\u00e9tel
+error.exception.ha.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa \u00f6sszetev\u0151j\u00e9ben.
+error.exception.ha.useraction=Nincs teend\u0151. 
+
+error.exception.ds=CWSCT0233E: Hiba - Adatverem kiv\u00e9tel
+error.exception.ds.explanation=DataStackException t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa \u00f6sszetev\u0151j\u00e9ben.
+error.exception.ds.useraction=Nincs teend\u0151. 
+
+error.exception.io=CWSCT0237E: Hiba - IO kiv\u00e9tel
+error.exception.io.explanation=IOException kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban.
+error.exception.io.useraction=Nincs teend\u0151. 
+
+error.exception.ucf.no_cluster_define=CWSCT0238E: Hiba - UCF kiv\u00e9tel; nem lett f\u00fcrt meghat\u00e1rozva.
+error.exception.ucf.no_cluster_define.explanation=A SIP com.ibm.ws.sip.container nem csatlakoztathat\u00f3 vagy lev\u00e1laszthat\u00f3 a f\u00fcrtr\u0151l, mert nincs meghat\u00e1rozva f\u00fcrt.
+error.exception.ucf.no_cluster_define.useraction=Nincs teend\u0151. 
+
+error.exception.ucf.noclusterservice=CWSCT0240E: Hiba - nincs f\u00fcrt tag szolg\u00e1ltat\u00e1s.
+error.exception.ucf.noclusterservice.explanation=A SIP com.ibm.ws.sip.container nem tudja elind\u00edtani vagy le\u00e1ll\u00edtani a magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa \u00f6sszetev\u0151t, mert egy kiv\u00e9tel t\u00f6rt\u00e9nt a f\u00fcrt szolg\u00e1ltat\u00e1s el\u00e9r\u00e9s\u00e9nek k\u00eds\u00e9rletekor.
+error.exception.ucf.noclusterservice.useraction=Nincs teend\u0151. 
+
+error.exception.ucf.no.member.available=CWSCT0241E: Hiba - UCF kiv\u00e9tel- nem \u00e9rhet\u0151 el tag.
+error.exception.ucf.no.member.available.explanation=A SIP com.ibm.ws.sip.container nem tudta megszerezni az SIP proxy v\u00e9gponti inform\u00e1ci\u00f3kat az UCF f\u00e1jlt\u00f3l.
+error.exception.ucf.no.member.available.useraction=Nincs teend\u0151. 
+
+error.exception.class.not.found=CWSCT0243E: Hiba - Oszt\u00e1ly nem tal\u00e1lhat\u00f3 kiv\u00e9tel.
+error.exception.class.not.found.explanation=ClassNotFoundException kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban.
+error.exception.class.not.found.useraction=Nincs teend\u0151. 
+
+error.orb=CWSCT0244E: Hiba - ORB objektum nem k\u00e9rdezhet\u0151 le
+error.orb.explanation=A SIP com.ibm.ws.sip.container nem tudja k\u00f6zz\u00e9tenni a logikai neveit az ORB objektum lek\u00e9rdez\u00e9s\u00e9nek hib\u00e1ja miatt.
+error.orb.useraction=Nincs teend\u0151. 
+
+error.orb.cc=CWSCT0245E: Hiba - ORB oszt\u00e1ly t\u00edpus\u00e1talak\u00edt\u00e1si kiv\u00e9tel
+error.orb.cc.explanation=A SIP com.ibm.ws.sip.container nem tudja k\u00f6zz\u00e9tenni a logikai neveit egy ClassCastException miatt.
+error.orb.cc.useraction=Nincs teend\u0151. 
+
+error.orb.in=CWSCT0246E: Hiba - \u00e9rv\u00e9nytelen ORB n\u00e9v k\u00e9r\u00e9s
+error.orb.in.explanation=A SIP com.ibm.ws.sip.container nem tudja k\u00f6zz\u00e9tenni logikai neveit InvalidName kiv\u00e9tel miatt.
+error.orb.in.useraction=Nincs teend\u0151. 
+
+error.exception.classnotfound=CWSCT0259E: Hiba - oszt\u00e1ly nem tal\u00e1lhat\u00f3
+error.exception.classnotfound.explanation=A SIP com.ibm.ws.sip.container TAI inicializ\u00e1l\u00e1sa nem siker\u00fclt egy ClassNotFoundException miatt
+error.exception.classnotfound.useraction=Nincs teend\u0151. 
+
+error.exception.instantiate=CWSCT0260E: Hiba - p\u00e9ld\u00e1nyos\u00edt\u00e1si kiv\u00e9tel
+error.exception.instantiate.explanation=A SIP com.ibm.ws.sip.container TAI inicializ\u00e1l\u00e1sa nem siker\u00fclt egy InstantiationException miatt.
+error.exception.instantiate.useraction=Nincs teend\u0151. 
+
+error.exception.illegalaccess=CWSCT0261E: Hiba - illeg\u00e1lis hozz\u00e1f\u00e9r\u00e9s kiv\u00e9tel.
+error.exception.illegalaccess.explanation=A SIP com.ibm.ws.sip.container TAI inicializ\u00e1l\u00e1sa nem siker\u00fclt egy IllegalAccessException miatt.
+error.exception.illegalaccess.useraction=Nincs teend\u0151. 
+
+error.exception.filenotfound=CWSCT0262E: Hiba - f\u00e1jl nem tal\u00e1lhat\u00f3.
+error.exception.filenotfound.explanation=A SIP com.ibm.ws.sip.container biztons\u00e1g nem tudja megnyitni a jelsz\u00f3f\u00e1jlt.
+error.exception.filenotfound.useraction=Nincs teend\u0151. 
+
+error.exception.login=CWSCT0264E: Hiba - Bejelentkez\u00e9si kontextus - meghi\u00fasult
+error.exception.login.explanation=Egy LoginException kiv\u00e9telt fogott el a SIP com.ibm.ws.sip.container TAI a felhaszn\u00e1l\u00f3 t\u00e1rgy megszerz\u00e9se k\u00f6zben.
+error.exception.login.useraction=Nincs teend\u0151. 
+
+error.exception.naming=CWSCT0266E: Hiba - Neves\u00edt\u00e9si kiv\u00e9tel
+error.exception.naming.explanation=Egy NamingException t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container biztons\u00e1gi szolg\u00e1ltat\u00e1s\u00e1ban.
+error.exception.naming.useraction=Nincs teend\u0151. 
+
+error.exception.parse=CWSCT0267E: Hiba - \u00e9rtelmez\u00e9si kiv\u00e9tel.
+error.exception.parse.explanation=\u00c9rtelmez\u00e9si kiv\u00e9telt fogott a SIP com.ibm.ws.sip.container TAI (Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s elfog\u00f3).
+error.exception.parse.useraction=Nincs teend\u0151. 
+
+error.exception.stack=CWSCT0315E: Kiv\u00e9tel a SIP veremben.
+error.exception.stack.explanation= Az SIP verem inicializ\u00e1l\u00e1sakor kiv\u00e9tel t\u00f6rt\u00e9nt.
+error.exception.stack.useraction=Nincs teend\u0151. 
+
+info.sipstack.version=CWSCT0316I: SIP verem {0}
+info.sipstack.version.explanation=Az SIP verem inicializ\u00e1l
+info.sipstack.version.useraction=Nincs teend\u0151. 
+
+error.unknown.host.exception=CWSCT0317E: Ismeretlen hoszt kiv\u00e9tel; a hosztn\u00e9v felold\u00e1sa nem lehets\u00e9ges.
+error.unknown.host.exception.explanation=Egy UnknownHostException t\u00f6rt\u00e9nt az SIP veremben a hosztn\u00e9v IP c\u00edmre bont\u00e1s\u00e1ra tett pr\u00f3ba k\u00f6zben.
+error.unknown.host.exception.useraction=Nincs teend\u0151. 
+
+error.base64parser.exception=CWSCT0318E: \u00c9rtelmez\u0151 kiv\u00e9tel; nem siker\u00fclt a kimeneti adatfolyamba \u00edrni.
+error.base64parser.exception.explanation=Az SIP veremnek nem siker\u00fclt a kimeneti adatfolyamba \u00edrnia.
+error.base64parser.exception.useraction=Nincs teend\u0151. 
+
+error.same.to.tag=CWSCT0319E: Azonos To c\u00edmke k\u00e9t vagy t\u00f6bb v\u00e1laszban t\u00f6bb proxy el\u00e1gaz\u00e1st\u00f3l
+error.same.to.tag.explanation=Ugyanaz a To c\u00edmke \u00e9rkezett kett\u0151 vagy t\u00f6bb v\u00e1laszban k\u00fcl\u00f6nb\u00f6z\u0151 proxy \u00e1gakt\u00f3l.  Ez a m\u0171velet az RFC 3261 specifik\u00e1ci\u00f3 szerint nem \u00e9rv\u00e9nyes.
+error.same.to.tag.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a v\u00e1laszol\u00f3 felhaszn\u00e1l\u00f3\u00fcgyn\u00f6k kiszolg\u00e1l\u00f3 (UAS) p\u00e9ld\u00e1nyok egyedi To c\u00edmk\u00e9ket hozzanak l\u00e9tre mindegyik p\u00e1rbesz\u00e9dablakhoz, hogy megfeleljen az RFC 3261 specifik\u00e1ci\u00f3nak. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1=CWSCT0321I: SIP verem inicializ\u00e1l\u00e1si be\u00e1ll\u00edt\u00e1s
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.explanation=Az SIP verem be\u00e1ll\u00edt\u00e1s inicializ\u00e1lva lett.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.useraction=Nincs teend\u0151. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2=CWSCT0322I: SIP verem sz\u00e1ll\u00edt\u00e1si inicializ\u00e1l\u00e1s.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.explanation=Az SIP verem sz\u00e1ll\u00edt\u00e1s inicializ\u00e1lva lett.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.useraction=Nincs teend\u0151. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3=CWSCT0323I: SIP verem inicializ\u00e1l\u00e1s be lett fejezve.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.explanation=SIP verem inicializ\u00e1l\u00e1s be lett fejezve.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.useraction=Nincs teend\u0151. 
+
+info.stack.timer.b=CWSCT0324I: SIP verem, B id\u0151m\u00e9r\u0151 {0} ezredm\u00e1sodpercre lett \u00e1ll\u00edtva.
+info.stack.timer.b.explanation=Az SIP verem B id\u0151m\u00e9r\u0151je be lett \u00e1ll\u00edtva. Tov\u00e1bbi inform\u00e1ci\u00f3kat a B id\u0151m\u00e9r\u0151r\u0151l az RFC 3261 dokumentumban tal\u00e1l.
+info.stack.timer.b.useraction=Nincs teend\u0151. 
+
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints=CWSCT0328I: A SIP elkezdett figyelni a k\u00f6vetkez\u0151n: {0}
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.explanation=Az SIP verem elkezdett figyelni a megadott figyel\u0151ponton.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.useraction=Nincs teend\u0151. 
+
+info.sip.container.launched.but.not.loaded=CWSCT0332I: A SIP t\u00e1rol\u00f3 sikeresen el lett ind\u00edtva, de csak akkor lesz inicializ\u00e1lva, amikor az els\u0151 SIP alkalmaz\u00e1s bet\u00f6lt\u00e9sre ker\u00fcl.
+info.sip.container.launched.but.not.loaded.explanation=Az SIP t\u00e1rol\u00f3 csak az els\u0151 SIP alkalmaz\u00e1s bet\u00f6lt\u00e9sekor ker\u00fcl inicializ\u00e1l\u00e1sra.
+info.sip.container.launched.but.not.loaded.useraction=Nincs teend\u0151. 
+
+error.replication.failed=CWSCT0333E: T\u00f6bbsz\u00f6r\u00f6z\u00e9s meghi\u00fasult.
+error.replication.failed.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban a replik\u00e1ci\u00f3 sor\u00e1n.
+error.replication.failed.useraction=Nincs teend\u0151. 
+
+error.failed.to.deserialize.replication=CWSCT0334E: A soros\u00edtott replik\u00e1ci\u00f3 visszaalak\u00edt\u00e1sa meghi\u00fasult.
+error.failed.to.deserialize.replication.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container replik\u00e1ci\u00f3ban egy soros\u00edtott objektum visszaalak\u00edt\u00e1sa k\u00f6zben.
+error.failed.to.deserialize.replication.useraction=Nincs teend\u0151. 
+
+error.failed.to.reactivate.objects.after.failover=CWSCT0335E: Objektumok \u00fajraaktiv\u00e1l\u00e1sa nem siker\u00fclt az \u00e1t\u00e1ll\u00e1s ut\u00e1n.
+error.failed.to.reactivate.objects.after.failover.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban szekci\u00f3 aktiv\u00e1l\u00e1s k\u00f6zben \u00e1t\u00e1ll\u00e1s ut\u00e1n.
+error.failed.to.reactivate.objects.after.failover.useraction=Nincs teend\u0151. 
+
+warning.display.name.different=CWSCT0337W: A megjelen\u0151 n\u00e9v elt\u00e9r a sip.xml dokumentumban ({0}) \u00e9s a web.xml dokumentumban ({1}).
+warning.display.name.different.explanation=Az alkalmaz\u00e1s megjelen\u0151 neve elt\u00e9r az sip.xml dokumentumban \u00e9s a web.xml dokumentumban. Ez nem felel meg a JSR-116 15.2 r\u00e9sz\u00e9nek.
+warning.display.name.different.useraction=M\u00f3dos\u00edtsa a telep\u00edt\u00e9sle\u00edr\u00f3kat \u00fagy, hogy egyezzenek az alkalmaz\u00e1s megjelen\u0151 nevek.
+
+warning.dispatch.failed=CWSCT0338W: Nem siker\u00fclt a SIP \u00fczenet elind\u00edt\u00e1sa a sz\u00e1lt\u00e1rba. \u00dczenet= {0}, H\u00edv\u00e1s azonos\u00edt\u00f3= {1}, Hibak\u00f3d= {2}.
+warning.dispatch.failed.explanation=A SIP com.ibm.ws.sip.container nem tudott elind\u00edtani egy \u00fczenetet a sz\u00e1lt\u00e1rol\u00f3ba.
+warning.dispatch.failed.useraction=Nincs teend\u0151. 
+
+error.cannot.identify.object.type=CWSCT0339E: Soros\u00edt\u00e1s megsz\u00fcntet\u00e9se: Objektumt\u00edpus nem azonos\u00edthat\u00f3.
+error.cannot.identify.object.type.explanation=A SIP com.ibm.ws.sip.container nem tudta azonos\u00edtani az objektumt\u00edpust a soros\u00edt\u00e1s megsz\u00fcntet\u00e9s\u00e9hez.
+error.cannot.identify.object.type.useraction=Nincs teend\u0151. 
+
+error.security.password.retrieve=CWSCT0340E: Hiba - a jelsz\u00f3attrib\u00fatum nem k\u00e9rhet\u0151 le.
+error.security.password.retrieve.explanation=Hiteles\u00edt\u00e9s nem siker\u00fclt, mert a SIP com.ibm.ws.sip.container nem tudta lek\u00e9rni a userPassword attrib\u00fatumot a k\u00f6nyvt\u00e1r szem\u00e9ly bejegyz\u00e9s\u00e9b\u0151l.
+error.security.password.retrieve.useraction=M\u00f3dos\u00edtsa az LDAP konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sokat \u00fagy, hogy a kiszolg\u00e1l\u00f3nak hozz\u00e1f\u00e9r\u00e9se legyen a userPassword attrib\u00fatumhoz a k\u00f6nyvt\u00e1rban.
+
+warn.server.overloaded=CWSCT0341W: A kiszolg\u00e1l\u00f3 t\u00falterhelt.
+warn.server.overloaded.explanation=A Szekci\u00f3 kezdem\u00e9nyez\u00e9si protokoll (SIP) kiszolg\u00e1l\u00f3 nem tud tov\u00e1bbi bej\u00f6v\u0151 \u00fczeneteket fogadni, am\u00edg t\u00fal van terhelve.
+warn.server.overloaded.useraction=Cs\u00f6kkentse a bej\u00f6v\u0151 \u00fczenetek sz\u00e1m\u00e1t, vagy cs\u00f6kkentse a kiszolg\u00e1l\u00f3 terhel\u00e9s\u00e9nek lehets\u00e9ges forr\u00e1sait.
+
+warn.server.overloaded.too.many.sessions=CWSCT0342W: A kiszolg\u00e1l\u00f3 a t\u00fal sok alkalmaz\u00e1sszekci\u00f3 miatt t\u00falterhelt. 
+warn.server.overloaded.too.many.sessions.explanation=Az SIP kiszolg\u00e1l\u00f3 nem tud tov\u00e1bbi bej\u00f6v\u0151 \u00fczeneteket fogadni, am\u00edg t\u00fal van terhelve. T\u00fal sok alkalmaz\u00e1sszekci\u00f3 akt\u00edv.
+warn.server.overloaded.too.many.sessions.useraction=Cs\u00f6kkentse a l\u00e9trehozott alkalmaz\u00e1sszekci\u00f3k sz\u00e1m\u00e1t vagy \u00e1ll\u00edtson be nagyobb maxim\u00e1lis \u00e9rt\u00e9ket az alkalmaz\u00e1sszekci\u00f3k sz\u00e1m\u00e1ra a Munkamenet-kezdem\u00e9nyez\u00e9si protokoll (SIP) com.ibm.ws.sip.container t\u00e1rol\u00f3ban.
+
+warn.server.overloaded.too.many.messages=CWSCT0343W: A kiszolg\u00e1l\u00f3 t\u00falterhelt, mert t\u00fal sok \u00fczenetet kapott \u00e1tlagol\u00e1si id\u0151szakban. 
+warn.server.overloaded.too.many.messages.explanation=Az SIP kiszolg\u00e1l\u00f3 nem tud tov\u00e1bbi bej\u00f6v\u0151 \u00fczeneteket fogadni, am\u00edg t\u00fal van terhelve. Az \u00fczenetforgalom t\u00fal magas.
+warn.server.overloaded.too.many.messages.useraction=Cs\u00f6kkentse az \u00fczenetterhel\u00e9st, vagy \u00e1ll\u00edtson be nagyobb maxim\u00e1lis \u00e9rt\u00e9ket az \u00e1tlagol\u00e1si id\u0151tartam \u00fczenetsz\u00e1m\u00e1hoz a Munkamenet-kezdem\u00e9nyez\u00e9si protokoll (SIP) com.ibm.ws.sip.container t\u00e1rol\u00f3hoz.
+
+warn.server.overloaded.slow.response=CWSCT0344W: A kiszolg\u00e1l\u00f3 t\u00falterhelt, mert v\u00e1laszideje t\u00fal lass\u00fa.
+warn.server.overloaded.slow.response.explanation=Az SIP kiszolg\u00e1l\u00f3 nem tud tov\u00e1bbi bej\u00f6v\u0151 \u00fczeneteket fogadni, am\u00edg t\u00fal van terhelve.
+warn.server.overloaded.slow.response.useraction=Cs\u00f6kkentse a bej\u00f6v\u0151 \u00fczenetek sz\u00e1m\u00e1t, vagy cs\u00f6kkentse a kiszolg\u00e1l\u00f3 terhel\u00e9s\u00e9nek lehets\u00e9ges forr\u00e1sait. Ha a maxim\u00e1lis v\u00e1laszid\u0151 \u00e9rt\u00e9ke be van \u00e1ll\u00edtva a Munkamenet-kezdem\u00e9nyez\u00e9si protokoll (SIP) com.ibm.ws.sip.container t\u00e1rol\u00f3hoz, akkor fontolja meg magasabb \u00e9rt\u00e9k megad\u00e1s\u00e1t.
+
+warn.dispatch.queue.overloaded=CWSCT0345W: Az elind\u00edt\u00e1si sor maxim\u00e1lis {0} m\u00e9rete meghalad\u00e1sra ker\u00fclt. Az \u00faj \u00fczenetek eldob\u00e1sra ker\u00fclnek.
+warn.dispatch.queue.overloaded.explanation=Az SIP kiszolg\u00e1l\u00f3 nem tud tov\u00e1bbi bej\u00f6v\u0151 \u00fczeneteket fogadni, am\u00edg a k\u00fcld\u00e9si sor t\u00fal van terhelve.
+warn.dispatch.queue.overloaded.useraction=Cs\u00f6kkentse az \u00fczenetterhel\u00e9st, vagy \u00e1ll\u00edtson be nagyobb maxim\u00e1lis \u00e9rt\u00e9ket a k\u00fcld\u00e9si sor m\u00e9ret\u00e9hez a Munkamenet-p\u00e9ld\u00e1nyos\u00edt\u00e1si protokoll (SIP) com.ibm.ws.sip.container t\u00e1rol\u00f3ban.
+
+error.container.queue.overloaded=CWSCT0346E: Az ir\u00e1ny\u00edt\u00f3 sor t\u00falterhelt. A k\u00f6vetkez\u0151 \u00fczenetek vissza lettek utas\u00edtva: {0}
+error.container.queue.overloaded.explanation=A SIP com.ibm.ws.sip.container sz\u00e1lai nem tudj\u00e1k kezelni a jelenlegi feladatterhel\u00e9st.
+error.container.queue.overloaded.useraction=Cs\u00f6kkentse a kiszolg\u00e1l\u00f3 terhel\u00e9s\u00e9nek lehets\u00e9ges forr\u00e1sait, f\u0151leg az SIP \u00fczenetek forgalm\u00e1t. Ezenk\u00edv\u00fcl, vizsg\u00e1lja meg az SIP alkalmaz\u00e1sk\u00f3d \u00e1ltal haszn\u00e1lt er\u0151forr\u00e1sok mennyis\u00e9g\u00e9t.
+
+info.bootstrap.started=CWSCT0347I: Az el\u0151bet\u00f6lt\u00e9si t\u00f6bbsz\u00f6r\u00f6z\u00e9s elindult.
+info.bootstrap.started.explanation=A Munkamenet-kezdem\u00e9nyez\u00e9si protokoll (SIP) com.ibm.ws.sip.container egy \u00fajonnan csatlakozott partnernek t\u00f6bbsz\u00f6r\u00f6zi munkamenetadatait.
+info.bootstrap.started.useraction=Nincs teend\u0151. 
+
+info.bootstrap.finished=CWSCT0348I: Az el\u0151bet\u00f6lt\u00e9si replik\u00e1ci\u00f3 befejez\u0151d\u00f6tt. 
+info.bootstrap.finished.explanation=A munkamenet-kezdem\u00e9nyez\u00e9si protokoll (SIP) com.ibm.ws.sip.container befejezte a munkamenetadatai t\u00f6bbsz\u00f6r\u00f6z\u00e9s\u00e9t az \u00fajonnan csatlakoztatott partnernek.
+info.bootstrap.finished.useraction=Nincs teend\u0151. 
+
+info.sip.stack.timer=CWSCT0349I: SIP verem id\u0151m\u00e9r\u0151 [{0}] \u00e9rt\u00e9ke [{1}] lett
+info.sip.stack.timer.explanation=Az id\u0151m\u00e9r\u0151 \u00e9rt\u00e9ke megv\u00e1ltozott a konfigur\u00e1ci\u00f3ban.
+info.sip.stack.timer.useraction=Nem kell semmit tennie
+
+info.sip.container.quiesce.on=CWSCT0350I: Nyugalmi \u00e1llapot megkezd\u00e9se
+info.sip.container.quiesce.on.explanation=A SIP com.ibm.ws.sip.container MBean adminisztr\u00e1ci\u00f3s n\u00e9m\u00edt\u00e1s parancsot kapott. Ebben a m\u00f3dban az \u00faj h\u00edv\u00e1sok nem lesznek kiszolg\u00e1lva a com.ibm.ws.sip.container ezen p\u00e9ld\u00e1ny\u00e1ban.
+info.sip.container.quiesce.on.useraction=Nem kell semmit tennie
+
+info.sip.container.quiesce.off=CWSCT0351I: Kil\u00e9p\u00e9s a nyugalmi \u00e1llapotb\u00f3l
+info.sip.container.quiesce.off.explanation=A SIP com.ibm.ws.sip.container MBean adminisztr\u00e1ci\u00f3s n\u00e9m\u00edt\u00e1s befejez\u00e9se parancsot kapott.
+info.sip.container.quiesce.off.useraction=Nem kell semmit tennie
+
+error.sip.get.server.type=CWSCT0352E: Nem siker\u00fclt lek\u00e9rni a kiszolg\u00e1l\u00f3t\u00edpust.   Hiba = {0}.
+error.sip.get.server.type.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a kiszolg\u00e1l\u00f3t\u00edpus lek\u00e9r\u00e9se k\u00f6zben.
+error.sip.get.server.type.useraction=Nem kell semmit tennie
+
+error.sip.get.configuration=CWSCT0353E: Indul\u00e1skor nem siker\u00fclt lek\u00e9rni a be\u00e1ll\u00edt\u00e1sokat.   Hiba = {0}.
+error.sip.get.configuration.explanation=A konfigur\u00e1ci\u00f3 lek\u00e9r\u00e9sekor kiv\u00e9tel t\u00f6rt\u00e9nt.
+error.sip.get.configuration.useraction=Nem kell semmit tennie
+
+info.sip.container.running.stanalone=CWSCT0354I: Futtat\u00e1s \u00f6n\u00e1ll\u00f3 kiszolg\u00e1l\u00f3n
+info.sip.container.running.stanalone.explanation=A SIP com.ibm.ws.sip.container \u00f6n\u00e1ll\u00f3 k\u00f6rnyezetben fut. A magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s kezel\u0151 nincs enged\u00e9lyezve.
+info.sip.container.running.stanalone.useraction=Nem kell semmit tennie
+
+error.sip.cannot.run.on.server=CWSCT0355E: Nem fut ezen a kiszolg\u00e1l\u00f3t\u00edpuson:  {0}.
+error.sip.cannot.run.on.server.explanation=A SipContainer nem fut a megadott t\u00edpus\u00fa kiszolg\u00e1l\u00f3n.
+error.sip.cannot.run.on.server.useraction=Nem kell semmit tennie
+
+error.parse.auth.challange=CWSCT0356E: Nem siker\u00fclt \u00e9rtelmezni a hiteles\u00edt\u00e9si fejl\u00e9cet.
+error.parse.auth.challange.explanation=Az alkalmaz\u00e1s SipServletResponse.getChallangeRealm() h\u00edv\u00e1sa nem siker\u00fclt.
+error.parse.auth.challange.useraction=Nincs teend\u0151. 
+
+error.exception.ioeinbody=CWSCT0357E: Hiba - Az \u00fczenett\u00f6rzs nem olvashat\u00f3 be.
+error.exception.ioeinbody.explanation=IOException t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container biztons\u00e1gi k\u00f3dj\u00e1ban.
+error.exception.ioeinbody.useraction=Nincs teend\u0151. 
+
+warn.unsupported.realm=CWSCT0358W: Ismeretlen hiteles\u00edt\u00e9si tartom\u00e1ny: {0}
+warn.unsupported.realm.explanation=Ismeretlen hiteles\u00edt\u00e9si tartom\u00e1nyra vonatkoz\u00f3 SIP k\u00e9r\u00e9s \u00e9rkezett 
+warn.unsupported.realm.useraction=Nem kell semmit tennie
+
+info.unhashed.creds=CWSCT0359I: Nem tal\u00e1lhat\u00f3k kivonatolt hiteles\u00edt\u00e9si adatok.
+info.unhashed.creds.explanation=A kivonatolt hiteles\u00edt\u00e9si adatok alkalmaz\u00e1s\u00e1hoz sz\u00fcks\u00e9ges attrib\u00fatumok nem tal\u00e1lhat\u00f3k. A hiteles\u00edt\u00e9shez kivonatol\u00e1s n\u00e9lk\u00fcli jelsz\u00f3 kikeres\u00e9s ker\u00fcl felhaszn\u00e1l\u00e1sra.
+info.unhashed.creds.useraction=Nem kell semmit tennie
+
+info.sip.container.quiesce.ended=CWSCT0360I: A kiszolg\u00e1l\u00f3 fokozatos le\u00e1ll\u00edt\u00e1sa sikeresen befejez\u0151d\u00f6tt
+info.sip.container.quiesce.ended.explanation=A SIP com.ibm.ws.sip.container fokozatos le\u00e1ll\u00edt\u00e1si m\u0171velete befejez\u0151d\u00f6tt, minden alkalmaz\u00e1s-munkamenet \u00e9rv\u00e9nytelen\u00edtve lett.
+info.sip.container.quiesce.ended.useraction=Nem kell semmit tennie
+
+info.sip.heartbeat.new.proxy=CWSCT0361I: H\u00e1l\u00f3zati \u00e9letjel egy \u00faj {0} proxyt\u00f3l, {1} id\u0151korl\u00e1t, {2} korl\u00e1t.
+info.sip.heartbeat.new.proxy.explanation=A SIP com.ibm.ws.sip.container \u00faj SIP proxyt tal\u00e1lt a f\u00fcrtben, \u00e9s az SIP h\u00e1l\u00f3zati kimarad\u00e1s \u00e9szlel\u00e9se enged\u00e9lyezett.
+info.sip.heartbeat.new.proxy.useraction=Nem kell semmit tennie
+
+warn.sip.heartbeat.limit.exceeded=CWSCT0362I: A SIP proxy {0} meghaladta a h\u00e1l\u00f3zati \u00e9letjelkorl\u00e1tot. {1} \u00e9letjel kimaradt.
+warn.sip.heartbeat.limit.exceeded.explanation=A SIP com.ibm.ws.sip.container nem kapott \u00e9letjel \u00fczeneteket az nem kapott \u00e9letjel\u00fczeneteket a k\u00fcls\u0151 proxyt\u00f3l az el\u0151re be\u00e1ll\u00edtott id\u0151korl\u00e1t \u00e9rt\u00e9k\u00e9n bel\u00fcl.
+warn.sip.heartbeat.limit.exceeded.useraction=Ellen\u0151rizze, hogy az SIP proxy m\u00e9g mindig fut-e, \u00e9s hogy az SIP h\u00e1l\u00f3zati vonal a proxy \u00e9s a com.ibm.ws.sip.container k\u00f6z\u00f6tt rendben van-e.
+
+error.sip.heartbeat.server.restart=CWSCT0363I: A SIP com.ibm.ws.sip.container h\u00e1l\u00f3zati kimarad\u00e1st \u00e9szlelt, ez\u00e9rt \u00fajraindul.
+error.sip.heartbeat.server.restart.explanation=A SIP com.ibm.ws.sip.container elvesztette a kapcsolatot az \u00f6sszes k\u00fcls\u0151 proxyval a f\u00fcrtben. \u00cdgy most \u00fajraind\u00edtja \u00f6nmag\u00e1t. Az akt\u00edv munkamenetek \u00e1tt\u00e9rnek egy biztons\u00e1gi ment\u00e9s com.ibm.ws.sip.container t\u00e1rol\u00f3ba, ha vannak ilyenek a replik\u00e1ci\u00f3s tartom\u00e1nyban.
+error.sip.heartbeat.server.restart.useraction=\u00c1llap\u00edtsa meg a SIP h\u00e1l\u00f3zati kimarad\u00e1s ok\u00e1t. K\u00fcl\u00f6n\u00f6s tekintettel a proxy \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 k\u00f6z\u00f6tti h\u00e1l\u00f3zati vonalra. H\u00e1l\u00f3zati sniffer seg\u00edts\u00e9g\u00e9vel k\u00f6vetheti nyomon az SIP KEEPALIVE \u00fczeneteket a proxy \u00e9s a com.ibm.ws.sip.container k\u00f6z\u00f6tt.
+
+error.sip.heartbeat.restart.failure=CWSCT0364I: A SIP com.ibm.ws.sip.container \u00fajraind\u00edt\u00e1sa meghi\u00fasult.
+error.sip.heartbeat.restart.failure.explanation=A SIP com.ibm.ws.sip.container megk\u00eds\u00e9relte \u00fajraind\u00edtani \u00f6nmag\u00e1t h\u00e1l\u00f3zatkimarad\u00e1s eredm\u00e9nyek\u00e9nt, de ez a m\u0171velet meghi\u00fasult. A com.ibm.ws.sip.container \u00fajraindul\u00e1s n\u00e9lk\u00fcl le\u00e1ll.
+error.sip.heartbeat.restart.failure.useraction=Ind\u00edtsa \u00fajra saj\u00e1t kez\u0171leg az alkalmaz\u00e1skiszolg\u00e1l\u00f3t.
+
+error.replication.b2blinkage.failed=CWSCT0365E: \u00c1t\u00e1ll\u00e1s ut\u00e1n nem siker\u00fclt Sip szekci\u00f3t tal\u00e1lni a(z) {0} B2B \u00f6sszek\u00f6ttet\u00e9snek
+error.replication.b2blinkage.failed.explanation=Hiba t\u00f6rt\u00e9nt a SIP com.ibm.ws.sip.container t\u00e1rol\u00f3ban a replik\u00e1ci\u00f3 sor\u00e1n.
+error.replication.b2blinkage.failed.useraction=Nincs teend\u0151. 
+
+info.dar.init.2=CWSCT0401I: Az alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 inicializ\u00e1lva van.
+info.dar.init.2.explanation=Az alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 az alkalmaz\u00e1sokat ind\u00edt\u00e1si sorrendben v\u00e1lasztja ki.
+info.dar.init.2.useraction=Semmit sem kell tennie. 
+
+info.dar.init.3=CWSCT0403I: K\u00fcls\u0151 alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 ker\u00fclt bet\u00f6lt\u00e9sre a megadott egy\u00e9ni tulajdons\u00e1g szerint - javax.servlet.sip.ar.spi.SipApplicationRouterProvider, oszt\u00e1lyn\u00e9v - {0}.
+info.dar.init.3.explanation=A k\u00fcls\u0151 alkalmaz\u00e1s \u00fatv\u00e1laszt\u00f3 harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3k\u00e9nt megval\u00f3s\u00edt\u00e1sra \u00e9s bet\u00f6lt\u00e9sre ker\u00fclt.
+info.dar.init.3.useraction=Semmit sem kell tennie. 
+
+info.dar.init.4=CWSCT0404I: Alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 (DAR) tulajdons\u00e1gf\u00e1jl bet\u00f6ltve, f\u00e1jln\u00e9v - {0}.
+info.dar.init.4.explanation=A felhaszn\u00e1l\u00f3 \u00e1ltal biztos\u00edtott Alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3t (DAR) siker\u00fclt megtal\u00e1lni \u00e9s bet\u00f6lteni.
+info.dar.init.4.useraction=Semmit sem kell tennie. 
+
+info.dar.init.5=CWSCT0405I: Az alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 \u00fagy van konfigur\u00e1lva, hogy ind\u00edt\u00e1s szerint v\u00e1lasszon alkalmaz\u00e1sokat.
+info.dar.init.5.explanation=Az alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 az alkalmaz\u00e1st ind\u00edt\u00e1si sorrend szerint v\u00e1lasztja ki.
+info.dar.init.5.useraction=Semmit sem kell tennie. 
+
+error.dar.repository.create.1=CWSCT0406E: Hiba t\u00f6rt\u00e9nt az alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 lerakat l\u00e9trehoz\u00e1sakor: {0}.
+error.dar.repository.create.1.explanation=Valami bels\u0151 hiba okozhatja.
+error.dar.repository.create.1.useraction=Semmit sem kell tennie. 
+
+error.dar.selector.1=CWSCT0407E: Nincs \u00e1llapota az alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3nak.
+error.dar.selector.1.explanation=Ha az alkalmaz\u00e1s \u00fatv\u00e1laszt\u00f3 NEW utas\u00edt\u00e1st\u00f3l elt\u00e9r\u0151 k\u00e9r\u00e9st fogad, akkor annak tartalmaznia kell az alkalmaz\u00e1sl\u00e1nc \u00e1llapotindex\u00e9t. 
+error.dar.selector.1.useraction=Semmit sem kell tennie. 
+
+error.dar.property.parser.1=CWSCT0408E: Alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3, tulajdons\u00e1gstrat\u00e9gia, nem siker\u00fclt bet\u00f6lteni a tulajdons\u00e1gf\u00e1jlt.
+error.dar.property.parser.1.explanation=Az alkalmaz\u00e1s \u00fatv\u00e1laszt\u00f3 tulajdons\u00e1gf\u00e1jl rossz form\u00e1tum\u00fa.
+error.dar.property.parser.1.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s \u00fatv\u00e1laszt\u00f3 tulajdons\u00e1gf\u00e1jl megfelel\u0151 form\u00e1tumban van-e.
+
+warn.sip.proxy.outboundif.invalid=CWSCT0409W: A proxy-k elt\u00e9r\u0151 kimen\u0151 csatol\u00f3ra lettek konfigur\u00e1lva.
+warn.sip.proxy.outboundif.invalid.explanation=Minden proxyt azonos virtu\u00e1lis IP c\u00edmmel kell konfigur\u00e1lni.
+warn.sip.proxy.outboundif.invalid.useraction=Nincs teend\u0151. 
+
+error.failed.create.500.response=CWSCT0410E: Nem siker\u00fclt egy alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 v\u00e1lasz el\u0151\u00e1ll\u00edt\u00e1sa.
+error.failed.create.500.response.explanation=Az alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 v\u00e1ratlan kiv\u00e9telbe \u00fctk\u00f6z\u00f6tt, a com.ibm.ws.sip.container sikertelen\u00fcl pr\u00f3b\u00e1lt 500-as v\u00e1laszt l\u00e9trehozni.
+error.failed.create.500.response.useraction=Keresse meg az alkalmaz\u00e1s \u00fatv\u00e1laszt\u00f3 tulajdonos\u00e1t.
+
+warn.sip.custom.property.deprecated=CWSCT0411W: A(z) [{0}] egy\u00e9ni tulajdons\u00e1g elavult.
+warn.sip.custom.property.deprecated.explanation=Ezen \u00e9rt\u00e9k be\u00e1ll\u00edt\u00e1sa eset\u00e9n tov\u00e1bbra is elismert \u00e9s felhaszn\u00e1l\u00e1sra ker\u00fcl. A visszamen\u0151leges kompatibilit\u00e1s miatt els\u0151bbs\u00e9get \u00e9lvez az attrib\u00fatummal szemben.
+warn.sip.custom.property.deprecated.useraction=Az adminisztr\u00e1ci\u00f3s fel\u00fclet SIP t\u00e1rol\u00f3 konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sain\u00e1l adhat\u00f3 meg ez az \u00e9rt\u00e9k.
+
+warn.sip.queue.hung=CWSCT0412W: A k\u00f6vetkez\u0151vel kapcsolatos SIP feladat feltehet\u0151leg lefagyott: {0} Ez a feladat figyelmen k\u00edv\u00fcl marad.
+warn.sip.queue.hung.explanation= A feladat t\u00fall\u00e9pte a lefagyott sz\u00e1l \u00e9szlel\u00e9s\u00e9re be\u00e1ll\u00edtott id\u0151korl\u00e1tot. A szekci\u00f3 ezt k\u00f6vet\u0151 SIP \u00fczenetei meghi\u00fasulhatnak.
+warn.sip.queue.hung.useraction=Nincs teend\u0151. 
+
+warn.server.overloaded.message.queue.overloaded=CWSCT0413W: A kiszolg\u00e1l\u00f3 t\u00falterhelt, mert a com.ibm.ws.sip.container sz\u00e1lsorok kapacit\u00e1sa betelt.
+warn.server.overloaded.message.queue.overloaded.explanation=Az SIP kiszolg\u00e1l\u00f3 nem tud tov\u00e1bbi bej\u00f6v\u0151 \u00fczeneteket fogadni, am\u00edg t\u00fal van terhelve.
+warn.server.overloaded.message.queue.overloaded.useraction=Cs\u00f6kkentse a bej\u00f6v\u0151 \u00fczenetforgalmat, vagy n\u00f6velje a Munkamenet-kezdem\u00e9nyez\u00e9si protokoll (SIP) com.ibm.ws.sip.container sor\u00e1nak m\u00e9ret\u00e9t.
+
+info.sip.replication.mode=CWSCT0414I: SIP replik\u00e1ci\u00f3s m\u00f3d: {0} 
+info.sip.replication.mode.explanation=Az SIP szekci\u00f3k t\u00f6bbsz\u00f6r\u00f6z\u00e9si gyakoris\u00e1ga a t\u00f6bbsz\u00f6r\u00f6z\u00e9si tartom\u00e1nyon (ha van ilyen).
+info.sip.replication.mode.useraction=Nem kell semmit tennie
+
+info.dar.weight=CWSCT0415I: Alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3, s\u00falyoz\u00e1si strat\u00e9gia bet\u00f6lt\u00e9se.
+info.dar.weight.explanation=Nincsen biztos\u00edtva egy\u00e9ni alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 vagy DAR konfigur\u00e1ci\u00f3s f\u00e1jl, ez\u00e9rt a SIP com.ibm.ws.sip.container az alap\u00e9rtelmezett viselked\u00e9st, vagyis az alkalmaz\u00e1sok s\u00falyoz\u00e1s alapj\u00e1n t\u00f6rt\u00e9n\u0151 rendez\u00e9s\u00e9t fogja haszn\u00e1lni.
+info.dar.weight.useraction=Nem kell semmit tennie
+
+error.dar.no.config=CWSCT0416E: A Default Application Router (DAR, alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3) be\u00e1ll\u00edt\u00e1sf\u00e1jlja nem tal\u00e1lhat\u00f3 a megadott {0} el\u00e9r\u00e9si \u00faton.
+error.dar.no.config.explanation=A felhaszn\u00e1l\u00f3 \u00e1ltal biztos\u00edtott Alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 (DAR) nem tal\u00e1lhat\u00f3
+error.dar.no.config.useraction=Ellen\u0151rizze a SIP com.ibm.ws.sip.container "javax.servlet.sip.ar.dar.configuration" tulajdons\u00e1ga \u00e1ltal megadott \u00fatvonal helyess\u00e9g\u00e9t.
+
+error.sip.descriptor.wrong.class=CWSCT0417E: A sip.xml f\u00e1jlban megadott Siplet oszt\u00e1lyn\u00e9v nem tal\u00e1lhat\u00f3, oszt\u00e1lyn\u00e9v: {0}. 
+error.sip.descriptor.wrong.class.explanation=A sip.xml dokumentumban olyan oszt\u00e1lyn\u00e9v van megadva, amelyet nem lehet bet\u00f6lteni.
+error.sip.descriptor.wrong.class.useraction=Ellen\u0151rizze a sip.xml f\u00e1jlban, hogy helyesen van-e megadva az oszt\u00e1lyn\u00e9v.
+
+info.sip.outbound.initialized=CWSCT0418I: A SIP "kimen\u0151" protokollkiterjeszt\u00e9s\u00e9nek inicializ\u00e1l\u00e1sa siker\u00fclt.
+info.sip.outbound.initialized.explanation=A SIP szervlet com.ibm.ws.sip.container felk\u00e9sz\u00fclt az \u00fcgyf\u00e9l \u00e1ltal kezdem\u00e9nyezett kapcsolatok \u00fajrafelhaszn\u00e1l\u00e1s\u00e1ra a "kimen\u0151" protokollkiterjeszt\u00e9s alapj\u00e1n.
+info.sip.outbound.initialized.useraction=Nincs teend\u0151. A "kimen\u0151" protokollkiterjeszt\u00e9sr\u0151l a Websphere Application Server inform\u00e1ci\u00f3s k\u00f6zpontj\u00e1nak "SIP \u00fcgyf\u00e9l \u00e1ltal kezdem\u00e9nyezett kapcsolatok \u00fajrafelhaszn\u00e1l\u00e1sa" c\u00edm\u0171 r\u00e9sz\u00e9ben tal\u00e1l tov\u00e1bbi inform\u00e1ci\u00f3kat.
+
+warn.sip.outbound.no.key.set=CWSCT0419W: Nincs megadva kulcsk\u00e9szlet a SIP "kimen\u0151" protokollkiterjeszt\u00e9shez.
+warn.sip.outbound.no.key.set.explanation=A SIP szervlet com.ibm.ws.sip.container kezeli az \u00fcgyf\u00e9l \u00e1ltal kezdem\u00e9nyezett kapcsolatokat a SIP "kimen\u0151" protokollkiterjeszt\u00e9s szerint, de a biztons\u00e1g le van tiltva. Ebben a helyzetben az adatfolyam jelsorait t\u00e1mad\u00f3k m\u00f3dos\u00edthatj\u00e1k.
+warn.sip.outbound.no.key.set.useraction=Az \u00fcgyf\u00e9l \u00e1ltal kezdem\u00e9nyezett kapcsolatok biztons\u00e1g\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez tanulm\u00e1nyozza a Websphere Application Server inform\u00e1ci\u00f3s k\u00f6zpontj\u00e1nak "SIP \u00fcgyf\u00e9l \u00e1ltal kezdem\u00e9nyezett kapcsolatok \u00fajrafelhaszn\u00e1l\u00e1sa" c\u00edm\u0171 r\u00e9sz\u00e9t.
+
+info.sip.outbound.key.set.updated=CWSCT0420I: A SIP "kimen\u0151" protokollkiterjeszt\u00e9shez haszn\u00e1lt kulcsk\u00e9szlet friss\u00fclt.
+info.sip.outbound.key.set.updated.explanation=A kulcsk\u00e9szletbe \u00faj kulcs ker\u00fclt.
+info.sip.outbound.key.set.updated.useraction=Nincs teend\u0151. 
+
+error.sip.outbound.failure=CWSCT0421E: A SIP "kimen\u0151" protokollkiterjeszt\u00e9st nem siker\u00fclt inicializ\u00e1lni a(z) {0} kulcsk\u00e9szlettel.
+error.sip.outbound.failure.explanation=A SIP szervlet com.ibm.ws.sip.container nem tudja feldolgozni a "kimen\u0151" protokollkiterjeszt\u00e9st, mert hiba t\u00f6rt\u00e9nt  megadott kulcsk\u00e9szlet inicializ\u00e1l\u00e1sa k\u00f6zben.
+error.sip.outbound.failure.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott kulcsk\u00e9szlet szerepel a kulcsk\u00e9szlet-konfigur\u00e1ci\u00f3ban. Tov\u00e1bbi inform\u00e1ci\u00f3kat a Websphere Application Server inform\u00e1ci\u00f3s k\u00f6zpontj\u00e1nak "SIP \u00fcgyf\u00e9l \u00e1ltal kezdem\u00e9nyezett kapcsolatok \u00fajrafelhaszn\u00e1l\u00e1sa" c\u00edm\u0171 r\u00e9sz\u00e9ben tal\u00e1l.
+
+warn.sip.invalid.comma.separated.headers=CWSCT0422W: \u00c9rv\u00e9nytelen szintaxis a "comma.separated.headers" egy\u00e9ni tulajdons\u00e1gban.
+warn.sip.invalid.comma.separated.headers.explanation=A SIP com.ibm.ws.sip.container "comma.separated.headers" egy\u00e9ni tulajdons\u00e1ga \u00e9rv\u00e9nytelen be\u00e1ll\u00edt\u00e1st tartalmaz.
+warn.sip.invalid.comma.separated.headers.useraction=Adjon meg egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a "comma.separated.headers" egy\u00e9ni tulajdons\u00e1gnak, vagy t\u00e1vol\u00edtsa el a SIP com.ibm.ws.sip.container konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1saib\u00f3l. A SIP com.ibm.ws.sip.container egy\u00e9ni tulajdons\u00e1gainak le\u00edr\u00e1s\u00e1t a Websphere Application Server inform\u00e1ci\u00f3s k\u00f6zpont "SIP com.ibm.ws.sip.container egy\u00e9ni tulajdons\u00e1gai" c\u00edm\u0171 t\u00e9mak\u00f6r\u00e9ben tal\u00e1lja.
+
+sip.app.deployment.failed=CWSCT0423E: A(z) {0} alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult, ok: {1}.
+sip.app.deployment.failed.explanation=A telep\u00edt\u00e9s \u00e9rv\u00e9nytelen telep\u00edt\u00e9si le\u00edr\u00f3 miatt meghi\u00fasult.
+sip.app.deployment.failed.useraction=Ellen\u0151rizze, hogy a telep\u00edt\u00e9si le\u00edr\u00f3 sip.xml vagy az annot\u00e1ci\u00f3k nem \u00fctk\u00f6znek, \u00e9s a specifik\u00e1ci\u00f3nak megfelel\u0151en \u00e9rv\u00e9nyesek.
+
+info.dar.start.order=CWSCT0424I: Alap\u00e9rtelmezett alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3, ind\u00edt\u00e1si sorrend strat\u00e9gia bet\u00f6lt\u00e9se.
+info.dar.start.order.explanation=Nincsen biztos\u00edtva egy\u00e9ni alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3 vagy DAR konfigur\u00e1ci\u00f3s f\u00e1jl, ez\u00e9rt a SIP com.ibm.ws.sip.container az  alap\u00e9rtelmezett viselked\u00e9st, vagyis az alkalmaz\u00e1sok ind\u00edt\u00e1si sorrendnek megfelel\u0151 rendez\u00e9s\u00e9t fogja haszn\u00e1lni.
+info.dar.start.order.useraction=Nem kell semmit tennie
+
+warn.change.in.endpoints=CWSCT0425W: A SIP csatorna konfigur\u00e1ci\u00f3 megv\u00e1ltozott. A SIP v\u00e9gpontokban a kiszolg\u00e1l\u00f3 fut\u00e1sa k\u00f6zben bek\u00f6vetkez\u0151 v\u00e1ltoz\u00e1sok a folyamatban l\u00e9v\u0151 p\u00e1rbesz\u00e9dablakok meghi\u00fasul\u00e1s\u00e1t okozhatj\u00e1k.
+warn.change.in.endpoints.explanation=A SIP p\u00e1rbesz\u00e9dablakok \u00e1llapot\u00e1nak megb\u00edzhat\u00f3s\u00e1ga a SIP fel\u00fcletek konfigur\u00e1ci\u00f3j\u00e1nak \u00e1lland\u00f3s\u00e1g\u00e1n alapul.
+warn.change.in.endpoints.useraction=Aj\u00e1nlott \u00fajraind\u00edtani a kiszolg\u00e1l\u00f3t, ha megl\u00e9v\u0151 SIP p\u00e1rbesz\u00e9dablakok \u00e1llnak feldolgoz\u00e1s alatt.
+
+warn.dar.file.modification=CWSCT0426W: A Default SIP Application Router (DAR - Alap\u00e9rtelmezett SIP alkalmaz\u00e1s-\u00fatv\u00e1laszt\u00f3) f\u00e1jl helye vagy tartalma nem lett m\u00f3dos\u00edtva.
+warn.dar.file.modification.explanation=A DAR f\u00e1jl helye vagy tartalma nem m\u00f3dos\u00edthat\u00f3, mik\u00f6zben a kiszolg\u00e1l\u00f3 fut.
+warn.dar.file.modification.useraction=A m\u00f3dos\u00edt\u00e1sok alkalmaz\u00e1s\u00e1hoz ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.no.main.serv=CWSCT0427E: Az alkalmaz\u00e1s olyan f\u0151 szervletet hat\u00e1rozott meg, amely nem l\u00e9tezik: {0}.
+error.no.main.serv.explanation=A f\u0151 szervlet egyik l\u00e9tez\u0151 szervlettel sem egyezik meg.
+error.no.main.serv.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u0151 szervlet helyesen van meghat\u00e1rozva a telep\u00edt\u00e9sle\u00edr\u00f3ban vagy egy annot\u00e1ci\u00f3val, \u00e9s hogy SipServlet t\u00edpus\u00fa oszt\u00e1lyra hivatkozik.
+
+cant.both.main.serv.mapping=CWSCT0428E: Az alkalmaz\u00e1s egyar\u00e1nt meghat\u00e1rozza a(z) {0} f\u0151 szervletet \u00e9s szervletlek\u00e9pez\u00e9si szab\u00e1lyokat, ami nem enged\u00e9lyezett.
+cant.both.main.serv.mapping.explanation=Az alkalmaz\u00e1s nem hat\u00e1rozhat meg egyszerre egy f\u0151 szervletet \u00e9s szervletlek\u00e9pez\u00e9si szab\u00e1lyokat.
+cant.both.main.serv.mapping.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s vagy a f\u0151 szervletet hat\u00e1rozza meg, vagy szervletlek\u00e9pez\u00e9si szab\u00e1lyokat ad meg, de a kett\u0151t egyszerre nem. A f\u0151 szervletet a telep\u00edt\u00e9si le\u00edr\u00f3ban vagy annot\u00e1ci\u00f3val adhatja meg.
+
+must.define.main.serv=CWSCT0429E: Az alkalmaz\u00e1s nem hat\u00e1roz meg f\u0151 szervletet, de t\u00f6bb siplete van.
+must.define.main.serv.explanation=Ha az alkalmaz\u00e1s t\u00f6bb sipletet hat\u00e1roz meg, akkor meg kell hat\u00e1roznia egy f\u0151 szervletet.
+must.define.main.serv.useraction=Biztos\u00edtsa, hogy a f\u0151 szervlet helyesen legyen meghat\u00e1rozva a telep\u00edt\u00e9si le\u00edr\u00f3ban vagy annot\u00e1ci\u00f3val. A f\u0151 szervletmeghat\u00e1roz\u00e1snak egy SipServlet t\u00edpus\u00fa oszt\u00e1lyra kell hivatkoznia.
+
+start.sipChain.error=CWSCT0430E: A SIP l\u00e1ncot nem siker\u00fclt elind\u00edtani.
+start.sipChain.error.explanation=Ha a SIP l\u00e1ncot nem siker\u00fclt elind\u00edtani, el\u0151fordulhat, hogy probl\u00e9m\u00e1k \u00e1llnak fenn a SIP v\u00e9gpont-meghat\u00e1roz\u00e1sokkal kapcsolatban.
+start.sipChain.error.useraction=Ellen\u0151rizze, hogy a SIP v\u00e9gpontok megfelel\u0151en vannak-e meghat\u00e1rozva.
+
+config.sipChain.error=CWSCT0431E: A SIP l\u00e1ncot nem siker\u00fclt inicializ\u00e1lni.
+config.sipChain.error.explanation=Ha a SIP l\u00e1ncot nem siker\u00fcl inicializ\u00e1lni, akkor a l\u00e1nc egyik csatorn\u00e1ja nem ker\u00fclt l\u00e9trehoz\u00e1sra vagy inicializ\u00e1l\u00e1sra, vagy a l\u00e1ncl\u00e9trehoz\u00e1s sikertelen. Ez mag\u00e1ban foglalja a portok \u00f6sszerendel\u00e9s\u00e9re ir\u00e1nyul\u00f3 sikertelen k\u00eds\u00e9rleteket is.
+config.sipChain.error.useraction=Ellen\u0151rizze, hogy a SIP v\u00e9gpontok megfelel\u0151en vannak-e meghat\u00e1rozva.
+
+error.asynchwork.host.unknown=CWSCT0432E: Az aszinkron munk\u00e1t nem siker\u00fclt elk\u00fcldeni, mivel a hoszt ismeretlen.
+error.asynchwork.host.unknown.explanation=A SIP t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt egy aszinkron munk\u00e1t elk\u00fcldeni, de az ismeretlen hoszt miatt a k\u00eds\u00e9rlet meghi\u00fasult.
+error.asynchwork.host.unknown.useraction=Az aszinkron munka elk\u00fcld\u00e9se el\u0151tt ellen\u0151rizze a hosztkonfigur\u00e1ci\u00f3t.
+
+info.sip.queue.stats=CWSCT0433I: A SIP t\u00e1rol\u00f3sorok statisztikai nyomtat\u00e1si m\u00f3dja= {0} . 1 = csak t\u00falterhelts\u00e9g eset\u00e9n, 2 = mindig. {1} ezredm\u00e1sodpercenk\u00e9nt egyszer.
+info.sip.queue.stats.explanation=SIP t\u00e1rol\u00f3sorok nyomtat\u00e1si m\u00f3dja.
+info.sip.queue.stats.useraction=Ez egy inform\u00e1ci\u00f3s \u00fczenet.  Nincs felhaszn\u00e1l\u00f3i teend\u0151.
+
+error.init.loadonstartup.app=CWSCT0435E: A SIP kiszolg\u00e1l\u00f3nak nem siker\u00fclt inicializ\u00e1lni az alkalmaz\u00e1st a loadOnStartup szervlet attrib\u00fatummal: {0}
+error.init.loadonstartup.app.explanation=Hiba t\u00f6rt\u00e9nt, amikor a SIP alkalmaz\u00e1s inicializ\u00e1l\u00e1sra ker\u00fclt a megadott loadOnStartup szervlet attrib\u00fatummal.
+error.init.loadonstartup.app.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse \u00e1t a SIP kiszolg\u00e1l\u00f3 nyomk\u00f6vet\u00e9si f\u00e1jlt, mely a SERVER_DIR mapp\u00e1ban a napl\u00f3k k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3.
+
+warn.sip.resolver.failed.connection=CWSCT0436W: A SIP felold\u00f3 kapcsolata meghi\u00fasult, t\u00e1voli c\u00edm = {0}.
+warn.sip.resolver.failed.connection.explanation=A Munkamenet-l\u00e9trehoz\u00e1si protokoll (SIP) felold\u00f3 nem volt k\u00e9pes csatlakozni egy t\u00e1voli csom\u00f3ponthoz.
+warn.sip.resolver.failed.connection.useraction=Lehet, hogy a t\u00e1voli n\u00e9vkiszolg\u00e1l\u00f3 nem \u00e9rhet\u0151 el. Ellen\u0151rizze a n\u00e9vkiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sait.
+
+warn.sip.resolver.server.not.responding=CWSCT0437W: A n\u00e9vkiszolg\u00e1l\u00f3 nem v\u00e1laszol a SIP kikeres\u00e9sre. T\u00e1voli c\u00edm = {0}.
+warn.sip.resolver.server.not.responding.explanation=A t\u00e1voli kiszolg\u00e1l\u00f3 nem v\u00e1laszolt a Munkamenet-l\u00e9trehoz\u00e1si protokoll (SIP) felold\u00f3 legut\u00f3bbi k\u00e9r\u00e9s\u00e9re.
+warn.sip.resolver.server.not.responding.useraction=Lehets\u00e9ges, hogy a n\u00e9vkiszolg\u00e1l\u00f3 nem m\u0171k\u00f6dik. Ellen\u0151rizze a n\u00e9vkiszolg\u00e1l\u00f3 el\u00e9rhet\u0151s\u00e9g\u00e9t.
+
+info.sip.resolver.established.connection=CWSCT0438I: A SIP felold\u00f3 a k\u00f6vetkez\u0151h\u00f6z csatlakozott: {0}.
+info.sip.resolver.established.connection.explanation=A Munkamenet-l\u00e9trehoz\u00e1si protokoll (SIP) felold\u00f3 TCP kapcsolatot l\u00e9tes\u00edtett egy t\u00e1voli n\u00e9vkiszolg\u00e1l\u00f3val.
+info.sip.resolver.established.connection.useraction=Semmit sem kell tennie.
+
+info.sip.resolver.initialized=CWSCT0439I: A SIP felold\u00f3 szolg\u00e1ltat\u00e1s inicializ\u00e1lva lett a(z) {0} n\u00e9vkiszolg\u00e1l\u00f3val.
+info.sip.resolver.initialized.explanation=A Munkamenet-l\u00e9trehoz\u00e1si protokoll (SIP) felold\u00f3 szolg\u00e1ltat\u00e1s inicializ\u00e1lva lett.
+info.sip.resolver.initialized.useraction=Semmit sem kell tennie.
+
+info.sip.resolver.not.initialized=CWSCT0440I: A SIP felold\u00f3 szolg\u00e1ltat\u00e1s nem lett inicializ\u00e1lva.
+info.sip.resolver.not.initialized.explanation=A Munkamenet-l\u00e9trehoz\u00e1si protokoll (SIP) felold\u00f3 szolg\u00e1ltat\u00e1s nem konfigur\u00e1lt n\u00e9vkiszolg\u00e1l\u00f3t.
+info.sip.resolver.not.initialized.useraction=Konfigur\u00e1lja \u00fajra a SIP felold\u00f3 szolg\u00e1ltat\u00e1st egy n\u00e9vkiszolg\u00e1l\u00f3val.
+
+warning.traditional.enabled=CWSCT0441W: Az SIP t\u00e1rol\u00f3 nem t\u00e1mogatja a hagyom\u00e1nyos PMI haszn\u00e1lat\u00e1t.
+warning.traditional.enabled.explanation=Az enableTraditionalPMI attrib\u00fatum true \u00e9rt\u00e9kre ker\u00fcl be\u00e1ll\u00edt\u00e1sra a server.xml f\u00e1jlban. Az SIP t\u00e1rol\u00f3 nem t\u00e1mogatja a hagyom\u00e1nyos PMI haszn\u00e1lat\u00e1t a Liberty k\u00f6rnyezetben.
+warning.traditional.enabled.useraction=T\u00e1vol\u00edtsa el az enableTraditionalPMI tulajdons\u00e1got a server.xml f\u00e1jlb\u00f3l.

@@ -436,7 +436,7 @@ public abstract class MonitorHolder implements Runnable {
      *
      * @param cacheRoot
      */
-    public synchronized void refresh(File cacheRoot) {
+    public synchronized void refresh() {
         monitorState.set(MonitorState.INIT.ordinal());
         stop();
         initProperties(monitorRef);
@@ -754,12 +754,12 @@ public abstract class MonitorHolder implements Runnable {
      * so we need to make sure each call is handled.</li>
      * </ul>
      *
-     * @param notifiedCreated The canonical paths of any created files
-     * @param notifiedDeleted The canonical paths of any deleted files
+     * @param notifiedCreated  The canonical paths of any created files
+     * @param notifiedDeleted  The canonical paths of any deleted files
      * @param notifiedModified The canonical paths of any modified files
-     * @param doFilterPaths The filter indicator. If true, input paths are filtered against pending file events.
-     *            If false, all pending file events are processed.
-     * @param listenerFilter The filter string that allows only those listeners with a matching id to be called to process the event.
+     * @param doFilterPaths    The filter indicator. If true, input paths are filtered against pending file events.
+     *                             If false, all pending file events are processed.
+     * @param listenerFilter   The filter string that allows only those listeners with a matching id to be called to process the event.
      */
     void externalScan(Set<File> notifiedCreated, Set<File> notifiedDeleted, Set<File> notifiedModified, boolean doFilterPaths, String listenerFilter) {
         // Don't perform the external scan if this monitor holder is paused
@@ -1084,8 +1084,8 @@ public abstract class MonitorHolder implements Runnable {
      * Not thread safe: please ensure you're calling this only from
      * one thread (i.e. within the scanLock)
      *
-     * @param created the list to which created files will be added
-     * @param deleted the list to which deleted files will be added
+     * @param created  the list to which created files will be added
+     * @param deleted  the list to which deleted files will be added
      * @param modified the list to which modified files will be added
      */
     private void scanForUpdates(Collection<File> created, Collection<File> deleted, Collection<File> modified) {
@@ -1135,8 +1135,8 @@ public abstract class MonitorHolder implements Runnable {
     /**
      * Processes file refresh operations for specific listeners.
      *
-     * @param doFilterPaths The filter indicator. If true, input paths are filtered against pending file events.
-     *            If false, all pending file events are processed.
+     * @param doFilterPaths  The filter indicator. If true, input paths are filtered against pending file events.
+     *                           If false, all pending file events are processed.
      * @param listenerFilter The filter string that allows only those listeners with a matching id to be called to process the event.
      */
     void processFileRefresh(boolean doFilterPaths, String listenerFilter) {

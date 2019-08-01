@@ -18,7 +18,7 @@ if [ -z $templateOpt ]; then
 fi
 
 usage() {
-    echo "Usage: $0 {start|stop|restart} serverName {defaultServer|javaee7|javee8|microProfile1|microProfile2|springBoot1|springBoot2|webProfile7|webProfile8}"
+    echo "Usage: $0 {start|stop|restart} serverName {defaultServer|javaee7|javee8|microProfile1|microProfile2|microProfile3|springBoot1|springBoot2|webProfile7|webProfile8}"
 }
 
 start() {
@@ -31,7 +31,7 @@ stop() {
 
 create() {
     su - openliberty -c '$0/bin/server create $1 --template=$2' -- $iD $serverName $templateOpt
-    su - openliberty -c 'printf "\nLOG_DIR=/var/log/openliberty/$0" >> /var/local/openliberty/usr/servers/$0/server.env' -- $serverName
+    su - openliberty -c 'printf "\nLOG_DIR=/var/log/openliberty/$0" >> /var/lib/openliberty/usr/servers/$0/server.env' -- $serverName
 }
 
 case "$1" in

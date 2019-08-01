@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.rest/resources/com/ibm/ws/jbatch/rest/resources/RestMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains:
+# 0151 - 0199: com.ibm.ws.jbatch.rest
+# 
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.instance.not.found=CWWKY0151E: Es wurde keine Jobinstanz f\u00fcr die Instanz-ID {0} gefunden.
+job.instance.not.found.explanation=Diese Fehlernachricht wird ausgegeben, wenn eine ung\u00fcltige Instanz-ID in der REST-Anforderung verwendet wird.
+job.instance.not.found.useraction=\u00dcberpr\u00fcfen Sie die \u00fcbergebene REST-Anforderung, um sicherzustellen, dass die \u00fcbergebene Instanz-ID g\u00fcltig ist.
+
+in.memory.search.not.supported=CWWKY0152E: Die Aufruf-URL der REST-API f\u00fcr das Stapelmanagement wird f\u00fcr speicherinterne Stapelpersistenz nicht unterst\u00fctzt.
+in.memory.search.not.supported.explanation=Die REST-API f\u00fcr das Stapelmanagement wurde mit einer Kombination von Pfad- und Abfrageparametern aufgerufen, die der Server zwar erkennt, die aber bei der Verwendung der speicherinternen Stapelpersistenz nicht unterst\u00fctzt wird. Diese URL wird m\u00f6glicherweise bei der Verwendung der Datenbankoption f\u00fcr die Stapelpersistenz unterst\u00fctzt.
+in.memory.search.not.supported.useraction=Verwenden Sie Version "v1" der REST-API f\u00fcr das Stapelmanagement, die die speicherinterne Stapelpersistenz unterst\u00fctzt.
+
+db.tables.not.created.for.jobparm.search=CWWKY0153E: Die Job-Repository-Datenbank unterst\u00fctzt das Suchen und L\u00f6schen von Jobparametern nicht, weil keine Tabelle JOBPARAMETER in der Datenbank vorhanden ist.
+db.tables.not.created.for.jobparm.search.explanation=Die REST-API f\u00fcr das Stapelmanagement wurde mit Abfrageparametern aufgerufen, um mithilfe einer Suchoperation (GET) oder einer L\u00f6schoperation (DELETE) unter Verwendung eines Jobparametermusters nach Jobinstanzen zu suchen. Dieser spezielle Suchparameter wird jedoch nur unterst\u00fctzt, wenn das Job-Repository die Tabelle JOBPARAMETER enth\u00e4lt, die in den Fixpackstufen 16.0.0.4 und h\u00f6her hinzugef\u00fcgt wurde. Wenn der von der Stapelpersistenz verwendete Datenbankspeicher mit der Standardeinstellung 'createTables=true' konfiguriert ist, wird diese Tabelle automatisch beim Start der Stapelkomponente in einem Server der Fixpackstufe 16.0.0.4 oder h\u00f6her erstellt. Wenn der Datenbankspeicher jedoch mit 'createTables=false' konfiguriert ist, muss der WebSphere-Administrator oder Datenbankadministrator die neue Tabelle gesondert erstellen, bevor eine Suche nach Jobparametern ausgef\u00fchrt wird.
+db.tables.not.created.for.jobparm.search.useraction=Anweisungen zum Migrieren der von der Datenbankpersistenz verwendeten Datenbank finden Sie in der Fixpackdokumentation.
+
+ssl.connection.unavailable=CWWKY0154I: Bei einer Verbindung mit dem Stapelendpunkt unter {0} ist ein SSL-Handshake-Fehler aufgetreten. Diese Anforderung und zuk\u00fcnftige Anforderungen werden versuchen, eine HTTP-Umleitung zur Weiterleitung an den richtigen Endpunkt zu verwenden.
+ssl.connection.unavailable.explanation=Bestimmte Aktionen, die \u00fcber die Stapel-REST-API verf\u00fcgbar sind, m\u00fcssen auf demselben Server ausgef\u00fchrt werden, auf dem der entsprechende Job ausgef\u00fchrt wurde. Wenn die Aktion auf einem anderen Server eingeleitet wird, versucht dieser Server m\u00f6glicherweise, eine neue Verbindung zu erstellen, um die Anforderung an das erforderliche Ziel weiterzuleiten. Dieser Server konnte einen SSL-Handshake mit dem Zielserver nicht ausf\u00fchren. Daher wird diese Anforderung und zuk\u00fcnftige Anforderungen versuchen, anstelle neuer Verbindungen Anforderungen umzuleiten.
+ssl.connection.unavailable.useraction=Es ist keine Aktion erforderlich.
+
+http.options.received=CWWKY0155W: An der Stapel-REST-API wurde eine HTTP-OPTIONS-Anforderung von einem Liberty-Server unter {0} empfangen. Dies ist das Ergebnis eines Verbindungsversuchs von einem anderen Liberty-Server, der das Admin Center hostet. Konfigurieren Sie CORS auf diesem Server, um Anforderungen von dem Server zu akzeptieren, der das Admin Center hostet, um dieses Problem zu beheben.
+http.options.received.explanation=Bestimmte Aktionen, die \u00fcber die Stapel-REST-API verf\u00fcgbar sind, m\u00fcssen auf demselben Server ausgef\u00fchrt werden, auf dem der entsprechende Job ausgef\u00fchrt wurde. Wenn die Aktion auf einem anderen Server eingeleitet wird, versucht dieser Server m\u00f6glicherweise, eine neue Verbindung zu erstellen, um die Anforderung an das erforderliche Ziel weiterzuleiten. CORS (Cross-Origin Resource Sharing) ist nicht so konfiguriert, dass eine solche Verbindung von einem Server zu einem anderen hergestellt werden darf. Daher konnte diese Anforderung nicht ausgef\u00fchrt werden.
+http.options.received.useraction=Konfigurieren Sie CORS, um Verbindungen f\u00fcr die Stapel-REST-API von dem Server, der das Admin Center hostet, an diesen Server zuzulassen.

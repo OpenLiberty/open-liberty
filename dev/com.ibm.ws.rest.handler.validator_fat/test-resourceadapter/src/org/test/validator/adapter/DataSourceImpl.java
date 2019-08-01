@@ -40,7 +40,7 @@ public class DataSourceImpl implements DataSource {
     @Override
     public Connection getConnection(String user, String password) throws SQLException {
         ConnectionSpecImpl conSpec = new ConnectionSpecImpl();
-        conSpec.setJDBC(true);
+        conSpec.setConnectionImplClass(JDBCConnectionImpl.class.getName());
         if (user != null)
             conSpec.setUserName(user);
         if (password != null)
