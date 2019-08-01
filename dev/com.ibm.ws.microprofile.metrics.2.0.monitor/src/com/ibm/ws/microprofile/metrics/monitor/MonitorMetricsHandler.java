@@ -128,6 +128,12 @@ public class MonitorMetricsHandler {
 			Set<ObjectInstance> mBeanObjectInstanceSet;
 			try {
 				mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
+				if (sName.contains("ThreadPoolStats")) {
+					while (mBeanObjectInstanceSet.isEmpty()) {
+						Thread.sleep(50);
+						mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
+					}
+				}
 		        for (ObjectInstance objInstance : mBeanObjectInstanceSet) {
 		            String objectName = objInstance.getObjectName().toString();
 		            String[][] data = mappingTable.getData(objectName);
