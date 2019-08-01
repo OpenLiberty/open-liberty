@@ -396,7 +396,7 @@ org.quartz-scheduler:quartz:2.2.1
 org.quartz-scheduler:quartz:2.2.1
 org.reactivestreams:reactive-streams-examples:1.0.2
 org.reactivestreams:reactive-streams:1.0.2
-org.reactivestreams:reactive-streams:1.0.2
+org.reactivestreams:reactive-streams-tck:1.0.2
 org.rnorth.duct-tape:duct-tape:1.0.7
 org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-jdk14:1.7.7
@@ -453,6 +453,7 @@ org.testcontainers:jdbc:1.12.0
 org.testcontainers:kafka:1.12.0
 org.testcontainers:postgresql:1.12.0
 org.testcontainers:testcontainers:1.12.0
+org.testng:testng:6.14.3
 org.yaml:snakeyaml:1.18
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.1
