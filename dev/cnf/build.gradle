@@ -38,22 +38,6 @@ dependencies {
     binaries "org.codehaus.plexus:plexus-utils:3.0.24"
     binaries "org.apache.ant:ant:1.9.6"
 }
-task downloadOpenLibertyPrerequisites(type:Exec){
-    if(project.hasProperty("authArgs")){
-        def authProperties = authArgs.split(",")
-        rsaKeyPath = authProperties[0]
-        scpUsername = authProperties[1]
-        workingDir "../"
-        commandLine "scp"
-        args "-i ${rsaKeyPath} ${scpUsername}@libfsfe01.hursley.ibm.com:/liberty/prereqs/ol_artifacts/wasliberty-open-liberty.zip .".split(" ")
-    }
-}
-
-task unzipOpenLiberty(type: Copy){
-    dependsOn downloadOpenLibertyPrerequisites 
-    from zipTree("../wasliberty-open-liberty.zip")
-    into new File("../unzipped-open-liberty")
-}
 
 task copyMavenLibs(type: Copy) {
         from configurations.binaries
@@ -99,7 +83,6 @@ task initialize {
 }
 
 task initializePersonalBuild{
-    dependsOn unzipOpenLiberty
     dependsOn cleanRepos
     dependsOn copyMavenLibs
     dependsOn updatePluginClasses
