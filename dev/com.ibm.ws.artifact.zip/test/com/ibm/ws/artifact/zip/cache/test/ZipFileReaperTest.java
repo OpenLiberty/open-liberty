@@ -57,7 +57,8 @@ public class ZipFileReaperTest {
     public ZipFileReaperTest() throws IOException {
         this.zipPaths = createZipPaths();
         this.ensureZipFiles(); // throws IOException
-
+        this.ensureArqFiles(); // throws IOException
+        
         this.trivialOpen = TRIVIAL_OPEN;
         this.shortOpen = SHORT_OPEN;
         this.mediumOpen = MEDIUM_OPEN;
@@ -97,6 +98,10 @@ public class ZipFileReaperTest {
             createDribbleWorkerData(41)
         };
 
+        this.arqData = new ZipTestOps[] {
+            createArqData()
+        };
+
         // '15' is 5 less than the number of test paths
         this.defaultProfile = createDefaultProfile(15);
         this.noQuickProfile = createNoQuickProfile(15);
@@ -111,98 +116,108 @@ public class ZipFileReaperTest {
             allTestOps); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testDefaultReaper_Simple() throws Exception {
         runProfile(defaultProfile, simpleWorkerData); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Simple() throws Exception {
         runProfile(noQuickProfile, simpleWorkerData); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testDefaultReaper_Burst() throws Exception {
         runProfile(defaultProfile, burstWorkerData); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Burst() throws Exception {
         runProfile(noQuickProfile, burstWorkerData); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testDefaultReaper_Overflow() throws Exception {
         runProfile(defaultProfile, overflowWorkerData); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Overflow() throws Exception {
         runProfile(noQuickProfile, overflowWorkerData); // throws Exception
     }
 
     //
 
-    @Test
+    // @Test
     public void testDefaultReaper_Scatter_One_Short() throws Exception {
         runProfile(defaultProfile, scatterWorkerData_One_Short); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Scatter_One_Short() throws Exception {
         runProfile(noQuickProfile, scatterWorkerData_One_Short); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testDefaultReaper_Scatter_One_Long() throws Exception {
         runProfile(defaultProfile, scatterWorkerData_One_Long); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Scatter_One_Long() throws Exception {
         runProfile(noQuickProfile, scatterWorkerData_One_Long); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testDefaultReaper_Scatter_Many_Short() throws Exception {
         runProfile(defaultProfile, scatterWorkerData_Many_Short); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Scatter_Many_Short() throws Exception {
         runProfile(noQuickProfile, scatterWorkerData_Many_Short); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testDefaultReaper_Scatter_Many_Long() throws Exception {
         runProfile(defaultProfile, scatterWorkerData_Many_Long); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Scatter_Many_Long() throws Exception {
         runProfile(noQuickProfile, scatterWorkerData_Many_Long); // throws Exception
     }
 
     //
 
-    @Test
+    // @Test
     public void testDefaultReaper_Dribble_One() throws Exception {
         runProfile(defaultProfile, dribbleWorkerData_One); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Dribble_One() throws Exception {
         runProfile(noQuickProfile, dribbleWorkerData_One); // throws Exception
     }    
 
-    @Test
+    // @Test
     public void testDefaultReaper_Dribble_Many() throws Exception {
         runProfile(defaultProfile, dribbleWorkerData_Many); // throws Exception
     }
 
-    @Test
+    // @Test
     public void testNoQuick_Dribble_Many() throws Exception {
         runProfile(noQuickProfile, dribbleWorkerData_Many); // throws Exception
+    }
+
+    @Test
+    public void testDefault_Arq() throws Exception {
+        runProfile(defaultProfile, arqData); // throws Exception
+    }
+
+    @Test
+    public void testNoQuick_Arq() throws Exception {
+        runProfile(noQuickProfile, arqData); // throws Exception
     }
 
     //
@@ -229,9 +244,16 @@ public class ZipFileReaperTest {
          return useZipPaths;
     }
 
-    public void ensureZipFiles() throws IOException{
+    public void ensureZipFiles() throws IOException {
         for ( int pathNo = 0; pathNo < ZIP_PATH_COUNT; pathNo++ ) {
             ensureZipFile(pathNo, zipPaths[pathNo]); // throws IOException
+        }
+    }
+
+    public void ensureArqFiles() throws IOException {
+        int pathNo = 0;
+        for ( SampleData sampleData : SAMPLE_DATA ) {
+            ensureZipFile( pathNo++, sampleData.name );
         }
     }
 
@@ -606,6 +628,76 @@ public class ZipFileReaperTest {
         return randomPattern;
     }
 
+    public static class SampleData {
+        public final String name;
+        public final int openCount;
+        public final long firstOpen, lastOpen;
+        public final long firstClose, lastClose;
+        
+        public final long openDur, pendDur;
+
+        public SampleData(
+            String name,
+            int openCount,
+            long firstOpen, long lastOpen,
+            long firstClose, long lastClose,
+            long openDur, long pendDur) {
+
+            this.name = ZIP_PATH_ROOT + "/" + name;
+
+            this.openCount = openCount;
+        
+            this.firstOpen = firstOpen;
+            this.lastOpen = lastOpen;
+        
+            this.firstClose = firstClose;
+            this.lastClose = lastClose;
+            
+            this.openDur = openDur;
+            this.pendDur = pendDur;
+        }
+
+        public void createOperations(List<ZipTestOp> ops) {
+            long openDelta = (lastOpen - firstOpen) / openCount;
+            // long closeDelta = (lastClose - firstClose) / openCount;
+            long closeDelta = openDur / openCount;
+
+            for ( int openNo = 0; openNo < openCount; openNo++ ) {
+                long openAt = firstOpen + (openNo * openDelta);
+                ops.add( new ZipTestOp( ops.size(), name, openAt, DO_OPEN) );
+
+                // long closeAt = firstClose + (openNo * closeDelta);
+                long closeAt = openAt + closeDelta;
+                ops.add( new ZipTestOp( ops.size(), name, closeAt, DO_CLOSE) );
+            }
+        }
+    }
+
+    public static final SampleData[] SAMPLE_DATA = new SampleData[] {
+        new SampleData( "arquillian-junit.jar", 8, 35439000L, 1676142000L, 37283000L, 1677358000L, 474086000L, 1167833000L ),
+        new SampleData( "arquillian-core.jar", 9, 13421000L, 1711152000L, 30729000L, 1711383000L, 536070000L, 1161890000L ),
+        new SampleData( "arquillian-testenricher-initialcontext.jar", 8, 52564000L, 1676372000L, 52796000L, 1677402000L, 377287000L, 1247550000L ),
+        new SampleData( "ef97c071-6901-4626-a774-2c34360ba9d8.war", 1, 70147000L, 7017000L, 70396000L, 70396000L, 249000L, 0L ),
+        new SampleData( "arquillian-protocol.jar", 10, 40817000L, 1680390000L, 41229000L, 1680534000L, 402384000L, 1237333000L ),
+        new SampleData( "arquillian-testenricher-cdi.jar", 7, 46458000L, 1676257000L, 46868000L, 1677384000L, 376613000L, 1254312000L ),
+        new SampleData( "arquillian-testenricher-resource.jar", 8, 56072000L, 1676433000L, 56282000L, 1677410000L, 378085000L, 1243252000L ),
+        new SampleData( "arquillian-testenricher-ejb.jar", 8, 49938000L, 1676315000L, 50161000L, 1677394000L, 378917000L, 1248537000L ),
+        new SampleData( "arquillian-chameleon-runner.jar", 8, 2788000L, 1675987000L, 9647000L, 1676989000L, 386646000L, 1287554000L ),
+        new SampleData( "arquillian-testenricher-cdi.jar", 3, 1165627000L, 1720516000L, 1166296000L, 172069100L, 997000L, 554066000L ),
+    };
+
+    protected ZipTestOps createArqData() {
+        List<ZipTestOp> arqOps = new ArrayList<ZipTestOp>();
+        for ( SampleData sampleData : SAMPLE_DATA ) {
+            sampleData.createOperations(arqOps);
+        }
+        ZipTestOp[] arqOpsArray = arqOps.toArray( new ZipTestOp[ arqOps.size() ]);
+
+        Arrays.sort(arqOpsArray, ZIP_TEST_OP_COMPARATOR);
+
+        return new ZipTestOps("arq", arqOpsArray);
+    }
+
     protected long trivialOpen;
     protected long shortOpen;
     protected long mediumOpen;
@@ -626,6 +718,8 @@ public class ZipFileReaperTest {
 
     protected ZipTestOps[] dribbleWorkerData_One;
     protected ZipTestOps[] dribbleWorkerData_Many;
+
+    protected ZipTestOps[] arqData;
 
     //
 
@@ -904,7 +998,7 @@ public class ZipFileReaperTest {
             } else {
                 // debug(methodName, "Close " + actionText(reaper, actualActAt));
                 @SuppressWarnings("unused")
-				ZipFileData.ZipFileState immediateState = reaper.close(path, actualActAt);
+                ZipFileData.ZipFileState immediateState = reaper.close(path, actualActAt);
                 // debug(methodName, "Closed [ " + immediateState + " ] " + actionText(reaper, actualActAt));
 
                 reaper.validate();
