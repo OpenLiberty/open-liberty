@@ -34,4 +34,6 @@ fat.project: true
 	com.ibm.ws.rest.handler.validator;version=latest,\
 	com.ibm.ws.rest.handler.validator.jca;version=latest,\
 	com.ibm.ws.rest.handler.validator.jdbc;version=latest,\
-	com.ibm.ws.security.jaas.common;version=latest
+	com.ibm.ws.security.jaas.common;version=latest,\
+	com.ibm.ws.microprofile.openapi,\
+	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0
