@@ -15,6 +15,7 @@ Subsystem-Name: Config and Validator REST API 1.0
  com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:="1.3"
 -bundles=\
  com.ibm.ws.rest.handler.config,\
+ com.ibm.ws.rest.handler.config.openapi,\
  com.ibm.ws.rest.handler.validator,\
  com.ibm.ws.rest.handler.validator.jca,\
  com.ibm.ws.rest.handler.validator.jdbc,\
