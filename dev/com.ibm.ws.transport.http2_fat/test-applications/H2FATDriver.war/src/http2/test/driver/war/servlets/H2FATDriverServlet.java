@@ -1288,6 +1288,54 @@ public class H2FATDriverServlet extends FATServlet {
         handleErrors(h2Client, testName);
     }
 
+    public void testSendPostRequestWithBody(HttpServletRequest request,
+                                    HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testSendPostRequestWithBody", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testSendPostRequestWithBody",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testSendPostRequestWithBody";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+        addFirstExpectedHeaders(h2Client);
+
+        List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
+        secondHeadersReceived.add(new H2HeaderField(":status", "200"));
+        secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+        secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+        secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        secondFrameHeaders.setHeaderFields(secondHeadersReceived);
+        h2Client.addExpectedFrame(secondFrameHeaders);
+
+        String testString = "test";
+        String s = "Request Body: " + testString +" content-length: " + testString.length();
+        FrameDataClient dataFrame = new FrameDataClient(3, s.getBytes(), 0, true, false, false);
+        h2Client.addExpectedFrame(dataFrame);
+
+
+        h2Client.sendUpgradeHeader("/H2TestModule/H2PostEchoBody");
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "POST"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", "/H2TestModule/H2PostEchoBody"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+        h2Client.sendFrame(frameHeadersToSend);
+
+        dataFrame = new FrameDataClient(3, testString.getBytes(), 0, true, false, false);
+        h2Client.sendFrame(dataFrame);
+
+        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        handleErrors(h2Client, testName);
+    }
+
+
     public void testSendHeadRequest(HttpServletRequest request,
                                     HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
