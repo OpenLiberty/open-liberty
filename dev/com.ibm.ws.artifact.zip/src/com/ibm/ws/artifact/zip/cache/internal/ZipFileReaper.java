@@ -19,8 +19,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -299,6 +297,7 @@ public class ZipFileReaper {
         private long nextReapAt;
         private long lastReapAt;
         private long nextReapDelay;
+        private String nextReapReason;
 
         // Invoked by 'ZipFileReaper.introspect(PrintWriter)'
 
@@ -320,7 +319,7 @@ public class ZipFileReaper {
             output.println("    Last Reap     [ " + toRelSec(reaperInitialAt, lastReapAt) + " (s) ]");
             output.println("    Next Reap     [ " + toRelSec(reaperInitialAt, nextReapAt) + " (s) ]");
             String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec(nextReapDelay) );
-            output.println("    Next Delay    [ " + delayText + " (s) ]");
+            output.println("    Next Delay    [ " + delayText + " (s) ] (" + nextReapReason + ")");
 
             output.println();
             output.println("  Logger [ " + logThread + " ]");
@@ -365,6 +364,7 @@ public class ZipFileReaper {
 
                 nextReapDelay = REAP_DELAY_INDEFINITE;
                 nextReapAt = initialAt;
+                nextReapReason = "Wait for first pending close";
 
                 while ( true ) {
                     lastReapAt = nextReapAt;
@@ -373,6 +373,47 @@ public class ZipFileReaper {
                     // Start an indefinite wait if and only if there are no pending closes.
                     // Upon waking, at least one pending close is expected, but
                     // is not guaranteed.
+
+                    // The reaper delay logic is fragile: Put in these extra checks to guard
+                    // against incorrectly putting the reaper in an indefinite wait, since that
+                    // cannoe be recovered.
+
+                    String errorMessage;
+
+                    ZipFileData testPending = reaper.getRipest();
+                    if ( nextReapDelay < 0L ) {
+                        if ( testPending != null ) {
+                            errorMessage = "Indefinite wait with pending [ " + testPending + " ]";
+                            nextReapDelay = reaper.getQuickPendMin();
+                            nextReapReason = "waiting on pending close (forced from indefinite)";
+                        } else {
+                            errorMessage = null;
+                            nextReapReason = "waiting for new pending close";
+                        }
+
+                    } else if ( nextReapDelay == 0L ) {
+                        errorMessage = "Incorrect explicit indefinited wait [ " + testPending + " ]";
+                        if ( testPending == null ) {
+                            nextReapDelay = REAP_DELAY_INDEFINITE;
+                            nextReapReason = "waiting for new pending close (forced from zero)";
+                        } else {
+                            nextReapDelay = reaper.getQuickPendMin();
+                            nextReapReason = "waiting on pending close (forced from zero)";
+                        }
+
+                    } else {
+                        if ( testPending == null ) {
+                            errorMessage = "Definite wait with null pending";
+                            nextReapReason = "waiting on pending close (but there are none)";
+                        } else {
+                            errorMessage = null;
+                            nextReapReason = "waiting on pending close";
+                        }
+                    }
+
+                    if ( errorMessage != null ) {
+                        Tr.error(tc, errorMessage);
+                    }
 
                     try {
                         if ( nextReapDelay < 0L ) {
@@ -927,7 +968,6 @@ public class ZipFileReaper {
     }
 
     private final ReaperLock reaperLock;
-    private static final DateFormat outputTimeFormat = new SimpleDateFormat("MM/dd/yyyy kk:mm:ss:SSS zzz");
 
     //
 
@@ -941,7 +981,7 @@ public class ZipFileReaper {
      * closes are pending and the thread should wait until a pending
      * close is available.
      */
-    private static final long REAP_DELAY_INDEFINITE = -1;
+    private static final long REAP_DELAY_INDEFINITE = -1L;
 
     /**
      * Reap the pending closes.
