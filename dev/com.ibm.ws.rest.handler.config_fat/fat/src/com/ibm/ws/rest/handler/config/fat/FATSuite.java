@@ -22,7 +22,8 @@ import componenttest.topology.utils.HttpUtils;
                 ConfigRESTHandlerAppDefinedResourcesTest.class,
                 ConfigRESTHandlerJCATest.class,
                 ConfigRESTHandlerJMSTest.class,
-                ConfigRESTHandlerTest.class
+                ConfigRESTHandlerTest.class,
+                ConfigOpenApiSchemaTest.class
 })
 
 public class FATSuite {
