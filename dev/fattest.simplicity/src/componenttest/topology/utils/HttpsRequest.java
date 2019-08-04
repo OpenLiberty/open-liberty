@@ -233,7 +233,7 @@ public class HttpsRequest {
                     return type.cast(out.toString("UTF-8"));
                 } else
                     throw new IllegalArgumentException(type.getName());
-            } else {
+            } else if (con.getErrorStream() != null) {
                 if (JsonArray.class.equals(type))
                     return type.cast(Json.createReader(con.getErrorStream()).readArray());
                 else if (JsonObject.class.equals(type))
@@ -250,6 +250,8 @@ public class HttpsRequest {
                     return type.cast(out.toString("UTF-8"));
                 } else
                     throw new IllegalArgumentException(type.getName());
+            } else {
+                return null;
             }
         } finally {
             con.disconnect();
