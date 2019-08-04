@@ -48,9 +48,9 @@
         </div>
     </div>
 
-    <table id="ca_table" class="tool_table" aria-describedby="ca_desc">
+    <table id="ca_table" role="grid" class="tool_table" aria-labelledby="ca_desc" aria-describedby="ca_desc">
         <thead>
-            <tr>
+            <tr role="row">
                 <th id="table_client_name_column" class="table_sort_column" type="button" tabIndex="0" data-externalizedString="CLIENT_NAME"  role="columnheader" aria-sort="none" scope="col">
                     <span id="table_client_name_sort" class="table_sort_direction" data-sortDir="none">
                         <img src='../../WEB-CONTENT/common/images/caretSortUnknown.svg' data-externalizedStringAlt="CLICK_TO_SORT" data-externalizedStringTitle="CLICK_TO_SORT">

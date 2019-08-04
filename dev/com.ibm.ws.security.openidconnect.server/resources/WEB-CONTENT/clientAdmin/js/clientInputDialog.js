@@ -124,7 +124,7 @@ var clientInputDialog = (function() {
                     event.preventDefault();
                     var $dropDownList = $(this).parent().siblings('.tool_multiSelect_dropdown');
                     // Un-select ALL selections.
-                    $dropDownList.find('input:checked').prop('checked', false).attr({'aria-selected': false, 'aria-checked': false});
+                    $dropDownList.find('input:checked').prop('checked', false).attr('aria-checked', false);
                     $dropDownList.find('.tool_multiSelect_menuItem').attr('aria-selected', false);
                     // Update the list of selected elements from the selection list
                     __updateSelectionValues($dropDownList);
@@ -165,11 +165,11 @@ var clientInputDialog = (function() {
                     var $checkbox = $(this).find("input[type='checkbox']");
                     if ($checkbox.prop("checked")) {
                         $checkbox.prop("checked", false);
-                        $checkbox.attr({"aria-checked": false, "aria-selected": false});
+                        $checkbox.attr("aria-checked", false);
                         $(this).attr('aria-selected', false).focus();
                     } else {
                         $checkbox.prop("checked", true);
-                        $checkbox.attr({"aria-checked": true, "aria-selected": true});
+                        $checkbox.attr("aria-checked", true);
                         $(this).attr('aria-selected', true).focus();
                     }
     
@@ -497,7 +497,7 @@ var clientInputDialog = (function() {
                 "           <div class='tool_multiSelect_menuItem' role=option tabindex='-1' data-default=" + defaultValue + ">" +
                 "               <div class='tool_multiSelect_menuItem_option'>" +
                 "                   <div class='tool_checkbox_wrapper'>" +
-                "                       <input id='" + optionId + "' class='tool_checkbox' type='checkbox' value='" + option.value + "'>" +
+                "                       <input id='" + optionId + "' class='tool_checkbox' type='checkbox' role='checkbox' aria-checked='false' value='" + option.value + "'>" +
                 "                       <label class='tool_checkbox_label' for='" + optionId + "'>" + option.value + "</label>" +
                 "                   </div>" +
                 "               </div>" + 
@@ -531,7 +531,7 @@ var clientInputDialog = (function() {
             var optionId = 'rb_' + option.value.replace(/\s/g, '__');
             var defaultValue = option.value === fldDefault;
             field +=
-                "       <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + "></input>" +
+                "       <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + "></input>" +
                 "       <label for='" + optionId + "' class='tool_modal_radio_button_label'>" +
                 "           <span class='tool_modal_radio_button_appearance'></span>" + 
                 "           " + option.value + 
@@ -558,7 +558,7 @@ var clientInputDialog = (function() {
             "<div class='tool_modal_body_field'>" +
             "   <label class='tool_modal_body_field_label'>" + fldName + "</label>" +
             "   <div id='" + fldId + "' class='tool_checkbox_wrapper tool_single_checkbox'>" +
-            "       <input id='" + fldId + "_box' class='tool_checkbox' type='checkbox' value='" + fldOptionValue + "'>" +
+            "       <input id='" + fldId + "_box' class='tool_checkbox' type='checkbox' role='checkbox' aria-checked='false' value='" + fldOptionValue + "'>" +
             "       <label class='tool_checkbox_label' for='" + fldId + "_box'>" + fldOptionLabel + "</label>" +
             "   </div>" + 
             "</div>";
@@ -578,14 +578,14 @@ var clientInputDialog = (function() {
             "       <legend class='tool_modal_body_field_label'>" + fldName + "</legend>" +
             "       <div class='tool_modal_body_field_helper_text'>" + fldDescription + "</div>" +
             "       <div class='tool_modal_radio_button_horizontal_wrapper'>" +
-            "           <input id='" + fldId + "-true' class='tool_modal_radio_button' type='radio' name='" + fldId + "' value='true'";
+            "           <input id='" + fldId + "-true' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='true'";
         field += fldDefault === 'true' ? " data-default='true'" : " data-default='false'";
         field +=
             "></input>" +
             "           <label for='" + fldId + "-true' class='tool_modal_radio_button_label'>" +
             "               <span class='tool_modal_radio_button_appearance'></span>" + messages.TRUE + 
             "           </label>" +
-            "           <input id='" + fldId + "-false' class='tool_modal_radio_button' type='radio' name='" + fldId + "' value='false'";
+            "           <input id='" + fldId + "-false' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='false'";
         field += fldDefault === 'false' ? " data-default='true'" : " data-default='false'";
         field += 
             "></input>" +
@@ -701,7 +701,7 @@ var clientInputDialog = (function() {
         }
 
         // For multi-selection lists, deselect all checkboxes and hide the selection list
-        $('#add_edit_client_modal .tool_multiSelect_dropdown input:checkbox').prop('checked', false).attr({'aria-selected': false, 'aria-checked': false});
+        $('#add_edit_client_modal .tool_multiSelect_dropdown input:checkbox').prop('checked', false).attr('aria-checked', false);
         $('#add_edit_client_modal .tool_multiSelect_dropdown>.tool_multiSelect_menuItem').attr('aria-selected', false);
         var $selectionListButtons = $('#add_edit_client_modal .tool_multiSelect_field');
         for (var i=0; i<$selectionListButtons.length; i++) {
@@ -730,7 +730,7 @@ var clientInputDialog = (function() {
         // Array fields ... no known defaults set
 
         // Multi-selection lists ... check default values and identify selections on drop-down button
-        $("#add_edit_client_modal .tool_multiSelect_menuItem[data-default='true']").attr('aria-selected', true).find("input.tool_checkbox").prop('checked', true).attr({'aria-selected': true, 'aria-checked': true});
+        $("#add_edit_client_modal .tool_multiSelect_menuItem[data-default='true']").attr('aria-selected', true).find("input.tool_checkbox").prop('checked', true).attr('aria-checked', true);
         $("#add_edit_client_modal .tool_multiSelect_dropdown").each(function() {
             __updateSelectionValues($(this));
         });
@@ -1079,7 +1079,7 @@ var clientInputDialog = (function() {
             for (var listboxX=0; listboxX<listboxVals.length; listboxX++) {
                 // For each value returned, find its corresponding checkbox and select it.
                 var $checkbox = $dropDownList.find("input[type='checkbox'][value='" + listboxVals[listboxX] + "']");
-                $checkbox.prop('checked', true).attr({'aria-selected': true, 'aria-checked': true}).closest('.tool_multiSelect_menuItem').attr('aria-selected', true);
+                $checkbox.prop('checked', true).attr('aria-checked', true).closest('.tool_multiSelect_menuItem').attr('aria-selected', true);
             }
             __updateSelectionValues($dropDownList);
         });
