@@ -104,11 +104,6 @@ public class KeyStoreServiceImpl implements KeyStoreService {
         return alist.toArray(new String[] {});
     }
 
-    @Override
-    public int getKeyStoreCount() {
-        return ksMgr.getKeyStoreCount();
-    }
-
     /** {@inheritDoc} */
     @Override
     public String getKeyStoreLocation(String keyStoreName) throws KeyStoreException {

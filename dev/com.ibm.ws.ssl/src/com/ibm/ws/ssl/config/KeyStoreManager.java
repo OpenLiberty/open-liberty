@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -201,20 +199,6 @@ public class KeyStoreManager {
     public String[] getKeyStoreAliases() {
         Set<String> set = keyStoreMap.keySet();
         return set.toArray(new String[set.size()]);
-    }
-
-    /**
-     * @return total number of unique keystore entries in map. (Filter out duplicates representing same keystore).
-     */
-    public int getKeyStoreCount() {
-        // each keystore usually has two entries in map, it's name and it's service reference name.
-        // traverse the map to find the unique ones based on name, and return the count of that.
-        HashSet uniqueIds = new HashSet();
-        Iterator<Entry<String, WSKeyStore>> it = keyStoreMap.entrySet().iterator();
-        while (it.hasNext()) {
-            uniqueIds.add(it.next().getValue().getName());
-        }
-        return uniqueIds.size();
     }
 
     /**

@@ -24,8 +24,8 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -33,8 +33,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.regex.Pattern;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
@@ -45,11 +45,12 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
 import com.ibm.ws.security.openidconnect.server.ServerConstants;
 import com.ibm.ws.security.openidconnect.server.plugins.OIDCProvidersConfig;
 import com.ibm.ws.ssl.KeyStoreService;
+import com.ibm.ws.ssl.config.KeyStoreManager;
+import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -79,7 +80,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     public static final String CFG_KEY_CUSTOM_CLAIMS = "customClaims";
     public static final String CFG_KEY_JTI_CLAIM_ENABLED = "jtiClaimEnabled";
     public static final String CFG_KEY_KEYSTORE_REF = "keyStoreRef";
-    public static final String CFG_KEYSTORE_REF_DEFAULT = "opKeyStore";
     public static final String CFG_KEY_KEY_ALIAS_NAME = "keyAliasName";
     public static final String CFG_KEY_TRUSTSTORE_REF = "trustStoreRef";
     public static final String CFG_KEY_SESSION_MANAGED = "sessionManaged";
@@ -219,7 +219,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             writeLock.unlock();
         }
     }
-
+    
     protected void setSslSupport(ServiceReference<SSLSupport> ref) {
         sslSupportRef.setReference(ref);
     }
@@ -231,6 +231,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     protected void unsetSslSupport(ServiceReference<SSLSupport> ref) {
         sslSupportRef.unsetReference(ref);
     }
+
 
     protected synchronized void activate(ComponentContext cc, Map<String, Object> props) {
         writeLock.lock();
@@ -291,7 +292,8 @@ public class OidcServerConfigImpl implements OidcServerConfig {
 
         // Let runtime reset issuerIdentifier to default
         if (httpsRequired && !issuer.contains(HTTPS_SCHEME)) {
-            Tr.warning(tc, "OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS", new Object[] { issuer });
+            Tr.warning(tc, "OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS", new Object[]
+            { issuer });
             issuer = null;
         }
         return issuer;
@@ -317,7 +319,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         customClaims = newCustomClaims(aCustomClaims);
         jtiClaimEnabled = (Boolean) props.get(CFG_KEY_JTI_CLAIM_ENABLED);
         sessionManaged = (Boolean) props.get(CFG_KEY_SESSION_MANAGED);
-        keyStoreRef = trimIt(fixUpKeyStoreRef((String) props.get(CFG_KEY_KEYSTORE_REF)));
+        keyStoreRef = trimIt((String) props.get(CFG_KEY_KEYSTORE_REF));
         keyAliasName = trimIt((String) props.get(CFG_KEY_KEY_ALIAS_NAME));
         trustStoreRef = trimIt((String) props.get(CFG_KEY_TRUSTSTORE_REF));
         idTokenLifetime = (Long) props.get(CFG_KEY_ID_TOKEN_LIFETIME);
@@ -421,7 +423,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         requestUriParameterSupported = (Boolean) discovery.get(CFG_KEY_REQUEST_URI_PARAMETER_SUPPORTED);
         requireRequestUriRegistration = (Boolean) discovery.get(CFG_KEY_REQUIRE_REQUEST_URI_REGISTRATION);
         backingIdpUriPrefix = trimIt((String) discovery.get(CFG_KEY_BACKING_IDP_URI_PREFIX));
-        authProxyEndpointUrl = trimIt(discovery.getProperty(CFG_KEY_AUTH_PROXY_ENDPOINT_URL));
+        authProxyEndpointUrl = trimIt((String) discovery.getProperty(CFG_KEY_AUTH_PROXY_ENDPOINT_URL));
     }
 
     /** {@inheritDoc} */
@@ -632,12 +634,12 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             readLock.unlock();
         }
     }
-
+    
     public SSLSupport getSSLSupportService() {
         // TODO Auto-generated method stub
         return (sslSupportRef.getService());
     }
-
+    
     public String getDefaultKeyStoreName(String propKey) {
         String keyStoreName = null;
         // config does not specify keystore, so try to get one from servers
@@ -677,35 +679,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         }
         return keyStoreName;
     }
-
-    // usability: don't use our long-established default value if it is highly likely to be wrong.
-    // the new JwtData impl needs the keystore ref value to be correct, all the time.
-    private String fixUpKeyStoreRef(String keyStoreRef) {
-        if (!keyStoreRef.equals(CFG_KEYSTORE_REF_DEFAULT)) {
-            return keyStoreRef; // if user changed default, take what they supplied.
-        }
-        if (!keyStoreExists(keyStoreRef) && onlyOneKeyStore()) {
-            // if default is missing, use what's on the system, not the default in metatype.xml
-            return getDefaultKeyStoreName("com.ibm.ssl.keyStoreName");
-        }
-        return keyStoreRef;
-    }
-
-    @FFDCIgnore(KeyStoreException.class)
-    private boolean keyStoreExists(String keyStoreRef) {
-        KeyStoreService keyStoreService = keyStoreServiceRef.getService();
-        try {
-            keyStoreService.getKeyStoreLocation(keyStoreRef);
-        } catch (KeyStoreException k) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean onlyOneKeyStore() {
-        KeyStoreService keyStoreService = keyStoreServiceRef.getService();
-        return keyStoreService.getKeyStoreCount() == 1;
-    }
+    
 
     /** {@inheritDoc} */
     @Sensitive
@@ -771,7 +745,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
                         return null;
                     }
                 }
-
+                
             } else {
                 return null;
             }
@@ -780,6 +754,9 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         }
     }
 
+    
+ 
+
     /** {@inheritDoc} */
     @FFDCIgnore({ KeyStoreException.class, CertificateException.class })
     @Sensitive
@@ -787,55 +764,54 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         readLock.lock();
         PublicKey result = null;
         try {
-            String myKeyStoreRef = keyStoreRef;
-            KeyStoreService keyStoreService = keyStoreServiceRef.getService();
-            if (keyStoreService != null) {
-
+            String myKeyStoreRef = keyStoreRef; 
+            KeyStoreService keyStoreService = keyStoreServiceRef.getService();            
+            if(keyStoreService != null) {     
+                
                 // if keystore is the default "opKeyStore" from metatype, see if it's really there
                 String[] ksAliases = keyStoreService.getAllKeyStoreAliases();
-                if (keyStoreRef != null && keyStoreRef.equals("opKeyStore")) {
+                if (keyStoreRef != null && keyStoreRef.equals("opKeyStore")){
                     boolean keyStoreExists = false;
-                    for (int i = 0; i < ksAliases.length; i++) {
-                        if (ksAliases[i].equals(keyStoreRef)) {
+                    for(int i=0; i<ksAliases.length; i++ ){                    
+                        if (ksAliases[i].equals(keyStoreRef)){                        
                             keyStoreExists = true;
                             break;
                         }
                     }
-                    if (!keyStoreExists) {
+                    if(!keyStoreExists){
                         myKeyStoreRef = null;
                     }
                 }
                 // if only one keystore in server, try to use.
-                if (myKeyStoreRef == null) {
-                    if (ksAliases.length == 1) {
+                if ( myKeyStoreRef == null ){                 
+                    if (ksAliases.length == 1){
                         myKeyStoreRef = ksAliases[0];
                     }
-                }
-
-                if (myKeyStoreRef != null) {
-                    X509Certificate x509 = null;
-                    if (keyAliasName == null) {
-                        x509 = keyStoreService.getX509CertificateFromKeyStore(myKeyStoreRef);
-                    } else {
+                }                
+                
+                if(myKeyStoreRef != null){
+                    X509Certificate x509 = null;            
+                    if(keyAliasName == null){
+                        x509 = keyStoreService.getX509CertificateFromKeyStore(myKeyStoreRef);                
+                    } else {                    
                         x509 = keyStoreService.getX509CertificateFromKeyStore(myKeyStoreRef, keyAliasName);
                     }
-                    if (x509 != null) {
-                        result = x509.getPublicKey();
+                    if(x509 != null){
+                        result =  x509.getPublicKey();
                     }
                 }
             }
-        } catch (KeyStoreException ke) {
-        } catch (CertificateException ce) {
-        } finally {
+        } catch (KeyStoreException ke) {            
+        } catch(CertificateException ce) {            
+        }
+        finally {
             readLock.unlock();
         }
         return result;
     }
-
     /**
      * Determines if the session management is enabled.
      */
-    @Override
     public boolean isSessionManaged() {
         readLock.lock();
         try {
@@ -845,7 +821,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         }
     }
 
-    @Override
     public long getIdTokenLifetime() {
         readLock.lock();
         try {
@@ -856,7 +831,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     }
 
     /** {@inheritDoc} */
-    @Override
     public String getCheckSessionIframeEndpointUrl() {
         readLock.lock();
         try {
@@ -1035,26 +1009,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         }
     }
 
-    @Override
-    public String getKeyStoreRef() {
-        readLock.lock();
-        try {
-            return keyStoreRef;
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    @Override
-    public String getKeyAliasName() {
-        readLock.lock();
-        try {
-            return keyAliasName;
-        } finally {
-            readLock.unlock();
-        }
-    }
-
     /** {@inheritDoc} */
     @Override
     public Pattern getProtectedEndpointsPattern() {
@@ -1092,11 +1046,11 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             if (bHasOne) {
                 pattern = pattern.concat("|");
             }
-            ep = st.nextToken();
+            ep = st.nextToken();            
             if (OAuth20Constants.AUTHORIZE_URI.equals(ep)) {
                 pattern = pattern.concat(ep);
             } else {
-                // accept ep, ep/ ep/(anything)
+                // accept ep, ep/ ep/(anything) 
                 pattern = pattern.concat(ep + "|" + ep + "/.*");
             }
             bHasOne = true;
@@ -1112,7 +1066,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
      * @return
      */
     private Pattern handleOidcPattern() {
-        String pattern = "/oidc/(endpoint|providers)/" + providerId + "/.*"; // later on, need to take off end_session check_session_iframe
+        String pattern = "/oidc/(endpoint|providers)/" + providerId + "/.*"; // later on, need to take off end_session check_session_iframe 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Pattern:" + pattern);
         }
@@ -1123,14 +1077,13 @@ public class OidcServerConfigImpl implements OidcServerConfig {
      * @return
      */
     private Pattern handleNonOidcPattern() {
-        String pattern = "/oidc/(endpoint|providers)/" + providerId + "/(end_session|check_session_iframe)"; // take off end_session check_session_iframe
+        String pattern = "/oidc/(endpoint|providers)/" + providerId + "/(end_session|check_session_iframe)"; // take off end_session check_session_iframe 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Non Pattern:" + pattern);
         }
         return Pattern.compile(pattern);
     }
 
-    @Override
     public boolean isJwkEnabled() {
         return this.jwkEnabled;
     }
@@ -1146,8 +1099,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
 
         jwkProvider = new JWKProvider(jwkSigningKeySize, signatureAlgorithm, jwkRotationTime);
     }
-
-    @Override
+  
     public String getJwkJsonString() {
         if (isJwkEnabled()) {
             return jwkProvider.getJwkSetString();
@@ -1155,14 +1107,13 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         jwkProvider = getJwkProviderWithX509();
         if (jwkProvider != null) {
             return jwkProvider.getJwkSetString();
-        }
+        }        
         // CWWKS1640W
-        Tr.warning(tc, "OIDC_SERVER_JWK_NOT_AVAILABLE", new Object[] {});
+        Tr.warning(tc, "OIDC_SERVER_JWK_NOT_AVAILABLE", new Object[]{});                      
         return null;
     }
-
-    @Override
-    public JSONWebKey getJSONWebKey() {
+    
+    public JSONWebKey getJSONWebKey(){
         if (isJwkEnabled()) {
             return jwkProvider.getJWK();
         }
@@ -1172,33 +1123,33 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         }
         return null;
     }
-
+    
     @FFDCIgnore({ KeyStoreException.class, CertificateException.class })
     private JWKProvider getJwkProviderWithX509() {
         JWKProvider jwkX509Provider = null;
         if (signatureAlgorithm.equals("RS256") && !ServerConstants.JAVA_VERSION_6) {
             PublicKey publicKey = null;
             PrivateKey privateKey = null;
-            try {
+            try{ 
                 publicKey = getX509PublicKey();
                 privateKey = getPrivateKey();
-            } catch (KeyStoreException k) {
-            } catch (CertificateException c) {
+            }
+            catch(KeyStoreException k){
+            }
+            catch(CertificateException c){
             }
             if (publicKey != null) {
                 jwkX509Provider = new JWKProvider(jwkSigningKeySize, signatureAlgorithm, jwkRotationTime, publicKey, privateKey);
                 //return jwkProvider.getJWK();
-            }
+            } 
         }
         return jwkX509Provider;
     }
 
-    @Override
     public long getJwkRotationTime() {
         return this.jwkRotationTime;
     }
 
-    @Override
     public int getJwkSigningKeySize() {
         return this.jwkSigningKeySize;
     }
@@ -1211,7 +1162,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         return new HashSet<String>(this.customClaims);
     }
 
-    @Override
     public boolean allowDefaultSsoCookieName() {
         return this.allowLtpaToken2Name;
     }
