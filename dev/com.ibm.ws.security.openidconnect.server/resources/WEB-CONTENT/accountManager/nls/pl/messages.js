@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Usuń",
     "DONE": "Gotowe",
     "EDIT": "Edytuj",
+    "FALSE": "Fałsz",
     "GENERATE": "Generuj",
     "LOADING": "Trwa ładowanie",
     "LOGOUT": "Wylogowanie",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "Przetwarzanie",
     "REGENERATE": "Wygeneruj ponownie",
     "REGISTER": "Zarejestruj",
+    "TABLE_FIELD_SORT_ASC": "Tabela jest sortowana według {0} w kolejności rosnącej.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabela jest sortowana według {0} w kolejności malejącej.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Prawda",
     "TRY_AGAIN": "Spróbuj ponownie...",
     "UPDATE": "Aktualizuj",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Zarządzanie znacznikami osobistymi",
     "ACCT_MGR_DESC": "Twórz, usuwaj i generuj ponownie elementy app-password i app-token.",
-    "ADD_NEW_AUTHENTICATION": "Dodaj nowy element app-password lub app-token",
+    "ADD_NEW_AUTHENTICATION": "Dodaj nowy element app-password lub app-token.",
     "NAME_IDENTIFIER": "Nazwa: {0}",
     "ADD_NEW_TITLE": "Rejestrowanie nowego uwierzytelnienia",
     "NOT_GENERATED_PLACEHOLDER": "Nie wygenerowano",
+    "AUTHENTICAION_GENERATED": "Wygenerowano uwierzytelnienie",
+    "GENERATED_APP_PASSWORD": "Wygenerowano element app-password",
+    "GENERATED_APP_TOKEN": "Wygenerowano element app-token",
+    "COPY_APP_PASSWORD": "Skopiuj element app-password do schowka",
+    "COPY_APP_TOKEN": "Skopiuj element app-token do schowka",
     "REGENERATE_APP_PASSWORD": "Wygeneruj ponownie element App-Password",
     "REGENERATE_PW_WARNING": "To działanie spowoduje zastąpienie bieżącego elementu app-password.",
     "REGENERATE_PW_PLACEHOLDER": "Hasło zostało wcześniej wygenerowane dnia {0}",        // 0 - date

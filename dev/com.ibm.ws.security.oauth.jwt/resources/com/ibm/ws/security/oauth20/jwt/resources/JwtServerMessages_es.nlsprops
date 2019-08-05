@@ -127,6 +127,7 @@ JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.useraction=Aseg\u00farese de que la configura
 JWT_TOKEN_NO_PUBLIC_KEY_ERR=CWWKS2270E: La solicitud de punto final de se\u00f1al ha fallado. No se puede obtener un almac\u00e9n de confianza para verificar la se\u00f1al JWT. El algoritmo de firma para la verificaci\u00f3n en el proveedor de OpenID Connect es [{0}]. 
 JWT_TOKEN_NO_PUBLIC_KEY_ERR.explanation=El proveedor de OpenID Connect no puede obtener un almac\u00e9n de confianza para verificar la se\u00f1al JWT. La configuraci\u00f3n del openidConnectProvider debe ser correcta. 
 JWT_TOKEN_NO_PUBLIC_KEY_ERR.useraction=Aseg\u00farese de que las configuraciones de jwtGrantType y trustStoreRef en openidConnectProvider son correctas y aseg\u00farese tambi\u00e9n de que la ubicaci\u00f3n de trustStore y la contrase\u00f1a son correctas. 
+
 JWT_UNEXPECTED_ERR=CWWKS2271E: Durante el proceso de solicitud del punto final de la se\u00f1al, el proveedor de OpenID Connect no se ha podido procesar debido a ({0}].
 JWT_UNEXPECTED_ERR.explanation=El proveedor de OpenID Connect recibe un error inesperado
 JWT_UNEXPECTED_ERR.useraction=Aseg\u00farese de que la configuraci\u00f3n es correcta. Si el problema persiste, p\u00f3ngase en contacto con IBM.

@@ -56,9 +56,8 @@ def setProperties = { props ->
     props.setProperty('is.public.publishing',     isPublicPublishing.toString())
     props.setProperty('disable.run.runUnitTests', isUnittestsDisabled.toString())
 
-    //Set to false for now to avoid zip issues
-    //boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
-    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
+    //Sets my RPM/DEB flag to true on every release build
+    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
     props.setProperty('build.os.native.packages', isBuildOsNativePackages.toString())
 
     gradle.rootProject { rootProject ->

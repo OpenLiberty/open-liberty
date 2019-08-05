@@ -160,6 +160,9 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
 
     @Override
     public OAuth20ConfigProvider get20Configuration() {
+        if (_log.isLoggable(Level.FINEST)) {
+            _log.logp(Level.FINEST, CLASS, "get20Configuration", "get20Configuration returns ["+_config20+"]");
+        }
         return _config20;
     }
 
@@ -1932,7 +1935,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
          * Send it with some recommended headers
          */
         if (finestLoggable) {
-            _log.logp(Level.FINEST, CLASS, methodName, "Sending redirect to: " + redirect);
+            _log.logp(Level.FINEST, CLASS, methodName,  "_SSO OP redirecting to [" + redirect +"]");
         }
         response.setHeader(OAuth20Constants.HEADER_CACHE_CONTROL, OAuth20Constants.HEADERVAL_CACHE_CONTROL);
         response.setHeader(OAuth20Constants.HEADER_PRAGMA, OAuth20Constants.HEADERVAL_PRAGMA);

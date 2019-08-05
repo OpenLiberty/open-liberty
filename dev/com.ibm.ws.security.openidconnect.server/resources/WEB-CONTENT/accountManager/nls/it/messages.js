@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Elimina",
     "DONE": "Eseguito",
     "EDIT": "Modifica",
+    "FALSE": "False",
     "GENERATE": "Genera",
     "LOADING": "Caricamento",
     "LOGOUT": "Logout",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "In elaborazione",
     "REGENERATE": "Rigenera",
     "REGISTER": "Registra",
+    "TABLE_FIELD_SORT_ASC": "La tabella è ordinata per {0} in sequenza crescente. ",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "La tabella è ordinata per {0} in sequenza decrescente. ", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "Riprova...",
     "UPDATE": "Aggiorna",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Gestisci token personali",
     "ACCT_MGR_DESC": "Crea, elimina e rigenera password e token app.",
-    "ADD_NEW_AUTHENTICATION": "Aggiungi nuova password o token app",
+    "ADD_NEW_AUTHENTICATION": "Aggiungi nuova password o token app.",
     "NAME_IDENTIFIER": "Nome: {0}",
     "ADD_NEW_TITLE": "Registra nuova autenticazione",
     "NOT_GENERATED_PLACEHOLDER": "Non generato",
+    "AUTHENTICAION_GENERATED": "Autenticazione generata",
+    "GENERATED_APP_PASSWORD": "Password app generata",
+    "GENERATED_APP_TOKEN": "Token app generato",
+    "COPY_APP_PASSWORD": "Copia password app negli appunti",
+    "COPY_APP_TOKEN": "Copia token app negli appunti",
     "REGENERATE_APP_PASSWORD": "Rigenera password app",
     "REGENERATE_PW_WARNING": "Questa azione sovrascriverà la password app corrente.",
     "REGENERATE_PW_PLACEHOLDER": "Password precedentemente generata il {0}",        // 0 - date

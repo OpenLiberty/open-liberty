@@ -40,6 +40,7 @@ import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.filter.internal.AuthFilterConfig;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
+import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.oauth20.util.OAuth20ProviderUtils;
 import com.ibm.ws.security.openidconnect.client.AccessTokenAuthenticator;
@@ -269,6 +270,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             String provider,
             ReferrerURLCookieHandler referrerURLCookieHandler,
             boolean beforeSso) {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO RP PROCESS IS STARTING.");
+            Tr.debug(tc, "OIDC _SSO RP inbound URL "+WebUtils.getRequestStringForTrace(req, "client_secret"));
+        }
         PostParameterHelper.savePostParams((SRTServletRequest) req);
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
         OidcClientRequest oidcClientRequest = new OidcClientRequest(req, res, oidcClientConfig, referrerURLCookieHandler);
@@ -276,6 +281,9 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         ProviderAuthenticationResult result = authenticate(req, res, provider, referrerURLCookieHandler, beforeSso, oidcClientConfig, oidcClientRequest);
         // handle the result when it's OAuthChallengeReply
         handleOauthChallenge(res, result);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO RP PROCESS HAS ENDED.");
+        }
         return result;
     }
 
@@ -350,6 +358,9 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         if (initOidcClientAuth) {
             synchronized (initOidcClientAuthLock) {
                 if (initOidcClientAuth) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Initializing authenticator objects");
+                    }
                     oidcClientAuthenticator = new OidcClientAuthenticator(sslSupportRef);
                     accessTokenAuthenticator = new AccessTokenAuthenticator(sslSupportRef);
                     initOidcClientAuth = false;

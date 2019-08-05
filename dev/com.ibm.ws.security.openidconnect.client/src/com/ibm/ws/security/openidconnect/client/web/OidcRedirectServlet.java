@@ -182,7 +182,7 @@ public class OidcRedirectServlet extends HttpServlet {
             postToWASReqURL(request, response, requestUrl, oidcClientId); //  implicit flow???
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "... expect to be redirected by the browser:" + requestUrl);
+                Tr.debug(tc, "OIDC _SSO RP Servlet redirecting to [" + requestUrl +"]");
             }
             response.sendRedirect(requestUrl); // send back to protected resource
         }
@@ -293,7 +293,7 @@ public class OidcRedirectServlet extends HttpServlet {
         sb.append("<button type=\"submit\" name=\"redirectform\">Process Form Post</button></FORM></BODY></HTML>");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "... expect to be redirected by the browser (\"" + "POST" + "\")\n" + sb.toString());
+            Tr.debug(tc, "OIDC _SSO RP redirecting (\"" + "POST" + "\")\n" + sb.toString());
         }
 
         // HTTP 1.1.
@@ -373,7 +373,7 @@ public class OidcRedirectServlet extends HttpServlet {
         sb.append("</div></noscript>");
         sb.append("</FORM></BODY></HTML>");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "... expect to be redirected by the browser\n" +
+            Tr.debug(tc, "OIDC _SSO RP redirecting\n" +
                     sb.toString());
         }
 

@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.KafkaTlsContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls.KafkaTlsTest;
 
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;

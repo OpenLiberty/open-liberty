@@ -20,7 +20,7 @@ Bundle-Description: Validator for JCA connection factories; version=${bVersion}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-WS-TraceGroup: validator.rest
+WS-TraceGroup: rest.validation
 
 Private-Package:\
   com.ibm.ws.rest.handler.validator.jca.*,\

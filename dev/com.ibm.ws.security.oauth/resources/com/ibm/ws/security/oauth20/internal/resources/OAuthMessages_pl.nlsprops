@@ -389,7 +389,7 @@ OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: \u017b\u0105danie {0} wys\
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Tylko u\u017cytkownicy o roli tokenManager mog\u0105 poda\u0107 atrybut user_id dla tego identyfikatora URI \u017c\u0105dania.
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c wymagan\u0105 rol\u0119 tokenManager i poprawny identyfikator u\u017cytkownika.
 
-OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Brak ID klienta, klucza tajnego klinenta lub obu tych warto\u015bci.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Brak ID klienta, klucza tajnego klienta lub obu tych warto\u015bci.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=Wskazane \u017c\u0105danie jest niepoprawne. Poprawne warto\u015bci identyfikatora klienta i klucza tajnego klienta musz\u0105 zosta\u0107 podane w nag\u0142\u00f3wku Authorization \u017c\u0105dania wys\u0142anego do tego identyfikatora URI.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Popraw \u017c\u0105danie. Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c poprawny identyfikator klienta i klucz tajny klienta w nag\u0142\u00f3wku Authorization.
 
@@ -435,6 +435,15 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Sprawd\u017a, czy to \u017c\u0105dan
 OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: \u017b\u0105danie wys\u0142ane do identyfikatora URI {0} zosta\u0142o zignorowane, poniewa\u017c ten identyfikator URI nie jest w\u0142\u0105czony. Co najmniej jeden z atrybut\u00f3w klienta lub dostawcy nie jest ustawiony. Upewnij si\u0119, \u017ce skonfigurowano atrybuty dostawcy internalClientId i internalClientSecret. Sprawd\u017a, czy skonfigurowano atrybuty klienta isEnabled, appPasswordAllowed lub appTokenAllowed.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Atrybuty klienta i dostawcy musz\u0105 by\u0107 ustawione dla tego identyfikatora URI, aby mo\u017cna by\u0142o przetwarza\u0107 \u017c\u0105dania.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Ustaw poprawnie atrybuty klienta i dostawcy, aby dostawca m\u00f3g\u0142 przetworzy\u0107 \u017c\u0105danie.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Funkcja dost\u0119pna pod adresem URI {0} wymaga \u015brodowiska 8 lub nowszego. \u017b\u0105danie zostanie zignorowane.
+JAVA8_REQUIRED.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
+JAVA8_REQUIRED.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Dostawca OpenIdConnect {0} ma ustawiony atrybut {1} w taki spos\u00f3b, \u017ce u\u017cywany jest algorytm {2}, kt\u00f3ry wymaga \u015brodowiska Java 8 lub nowszego. Podany dostawca ignoruje ustawienie {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej, aby u\u017cywa\u0107 wspomnianej opcji konfiguracyjnej.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Wylogowanie

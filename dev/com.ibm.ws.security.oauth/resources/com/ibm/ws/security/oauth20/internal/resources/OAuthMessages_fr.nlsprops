@@ -436,6 +436,15 @@ OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: La demande envoy\u00e9e \u00e0 l''URI 
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Les attributs de client et de fournisseur doivent \u00eatre d\u00e9finis pour que l'URI puisse traiter les demandes.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=D\u00e9finissez les attributs de client et de fournisseur correctement pour que le fournisseur puisse traiter la demande.
 
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Les fonctions disponibles dans l''URI {0} URI requi\u00e8rent Java 8 ou une version ult\u00e9rieure. La demande est ignor\u00e9e.
+JAVA8_REQUIRED.explanation=La version Java utilis\u00e9e ne correspond pas \u00e0 la version 8 ou une version ult\u00e9rieure.
+JAVA8_REQUIRED.useraction=Installez la version Java 8 ou une version ult\u00e9rieure.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: L''attribut {1} du fournisseur OpenIdConnect {0} est d\u00e9fini de sorte \u00e0 utiliser l''algorithme {2}, qui requiert Java 8 ou une version ult\u00e9rieure. Le fournisseur sp\u00e9cifi\u00e9 ignore le param\u00e8tre {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=La version Java utilis\u00e9e ne correspond pas \u00e0 la version 8 ou une version ult\u00e9rieure.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installez la version Java 8 ou une version ult\u00e9rieure pour utiliser l'option de configuration mentionn\u00e9e.
+
 # html title of logout page
 LOGOUT_PAGE_TITLE=D\u00e9connexion
 # html body of logout page

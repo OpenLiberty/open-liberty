@@ -1,4 +1,4 @@
-package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
+package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers;
 
 import java.io.File;
 import java.util.Arrays;

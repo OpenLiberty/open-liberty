@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "删除",
     "DONE": "完成",
     "EDIT": "编辑",
+    "FALSE": "False",
     "GENERATE": "生成",
     "LOADING": "正在加载",
     "LOGOUT": "注销",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "处理",
     "REGENERATE": "重新生成",
     "REGISTER": "注册",
+    "TABLE_FIELD_SORT_ASC": "表按 {0} 以升序进行排序。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表按 {0} 以降序进行排序。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "请重试...",
     "UPDATE": "更新",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "管理个人令牌",
     "ACCT_MGR_DESC": "创建、删除和重新生成应用程序密码及应用程序令牌。",
-    "ADD_NEW_AUTHENTICATION": "添加新的应用程序密码或应用程序令牌",
+    "ADD_NEW_AUTHENTICATION": "添加新的应用程序密码或应用程序令牌。",
     "NAME_IDENTIFIER": "名称：{0}",
     "ADD_NEW_TITLE": "注册新的认证",
     "NOT_GENERATED_PLACEHOLDER": "未生成",
+    "AUTHENTICAION_GENERATED": "已生成认证",
+    "GENERATED_APP_PASSWORD": "已生成应用程序密码",
+    "GENERATED_APP_TOKEN": "已生成应用程序令牌",
+    "COPY_APP_PASSWORD": "将应用程序密码复制到剪贴板",
+    "COPY_APP_TOKEN": "将应用程序令牌复制到剪贴板",
     "REGENERATE_APP_PASSWORD": "重新生成应用程序密码",
     "REGENERATE_PW_WARNING": "此操作将覆盖当前应用程序密码。",
     "REGENERATE_PW_PLACEHOLDER": "先前在 {0} 生成的密码",        // 0 - date

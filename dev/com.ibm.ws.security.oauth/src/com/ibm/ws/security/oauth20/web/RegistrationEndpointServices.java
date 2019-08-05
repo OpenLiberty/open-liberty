@@ -146,6 +146,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
                     "CWWKS1424E: The client id {0} was not found.");
             Tr.error(tc, serverErrorMsg);
             throw new OidcServerException(browserErrorMsg, OIDCConstants.ERROR_INVALID_CLIENT, HttpServletResponse.SC_NOT_FOUND);
+
         }
 
         // Remove empty initialized JSON Arrays

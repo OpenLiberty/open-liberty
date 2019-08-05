@@ -48,4 +48,48 @@
         <actions>read</actions>
      </permission>
      
+     <!-- Kafka client allowed to invoke the Subject.doAs methods -->
+     <permission>
+        <class-name>javax.security.auth.AuthPermission</class-name>
+        <name>doAs</name>
+     </permission>
+     
+     <!-- Kafka client allowed to call getSubject -->
+     <permission>
+        <class-name>javax.security.auth.AuthPermission</class-name>
+        <name>getSubject</name>
+     </permission>
+     
+     <!-- Kafka client sets properties for the Simple SASL/PLAIN Server Provider -->
+     <permission>
+        <class-name>java.security.SecurityPermission</class-name>
+        <name>putProviderProperty.Simple SASL/PLAIN Server Provider</name>
+     </permission>
+     
+     <!-- Kafka client allowed to set a Provider -->
+     <permission>
+        <class-name>java.security.SecurityPermission</class-name>
+        <name>insertProvider</name>
+     </permission>
+     
+     <!-- Kafka client allowed access to private Credentials belonging to a particular Subject -->
+     <permission>
+        <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+        <name>* * "*"</name>
+        <actions>read</actions>
+     </permission>
+     
+     <!-- Kafka client allowed to modify the set of public credentials associated with a Subject -->
+     <permission>
+        <class-name>javax.security.auth.AuthPermission</class-name>
+        <name>modifyPublicCredentials</name>
+     </permission>
+     
+     <!-- Kafka client allowed to modify the set of private credentials associated with a Subject -->
+     <permission>
+        <class-name>javax.security.auth.AuthPermission</class-name>
+        <name>modifyPrivateCredentials</name>
+     </permission>
+     
+     
 </permissions>

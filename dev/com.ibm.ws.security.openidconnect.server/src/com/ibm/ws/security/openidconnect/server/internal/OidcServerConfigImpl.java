@@ -41,6 +41,7 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -1165,13 +1166,19 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         return this.allowLtpaToken2Name;
     }
 
+    @Trivial
     String trimIt(String str) {
         if (str == null)
             return null;
-        str = str.trim();
-        if (str.isEmpty())
-            return null;
-        return str;
+        String retVal = str.trim();
+
+        if (retVal.isEmpty())
+            retVal= null;
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc,"trimIt("+str+") returns ["+retVal+"]");
+        }
+        return retVal;
     }
 
     /** {@inheritDoc} */

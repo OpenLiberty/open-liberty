@@ -114,6 +114,7 @@ if (request.getAttribute("ui_app_tok_enabled") != null) {
                     <div class="tool_modal_body_info_item" style="margin-bottom: 13px;">
                         <span class="tool_modal_body_info_label"></span>
                     </div>
+                    <div class="tool_modal_body_description"></div>
                 </div>
                 <div id='authType'>
                     <fieldset class='tool_modal_radio_button_fieldset'>

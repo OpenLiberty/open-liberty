@@ -547,7 +547,7 @@ public class UserAuthentication {
         response.addCookie(c);
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "send user to login page on " + loginURL);
+            Tr.debug(tc, "_SSO OP redirecting to login page [" + loginURL +"]");
         }
         request.getSession(true).setAttribute(Constants.ATTR_AFTERLOGIN, Boolean.TRUE);
         response.sendRedirect(loginURL);

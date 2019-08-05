@@ -7,8 +7,8 @@ After=network-online.target
 [Service]
 Type=forking
 
-ExecStart=/usr/libexec/openliberty start %i
-ExecStop=/usr/libexec/openliberty stop %i
+ExecStart=/etc/init.d/openliberty start %i
+ExecStop=/etc/init.d/openliberty stop %i
 
 User=openliberty
 Group=openliberty

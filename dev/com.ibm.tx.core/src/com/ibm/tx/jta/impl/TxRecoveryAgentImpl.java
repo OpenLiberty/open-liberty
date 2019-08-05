@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2018 IBM Corporation and others.
+ * Copyright (c) 2002, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.InvalidLogPropertiesException;
 import com.ibm.ws.recoverylog.spi.LeaseInfo;
+import com.ibm.ws.recoverylog.spi.LivingRecoveryLog;
 import com.ibm.ws.recoverylog.spi.LogProperties;
 import com.ibm.ws.recoverylog.spi.PeerLeaseTable;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
@@ -67,6 +68,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
     // In the special case where we are operating in the cloud, we'll also work with a "lease" log
     SharedServerLeaseLog _leaseLog;
+
     private String _recoveryGroup;
     private boolean _isPeerRecoverySupported;
 
@@ -832,5 +834,200 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.exit(tc, "createFailureScopeController", fsc);
 
         return fsc;
+    }
+
+    @Override
+    public void startHADBLogAvailabilityHeartbeat(RecoveryLog customPartnerLog) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "startHADBLogAvailabilityHeartbeat", customPartnerLog);
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        int peerLockTimeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
+        HADBLogAvailabilityManager.setTimeout(this, customPartnerLog, peerLockTimeBetweenHeartbeats);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "startHADBLogAvailabilityHeartbeat");
+    }
+
+    /**
+     * Update HADBTimestamp if appropriate
+     *
+     */
+    @Override
+    public void updateHADBTimestamp(RecoveryLog customPartnerLog) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "updateHADBTimestamp", customPartnerLog);
+        if (customPartnerLog != null) {
+            if (customPartnerLog instanceof LivingRecoveryLog) {
+                LivingRecoveryLog livingRecoveryLog = (LivingRecoveryLog) customPartnerLog;
+                livingRecoveryLog.heartBeat();
+            }
+
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "updateHADBTimestamp");
+    }
+
+    /**
+     * Claim Local HA DB Logs if appropriate.
+     *
+     */
+    @Override
+    public boolean claimLocalHADBLogs(RecoveryLog customPartnerLog) {
+        boolean logIsStale = false;
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "claimLocalHADBLogs", customPartnerLog);
+
+        if (customPartnerLog != null && customPartnerLog instanceof LivingRecoveryLog) {
+            LivingRecoveryLog livingRecoveryLog = (LivingRecoveryLog) customPartnerLog;
+            logIsStale = livingRecoveryLog.claimLocalRecoveryLogs();
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "claimLocalHADBLogs", new Boolean(logIsStale));
+        return logIsStale;
+    }
+
+    /**
+     * Claim a Peer server's HA DB Logs if appropriate.
+     *
+     */
+    @Override
+    public boolean claimPeerHADBLogs(RecoveryLog customPartnerLog) {
+        boolean logIsStale = false;
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "claimPeerHADBLogs", customPartnerLog);
+
+        if (customPartnerLog != null && customPartnerLog instanceof LivingRecoveryLog) {
+            LivingRecoveryLog livingRecoveryLog = (LivingRecoveryLog) customPartnerLog;
+            logIsStale = livingRecoveryLog.claimPeerRecoveryLogs();
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "claimPeerHADBLogs", new Boolean(logIsStale));
+        return logIsStale;
+    }
+
+    /**
+     * Given a FailureScope, return a reference to the corresponding custom partner recovery log.
+     *
+     * @param fs
+     * @return
+     */
+    @Override
+    public RecoveryLog getCustomPartnerLog(FailureScope fs) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getCustomPartnerLog", fs);
+        RecoveryLog partnerLog = null;
+        String recoveredServerIdentity = null;
+        try {
+            recoveredServerIdentity = fs.serverName();
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "getCustomPartnerLog for server -  ", recoveredServerIdentity);
+
+            // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
+            boolean isCustom = false;
+            String logDir = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDirectory();
+
+            if (logDir.startsWith("custom")) {
+                isCustom = true;
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Found a custom tran log directory");
+            }
+
+            // Retrieve the recovery log configuration information for this failure scope. This will
+            // be retrieved from WCCM if its not been encountered before on this run.
+            TranLogConfiguration tlc = null;
+
+            // We now need to determine the properties and instantiate an appropriate TranLogConfiguration object
+            if (isCustom) {
+                // Create "custom" tlc.
+                tlc = createCustomTranLogConfiguration(recoveredServerIdentity, logDir, _isPeerRecoverySupported);
+
+                // As long as a physical location for the recovery logs is found, and logging is enabled (ie user
+                // has not specified ";0" as the log location string for a file based log) then create the
+                if ((tlc != null) && (tlc.enabled())) {
+
+                    final LogProperties partnerLogProps;
+
+                    if (tlc.type() == TranLogConfiguration.TYPE_CUSTOM) {
+                        // Set up CustomLogProperties
+
+                        partnerLogProps = new CustomLogProperties(partnerLogRLI, TransactionImpl.PARTNER_LOG_NAME, tlc.customId(), tlc.customProperties());
+                        // For Liberty we need to retrieve the resource factory associated with the non transactional datasource
+                        // and set it into the CustomLogProperties. This specific property is currently only referenced in the Liberty
+                        // specific SQLNonTransactionalDataSource class, which overrides the tWAS equivalent.
+                        ResourceFactory nontranDSResourceFactory = ConfigurationProviderManager.getConfigurationProvider().getResourceFactory();
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Retrieved non tran DS Resource Factory, ", nontranDSResourceFactory);
+
+                        ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
+
+                        //
+                        // Get the Partner (XAResources) log
+                        //
+                        final RecoveryLogManager rlm = Configuration.getLogManager();
+                        partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Custom PartnerLog is set - ", partnerLog);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "getCustomPartnerLog", e);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getCustomPartnerLog", partnerLog);
+        return partnerLog;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#enableHADBPeerLocking()
+     */
+    @Override
+    public boolean enableHADBPeerLocking() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "enableHADBPeerLocking");
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        boolean enableLocking = cp.enableHADBPeerLocking();
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "enableHADBPeerLocking", enableLocking);
+        return enableLocking;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#getPeerTimeBeforeStale()
+     */
+    @Override
+    public int getPeerTimeBeforeStale() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getPeerTimeBeforeStale");
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getPeerTimeBeforeStale", peerLockTimeBeforeStale);
+        return peerLockTimeBeforeStale;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#getLocalTimeBeforeStale()
+     */
+    @Override
+    public int getLocalTimeBeforeStale() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getLocalTimeBeforeStale");
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        int localLockTimeBeforeStale = cp.getLocalTimeBeforeStale();
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getLocalTimeBeforeStale", localLockTimeBeforeStale);
+        return localLockTimeBeforeStale;
     }
 }
