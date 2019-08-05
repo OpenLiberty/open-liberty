@@ -46,3 +46,4 @@ Subsystem-Name: JavaServer Pages 2.3
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

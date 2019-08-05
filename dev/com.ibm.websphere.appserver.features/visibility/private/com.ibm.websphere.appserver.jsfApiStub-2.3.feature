@@ -7,3 +7,4 @@ Subsystem-Content: com.ibm.ws.org.apache.myfaces.2.3; type="jar"; location:="dev
 Subsystem-Type: osgi.subsystem.feature
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

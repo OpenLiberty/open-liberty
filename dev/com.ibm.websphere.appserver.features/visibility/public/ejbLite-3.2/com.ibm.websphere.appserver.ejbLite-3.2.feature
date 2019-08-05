@@ -22,3 +22,4 @@ Subsystem-Category: JavaEE7Application
 Subsystem-Name: Enterprise JavaBeans Lite 3.2
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

@@ -51,3 +51,4 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.websphere.appserver.thirdparty.jsf-2.3; location:="dev/api/third-party/"; mavenCoordinates="org.apache.myfaces.core:myfaces-impl:2.3.3"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

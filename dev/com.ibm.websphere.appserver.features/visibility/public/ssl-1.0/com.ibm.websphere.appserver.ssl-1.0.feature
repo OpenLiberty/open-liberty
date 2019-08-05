@@ -19,3 +19,4 @@ Subsystem-Name: Secure Socket Layer 1.0
 kind=ga
 edition=core
 superseded-by=transportSecurity-1.0
+WLP-Activation-Type: parallel

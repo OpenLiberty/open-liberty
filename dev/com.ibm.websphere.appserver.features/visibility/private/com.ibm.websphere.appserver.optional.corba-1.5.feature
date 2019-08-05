@@ -64,3 +64,4 @@ IBM-API-Package: \
   com.ibm.ws.org.apache.yoko.osgi.1.5; require-java:="9"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
