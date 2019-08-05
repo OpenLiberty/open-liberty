@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Consumer;
+//import java.util.function.Consumer;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -555,7 +555,7 @@ public class ZipFileReaper {
              NULL_ERROR_HANDLER);
     }
 
-    protected static final Consumer<String> NULL_ERROR_HANDLER = null;
+    protected static final ErrorConsumer<String> NULL_ERROR_HANDLER = null;
 
     @Trivial
     public ZipFileReaper(
@@ -564,7 +564,7 @@ public class ZipFileReaper {
         int maxCache,
         long quickPendMin, long quickPendMax,
         long slowPendMin, long slowPendMax,
-        Consumer<String> errorHandler) {
+        ErrorConsumer<String> errorHandler) {
 
         this(reaperName,
              debugState,
@@ -647,7 +647,7 @@ public class ZipFileReaper {
         int maxCache,
         long quickPendMin, long quickPendMax,
         long slowPendMin, long slowPendMax,
-        Consumer<String> errorHandler,
+        ErrorConsumer<String> errorHandler,
         final long initialAt) {
 
         // Parameters ...
@@ -1001,10 +1001,14 @@ public class ZipFileReaper {
 
     //
 
+    public interface ErrorConsumer<T>{
+        public void accept(T t);
+    }
+
     /**
      * Error handling hook.  Used by unit tests to detect test errors.
      */
-    private final Consumer<String> errorHandler;
+    private final ErrorConsumer<String> errorHandler;
 
     private void handleError(String errorMessage) {
         //System.out.println("**** ZipFileReaper ERROR [ " + errorMessage + " ] ****");
