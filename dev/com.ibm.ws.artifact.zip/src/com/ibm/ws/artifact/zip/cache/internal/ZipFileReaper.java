@@ -390,7 +390,8 @@ public class ZipFileReaper {
 
 
                 while ( true ) {
-                    long lastReapAt = reapAt;
+                    
+                    long lastReapAt = nextReapAt;
 
                     // Condition:
                     // Start an indefinite wait if and only if there are no pending closes.
@@ -441,10 +442,10 @@ public class ZipFileReaper {
                     }
 
                     try {
-                        if ( requestedReapDelay < 0L ) {
+                        if ( nextReapDelay < 0L ) {
                             reaper.reaperLock.wait(methodName, "new pending close"); // throws InterruptedException
                         } else {
-                            reaper.reaperLock.waitNS(requestedReapDelay, methodName, "active pending close"); // throws InterruptedException
+                            reaper.reaperLock.waitNS(nextReapDelay, methodName, "active pending close"); // throws InterruptedException
                         }
                     } catch ( InterruptedException e ) {
                         if ( doDebug ) {
@@ -453,18 +454,18 @@ public class ZipFileReaper {
                         break;
                     }
 
-                    reapAt = SystemUtils.getNanoTime();
+                    nextReapAt = SystemUtils.getNanoTime();
                     
                     if ( doDebug ) {
-                        Tr.debug(tc, methodName + " Reap [ " + toRelSec(startAt, reapAt) + " (s) ]");
+                        Tr.debug(tc, methodName + " Reap [ " + toRelSec(startAt, nextReapAt) + " (s) ]");
                         
                         // Issue #7770 - Remove reaper stall warning - change to debug
                         // asyncWarning("reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
                         
                         String message;
-                        long actualReapDelay = reapAt - lastReapAt;
-                        if ( requestedReapDelay > 0L ) {
-                            long overage = actualReapDelay - requestedReapDelay;
+                        long actualReapDelay = nextReapAt - lastReapAt;
+                        if ( nextReapDelay > 0L ) {
+                            long overage = actualReapDelay - nextReapDelay;
                             if ( overage > STALL_LIMIT ) {
                                 message = " Excessive reap cycle time:";
                             } else {
@@ -475,7 +476,7 @@ public class ZipFileReaper {
                         }
                         Tr.debug(tc, methodName + message + " Actual delay [ " 
                                         + toAbsSec(actualReapDelay) + " (s) ]; Requested delay [ " 
-                                        + toAbsSec(requestedReapDelay) + " (s) ]");
+                                        + toAbsSec(nextReapDelay) + " (s) ]");
                     }
 
                     ZipFileData ripestPending = reaper.getRipest();
@@ -497,7 +498,7 @@ public class ZipFileReaper {
                     }
 
                     long lastPendAt = ripestPending.lastPendAt;
-                    long consumedPend = ( reapAt - lastPendAt );
+                    long consumedPend = ( nextReapAt - lastPendAt );
                     long pendMax = ( ripestPending.expireQuickly ? reaper.getQuickPendMin() : reaper.getSlowPendMax() );
 
                     if ( consumedPend < pendMax ) {
@@ -508,7 +509,7 @@ public class ZipFileReaper {
                         reaper.addWaitReason("specific (incomplete pend)");
 
                         if ( doDebug ) {
-                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ] remaining [ " + toAbsSec(requestedReapDelay) + " (s) ]");
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ] remaining [ " + toAbsSec(nextReapDelay) + " (s) ]");
                         }
 
                     } else {
