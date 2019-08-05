@@ -116,7 +116,7 @@ public interface TaskStore {
      * @param maxNextExecTime  expected next execution time threshold before which an unexecuted task is considered late.
      * @param excludePartition current partition number, which is excluded from the query because it was just polled.
      * @param maxResults       maximum number of results to return. Null means unlimited.
-     * @return List of (Id, MiscBinaryFlags, NextExecutionTime, TransactionTimeout) tuples.
+     * @return List of (Id, MiscBinaryFlags, NextExecutionTime, TransactionTimeout, Version) tuples.
      *         This list is ordered by next execution time only if maxResults is specified.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
@@ -328,7 +328,7 @@ public interface TaskStore {
     boolean removeProperty(String name) throws Exception;
 
     /**
-     * Assigns the value of the property with the specified name, if it exists in the persistent store.
+     * Assigns the value of the property if it exists in the persistent store.
      * 
      * @param name property name.
      * @param value new value for the property.
@@ -337,6 +337,18 @@ public interface TaskStore {
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
     boolean setProperty(String name, String value) throws Exception;
+
+    /**
+     * Assigns the value of the property if it exists in the persistent store
+     * and has a value that is less than or equal to the comparisonValue.
+     *
+     * @param name            property name.
+     * @param value           new value for the property.
+     * @param comparisonValue the value against which the current value is compared.
+     * @return true if the property value was assigned to the new value.
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     */
+    boolean setPropertyIfLessThanOrEqual(String name, String value, String comparisonValue) throws Exception;
 
     /**
      * Transfers tasks that have not yet completed all executions to another partition.
