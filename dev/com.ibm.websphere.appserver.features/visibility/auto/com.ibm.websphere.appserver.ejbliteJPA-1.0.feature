@@ -8,3 +8,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.ejbcontainer.jpa
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

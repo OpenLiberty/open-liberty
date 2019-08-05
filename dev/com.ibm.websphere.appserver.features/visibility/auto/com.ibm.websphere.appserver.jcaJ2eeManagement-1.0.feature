@@ -7,3 +7,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jca.management.j2ee
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

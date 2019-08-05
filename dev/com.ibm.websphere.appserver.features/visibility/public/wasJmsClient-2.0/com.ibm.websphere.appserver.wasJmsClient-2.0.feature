@@ -17,3 +17,4 @@ Subsystem-Name: JMS 2.0 Client for Message Server
  com.ibm.ws.messaging.comms.client
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

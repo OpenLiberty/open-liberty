@@ -12,3 +12,4 @@ Subsystem-Name: Java Message Service 2.0
 -bundles=com.ibm.ws.jms20.feature
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

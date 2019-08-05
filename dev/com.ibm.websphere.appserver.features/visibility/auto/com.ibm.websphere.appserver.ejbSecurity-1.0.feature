@@ -10,3 +10,4 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.ejbcontainer.security
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

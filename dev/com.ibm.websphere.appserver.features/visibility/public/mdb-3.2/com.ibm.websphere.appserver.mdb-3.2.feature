@@ -18,3 +18,4 @@ Subsystem-Category: JavaEE7Application
 Subsystem-Name: Message-Driven Beans 3.2
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

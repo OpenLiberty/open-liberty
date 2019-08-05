@@ -18,3 +18,4 @@ Subsystem-Name: J2EE Management 1.1
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.j2eemanagement_1.1-javadoc.zip
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

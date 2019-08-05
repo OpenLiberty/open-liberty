@@ -10,3 +10,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.wsoc.cdi.weld
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

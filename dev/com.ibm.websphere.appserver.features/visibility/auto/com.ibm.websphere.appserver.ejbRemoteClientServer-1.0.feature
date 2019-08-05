@@ -13,3 +13,4 @@ IBM-Install-Policy: when-satisfied
 IBM-Process-Types: server
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

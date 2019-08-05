@@ -13,3 +13,4 @@ visibility=private
  com.ibm.ws.concurrent.persistent
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

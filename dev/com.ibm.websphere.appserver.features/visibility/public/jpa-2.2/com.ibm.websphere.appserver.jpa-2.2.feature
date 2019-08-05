@@ -231,3 +231,4 @@ Subsystem-Name: Java Persistence API 2.2
  com.ibm.ws.jpa.container.eclipselink
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

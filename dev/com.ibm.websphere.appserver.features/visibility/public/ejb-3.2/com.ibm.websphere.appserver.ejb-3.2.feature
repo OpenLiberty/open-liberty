@@ -15,3 +15,4 @@ Subsystem-Category: JavaEE7Application
  com.ibm.websphere.appserver.ejbRemote-3.2
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

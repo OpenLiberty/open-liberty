@@ -7,3 +7,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.management.j2ee.mejb
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

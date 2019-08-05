@@ -9,3 +9,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.messaging.jms.j2ee.mbeans
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

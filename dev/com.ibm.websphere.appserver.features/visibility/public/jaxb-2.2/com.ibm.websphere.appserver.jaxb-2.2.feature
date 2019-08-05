@@ -34,3 +34,4 @@ Subsystem-Name: Java XML Bindings 2.2
   bin/jaxb/schemagen.bat
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

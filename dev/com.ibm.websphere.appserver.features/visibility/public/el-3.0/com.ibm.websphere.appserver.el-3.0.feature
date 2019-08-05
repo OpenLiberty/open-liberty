@@ -16,3 +16,4 @@ Subsystem-Name: Expression Language 3.0
 -bundles=com.ibm.ws.org.apache.jasper.el.3.0
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

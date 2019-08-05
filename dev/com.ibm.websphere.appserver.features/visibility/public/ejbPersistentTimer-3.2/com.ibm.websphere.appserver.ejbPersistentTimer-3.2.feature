@@ -12,3 +12,4 @@ Subsystem-Name: Enterprise JavaBeans Persistent Timers 3.2
 -bundles=com.ibm.ws.ejbcontainer.timer.persistent
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

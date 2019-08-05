@@ -7,3 +7,4 @@ IBM-Install-Policy: when-satisfied
  com.ibm.websphere.javaee.jacc.1.5; location:="dev/api/spec/,lib"; mavenCoordinates="javax.security.jacc:javax.security.jacc-api:1.5"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

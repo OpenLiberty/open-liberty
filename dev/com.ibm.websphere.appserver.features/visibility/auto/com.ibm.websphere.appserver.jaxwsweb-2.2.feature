@@ -11,3 +11,4 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.jaxws.webcontainer
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

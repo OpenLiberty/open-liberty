@@ -28,3 +28,4 @@ Subsystem-Name: Java EE Full Platform 8.0
   com.ibm.websphere.appserver.webProfile-8.0
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

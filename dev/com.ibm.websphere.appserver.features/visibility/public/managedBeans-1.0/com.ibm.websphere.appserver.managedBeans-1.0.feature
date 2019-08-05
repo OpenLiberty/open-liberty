@@ -14,3 +14,4 @@ Subsystem-Name: Java EE Managed Bean 1.0
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

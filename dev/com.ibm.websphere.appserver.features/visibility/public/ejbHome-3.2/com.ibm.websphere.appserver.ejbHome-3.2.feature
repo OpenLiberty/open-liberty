@@ -10,3 +10,4 @@ Subsystem-Name: Enterprise JavaBeans Home Interfaces 3.2
 -bundles=com.ibm.ws.ejbcontainer.ejb2x
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

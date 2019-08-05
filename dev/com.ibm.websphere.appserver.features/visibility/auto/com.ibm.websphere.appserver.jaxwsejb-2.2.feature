@@ -9,3 +9,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxws.ejb
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

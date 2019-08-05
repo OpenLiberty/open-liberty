@@ -13,3 +13,4 @@ IBM-API-Package: javax.resource; type="spec", \
 -bundles=com.ibm.websphere.javaee.connector.1.7; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.resource:javax.resource-api:1.7"
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

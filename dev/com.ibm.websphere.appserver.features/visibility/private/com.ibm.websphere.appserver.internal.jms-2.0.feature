@@ -11,3 +11,4 @@ IBM-API-Package: javax.jms; version="2.0"; type="spec"
  com.ibm.ws.messaging.jmsspec.common
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

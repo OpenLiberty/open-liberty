@@ -8,3 +8,4 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 IBM-Install-Policy: when-satisfied
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

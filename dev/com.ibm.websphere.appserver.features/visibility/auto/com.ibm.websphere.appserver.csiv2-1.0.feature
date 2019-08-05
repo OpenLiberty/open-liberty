@@ -9,3 +9,4 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.security.csiv2
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

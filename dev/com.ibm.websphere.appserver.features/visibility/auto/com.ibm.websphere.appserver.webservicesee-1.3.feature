@@ -10,3 +10,4 @@ IBM-Install-Policy: when-satisfied
  com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12"
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

@@ -76,3 +76,4 @@ Subsystem-Name: Java Web Services 2.2
  bin/jaxws/tools/ws-wsgen.jar
 kind=ga
 edition=base
+WLP-Activation-Type: parallel
