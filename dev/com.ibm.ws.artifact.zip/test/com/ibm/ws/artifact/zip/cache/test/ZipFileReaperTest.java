@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
+//import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -866,6 +866,20 @@ public class ZipFileReaperTest {
         public final long slowPendMax;
 
         // Worker parms ...
+        private class TestErrorConsumer implements ZipFileReaper.ErrorConsumer<String>{
+
+            private List<String> collection;
+
+            public TestErrorConsumer(List<String> collection){
+                this.collection = collection;
+            }
+
+            @Override
+            public void accept(String t) {
+                collection.add(t);
+            }
+            
+        }
 
         public void displayProfile() {
             String methodName = "displayProfile";
@@ -915,8 +929,11 @@ public class ZipFileReaperTest {
                 zipPaths, allTestOps);
 
             List<String> reaperErrors = new ArrayList<>();
-            Consumer<String> errorHandler =
-                (String errorMessage) -> { reaperErrors.add(errorMessage); };
+            
+            TestErrorConsumer errorHandler = new TestErrorConsumer(reaperErrors);
+
+            //Consumer<String> errorHandler =
+            //    (String errorMessage) -> { reaperErrors.add(errorMessage); };
 
             ZipFileReaper reaper = startReaper(errorHandler);
 
@@ -945,7 +962,7 @@ public class ZipFileReaperTest {
             }
         }
 
-        public ZipFileReaper startReaper(Consumer<String> errorHandler) {
+        public ZipFileReaper startReaper(TestErrorConsumer errorHandler) {
             return new ZipFileReaper(
                 profileName,
                 debugState,
@@ -1325,4 +1342,5 @@ public class ZipFileReaperTest {
     public static String toCount(int count) {
         return ZipCachingProperties.toCount(count);
     }
+
 }
