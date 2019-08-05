@@ -15,8 +15,6 @@ Bundle-Name: Artifact API Zip Implementation
 Bundle-SymbolicName: com.ibm.ws.artifact.zip
 Bundle-Description: Implementation of artifact api for on disk zip archives; version=${bVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
 Export-Package: com.ibm.ws.artifact.zip.cache;provide:=true
 
