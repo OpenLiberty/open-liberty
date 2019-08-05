@@ -58,7 +58,6 @@
             <Option label="%signatureAlgorithm.RS256" value="RS256" />
             <Option label="%signatureAlgorithm.HS256" value="HS256" />
          </AD>
-         <!--  keystoreRef default value is also hardcoded in OidcServerConfigImpl -->
          <AD id="keyStoreRef" name="%keyStoreRef" description="%keyStoreRef.desc" required="false" type="String" default="opKeyStore" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
          <AD id="keyAliasName" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" />
          <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />

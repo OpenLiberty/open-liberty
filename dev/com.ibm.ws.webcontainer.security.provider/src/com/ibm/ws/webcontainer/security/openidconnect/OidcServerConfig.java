@@ -130,8 +130,4 @@ public interface OidcServerConfig {
 
     boolean isOpenidScopeRequiredForUserInfo();
 
-    String getKeyStoreRef();
-
-    String getKeyAliasName();
-
 }
