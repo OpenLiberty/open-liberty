@@ -62,10 +62,10 @@ public class JwtData {
 		bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
 		String sharedKey = jwtBuilder.getSharedKey();
 		sharedKey = (JwtUtils.isNullEmpty(sharedKey) ? jwtConfig.getSharedKey() : sharedKey);
-		JwtDataConfig jwtDataconfig = new JwtDataConfig(jwtBuilder.getAlgorithm(), jwtConfig.getJSONWebKey(), sharedKey,
+		jwtDataConfig = new JwtDataConfig(jwtBuilder.getAlgorithm(), jwtConfig.getJSONWebKey(), sharedKey,
 				jwtBuilder.getKey(), jwtConfig.getKeyAlias(), jwtConfig.getKeyStoreRef(), tokenType,
 				jwtConfig.isJwkEnabled());
-		initSigningKey(jwtDataconfig);
+		initSigningKey(jwtDataConfig);
 	}
 
 	public JwtData(JwtDataConfig config) throws JwtTokenException {
@@ -73,7 +73,7 @@ public class JwtData {
 		jwtDataConfig = config;
 		signatureAlgorithm = config.signatureAlgorithm;
 		bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
-		initSigningKey(config);
+		initSigningKey(jwtDataConfig);
 	}
 
 	public JwtConfig getConfig() {
