@@ -34,6 +34,13 @@
     snapshotUrl       = ${fileuri;${build}/release}; \
     local             = ${build}/local
 
+-plugin.0.oss_dep_staging: \
+    aQute.bnd.repository.maven.provider.MavenBndRepository; \
+      name='DependencyTestStaging'; \
+      local = ${workspace}/staging/repository; \
+      index = ${workspace}/staging/dependencies_index.maven; \
+      readonly=true
+
 fetch.oss.repository: \
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = RemotePublic; \

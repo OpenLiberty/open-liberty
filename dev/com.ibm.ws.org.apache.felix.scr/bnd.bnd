@@ -9,16 +9,16 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= \
- jar:${fileuri;${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.17.ibm20190717-1;EXACT}}!/META-INF/MANIFEST.MF,\
+ jar:${fileuri;${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.17.ibm20190731-1;EXACT}}!/META-INF/MANIFEST.MF,\
  bnd.overrides
 
 -includeresource: \
    OSGI-INF=resources/OSGI-INF, \
-   @${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.17.ibm20190717-1;EXACT}!/!META-INF/maven/*,\
+   @${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.17.ibm20190731-1;EXACT}!/!META-INF/maven/*,\
    @${repo;org.osgi:org.osgi.util.function;1.1.0;EXACT}!/!(OSGI-OPT|META-INF)/*,\
    @${repo;org.osgi:org.osgi.util.promise;1.1.1;EXACT}!/!(OSGI-OPT|META-INF)/*
 
 -buildpath: \
-	com.ibm.ws.org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.1.17.ibm20190717-1,\
+	com.ibm.ws.org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.1.17.ibm20190731-1,\
 	org.osgi:org.osgi.util.function;strategy=exact;version=1.1.0,\
 	org.osgi:org.osgi.util.promise;strategy=exact;version=1.1.1
