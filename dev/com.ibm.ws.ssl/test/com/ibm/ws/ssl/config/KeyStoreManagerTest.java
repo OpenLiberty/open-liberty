@@ -13,6 +13,7 @@ package com.ibm.ws.ssl.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -23,7 +24,7 @@ public class KeyStoreManagerTest {
 
     /**
      * Test to make sure a WSKeyStore gets added the the KeyStore HashMap
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -35,9 +36,26 @@ public class KeyStoreManagerTest {
     }
 
     /**
+     * Test to make sure getKeyStoreCount is working
+     */
+    @Test
+    public void testKeyStoreCount() throws Exception {
+        KeyStoreManager ksMgr = KeyStoreManager.getInstance();
+        int before = ksMgr.getKeyStoreCount();
+        WSKeyStore wsks = new WSKeyStore("unique");
+        ksMgr.addKeyStoreToMap("UniquetestKeyStore", wsks);
+        int after = ksMgr.getKeyStoreCount();
+        assertTrue("expect 1,2 but got: before " + before + " after: " + after, after - before == 1);
+        //remove the keystore
+        ksMgr.clearKeyStoreFromMap("UniquetestKeyStore");
+        assertTrue(ksMgr.getKeyStoreCount() == before);
+
+    }
+
+    /**
      * Test to make sure a WSKeyStore gets replaced when a WSKeyStore is added to the
      * cache with the name of an existing WSKeyStore.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -63,7 +81,7 @@ public class KeyStoreManagerTest {
 
     /**
      * Test to make sure a WSKeyStore gets removed the the KeyStore HashMap
-     * 
+     *
      * @throws Exception
      */
     @Test
