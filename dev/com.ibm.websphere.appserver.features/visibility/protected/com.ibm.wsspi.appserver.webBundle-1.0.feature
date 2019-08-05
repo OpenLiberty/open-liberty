@@ -22,3 +22,4 @@ Subsystem-Name: OSGi Application
 
 edition=core
 kind=ga
+WLP-Activation-Type: parallel

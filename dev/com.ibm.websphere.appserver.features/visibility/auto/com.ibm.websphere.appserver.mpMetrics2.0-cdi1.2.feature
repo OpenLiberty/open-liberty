@@ -9,3 +9,4 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
