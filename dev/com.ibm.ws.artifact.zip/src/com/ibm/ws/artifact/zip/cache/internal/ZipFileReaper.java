@@ -16,7 +16,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -284,6 +286,8 @@ public class ZipFileReaper {
             this.nextReapAt = -1;
             this.lastReapAt = -1;
             this.nextReapDelay = -1;
+
+            this.startupLatch = new CountDownLatch(1);
         }
 
         private long initialAt;
@@ -298,6 +302,16 @@ public class ZipFileReaper {
         private long lastReapAt;
         private long nextReapDelay;
         private String nextReapReason;
+
+        private final CountDownLatch startupLatch;
+
+        protected void waitForStartup() throws InterruptedException {
+            startupLatch.await(); // throws InterruptedException
+        }
+
+        protected void signalStartup() {
+            startupLatch.countDown();
+        }
 
         // Invoked by 'ZipFileReaper.introspect(PrintWriter)'
 
@@ -351,6 +365,13 @@ public class ZipFileReaper {
             }
 
             synchronized ( reaper.reaperLock ) {
+                // Use this latch to ensure the reaper thread has started
+                // and has acquired the reaper lock before allowing zip file
+                // operations.  That prevents us from having to handle cases where
+                // the reaper thread doesn't start immediately.
+
+                signalStartup();
+
                 // CAUTION CAUTION CAUTION CAUTION
                 //
                 // The notification which occurs when a pending close is added does not
@@ -363,8 +384,10 @@ public class ZipFileReaper {
                 // CAUTION CAUTION CAUTION CAUTION
 
                 nextReapDelay = REAP_DELAY_INDEFINITE;
+                reaper.addWaitReason("indefinite (initial)");
+
                 nextReapAt = initialAt;
-                nextReapReason = "Wait for first pending close";
+                nextReapReason = "indefinite (initial)";
 
                 while ( true ) {
                     long lastReapAt = reapAt;
@@ -384,35 +407,37 @@ public class ZipFileReaper {
                     if ( nextReapDelay < 0L ) {
                         if ( testPending != null ) {
                             errorMessage = "Indefinite wait with pending [ " + testPending + " ]";
+                            nextReapReason = "specific (corrected from indefinite) [ " + nextReapDelay + " ]";
                             nextReapDelay = reaper.getQuickPendMin();
-                            nextReapReason = "waiting on pending close (forced from indefinite)";
+                            reaper.addWaitReason("specific (corrected from indefinite)");
                         } else {
                             errorMessage = null;
-                            nextReapReason = "waiting for new pending close";
+                            nextReapReason = "indefinite (no pending)";
                         }
 
                     } else if ( nextReapDelay == 0L ) {
                         errorMessage = "Incorrect explicit indefinited wait [ " + testPending + " ]";
                         if ( testPending == null ) {
                             nextReapDelay = REAP_DELAY_INDEFINITE;
-                            nextReapReason = "waiting for new pending close (forced from zero)";
+                            nextReapReason = "indefinite (corrected from zero)";
+                            reaper.addWaitReason("indefinite (corrected from zero)");
                         } else {
                             nextReapDelay = reaper.getQuickPendMin();
-                            nextReapReason = "waiting on pending close (forced from zero)";
+                            nextReapReason = "specific (corrected from zero)";
+                            reaper.addWaitReason("specific (corrected from zero)");
                         }
 
                     } else {
+                        errorMessage = null;
                         if ( testPending == null ) {
-                            errorMessage = "Definite wait with null pending";
-                            nextReapReason = "waiting on pending close (but there are none)";
+                            nextReapReason = "specific (no pending)";
                         } else {
-                            errorMessage = null;
-                            nextReapReason = "waiting on pending close";
+                            nextReapReason = "specific [ " + nextReapDelay + " ]";
                         }
                     }
 
                     if ( errorMessage != null ) {
-                        Tr.error(tc, errorMessage);
+                        reaper.handleError(errorMessage);
                     }
 
                     try {
@@ -464,7 +489,8 @@ public class ZipFileReaper {
                         // this code holds the reaper lock, none can be added before
                         // the next wait.
 
-                        requestedReapDelay = REAP_DELAY_INDEFINITE;
+                        nextReapDelay = REAP_DELAY_INDEFINITE;
+                        reaper.addWaitReason("indefinite (no pending)");
                         continue;
                     }
 
@@ -475,7 +501,9 @@ public class ZipFileReaper {
                     if ( consumedPend < pendMax ) {
                         // The ripest still has time left before it is fully closed.
                         // That is the amount of time to wait to the next reap. 
-                        requestedReapDelay = pendMax - consumedPend;
+
+                        nextReapDelay = pendMax - consumedPend;
+                        reaper.addWaitReason("specific (incomplete pend)");
                         if ( doDebug ) {
                             Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ] remaining [ " + toAbsSec(requestedReapDelay) + " (s) ]");
                         }
@@ -488,7 +516,8 @@ public class ZipFileReaper {
                             Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ]");
                         }
 
-                        requestedReapDelay = reaper.reap(reapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
+                        nextReapDelay = reaper.reap(nextReapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
+                        reaper.addWaitReason("specific (reap)");
                     }
                 }
             }
@@ -521,8 +550,11 @@ public class ZipFileReaper {
              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
              ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
-             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX);
+             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
+             NULL_ERROR_HANDLER);
     }
+
+    protected static final Consumer<String> NULL_ERROR_HANDLER = null;
 
     @Trivial
     public ZipFileReaper(
@@ -530,14 +562,38 @@ public class ZipFileReaper {
         boolean debugState,
         int maxCache,
         long quickPendMin, long quickPendMax,
-        long slowPendMin, long slowPendMax) {
+        long slowPendMin, long slowPendMax,
+        Consumer<String> errorHandler) {
 
         this(reaperName,
              debugState,
              maxCache,
              quickPendMin, quickPendMax,
              slowPendMin, slowPendMax,
+             errorHandler,
              SystemUtils.getNanoTime() );
+    }
+
+    @Trivial
+    public ZipFileReaper(
+        String reaperName,
+        boolean debugState,
+        int maxCache,
+        long quickPendMin,
+        long quickPendMax,
+        long slowPendMin,
+        long slowPendMax
+    ) {
+        this(
+            reaperName,
+            debugState,
+            maxCache,
+            quickPendMin,
+            quickPendMax,
+            slowPendMin,
+            slowPendMax,
+            ZipFileReaper.NULL_ERROR_HANDLER
+        );
     }
 
     private static void validate(
@@ -590,6 +646,7 @@ public class ZipFileReaper {
         int maxCache,
         long quickPendMin, long quickPendMax,
         long slowPendMin, long slowPendMax,
+        Consumer<String> errorHandler,
         final long initialAt) {
 
         // Parameters ...
@@ -649,12 +706,22 @@ public class ZipFileReaper {
 
         this.isActive = true;
 
-        // TODO: Not sure which of the following two steps to do first.
+        this.waitReasons = new Reasons("Reaper Waits");
 
+        this.errorHandler = errorHandler;
+
+        // TODO: Not sure which of the following two steps to do first.
+ 
         this.reaperThread.start();
 
         if ( this.debugState ) {
             SystemUtils.addShutdownHook(this.reaperShutdownThread);
+        }
+
+        try {
+            this.reaperRunnable.waitForStartup(); // throws InterruptedException
+        } catch ( InterruptedException e ) {
+            // FFDC
         }
     }
 
@@ -910,32 +977,137 @@ public class ZipFileReaper {
     protected void introspectReaperThread(PrintWriter output) {
         output.println();
         output.println("  Reaper [ " + reaperThread + " ]");
-
         output.println("    Id          [ " + reaperThread.getId() + " ]"); 
         output.println("    Name        [ " + reaperThread.getName() + " ]"); 
         output.println("    Daemon      [ " + reaperThread.isDaemon() + " ]");
         output.println("    Priority    [ " + reaperThread.getPriority() + " ]");
         output.println("    Group       [ " + reaperThread.getThreadGroup() + " ]");
+
         output.println();
         output.println("    State       [ " + reaperThread.getState() + " ]");
         output.println("    Alive       [ " + reaperThread.isAlive() + " ]");
         output.println("    Interrupted [ " + reaperThread.isInterrupted() + " ]");
 
+        output.println();
+        reaperLock.introspect(output);
+
+        output.println();
+        waitReasons.introspect(output);
+
+        output.println();
         reaperRunnable.introspect(output);
     }
-    
+
     //
 
+    /**
+     * Error handling hook.  Used by unit tests to detect test errors.
+     */
+    private final Consumer<String> errorHandler;
+
+    private void handleError(String errorMessage) {
+        //System.out.println("**** ZipFileReaper ERROR [ " + errorMessage + " ] ****");
+
+        Tr.error(tc, errorMessage);
+
+        if ( errorHandler != null ) {
+            errorHandler.accept(errorMessage);
+        }
+
+        PrintWriter writer = new PrintWriter(System.out);
+        introspect(writer, System.nanoTime());
+        writer.flush();
+    }
+
+    //
+
+    public static final int NUM_REASONS = 10;
+
+    private static class Reasons {
+        private final String description;
+        private int nextReason;
+        public final String[] reasons;
+
+        public Reasons(String description) {
+            this.description = description;
+            this.reasons = new String[NUM_REASONS];
+            this.nextReason = 0;
+        }
+
+        public void add(String reason) {
+            reasons[nextReason] = reason;
+            if ( nextReason == NUM_REASONS - 1 ) {
+                nextReason = 0;
+            } else {
+                nextReason = nextReason + 1;
+            }
+        }
+
+        public void introspect(PrintWriter printWriter) {
+            printWriter.println(description + ": ");
+
+            int lastReason = ( (nextReason == 0) ? (NUM_REASONS - 1) : (nextReason - 1) );
+            if ( reasons[lastReason] == null ) {
+                printWriter.println("  *** NONE ***");
+            } else {
+                for ( int reasonNo = 0; reasonNo > -NUM_REASONS; reasonNo-- ) {
+                    int actualReasonNo = nextReason + reasonNo - 1;
+                    if ( actualReasonNo < 0 ) {
+                        actualReasonNo += NUM_REASONS;
+                    }
+
+                    String reason = reasons[actualReasonNo];
+                    if ( reason == null ) {
+                        break;
+                    }
+
+                    printWriter.println("  [ " + reasonNo + " ] [ " + reasons[actualReasonNo] + " ]");
+                }
+            }
+        }
+    }
+
+    private Reasons waitReasons;
+
+    protected void addWaitReason(String reason) {
+        waitReasons.add(reason);
+    }
+
     private static class ReaperLock {
-        public void notify(String methodName, String text) {
+        Reasons lockReasons;
+
+        public ReaperLock() {
+            this.lockReasons = new Reasons("Reaper Lock Activity");
+        }
+
+        public void addReason(String reason) {
+            lockReasons.add(reason);
+        }
+
+        public void introspect(PrintWriter printWriter) {
+            lockReasons.introspect(printWriter);
+        }
+
+        public void skipNotify(String methodName, String text) {
+            addReason(text);
+
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " " + text);
             }
+        }
 
+        public void notify(String methodName, String text) {
+            addReason(text);
+
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " " + text);
+            }
             notify();
         }
 
         public void wait(String methodName, String text) throws InterruptedException {
+            addReason(text);
+
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " Waiting for [ " + text + " ]");
             }
@@ -946,6 +1118,8 @@ public class ZipFileReaper {
         }
 
         public void waitNS(long waitNs, String methodName, String text) throws InterruptedException {
+            addReason(text);
+
             long waitMs = waitNs / ZipCachingProperties.NANO_IN_MILLI;
             int fracWaitNs = (int) (waitNs - (waitMs * ZipCachingProperties.NANO_IN_MILLI));
 
@@ -1398,6 +1572,7 @@ public class ZipFileReaper {
                         }
 
                         String wakeReason;
+                        String skipWakeReason;
 
                         if ( wasQuickEmpty && wasSlowEmpty ) {
                             // The reaper was in an indefinite wait, since there were
@@ -1408,9 +1583,12 @@ public class ZipFileReaper {
                             // will find the ripest pending close and set a definite wait
                             // based on that pending close.
                             wakeReason = "Added first pending";
+                            skipWakeReason = null;
 
                         } else if ( expireQuickly ) {
                             if ( !wasQuickEmpty ) { // expireQuickly && !wasQuickEmpty
+                                // Either:
+                                //
                                 // The reaper is set to a definite wait based on the ripest
                                 // quick pending.
                                 //
@@ -1420,8 +1598,9 @@ public class ZipFileReaper {
                                 // Either way, the definite wait already set for the reaper
                                 // remains correct.
                                 wakeReason = null; // Added quick while quick are present.
-
+                                skipWakeReason = "Quick added with other quick";
                                 // wasQuickEmpty ==> !wasSlowEmpty
+
                             } else { // expireQuickly && wasQuickEmpty && !wasSlowEmpty
                                 // The reaper is set to a definite wait based on the ripest
                                 // slow pending close.
@@ -1443,7 +1622,13 @@ public class ZipFileReaper {
                                 // cycle to run.  The reaper will notice that no pending closes
                                 // have expired, and will recompute and set the reaper wait to a
                                 // newly computed definite wait.
+                                //
+                                // The reaper is set to an indefinite wait, because this close
+                                // captured the notification and prevented the reaper from waking
+                                // up for a prior close request.
+
                                 wakeReason = "Added first quick while slow are present";
+                                skipWakeReason = null;
                             }
 
                         } else { // !expireQuickly
@@ -1451,6 +1636,7 @@ public class ZipFileReaper {
                             // is later than the expiration of the ripest pending close.  The definite
                             // wait already set for the reaper remains correct.
                             wakeReason = null; // Added slow while quick or slow are present.
+                            skipWakeReason = "slow added with quick or slow";
                         }
 
                         // CAUTION CAUTION CAUTION CAUTION
@@ -1465,6 +1651,8 @@ public class ZipFileReaper {
 
                         if ( wakeReason != null ) {
                             reaperLock.notify(methodName, wakeReason);
+                        } else {
+                            reaperLock.skipNotify(methodName, skipWakeReason);
                         }
                     }
                 }
