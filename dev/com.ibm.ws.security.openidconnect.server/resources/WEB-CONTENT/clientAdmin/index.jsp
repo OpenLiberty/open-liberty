@@ -57,8 +57,8 @@
                      </span>
                 </th>
                 <th id="table_client_id_column" data-externalizedString="CLIENT_ID" scope="col" tabindex='-1'></th>
-                <th class="table_button_column" tabindex='-1'></th>
-                <th class="table_button_column" tabindex='-1'></th>
+                <th class="table_button_column" scope="col" tabindex='-1'></th>
+                <th class="table_button_column" scope="col" tabindex='-1'></th>
             </tr>
         </thead>
         <tbody>
