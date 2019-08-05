@@ -208,7 +208,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                         }
                     }
 
-                    List<String> allowedFFDCs = getAllowedFFDCAnnotationFromTest(method);
+                    Set<String> allowedFFDCs = getAllowedFFDCAnnotationFromTest(method);
                     // remove allowedFFDCs
                     for (String ffdcException : allowedFFDCs) {
                         if (ffdcException.equals(AllowedFFDC.ALL_FFDC))
@@ -635,9 +635,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
     }
 
-    public List<String> getAllowedFFDCAnnotationFromTest(FrameworkMethod m) {
+    private Set<String> getAllowedFFDCAnnotationFromTest(FrameworkMethod m) {
 
-        ArrayList<String> annotationListPerClass = new ArrayList<String>();
+        Set<String> annotationListPerClass = new HashSet<String>();
         AllowedFFDC methodFFDC = m.getAnnotation(AllowedFFDC.class);
         if (methodFFDC != null) {
             String[] exceptionClasses = methodFFDC.value();
@@ -645,11 +645,23 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 annotationListPerClass.add(exceptionClass);
             }
         }
-        AllowedFFDC classFFDC = getTestClass().getJavaClass().getAnnotation(AllowedFFDC.class);
-        if (classFFDC != null) {
-            String[] exceptionClasses = classFFDC.value();
+
+        Class<?> declaringClass = m.getMethod().getDeclaringClass();
+        AllowedFFDC servletFFDC = declaringClass.getAnnotation(AllowedFFDC.class);
+        if (servletFFDC != null) {
+            String[] exceptionClasses = servletFFDC.value();
             for (String exceptionClass : exceptionClasses) {
                 annotationListPerClass.add(exceptionClass);
+            }
+        }
+        Class<?> testClass = getTestClass().getJavaClass();
+        if (!declaringClass.equals(testClass)) {
+            AllowedFFDC classFFDC = testClass.getAnnotation(AllowedFFDC.class);
+            if (classFFDC != null) {
+                String[] exceptionClasses = classFFDC.value();
+                for (String exceptionClass : exceptionClasses) {
+                    annotationListPerClass.add(exceptionClass);
+                }
             }
         }
         return annotationListPerClass;
