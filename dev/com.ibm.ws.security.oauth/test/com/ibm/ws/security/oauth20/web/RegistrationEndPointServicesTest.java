@@ -174,6 +174,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_GET));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -212,6 +213,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_GET));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -247,6 +249,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -292,6 +295,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getRequestURL();
@@ -363,6 +367,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getRequestURL();
@@ -429,6 +434,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_POST));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -467,6 +473,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_POST));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -502,6 +509,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_POST));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -539,6 +547,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -588,6 +597,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -652,6 +662,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -716,6 +727,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -784,6 +796,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_PUT));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -822,6 +835,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_PUT));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -857,6 +871,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_PUT));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -894,6 +909,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -935,6 +951,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -984,6 +1001,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1048,6 +1066,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1107,6 +1126,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -1135,6 +1155,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1167,6 +1188,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1218,6 +1240,7 @@ public class RegistrationEndPointServicesTest {
             mock.checking(new Expectations() {
                 {
                     one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
