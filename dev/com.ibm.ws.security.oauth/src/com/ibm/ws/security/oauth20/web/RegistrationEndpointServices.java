@@ -138,7 +138,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
                     "OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND",
                     new Object[] { clientId },
                     "CWWKS1424E: The client id {0} was not found.");
-            Tr.error(tc, errorMsg);
+            Tr.warning(tc, errorMsg);
             throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT, HttpServletResponse.SC_NOT_FOUND);
         }
 

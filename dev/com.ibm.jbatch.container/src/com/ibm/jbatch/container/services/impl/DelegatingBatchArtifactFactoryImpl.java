@@ -133,7 +133,8 @@ public class DelegatingBatchArtifactFactoryImpl implements IBatchArtifactFactory
 
         if (cdiBatchArtifactFactory != null && !classExistsInIssuedMessage(clazz)) {
             addClassToIssuedMessage(clazz);
-            JoblogUtil.logToJobLogAndTrace(Level.WARNING, "cdi.ambiguous.artifact.names", null, logger);
+            Object[] arr = { this.getClass().getName() };
+            JoblogUtil.logToJobLogAndTrace(Level.WARNING, "cdi.ambiguous.artifact.names", arr, logger);
         }
 
         DependencyInjectionUtility.injectReferences(loadedArtifact, ProxyFactory.getInjectionReferences());
