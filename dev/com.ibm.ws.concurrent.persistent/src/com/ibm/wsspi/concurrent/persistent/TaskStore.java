@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,19 @@ public interface TaskStore {
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
     TaskRecord findById(long taskId, String owner, boolean includeTrigger) throws Exception;
+
+    /**
+     * Find all pending tasks which are late beyond the specified expected execution time without a
+     * successful execution of the task.
+     *
+     * @param maxNextExecTime  expected next execution time threshold before which an unexecuted task is considered late.
+     * @param excludePartition current partition number, which is excluded from the query because it was just polled.
+     * @param maxResults       maximum number of results to return. Null means unlimited.
+     * @return List of (Id, MiscBinaryFlags, NextExecutionTime, TransactionTimeout) tuples.
+     *         This list is ordered by next execution time only if maxResults is specified.
+     * @throws Exception if an error occurs when attempting to access the persistent task store.
+     */
+    List<Object[]> findLateTasks(long maxNextExecTime, long excludePartition, Integer maxResults) throws Exception;
 
     /**
      * Creates an entry for a partition record if one with the specified combination of executor/host/server/userdir

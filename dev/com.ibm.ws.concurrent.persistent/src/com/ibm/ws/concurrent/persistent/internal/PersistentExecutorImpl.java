@@ -2206,7 +2206,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 try {
                     EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
 
-                    long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + new Date().getTime()) : Long.MAX_VALUE;
+                    long now = new Date().getTime();
+                    long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + now) : Long.MAX_VALUE;
                     List<Object[]> results;
                     tranMgr.begin();
                     try {
@@ -2237,7 +2238,21 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                     if (config.lateTaskThreshold > 0) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(PersistentExecutorImpl.this, tc, "Poll for tasks late by " + config.lateTaskThreshold + "s");
-                        // TODO poll
+                        tranMgr.begin();
+                        try {
+                            results = taskStore.findLateTasks(now - TimeUnit.SECONDS.toMillis(config.lateTaskThreshold), getPartitionId(), config.pollSize);
+                        } catch (Throwable x) {
+                            throw failure = x;
+                        } finally {
+                            tranMgr.commit();
+                        }
+                        for (Object[] result : results) {
+                            long taskId = (long) result[0];
+                            long expectedExecTime = (long) result[2];
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(PersistentExecutorImpl.this, tc, "Task " + taskId + " is late by " + (now - expectedExecTime) + "ms");
+                            // TODO attempt to take over late tasks
+                        }
                     }
                 } finally {
                     // Schedule next poll
