@@ -240,12 +240,14 @@ public class TestBuffers {
         Assert.assertTrue( message, (expected != null) );
     }
 
-    private void verify(TestProfile profile, File testFile) throws IOException {
+    private void verify(final TestProfile profile, File testFile) throws IOException {
         RandomAccessFile randomTestFile = new RandomAccessFile(testFile, "r");
 
-        UtilImpl_ReadBufferPartial readBuffer =
-            new UtilImpl_ReadBufferPartial( testFile.getAbsolutePath(), randomTestFile,
-                                     profile.readBufferSize);
+        final UtilImpl_ReadBufferPartial readBuffer =
+            new UtilImpl_ReadBufferPartial(
+                testFile.getAbsolutePath(),
+                randomTestFile,
+                profile.readBufferSize);
 
         try {
             byte[] readBytes = profile.allocateBytes();
@@ -258,10 +260,17 @@ public class TestBuffers {
 
             // Next read should be past the end.
 
-            verifyFailure( "Read 1 past EOF after read did not fail", () -> { readBuffer.read(); } );
+            // verifyFailure( "Read 1 past EOF after read did not fail", () -> { readBuffer.read(); } );
+            Failable<Exception> readAction = new Failable<Exception>() {
+                @Override
+                public void run() throws Exception {
+                    readBuffer.read();
+                }
+            };
+            verifyFailure("Read 1 past EOF after read did not fail", readAction);
 
             // Plus two bytes, which is the write size of the payload number.
-            int fullPayload = 2 + profile.payloadSize;
+            final int fullPayload = 2 + profile.payloadSize;
 
             // Skip 5 and 2/5 of test data packages, then skip the last 3/5.
 
@@ -279,22 +288,45 @@ public class TestBuffers {
             // Try a few different ways to cause read failures.
 
             readBuffer.seek(profile.payloads * fullPayload);
-            verifyFailure( "Read 1 past EOF after seek did not fail", () -> { readBuffer.read(); } );
+            // verifyFailure( "Read 1 past EOF after seek did not fail", () -> { readBuffer.read(); } );
+            verifyFailure("Read 1 past EOF after seek did not fail", readAction);
 
             readBuffer.seek((profile.payloads - 1) * fullPayload);
             profile.verifyPayload(readBuffer, profile.payloads - 1, readBytes);
-            verifyFailure( "Read 1 past EOF after seek and read did not fail", () -> { readBuffer.read(); } );
+            // verifyFailure( "Read 1 past EOF after seek and read did not fail", () -> { readBuffer.read(); } );            
+            verifyFailure("Read 1 past EOF after seek and read did not fail", readAction);
 
             readBuffer.seek(0);
             profile.verifyPayload(readBuffer, 0, readBytes);
-            verifyFailure( "Seek before beginning of file did not fail", () -> { readBuffer.seek(-1); } );
+            // verifyFailure( "Seek before beginning of file did not fail", () -> { readBuffer.seek(-1); } );
+            Failable<Exception> backupAction = new Failable<Exception>() {
+                @Override
+                public void run() throws Exception {
+                    readBuffer.seek(-1);
+                }
+            };
+            verifyFailure( "Seek before beginning of file did not fail", backupAction);
 
             readBuffer.seek(0);
             profile.verifyPayload(readBuffer, 0, readBytes);
-            verifyFailure("Seek past EOF did not fail", () -> { readBuffer.seek(profile.payloads * fullPayload + 1); } ); 
+            // verifyFailure("Seek past EOF did not fail", () -> { readBuffer.seek(profile.payloads * fullPayload + 1); } ); 
+            Failable<Exception> longSeekAction = new Failable<Exception>() {
+                @Override
+                public void run() throws Exception {
+                    readBuffer.seek(profile.payloads * fullPayload + 1);
+                }
+            };
+            verifyFailure("Seek past EOF did not fail", longSeekAction);
 
             readBuffer.seek((profile.payloads - 1) * fullPayload);
-            verifyFailure( "Read past EOF did not fail", () -> { readBuffer.read(null, 0, 10); } );
+            // verifyFailure( "Read past EOF did not fail", () -> { readBuffer.read(null, 0, 10); } );
+            Failable<Exception> read10Action = new Failable<Exception>() {
+                @Override
+                public void run() throws Exception {
+                    readBuffer.read(null, 0, 10);
+                }
+            };
+            verifyFailure( "Read past EOF did not fail", read10Action);
 
             // Verify random(ish) seeks and reads.
 

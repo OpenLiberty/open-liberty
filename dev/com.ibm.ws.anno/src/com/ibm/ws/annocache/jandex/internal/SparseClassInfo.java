@@ -92,17 +92,21 @@ public final class SparseClassInfo {
     //
 
     public void addField(SparseDotName fieldName) {
-    	// Ignore
+        // Ignore
     }
 
     public void addMethod(SparseDotName methodName) {
-    	// Ignore
+        // Ignore
     }
 
     //
 
     public List<SparseDotName> classAnnotations() {
-        return ((classAnnotations == null) ? Collections.emptyList() : classAnnotations);
+        if ( classAnnotations == null ) {
+            return Collections.emptyList();
+        } else {
+            return classAnnotations;
+        }
     }
 
     public void addClassAnnotation(SparseDotName classAnnotation) {
@@ -130,7 +134,11 @@ public final class SparseClassInfo {
     }
 
     public List<SparseDotName> fieldAnnotations() {
-        return ((fieldAnnotations == null) ? Collections.emptyList() : fieldAnnotations);
+        if ( fieldAnnotations == null ) {
+            return Collections.emptyList();
+        } else {
+            return fieldAnnotations;
+        }
     }
 
     // Only used by the V1 reader.
@@ -175,7 +183,11 @@ public final class SparseClassInfo {
     }
 
     public List<SparseDotName> methodAnnotations() {
-        return ((methodAnnotations == null) ? Collections.emptyList() : methodAnnotations);
+        if ( methodAnnotations == null ) {
+            return Collections.emptyList();
+        } else {
+            return methodAnnotations;
+        }
     }
 
     // Only used by the V1 reader.

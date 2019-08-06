@@ -12,9 +12,6 @@
 
 bVersion=1.1
 
-javac.source: 1.8
-javac.target: 1.8
-            
 Bundle-SymbolicName: com.ibm.ws.anno; singleton:=true
 
 Private-Package: \

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.annocache.test.classes.repeatable;
 
-import com.ibm.ws.annocache.test.classes.repeatable.Author;
-
-@Author(name="Paul")
-@Author(name="Ringo")
+// Disabled: Requires java8
+//
+// @Author(name="Paul")
+// @Author(name="Ringo")
 public class Book_Indirect {
 	// EMPTY
 }

@@ -200,7 +200,7 @@ public class UtilImpl_FileUtils {
     public static final boolean DO_APPEND = true;
     public static final boolean DO_NOT_APPEND = false;
 
-    public static FileOutputStream createFileOutputStream(final File target, boolean append) throws IOException {
+    public static FileOutputStream createFileOutputStream(final File target, final boolean append) throws IOException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
                 @Override

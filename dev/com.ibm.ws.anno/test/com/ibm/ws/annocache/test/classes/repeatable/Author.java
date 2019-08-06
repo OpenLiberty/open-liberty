@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.annocache.test.classes.repeatable;
 
-import java.lang.annotation.Repeatable;
-@Repeatable(Authors.class)
+// Disabled: Requires java8
+//
+// import java.lang.annotation.Repeatable;
+// @Repeatable(Authors.class)
+
 public @interface Author {
      String name() default "DEFAULT!";
 }

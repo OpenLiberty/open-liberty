@@ -34,7 +34,7 @@ public class UtilImpl_FileStamp {
      * 
      * @return The stamp of the file.
      */
-    public static String computeStamp(File file) {
+    public static String computeStamp(final File file) {
         return AccessController.doPrivileged( new PrivilegedAction<String>() {
             @Override
             public String run() {

@@ -797,7 +797,7 @@ public class TargetsTableImpl implements TargetsTable {
      * @throws AnnotationTargets_Exception Thrown in case of a scan error.
      */
     @Trivial
-    protected void scanInternal(ClassSource classSource,
+    protected void scanInternal(final ClassSource classSource,
 
                                 final Set<String> i_newResolvedClassNames,
                                 final Set<String> i_resolvedClassNames,

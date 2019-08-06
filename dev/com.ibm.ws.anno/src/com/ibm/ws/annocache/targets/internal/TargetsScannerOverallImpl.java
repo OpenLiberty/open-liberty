@@ -1248,19 +1248,19 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         List<? extends ClassSource> childClassSources = rootClassSource.getClassSources();
         int numChildSources = childClassSources.size();
 
-        UtilImpl_PoolExecutor readPool = createSourceExecutor();
+        final UtilImpl_PoolExecutor readPool = createSourceExecutor();
 
         for ( int sourceNo = 0; sourceNo < numChildSources; sourceNo++ ) {
-            ClassSource childClassSource = childClassSources.get(sourceNo);
-            ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
+            final ClassSource childClassSource = childClassSources.get(sourceNo);
+            final ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
 
             if ( childScanPolicy == ScanPolicy.EXTERNAL ) {
                 readPool.completeExecution();
                 continue;
             }
 
-            String classSourceName = childClassSource.getName();
-            String classSourceStamp = childClassSource.getStamp();
+            final String classSourceName = childClassSource.getName();
+            final String classSourceStamp = childClassSource.getStamp();
 
             TargetsTableImpl priorTargets = getTargetsTable(classSourceName);
             if ( priorTargets != null ) {
@@ -1368,15 +1368,15 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         List<? extends ClassSource> childClassSources = rootClassSource.getClassSources();
         int numChildSources = childClassSources.size();
 
-        boolean validContainers[] = new boolean[numChildSources];
+        final boolean validContainers[] = new boolean[numChildSources];
 
-        UtilImpl_PoolExecutor validatorPool = createSourceExecutor();
+        final UtilImpl_PoolExecutor validatorPool = createSourceExecutor();
 
         int internalContainers = 0;
 
         for ( int sourceNo = 0; sourceNo < numChildSources; sourceNo++ ) {
-            ClassSource childClassSource = childClassSources.get(sourceNo);
-            ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
+            final ClassSource childClassSource = childClassSources.get(sourceNo);
+            final ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
 
             if ( childScanPolicy == ScanPolicy.EXTERNAL ) {
                 validContainers[sourceNo] = true;
@@ -1386,7 +1386,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
             internalContainers++;
 
-            int useSourceNo = sourceNo;
+            final int useSourceNo = sourceNo;
 
             Runnable validator = new Runnable() {
                 @Override
@@ -1460,16 +1460,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                     Integer.valueOf(internalContainers) });
         }
 
-        UtilImpl_PoolExecutor completionPool = createSourceExecutor();
+        final UtilImpl_PoolExecutor completionPool = createSourceExecutor();
 
-        for ( ClassSource childClassSource : rootClassSource.getClassSources() ) {
+        for ( final ClassSource childClassSource : rootClassSource.getClassSources() ) {
             ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
             if ( childScanPolicy == ScanPolicy.EXTERNAL ) {
                 completionPool.completeExecution();
                 continue;
             }
 
-            String classSourceName = childClassSource.getName();
+            final String classSourceName = childClassSource.getName();
 
             TargetsTableImpl alreadyRefreshedTargets = getTargetsTable(classSourceName);
             if ( alreadyRefreshedTargets != null ) {
@@ -1886,14 +1886,14 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         return !isAnyMissing;
     }
 
-    protected boolean readInternalResults_Concurrent(TargetsTableImpl[] tables) {
+    protected boolean readInternalResults_Concurrent(final TargetsTableImpl[] tables) {
         String methodName = "readInternalResults";
 
         // Each processing array have a cell for the EXTERNAL scan policy,
         // which is unused.  Having the extra unused cell is simpler than
         // adjusting for the unused policy.
 
-        boolean[] missingResults = new boolean[ ScanPolicy.values().length ];
+        final boolean[] missingResults = new boolean[ ScanPolicy.values().length ];
 
         // Do not pool the internal result readers: there will only be at most
         // three of these.
@@ -1910,7 +1910,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 continue;
             }
 
-            ScanPolicy useScanPolicy = scanPolicy;
+            final ScanPolicy useScanPolicy = scanPolicy;
 
             Runnable readRunner = new Runnable() {
                 @Override
