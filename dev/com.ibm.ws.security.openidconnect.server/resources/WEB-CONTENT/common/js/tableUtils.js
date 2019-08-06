@@ -240,6 +240,7 @@ var tableUtils = (function() {
     var filterRows = function(tableId, filterValue) {
         var filter = filterValue.trim().toLowerCase();  // Stored the name in <tr> element
                                                         // lower-cased for a case insensitive search
+        filter = utils.escapeString(filter);                                                        
 
         var $table = $('#' + tableId + ' tbody');
 

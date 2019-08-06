@@ -280,7 +280,7 @@ var clientInputDialog = (function() {
                     // Something happended with the request.  Put up the generic error message.
                     var errTitle = messages.GENERIC_REGISTER_FAIL;
                     // insert bidi text direction to the client name
-                    var errClientName = bidiUtils.getDOMSpanWithBidiTextDirection(client_name);
+                    var errClientName = bidiUtils.getDOMSpanWithBidiTextDirection(utils.encodeData(client_name));
                     var errDescription = utils.formatString(messages.GENERIC_REGISTER_FAIL_MSG, [errClientName]);
                     utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowAddEditDialog);
                 });                      
@@ -339,7 +339,7 @@ var clientInputDialog = (function() {
                     //     }
                     // }
                     // insert bidi text direction to the client name
-                    var msgClientName = bidiUtils.getDOMSpanWithBidiTextDirection(client_name);
+                    var msgClientName = bidiUtils.getDOMSpanWithBidiTextDirection(utils.encodeData(client_name));
                     if (errResponse.status === 404) {
                         if (errResponse.responseJSON.error && errResponse.responseJSON.error === "invalid_client") {
                             // Updating an OAuth client that no longer exists....message the user and delete

@@ -155,7 +155,7 @@ var table = (function() {
 
         // Create a table row and add the filter data attribute as the name lowecased.
         // This is used in sorting and filtering (when implemented).
-        var tableRow = "<tr data-filter='" + authData.name.toLowerCase() + "' data-authid='" + authData.authID + "' data-userid='" + authData.user + "'>" + selectBox + name + clientName + type + issuedOn + expiresOn + deleteButton + "</tr>";
+        var tableRow = "<tr data-filter='" + utils.encodeData(authData.name.toLowerCase()) + "' data-authid='" + authData.authID + "' data-userid='" + authData.user + "'>" + selectBox + name + clientName + type + issuedOn + expiresOn + deleteButton + "</tr>";
 
         return tableRow;
     };
@@ -258,7 +258,7 @@ var table = (function() {
 
         // Find the delete dialog in the html
         var $deleteDlg = $('.tool_modal_container.token_manager_delete');
-        var confirmationTitle = utils.formatString(messages.DELETE_FOR_USERID, [name, userID]);
+        var confirmationTitle = utils.formatString(messages.DELETE_FOR_USERID, [utils.encodeData(name), userID]);
         $deleteDlg.find('.tool_modal_title').html(confirmationTitle);
 
         if (type === 'app-password') {
@@ -338,7 +338,7 @@ var table = (function() {
             // So, if something else happended with the request, put up the generic error message.
             var deleteTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, [deleteTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, name]);
+            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
         });
     };
@@ -475,7 +475,7 @@ var table = (function() {
     };
 
     var __identifyAuthentication = function(authentication) {
-        return (utils.formatString(messages.IDENTIFY_AUTH, [authentication.authType, authentication.name]));   
+        return (utils.formatString(messages.IDENTIFY_AUTH, [authentication.authType, utils.encodeData(authentication.name)]));   
     };
 
     var __reshowDeleteDialog = function() {
