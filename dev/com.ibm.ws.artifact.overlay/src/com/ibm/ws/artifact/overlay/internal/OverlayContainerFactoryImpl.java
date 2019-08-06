@@ -141,7 +141,9 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
             }
 
             //introspect each of the containers
-            snapshotSet.forEach(containerEntry -> containerEntry.introspect(outputWriter));
+            for(DirectoryBasedOverlayContainerImpl containerEntry : snapshotSet){
+                containerEntry.introspect(outputWriter);
+            }
 
         }
     }
