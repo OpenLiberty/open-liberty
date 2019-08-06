@@ -13,6 +13,7 @@ package com.ibm.ws.annocache.targets.cache.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.jboss.jandex.Index;
@@ -20,6 +21,7 @@ import org.jboss.jandex.Index;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.jandex.internal.Jandex_Utils;
 import com.ibm.ws.annocache.jandex.internal.SparseIndex;
+import com.ibm.ws.annocache.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.annocache.targets.internal.TargetsScannerOverallImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableTimeStampImpl;
@@ -283,7 +285,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         stampLink.setHasFile(hasStampFile);
     }
 
-    public boolean readStamp(TargetsTableTimeStampImpl useStampTable) {
+    public boolean readStamp(final TargetsTableTimeStampImpl useStampTable) {
         long readStart = System.nanoTime();
 
         boolean didRead;
@@ -291,11 +293,13 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         File stampFile = getStampFile();
 
         if ( getUseBinaryFormat() ) {
-            didRead = readBinary(
-                stampFile, !DO_READ_STRINGS, !DO_READ_FULL,
-                (TargetCacheImpl_ReaderBinary reader) -> {
-                    reader.readEntire(useStampTable);
-                } );
+            Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
+                new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
+                        reader.readEntire(useStampTable);
+                    }
+                };
+            didRead = readBinary(stampFile, !DO_READ_STRINGS, !DO_READ_FULL, readAction);
         } else {
             didRead = read(stampFile, useStampTable);
         }
@@ -308,7 +312,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
 
     private void writeStamp(
         TargetCacheImpl_DataMod modData,
-        TargetsTableTimeStampImpl useStampTable) {
+        final TargetsTableTimeStampImpl useStampTable) {
 
         String description;
         if ( logger.isLoggable(Level.FINER) ) {
@@ -323,13 +327,17 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         if ( getUseBinaryFormat() ) {
             writeAction = null;
             writeActionBinary =
-                (TargetCacheImpl_WriterBinary useWriter) -> {
-                    useWriter.writeEntire(useStampTable);
+                new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    public void accept(TargetCacheImpl_WriterBinary useWriter) throws IOException {
+                        useWriter.writeEntire(useStampTable);
+                    }
                 };
         } else {
             writeAction =
-                (TargetCacheImpl_Writer useWriter) -> {
-                    useWriter.write(useStampTable);
+                new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    public void accept(TargetCacheImpl_Writer useWriter) throws IOException {
+                        useWriter.write(useStampTable);
+                    }
                 };
             writeActionBinary = null;
         }
@@ -365,7 +373,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         coreDataLink.setHasFile(hasCombinedFile);
     }
 
-    public boolean readCoreData(TargetsTableImpl targetData) {
+    public boolean readCoreData(final TargetsTableImpl targetData) {
         long readStart = System.nanoTime();
 
         File coreDataFile = getCoreDataFile();
@@ -373,14 +381,15 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         boolean didRead;
 
         if ( getUseBinaryFormat() ) {
-            didRead = readBinary(
-                coreDataFile, DO_READ_STRINGS, DO_READ_FULL,
-                (TargetCacheImpl_ReaderBinary reader) -> {
-                    reader.readEntire(
-                        targetData.getClassTable(),
-                        targetData.getAnnotationTable() );
-                } );
-
+            Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
+                new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
+                        reader.readEntire(
+                            targetData.getClassTable(),
+                            targetData.getAnnotationTable() );
+                    }
+                };
+            didRead = readBinary(coreDataFile, DO_READ_STRINGS, DO_READ_FULL, readAction);
         } else {
             didRead = read(
                 coreDataFile,
@@ -407,7 +416,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
      * @param modData The module which will perform the write.
      * @param targetData The data which is to be written.
      */
-    private void writeCoreData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
+    private void writeCoreData(TargetCacheImpl_DataMod modData, final TargetsTableImpl targetData) {
         String description;
         if ( logger.isLoggable(Level.FINER) ) {
             description = "Container [ " + getName() + " ] [ " + getCoreDataLink() + " ]";
@@ -421,16 +430,20 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         if ( getUseBinaryFormat() ) {
             writeAction = null;
             writeActionBinary =
-                (TargetCacheImpl_WriterBinary useWriter) -> {
-                    useWriter.writeEntire(
-                        targetData.getClassTable(),
-                        targetData.getAnnotationTable() );
+                new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    public void accept(TargetCacheImpl_WriterBinary useWriter) throws IOException {
+                        useWriter.writeEntire(
+                            targetData.getClassTable(),
+                            targetData.getAnnotationTable() );
+                    }
                 };
         } else {
             writeAction =
-                (TargetCacheImpl_Writer useWriter) -> {
-                    useWriter.write( targetData.getClassTable() );
-                    useWriter.write( targetData.getAnnotationTable() );
+                new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    public void accept(TargetCacheImpl_Writer useWriter) throws IOException {
+                        useWriter.write( targetData.getClassTable() );
+                        useWriter.write( targetData.getAnnotationTable() );
+                    }
                 };
             writeActionBinary = null;
         }
@@ -461,7 +474,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
             didRead = true;
 
         } catch ( IOException e ) {
-            readError( coreDataFile, e, Collections.emptyList() );
+            List<TargetCache_ParseError> errors = Collections.emptyList(); 
+            readError(coreDataFile, e, errors);
             didRead = false;
         }
 
@@ -475,7 +489,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
 
     private void writeJandex(
         TargetCacheImpl_DataMod modData,
-        Index jandexIndex) {
+        final Index jandexIndex) {
 
         String description;
         if ( logger.isLoggable(Level.FINER) ) {
@@ -485,8 +499,10 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         }
 
         Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction =
-            (TargetCacheImpl_Writer useWriter) -> {
-                useWriter.write(jandexIndex);
+            new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                public void accept(TargetCacheImpl_Writer useWriter) throws IOException {
+                    useWriter.write(jandexIndex);
+                }
             };
 
         modData.scheduleWrite(description, getCoreDataFile(), DO_TRUNCATE, writeAction, null);
@@ -552,8 +568,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
 
     @SuppressWarnings("unused")
     private void clearFiles() {
-    	stampLink.setHasFile(false);
-    	coreDataLink.setHasFile(false);
+        stampLink.setHasFile(false);
+        coreDataLink.setHasFile(false);
     }
 
     public boolean hasCoreDataFile() {

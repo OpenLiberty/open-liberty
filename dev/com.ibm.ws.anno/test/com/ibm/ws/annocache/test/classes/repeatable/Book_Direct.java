@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.annocache.test.classes.repeatable;
 
-import com.ibm.ws.annocache.test.classes.repeatable.Author;
-import com.ibm.ws.annocache.test.classes.repeatable.Authors;
-
 @Authors({@Author(name="John"), @Author(name="George")})
 public class Book_Direct {
 	// EMPTY

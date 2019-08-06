@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.wsspi.annocache.util;
 
-import java.util.Objects;
+// import java.util.Objects;
+
+// Converted to a regular interface to remove a java8 dependency.
 
 /**
  * Functional interface for consumers which throw exceptions.
@@ -20,15 +22,15 @@ import java.util.Objects;
  * @param <T> The type which is consumed.
  * @param <E> The type of the exception which may be thrown.
  */
-@FunctionalInterface
+// @FunctionalInterface
 public interface Util_Consumer<T, E extends Exception> {
     void accept(T t) throws E;
 
-    default Util_Consumer<? super T, ? extends E> andThen
-        (Util_Consumer<? super T, ? extends E> after) {
-
-        Objects.requireNonNull(after);
-
-        return (T t) -> { accept(t); after.accept(t); };
-    }
+//    default Util_Consumer<? super T, ? extends E> andThen
+//        (Util_Consumer<? super T, ? extends E> after) {
+//
+//        Objects.requireNonNull(after);
+//
+//        return (T t) -> { accept(t); after.accept(t); };
+//    }
 }

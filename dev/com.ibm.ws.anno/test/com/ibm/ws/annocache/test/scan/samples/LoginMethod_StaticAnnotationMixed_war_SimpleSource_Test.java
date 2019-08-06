@@ -47,7 +47,7 @@ public class LoginMethod_StaticAnnotationMixed_war_SimpleSource_Test extends Tes
         ClassSourceImpl_Aggregate rootClassSource =
         	factory.createAggregateClassSource(EAR_SIMPLE_NAME, WAR_SIMPLE_NAME, JAVAEE_MOD_CATEGORY_NAME, options);
 
-        String warClassesPath = TestLocalization.putInto(warPath, "WEB-INF/classes");
+        final String warClassesPath = TestLocalization.putInto(warPath, "WEB-INF/classes");
 
         final List<String> warResourcePaths;
         try {

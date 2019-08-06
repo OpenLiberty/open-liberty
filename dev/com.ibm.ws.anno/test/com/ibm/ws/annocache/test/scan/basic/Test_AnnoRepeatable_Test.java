@@ -89,7 +89,7 @@ public class Test_AnnoRepeatable_Test extends Test_Base {
     	EXPECTED_AUTHOR_NAMES_INDIRECT = expectedAuthorNames;
     }
 
-    @Test
+    // @Test // Disabled - requires java8
     public void testRepeatableTarget() throws Exception {
         boolean authorIsRepeatable = getBaseTargets().i_classHasAnnotation(AUTHOR_CLASS_NAME, REPEATABLE_CLASS_NAME);
         Assert.assertTrue("Found [ " + REPEATABLE_CLASS_NAME + " ] on [ " + REPEATABLE_CLASS_NAME + " ]", authorIsRepeatable); 
@@ -100,7 +100,7 @@ public class Test_AnnoRepeatable_Test extends Test_Base {
     	testRepeatableInfo(BOOK_DIRECT_CLASS_NAME, EXPECTED_AUTHOR_NAMES_DIRECT);
     }
     
-    @Test
+    // @Test // Disabled - requires java8
     public void testRepeatableInfo_Indirect() throws Exception {
     	testRepeatableInfo(BOOK_INDIRECT_CLASS_NAME, EXPECTED_AUTHOR_NAMES_INDIRECT);
     }

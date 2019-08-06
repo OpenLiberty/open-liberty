@@ -261,12 +261,12 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
 
     @Trivial
     protected void scheduleWrite(
-        TargetCacheImpl_DataMod modData,
-        String description,
-        File outputFile,
-        boolean doTruncate,
-        Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction,
-        Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary) {
+        final TargetCacheImpl_DataMod modData,
+        final String description,
+        final File outputFile,
+        final boolean doTruncate,
+        final Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction,
+        final Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary) {
 
         String methodName = "scheduleWrite";
 
@@ -287,7 +287,7 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
             }
 
         } else {
-            Throwable scheduler =
+            final Throwable scheduler =
                 new Throwable(
                     "App [ " + getName() + " ] [ " + e_getName() + " ]" +
                     " Mod [ " + modData.getName() + " ] [ " + modData.e_getName() + " ]" +
