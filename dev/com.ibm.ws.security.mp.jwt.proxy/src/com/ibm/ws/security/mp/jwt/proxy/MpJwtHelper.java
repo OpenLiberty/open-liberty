@@ -83,6 +83,13 @@ public class MpJwtHelper {
 		return null;
 	}
 
+	public static void addLoggedOutJwtToList(String jwtString) {
+		JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
+		if (jsonWebTokenUtil != null) {
+			jsonWebTokenUtil.addLoggedOutJwtToList(jwtString);
+		}
+	}
+
 	private static JsonWebTokenUtil getJsonWebTokenUtil() {
 		if (isJavaVersionAtLeast18()) {
 			return JsonWebTokenUtilRef.getService();
