@@ -19,7 +19,7 @@
 repositories {
     if(file("unzipped-open-liberty/wasliberty-open-liberty").exists()){
         maven{
-            file("unzipped-open-liberty/wasliberty-open-liberty")
+            url("file://unzipped-open-liberty/wasliberty-open-liberty")
         }
     }
     if (isUsingArtifactory) {
