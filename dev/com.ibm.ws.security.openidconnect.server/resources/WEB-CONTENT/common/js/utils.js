@@ -360,6 +360,34 @@ var utils = (function() {
         return coords;
     };
 
+    /**
+     * Encode untrusted data by replacing the following characters with HTML entity
+     * encoding values before inserting into the DOM.
+     * 
+     *      Characters replaced: &, <, >, ", ', #, and /
+     * 
+     * @param String dataString 
+     */
+    var encodeData = function(dataString) {
+        var chars = {'&': '&amp;',
+                     '<': '&lt;',
+                     '>': '&gt;',
+                     '"': '&quot;',
+                     "'": '&#039;',
+                     '#': '&#035;',
+                     '/': '&#x2F;'};
+        return dataString.replace( /[&<>'"#/]/g, function(c) { return chars[c]; } );
+    };
+
+    /**
+     * Escape the dataString so it is as it appears in the HTML.
+     * 
+     * @param String dataString
+     */
+    var escapeString = function(dataString) {
+        return dataString.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1');
+    };
+
     return {
         formatString: formatString,
         copyToClipboard: copyToClipboard,
@@ -377,7 +405,9 @@ var utils = (function() {
         clearFocus: clearFocus,
         getTopFocusElement: getTopFocusElement,
         updateFocusAfterDelete: updateFocusAfterDelete,
-        getTableCellCoords: getTableCellCoords
+        getTableCellCoords: getTableCellCoords,
+        encodeData: encodeData,
+        escapeString: escapeString
     };
 
 })();
