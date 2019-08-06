@@ -194,7 +194,7 @@ public class AuthenticateApi {
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
         }
 
-        removeEntryFromAuthCache(req, res, config); //bt: here
+        removeEntryFromAuthCache(req, res, config);
         invalidateSession(req);
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);
