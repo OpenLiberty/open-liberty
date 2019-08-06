@@ -66,4 +66,71 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
         return containerFactory;
     }
 
+    /**
+     * Registry to store all the containers created with this.createOverlay()
+     */
+    private final DirectoryBasedOverlayContainerRegistry registeredContainers = new DirectoryBasedOverlayContainerRegistry();;
+
+    /**
+     * method to add a container to the registrt
+     * @param container to add to registry
+     */
+    private void register(DirectoryBasedOverlayContainerImpl container) {
+        registeredContainers.add(container);
+    };
+
+    /**
+     * Introspection method to print then number of registered containers, the enclosing and current containers in the registry and the Base / File URLs associated with them
+     * @param outputWriter PrintWriter to print the introspection
+     */
+    public void introspect(PrintWriter outputWriter) {
+
+        outputWriter.println("Active Containers:");
+
+        if (registeredContainers.isEmpty()) {
+            outputWriter.println("  ** NONE **");
+        } else {
+
+            Set<DirectoryBasedOverlayContainerImpl> snapshotSet = registeredContainers.getSnapshotSet();
+
+            outputWriter.println(String.format("  Number of Registered Containers: [ %d ]",snapshotSet.size()));
+            outputWriter.println();
+
+            outputWriter.println("Containers in Set:");
+            for(DirectoryBasedOverlayContainerImpl containerEntry: snapshotSet){
+
+                //print the enclosing container and current container////////////////////
+                ArtifactEntry useEnclosingEntry = containerEntry.getEntryInEnclosingContainer();
+                String enclosingEntryIntrospectFormat = "  [ %s ] [ %s ]";
+                if(useEnclosingEntry == null) {
+                    outputWriter.println(String.format(enclosingEntryIntrospectFormat, "ROOT" ,containerEntry.toString()));
+                }
+                else {
+                    outputWriter.println(String.format(enclosingEntryIntrospectFormat, containerEntry.getFullPath(useEnclosingEntry) ,containerEntry.toString()));
+                }
+                
+                //print the base container reference and URLs////////////////////////////
+                ArtifactContainer baseContainer = containerEntry.getContainerBeingOverlaid();
+                outputWriter.println(String.format("      Base [ %s ]", baseContainer.toString()));
+                for(URL baseURL : baseContainer.getURLs()){
+                    outputWriter.println(String.format("        URL [ %s ]",baseURL.toString()));
+                }
+
+                //print the file container reference and URLs////////////////////////////
+                ArtifactContainer fileContainer = containerEntry.getFileOverlay();
+                outputWriter.println(String.format("      File [ %s ]", fileContainer.toString()));
+                for(URL fileURL : fileContainer.getURLs()){
+                    outputWriter.println(String.format("        URL [ %s ]", fileURL.toString()));
+                }
+
+
+            }
+
+            //introspect each of the containers
+            for(DirectoryBasedOverlayContainerImpl containerEntry : snapshotSet){
+                containerEntry.introspect(outputWriter);
+            }
+
+        }
+    }
 }
