@@ -124,7 +124,7 @@ var table = (function() {
         var textDir = bidiUtils.getDOMBidiTextDirection(); 
         // Create a table row and add the filter data attribute as the name lowecased.
         // This is used in sorting and filtering (when implemented).
-        var tableRow = "<tr data-filter='" + utils.encodeData(authData.name.toLowerCase()) + "' " + textDir + ">" + name + type + issuedOn + expiresOn + regenerateButton + deleteButton + "</tr>";
+        var tableRow = "<tr data-filter='" + authData.name.toLowerCase() + "' " + textDir + ">" + name + type + issuedOn + expiresOn + regenerateButton + deleteButton + "</tr>";
 
         return tableRow;
     };
