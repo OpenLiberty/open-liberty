@@ -14,15 +14,16 @@ import java.util.ArrayList;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jose4j.lang.JoseException;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
-import com.ibm.ws.security.mp.jwt.TraceConstants;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
+import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
 
@@ -55,6 +56,12 @@ public class TAIJwtUtils {
             }
             throw new MpJwtProcessingException(msg, e);
         }
+    }
+
+    public synchronized static void addLoggedOutJwtToList(String rawtoken) {
+        System.out.println("*** add logged out jwt to list: " + rawtoken);
+        // implement me.
+        // todo: implement list bounding, somehow.
     }
 
     /**
