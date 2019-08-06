@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -1271,96 +1270,4 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         return this.overlayNotifier;
     }
 
-    /**
-     * Answer the path to an entry from the root-of-roots container.
-     *
-     * @param entry The entry for which to obtain the path.
-     *
-     * @return The path to the entry from the root-of-roots container.
-     */
-    public String getFullPath(ArtifactEntry entry) {
-        String entryPath = entry.getPath();
-
-        // If the immediate root container is the root of roots, just
-        // answer the path to the entry.
-
-        ArtifactEntry entryRootEntry = entry.getRoot().getEntryInEnclosingContainer();
-        if ( entryRootEntry == null ) {
-            return entryPath;
-        }
-
-        // Otherwise, walk upwards, concatenating the enclosing entry
-        // paths.
-
-        StringBuilder builder = new StringBuilder(entry.getPath());
-        while ( entryRootEntry != null ) {
-            builder.insert(0,  '/');
-            builder.insert(0,  entryRootEntry.getPath());
-
-            entryRootEntry = entryRootEntry.getRoot().getEntryInEnclosingContainer();
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Method to get a snapshot for the cacheStore field of the DirectoryBasedOverlayContainerImpl
-     * 
-     * @return Map of String to Map of Class to Object as a snapshot of the state of the nonpersistant cache
-     */
-    private Map<String, Map<Class, Object>> getCacheSnapshot() {
-        return cacheStore.getSnapshot();
-    }
-
-    /**
-     * Method to return the file overlay container for introspection from OverlayContainerFactoryImpl
-     * 
-     * @return ArtifactContainer for the file overlay
-     */
-    protected ArtifactContainer getFileOverlay() {
-        return fileOverlayContainer;
-    }
-    
-    /**
-     * Introspect method to print information related to the enclosing and current container as well as the
-     * state of the nonpersistant cache
-     * 
-     * @param outputWriter PrintWriter to output the introspection 
-     */
-    public void introspect(PrintWriter outputWriter) {
-        outputWriter.println();
-
-        //print out the enclosing and current container//////////////////////////////////
-        ArtifactEntry useEnclosingEntry = getEntryInEnclosingContainer();
-        String enclosingIntrospect = "Directory Overlay Container [ %s ] [ %s ]";
-        if(useEnclosingEntry == null) {
-            outputWriter.println(String.format(enclosingIntrospect, "ROOT" , this.toString() ));
-        }
-        else {
-            outputWriter.println(String.format(enclosingIntrospect, getFullPath(useEnclosingEntry) , this.toString()));
-        }
-
-        //if the cache is empty then continue with the introspection else print info/////
-        if( cacheStore.isCacheEmpty() ) {
-            outputWriter.println("  ** EMPTY **");
-        } 
-        else {
-            Map<String, Map<Class, Object>> snapshot = getCacheSnapshot();
-            //for each of the (String -> Map) entries////////////////////////////////////
-            for( Map.Entry<String, Map<Class, Object>> pathEntry: snapshot.entrySet() ) {
-                outputWriter.println(String.format("  [ %s ]", pathEntry.getKey()));
-                Map<Class, Object> entriesForPath = pathEntry.getValue();
-                if( entriesForPath.isEmpty() ) {
-                    outputWriter.println("      ** EMPTY **");
-                }
-                else {
-                    String subEntryFormat = "      [ %s ] [ %s ]";
-                    for( Map.Entry<Class, Object> subEntry: entriesForPath.entrySet() ) {
-                        outputWriter.println(String.format(subEntryFormat, subEntry.getKey(), subEntry.getValue() == null ? "** NULL **" : subEntry.getValue()));
-                    }
-                }
-            }
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
 }
