@@ -4,5 +4,19 @@
 	<classpathentry kind="src" output="bin_test" path="test"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/Users/bruce/.m2/repository/org/eclipse/microprofile/jwt/microprofile-jwt-auth-api/1.0/microprofile-jwt-auth-api-1.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.eclipse.microprofile.jwt"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.security.jwtsso_fat"/>
+			<attribute name="version" value="latest"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/eclipse/microprofile/auth/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/microprofile/jwt/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.security.mp.jwt"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
