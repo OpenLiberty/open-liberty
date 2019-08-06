@@ -22,7 +22,7 @@
                     </script>
                 </method-selector>
             </method-selectors>
-            <package name="org.eclipse.microprofile.graphql.tck.dynamic.*"></package>
+            <package name="org.eclipse.microprofile.graphql.tck.*"></package>
         </packages>
     </test>
 </suite>

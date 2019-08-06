@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.microprofile.rest.client.tck;
+package org.eclipse.microprofile.graphql.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
