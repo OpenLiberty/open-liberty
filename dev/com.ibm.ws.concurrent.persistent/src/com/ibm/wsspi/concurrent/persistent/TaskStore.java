@@ -319,6 +319,20 @@ public interface TaskStore {
     int removeProperties(String pattern, Character escape) throws Exception;
 
     /**
+     * Removes all persisted properties that match the specified name pattern
+     * and which have a value that is less than or equal to the comparisonValue.
+     *
+     * @param pattern         name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
+     * @param escape          escape character that indicates when matching characters like % and _ should be interpreted literally.
+     *                            A value of null avoids designating an escape character, in which case the
+     *                            behavior depends on the persistent store.
+     * @param comparisonValue the value against which the current value is compared.
+     * @return number of properties removed.
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     */
+    int removePropertiesIfLessThanOrEqual(String pattern, Character escape, String comparisonValue) throws Exception;
+
+    /**
      * Removes the property with the specified name from the persistent store.
      * 
      * @param name name of the entry.

@@ -2259,7 +2259,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                     InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, expectedExecTime, mbits, txTimeout);
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(PersistentExecutorImpl.this, tc, "Submit task " + taskId + " for immediate execution");
-                    executor.submit(task); // TODO include something to clean up the PROPERTIES table?
+                    executor.submit(task);
                 }
             }
 
@@ -2330,8 +2330,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                         boolean anyClaimed = false;
                         for (Object[] result : results)
                             anyClaimed |= claimLateTask(result, config.lateTaskThreshold);
-                        if (anyClaimed)
-                            ; // TODO schedule a task to clean up the properties table once claims would expire
+                        if (anyClaimed) {
+                            // schedule a task to clean up the properties table after claims start to expire
+                            scheduledExecutor.schedule(new PropertyCleanupTask(), config.lateTaskThreshold, TimeUnit.SECONDS);
+                        }
                     }
                 } finally {
                     // Schedule next poll
@@ -2354,6 +2356,46 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(PersistentExecutorImpl.this, tc, "run[poll]", failure);
+        }
+    }
+
+    /**
+     * Cleans up out-dated claim entries from the properties table.
+     */
+    @Trivial
+    private class PropertyCleanupTask implements Runnable {
+        @Override
+        public void run() {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+            if (trace && tc.isEntryEnabled())
+                Tr.entry(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]");
+
+            if (deactivated) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]", "not active - skipped");
+                return;
+            }
+
+            try {
+                EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+                String now = String.format("%019d", new Date().getTime());
+                tranMgr.begin();
+                try {
+                    int removed = taskStore.removePropertiesIfLessThanOrEqual(":CLAIM:%", null, now);
+
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]", removed);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+            } catch (Throwable x) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]", x);
+            }
         }
     }
 

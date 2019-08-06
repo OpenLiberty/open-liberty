@@ -1321,6 +1321,35 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
+    public int removePropertiesIfLessThanOrEqual(String pattern, Character escape, String comparisonValue) throws Exception {
+        StringBuilder delete = new StringBuilder(58)
+                        .append("DELETE FROM Property WHERE ID LIKE :p AND VAL<:c");
+        if (escape != null)
+            delete.append(" ESCAPE :e");
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "removePropertiesIfLessThanOrEqual", pattern, escape, comparisonValue, delete);
+
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Query query = em.createQuery(delete.toString());
+            query.setParameter("p", pattern);
+            query.setParameter("c", comparisonValue);
+            if (escape != null)
+                query.setParameter("e", escape);
+            int count = query.executeUpdate();
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "removePropertiesIfLessThanOrEqual", count);
+            return count;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean removeProperty(String name) throws Exception {
         String update = "DELETE FROM Property WHERE ID=:i";
 
