@@ -472,8 +472,8 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public List<Object[]> findLateTasks(long maxNextExecTime, long excludePartition, Integer maxResults) throws Exception {
-        StringBuilder find = new StringBuilder(128)
-                        .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT FROM Task t WHERE t.PARTN<>:p AND t.STATES<")
+        StringBuilder find = new StringBuilder(138)
+                        .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT,t.VERSION FROM Task t WHERE t.PARTN<>:p AND t.STATES<")
                         .append(TaskState.SUSPENDED.bit)
                         .append(" AND t.NEXTEXEC<=:m");
         if (maxResults != null)
@@ -1365,6 +1365,32 @@ public class DatabaseTaskStore implements TaskStore {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "setProperty", exists);
         return exists;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean setPropertyIfLessThanOrEqual(String name, String value, String comparisonValue) throws Exception {
+        String update = "UPDATE Property SET VAL=:v WHERE ID=:i AND VAL<:c";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "setPropertyIfLessThanOrEqual", name, value, comparisonValue, update);
+
+        boolean replaced;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Query query = em.createQuery(update);
+            query.setParameter("v", value);
+            query.setParameter("i", name);
+            query.setParameter("c", comparisonValue);
+            replaced = query.executeUpdate() > 0;
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "setPropertyIfLessThanOrEqual", replaced);
+        return replaced;
     }
 
     /** {@inheritDoc} */
