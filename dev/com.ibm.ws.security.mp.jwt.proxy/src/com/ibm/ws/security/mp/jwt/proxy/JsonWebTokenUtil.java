@@ -17,8 +17,8 @@ import javax.security.auth.Subject;
 
 public interface JsonWebTokenUtil {
 	/*
-	 * Retrieve the JsonWebToken from the subject's hashtable and adding it in
-	 * the subject as a Principal
+	 * Retrieve the JsonWebToken from the subject's hashtable and adding it in the
+	 * subject as a Principal
 	 */
 	public void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties, String key);
 
@@ -33,9 +33,14 @@ public interface JsonWebTokenUtil {
 	public Principal cloneJsonWebToken(Subject subject);
 
 	/**
-	 * Creates a JsonWebToken from the given jwt, type, and username then
-	 * returns it as a Principal
+	 * Creates a JsonWebToken from the given jwt, type, and username then returns it
+	 * as a Principal
 	 */
 	public Principal getJsonWebToken(String jwt, String type, String username);
+
+	/**
+	 * adds a jwt string to the list of jwt's that have been logged out
+	 */
+	public void addLoggedOutJwtToList(String jwt);
 
 }

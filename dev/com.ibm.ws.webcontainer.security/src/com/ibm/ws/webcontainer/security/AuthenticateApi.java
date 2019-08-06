@@ -20,11 +20,11 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.http.cookie.Cookie;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import com.ibm.websphere.ras.Tr;
@@ -45,7 +45,6 @@ import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
-import com.ibm.ws.security.mp.jwt.tai.TAIJwtUtils;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.ChallengeReply;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
@@ -200,6 +199,13 @@ public class AuthenticateApi {
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);
 
+        // if we have jwt, put on mpjwt's list of logged out jwt's so it cannot be reused.
+        // will be null if mpJwt feature not active, or no jwt in principal
+        Principal p = MpJwtHelper.getJsonWebTokenPricipal(subjectManager.getCallerSubject());
+        if (p != null) {
+            MpJwtHelper.addLoggedOutJwtToList(((JsonWebToken) p).getRawToken().toString());
+        }
+
         try {
             if (unauthenticatedSubjectService != null) {
                 ThreadIdentityManager.setAppThreadIdentity(unauthenticatedSubjectService.getUnauthenticatedSubject());
@@ -207,13 +213,6 @@ public class AuthenticateApi {
 
         } catch (ThreadIdentityException e) {
             //FFDC will be generated
-        }
-
-        // if we have jwt, put on mpjwt's list of logged out jwt's so it cannot be reused.
-        // will be null if mpJwt feature not active, or no jwt in principal
-        Principal p = MpJwtHelper.getJsonWebTokenPricipal(subjectManager.getCallerSubject());
-        if (p != null) {
-            TAIJwtUtils.addLoggedOutJwtToList(((JsonWebToken) p).getRawToken()); // hopefully no ncdf here.
         }
 
         //If authenticated with form login, we need to clear the RefrrerURLCookie
