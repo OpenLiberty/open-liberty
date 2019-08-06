@@ -14,9 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.codec.binary.Base64;
-
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
@@ -81,7 +78,7 @@ public class HashUtils {
         String output = null;
         if (code_verifier != null && code_verifier.length() > 0) {
             try {
-                
+
                 md = MessageDigest.getInstance(algorithm);
                 md.update(code_verifier.getBytes(charset));
                 output = convertToBase64(md.digest());
