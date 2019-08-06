@@ -117,15 +117,17 @@ public class KafkaTestClient {
      * The following properties will be added with default values if they are not set in {@code config}
      * <ul>
      * <li>{@value ProducerConfig#BOOTSTRAP_SERVERS_CONFIG} = the test kafka broker</li>
-     * <li>{@value ProducerConfig#KEY_SERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
-     * <li>{@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * <li>{@value ProducerConfig#KEY_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
+     * <li>{@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
      * </ul>
-     *
+     * 
+     * @param <T>       the type of the message written to Kafka. This must match the type serialized by the class configured with
+     *                      {@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG}
      * @param config    the producer config
      * @param topicName the topic to write to
      * @return the writer
      */
-    public SimpleKafkaWriter<String> writerFor(Map<String, Object> config, String topicName) {
+    public <T> SimpleKafkaWriter<T> writerFor(Map<String, Object> config, String topicName) {
         Map<String, Object> localConfig = new HashMap<>();
         localConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
         localConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -134,8 +136,8 @@ public class KafkaTestClient {
         // Add in provided config (which will overwrite any defaults)
         localConfig.putAll(config);
 
-        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(localConfig);
-        SimpleKafkaWriter<String> writer = new SimpleKafkaWriter<String>(kafkaProducer, topicName);
+        KafkaProducer<String, T> kafkaProducer = new KafkaProducer<>(localConfig);
+        SimpleKafkaWriter<T> writer = new SimpleKafkaWriter<T>(kafkaProducer, topicName);
         openClients.add(writer);
         return writer;
     }

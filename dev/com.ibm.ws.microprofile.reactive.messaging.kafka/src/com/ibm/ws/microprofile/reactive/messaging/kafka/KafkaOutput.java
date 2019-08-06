@@ -25,6 +25,7 @@ public class KafkaOutput<K, V> {
     private static final TraceComponent tc = Tr.register(KafkaOutput.class);
     private final KafkaProducer<K, V> kafkaProducer;
     private final String topic;
+    private volatile boolean running = true;
 
     public KafkaOutput(String topic, KafkaProducer<K, V> kafkaProducer) {
         this.topic = topic;
@@ -32,10 +33,11 @@ public class KafkaOutput<K, V> {
     }
 
     public SubscriberBuilder<Message<V>, Void> getSubscriber() {
-        return ReactiveStreams.<Message<V>> builder().onError(this::logError).forEach(this::sendMessage);
+        return ReactiveStreams.<Message<V>> builder().takeWhile(m -> running).onError(this::logError).forEach(this::sendMessage);
     }
 
     public void shutdown(Duration timeout) {
+        running = false;
         kafkaProducer.close(timeout);
     }
 

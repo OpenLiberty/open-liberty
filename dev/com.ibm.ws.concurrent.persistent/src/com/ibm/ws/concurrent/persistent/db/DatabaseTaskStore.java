@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.db;
 
 import java.security.AccessController;
+import java.sql.Connection;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,8 +120,8 @@ public class DatabaseTaskStore implements TaskStore {
      * Appends conditions to a JPA query to filter based on the presence or absence of the specified state.
      * This method optimizes to avoid the MOD function if possible.
      *
-     * @param sb string builder for the query
-     * @param state a task state. For example, TaskState.CANCELED
+     * @param sb      string builder for the query
+     * @param state   a task state. For example, TaskState.CANCELED
      * @param inState indicates whether to include or exclude results with the specified state
      * @return map of parameters and values that must be set on the query.
      */
@@ -261,7 +262,7 @@ public class DatabaseTaskStore implements TaskStore {
     /**
      * Create a property entry in the persistent store.
      *
-     * @param name unique name for the property.
+     * @param name  unique name for the property.
      * @param value value of the property.
      * @return true if the property was created. False if a property with the same name already exists.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
@@ -466,6 +467,42 @@ public class DatabaseTaskStore implements TaskStore {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "findById", taskRecord);
         return taskRecord;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Object[]> findLateTasks(long maxNextExecTime, long excludePartition, Integer maxResults) throws Exception {
+        StringBuilder find = new StringBuilder(128)
+                        .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT FROM Task t WHERE t.PARTN<>:p AND t.STATES<")
+                        .append(TaskState.SUSPENDED.bit)
+                        .append(" AND t.NEXTEXEC<=:m");
+        if (maxResults != null)
+            find.append(" ORDER BY t.NEXTEXEC");
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findLateTasks", Utils.appendDate(new StringBuilder(30), maxNextExecTime), excludePartition, maxResults, find);
+
+        List<Object[]> resultList;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Connection con = em.unwrap(Connection.class);
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+
+            TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
+            query.setParameter("p", excludePartition);
+            query.setParameter("m", maxNextExecTime);
+            if (maxResults != null)
+                query.setMaxResults(maxResults);
+            List<Object[]> results = query.getResultList();
+            resultList = results;
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findLateTasks", resultList.size());
+        return resultList;
     }
 
     /** {@inheritDoc} */
@@ -714,7 +751,7 @@ public class DatabaseTaskStore implements TaskStore {
      * Returns the persistence service unit, lazily initializing if necessary.
      *
      * @return the persistence service unit.
-     * @throws Exceptin if an error occurs.
+     * @throws Exceptin              if an error occurs.
      * @throws IllegalStateException if this instance has been destroyed.
      */
     public final PersistenceServiceUnit getPersistenceServiceUnit() throws Exception {
@@ -942,7 +979,7 @@ public class DatabaseTaskStore implements TaskStore {
     /**
      * Persist updates to a task record in the persistent store.
      *
-     * @param updates updates to make to the task. Only the specified fields are persisted. Version must be omitted, as it always increments by 1.
+     * @param updates  updates to make to the task. Only the specified fields are persisted. Version must be omitted, as it always increments by 1.
      * @param expected criteria that must be matched for optimistic update to succeed. Must include Id.
      * @return true if persistent task store was updated, otherwise false.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
@@ -1201,10 +1238,10 @@ public class DatabaseTaskStore implements TaskStore {
      * taskStore.remove("PAYROLL\\_TASK\\_%", '\\', TaskState.CANCELED, true, "app1");
      *
      * @param pattern task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
-     * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally.
-     * @param state a task state. For example, TaskState.UNATTEMPTED.
+     * @param escape  escape character that indicates when matching characters like % and _ should be interpreted literally.
+     * @param state   a task state. For example, TaskState.UNATTEMPTED.
      * @param inState indicates whether to remove tasks with or without the specified state
-     * @param owner name of owner to match as the task submitter. Null to ignore.
+     * @param owner   name of owner to match as the task submitter. Null to ignore.
      * @return count of tasks removed.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
