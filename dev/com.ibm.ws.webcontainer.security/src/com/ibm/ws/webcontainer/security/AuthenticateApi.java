@@ -20,13 +20,10 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.eclipse.microprofile.jwt.JsonWebToken;
-
+import javax.servlet.http.Cookie;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -203,7 +200,7 @@ public class AuthenticateApi {
         // will be null if mpJwt feature not active, or no jwt in principal
         Principal p = MpJwtHelper.getJsonWebTokenPricipal(subjectManager.getCallerSubject());
         if (p != null) {
-            MpJwtHelper.addLoggedOutJwtToList(((JsonWebToken) p).getRawToken().toString());
+            MpJwtHelper.addLoggedOutJwtToList(p);
         }
 
         try {

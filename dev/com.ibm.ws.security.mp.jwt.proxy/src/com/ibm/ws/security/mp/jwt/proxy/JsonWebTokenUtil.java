@@ -39,8 +39,9 @@ public interface JsonWebTokenUtil {
 	public Principal getJsonWebToken(String jwt, String type, String username);
 
 	/**
-	 * adds a jwt string to the list of jwt's that have been logged out
+	 * adds a jwt string to the list of jwt's that have been logged out after
+	 * extracting it from the Principal
 	 */
-	public void addLoggedOutJwtToList(String jwt);
+	public void addLoggedOutJwtToList(Principal p);
 
 }

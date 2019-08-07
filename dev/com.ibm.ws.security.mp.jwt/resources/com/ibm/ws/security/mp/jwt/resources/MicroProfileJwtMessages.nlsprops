@@ -153,5 +153,5 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Ensure that the server or application 
 
 # do not translate HttpServletRequest.logout
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: The MicroProfile JWT feature cannot perform authentication because the JWT in the request was previously logged out.
-JWT_PREVIOUSLY_LOGGED_OUT.explanation=An HttpServletRequest.logout() call was previously made for a subject that was authenticated with this JWT.
+JWT_PREVIOUSLY_LOGGED_OUT.explanation=A previous HttpServletRequest.logout() call was made for a subject that was authenticated with this JWT.  
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=Resubmit the request with a different JWT.
