@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="ejb-jar_ID" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+      <display-name>EJB3INJEJBX</display-name>
+      <enterprise-beans>
+         <session id="SLSTestFieldBean">
+            <ejb-name>SLSTestFieldBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBInjectionLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBInjectionRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <ejb-ref id="EJBRef_101">
+               <description>EJB field injection of a Stateless bean's remote BI with all elements specified</description>
+               <ejb-ref-name>ejb/SLF1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SLBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldRemote1</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_102">
+               <description>EJB field injection of a Stateful bean's remote BI with all elements specified</description>
+               <ejb-ref-name>ejb/SFF1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SFBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SFFieldRemote1</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_103">
+               <description>EJB field injection of a Stateless bean's remote BI with no ejb-ref-type</description>
+               <ejb-ref-name>ejb/SLF2</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SLBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldRemote2</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_104">
+               <ejb-ref-name>ejb/SFF2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SFBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SFFieldRemote2</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_105">
+               <description>EJB field injection of a Stateless bean's remote BI with no injection-target</description>
+               <ejb-ref-name>ejb/SLF3</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SLBean3</ejb-link>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_106">
+               <ejb-ref-name>ejb/SFF3</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SFBean3</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SFFieldRemote3</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_107">
+               <ejb-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SLBean4</ejb-link>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_108">
+               <ejb-ref-name>ejb/SFF4</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SFBean4</ejb-link>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_109">
+               <description>EJB field injection of a remote BI residing in a different module</description>
+               <ejb-ref-name>ejb/SLFOther</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>../OtherEJB.jar#OtherBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldOther</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_110">
+               <description>EJB field injection of an assignable Stateful bean's remote BI</description>
+               <ejb-ref-name>ejb/SFFAssign</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</remote>
+               <ejb-link>SFBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SFField1</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-local-ref id="EJBLocalRef_101">
+               <description>EJB field injection of a Stateless bean's local BI with all elements specified</description>
+               <ejb-ref-name>ejb/SLFLocal1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SLBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldLocal1</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_102">
+               <description>EJB field injection of a Stateful bean's local BI with all elements specified</description>
+               <ejb-ref-name>ejb/SFFLocal1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SFBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SFFieldLocal1</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_103">
+               <ejb-ref-name>ejb/SLFLocal2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SLBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldLocal2</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_104">
+               <description>EJB field injection of a Stateful bean's local BI with no ejb-ref-type</description>
+               <ejb-ref-name>ejb/SFFLocal2</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SFBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SFFieldLocal2</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_105">
+               <ejb-ref-name>ejb/SLFLocal3</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SLBean3</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldLocal3</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_106">
+               <description>EJB field injection of a Stateful bean's local BI with no injection-target</description>
+               <ejb-ref-name>ejb/SFFLocal3</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SFBean3</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_107">
+               <ejb-ref-name>ejb/SLFLocal4</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SLBean4</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_108">
+               <ejb-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SFBean4</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_109">
+               <description>EJB field injection of a bean's local BI using autolink</description>
+               <ejb-ref-name>ejb/SLFUnique</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBUnique</local>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldUnique</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_110">
+               <description>EJB field injection of a bean's local BI using a non-unique ejb-ref-name</description>
+               <ejb-ref-name>ejb/SameName</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SameBean7</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldSame</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_111">
+               <description>EJB field injection of a local BI residing in a different module</description>
+               <ejb-ref-name>ejb/SLFOtherLocal</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>../OtherEJB.jar#OtherBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldLocalOther</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_112">
+               <description>EJB field injection of a local BI residing in a different module using autolink</description>
+               <ejb-ref-name>ejb/SLFAuto</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBAuto</local>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldAuto</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_113">
+               <description>EJB field injection of a local BI residing in a different module where the bean has the same name and interface as a bean in this module</description>
+               <ejb-ref-name>ejb/SLFIdentical1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBIdentical</local>
+               <ejb-link>../OtherEJB.jar#IdenticalBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldOtherIdentical</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_114">
+               <description>EJB field injection of a local BI using autolink where the bean has the same name and interface as a bean in a different module</description>
+               <ejb-ref-name>ejb/SLFIdentical2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBIdentical</local>
+               <ejb-link>IdenticalBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldIdentical</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_115">
+               <description>EJB field injection of 3 nested EJB injections</description>
+               <ejb-ref-name>ejb/SLFNested1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBNested</local>
+               <ejb-link>NestedBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLFieldNested</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_116">
+               <description>EJB field injection of an assignable Stateless bean's local BI</description>
+               <ejb-ref-name>ejb/SLFAssign</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</local>
+               <ejb-link>SLBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>SLField1</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <resource-env-ref id="ResourceEnvRef_101">
+               <description>SessionContext</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="SLSTestMethodBean">
+            <ejb-name>SLSTestMethodBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBInjectionLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBInjectionRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <ejb-ref id="EJBRef_401">
+               <description>EJB method injection of a Stateless bean's remote BI with all elements specified</description>
+               <ejb-ref-name>ejb/SLM1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SLBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodRemote1</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_402">
+               <description>EJB method injection of a Stateful bean's remote BI with all elements specified</description>
+               <ejb-ref-name>ejb/SFM1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SFBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SFMethodRemote1</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_403">
+               <description>EJB method injection of a Stateless bean's remote BI with no ejb-ref-type</description>
+               <ejb-ref-name>ejb/SLM2</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SLBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodRemote2</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_404">
+               <ejb-ref-name>ejb/SFM2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SFBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SFMethodRemote2</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_405">
+               <description>EJB method injection of a Stateless bean's remote BI with no injection-target</description>
+               <ejb-ref-name>ejb/SLM3</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SLBean3</ejb-link>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_406">
+               <ejb-ref-name>ejb/SFM3</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SFBean3</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SFMethodRemote3</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_407">
+               <ejb-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean/SLMethodRemote4</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SLBean4</ejb-link>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_408">
+               <ejb-ref-name>ejb/SFM4</ejb-ref-name>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SFBean4</ejb-link>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_409">
+               <description>EJB method injection of a remote BI residing in a different module</description>
+               <ejb-ref-name>ejb/SLMOther</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>../OtherEJB.jar#OtherBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodOther</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref id="EJBRef_410">
+               <description>EJB method injection of an assignable Stateful bean's remote BI</description>
+               <ejb-ref-name>ejb/SFMAssign</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</remote>
+               <ejb-link>SFBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SFMethod1</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-local-ref id="EJBLocalRef_401">
+               <description>EJB method injection of a Stateless bean's local BI with all elements specified</description>
+               <ejb-ref-name>ejb/SLMLocal1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SLBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodLocal1</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_402">
+               <description>EJB method injection of a Stateful bean's local BI with all elements specified</description>
+               <ejb-ref-name>ejb/SFMLocal1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SFBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SFMethodLocal1</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_403">
+               <ejb-ref-name>ejb/SLMLocal2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SLBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodLocal2</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_404">
+               <description>EJB method injection of a Stateful bean's local BI with no ejb-ref-type</description>
+               <ejb-ref-name>ejb/SFMLocal2</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SFBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SFMethodLocal2</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_405">
+               <ejb-ref-name>ejb/SLMLocal3</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SLBean3</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodLocal3</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_406">
+               <description>EJB method injection of a Stateful bean's local BI with no injection-target</description>
+               <ejb-ref-name>ejb/SFMLocal3</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SFBean3</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_407">
+               <ejb-ref-name>ejb/SLMLocal4</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SLBean4</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_408">
+               <ejb-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean/SFMethodLocal4</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SFBean4</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_409">
+               <description>EJB method injection of a bean's local BI using autolink</description>
+               <ejb-ref-name>ejb/SLMUnique</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBUnique</local>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodUnique</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_410">
+               <description>EJB method injection of a bean's local BI using a non-unique ejb-ref-name</description>
+               <ejb-ref-name>ejb/SameName</ejb-ref-name>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SameBean4</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodSame</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_411">
+               <description>EJB method injection of a local BI residing in a different module</description>
+               <ejb-ref-name>ejb/SLMOtherLocal</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>../OtherEJB.jar#OtherBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodLocalOther</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_412">
+               <description>EJB method injection of a local BI residing in a different module using autolink</description>
+               <ejb-ref-name>ejb/SLMAuto</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBAuto</local>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodAuto</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_413">
+               <description>EJB method injection of a local BI residing in a different module where the bean has the same name and interface as a bean in this module</description>
+               <ejb-ref-name>ejb/SLMIdentical1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBIdentical</local>
+               <ejb-link>../OtherEJB.jar#IdenticalBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodOtherIdentical</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_414">
+               <description>EJB method injection of a local BI using autolink where the bean has the same name and interface as a bean in a different module</description>
+               <ejb-ref-name>ejb/SLMIdentical2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBIdentical</local>
+               <ejb-link>IdenticalBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodIdentical</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_415">
+               <description>EJB method injection of 3 nested EJB injections</description>
+               <ejb-ref-name>ejb/SLMNested1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBNested</local>
+               <ejb-link>NestedBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethodNested</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref id="EJBLocalRef_416">
+               <description>EJB method injection of an assignable Stateless bean's local BI</description>
+               <ejb-ref-name>ejb/SLMAssign</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</local>
+               <ejb-link>SLBean1</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>SLMethod1</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <resource-env-ref id="ResourceEnvRef_401">
+               <description>SessionContext</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestMethodBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="SLBean1">
+            <ejb-name>SLBean1</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SFBean1">
+            <ejb-name>SFBean1</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SLBean2">
+            <ejb-name>SLBean2</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SFBean2">
+            <ejb-name>SFBean2</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SLBean3">
+            <ejb-name>SLBean3</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SFBean3">
+            <ejb-name>SFBean3</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SLBean4">
+            <ejb-name>SLBean4</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SFBean4">
+            <ejb-name>SFBean4</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="UniqueBean">
+            <ejb-name>UniqueBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBUnique</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.UniqueBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SameBean4">
+            <ejb-name>SameBean4</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SameBean4</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="SameBean7">
+            <ejb-name>SameBean7</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.SameBean7</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="IdenticalBean">
+            <ejb-name>IdenticalBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBIdentical</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.IdenticalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="NestedBean1">
+            <ejb-name>NestedBean1</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBNested</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.NestedBean1</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <ejb-local-ref id="EJBLocalRef_201">
+               <description>EJB injection of 3 nested EJB injections</description>
+               <ejb-ref-name>ejb/SLNested2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBNested</local>
+               <ejb-link>NestedBean2</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.NestedBean1</injection-target-class>
+                  <injection-target-name>SLFieldNested2</injection-target-name>
+               </injection-target>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.NestedBean1</injection-target-class>
+                  <injection-target-name>SLMethodNested2</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+         </session>
+         <session id="NestedBean2">
+            <ejb-name>NestedBean2</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBNested</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.NestedBean2</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <ejb-local-ref id="EJBLocalRef_301">
+               <description>EJB field injection of 3 nested EJB injections</description>
+               <ejb-ref-name>ejb/SLNested3</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBNested</local>
+               <ejb-link>../OtherEJB.jar#NestedBean3</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.NestedBean2</injection-target-class>
+                  <injection-target-name>SLFieldNested3</injection-target-name>
+               </injection-target>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejbx.NestedBean2</injection-target-class>
+                  <injection-target-name>SLMethodNested3</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+         </session>
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+      </assembly-descriptor>
+   </ejb-jar>

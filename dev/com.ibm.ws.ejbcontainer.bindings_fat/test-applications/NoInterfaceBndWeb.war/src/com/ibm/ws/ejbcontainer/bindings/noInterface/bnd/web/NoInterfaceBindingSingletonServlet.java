@@ -89,9 +89,8 @@ public class NoInterfaceBindingSingletonServlet extends NoInterfaceBindingAbstra
      * class.... and it would be best to call a method on that class, it
      * is left up to this subclass to fully implement this variation.
      */
-    @Override
     @Test
-    public void testUniqueNoInterfaceDefaultBindings() throws Exception {
+    public void testUniqueNoInterfaceDefaultBindings_NoInterfaceBindingSingleton() throws Exception {
         String beanName = BasicNoInterfaceSGBean.class.getSimpleName();
         String beanInterface = BasicNoInterfaceSGBean.class.getName();
         ivContext = (Context) new InitialContext().lookup("");
