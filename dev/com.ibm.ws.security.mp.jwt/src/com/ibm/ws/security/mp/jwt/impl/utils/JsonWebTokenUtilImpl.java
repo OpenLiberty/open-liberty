@@ -118,8 +118,11 @@ public class JsonWebTokenUtilImpl implements JsonWebTokenUtil {
     }
 
     @Override
-    public void addLoggedOutJwtToList(String jwt) {
-        TAIJwtUtils.addLoggedOutJwtToList(jwt);
+    public void addLoggedOutJwtToList(Principal p) {
+        if (p instanceof JsonWebToken) {
+            String jwt = ((JsonWebToken) p).getRawToken().toString();
+            TAIJwtUtils.addLoggedOutJwtToList(jwt);
+        }
     }
 
     private void multipleJsonWebTokenPrincipalsError(Set<JsonWebToken> principals) {
