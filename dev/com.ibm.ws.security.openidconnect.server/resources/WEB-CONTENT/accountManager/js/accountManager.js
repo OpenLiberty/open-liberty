@@ -22,7 +22,7 @@ var acctMgr = (function() {
         apiUtils.addAcctAppPasswordToken(providedName, generateType).done(function (response) {
 
             // Add new entry as table row
-            table.addTableRow(table.convertResponseForTable(response, generateType, providedName));
+            table.addTableRow(table.convertResponseForTable(response, generateType, utils.encodeData(providedName)));
 
             var authenticationValue;
             if (generateType === "app-password") {
@@ -89,7 +89,7 @@ var acctMgr = (function() {
             // Something else happended with the request.  Put up the generic error message.
             var generateTypeTitle = generateType === 'app-password' ? 'App-Password' : 'App-Token';
             var errTitle = utils.formatString(messages.GENERIC_GENERATE_FAIL, [generateTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_GENERATE_FAIL_MSG, [generateType, providedName]);
+            var errDescription = utils.formatString(messages.GENERIC_GENERATE_FAIL_MSG, [generateType, utils.encodeData(providedName)]);
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, table.reshowAddRegenDialog);
         });
     };
