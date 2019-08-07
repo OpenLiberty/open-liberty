@@ -65,12 +65,12 @@ public class EJBHomeTestServlet extends FATServlet {
     }
 
     @Test
-    public void testEJBHomeInjection() throws Exception {
+    public void testEJBHomeInjection_EJBHomeTest() throws Exception {
         assertEquals("abcd", home.create().echo("abcd"));
     }
 
     @Test
-    public void testEJBHomeLookup() throws Exception {
+    public void testEJBHomeLookup_EJBHomeTest() throws Exception {
         assertEquals("abcd", narrow(new InitialContext().lookup("java:module/TestEJBHomeBean"), TestEJBHome.class).create().echo("abcd"));
     }
 
@@ -100,7 +100,7 @@ public class EJBHomeTestServlet extends FATServlet {
      * result in an OutOfMemoryError.
      */
     @Test
-    public void testEJBHomeWriteValue() throws Exception {
+    public void testEJBHomeWriteValue_EJBHomeTest() throws Exception {
         List<?> expected = new ArrayList<Object>(Arrays.asList("a", "b", "c"));
         List<?> actual = home.create().testWriteValue(expected);
         if (!expected.equals(actual)) {
@@ -115,7 +115,7 @@ public class EJBHomeTestServlet extends FATServlet {
      * so a tie mismatch will result in an OutOfMemoryError.
      */
     @Test
-    public void testEJBHomeWriteValueDirect() throws Exception {
+    public void testEJBHomeWriteValueDirect_EJBHomeTest() throws Exception {
         List<?> expected = new ArrayList<Object>(Arrays.asList("a", "b", "c"));
         List<?> actual = stubTestWriteValue((Stub) home.create(), expected);
         if (!expected.equals(actual)) {
@@ -150,33 +150,33 @@ public class EJBHomeTestServlet extends FATServlet {
     }
 
     @Test
-    public void testEJBHomeContextLookup() throws Exception {
+    public void testEJBHomeContextLookup_EJBHomeTest() throws Exception {
         // narrow not required per spec.
         assertEquals("abcd", home.create().lookupTestEJBHome("ejb/home").create().echo("abcd"));
     }
 
     @Test
-    public void testSessionContextGetEJBObject() throws Exception {
+    public void testSessionContextGetEJBObject_EJBHomeTest() throws Exception {
         assertEquals("abc", home.create().getSessionContextEJBObject().echo("abc"));
     }
 
     @Test
-    public void testSessionContextGetEJBHome() throws Exception {
+    public void testSessionContextGetEJBHome_EJBHomeTest() throws Exception {
         assertEquals("abc", home.create().getSessionContextEJBHome().create().echo("abc"));
     }
 
     @Test
-    public void testEJBMetaDataGetEJBHome() throws Exception {
+    public void testEJBMetaDataGetEJBHome_EJBHomeTest() throws Exception {
         assertEquals("abcd", ((TestEJBHome) home.getEJBMetaData().getEJBHome()).create().echo("abcd"));
     }
 
     @Test
-    public void testEJBMetaDataGetHomeInterfaceClass() throws Exception {
+    public void testEJBMetaDataGetHomeInterfaceClass_EJBHomeTest() throws Exception {
         assertEquals(TestEJBHome.class, home.getEJBMetaData().getHomeInterfaceClass());
     }
 
     @Test
-    public void testEJBMetaDataGetPrimaryKeyClass() throws Exception {
+    public void testEJBMetaDataGetPrimaryKeyClass_EJBHomeTest() throws Exception {
         try {
             assertEquals(null, home.getEJBMetaData().getPrimaryKeyClass());
             throw new IllegalStateException("expected EJBException from getPrimaryKeyClass");
@@ -186,17 +186,17 @@ public class EJBHomeTestServlet extends FATServlet {
     }
 
     @Test
-    public void testEJBMetaDataGetRemoteInterfaceClass() throws Exception {
+    public void testEJBMetaDataGetRemoteInterfaceClass_EJBHomeTest() throws Exception {
         assertEquals(TestEJBObject.class, home.getEJBMetaData().getRemoteInterfaceClass());
     }
 
     @Test
-    public void testEJBMetaDataIsSession() throws Exception {
+    public void testEJBMetaDataIsSession_EJBHomeTest() throws Exception {
         assertEquals(true, home.getEJBMetaData().isSession());
     }
 
     @Test
-    public void testEJBMetaDataIsStatelessSession() throws Exception {
+    public void testEJBMetaDataIsStatelessSession_EJBHomeTest() throws Exception {
         assertEquals(true, home.getEJBMetaData().isStatelessSession());
     }
 
@@ -215,22 +215,22 @@ public class EJBHomeTestServlet extends FATServlet {
     }
 
     @Test
-    public void testHomeHandle() throws Exception {
+    public void testHomeHandle_EJBHomeTest() throws Exception {
         assertEquals("abcd", narrow(home.getHomeHandle().getEJBHome(), TestEJBHome.class).create().echo("abcd"));
     }
 
     @Test
-    public void testHomeHandleCopy() throws Exception {
+    public void testHomeHandleCopy_EJBHomeTest() throws Exception {
         assertEquals("abcd", narrow(copy(home.getHomeHandle()).getEJBHome(), TestEJBHome.class).create().echo("abcd"));
     }
 
     @Test
-    public void testEJBHomeRemoveByHandle() throws Exception {
+    public void testEJBHomeRemoveByHandle_EJBHomeTest() throws Exception {
         home.remove(home.create().getHandle());
     }
 
     @Test
-    public void testEJBHomeRemoveByPrimaryKey() throws Exception {
+    public void testEJBHomeRemoveByPrimaryKey_EJBHomeTest() throws Exception {
         try {
             home.remove(home.create());
             throw new IllegalStateException("expected RemoveException from remove");
@@ -240,22 +240,22 @@ public class EJBHomeTestServlet extends FATServlet {
     }
 
     @Test
-    public void testEJBObjectGetEJBHome() throws Exception {
+    public void testEJBObjectGetEJBHome_EJBHomeTest() throws Exception {
         assertEquals("abcd", narrow(home.create().getEJBHome(), TestEJBHome.class).create().echo("abcd"));
     }
 
     @Test
-    public void testHandle() throws Exception {
+    public void testHandle_EJBHomeTest() throws Exception {
         assertEquals("abcd", narrow(home.create().getHandle().getEJBObject(), TestEJBObject.class).echo("abcd"));
     }
 
     @Test
-    public void testHandleCopy() throws Exception {
+    public void testHandleCopy_EJBHomeTest() throws Exception {
         assertEquals("abcd", narrow(copy(home.create().getHandle()).getEJBObject(), TestEJBObject.class).echo("abcd"));
     }
 
     @Test
-    public void testEJBObjectGetPrimaryKey() throws Exception {
+    public void testEJBObjectGetPrimaryKey_EJBHomeTest() throws Exception {
         try {
             home.create().getPrimaryKey();
         } catch (RemoteException e) {
@@ -264,17 +264,17 @@ public class EJBHomeTestServlet extends FATServlet {
     }
 
     @Test
-    public void testEJBObjectRemove() throws Exception {
+    public void testEJBObjectRemove_EJBHomeTest() throws Exception {
         home.create().remove();
     }
 
     @Test
-    public void testEJBObjectIsIdentical() throws Exception {
+    public void testEJBObjectIsIdentical_EJBHomeTest() throws Exception {
         assertEquals(true, home.create().isIdentical(home.create()));
     }
 
     @Test
-    public void testHandleDelegateLookup() throws Exception {
+    public void testHandleDelegateLookup_EJBHomeTest() throws Exception {
         if (new InitialContext().lookup("java:comp/HandleDelegate") == null) {
             throw new IllegalStateException("expected java:comp/HandleDelegate");
         }

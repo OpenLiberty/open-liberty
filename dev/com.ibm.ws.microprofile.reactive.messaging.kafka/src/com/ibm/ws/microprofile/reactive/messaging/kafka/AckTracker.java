@@ -21,10 +21,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 
@@ -45,7 +44,7 @@ public class AckTracker implements ConsumerRebalanceListener {
     private static final TraceComponent tc = Tr.register(AckTracker.class);
 
     private final Map<TopicPartition, PartitionAckTracker> partitionTrackers;
-    private final ManagedScheduledExecutorService executor;
+    private final ScheduledExecutorService executor;
     private final int ackThreshold;
     private final AtomicInteger outstandingAcks;
 
@@ -53,7 +52,7 @@ public class AckTracker implements ConsumerRebalanceListener {
     private CompletableFuture<Void> ackThresholdStage = CompletableFuture.completedFuture(null);
     private final KafkaAdapterFactory kafkaAdapterFactory;
 
-    public AckTracker(KafkaAdapterFactory kafkaAdapterFactory, ManagedScheduledExecutorService executor, int ackThreshold) {
+    public AckTracker(KafkaAdapterFactory kafkaAdapterFactory, ScheduledExecutorService executor, int ackThreshold) {
         this.kafkaAdapterFactory = kafkaAdapterFactory;
         this.executor = executor;
         this.ackThreshold = ackThreshold;

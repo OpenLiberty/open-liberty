@@ -22,7 +22,7 @@ var table = (function() {
 
     var __getTableRowByName = function(name, authType) {
         var $table = $('#' + tableId + ' tbody');
-        var $row = $table.find('tr[data-filter="' + name.toLowerCase() + '"]');
+        var $row = $table.find('tr[data-filter="' + utils.escapeString(name.toLowerCase())+ '"]');
         if ($row.length > 1) {
             // Two rows with the same name.   Find requested one based on authType.
             var $correctAuthType = $row.find('td.authType').filter(function(){ return this.textContent === authType; });
@@ -229,7 +229,7 @@ var table = (function() {
         var $dialogInfo = $regenerateDlg.find('.tool_modal_body_info');
         // insert bidi text direction to the name
         var dirTextName = bidiUtils.getDOMBidiTextDirection(name);
-        var nameLabel = utils.formatString(messages.NAME_IDENTIFIER, ["<span class='tool_modal_body_info_value' " + dirTextName + ">" + name + "</span>"]);
+        var nameLabel = utils.formatString(messages.NAME_IDENTIFIER, ["<span class='tool_modal_body_info_value' " + dirTextName + ">" + utils.encodeData(name) + "</span>"]);
         $dialogInfo.find('.tool_modal_body_info_label').html(nameLabel);
         var $authType = $regenerateDlg.find('#authType');
         var $authValue = $regenerateDlg.find('.authValueDiv');
@@ -314,7 +314,7 @@ var table = (function() {
                 $("#auth_value_copy").get(0).focus();
 
                 // Update the row in the table with the returned information
-                var authData = convertResponseForTable(response, authType, name);
+                var authData = convertResponseForTable(response, authType, utils.encodeData(name));
                 var tableRow = __createTableRow(authData);   // Create new table row with new values
                 var $currentTableRow = __getTableRowByName(name, authType);
                 $currentTableRow.replaceWith(tableRow);      // In place replacement
@@ -344,7 +344,7 @@ var table = (function() {
                 // So, if something else happended with the request, put up the generic error message.
                 var regenerateTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
                 var errTitle = utils.formatString(messages.GENERIC_REGENERATE_FAIL, [regenerateTypeTitle]);
-                var errDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_CREATE_MSG, [authType, name]);
+                var errDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_CREATE_MSG, [authType, utils.encodeData(name)]);
                 utils.showResultsDialog(true, errTitle, errDescription, true, true, false, reshowAddRegenDialog);
             });            
         }).fail(function(errResponse) {
@@ -355,7 +355,7 @@ var table = (function() {
             // So, if something else happended with the request, put up the generic error message.
             var regenDelTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errDelTitle = utils.formatString(messages.GENERIC_REGENERATE_FAIL, [regenDelTitle]);
-            var errDelDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_MSG, [authType, name]);
+            var errDelDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_MSG, [authType, utils.encodeData(name)]);
             utils.showResultsDialog(true, errDelTitle, errDelDescription, true, true, false, reshowAddRegenDialog);
         });
     };
@@ -374,7 +374,7 @@ var table = (function() {
 
         // Find the delete dialog in the html
         var $deleteDlg = $('.tool_modal_container.ss_delete');
-        $deleteDlg.find('.tool_modal_title').html(name);
+        $deleteDlg.find('.tool_modal_title').html(utils.encodeData(name));
 
         if (type === 'app-password') {
             $deleteDlg.find('.tool_modal_secondary_title').html(messages.DELETE_PW);
@@ -420,7 +420,7 @@ var table = (function() {
             // So, if something else happended with the request, put up the generic error message.
             var deleteTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, [deleteTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, name]);
+            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
         });
     };

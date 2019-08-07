@@ -113,7 +113,7 @@ var tokenMgr = (function() {
             utils.stopProcessingSpinner();
         }, function() {
             console.log("GET account passwords/token failed to retrieve all app-passwords or app-tokens");
-            var errMsg = utils.formatString(messages.GENERIC_FETCH_ALL_FAIL_MSG, [userID]);
+            var errMsg = utils.formatString(messages.GENERIC_FETCH_ALL_FAIL_MSG, [utils.encodeData(userID)]);
             utils.showResultsDialog(true, messages.GENERIC_FETCH_ALL_FAIL, errMsg, false, false, true);
 
             // Reset the table contents to 'no results' message

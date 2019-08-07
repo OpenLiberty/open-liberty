@@ -22,10 +22,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
-
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
@@ -70,7 +69,7 @@ public class KafkaInput<K, V> {
      */
     private final ReentrantLock lock = new ReentrantLock();
 
-    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ManagedScheduledExecutorService executor, Collection<String> topics,
+    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ScheduledExecutorService executor, Collection<String> topics,
                       int unackedThreshold) {
         super();
         this.kafkaConsumer = kafkaConsumer;
