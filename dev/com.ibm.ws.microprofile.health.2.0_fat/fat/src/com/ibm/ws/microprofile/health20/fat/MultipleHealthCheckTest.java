@@ -68,7 +68,19 @@ public class MultipleHealthCheckTest {
 
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(1, checks.size());
+        assertEquals(2, checks.size());
+        assertEquals(jsonResponse.getString("status"), "DOWN");
+    }
+
+    @Test
+    public void testFailureCDIProducerLivenessCheck() throws Exception {
+        log("testLivenessCheck", "Testing the /health/live endpoint");
+        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
+        assertEquals(FAILED_RESPONSE_CODE, conReady.getResponseCode());
+
+        JsonObject jsonResponse = getJSONPayload(conReady);
+        JsonArray checks = (JsonArray) jsonResponse.get("checks");
+        assertEquals(2, checks.size());
         assertEquals(jsonResponse.getString("status"), "DOWN");
     }
 
@@ -80,7 +92,19 @@ public class MultipleHealthCheckTest {
 
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(1, checks.size());
+        assertEquals(2, checks.size());
+        assertEquals(jsonResponse.getString("status"), "UP");
+    }
+
+    @Test
+    public void testSuccessCDIProducerReadinessCheck() throws Exception {
+        log("testReadinessCheck", "Testing the /health/ready endpoint");
+        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
+        assertEquals(SUCCESS_RESPONSE_CODE, conReady.getResponseCode());
+
+        JsonObject jsonResponse = getJSONPayload(conReady);
+        JsonArray checks = (JsonArray) jsonResponse.get("checks");
+        assertEquals(2, checks.size());
         assertEquals(jsonResponse.getString("status"), "UP");
     }
 
@@ -92,7 +116,7 @@ public class MultipleHealthCheckTest {
 
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(2, checks.size());
+        assertEquals(4, checks.size());
         assertEquals(jsonResponse.getString("status"), "DOWN");
     }
 
