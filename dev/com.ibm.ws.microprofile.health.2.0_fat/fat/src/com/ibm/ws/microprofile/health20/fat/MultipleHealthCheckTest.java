@@ -69,6 +69,8 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
+        assertEquals(true, checks.getJsonObject(0).getString("name").equals("failed-liveness-check") ||
+                           checks.getJsonObject(1).getString("name").equals("failed-liveness-check"));
         assertEquals(jsonResponse.getString("status"), "DOWN");
     }
 
@@ -81,6 +83,8 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
+        assertEquals(true, checks.getJsonObject(0).getString("name").equals("failed-cdi-producer-liveness-check") ||
+                           checks.getJsonObject(1).getString("name").equals("failed-cdi-producer-liveness-check"));
         assertEquals(jsonResponse.getString("status"), "DOWN");
     }
 
@@ -93,6 +97,8 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
+        assertEquals(true, checks.getJsonObject(0).getString("name").equals("successful-readiness-check") ||
+                           checks.getJsonObject(1).getString("name").equals("successful-readiness-check"));
         assertEquals(jsonResponse.getString("status"), "UP");
     }
 
@@ -105,6 +111,8 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
+        assertEquals(true, checks.getJsonObject(0).getString("name").equals("successful-cdi-producer-readiness-check") ||
+                           checks.getJsonObject(1).getString("name").equals("successful-cdi-producer-readiness-check"));
         assertEquals(jsonResponse.getString("status"), "UP");
     }
 
