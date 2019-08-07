@@ -64,6 +64,9 @@ public class Failover1ServerTest extends FATServletClient {
         String taskId = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
 
         System.out.println("Scheduled task " + taskId);
-        Thread.sleep(12000); // TODO once supported, have this test check for task completion
+
+        runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleOnOneServerRunOnAnother[2]");
+
     }
 }

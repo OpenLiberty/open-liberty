@@ -10,6 +10,8 @@
  *******************************************************************************/
 package failover1serv.web;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -31,6 +33,8 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/Failover1ServerTestServlet")
 public class Failover1ServerTestServlet extends FATServlet {
+    private static final long POLL_INTERVAL_MS = 500;
+
     /**
      * Maximum number of nanoseconds to wait for a task to finish.
      */
@@ -53,5 +57,21 @@ public class Failover1ServerTestServlet extends FATServlet {
         long taskId = status.getTaskId();
 
         response.getWriter().println("Task id is " + taskId + ".");
+    }
+
+    /**
+     * Confirms that a task has completed and verifies the result.
+     */
+    public void testTaskCompleted(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jndiName = request.getParameter("jndiName");
+        long taskId = Long.parseLong(request.getParameter("taskId"));
+        int expected = Integer.parseInt(request.getParameter("expectedResult"));
+
+        PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
+        TaskStatus<Integer> status;
+        for (long start = System.nanoTime(); (status = executor.getStatus(taskId)).getNextExecutionTime() != null && System.nanoTime() - start < TIMEOUT_NS; )
+            Thread.sleep(POLL_INTERVAL_MS);
+
+        assertEquals(Integer.valueOf(expected), status.get());
     }
 }

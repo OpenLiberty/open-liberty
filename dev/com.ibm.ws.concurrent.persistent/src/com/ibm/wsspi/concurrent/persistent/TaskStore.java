@@ -342,6 +342,17 @@ public interface TaskStore {
     boolean removeProperty(String name) throws Exception;
 
     /**
+     * Assigns a task to the specified partition.
+     *
+     * @param taskId         id of the task to reassign.
+     * @param version        version number of the task entry which must match in order for the task to be transferred.
+     * @param newPartitionId partition id to which to assign the task.
+     * @return true if the task was assigned. Otherwise false.
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     */
+    boolean setPartition(long taskId, int version, long newPartitionId) throws Exception;
+
+    /**
      * Assigns the value of the property if it exists in the persistent store.
      * 
      * @param name property name.

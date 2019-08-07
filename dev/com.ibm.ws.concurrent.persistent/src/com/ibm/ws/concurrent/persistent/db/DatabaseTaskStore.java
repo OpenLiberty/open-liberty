@@ -1373,6 +1373,31 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
+    public boolean setPartition(long taskId, int version, long newPartitionId) throws Exception {
+        String update = "UPDATE Task t SET t.PARTN=:p,t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.VERSION=:v";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "setPartition", taskId + " v" + version + " assign to " + newPartitionId, update);
+
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Query query = em.createQuery(update.toString());
+            query.setParameter("p", newPartitionId);
+            query.setParameter("i", taskId);
+            query.setParameter("v", version);
+            boolean assigned = query.executeUpdate() > 0;
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "setPartition", assigned);
+            return assigned;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean setProperty(String name, String value) throws Exception {
         String update = "UPDATE Property SET VAL=:v WHERE ID=:i";
 
