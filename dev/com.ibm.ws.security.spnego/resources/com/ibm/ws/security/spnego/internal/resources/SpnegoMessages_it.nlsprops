@@ -104,9 +104,9 @@ SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E: Impossibile ottenere il 
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation=La pagina di errore personalizzata non pu\u00f2 essere caricata a causa dell'eccezione in fase di ottenimento del tipo di contenuto.
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction=Esaminare il tipo di contenuto della pagina di errore personalizzata per assicurarsi che sia valido.
 
-SPNEGO_CAN_NOT_VALIDATE_TOKEN=CWWKS4320E: Non \u00e8 possibile convalidare il token SPNEGO o Kerberos incluso nella HttpServletRequest {0}
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.explanation=Il token SPNEGO o Kerberos utilizzato per autenticare la richiesta non \u00e8 valido.
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.useraction=Se non viene visualizzato alcun messaggio di errore aggiuntivo, abilitare il debug JGSS e KRB5. Consultare la documentazione JDK per la modalit\u00e0 di abilitazione del debug JGSS e KRB5. Verificare la configurazione SPNEGO e assicurarsi che i file keytab Kerberos, SPN e client utilizzino lo stesso tipo di codifica che \u00e8 specificato nel file di configurazione Kerberos.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: Impossibile stabilire GSSContext con un il token SPNEGO o Kerberos valido incluso in {0} HttpServletRequest. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=Il token SPNEGO o Kerberos utilizzato per autenticare la richiesta \u00e8 valido, ma \u00e8 impossibile stabilire GSSContext.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Se non viene visualizzato alcun messaggio di errore aggiuntivo, abilitare il debug JGSS e KRB5. Consultare la documentazione JDK per la modalit\u00e0 di abilitazione del debug JGSS e KRB5. Verificare la configurazione SPNEGO e assicurarsi che i file keytab Kerberos, SPN e client utilizzino lo stesso tipo di codifica che \u00e8 specificato nel file di configurazione Kerberos.
 
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Impossibile ottenere l''SPN del servizio di delega {0} da GSSCredential. Si \u00e8 verificata una GSSException: {1}
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Impossibile ottenere l'SPN del servizio di delega da GSSCredential. GSSCredential del client per il proxy non sar\u00e0 nel soggetto.

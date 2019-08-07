@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Zaktualizuj aplikacj\u0119, tak aby w miejscu
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: Propagowanie transakcji do dzia\u0142a\u0144 i zada\u0144 kontekstowych nie jest obs\u0142ugiwane.
 CWWKC1157.cannot.propagate.tx.explanation=Klasa ManagedExecutor lub ThreadContext skonfigurowana do propagowania kontekst\u00f3w transakcji mo\u017ce propagowa\u0107 tylko puste konteksty transakcji. Dlatego nie mo\u017cna utworzy\u0107 dzia\u0142a\u0144 i zada\u0144 kontekstowych w transakcji.
 CWWKC1157.cannot.propagate.tx.useraction=Utw\u00f3rz dzia\u0142anie lub zadanie kontekstowe poza transakcj\u0105. Inna mo\u017cliwo\u015b\u0107 to skonfigurowanie klasy ManagedExecutor lub ThreadContext w taki spos\u00f3b, aby konteksty transakcji nie by\u0142y propagowane.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

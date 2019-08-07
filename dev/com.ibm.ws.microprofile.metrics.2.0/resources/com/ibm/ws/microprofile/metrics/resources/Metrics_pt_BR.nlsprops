@@ -55,7 +55,7 @@ internal.error.CWMMC0005E.explanation=O servidor de aplicativos sofreu um erro i
 internal.error.CWMMC0005E.useraction=Re\u00fana um conjunto de rastreios e abra uma nova emiss\u00e3o em seu servidor de aplicativos.
 
 #Generic error for internal failures. 
-internal.error.CWMMC0006E=CWMMC0006E: Ocorreu um erro interno
+internal.error.CWMMC0006E=CWMMC0006E: Ocorreu um erro interno.
 internal.error.CWMMC0006E.explanation=O servidor de aplicativos sofreu um erro interno.
 internal.error.CWMMC0006E.useraction=Re\u00fana um conjunto de rastreios e abra uma nova emiss\u00e3o em seu servidor de aplicativos.
 

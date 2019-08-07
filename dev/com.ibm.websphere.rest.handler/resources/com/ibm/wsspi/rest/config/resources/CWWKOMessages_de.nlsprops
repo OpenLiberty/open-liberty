@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.rest.handler/resources/com/ibm/wsspi/rest/config/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Rest Handler
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   that do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1500 to CWWKO1529
+
+CWWKO1500_NOT_FOUND=CWWKO1500E: Es wurden keine konfigurierten Instanzen des {0}-Elements in der Serverkonfiguration gefunden.
+CWWKO1500_NOT_FOUND.explanation=Das angeforderte Konfigurationselement wurde nicht in der Datei server.xml gefunden.
+CWWKO1500_NOT_FOUND.useraction=Vergewissern Sie sich, dass das Konfigurationselement in der Datei server.xml enthalten und richtig geschrieben ist (Gro\u00df- und Kleinschreibung abgleichen).
+
+CWWKO1501_INVALID_IDENTIFIER=CWWKO1501E: Die eindeutige ID {0} ist nicht g\u00fcltig. Die korrekte eindeutige ID k\u00f6nnte Folgende sein: {1}.
+CWWKO1501_INVALID_IDENTIFIER.explanation=Ein konfiguriertes Element mit der angeforderten eindeutigen ID wurde nicht gefunden. Es wurde eine Instanz mit einer anderen eindeutigen ID gefunden und gemeldet, falls es sich um die ID handelt, nach der Sie suchen.
+CWWKO1501_INVALID_IDENTIFIER.useraction=Ermitteln Sie die korrekte eindeutige ID. Bei Konfigurationselementen der Ausgangsebene mit einem angegebenen ID-Attribut ist die eindeutige ID der Wert des ID-Attributs. Andernfalls wird die eindeutige ID vom Server generiert.
+
+CWWKO1502_MULTIPLE_FOUND=CWWKO1502E: Es wurde eine widerspr\u00fcchliche eindeutige ID, {0}, f\u00fcr mehrere konfigurierte Instanzen angegeben oder berechnet.
+CWWKO1502_MULTIPLE_FOUND.explanation=Eine eindeutige ID kann nur ein einziges Mal verwendet werden.
+CWWKO1502_MULTIPLE_FOUND.useraction=Aktualisieren Sie die Serverkonfiguration, um die ID-Attribute der konfigurierten Instanzen hinzuzuf\u00fcgen oder zu \u00e4ndern, sodass jede eindeutige ID nur einmal verwendet wird.

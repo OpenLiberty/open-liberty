@@ -47,7 +47,7 @@ healthcheck.bean.call.exception.CWMH0050E.useraction=Przejrzyj metod\u0119 wywo\
 # The HealthCheck bean call method had a DOWN outcome
 healthcheck.application.down.CWMH0052W=CWMH0052W: Metoda {0} implementuj\u0105ca klas\u0119 HealthCheckResponse w aplikacji {1} modu\u0142u {2} zg\u0142osi\u0142a status {3} z danymi {4}.
 healthcheck.application.down.CWMH0052W.explanation=Status Wy\u0142\u0105czony mo\u017ce spowodowa\u0107 podj\u0119cie dzia\u0142ania wzgl\u0119dem tego serwera przez us\u0142ug\u0119 monitorowania.
-healthcheck.application.down.CWMH0052W.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. To ostrze\u017cenie jest rekordem statusu Wy\u0142\u0105czony.
+healthcheck.application.down.CWMH0052W.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.  To ostrze\u017cenie jest rekordem statusu Wy\u0142\u0105czony.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
 readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: Kontrola poprawno\u015bci w zakresie gotowo\u015bci zg\u0142osi\u0142a og\u00f3lny status WY\u0141\u0104CZONE, poniewa\u017c nast\u0119puj\u0105ce aplikacje nie zosta\u0142y jeszcze uruchomione: {0}

@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy a me
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: A k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veletekre \u00e9s feladatokra t\u00f6rt\u00e9n\u0151 tranzakci\u00f3tov\u00e1bb\u00edt\u00e1s nem t\u00e1mogatott.
 CWWKC1157.cannot.propagate.tx.explanation=A tranzakci\u00f3kontextust tov\u00e1bb\u00edt\u00e1s\u00e1ra be\u00e1ll\u00edtott ManagedExecutor vagy ThreadContext \u00f6ssze\u00e1ll\u00edt\u00f3k csak \u00fcres tranzakci\u00f3kontextust tov\u00e1bb\u00edthatnak. Ez\u00e9rt a tranzakci\u00f3kban nem hozhat l\u00e9tre k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veleteket \u00e9s feladatokat.
 CWWKC1157.cannot.propagate.tx.useraction=Hozza l\u00e9tre a k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veletet vagy feladatot a tranzakci\u00f3kon k\u00edv\u00fcl. Ennek alternat\u00edv\u00e1jak\u00e9nt be\u00e1ll\u00edthatja a ManagedExecutor vagy ThreadContext \u00f6ssze\u00e1ll\u00edt\u00f3kat, hogy ne tov\u00e1bb\u00edtsa a tranzakci\u00f3 kontextus\u00e1t.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

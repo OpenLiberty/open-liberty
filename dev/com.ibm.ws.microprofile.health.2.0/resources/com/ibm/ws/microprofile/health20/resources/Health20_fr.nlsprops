@@ -47,7 +47,7 @@ healthcheck.bean.call.exception.CWMH0050E.useraction=V\u00e9rifiez votre m\u00e9
 # The HealthCheck bean call method had a DOWN outcome
 healthcheck.application.down.CWMH0052W=CWMH0052W: La classe {0} qui impl\u00e9mente HealthCheckResponse dans l'application {1} dans le module {2} a pour statut {3} avec les donn\u00e9es suivantes : {4}.
 healthcheck.application.down.CWMH0052W.explanation=Le statut DOWN peut entra\u00eener une action du service de surveillance sur ce serveur.
-healthcheck.application.down.CWMH0052W.useraction=Aucune action utilisateur n'est requise. Cet avertissement est un enregistrement du statut DOWN.
+healthcheck.application.down.CWMH0052W.useraction=Aucune action utilisateur n'est requise.  Cet avertissement est un enregistrement du statut DOWN.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
 readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: Le bilan de sant\u00e9 permettant de savoir si le produit est pr\u00eat a signal\u00e9 un statut global DOWN car les applications suivantes n'ont pas encore d\u00e9marr\u00e9 : {0}

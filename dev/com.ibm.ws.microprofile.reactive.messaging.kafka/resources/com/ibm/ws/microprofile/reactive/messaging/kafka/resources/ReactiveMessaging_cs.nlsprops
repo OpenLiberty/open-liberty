@@ -1,0 +1,55 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Do\u0161lo k intern\u00ed chyb\u011b v konektoru Kafka syst\u00e9mu Reactive Messaging. Chyba je: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Do\u0161lo k chyb\u011b syst\u00e9mu Reactive Messaging br\u00e1n\u00edc\u00ed norm\u00e1ln\u00ed \u010dinnosti.
+internal.kafka.connector.error.CWMRX1000E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Do\u0161lo k chyb\u011b p\u0159i potvrzov\u00e1n\u00ed offset\u016f \u010dten\u00ed u zprost\u0159edkovatele Kafka. Chyba je: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Do\u0161lo k chyb\u011b v p\u0159\u00edchoz\u00edm konektoru Kafka, co\u017e br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Do\u0161lo k chyb\u011b p\u0159i v\u00fdzv\u011b zprost\u0159edkovatele Kafka. Chyba je: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Do\u0161lo k chyb\u011b v p\u0159\u00edchoz\u00edm konektoru Kafka, co\u017e br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.poll.error.CWMRX1002E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Do\u0161lo k chyb\u011b p\u0159i odes\u00edl\u00e1n\u00ed zpr\u00e1vy do zprost\u0159edkovatele Kafka. Chyba je: {0}.
+kafka.send.error.CWMRX1003E.explanation=Do\u0161lo k chyb\u011b v odchoz\u00edm konektoru Kafka, co\u017e br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.send.error.CWMRX1003E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b syst\u00e9mu Reactive Messaging: {0}.
+temporary.CWMRX1999E.explanation=Do\u0161lo k chyb\u011b syst\u00e9mu Reactive Messaging br\u00e1n\u00edc\u00ed norm\u00e1ln\u00ed \u010dinnosti.
+temporary.CWMRX1999E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
