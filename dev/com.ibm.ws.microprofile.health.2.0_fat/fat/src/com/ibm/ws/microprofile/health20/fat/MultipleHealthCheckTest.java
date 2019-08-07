@@ -76,7 +76,7 @@ public class MultipleHealthCheckTest {
 
     @Test
     public void testFailureCDIProducerLivenessCheck() throws Exception {
-        log("testLivenessCheck", "Testing the /health/live endpoint");
+        log("testCDIProducerLivenessCheck", "Testing the /health/live endpoint");
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
         assertEquals(FAILED_RESPONSE_CODE, conReady.getResponseCode());
 
@@ -104,7 +104,7 @@ public class MultipleHealthCheckTest {
 
     @Test
     public void testSuccessCDIProducerReadinessCheck() throws Exception {
-        log("testReadinessCheck", "Testing the /health/ready endpoint");
+        log("testCDIProducerReadinessCheck", "Testing the /health/ready endpoint");
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
         assertEquals(SUCCESS_RESPONSE_CODE, conReady.getResponseCode());
 
