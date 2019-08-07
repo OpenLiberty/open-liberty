@@ -147,9 +147,12 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     @Override
-    @Trivial
     public String getCanonicalName(String classSourceName) {
-        return classSourceName.replace('\\', '/');
+    	if (classSourceName == null) {
+    		return ClassSource_Factory.UNNAMED_CLASS_SOURCE;
+    	} else {
+    		return classSourceName.replace('\\', '/');
+    	}
     }
 
     //

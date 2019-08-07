@@ -501,7 +501,7 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
     }
 
     public Set<String> getAnnotatedClassesPostBeta(Set<String> annotationClassNames) throws CDIException {
-        // Archive.Type:
+        // ArchiveType:
         //   MANIFEST_CLASSPATH
         //   EAR_LIB
         //   WEB_INF_LIB
@@ -524,12 +524,26 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
 
         Container archiveContainer = getContainer();
 
-        // When the archive is a root-of-roots, change the archive path
-        // to the application name.
+        // When the archive is a root-of-roots, and the archive type
+        // is a module type, change the archive path to the application name.
+        //
+        // Leave the archive path unassigned for other types.
+        //
+        // (Cases other than modules duplicate the application name,
+        // which causes data from different containers to be mapped
+        // to the same location in the archive.)
 
         String archivePath = getPath(archiveContainer);
         if ( archivePath.isEmpty() ) { // Root-of-roots
-            archivePath = appName;
+            if ( (type == ArchiveType.WEB_MODULE) ||
+                 (type == ArchiveType.WEB_MODULE) ||
+                 (type == ArchiveType.EJB_MODULE) ||
+                 (type == ArchiveType.CLIENT_MODULE) ||
+                 (type == ArchiveType.RAR_MODULE) ) {
+                archivePath = appName;
+            } else {
+                archivePath = null;
+            }
         }
 
         String archiveEntryPrefix;
@@ -589,7 +603,11 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
             cdiContainerAnnotations.setUseJandex( application.getUseJandex() );
 
             cdiContainerAnnotations.setAppName(appName);
-            cdiContainerAnnotations.setModName(archivePath);
+            if ( archivePath == null ) {
+                cdiContainerAnnotations.setIsUnnamedMod(true);
+            } else {
+                cdiContainerAnnotations.setModName(archivePath);
+            }
 
             if ( archiveEntryPrefix != null ) {
                 cdiContainerAnnotations.setEntryPrefix(archiveEntryPrefix);

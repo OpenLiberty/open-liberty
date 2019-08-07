@@ -173,6 +173,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                rootContainer, rootOverlayContainer,
                rootArtifactContainer, rootAdaptableContainer,
                ModuleAnnotationsImpl.getAppName(moduleInfo),
+               !ClassSource_Factory.IS_UNNAMED_MOD,
                AnnotationsImpl.getPath( moduleInfo.getContainer() ), // 'getPath' throws UnableToAdaptException
                modCatName );
 

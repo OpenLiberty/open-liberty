@@ -61,6 +61,9 @@ public interface ClassSource_Factory extends com.ibm.wsspi.anno.classsource.Clas
 
     //
 
+    /** Canonical name for unnamed class sources. */
+    String UNNAMED_CLASS_SOURCE = "*** UNNAMED ***";
+
     /**
      * Parameter used for aggregate class sources which do not have an associated
      * application.  Module level results from a class source with an unnamed
@@ -69,9 +72,15 @@ public interface ClassSource_Factory extends com.ibm.wsspi.anno.classsource.Clas
     String UNNAMED_APP = null;
 
     /**
+     * Parameter used for aggregate class source which do not have an associated
+     * module. 
+     */
+    boolean IS_UNNAMED_MOD = true;
+
+    /**
      * Parameter used for aggregate class sources which do not have an associated
-     * application.  Module level results from a class source with an unnamed
-     * application are not persisted.  (Container level results are persisted.)
+     * module.  Module level results from a class source with an unnamed
+     * module are not persisted.  (Container level results are persisted.)
      */
     String UNNAMED_MOD = null;
 

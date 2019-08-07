@@ -123,9 +123,9 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "Use Jandex Format [ {0} ] Use Binary Format [ {1} ]",
                     new Object[] { getUseJandexFormat(), getUseBinaryFormat() });
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "Write Threshold [ {0} ]",
-                    new Object[] { getWriteLimit() });
+            // logger.logp(Level.FINER, CLASS_NAME, methodName,
+            //         "Write Threshold [ {0} ]",
+            //         new Object[] { getWriteLimit() });
 
             logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.stampLink);
             logger.logp(Level.FINER, CLASS_NAME, methodName, "{0}", this.coreDataLink);
@@ -208,7 +208,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         return getCacheOptions().getUseBinaryFormat();
     }
 
-@Trivial
+    @Trivial
     public int getWriteLimit() {
         return getCacheOptions().getWriteLimit();
     }
@@ -247,10 +247,6 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
      */
     public void writeData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         if ( !shouldWrite("Full data") ) {
-            return;
-        }
-
-        if ( getWriteLimit() > targetData.getClassNames().size() ) {
             return;
         }
 

@@ -441,7 +441,11 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
 
     protected void basicAddClassSource(ClassSource classSource, ScanPolicy scanPolicy) {
         classSources.add(classSource);
-        classSourceNames.put(classSource.getName(), classSource.getCanonicalName());
+
+        String classSourceName = classSource.getName();
+        if ( classSourceName != null ) {
+            classSourceNames.put( classSourceName, classSource.getCanonicalName() );
+        }
 
         classSource.setParentSource(this);
 

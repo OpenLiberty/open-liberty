@@ -28,12 +28,12 @@ public class ContainerAnnotationsImpl extends AnnotationsImpl implements Contain
         AnnotationsAdapterImpl annotationsAdapter,
         Container rootContainer, OverlayContainer rootOverlayContainer,
         ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
-        String appName, String modName, String modCatName) {
+        String appName, boolean isUnnamedMod, String modName, String modCatName) {
 
         super(annotationsAdapter,
               rootContainer, rootOverlayContainer,
               rootArtifactContainer, rootAdaptableContainer,
-              appName, modName, modCatName);
+              appName, isUnnamedMod, modName, modCatName);
 
         this.entryPrefix = null;
     }
@@ -67,11 +67,13 @@ public class ContainerAnnotationsImpl extends AnnotationsImpl implements Contain
 
         Container useContainer = getContainer();
 
-        String useContainerName = getModName();
-        if ( useContainerName == null ) {
-            useContainerName = getAppName();
+        String useContainerName;
+        if ( getIsUnnamedMod() ) {
+            useContainerName = null;
+        } else {
+            useContainerName = getModName();
             if ( useContainerName == null ) {
-                useContainerName = "unused";
+                useContainerName = getAppName();
             }
         }
 

@@ -802,9 +802,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         String useHash = ( logger.isLoggable(Level.FINER) ? getHashText() : null );
 
-        String classSourceName = classSource.getName();
+        boolean classSourceIsNamed = ( classSource.getName() != null );
+        String classSourceName = classSource.getCanonicalName();
 
-        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceIsNamed, classSourceName);
 
         synchronized ( conData ) {
             TargetsTableImpl priorTargetsTable = getTargetsTable(classSourceName);
@@ -1043,7 +1044,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 continue;
             }
 
-            String classSourceName = childClassSource.getName();
+            boolean classSourceIsNamed = ( childClassSource.getName() != null );
+            String classSourceName = childClassSource.getCanonicalName();
             String classSourceStamp = childClassSource.getStamp();
 
             TargetsTableImpl newTargets = getTargetsTable(classSourceName);
@@ -1058,7 +1060,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
                 newTargets);
 
-            TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+            TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceIsNamed, classSourceName);
 
             synchronized ( conData ) {
                 conData.writeStamp(modData, newTargets);
@@ -1090,7 +1092,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 continue;
             }
 
-            String classSourceName = childClassSource.getName();
+            String classSourceName = childClassSource.getCanonicalName();
             if ( getTargetsTable(classSourceName) == null ) {
                 numMissingTables++;
             }
@@ -1128,7 +1130,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 continue;
             }
 
-            String classSourceName = childClassSource.getName();
+            boolean classSourceIsNamed = ( childClassSource.getName() != null );
+            String classSourceName = childClassSource.getCanonicalName();
             String classSourceStamp = childClassSource.getStamp();
 
             TargetsTableImpl priorTargets = getTargetsTable(classSourceName);
@@ -1140,7 +1143,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             boolean didRead;
             String dataReason;
 
-            TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+            TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceIsNamed, classSourceName);
 
             synchronized ( conData ) {
                 if ( conData.getHasStampFile() && conData.hasCoreDataFile() ) {
@@ -1259,7 +1262,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 continue;
             }
 
-            final String classSourceName = childClassSource.getName();
+            final boolean classSourceIsNamed = ( childClassSource.getName() != null );
+            final String classSourceName = childClassSource.getCanonicalName();
             final String classSourceStamp = childClassSource.getStamp();
 
             TargetsTableImpl priorTargets = getTargetsTable(classSourceName);
@@ -1276,7 +1280,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                         boolean didRead;
                         String dataReason;
 
-                        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+                        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceIsNamed, classSourceName);
 
                         synchronized ( conData ) {
                             if ( conData.getHasStampFile() && conData.hasCoreDataFile() ) {
@@ -1469,7 +1473,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 continue;
             }
 
-            final String classSourceName = childClassSource.getName();
+            final boolean classSourceIsNamed = ( childClassSource.getName() != null );
+            final String classSourceName = childClassSource.getCanonicalName();
 
             TargetsTableImpl alreadyRefreshedTargets = getTargetsTable(classSourceName);
             if ( alreadyRefreshedTargets != null ) {
@@ -1490,7 +1495,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                             TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
                             newTargets);
 
-                        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceName);
+                        TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceIsNamed, classSourceName);
 
                         synchronized ( conData ) {
                             conData.writeStamp(modData, newTargets);
@@ -1640,10 +1645,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 if ( logger.isLoggable(Level.FINER) ) {
                     logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] Class source [ {1} ] Resolved [ {2} ]",
-                        new Object[] { getHashText(), classSource.getName(), printString(i_newResolved) });
+                        new Object[] { getHashText(), classSource.getCanonicalName(), printString(i_newResolved) });
                     logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] Class source [ {1} ] Unresolved [ {2} ]",
-                        new Object[] { getHashText(), classSource.getName(), printString(i_newUnresolved) });
+                        new Object[] { getHashText(), classSource.getCanonicalName(), printString(i_newUnresolved) });
                 }
             }
 
@@ -2109,7 +2114,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             throw new IllegalStateException("An external class source is required");
         }
 
-        String classSourceName = externalClassSource.getName();
+        String classSourceName = externalClassSource.getCanonicalName();
 
         String isChangedReason;
         boolean isChanged;

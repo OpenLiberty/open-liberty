@@ -58,6 +58,7 @@ public class CDIContainerAnnotationsAdapterImpl
                 this,
                 rootContainer, rootOverlayContainer, rootArtifactContainer, rootAdaptableContainer,
                 ClassSource_Factory.UNNAMED_APP,
+                !ClassSource_Factory.IS_UNNAMED_MOD,
                 ClassSource_Factory.UNNAMED_MOD);
 
         // The container annotations are ready to be used, but is incomplete:

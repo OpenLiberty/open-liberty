@@ -97,6 +97,16 @@ public interface Annotations {
     void setModName(String modName);
 
     /**
+     * Mark these annotations do not have a named module.
+     */
+    void setIsUnnamedMod(boolean isUnnamedMod);
+
+    /**
+     * Tell if these annotations do not have a named module.
+     */
+    boolean getIsUnnamedMod();
+
+    /**
      * Answer the category name for the results.  The category name
      * is null except for CDI container annotations.
      *

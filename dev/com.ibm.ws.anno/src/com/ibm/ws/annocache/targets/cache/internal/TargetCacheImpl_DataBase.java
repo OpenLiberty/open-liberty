@@ -149,6 +149,13 @@ public abstract class TargetCacheImpl_DataBase {
             }
             return false;
 
+        } else if ( getDataFile() == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "Unnamed: Skipping write of [ {0} ]", outputDescription);
+            }
+            return false;
+
         } else {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -549,13 +556,13 @@ public abstract class TargetCacheImpl_DataBase {
     }
 
     @Trivial
-    public boolean isNamed() {
-        return ( name != null );
+    public String e_getName() {
+        return e_name;
     }
 
     @Trivial
-    public String e_getName() {
-        return e_name;
+    public boolean isNamed() {
+        return ( e_name != null );
     }
 
     //

@@ -324,7 +324,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
     protected void basicAddClassSource(ClassSource classSource, ScanPolicy scanPolicy) {
         classSources.add(classSource);
-        classSourceNames.put(classSource.getName(), classSource.getCanonicalName());
+        classSourceNames.put( classSource.getName(), classSource.getCanonicalName() );
 
         if ( scanPolicy == ScanPolicy.SEED ) {
             seedClassSources.add(classSource);
