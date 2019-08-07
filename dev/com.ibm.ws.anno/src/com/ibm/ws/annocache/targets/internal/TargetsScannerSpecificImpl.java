@@ -76,7 +76,7 @@ public class TargetsScannerSpecificImpl extends TargetsScannerBaseImpl {
         Set<String> i_resolvedClassNames = createIdentityStringSet();
 
         for ( ClassSource classSource : useRootClassSource.getClassSources() ) {
-            String classSourceName = classSource.getName();
+            String classSourceName = classSource.getCanonicalName();
             ScanPolicy scanPolicy = useRootClassSource.getScanPolicy(classSource);
 
             if ( i_specificClassNames.isEmpty() ) {

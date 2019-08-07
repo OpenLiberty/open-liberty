@@ -27,12 +27,12 @@ public class CDIContainerAnnotationsImpl extends ContainerAnnotationsImpl implem
         AnnotationsAdapterImpl annotationsAdapter,
         Container rootContainer, OverlayContainer rootOverlayContainer,
         ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
-        String appName, String modName) {
+        String appName, boolean isUnnamedMod, String modName) {
 
         super(annotationsAdapter,
               rootContainer, rootOverlayContainer,
               rootArtifactContainer, rootAdaptableContainer,
-              appName, modName, CDI_CATEGORY_NAME);
+              appName, isUnnamedMod, modName, CDI_CATEGORY_NAME);
     }
 }
 

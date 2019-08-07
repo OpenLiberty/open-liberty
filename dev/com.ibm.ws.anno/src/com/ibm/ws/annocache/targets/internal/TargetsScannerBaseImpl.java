@@ -205,7 +205,7 @@ public class TargetsScannerBaseImpl {
             getClassNameInternMap(),
             getFieldNameInternMap(),
             getMethodSignatureInternMap(),
-            classSource.getName(),
+            classSource.getCanonicalName(),
             getUseJandexFormat() );
 
         targetsTable.setStamp( classSource.getStamp() );
@@ -393,7 +393,7 @@ public class TargetsScannerBaseImpl {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "Location {0}: Classes {1}: Scan type {2}",
-                    new Object[] { nextClassSource.getName(), nextClassCount, scanType });
+                    new Object[] { nextClassSource.getCanonicalName(), nextClassCount, scanType });
             }
         }
 
@@ -449,7 +449,7 @@ public class TargetsScannerBaseImpl {
 
         Object[] logParms;
         if ( logger.isLoggable(Level.FINER) ) {
-            logParms = new Object[] { getHashText(), classSource.getName() };
+            logParms = new Object[] { getHashText(), classSource.getCanonicalName() };
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class source [ {1} ]", logParms);
             if ( i_useResolvedClassNames != null ) {
                 logParms[1] = Integer.valueOf(i_useResolvedClassNames.size());
@@ -498,7 +498,7 @@ public class TargetsScannerBaseImpl {
 
         Object[] logParms;
         if ( logger.isLoggable(Level.FINER) ) {
-            logParms = new Object[] { getHashText(), classSource.getName() };
+            logParms = new Object[] { getHashText(), classSource.getCanonicalName() };
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class source [ {1} ]", logParms);
             if ( i_useResolvedClassNames != null ) {
                 logParms[1] = Integer.valueOf(i_useResolvedClassNames.size());
@@ -560,11 +560,11 @@ public class TargetsScannerBaseImpl {
     }
 
     public TargetsTableImpl getTargetsTable(ClassSource classSource) {
-        return getTargetsTables().get(classSource.getName());
+        return getTargetsTables().get(classSource.getCanonicalName());
     }
 
     public void putTargetsTable(ClassSource classSource, TargetsTableImpl targetsTable) {
-        getTargetsTables().put(classSource.getName(), targetsTable);
+        getTargetsTables().put(classSource.getCanonicalName(), targetsTable);
     }
 
     //

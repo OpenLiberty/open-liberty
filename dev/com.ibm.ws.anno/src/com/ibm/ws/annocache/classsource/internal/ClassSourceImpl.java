@@ -659,7 +659,7 @@ public abstract class ClassSourceImpl implements ClassSource {
                     indexer.index(inputStream);
                 } catch ( IOException e ) {
                     throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName,
-                        "Failed to scan class [ " + i_className + " ] of class source [ " + getName() + " ]", e);
+                        "Failed to scan class [ " + i_className + " ] of class source [ " + getCanonicalName() + " ]", e);
                 }
                 return true;
             }

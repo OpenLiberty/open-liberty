@@ -138,7 +138,7 @@ public class TargetsTableContainersImpl
                 continue;
             }
 
-            addName( childClassSource.getName(), scanPolicy );
+            addName( childClassSource.getCanonicalName(), scanPolicy );
         }
     }
 

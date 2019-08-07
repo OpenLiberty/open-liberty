@@ -829,7 +829,7 @@ public class TargetsTableImpl implements TargetsTable {
                 private final TargetsVisitorClassImpl visitor =
                     new TargetsVisitorClassImpl(
                         TargetsTableImpl.this,
-                        classSource.getName(),
+                        classSource.getCanonicalName(),
                         i_newResolvedClassNames, i_resolvedClassNames,
                         i_newUnresolvedClassNames, i_unresolvedClassNames,
                         i_selectAnnotationClassNames,
@@ -962,7 +962,7 @@ public class TargetsTableImpl implements TargetsTable {
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ] ENTER Resolved [ {2} ] Unresolved [ {3} ]",
-                        new Object[] { getHashText(), classSource.getName(),
+                        new Object[] { getHashText(), classSource.getCanonicalName(),
                                        Integer.valueOf(i_resolvedClassNames.size()),
                                        Integer.valueOf(i_unresolvedClassNames.size()) });
         }
@@ -971,7 +971,7 @@ public class TargetsTableImpl implements TargetsTable {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                             "[ {0} ] [ {1} ] RETURN Immedate; Empty Unresolved",
-                            new Object[] { getHashText(), classSource.getName() });
+                            new Object[] { getHashText(), classSource.getCanonicalName() });
             }
             return;
         }
@@ -1134,7 +1134,7 @@ public class TargetsTableImpl implements TargetsTable {
             final TargetsVisitorClassImpl visitor =
                 new TargetsVisitorClassImpl(
                     this,
-                    classSource.getName(),
+                    classSource.getCanonicalName(),
                     TargetsVisitorClassImpl.DONT_RECORD_NEW_UNRESOLVED, i_unresolvedClassNames,
                     TargetsVisitorClassImpl.DONT_RECORD_NEW_RESOLVED, i_resolvedClassNames,
                     i_specificAnnotationClassNames,

@@ -232,7 +232,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         return cons;
     }
 
-    public TargetCacheImpl_DataCon getSourceConForcing(String conPath) {
+    public TargetCacheImpl_DataCon getSourceConForcing(boolean isNamed, String conPath) {
         TargetCacheImpl_DataCon con;
 
         synchronized(consLock) {
@@ -240,7 +240,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
             con = useCons.get(conPath);
             if ( con == null ) {
-                con = getApp().getSourceConForcing(conPath);
+                con = getApp().getSourceConForcing(isNamed, conPath);
                 useCons.put(conPath, con);
             }
         }

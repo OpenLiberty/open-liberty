@@ -170,11 +170,11 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
     private final ConsLock consLock;
     private final WeakHashMap<String, TargetCacheImpl_DataCon> cons;
 
-    public TargetCacheImpl_DataCon getSourceConForcing(String conPath) {
+    public TargetCacheImpl_DataCon getSourceConForcing(boolean isNamed, String conPath) {
         synchronized( consLock ) {
             TargetCacheImpl_DataCon con = cons.get(conPath);
             if ( con == null ) {
-                con = createSourceConData(conPath);
+                con = createSourceConData(isNamed, conPath);
                 cons.put(conPath, con);
             }
             return con;
@@ -182,9 +182,9 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
     }
 
     @Trivial
-    public TargetCacheImpl_DataCon createSourceConData(String conName) {
-        String e_conName = encode(conName);
-        File e_resultConFile = e_getConFile(e_conName);
+    public TargetCacheImpl_DataCon createSourceConData(boolean isNamed, String conName) {
+        String e_conName = ( isNamed ? encode(conName) : null );
+        File e_resultConFile = ( isNamed ? e_getConFile(e_conName) : null );
         return createConData( this,
             conName, e_conName, e_resultConFile,
             TargetCacheImpl_DataCon.IS_SOURCE);

@@ -146,6 +146,8 @@ public abstract class AnnotationsImpl implements Annotations {
      *     the same as 'rootContainer'.
      * @param appName The name of the enclosing application.  Null if there is no enclosing
      *     application.
+     * @param isUnnamedMod Set that the module is unnamed.  This prevents default module
+     *     naming from occurring. 
      * @param modName The name of the enclosing module.  Null if there is no enclosing module.
      * @param modCatName A category name for the module.  Used to enable multiple results for
      *     ths same module.
@@ -154,7 +156,7 @@ public abstract class AnnotationsImpl implements Annotations {
         AnnotationsAdapterImpl annotationsAdapter,
         Container rootContainer, OverlayContainer rootOverlayContainer,
         ArtifactContainer rootDelegateContainer, Container rootAdaptableContainer,
-        String appName, String modName, String modCatName) {
+        String appName, boolean isUnnamedMod, String modName, String modCatName) {
 
     	// (new Throwable("Annotations (cache)")).printStackTrace(System.out);
 
@@ -319,13 +321,28 @@ public abstract class AnnotationsImpl implements Annotations {
     }
 
     private String modName;
+    private boolean isUnnamedMod;
 
     @Override
     public String getModName() {
         return modName;
     }
 
+    @Override
+    public void setIsUnnamedMod(boolean isUnnamedMod) {
+    	this.isUnnamedMod = isUnnamedMod;
+    }
+
+    @Override 
+    public boolean getIsUnnamedMod() { 
+    	return isUnnamedMod;
+	}
+
     protected void forceModName() throws UnableToAdaptException {
+    	if ( getIsUnnamedMod() ) {
+    		return;
+    	}
+
         if ( (modName == null) || modName.isEmpty() ) {
             String modNameCase;
             String useModName = getPath( getContainer() ); // 'getPath' throws UnableToAdaptException
