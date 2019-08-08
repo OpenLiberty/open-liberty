@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -468,12 +468,17 @@ public class H2Headers {
      * @param H2HeaderField
      * @throws CompressionException if the H2HeaderField is not valid
      */
-    public static boolean checkIsValidH2WriteHeader(String headerName) {
+    public static boolean checkIsValidH2WriteHeader(String headerName, String headerValue) {
         if (!headerName.startsWith(":")) {
             if ("Connection".equalsIgnoreCase(headerName)) {
                 return false;
             }
-            if ("TE".equalsIgnoreCase(headerName)) {
+            for (String name : HpackConstants.connectionSpecificHeaderList) {
+                if (name.equalsIgnoreCase(headerName)) {
+                    return false;
+                }
+            }
+            if ("TE".equalsIgnoreCase(headerName) && !"trailers".equalsIgnoreCase(headerValue)) {
                 return false;
             }
         }
