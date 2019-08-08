@@ -28,9 +28,9 @@ public class AuditData extends GenericData {
     };
 
     private final static String[] NAMES = {
-                                            LogFieldConstants.IBM_DATETIME,
-                                            LogFieldConstants.IBM_SEQUENCE,
-                                            LogFieldConstants.IBM_THREADID,
+                                            LogFieldConstants.DATETIME,
+                                            LogFieldConstants.SEQUENCE,
+                                            LogFieldConstants.THREADID,
                                             LogFieldConstants.HOSTNAME,
                                             LogFieldConstants.WLPUSERDIR,
                                             LogFieldConstants.SERVERNAME
