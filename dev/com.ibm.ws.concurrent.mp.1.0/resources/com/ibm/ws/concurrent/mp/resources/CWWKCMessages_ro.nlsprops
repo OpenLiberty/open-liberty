@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Actualiza\u0163i aplica\u0163ia pentru a util
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: Nu este suportat\u0103 propagarea tranzac\u0163iilor pentru ac\u0163iuni \u015fi taskuri contextuale.
 CWWKC1157.cannot.propagate.tx.explanation=Un ManagedExecutor sau ThreadContext care este configurat pentru propagarea contextelor de tranzac\u0163ie poate propaga numai contexte de tranzac\u0163ie goale. Ca urmare, nu pute\u0163i crea ac\u0163iuni \u015fi taskuri contextuale \u00een cadrul unei tranzac\u0163ii.
 CWWKC1157.cannot.propagate.tx.useraction=Crea\u0163i o ac\u0163iune sau un task contextual \u00een afara unei tranzac\u0163ii. Sau configura\u0163i ManagedExecutor sau ThreadContext astfel \u00eenc\u00e2t s\u0103 nu propage contexte de tranzac\u0163ie.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

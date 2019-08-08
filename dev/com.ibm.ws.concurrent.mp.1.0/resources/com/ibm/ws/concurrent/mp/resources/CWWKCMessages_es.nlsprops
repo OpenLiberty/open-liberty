@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Actualice la aplicaci\u00f3n para que utilice
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: No se admite la propagaci\u00f3n de transacciones a acciones contextuales y tareas.
 CWWKC1157.cannot.propagate.tx.explanation=Un ManagedExecutor o ThreadContext que est\u00e1 configurado para propagar contextos de transacci\u00f3n solo puede propagar contextos de transacci\u00f3n vac\u00edos. Por lo tanto, no puede crear acciones y tareas contextuales dentro de una transacci\u00f3n.
 CWWKC1157.cannot.propagate.tx.useraction=Cree la acci\u00f3n o tarea contextual fuera de la transacci\u00f3n. De forma alternativa, configure ManagedExecutor o ThreadContext para que no propague contextos de transacci\u00f3n.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

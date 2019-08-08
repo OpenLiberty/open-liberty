@@ -1,0 +1,55 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Une erreur interne est survenue dans Reactive Messaging Kafka Connector. Erreur : {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Une erreur Reactive Messaging emp\u00eachant le fonctionnement normal est survenue.
+internal.kafka.connector.error.CWMRX1000E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Une erreur est survenue lors de la validation des d\u00e9calages de lecture dans le courtier Kafka. Erreur : {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Une erreur qui emp\u00eache le fonctionnement normal de Reactive Messaging est survenue dans le connecteur entrant Kafka.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Une erreur est survenue lors de l'interrogation du courtier Kafka. Erreur : {0}.
+kafka.poll.error.CWMRX1002E.explanation=Une erreur qui emp\u00eache le fonctionnement normal de Reactive Messaging est survenue dans le connecteur entrant Kafka.
+kafka.poll.error.CWMRX1002E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Une erreur est survenue lors de l'envoi d'un message au courtier Kafka. Erreur : {0}.
+kafka.send.error.CWMRX1003E.explanation=Une erreur qui emp\u00eache le fonctionnement normal de Reactive Messaging est survenue dans le connecteur sortant Kafka.
+kafka.send.error.CWMRX1003E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: L'erreur Reactive Messaging suivante est survenue : {0}.
+temporary.CWMRX1999E.explanation=Une erreur Reactive Messaging emp\u00eachant le fonctionnement normal est survenue.
+temporary.CWMRX1999E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.

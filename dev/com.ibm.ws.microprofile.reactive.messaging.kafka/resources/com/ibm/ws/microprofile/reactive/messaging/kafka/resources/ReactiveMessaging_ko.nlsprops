@@ -1,0 +1,55 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Reactive Messaging Kafka \ucee4\ub125\ud130\uc5d0\uc11c \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958\ub294 {0}\uc785\ub2c8\ub2e4. 
+internal.kafka.connector.error.CWMRX1000E.explanation=\uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 Reactive Messaging \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+internal.kafka.connector.error.CWMRX1000E.useraction=\uc11c\ubc84 message.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud30c\uc545\ud558\uc2ed\uc2dc\uc624.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Kafka \ube0c\ub85c\ucee4\uc5d0 \uc77d\uae30 \uc624\ud504\uc14b\uc744 \ucee4\ubbf8\ud2b8\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958\ub294 {0}\uc785\ub2c8\ub2e4.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Kafka \uc218\uc2e0 \ucee4\ub125\ud130\uc5d0\uc11c Reactive Messaging\uc758 \uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=\uc11c\ubc84 message.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud30c\uc545\ud558\uc2ed\uc2dc\uc624.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Kafka \ube0c\ub85c\ucee4\ub97c \ud3f4\ub9c1\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958\ub294 {0}\uc785\ub2c8\ub2e4.
+kafka.poll.error.CWMRX1002E.explanation=Kafka \uc218\uc2e0 \ucee4\ub125\ud130\uc5d0\uc11c Reactive Messaging\uc758 \uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+kafka.poll.error.CWMRX1002E.useraction=\uc11c\ubc84 message.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud30c\uc545\ud558\uc2ed\uc2dc\uc624.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Kafka \ube0c\ub85c\ucee4\uc5d0 \uba54\uc2dc\uc9c0\ub97c \uc804\uc1a1\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958\ub294 {0}\uc785\ub2c8\ub2e4.
+kafka.send.error.CWMRX1003E.explanation=Kafka \ubc1c\uc2e0 \ucee4\ub125\ud130\uc5d0\uc11c Reactive Messaging\uc758 \uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+kafka.send.error.CWMRX1003E.useraction=\uc11c\ubc84 message.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud30c\uc545\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: \ub2e4\uc74c Reactive Messaging \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}.
+temporary.CWMRX1999E.explanation=\uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 Reactive Messaging \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+temporary.CWMRX1999E.useraction=\uc11c\ubc84 message.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud30c\uc545\ud558\uc2ed\uc2dc\uc624.
