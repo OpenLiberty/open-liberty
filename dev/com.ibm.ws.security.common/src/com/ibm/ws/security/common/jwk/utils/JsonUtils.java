@@ -136,12 +136,15 @@ public class JsonUtils {
         if (jsonFormattedString == null) {
             return null;
         }
-
         Object claim = null;
-        //JSONObject jobj = JSONObject.parse(jsonFormattedString);
         Map<String, Object> jobj = org.jose4j.json.JsonUtil.parseJson(jsonFormattedString);
         if (jobj != null) {
-            claim = jobj.get(claimName);
+            //linkedin has "elements" as the key in the first layer of json
+            if(jobj.containsKey("elements")){
+                claim = jobj.get("elements");
+            }else{
+                claim = jobj.get(claimName);
+            }
         }
 
         return claim;

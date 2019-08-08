@@ -179,7 +179,9 @@ public class OAuthClientUtil {
             boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (accessToken != null) {
-            params.add(new BasicNameValuePair("access_token", accessToken));
+            if(!userApi.contains("linkedin")){
+                params.add(new BasicNameValuePair("access_token", accessToken));
+            } //modified reason: [{"serviceErrorCode":65603,"message":"Multiple access token provided","status":401}] (LinkedIn and Facebook)
         }
 
         Map<String, Object> getResponseMap = getFromUserApiEndpoint(userApi, params, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, useJvmProps);
@@ -426,9 +428,10 @@ public class OAuthClientUtil {
         if (params == null) {
             params = new ArrayList<NameValuePair>();
         }
-        //params.add(new BasicNameValuePair("format", "json"));
+        if(!url.contains("linkedin")){
+            params.add(new BasicNameValuePair("format", "json"));
+        }//removed reason: [{"serviceErrorCode":100,"message":"Unpermitted fields present in PARAMETER: Data Processing Exception while processing fields [/format]","status":403}] (LinkedIn)
         query = URLEncodedUtils.format(params, ClientConstants.CHARSET);
-
         if (query != null && !query.isEmpty()) {
             if (!url.endsWith("?")) {
                 if (url.contains("?")) {

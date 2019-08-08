@@ -80,7 +80,6 @@
         <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
         <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
-        <AD id="forwardLoginParameter" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.google">
@@ -241,9 +240,9 @@
         <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
             required="false" type="String" default="https://www.linkedin.com/oauth/v2/accessToken"/>  
         <AD id="userApi" name="%userApi" description="%userApi.desc"
-            required="false" type="String" default="https://api.linkedin.com/v1/people/~:(firstName\,id\,lastName\,email-address)"/>                    
+            required="false" type="String" default="https://api.linkedin.com/v2/emailAddress?q=members&amp;projection=(elements*(handle~))"/>                    
         <AD id="scope" name="%scope" description="%scope.desc"
-            required="false" type="String" default="r_emailaddress r_basicprofile" />
+            required="false" type="String" default="r_emailaddress" />
         <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
             required="false" type="String" default="emailAddress"/>
         <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
@@ -421,10 +420,9 @@
         <AD id="jwkClientId" name="%jwkClientIdentifier" description="%jwkClientIdentifier.desc" required="false"  type="String" />
         <AD id="jwkClientSecret" name="%jwkClientSecret" description="%jwkClientSecret.desc" required="false"  type="String" ibm:type="password"/>
         <AD id="authzParameter" name="%authzParameter" description="%authzParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
-        <AD id="tokenParameter" name="%tokenParameter" description="%tokenParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
-        <AD id="userinfoParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
-        <AD id="jwkParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
-        <AD id="forwardLoginParameter" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
+         <AD id="tokenParameter" name="%tokenParameter" description="%tokenParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
+         <AD id="userinfoParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
+         <AD id="jwkParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />    
 
     </OCD>
     

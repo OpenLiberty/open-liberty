@@ -126,10 +126,17 @@ public class AttributeToSubject {
     }
 
     private String getTheUserName(String userNameAttr, String jsonstr, String userApiRespIdentifier) {
+        Tr.debug(tc, "ENTP: step 0, userNameAttr: " + userNameAttr);
+        Tr.debug(tc, "ENTP: step 0, jsonstr: " + jsonstr);
+        Tr.debug(tc, "ENTP: step 0, userApiRespIdentifier: " + userApiRespIdentifier);
+        Tr.debug(tc, "ENTP: step 0, if the str contains elements, then set userApiResIdentifier to handle~");
+        if (jsonstr.contains("elements"))
+            userApiRespIdentifier = "handle~";
         if (jsonstr != null) {
             if (userNameAttr != null && !userNameAttr.isEmpty()) {
                 Object user = null;
                 try {
+                    Tr.debug(tc, "ENTP: step 0.5 --> go to step 5");
                     user = JsonUtils.claimFromJsonObject(jsonstr, userNameAttr);
                 } catch (JoseException e) {
 
@@ -139,6 +146,7 @@ public class AttributeToSubject {
                         userName = (String) user;
                     } else {
                         if (userApiRespIdentifier != null) {
+                            Tr.debug(tc, "ENTP: step 2, LinkedIn should fall under here");
                             userName = handleDifferentDataTypes(user, userNameAttr, userApiRespIdentifier);
                         } else {
                             Tr.error(tc, "SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE", new Object[] { userNameAttr, "userNameAttribute" });
@@ -165,10 +173,12 @@ public class AttributeToSubject {
         Iterator it = keys.iterator();
         while (it.hasNext()) {
             String key = (String) it.next();
+            // Tr.debug(tc, "step 8, key is: " + key);
             Object obj = map.get(key);
             if (obj instanceof Map) {
                 if (((Map) obj).containsKey(attr)) {
                     try {
+                        // Tr.debug(tc, "key is: " + (String) ((Map) obj).get(attr));
                         return (String) ((Map) obj).get(attr);
                     } catch (ClassCastException cce) {
                         return null;
@@ -200,9 +210,17 @@ public class AttributeToSubject {
                         Tr.debug(tc, "response is an array list of maps");
                     }
                     for (int i = 0; i < list.size(); i++) {
+                        Tr.debug(tc, "ENTP: step 2.5, the userNameAttr is: " + userNameAttr);
                         Map map = (Map) list.get(i);
-                        if (map.containsKey(userApiRespIdentifier) && (Boolean) map.get(userApiRespIdentifier)) {
+                        //why is it converted to boolean?
+                        /*if (map.containsKey(userApiRespIdentifier) && (Boolean) map.get(userApiRespIdentifier)) {
                             name = (String) map.get(userNameAttr);
+                            break;
+                        }*/if(map.containsKey(userApiRespIdentifier)){
+                            Tr.debug(tc, "ENTP: step 2.75, this is the future where userApiIndentifier should be handle~ and it is " + userApiRespIdentifier);
+                        //name = (String) map.get(userNameAttr); //(original) removed to check for different input
+                           name = ((Map) map).get(userApiRespIdentifier).toString();
+                            Tr.debug(tc, "ENTP: step 2.875, the name is: " +  name);
                             break;
                         }
                     }
