@@ -69,8 +69,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
-        assertEquals(true, checks.getJsonObject(0).getString("name").equals("failed-liveness-check") ||
-                           checks.getJsonObject(1).getString("name").equals("failed-liveness-check"));
+        assertEquals(true, checkIfHealthCheckNameExists(checks, "failed-liveness-check"));
         assertEquals(jsonResponse.getString("status"), "DOWN");
     }
 
@@ -83,8 +82,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
-        assertEquals(true, checks.getJsonObject(0).getString("name").equals("failed-cdi-producer-liveness-check") ||
-                           checks.getJsonObject(1).getString("name").equals("failed-cdi-producer-liveness-check"));
+        assertEquals(true, checkIfHealthCheckNameExists(checks, "failed-cdi-producer-liveness-check"));
         assertEquals(jsonResponse.getString("status"), "DOWN");
     }
 
@@ -97,8 +95,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
-        assertEquals(true, checks.getJsonObject(0).getString("name").equals("successful-readiness-check") ||
-                           checks.getJsonObject(1).getString("name").equals("successful-readiness-check"));
+        assertEquals(true, checkIfHealthCheckNameExists(checks, "successful-readiness-check"));
         assertEquals(jsonResponse.getString("status"), "UP");
     }
 
@@ -111,8 +108,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(2, checks.size());
-        assertEquals(true, checks.getJsonObject(0).getString("name").equals("successful-cdi-producer-readiness-check") ||
-                           checks.getJsonObject(1).getString("name").equals("successful-cdi-producer-readiness-check"));
+        assertEquals(true, checkIfHealthCheckNameExists(checks, "successful-cdi-producer-readiness-check"));
         assertEquals(jsonResponse.getString("status"), "UP");
     }
 
@@ -126,6 +122,17 @@ public class MultipleHealthCheckTest {
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals(4, checks.size());
         assertEquals(jsonResponse.getString("status"), "DOWN");
+    }
+
+    /**
+     * Returns true if the specified String name, is found within JsonArray checks.
+     */
+    public boolean checkIfHealthCheckNameExists(JsonArray checks, String name) {
+        for (int i = 0; i < checks.size(); i++) {
+            if (checks.getJsonObject(i).getString("name").equals(name))
+                return true;
+        }
+        return false;
     }
 
     public JsonObject getJSONPayload(HttpURLConnection con) throws Exception {
