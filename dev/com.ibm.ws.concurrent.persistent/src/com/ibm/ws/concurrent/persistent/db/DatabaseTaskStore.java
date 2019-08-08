@@ -487,7 +487,11 @@ public class DatabaseTaskStore implements TaskStore {
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
             Connection con = em.unwrap(Connection.class);
-            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            if (con == null)
+                // TODO why does this sometimes return null when running in builds?
+                System.out.println("em.unwrap(Connection) returned null! em = " + em);
+            else
+                con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED); // TODO: jdbc driver might not support this
 
             TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
             query.setParameter("p", excludePartition);
