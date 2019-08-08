@@ -181,7 +181,7 @@ public class OAuthClientUtil {
         if (accessToken != null) {
             if(!userApi.contains("linkedin")){
                 params.add(new BasicNameValuePair("access_token", accessToken));
-            } //modified reason: [{"serviceErrorCode":65603,"message":"Multiple access token provided","status":401}] (LinkedIn and Facebook)
+            } //removed reason: [{"serviceErrorCode":65603,"message":"Multiple access token provided","status":401}] (LinkedIn and Facebook)
         }
 
         Map<String, Object> getResponseMap = getFromUserApiEndpoint(userApi, params, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, useJvmProps);

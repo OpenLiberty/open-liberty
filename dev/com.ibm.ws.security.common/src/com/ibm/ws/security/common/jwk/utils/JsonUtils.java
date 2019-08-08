@@ -139,7 +139,7 @@ public class JsonUtils {
         Object claim = null;
         Map<String, Object> jobj = org.jose4j.json.JsonUtil.parseJson(jsonFormattedString);
         if (jobj != null) {
-            //linkedin has "elements" as the key in the first layer of json
+            //removed reason: linkedin has "elements" as the key in the first layer of json
             if(jobj.containsKey("elements")){
                 claim = jobj.get("elements");
             }else{
@@ -149,6 +149,13 @@ public class JsonUtils {
 
         return claim;
     }
+
+    public static boolean isLinkedIn(Map<String, Object> map){
+        if(map.containsKey("elements")){
+            return true;
+        }
+        return false;
+    } 
 
     // assuming payload not the whole token string
     public static Map claimsFromJsonObject(String jsonFormattedString) throws JoseException {
