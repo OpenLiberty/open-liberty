@@ -127,7 +127,7 @@ public class MultipleHealthCheckTest {
     /**
      * Returns true if the specified String name, is found within JsonArray checks.
      */
-    public boolean checkIfHealthCheckNameExists(JsonArray checks, String name) {
+    private boolean checkIfHealthCheckNameExists(JsonArray checks, String name) {
         for (int i = 0; i < checks.size(); i++) {
             if (checks.getJsonObject(i).getString("name").equals(name))
                 return true;
