@@ -339,8 +339,9 @@ public class PermissionManager implements PermissionsCombiner {
         Certificate[] certs = null;
         CodeSource codeSource = null;
         try {
-            codeSource = new CodeSource(new URL("wsjar:file:/" + codeBase), certs);
+            codeSource = new CodeSource(new URL("file:/" + codeBase), certs);
         } catch (MalformedURLException e) {
+            codeSource = new CodeSource(null, certs);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unable to create code source for protection domain");
             }
