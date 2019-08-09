@@ -62,5 +62,5 @@ test.project: true
 	org.apache.deltaspike.modules:deltaspike-scheduler-module-impl;version=1.5.0,\
         com.ibm.websphere.javaee.transaction.1.2;version=latest,\
         com.ibm.websphere.javaee.persistence.2.0;version=latest,\
-        org.hibernate.common.hibernate-commons-annotations\, 
-        org.hibernate:hibernate-search-engine;version=latest
+        org.hibernate.common.hibernate-commons-annotations;version=5.1.0.Final,\
+        org.hibernate.search-engine;version=5.11.2.Final
