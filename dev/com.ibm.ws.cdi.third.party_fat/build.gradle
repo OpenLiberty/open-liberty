@@ -29,7 +29,9 @@ repositories {
 	
 configurations {
   deltaspikeWarLibs
-  hibernateSearchWarLibs
+  hibernateSearchWarLibs {
+    transitive = false
+  }
 }
 
 dependencies {
@@ -62,7 +64,7 @@ dependencies {
     'org.dom4j:dom4j:2.1.1',
     'org.elasticsearch.client:elasticsearch-rest-client:5.6.8',
     'org.elasticsearch.client:elasticsearch-rest-client-sniffer:5.6.8',
-    'org.hibernate.common:hibernate-commons-annotations:3.3.0.ga',
+    'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final',
     'org.hibernate:hibernate-core:5.4.3.Final',
     'org.hibernate:hibernate-search-elasticsearch:5.11.2.Final',
     'org.hibernate:hibernate-search-engine:5.11.2.Final',
