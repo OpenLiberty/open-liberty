@@ -487,7 +487,11 @@ public class DatabaseTaskStore implements TaskStore {
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
             Connection con = em.unwrap(Connection.class);
-            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            if (con == null)
+                // TODO why does this sometimes return null when running in builds?
+                System.out.println("em.unwrap(Connection) returned null! em = " + em);
+            else
+                con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED); // TODO: jdbc driver might not support this
 
             TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
             query.setParameter("p", excludePartition);
@@ -1366,6 +1370,31 @@ public class DatabaseTaskStore implements TaskStore {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "removeProperty", removed);
             return removed;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean setPartition(long taskId, int version, long newPartitionId) throws Exception {
+        String update = "UPDATE Task t SET t.PARTN=:p,t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.VERSION=:v";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "setPartition", taskId + " v" + version + " assign to " + newPartitionId, update);
+
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Query query = em.createQuery(update.toString());
+            query.setParameter("p", newPartitionId);
+            query.setParameter("i", taskId);
+            query.setParameter("v", version);
+            boolean assigned = query.executeUpdate() > 0;
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "setPartition", assigned);
+            return assigned;
         } finally {
             em.close();
         }

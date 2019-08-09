@@ -11,22 +11,44 @@
 package failover1serv.web;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.enterprise.concurrent.ManagedTask;
+import javax.enterprise.concurrent.ManagedTaskListener;
+
+import com.ibm.websphere.concurrent.persistent.AutoPurge;
 import com.ibm.websphere.concurrent.persistent.TaskIdAccessor;
 
 /**
  * A simple task that increments a counter each time it runs.
  */
-public class IncTask implements Callable<Integer>, Serializable {
+public class IncTask implements Callable<Integer>, ManagedTask, Serializable {
     private static final long serialVersionUID = 1L;
 
     int counter;
+    private final Map<String, String> execProps = Collections.singletonMap(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.toString());
+    final String testIdentifier;
+
+    IncTask(String testIdentifier) {
+        this.testIdentifier = testIdentifier;
+    }
 
     @Override
     public Integer call() throws Exception {
         ++counter;
-        System.out.println("IncTask " + TaskIdAccessor.get() + " execution attempt #" + counter);
+        System.out.println("IncTask " + TaskIdAccessor.get() + " from " + testIdentifier + " execution attempt #" + counter);
         return counter;
+    }
+
+    @Override
+    public Map<String, String> getExecutionProperties() {
+        return execProps;
+    }
+
+    @Override
+    public ManagedTaskListener getManagedTaskListener() {
+        return null;
     }
 }

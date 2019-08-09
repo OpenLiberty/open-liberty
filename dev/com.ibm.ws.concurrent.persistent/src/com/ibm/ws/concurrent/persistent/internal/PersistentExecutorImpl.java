@@ -2243,11 +2243,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             if (claimed) {
                 int currentVersion = (Integer) taskData[4];
-
+                long partition = getPartitionId();
                 boolean transferred;
                 tranMgr.begin();
                 try {
-                    transferred = false; // TODO taskStore.transfer(taskId, newPartitionId, currentVersion);
+                    transferred = taskStore.setPartition(taskId, currentVersion, partition);
                 } finally {
                     tranMgr.commit();
                 }
