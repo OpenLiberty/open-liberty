@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,17 +9,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.websphere.security.wim.scim20.exceptions;
+package com.ibm.ws.security.wim.scim20.fat;
 
-/**
- * The specified filter syntax was invalid, or the specified attribute and
- * filter comparison combination is not supported.
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+/*
+ * The classes specified in the @SuiteClasses annotation
+ * below should represent all of the test cases for this FAT.
  */
-public class InvalidFilterException extends SCIMException {
-
-    private static final long serialVersionUID = -4872756520888058312L;
-
-    public InvalidFilterException(String msg) {
-        super(400, "invalidFilter", msg);
-    }
-}
+@SuiteClasses({ SCIMTest.class })
+@RunWith(Suite.class)
+public class FATSuite {}

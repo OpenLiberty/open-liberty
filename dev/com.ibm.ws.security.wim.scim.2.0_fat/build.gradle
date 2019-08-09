@@ -9,17 +9,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.websphere.security.wim.scim20.exceptions;
-
-/**
- * The specified filter syntax was invalid, or the specified attribute and
- * filter comparison combination is not supported.
- */
-public class InvalidFilterException extends SCIMException {
-
-    private static final long serialVersionUID = -4872756520888058312L;
-
-    public InvalidFilterException(String msg) {
-        super(400, "invalidFilter", msg);
-    }
+autoFVT.doLast {
+  /*
+   * Copy the SCIM 2.0 JAR for use by FVT.
+   */
+  copy { 
+    from new File(project(':com.ibm.ws.security.wim.scim.2.0').buildDir, 'com.ibm.ws.security.wim.scim.2.0.jar')
+    into new File(autoFvtDir, 'lib')
+  }
 }
