@@ -341,8 +341,13 @@ public class PermissionManager implements PermissionsCombiner {
         try {
             codeSource = new CodeSource(new URL("wsjar:file:/" + codeBase), certs);
         } catch (MalformedURLException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unable to create code source for protection domain");
+            try {
+                codeSource = new CodeSource(new URL("jar:file:/" + codeBase), certs);
+            } catch (MalformedURLException e2) {
+                codeSource = new CodeSource(null, certs);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Unable to create code source for protection domain");
+                }
             }
         }
         return codeSource;
