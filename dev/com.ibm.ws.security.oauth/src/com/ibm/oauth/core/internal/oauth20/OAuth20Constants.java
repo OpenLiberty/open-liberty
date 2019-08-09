@@ -73,6 +73,16 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String TOKEN_TYPE = "token_type";
     public static final String STATE = "state";
 
+    public static final String CODE_CHALLENGE = "code_challenge";
+    public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
+    public static final String CODE_VERIFIER = "code_verifier";
+    public static final String CODE_CHALLENGE_METHOD_PLAIN = "plain";
+    public static final String CODE_CHALLENGE_METHOD_S256 = "S256";
+    public static final String CODE_CHALLENGE_ALG_METHOD_SHA256 = "SHA-256";
+    public static final String CODE_VERIFIER_ASCCI = "US-ASCII";
+    public static final int CODE_VERIFIER_MIN_LENGTH = 43;
+    public static final int CODE_VERIFIER_MAX_LENGTH = 128;
+
     public static final String ISSUER_IDENTIFIER = "issuerIdentifier";
     public static final String REFRESH_TOKEN_KEY = "refresh_key";
     public static final String OLD_REFRESH_TOKEN_KEY = "old_refresh_key";

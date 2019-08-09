@@ -229,6 +229,8 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public static final String KEY_CLIENT_APP_PASSWORD_ALLOWED = "appPasswordAllowed";
     public static final String KEY_CLIENT_APP_TOKEN_ALLOWED = "appTokenAllowed";
     public static final String KEY_CLIENT_SECRET_ENCODING = "clientSecretEncoding";
+    
+    public static final String KEY_CLIENT_PROOF_KEY_FOR_CODE_EXCHANGE = "proofKeyForCodeExchange";
 
     private volatile SecurityService securityService;
 
@@ -1232,6 +1234,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         newClient.setFunctionalUserGroupIds(OidcOAuth20Util.initJsonArray((String[]) props.get(KEY_CLIENT_FUNCTIONAL_USER_GROUPIDS)));
         newClient.setAppPasswordAllowed(((Boolean) props.get(KEY_CLIENT_APP_PASSWORD_ALLOWED)).booleanValue());
         newClient.setAppTokenAllowed(((Boolean) props.get(KEY_CLIENT_APP_TOKEN_ALLOWED)).booleanValue());
+        newClient.setProofKeyForCodeExchange(((Boolean) props.get(KEY_CLIENT_PROOF_KEY_FOR_CODE_EXCHANGE)).booleanValue());
         // newClient.setAppPasswordLifetime(((Long) props.get(KEY_CLIENT_APP_PASSWORD_LIFETIME)).longValue());
         // newClient.setAppTokenLifetime(((Long) props.get(KEY_CLIENT_APP_TOKEN_LIFETIME)).longValue());
         // newClient.setAppTokenOrPasswordLimit(((Long) props.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT)).longValue());

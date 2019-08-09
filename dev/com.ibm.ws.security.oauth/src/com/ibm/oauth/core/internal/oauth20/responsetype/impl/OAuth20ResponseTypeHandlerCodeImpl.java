@@ -84,6 +84,12 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
             String clientId = attributeList.getAttributeValueByNameAndType(
                     OAuth20Constants.CLIENT_ID,
                     OAuth20Constants.ATTRTYPE_PARAM_QUERY);
+            String code_challenge = attributeList.getAttributeValueByNameAndType(
+                    OAuth20Constants.CODE_CHALLENGE,
+                    OAuth20Constants.ATTRTYPE_PARAM_QUERY);
+            String code_challenge_method = attributeList.getAttributeValueByNameAndType(
+                    OAuth20Constants.CODE_CHALLENGE_METHOD,
+                    OAuth20Constants.ATTRTYPE_PARAM_QUERY);
             String username = attributeList.getAttributeValueByNameAndType(
                     OAuth20Constants.USERNAME,
                     OAuth20Constants.ATTRTYPE_REQUEST);
@@ -95,6 +101,11 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
 
             Map<String, String[]> tokenMap = tokenFactory.buildTokenMap(
                     clientId, username, redirect, null, scope, null, OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+            
+            if (code_challenge != null && code_challenge_method != null) {
+                addPKCEAttributes(code_challenge, code_challenge_method, tokenMap);
+            }
+            
             OAuth20TokenHelper.getExternalClaims(tokenMap, attributeList);
             OAuth20Token code = tokenFactory.createAuthorizationCode(tokenMap);
 
@@ -105,6 +116,23 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
             _log.exiting(CLASS, methodName);
         }
         return result;
+    }
+
+    /**
+     * @param code_challenge
+     * @param code_challenge_method
+     * @param tokenMap
+     */
+    private void addPKCEAttributes(String code_challenge, String code_challenge_method, Map<String, String[]> tokenMap) {
+        String methodName = "addPKCEAttributes";
+        _log.entering(CLASS, methodName, tokenMap);
+        String key = OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.CODE_CHALLENGE;
+        tokenMap.put(key, new String[] { code_challenge });
+        key = OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.CODE_CHALLENGE_METHOD;
+        tokenMap.put(key, new String[] { code_challenge_method });
+        
+        _log.exiting(CLASS, methodName, tokenMap);
+        
     }
 
     @Override

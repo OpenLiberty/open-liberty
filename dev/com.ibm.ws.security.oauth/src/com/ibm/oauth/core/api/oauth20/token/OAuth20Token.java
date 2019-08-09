@@ -158,6 +158,19 @@ public interface OAuth20Token {
     public String[] getUsedBy();
 
     /**
+     * In the case of an authorization grant code, return code_challenge if exists, or null
+     * @return
+     */
+    public String getCodeChallenge();
+
+    /**
+     * In the case of authorization grant code, return code_challenge_method if exists, or null.
+     *
+     * @return
+     */
+    public String getCodeChallengeMethod();
+
+    /**
      * In the case of an app-password or app-token, return the name of the application that this token is associated with.
      * Otherwise return null.
      * @return
