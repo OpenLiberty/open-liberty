@@ -137,7 +137,7 @@ var table = (function() {
         var selectionAriaLabel = utils.formatString(messages.SELECT_SPECIFIC, [authData.authType, authData.name]);
         var selectBox = "<td class='table_column_checkbox'>" +
                         "   <div class='tool_checkbox_wrapper'>" +
-                        "       <input id='select_" + authData.authID + "' class='tool_checkbox' type='checkbox' aria-checked='false' aria-label='" + selectionAriaLabel + "'>" +
+                        "       <input id='select_" + authData.authID + "' class='tool_checkbox' type='checkbox' role='checkbox' aria-checked='false' aria-label='" + selectionAriaLabel + "'>" +
                         "       <div class='tool_checkbox_label' title='" + selectionAriaLabel + "' aria-label='" + selectionAriaLabel + "'></div>" +
                         "   </div>" +
                         "</td>";
