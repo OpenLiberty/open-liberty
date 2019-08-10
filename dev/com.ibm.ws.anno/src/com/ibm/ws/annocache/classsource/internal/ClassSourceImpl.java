@@ -664,6 +664,11 @@ public abstract class ClassSourceImpl implements ClassSource {
                 return true;
             }
 
+            @Override
+            public boolean doProcess(String className) {
+                return true;
+            }
+
             // Unused
 
             public boolean supportsJandex() {
@@ -711,12 +716,6 @@ public abstract class ClassSourceImpl implements ClassSource {
             @Override
             public boolean process(String sourceName, Object jandexClassInfo, ScanPolicy scanPolicy)
                 throws com.ibm.wsspi.anno.classsource.ClassSource_Exception {
-                return false;
-            }
-
-            @Override
-            public boolean doProcess(String className) {
-                // TODO Auto-generated method stub
                 return false;
             }
         };

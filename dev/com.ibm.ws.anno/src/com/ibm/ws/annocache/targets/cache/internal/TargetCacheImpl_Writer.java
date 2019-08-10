@@ -906,7 +906,10 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
      * @throws IOException Thrown if the write fails.
      */
     public void write(Index jandexIndex) throws IOException {
-        Jandex_Utils.basicWriteIndex( getStream(), jandexIndex, "Jandex write to [ " + getPath() + " ]" );
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, "write", "Jandex write [ " + getPath() + " ] [ " + jandexIndex.getKnownClasses().size() + " ]");
+        }
+        Jandex_Utils.basicWriteIndex( getStream(), jandexIndex, "Jandex write [ " + getPath() + " ]" );
         // 'basicWriteIndex' throws IOException
     }
 

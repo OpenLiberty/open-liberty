@@ -732,7 +732,13 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         TargetsTableContainersImpl useContainerTable;
 
-        if ( !modData.shouldRead("Containers table") || !modData.hasContainersTable() ) {
+        if ( modData.getIsLightweight() ) {
+            isChanged = false;
+            isChangedReason = "Lightweight";
+
+            useContainerTable = createContainerTable(rootClassSource);
+
+        } else if ( !modData.shouldRead("Containers table") || !modData.hasContainersTable() ) {
             isChanged = true;
             isChangedReason = "Cache miss";
 
@@ -856,19 +862,20 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
                 newTargets);
 
-            TargetsTableImpl priorTargets = createIsolatedTargetsTable(classSourceName, currentStamp);
-
             String isValidReason;
             if ( !conData.hasCoreDataFile() ) {
                 isValidReason = "New data";
-            } else if ( !conData.read(priorTargets) ) {
-                isValidReason = "Read failure";
-            } else if ( !newTargets.getClassTable().sameAs( priorTargets.getClassTable(), HAVE_DIFFERENT_INTERN_MAPS ) ) {
-                isValidReason = "Change to classes";
-            } else if ( !newTargets.getAnnotationTable().sameAs( priorTargets.getAnnotationTable(), HAVE_DIFFERENT_INTERN_MAPS ) ) {
-                isValidReason = "Change to annotations";
             } else {
-                isValidReason = null;
+                TargetsTableImpl priorTargets = createIsolatedTargetsTable(classSourceName, currentStamp);
+                if ( !conData.readCoreData(priorTargets) ) {
+                    isValidReason = "Read failure";
+                } else if ( !newTargets.getClassTable().sameAs( priorTargets.getClassTable(), HAVE_DIFFERENT_INTERN_MAPS ) ) {
+                    isValidReason = "Change to classes";
+                } else if ( !newTargets.getAnnotationTable().sameAs( priorTargets.getAnnotationTable(), HAVE_DIFFERENT_INTERN_MAPS ) ) {
+                    isValidReason = "Change to annotations";
+                } else {
+                    isValidReason = null;
+                }
             }
 
             boolean isValid;
@@ -1009,9 +1016,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         if ( changedContainers > 0 ) {
             changed = true;
             if ( changedTable ) {
-                changedReason += "; changed tables [ " + Integer.valueOf(changedContainers) + " ]";
+                changedReason += "; changed tables [ " + changedContainers + " ]";
             } else {
-                changedReason += "changed tables [ " + Integer.valueOf(changedContainers) + " ]";
+                changedReason += "changed tables [ " + changedContainers + " ]";
             }
         }
 
@@ -1031,48 +1038,15 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         if ( useHashText != null ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                "[ {0} ] Changed [ {1} ] out of [ {2} ] internal containers",
+                "[ {0} ] Changed [ {1} ] out of [ {2} ] internal containers: [ {3} ]",
                 new Object[] {
                     useHashText,
                     Integer.valueOf(changedContainers),
-                    Integer.valueOf(internalContainers) });
+                    Integer.valueOf(internalContainers),
+                    changedAnyTargetsReason });
         }
 
-        for ( ClassSource childClassSource : rootClassSource.getClassSources() ) {
-            ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
-            if ( childScanPolicy == ScanPolicy.EXTERNAL ) {
-                continue;
-            }
-
-            boolean classSourceIsNamed = ( childClassSource.getName() != null );
-            String classSourceName = childClassSource.getCanonicalName();
-            String classSourceStamp = childClassSource.getStamp();
-
-            TargetsTableImpl newTargets = getTargetsTable(classSourceName);
-            if ( newTargets != null ) {
-                continue;
-            }
-
-            newTargets = createIsolatedTargetsTable(classSourceName, classSourceStamp);
-
-            scanInternal(childClassSource,
-                TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
-                TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                newTargets);
-
-            TargetCacheImpl_DataCon conData = modData.getSourceConForcing(classSourceIsNamed, classSourceName);
-
-            synchronized ( conData ) {
-                conData.writeStamp(modData, newTargets);
-                conData.writeData(modData, newTargets);
-                conData.setTargetsTable(newTargets);
-            }
-
-            putTargetsTable(
-                classSourceName,
-                internTargetsTable(newTargets),
-                "New data", true);
-        }
+        forceInternalContainers();
 
         if ( useHashText != null ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -1994,7 +1968,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             }
 
             cachedResultData = createResultTargetsTable(scanPolicy, resultCon);
-            if ( !resultCon.read(cachedResultData) ) {
+            if ( !resultCon.readCoreData(cachedResultData) ) {
                 return null;
             }
         }

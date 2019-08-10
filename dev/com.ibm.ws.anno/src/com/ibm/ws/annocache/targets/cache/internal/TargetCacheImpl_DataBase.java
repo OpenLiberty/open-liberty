@@ -68,6 +68,8 @@ public abstract class TargetCacheImpl_DataBase {
 
         this.readTime = 0L;
         this.writeTime = 0L;
+
+        // System.out.println("Data [ " + getClass().getSimpleName() + " ] [ " + name + " ]");
     }
 
     //
@@ -715,6 +717,9 @@ public abstract class TargetCacheImpl_DataBase {
     public long addReadTime(long start, String description) {
         long duration = System.nanoTime() - start;
         readTime += duration;
+
+        // System.out.println("Read [ " + description + " ] [ " + duration + " (ns) ]");
+
         return duration;
     }
 
@@ -728,6 +733,9 @@ public abstract class TargetCacheImpl_DataBase {
     public long addWriteTime(long start, String description) {
         long duration = System.nanoTime() - start;
         writeTime += duration;
+
+        // System.out.println("Write [ " + description + " ] [ " + duration + " (ns) ]");
+
         return duration;
     }
 

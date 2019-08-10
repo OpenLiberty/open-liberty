@@ -1453,6 +1453,19 @@ public class TargetsTableImpl implements TargetsTable {
     private Index jandexIndex;
 
     public void setJandexIndex(Index jandexIndex) {
+        String methodName = "setJandexIndex";
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            String sizeText;
+            if ( jandexIndex == null ) {
+                sizeText = "***NULL***";
+            } else {
+                sizeText =Integer.toString(jandexIndex.getKnownClasses().size());
+            }
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ " + getName() + " ]" + " Classes [ " + sizeText + " ]"); 
+        }
+
         this.jandexIndex = jandexIndex;
     }
 
@@ -1461,7 +1474,7 @@ public class TargetsTableImpl implements TargetsTable {
     }
 
     public Index consumeJandexIndex() {
-    	Index useJandexIndex = jandexIndex;
+        Index useJandexIndex = jandexIndex;
         jandexIndex = null;
         return useJandexIndex;
     }
