@@ -93,6 +93,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
 
         super( parentData.getFactory(), conName, e_conName, conFile );
 
+        // System.out.println("Data Parent [ " + getClass().getSimpleName() + " ] [ " + name + " ] [ " + parentData.getName() + " ]");
+
         // (new Throwable("DataCon [ " + conName + " : " + ((conFile == null) ? "*** NULL ***" : conFile.getAbsolutePath()) + " ]")).printStackTrace(System.out);
 
         String methodName = "<init>";
@@ -223,11 +225,11 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
      *
      * @return True or false telling if the read was successful.
      */
-    public boolean read(TargetsTableImpl targetData) {
+    public boolean readCoreData(TargetsTableImpl targetData) {
         if ( getUseJandexFormat() ) {
-            return ( readJandex(targetData) );
+            return ( basicReadJandex(targetData) );
         } else {
-            return ( readCoreData(targetData) );
+            return ( basicReadCoreData(targetData) );
         }
     }
 
@@ -301,7 +303,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Stamp");
+        long readDuration = addReadTime(readStart, "Stamp");
 
         return didRead;
     }
@@ -309,13 +311,6 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
     private void writeStamp(
         TargetCacheImpl_DataMod modData,
         final TargetsTableTimeStampImpl useStampTable) {
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] TimeStamp [ " + getStampLink() + " ]";
-        } else {
-            description = null;
-        }
 
         Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
         Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary;
@@ -339,7 +334,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         }
 
         modData.scheduleWrite(
-            description, getStampFile(), DO_TRUNCATE,
+            "Stamp", getStampFile(), DO_TRUNCATE,
             writeAction, writeActionBinary);
     }
 
@@ -369,7 +364,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         coreDataLink.setHasFile(hasCombinedFile);
     }
 
-    public boolean readCoreData(final TargetsTableImpl targetData) {
+    public boolean basicReadCoreData(final TargetsTableImpl targetData) {
         long readStart = System.nanoTime();
 
         File coreDataFile = getCoreDataFile();
@@ -394,9 +389,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Core Data");
-
-        // System.out.println("Read Core Data [ " + getName() + " ] [ " + readDuration + " ]");
+        long readDuration = addReadTime(readStart, "Core Data");
 
         return didRead;
     }
@@ -413,13 +406,6 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
      * @param targetData The data which is to be written.
      */
     private void writeCoreData(TargetCacheImpl_DataMod modData, final TargetsTableImpl targetData) {
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] [ " + getCoreDataLink() + " ]";
-        } else {
-            description = null;
-        }
-
         Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
         Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary;
 
@@ -445,11 +431,11 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         }
 
         modData.scheduleWrite(
-            description, getCoreDataFile(), DO_TRUNCATE,
+            "Core data", getCoreDataFile(), DO_TRUNCATE,
             writeAction, writeActionBinary);
     }
 
-    private boolean readJandex(TargetsTableImpl targetData) {
+    private boolean basicReadJandex(TargetsTableImpl targetData) {
         String methodName = "readJandex";
 
         long readStart = System.nanoTime();
@@ -476,7 +462,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Jandex");
+        long readDuration = addReadTime(readStart, "Jandex");
 
         // System.out.println("Sparse jandex cache read [ " + getName() + " ] [ " + readDuration + " ]");
 
@@ -487,13 +473,6 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
         TargetCacheImpl_DataMod modData,
         final Index jandexIndex) {
 
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Jandex File [ " + getCoreDataLink() + " ]";
-        } else {
-            description = null;
-        }
-
         Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction =
             new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
                 public void accept(TargetCacheImpl_Writer useWriter) throws IOException {
@@ -501,7 +480,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
                 }
             };
 
-        modData.scheduleWrite(description, getCoreDataFile(), DO_TRUNCATE, writeAction, null);
+        modData.scheduleWrite("Jandex", getCoreDataFile(), DO_TRUNCATE, writeAction, null);
     }
 
     // Cache of the combined targets data.

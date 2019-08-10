@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.logging.Level;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.annocache.targets.cache.TargetCache_Readable;
@@ -177,20 +175,13 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Containers");
+        long readDuration = addReadTime(readStart, "Containers");
 
         return didRead;
     }
 
     public void writeContainersTable(final TargetsTableContainersImpl containerTable) {
         // String methodName = "writeContainersTable";
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Containers table [ " + getContainersFile().getPath() + " ]";
-        } else {
-            description = null;
-        }
 
         Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
         Util_Consumer<TargetCacheImpl_WriterBinary, IOException> writeActionBinary;
@@ -214,7 +205,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
 
         scheduleWrite(
-            description, getContainersFile(), DO_TRUNCATE,
+            "Containers", getContainersFile(), DO_TRUNCATE,
             writeAction, writeActionBinary);
     }
 
@@ -411,7 +402,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Unresolved Refs");
+        long readDuration = addReadTime(readStart, "Unresolved Refs");
 
         return didRead;
     }
@@ -419,13 +410,6 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     public void writeUnresolvedRefs(Set<String> unresolvedClassNames) {
         if ( !shouldWrite("Unresolved class references") ) {
             return;
-        }
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Targets [ " + getUnresolvedRefsFile().getPath() + " ]";
-        } else {
-            description = null;
         }
 
         // The unresolved class names are written from TargetsScannerOverallImpl.validInternalUnresolved,
@@ -469,7 +453,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
 
         scheduleWrite(
-            description, getUnresolvedRefsFile(), DO_TRUNCATE,
+            "Unresolved classes", getUnresolvedRefsFile(), DO_TRUNCATE,
             writeAction, writeActionBinary);
     }
 
@@ -524,7 +508,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Resolved Refs");
+        long readDuration = addReadTime(readStart, "Resolved Refs");
 
         return didRead;
     }
@@ -532,13 +516,6 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     public void writeResolvedRefs(Set<String> resolvedClassNames) {
         if ( !shouldWrite("Resolved class references") ) {
             return;
-        }
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Targets [ " + getResolvedRefsFile().getPath() + " ]";
-        } else {
-            description = null;
         }
 
         // The resolved class names are written from TargetsScannerOverallImpl.validInternalUnresolved,
@@ -581,7 +558,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeActionBinary = null;
         }
 
-        scheduleWrite(description, getResolvedRefsFile(), DO_TRUNCATE, writeAction, writeActionBinary);
+        scheduleWrite("Resolved Classes", getResolvedRefsFile(), DO_TRUNCATE, writeAction, writeActionBinary);
     }
 
     //
@@ -616,7 +593,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
 
         @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Classes");
+        long readDuration = addReadTime(readStart, "Classes");
 
         return didRead;
     }
@@ -624,13 +601,6 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     public void writeClasses(final TargetsTableClassesMultiImpl classesTable) {
         if ( !shouldWrite("Classes table") ) {
             return;
-        }
-
-        String description;
-        if ( logger.isLoggable(Level.FINER) ) {
-            description = "Container [ " + getName() + " ] Targets [ " + getClassesFile().getPath() + " ]";
-        } else {
-            description = null;
         }
 
         Util_Consumer<TargetCacheImpl_Writer, IOException> writeAction;
@@ -665,7 +635,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
 
         scheduleWrite(
-            description, getClassesFile(), DO_TRUNCATE,
+            "Classes", getClassesFile(), DO_TRUNCATE,
             writeAction, writeActionBinary);
     }
 

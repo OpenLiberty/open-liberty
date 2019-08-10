@@ -516,13 +516,18 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         //   ON_DEMAND_LIB
         //   RUNTIME_EXTENSION
 
-        String appName = getAnnoAppName(); // throws CDIException
+    	String methodName = "getAnnotatedClassesPostBeta";
+
+    	String appName = getAnnoAppName(); // throws CDIException
+    	// System.out.println(methodName + " App: " + appName);
+    	// System.out.println(methodName + " Type: " + type);
 
         // Handle WEB-INF/classes by providing an entry prefix to the
         // annotations information.  Keep the archive container as the
         // target container.
 
         Container archiveContainer = getContainer();
+    	// System.out.println(methodName + " Container: " + archiveContainer);
 
         // When the archive is a root-of-roots, and the archive type
         // is a module type, change the archive path to the application name.
@@ -534,6 +539,8 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         // to the same location in the archive.)
 
         String archivePath = getPath(archiveContainer);
+    	// System.out.println(methodName + " Container Path: " + archivePath);
+
         if ( archivePath.isEmpty() ) { // Root-of-roots
             if ( (type == ArchiveType.WEB_MODULE) ||
                  (type == ArchiveType.WEB_MODULE) ||
