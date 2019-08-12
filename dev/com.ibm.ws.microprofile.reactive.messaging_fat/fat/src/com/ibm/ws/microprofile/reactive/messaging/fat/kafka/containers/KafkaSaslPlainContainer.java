@@ -21,6 +21,8 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
     private static final String ADMIN_SECRET = generateSecret(ADMIN_USER);
     private static final String TEST_USER = "test";
     private static final String TEST_SECRET = generateSecret(TEST_USER);
+    private static final String SPECIAL_USER = "specialchars";
+    private static final String SPECIAL_SECRET = generateSecret("{test}^&*+=-$(");
 
     private static final String SECRETS_PREFIX = "/etc/kafka/secrets/";
     private static final String KEYSTORE_FILENAME = "kafkakey.jks";
@@ -108,6 +110,14 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
         return TEST_SECRET;
     }
 
+    public String getSpecialCharsUser() {
+        return SPECIAL_USER;
+    }
+
+    public String getSpecialCharsSecret() {
+        return SPECIAL_SECRET;
+    }
+
     @SuppressWarnings("resource")
     @Override
     protected void doStart() {
@@ -173,6 +183,12 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
         builder.append(getTestUser());
         builder.append("=\"");
         builder.append(getTestSecret());
+        builder.append("\"\n");
+
+        builder.append("   user_");
+        builder.append(getSpecialCharsUser());
+        builder.append("=\"");
+        builder.append(getSpecialCharsSecret());
         builder.append("\";\n");
 
         builder.append("};\n\n");

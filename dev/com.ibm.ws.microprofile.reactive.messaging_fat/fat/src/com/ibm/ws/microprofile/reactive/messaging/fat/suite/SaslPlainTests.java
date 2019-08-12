@@ -17,6 +17,11 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.KafkaSaslPlainContainer;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.LibertyLoginModuleTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.invalid.LibertyLoginModuleInvalidTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.none.LibertyLoginModuleNoEncTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.special_chars.LibertyLoginModuleSpecialCharsTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.xor.LibertyLoginModuleXorTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslPlainTest;
 
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
@@ -25,7 +30,13 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
  * Suite for tests which run against a TLS enabled kafka broker
  */
 @RunWith(Suite.class)
-@SuiteClasses({ KafkaSaslPlainTest.class,
+@SuiteClasses({
+                KafkaSaslPlainTest.class,
+                LibertyLoginModuleTest.class,
+                LibertyLoginModuleXorTest.class,
+                LibertyLoginModuleNoEncTest.class,
+                LibertyLoginModuleInvalidTest.class,
+                LibertyLoginModuleSpecialCharsTest.class,
 })
 public class SaslPlainTests {
 
