@@ -11,29 +11,13 @@
 <server description="JPA DMI Injection Tests Server">
     <include location="../fatTestPorts.xml"/>
     <include location="${shared.config.dir}/${env.repeat_phase}"/>
+    <include location="database.xml"/>
     
-    <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true">
-    	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
-    </dataSource>
-    
-    <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" fat.modify="true" transactional="false">
-    	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
-    </dataSource>
-    
-    <library id="DerbyLib" fat.modify="true">
-    	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
-    </library>
-    
-    
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 <!--  
     <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
--->
-    <logging  traceSpecification="applications=all"
               traceFileName="trace.log"
               maxFileSize="2000"
               maxFiles="10"
               traceFormat="BASIC" />
+-->
 </server>
