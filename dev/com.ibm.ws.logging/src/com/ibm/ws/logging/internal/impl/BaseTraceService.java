@@ -483,8 +483,8 @@ public class BaseTraceService implements TrService {
         {
             String[] entry = pair.split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
-            entry[1] = entry[1].trim();
             if (entry.length == 2) {//if the mapped value is intended for all event types
+                entry[1] = entry[1].trim();
                 //add properties to all the hashmaps and trim whitespaces
                 if (LogTraceList.contains(entry[0])) {
                     messageMap.put(entry[0], entry[1]);
