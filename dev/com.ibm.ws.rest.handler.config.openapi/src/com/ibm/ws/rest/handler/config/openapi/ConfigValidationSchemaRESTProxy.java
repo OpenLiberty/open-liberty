@@ -22,11 +22,14 @@ import javax.servlet.http.HttpSession;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.rest.handler.helper.ServletRESTRequestImpl;
 import com.ibm.ws.rest.handler.helper.ServletRESTResponseImpl;
 import com.ibm.wsspi.rest.handler.RESTHandlerContainer;
 
 public class ConfigValidationSchemaRESTProxy extends HttpServlet {
+    private static final TraceComponent tc = Tr.register(ConfigValidationSchemaRESTProxy.class);
     private static final long serialVersionUID = 1L;
 
     private transient RESTHandlerContainer REST_HANDLER_CONTAINER = null;
@@ -60,8 +63,7 @@ public class ConfigValidationSchemaRESTProxy extends HttpServlet {
 
         if (!foundHandler) {
             // No handler found, so we send back a 404 "not found" response.
-            // TODO: NLS: Copy HANDLER_NOT_FOUND_ERROR from com.ibm.ws.rest.handler project.
-            String errorMsg = "There are no registered handlers that match the requested URL " + request.getRequestURI();
+            String errorMsg = Tr.formatMessage(tc, request.getLocale(), "CWWKO1570_HANDLER_NOT_FOUND", request.getRequestURI());
             response.sendError(HttpServletResponse.SC_NOT_FOUND, errorMsg);
         }
     }
@@ -84,8 +86,7 @@ public class ConfigValidationSchemaRESTProxy extends HttpServlet {
 
             if (ref == null) {
                 // Couldn't find service, so throw the error.
-                // TODO: NLS: Copy OSGI_SERVICE_ERROR from com.ibm.ws.rest.handler project.
-                throw new ServletException("OSGi service RESTHandlerContainer is not available.");
+                throw new ServletException(Tr.formatMessage(tc, "CWWKO1571_OSGI_SERVICE_NOT_AVAILABLE", "RESTHandlerContainer"));
             } else {
                 REST_HANDLER_CONTAINER = ctxt.getService(ref);
             }
