@@ -11,6 +11,7 @@
 package com.ibm.ws.security.oauth20.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -84,6 +86,7 @@ public class RegistrationEndPointServicesTest {
     private final static String componentId = "TestComponent";
     private final static String redirectUri1 = "https://localhost:8999/resource/redirect1";
     private final static String redirectUri2 = "https://localhost:8999/resource/redirect2";
+    private final Enumeration<String> locales = (new Vector()).elements();
 
     private final String pathInfoBase = "/OIDC/registration/";
     private final String pathInfoClient = pathInfoBase + clientId;
@@ -115,6 +118,7 @@ public class RegistrationEndPointServicesTest {
     public void tearDown() {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.resetStreams();
+        mock.assertIsSatisfied();
     }
 
     @AfterClass
@@ -135,6 +139,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue("TRACE"));
                 }
@@ -167,6 +173,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_GET));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -204,6 +212,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_GET));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -238,7 +248,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -283,6 +294,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getRequestURL();
@@ -353,7 +366,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getRequestURL();
@@ -419,6 +433,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_POST));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -456,6 +472,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_POST));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -490,6 +508,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_POST));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -526,7 +546,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -575,7 +596,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -605,24 +627,12 @@ public class RegistrationEndPointServicesTest {
                     allowing(request).getReader();
                     will(returnValue(br));
 
-                    one(response).setStatus(with(HttpServletResponse.SC_CREATED));
-                    one(response).setHeader(CACHE_CONTROL, cacheCtrHdr);
-                    one(response).setHeader(CT, CT_APPLICATION_JSON);
-                    one(response).flushBuffer();
-
-                    // Exact local ETag computation too fragile (esp across JVM order variance)
-                    // and JMockery too limited and won't allow exact / pattern matching combined
-                    // FAT test will catch true internal eTag evaluation (so this test is redundant)
-                    // one(response).addHeader(HDR_ETAG, computeExpectedETag(client));
-                    one(response).addHeader(with(any(String.class)), with(any(String.class)));
-
-                    one(response).getOutputStream().print(with(any(String.class)));
-
                 }
             });
 
             RegistrationEndpointServices registrationEndpointServices = new RegistrationEndpointServices();
             registrationEndpointServices.handleEndpointRequest(provider, request, response);
+            fail("The method did not throw an exception but it should have");
 
         } catch (OidcServerException oidcExc) {
             assertEquals("CWWKS1428E: The request body is malformed.", oidcExc.getErrorDescription());
@@ -651,7 +661,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -681,24 +692,12 @@ public class RegistrationEndPointServicesTest {
                     allowing(request).getReader();
                     will(returnValue(br));
 
-                    one(response).setStatus(with(HttpServletResponse.SC_CREATED));
-                    one(response).setHeader(CACHE_CONTROL, cacheCtrHdr);
-                    one(response).setHeader(CT, CT_APPLICATION_JSON);
-                    one(response).flushBuffer();
-
-                    // Exact local ETag computation too fragile (esp across JVM order variance)
-                    // and JMockery too limited and won't allow exact / pattern matching combined
-                    // FAT test will catch true internal eTag evaluation (so this test is redundant)
-                    // one(response).addHeader(HDR_ETAG, computeExpectedETag(client));
-                    one(response).addHeader(with(any(String.class)), with(any(String.class)));
-
-                    one(response).getOutputStream().print(with(any(String.class)));
-
                 }
             });
 
             RegistrationEndpointServices registrationEndpointServices = new RegistrationEndpointServices();
             registrationEndpointServices.handleEndpointRequest(provider, request, response);
+            fail("The method did not throw an exception but it should have");
 
         } catch (OidcServerException oidcExc) {
             assertEquals("CWWKS1429E: Client id " + clientId + " already exists.", oidcExc.getErrorDescription());
@@ -727,7 +726,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -795,6 +795,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_PUT));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -832,6 +834,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_PUT));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -866,6 +870,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getMethod();
                     will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_PUT));
                     allowing(request).getHeaders(HDR_ACCEPT);
@@ -902,7 +908,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -943,7 +950,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -992,7 +1000,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1022,24 +1031,12 @@ public class RegistrationEndPointServicesTest {
                     allowing(request).getReader();
                     will(returnValue(br));
 
-                    one(response).setStatus(with(HttpServletResponse.SC_CREATED));
-                    one(response).setHeader(CACHE_CONTROL, cacheCtrHdr);
-                    one(response).setHeader(CT, CT_APPLICATION_JSON);
-                    one(response).flushBuffer();
-
-                    // Exact local ETag computation too fragile (esp across JVM order variance)
-                    // and JMockery too limited and won't allow exact / pattern matching combined
-                    // FAT test will catch true internal eTag evaluation (so this test is redundant)
-                    // one(response).addHeader(HDR_ETAG, computeExpectedETag(client));
-                    one(response).addHeader(with(any(String.class)), with(any(String.class)));
-
-                    one(response).getOutputStream().print(with(any(String.class)));
-
                 }
             });
 
             RegistrationEndpointServices registrationEndpointServices = new RegistrationEndpointServices();
             registrationEndpointServices.handleEndpointRequest(provider, request, response);
+            fail("The method did not throw an exception but it should have");
 
         } catch (OidcServerException oidcExc) {
             assertEquals("CWWKS1428E: The request body is malformed.", oidcExc.getErrorDescription());
@@ -1068,7 +1065,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1099,7 +1097,6 @@ public class RegistrationEndPointServicesTest {
                     will(returnValue(br));
 
                     one(response).setStatus(with(HttpServletResponse.SC_OK));
-                    one(response).setHeader(CACHE_CONTROL, cacheCtrHdr);
                     one(response).setHeader(CT, CT_APPLICATION_JSON_UTF8);
                     one(response).flushBuffer();
 
@@ -1128,7 +1125,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
@@ -1156,7 +1154,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1188,7 +1187,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
-
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoClient));
                     allowing(request).getMethod();
@@ -1239,6 +1239,8 @@ public class RegistrationEndPointServicesTest {
         try {
             mock.checking(new Expectations() {
                 {
+                    one(request).getLocales();
+                    will(returnValue(locales));
                     allowing(request).getPathInfo();
                     will(returnValue(pathInfoBase));
                     allowing(request).getMethod();
