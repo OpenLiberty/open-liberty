@@ -23,5 +23,7 @@ Import-Package: \
  *
  
 Export-Package: \
-  org.apache.cxf.*;version=2.6.2, \
+  org.apache.cxf.frontend.*;version=2.6.2, \
+  org.apache.cxf.simple.*;version=2.6.2, \
+  !org.apache.cxf.internal, \
   META-INF.cxf;version=2.6.2

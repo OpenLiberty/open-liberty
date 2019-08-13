@@ -10,16 +10,16 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-frontend-simple;2.6.2}}!/META-INF/MANIFEST.MF,bnd.overrides
 bVersion=1.0
+cxfVersion=2.6.2
 
 Include-Resource:\
- @${repo;org.apache.cxf.cxf-rt-frontend-simple;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.handlers, \
- @${repo;org.apache.cxf.cxf-rt-frontend-simple;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.schemas, \
- @${repo;org.apache.cxf.cxf-rt-frontend-simple;2.6.2.ibm-s20170216-1739;EXACT}!/schemas/**, \
- @${repo;org.apache.cxf.cxf-rt-frontend-simple;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/DEPENDENCIES, \
- @${repo;org.apache.cxf.cxf-rt-frontend-simple;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/LICENSE, \
- @${repo;org.apache.cxf.cxf-rt-frontend-simple;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/NOTICE, \
- @${repo;org.apache.cxf.cxf-rt-frontend-simple;2.6.2.ibm-s20170216-1739;EXACT}!/org/apache/cxf/**
- com/ibm/ws=${bin}/com/ibm/ws,\
+ @${repo;org.apache.cxf.cxf-rt-frontend-simple;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
+ @${repo;org.apache.cxf.cxf-rt-frontend-simple;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
+ @${repo;org.apache.cxf.cxf-rt-frontend-simple;${cxfVersion};EXACT}!/schemas/**, \
+ @${repo;org.apache.cxf.cxf-rt-frontend-simple;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+ @${repo;org.apache.cxf.cxf-rt-frontend-simple;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+ @${repo;org.apache.cxf.cxf-rt-frontend-simple;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+ @${repo;org.apache.cxf.cxf-rt-frontend-simple;${cxfVersion};EXACT}!/org/apache/cxf/**, \
  org/apache/cxf=${bin}/org/apache/cxf
  
  -buildpath: org.apache.cxf:cxf-rt-frontend-simple;version=${cxfVersion},\
