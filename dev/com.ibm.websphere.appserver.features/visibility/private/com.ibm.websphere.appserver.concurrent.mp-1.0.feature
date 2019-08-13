@@ -8,6 +8,7 @@ singleton=true
   com.ibm.ws.concurrent.mp.1.0
 =======
   com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.0-RC3",\
+<<<<<<< HEAD
   com.ibm.ws.concurrent.mp.1.0,\
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.websphere.javaee.concurrent.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0", \
@@ -15,4 +16,8 @@ singleton=true
   com.ibm.ws.concurrent  
 >>>>>>> Issue #7394: Use MP Context Propagation for JAX-RS Reactive Client
 kind=ga
+=======
+  com.ibm.ws.concurrent.mp.1.0
+kind=beta
+>>>>>>> Issue #7394: Use MP Context Propagation for JAX-RS Reactive Client remove change for mp.feature
 edition=core
