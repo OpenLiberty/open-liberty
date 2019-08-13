@@ -2,9 +2,10 @@
 bVersion=1.0
 cxfVersion=2.6.2
 
-Bundle-Name: Apache CXF Runtime Data Binding JAX-B
-Bundle-Description: Apache CXF Runtime Data Binding JAX-B, version 2.6.2
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6
+Bundle-Name: Apache CXF Runtime Simple Frontend
+Bundle-Description: Apache CXF Runtime Simple Frontend, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6
+Bundle-Activator: com.ibm.ws.jaxws22.cxf.rt.frontend.simple.NoOpActivator
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
@@ -22,10 +23,5 @@ Import-Package: \
  *
  
 Export-Package: \
-  org.apache.cxf.jaxb.*;version=2.6.2, \
-  org.apache.cxf.endpoint.dynamic.*;version=2.6.2, \
+  org.apache.cxf.*;version=2.6.2, \
   META-INF.cxf;version=2.6.2
-
-Private-Package: \
-  org.apache.cxf.internal
-  
