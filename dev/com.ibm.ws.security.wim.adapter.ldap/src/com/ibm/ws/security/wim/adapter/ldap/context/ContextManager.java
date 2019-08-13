@@ -742,8 +742,9 @@ public class ContextManager {
                                     }
 
                                     // Log the URL being used.
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, WIMMessageKey.CURRENT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(getActiveURL()));
+                                    if (tc.isDebugEnabled()) {
+                                        Tr.debug(tc, WIMMessageKey.CURRENT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(primaryURL));
+                                    }
 
                                     primaryOK = true;
                                     TimedDirContext tempCtx = ctx;
