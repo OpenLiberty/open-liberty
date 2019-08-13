@@ -250,6 +250,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase
     public void writeData(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         if ( !shouldWrite("Full data") ) {
             return;
+        } else if ( targetData.getUsedJandex() ) {
+            return;
         }
 
         if ( getUseJandexFormat() ) {
