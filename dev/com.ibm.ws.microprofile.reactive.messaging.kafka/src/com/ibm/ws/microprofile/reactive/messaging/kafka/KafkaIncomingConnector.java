@@ -40,17 +40,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
 
-@Connector("io.openliberty.kafka")
+@Connector(KafkaConnectorConstants.CONNECTOR_NAME)
 @ApplicationScoped
 public class KafkaIncomingConnector implements IncomingConnectorFactory {
 
     private static final TraceComponent tc = Tr.register(KafkaIncomingConnector.class);
-
-    //properties extracted from config
-    private static final String TOPICS = "topics";
-    private static final String UNACKED_LIMIT = "unacked.limit";
-    //Kafka property
-    private static final String ENABLE_AUTO_COMMIT = "enable.auto.commit";
 
     ManagedScheduledExecutorService executor;
 
@@ -89,16 +83,17 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
     public PublisherBuilder<Message<Object>> getPublisherBuilder(Config config) {
 
         // Extract our config
-        List<String> topics = Arrays.asList(config.getValue(TOPICS, String.class).split(" *, *", -1));
-        int unackedLimit = config.getOptionalValue(UNACKED_LIMIT, Integer.class).orElse(20);
+        List<String> topics = Arrays.asList(config.getValue(KafkaConnectorConstants.TOPICS, String.class).split(" *, *", -1));
+        int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(20);
 
         // Pass the rest of the config directly through to the kafkaConsumer
-        Map<String, Object> consumerConfig = new HashMap<>(StreamSupport.stream(config.getPropertyNames().spliterator(),
-                                                                                false).collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
+        Map<String, Object> consumerConfig = new HashMap<>(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
+                                                                        .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
+                                                                        .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
 
         // Set the config values which we hard-code
-        consumerConfig.put(ENABLE_AUTO_COMMIT, "false"); // Connector handles commit in response to ack()
-                                                         // automatically
+        consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false"); // Connector handles commit in response to ack()
+        // automatically
 
         // Create the kafkaConsumer
         KafkaConsumer<String, Object> kafkaConsumer = this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
