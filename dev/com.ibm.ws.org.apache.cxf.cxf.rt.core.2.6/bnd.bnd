@@ -22,7 +22,6 @@ Include-Resource:\
  @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/LICENSE, \
  @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/NOTICE, \
  @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/org/apache/cxf/**, \
-    com/ibm/ws=${bin}/com/ibm/ws,\
    org/apache/cxf=${bin}/org/apache/cxf
 
 
