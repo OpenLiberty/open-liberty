@@ -14,11 +14,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 PlaintextTests.class,
                 TlsTests.class,
                 SaslPlainTests.class,
+                KafkaTestClientProviderTest.class,
 })
 public class FATSuite {
 
