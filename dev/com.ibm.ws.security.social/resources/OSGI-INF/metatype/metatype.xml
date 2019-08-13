@@ -242,7 +242,8 @@
             required="false" type="String" default="https://www.linkedin.com/oauth/v2/accessToken"/>  
         <AD id="userApi" name="%userApi" description="%userApi.desc"
             required="false" type="String" default="https://api.linkedin.com/v2/emailAddress?q=members&amp;projection=(elements*(handle~))"/>                    
-        <AD id="scope" name="%scope" description="%scope.desc" default="r_emailaddress r_liteprofile" />
+        <AD id="scope" name="%scope" description="%scope.desc" 
+            required="false" type="String" default="r_emailaddress r_liteprofile" />
         <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
             required="false" type="String" default="emailAddress"/>
         <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
