@@ -44,15 +44,27 @@ import com.ibm.wsspi.annocache.util.Util_Consumer;
  *
  * Neither module data nor container data is initially loaded from the root cache
  * folder.
+ * 
+ * Container data holds in memory the last read data, and retains the time stamp of that
+ * read.  That enables component data between applications.
  */
 public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
     private static final String CLASS_NAME = TargetCacheImpl_DataApp.class.getSimpleName();
 
     //
 
+    /**
+     * Create cache data for an application.
+     *
+     * @param apps The parent applications data.
+     * @param appName The name of the application.
+     * @param e_appName The encoded name of the application.
+     * @param appDir The directory of the application cache data.
+     */
     public TargetCacheImpl_DataApp(
         TargetCacheImpl_DataApps apps,
-        String appName, String e_appName, File appDir) {
+        String appName, String e_appName,
+        File appDir) {
 
         super( apps.getFactory(), appName, e_appName, appDir );
 
@@ -65,7 +77,7 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
 
         this.consLock = new ConsLock();
         this.cons = new WeakHashMap<String, TargetCacheImpl_DataCon>();
-        
+
         // Writes are pooled per application.
         //
         // Writes are not possible if the application is unnamed.
@@ -100,22 +112,48 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         }
     }
 
-    //
+    // Structure
 
+    /** Parent root cache data. */
     private TargetCacheImpl_DataApps apps;
 
+    /**
+     * Answer the parent applications data, which is the root
+     * of cache data.
+     *
+     * @return The parent applications data.
+     */
     public TargetCacheImpl_DataApps getApps() {
         return apps;
     }
 
     //
 
+    /**
+     * Factory method: Create module cache data.
+     * 
+     * Do not store the new data.
+     *
+     * @param modName The module name.
+     * @param isLightweight Case parameter: Tells whether the
+     *     module has a single container, not counting the external
+     *     class source.
+     *
+     * @return The new module cache data.
+     */
     @Trivial
     protected TargetCacheImpl_DataMod createModData(String modName, boolean isLightweight) {
         String e_modName = encode(modName);
         return createModData( modName, e_modName, e_getModDir(e_modName), isLightweight );
     }
 
+    /**
+     * Factory helper method: Determine the file of module cache directory.
+     *
+     * @param e_modName The encoded module name.
+     *
+     * @return The directory of the module cache data.
+     */
     @Trivial
     public File e_getModDir(String e_modName) {
         return getDataFile( e_addModPrefix(e_modName) );
@@ -123,6 +161,19 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
 
     //
 
+    /**
+     * Factory method: Create cache data for a module.  Do not store the
+     * module data.
+     *
+     * @param modName The name of the module.
+     * @param e_modName The encoded name of the module.
+     * @param modDir The directory of the cache data.
+     * @param isLightweight Case parameter: Tells whether the
+     *     module has a single container, not counting the external
+     *     class source.
+     *
+     * @return The new module cache data.
+     */
     @Trivial
     protected TargetCacheImpl_DataMod createModData(
         String modName, String e_modName, File modDir,
@@ -131,7 +182,7 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         return getFactory().createModData(this, modName, e_modName, modDir, isLightweight);
     }
 
-    //
+    // Module cache data storage ...
 
     private class ModsLock {
         // EMPTY
@@ -139,11 +190,32 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
     private final ModsLock modsLock;
     private final WeakHashMap<String, TargetCacheImpl_DataMod> mods;
 
+    /**
+     * Answer the table of module cache data of this application.
+     *
+     * @return The table of module cache data of this application. 
+     */
     @Trivial
     protected Map<String, TargetCacheImpl_DataMod> getMods() {
         return mods;
     }
 
+    /**
+     * Obtain cache data for a module of this application..
+     * 
+     * Create new data if the module is unnamed, or if the module
+     * is lightweight.
+     * 
+     * Otherwise, either retrieve data from the module store,
+     * or create and store new data, and return the new data.
+     *
+     * @param modName The name of the module.
+     * @param isLightweight Case parameter: Tells whether the
+     *     module has a single container, not counting the external
+     *     class source.
+     *
+     * @return Cache data for the module.
+     */
     public TargetCacheImpl_DataMod getModForcing(String modName, boolean isLightweight) {
         // Unnamed modules always create new data.
         // Lightweight modules always create new data.
@@ -162,7 +234,7 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         }
     }
 
-    //
+    // Containers storage ...
 
     private class ConsLock {
         // EMPTY
@@ -170,6 +242,18 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
     private final ConsLock consLock;
     private final WeakHashMap<String, TargetCacheImpl_DataCon> cons;
 
+    /**
+     * Obtain cache data for a container of this application..
+     * 
+     * Either retrieve data from the module store, or create and
+     * store new data, and return the new data.
+     *
+     * @param isNamed Control parameter: Tell if the container is considered
+     *     "unnamed", which means it will not be read or written.
+     * @param conPath The relative path to the container.
+     *
+     * @return Cache data for the container.
+     */
     public TargetCacheImpl_DataCon getSourceConForcing(boolean isNamed, String conPath) {
         synchronized( consLock ) {
             TargetCacheImpl_DataCon con = cons.get(conPath);
@@ -181,6 +265,15 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         }
     }
 
+    /**
+     * Factory method: Create container cache data.  Do not store the new data.
+     * 
+     * @param isNamed Control parameter: Tell if the container is considered
+     *     "unnamed", which means it will not be read or written.
+     * @param conPath The relative path to the container.
+     *
+     * @return Cache data for the container.
+     */
     @Trivial
     public TargetCacheImpl_DataCon createSourceConData(boolean isNamed, String conName) {
         String e_conName = ( isNamed ? encode(conName) : null );
@@ -192,6 +285,15 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
 
     //
 
+    /**
+     * Tell if data should be written for this application.
+     *
+     * Answer false if the application is unnamed, or if writes
+     * are disabled via cache options.
+     * 
+     * @return True or false telling if data should be written for
+     *     this application.
+     */
     @Override
     @Trivial
     public boolean shouldWrite(String outputDescription) {
@@ -210,6 +312,15 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         }
     }
 
+    /**
+     * Tell if data should be read for this application.
+     *
+     * Answer false if the application is unnamed, or if reads
+     * are disabled via cache options.
+     * 
+     * @return True or false telling if data should be read for
+     *     this application.
+     */
     @Override
     @Trivial
     public boolean shouldRead(String inputDescription) {
@@ -244,6 +355,25 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
     //
     // Reads require additional coordination (joins for the results) and are
     // handled by the calling code.
+
+    // TODO:
+    // The write pool is experimental.  It is current unused, pending solutions
+    // to these problems:
+    //
+    // First, multi-threaded writes have not shown to be definitely advantageous.
+    // Initial testing did not show a clear performance gain from using multiple
+    // write threads.
+    //
+    // Second, multi-threaded writes require more a more integrated use of
+    // standard threading services.
+    //
+    // Fourth, policies for managing threads when multiple applications are in use
+    // must be determined.
+    //
+    // Fifth, asynchronous writes require the invention of two new capabilities:
+    // Reads and writes of data must be more carefully synchronized than is provided
+    // by the current implementation.  Writes must be tied to the server shutdown, to
+    // ensure that writes which are pending are allowed to complete.
 
     protected final UtilImpl_PoolExecutor writePool;
 
