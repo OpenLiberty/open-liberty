@@ -30,8 +30,16 @@ Import-Package: \
  
 Export-Package: \
  META-INF.cxf;version=2.6.2, \
- org.apache.cxf.*;version=2.6.2
-
-Private-Package: \
-  org.apache.cxf.internal
-  
+ org.apache.cxf.bus.*;version=2.6.2, \
+ org.apache.cxf.catalog.*;version=2.6.2, \
+ org.apache.cxf.configuration.blueprint.*;version=2.6.2, \
+ org.apache.cxf.databinding.source.*;version=2.6.2, \
+ org.apache.cxf.databinding.stax.*;version=2.6.2, \
+ org.apache.cxf.interceptor.security.*;version=2.6.2, \
+ org.apache.cxf.service.factory.*;version=2.6.2, \
+ org.apache.cxf.test.*;version=2.6.2, \
+ org.apache.cxf.transports.http.internal.*;version=2.6.2, \
+ org.apache.cxf.transport.common.*;version=2.6.2, \
+ org.apache.cxf.transports.http.internal.*;version=2.6.2, \
+ org.apache.cxf.wsdl11.*;version=2.6.2
+ 

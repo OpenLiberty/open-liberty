@@ -13,15 +13,15 @@
 cxfVersion=2.6.2
  
 Include-Resource:\
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/cxf/**, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/services/**, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/schemas/**, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/spring.handlers, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/spring.schemas, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/DEPENDENCIES, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/LICENSE, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/NOTICE, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20180529-1900;EXACT}!/org/apache/cxf/**, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/META-INF/cxf/**, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/META-INF/services/**, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/schemas/**, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/META-INF/spring.handlers, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/META-INF/spring.schemas, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/META-INF/DEPENDENCIES, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/META-INF/LICENSE, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/META-INF/NOTICE, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2;EXACT}!/org/apache/cxf/**, \
    org/apache/cxf=${bin}/org/apache/cxf
 
 
