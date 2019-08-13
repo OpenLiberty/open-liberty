@@ -65,20 +65,6 @@ public class CommonTestCode {
         dumpList(newEntList, em, pw);
     }
     
-    public static void query(HttpServletRequest request, HttpServletResponse response, EntityManager em, UserTransaction tx) throws Exception {
-        final PrintWriter pw = response.getWriter();
-        em.clear();
-
-        pw.println("<br>");
-        pw.println("Executing JPQL: &quot;SELECT a FROM EntityA a&quot;");
-        pw.println("<br>");
-        
-        TypedQuery<EntityA> q = em.createQuery("SELECT a FROM EntityA a", EntityA.class);
-        List<EntityA> retList = q.getResultList();
-
-        dumpList(retList, em, pw);
-    }
-    
     /*
      * Utility used by the populate and query actions to print a list of EntityA and Entity B
      * entities.  CSS for fancy table display, which isn't required to demonstrate an issue.

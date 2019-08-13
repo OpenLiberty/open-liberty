@@ -45,25 +45,30 @@ public class SimpleTestServlet extends HttpServlet {
     private UserTransaction tx;
 
     @Inject
-    EmptyBean b;
+    EmptyBean bean;
+
+    private static boolean fieldBridgeCalled = false;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         final PrintWriter pw = response.getWriter();
-        pw.println("<h1>JPA Simple Test Case</h1> " + b.getString());
+        bean.getString();
+        pw.println("<h1>JPA Simple Test Case</h1>");
         pw.println("<hr>");
-        
         try {
-            // The code that performs the create and query operations have been moved to CommonTestCode in order
-            // to share it with ActionedTestServlet.  You can continue with that pattern, or place all of
-            // your action's logic here.
+            // We trigger this method to indirectly call the field bridge.
             CommonTestCode.populate(request, response, em, tx);
-            CommonTestCode.query(request, response, em, tx);
         } catch (Exception e) {
             e.printStackTrace();
             e.printStackTrace(pw);
             pw.println("<br>");
         }        
+
+        pw.println("field bridge called: " + fieldBridgeCalled);
+    }
+
+    public static void registerFieldBridgeCalled() {
+        fieldBridgeCalled = true;
     }
 }

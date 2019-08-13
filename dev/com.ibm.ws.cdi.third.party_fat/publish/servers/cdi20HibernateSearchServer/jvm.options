@@ -1,1 +1,1 @@
--Dorg.jboss.weld.nonPortableMode=true
+-Dcom.ibm.websphere.jpa.hibernate-cdi-compatibility=true
