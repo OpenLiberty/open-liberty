@@ -20,6 +20,7 @@ import java.sql.Connection;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.json.bind.spi.JsonbProvider;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
@@ -92,6 +93,30 @@ public class WebProfile8TestServlet extends FATServlet {
         assertEquals("Rangers", rangers.name);
         assertEquals(7, rangers.size);
         assertEquals(0.6f, rangers.winLossRatio, 0.01f);
+    }
+
+    @Test
+    public void testJPAandJSONB() throws Exception {
+        Jsonb jsonb = JsonbBuilder.create();
+
+        tx.begin();
+        UserEntity entity = new UserEntity("Foo Bar");
+        em.persist(entity);
+        tx.commit();
+
+        em.clear();
+        UserEntity findEntity = em.find(UserEntity.class, entity.id);
+        assertNotNull(findEntity);
+        assertNotSame(entity, findEntity);
+        assertEquals(entity.id, findEntity.id);
+        assertEquals("Foo Bar", findEntity.strData);
+
+        String entityJSON = jsonb.toJson(findEntity);
+        System.out.println("JPA POJO --> JSON: " + entityJSON);
+        assertTrue("JPA entity converted to JSON did not contain expected data: " + entityJSON, entityJSON.contains("\"id\":"));// ID value is generated
+        assertTrue("JPA entity converted to JSON did not contain expected data: " + entityJSON, entityJSON.contains("\"strData\":\"Foo Bar\""));
+        assertTrue("JPA entity converted to JSON did not contain expected data: " + entityJSON, entityJSON.contains("\"version\":")); // version number is generated
+        assertTrue("JPA entity converted to JSON was not the expected length: " + entityJSON, 40 <= entityJSON.length() && entityJSON.length() <= 46);
     }
 
     @Test
