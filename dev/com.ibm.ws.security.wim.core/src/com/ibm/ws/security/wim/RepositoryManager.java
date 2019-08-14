@@ -340,13 +340,13 @@ public class RepositoryManager {
      * @param uniqueName
      * @return
      */
-    public List<String> getFederationUREntityType(String data) {
+    public List<String> getFederationUREntityType(String uniqueName) {
         List<String> result = null;
 
         for (RepositoryWrapper rw : repositories.values()) {
             if (rw instanceof UserRegistryWrapper) {
                 URBridge bridge = (URBridge) ((UserRegistryWrapper) rw).getRepository();
-                result = bridge.getEntityType(data);
+                result = bridge.getEntityType(uniqueName);
                 if (result != null) {
                     break;
                 }
