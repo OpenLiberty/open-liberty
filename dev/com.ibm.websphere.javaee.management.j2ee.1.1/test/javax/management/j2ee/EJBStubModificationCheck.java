@@ -27,12 +27,12 @@ public class EJBStubModificationCheck {
 
     @Test
     public void testManagementUnmodified() throws IOException {
-        verifyChecksum("javax/management/j2ee/Management.class", 279782729L);
+        verifyChecksum("javax/management/j2ee/Management.class", 2654422574L);
     }
 
     @Test
     public void testManagementHomeUnmodified() throws IOException {
-        verifyChecksum("javax/management/j2ee/ManagementHome.class", 2871325588L);
+        verifyChecksum("javax/management/j2ee/ManagementHome.class", 298015494L);
     }
 
     private void verifyChecksum(String clazz, long expectedChecksum) throws IOException {
