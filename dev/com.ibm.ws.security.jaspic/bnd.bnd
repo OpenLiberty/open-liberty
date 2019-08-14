@@ -15,7 +15,6 @@ Bundle-Name: WAS Security JASPI
 Bundle-Description: WAS Security JASPI 1.1, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.jaspic.1.1
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 WS-TraceGroup: \
   JASPI

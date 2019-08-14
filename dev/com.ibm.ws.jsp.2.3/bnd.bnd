@@ -76,7 +76,6 @@ Import-Package: \
    sun.io;resolution:=optional, \
    *
    
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -includeresource: \
    org/apache/jasper/runtime/packageinfo=src/org/apache/jasper/runtime/packageinfo

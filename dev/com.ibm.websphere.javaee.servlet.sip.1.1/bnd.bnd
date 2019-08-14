@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion: 1.1
 
-javac.source: 1.7
-javac.target: 1.7
 
 Bundle-Name: WebSphere SIP Container SPEC
 Bundle-SymbolicName: com.ibm.websphere.javaee.servlet.sip.1.1
