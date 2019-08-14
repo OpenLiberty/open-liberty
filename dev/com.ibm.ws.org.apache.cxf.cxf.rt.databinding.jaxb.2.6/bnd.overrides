@@ -27,6 +27,3 @@ Export-Package: \
   !org.apache.cxf.internal,\
   META-INF.cxf;version=2.6.2
 
-Private-Package: \
-  org.apache.cxf.internal
-  
