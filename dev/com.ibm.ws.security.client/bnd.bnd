@@ -17,7 +17,6 @@ Bundle-Description: Client Container Security Implementation, version=${bVersion
 Bundle-ActivationPolicy: lazy
 
 # client container security is part of EE7 and therefore requires java 1.7
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
 
 WS-TraceGroup: \
   security

@@ -137,7 +137,6 @@ Include-Resource: \
     
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
