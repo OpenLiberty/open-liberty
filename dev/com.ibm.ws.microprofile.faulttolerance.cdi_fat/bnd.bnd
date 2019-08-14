@@ -17,8 +17,6 @@ src: \
 	test-applications/TxFaultTolerance.war/src,\
 	test-applications/faulttolerance.jar/src
 
-javac.source: 1.8
-javac.target: 1.8
 
 tested.features: mpFaultTolerance-1.0,\
                  mpFaultTolerance-1.1,\
