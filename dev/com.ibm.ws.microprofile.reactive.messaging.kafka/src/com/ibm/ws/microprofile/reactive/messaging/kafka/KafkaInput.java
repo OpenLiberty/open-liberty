@@ -89,7 +89,9 @@ public class KafkaInput<K, V> {
     }
 
     private PublisherBuilder<Message<V>> createPublisher() {
-        PublisherBuilder<Message<V>> kafkaStream = ReactiveStreams.generate(() -> 0).flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync())).flatMap(Function.identity()).map(this::wrapInMessage).takeWhile((record) -> this.running);
+        PublisherBuilder<Message<V>> kafkaStream = ReactiveStreams.generate(() -> 0)
+                                                                  .flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync()))
+                                                                  .flatMap(Function.identity()).map(this::wrapInMessage).takeWhile((record) -> this.running);
         return kafkaStream;
     }
 
@@ -189,16 +191,7 @@ public class KafkaInput<K, V> {
                 this.lock.lock();
                 try {
                     while (this.running) {
-                        try {
-                            runPendingActions();
-                            ConsumerRecords<K, V> asyncRecords = pollKafka(FOREVER);
-                            result.complete(fromIterable(asyncRecords));
-                            break;
-                        } catch (WakeupException e) {
-                            // We were asked to stop polling, probably means there are pending actions to
-                            // process
-                        } catch (Throwable t) {
-                            result.completeExceptionally(t);
+                        if (executePollActions(result)) {
                             break;
                         }
                     }
@@ -211,6 +204,28 @@ public class KafkaInput<K, V> {
         }
 
         return result;
+    }
+
+    /**
+     * Run any pending actions and then poll Kafka for messages.
+     * Return false if a WakeupException was caught, otherwise return true.
+     */
+    @FFDCIgnore(WakeupException.class)
+    private boolean executePollActions(CompletableFuture<PublisherBuilder<ConsumerRecord<K, V>>> result) {
+        boolean complete = false;
+        try {
+            runPendingActions();
+            ConsumerRecords<K, V> asyncRecords = pollKafka(FOREVER);
+            result.complete(fromIterable(asyncRecords));
+            complete = true;
+        } catch (WakeupException e) {
+            // We were asked to stop polling, probably means there are pending actions to
+            // process
+        } catch (Throwable t) {
+            result.completeExceptionally(t);
+            complete = true;
+        }
+        return complete;
     }
 
     private ConsumerRecords<K, V> pollKafka(Duration duration) {
