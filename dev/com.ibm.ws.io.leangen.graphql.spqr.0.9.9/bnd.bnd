@@ -9,10 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 instrument.disabled: true
 

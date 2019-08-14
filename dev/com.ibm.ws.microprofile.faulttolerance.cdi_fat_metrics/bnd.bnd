@@ -16,8 +16,6 @@ src: \
 	test-applications/CDIFaultToleranceMetrics.war/src,\
 	test-applications/faulttolerancemetrics.jar/src
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 

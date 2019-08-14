@@ -14,8 +14,6 @@
 bSymbolicName=com.ibm.ws.microprofile.reactive.streams.operators
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.streams.operators
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.streams.operators
@@ -44,7 +42,6 @@ Export-Package: \
 Include-Resource: \
   META-INF=resources/META-INF
     
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 testsrc: test/src

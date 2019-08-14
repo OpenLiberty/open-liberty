@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: Health Check 2.0
 Bundle-SymbolicName: com.ibm.ws.microprofile.health.2.0
@@ -54,7 +52,6 @@ Include-Resource: \
     META-INF/services=resources/META-INF/services, \
     WEB-INF=resources/WEB-INF
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src,resources
 testsrc: test/src
