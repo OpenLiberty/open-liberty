@@ -24,8 +24,6 @@ tested.features:\
 	servlet-4.0,\
 	cdi-2.0
 
-javac.source: 1.7
-javac.target: 1.7
 
 -buildpath: \
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\

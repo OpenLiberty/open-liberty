@@ -27,7 +27,6 @@ Export-Package: \
 
 publish.wlp.jar.suffix: dev/api/third-party
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 instrument.ffdc: false
   instrument.classesExcludes: \

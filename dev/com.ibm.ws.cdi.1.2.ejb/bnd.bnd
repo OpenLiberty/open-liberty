@@ -15,7 +15,6 @@ Bundle-Name: com.ibm.ws.cdi.1.2.ejb
 Bundle-SymbolicName: com.ibm.ws.cdi.1.2.ejb
 Bundle-Description: CDI 1.2 EJB, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -dsannotations: com.ibm.ws.cdi.ejb.interceptor.liberty.EjbEndpointServiceImpl,\
   com.ibm.ws.cdi.ejb.security.EjbSecurityContextStore,\

@@ -27,7 +27,6 @@ Import-Package: \
     javax.el; version=3.0.0, \
     *
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 instrument.ffdc: false
 
