@@ -209,7 +209,7 @@ public abstract class AbstractOidcRegistrationBaseTest extends CommonTestClass {
         assertEquals(e.getHttpStatus(), HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
-    protected void setHash(boolean hash) {
+    protected static void setHash(boolean hash) {
         isHash = hash;
     }
 }
