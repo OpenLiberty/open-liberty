@@ -12,6 +12,7 @@ package failover1serv.web;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -124,6 +125,53 @@ public class Failover1ServerTestServlet extends FATServlet {
         int result2 = status.getResult();
         if (result1 == result2)
             throw new Exception("Did not see new result for repeating task within allotted interval. Result: " + result1 + ", Status: " + status);
+    }
+
+    /**
+     * Verifies that multiple repeating tasks continue to run periodically.
+     */
+    public void testTasksAreRunning(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jndiName = request.getParameter("jndiName");
+        String[] taskIds = request.getParameterValues("taskId");
+
+        PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
+
+        long start1 = System.nanoTime();
+        @SuppressWarnings("unchecked")
+        TaskStatus<Integer>[] statusWhenFirstComplete =
+                Arrays.stream(taskIds, 0, taskIds.length)
+                      .map(str -> Long.parseLong(str))
+                      .map(taskId -> {
+                          try {
+                              TaskStatus<Integer> status = null;
+                              for (; status == null || System.nanoTime() - start1 < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL_MS))
+                                  if ((status = executor.getStatus(taskId)).hasResult())
+                                      return status;
+                              throw new RuntimeException("Task " + status + " did complete any executions within the allotted interval.");
+                          } catch (InterruptedException x) {
+                              throw new RuntimeException(x);
+                          }
+                      })
+                      .toArray(TaskStatus[]::new);
+
+        Integer[] results1 = new Integer[taskIds.length];
+        Integer[] results2 = new Integer[taskIds.length];
+        for (int i = 0; i < statusWhenFirstComplete.length; i++) {
+            results1[i] = statusWhenFirstComplete[i].getResult();
+            results2[i] = executor.<Integer>getStatus(statusWhenFirstComplete[i].getTaskId()).getResult();
+        }
+
+        boolean anySame = true;
+        for (long start2 = System.nanoTime(); System.nanoTime() - start2 < TIMEOUT_NS && anySame; Thread.sleep(POLL_INTERVAL_MS)) {
+            anySame = false;
+            for (int i = 0; i < results1.length && !anySame; i++)
+                anySame |= results1[i].equals(results2[i])
+                        && results1[i].equals(results2[i] = executor.<Integer>getStatus(statusWhenFirstComplete[i].getTaskId()).getResult());
+        }
+
+        if (anySame)
+            throw new Exception("Did not see new result for one or more of the repeating tasks within the allotted interval. " +
+                                "Initial results: " + Arrays.asList(results1) + "; Later results: " + Arrays.asList(results2));
     }
 
     /**
