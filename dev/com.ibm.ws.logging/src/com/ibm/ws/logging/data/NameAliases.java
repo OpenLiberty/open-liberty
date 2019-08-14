@@ -19,6 +19,7 @@ public class NameAliases {
 
     public NameAliases(String[] originalNames) {
         this.originalNames = originalNames;
+        this.aliases = originalNames.clone();
     }
 
     public void newAliases(Map<String, String> newAliases) {
