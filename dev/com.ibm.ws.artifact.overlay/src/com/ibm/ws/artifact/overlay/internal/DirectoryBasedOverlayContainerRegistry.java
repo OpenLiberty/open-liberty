@@ -10,24 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.artifact.overlay.internal;
 
-
 import java.util.Set;
 import java.util.HashSet;
 import java.util.WeakHashMap;
-
 
 /**
  * Implementation of a WeakHashMap used as a Set to store all registered DirectoryBasedOverlayContainersImpl
  * created by OverlayContainerFactoryImpl
  */
 public class DirectoryBasedOverlayContainerRegistry{
-    
+
     /**
      * WeakHashMap will map the registered containers to a boolean object when they are created.
      * If a container is removed the the value of the key will be set to null to the GC will
      * sweep the container.
      */
-    private final WeakHashMap<DirectoryBasedOverlayContainerImpl, Boolean> containers = new WeakHashMap<DirectoryBasedOverlayContainerImpl, Boolean>();
+    private final WeakHashMap<DirectoryBasedOverlayContainerImpl, Boolean> containers =
+        new WeakHashMap<DirectoryBasedOverlayContainerImpl, Boolean>();
 
     /**
      * Threadsafe wrapper to add elements to the registry
@@ -67,7 +66,6 @@ public class DirectoryBasedOverlayContainerRegistry{
             return containers.isEmpty();
         }
     }
-    
 
     /**
      * Threadsafe way to get a new Set with all the current registered DirectoryBasedOverlayContainerImpls
@@ -79,12 +77,4 @@ public class DirectoryBasedOverlayContainerRegistry{
             return new HashSet<DirectoryBasedOverlayContainerImpl>(containers.keySet());
         }
     }
-    
 }
-
-
-
-
-
-
-
