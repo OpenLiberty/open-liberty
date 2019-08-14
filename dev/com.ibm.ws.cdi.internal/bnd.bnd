@@ -17,7 +17,7 @@ Bundle-Description:CDI Common Internal, version ${bVersion}
 
 
 javac.source: 1.7
-javac.target: 1.7
+javac.target: 1.8
 
 Export-Package: \
         com.ibm.ws.cdi.internal.interfaces,\

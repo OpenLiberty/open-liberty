@@ -17,7 +17,7 @@ Bundle-Description: CDI Transaction, version ${bVersion}
 
 
 javac.source: 1.7
-javac.target: 1.7
+javac.target: 1.8
 
 -dsannotations: com.ibm.ws.cdi.transaction.liberty.LibertyTransactionService
 

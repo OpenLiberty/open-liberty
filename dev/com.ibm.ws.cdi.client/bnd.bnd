@@ -17,7 +17,7 @@ Bundle-Description: CDI app client integration, version=${bVersion}
 
 
 javac.source: 1.7
-javac.target: 1.7
+javac.target: 1.8
 
 Private-Package: \
   com.ibm.ws.cdi.client.liberty

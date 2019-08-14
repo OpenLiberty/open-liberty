@@ -17,7 +17,7 @@ src: \
 	test-applications/simpleJar.jar/src
 
 javac.source: 1.7
-javac.target: 1.7
+javac.target: 1.8
 
 fat.project: true
 

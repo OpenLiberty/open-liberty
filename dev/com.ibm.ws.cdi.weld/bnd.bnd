@@ -17,7 +17,7 @@ Bundle-Description:CDI Common Weld Integration, version ${bVersion}
 
 
 javac.source: 1.7
-javac.target: 1.7
+javac.target: 1.8
 
 -dsannotations-inherit: true
 -dsannotations: \

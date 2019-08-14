@@ -11,7 +11,7 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-xml;2.6.2}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 javac.source: 1.7
-javac.target: 1.7
+javac.target: 1.8
 
 cxfVersion=2.6.2
 

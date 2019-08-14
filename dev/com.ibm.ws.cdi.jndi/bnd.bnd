@@ -17,7 +17,7 @@ Bundle-Description: CDI JNDI, version ${bVersion}
 
 
 javac.source: 1.7
-javac.target: 1.7
+javac.target: 1.8
 
 -dsannotations: com.ibm.ws.cdi.jndi.liberty.BeanManagerJavaColonNamingHelper,\
                 com.ibm.ws.cdi.jndi.liberty.BeanManagerObjectFactoryInfo
