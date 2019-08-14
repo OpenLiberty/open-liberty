@@ -3,7 +3,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.core.3.2
 Bundle-Activator:  com.ibm.ws.cxf.core.NoOpActivator
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # This needs to stay at 3.2.4 even though the bundle version is 3.3.0.
 # The reason is that the feature checker in WS-CD-Open has an ignore rule

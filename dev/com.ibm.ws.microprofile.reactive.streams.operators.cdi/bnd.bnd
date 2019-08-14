@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.streams.operators.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.streams.operators.cdi
@@ -41,7 +39,6 @@ WS-TraceGroup: REACTIVESTREAMS
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.reactive.streams.cdi.ReactiveStreamsEngineInjectionExtension
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 testsrc: test/src

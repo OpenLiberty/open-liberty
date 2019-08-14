@@ -15,8 +15,6 @@
 
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 bSymbolicName=com.ibm.ws.security.acme
 
@@ -26,7 +24,6 @@ Bundle-Description: This feature adds support for ACME and LetsEncrypt (and othe
 
 WS-TraceGroup: ACME
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"   
 
 Web-ContextPath: /.well-known/acme-challenge
 

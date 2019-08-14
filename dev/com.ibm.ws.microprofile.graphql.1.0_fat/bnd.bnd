@@ -28,8 +28,6 @@ src: \
 
 fat.project: true
 
-javac.source: 1.8
-javac.target: 1.8
 
 tested.features: mpMetrics-2.0
 
