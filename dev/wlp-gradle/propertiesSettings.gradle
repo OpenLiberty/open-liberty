@@ -45,7 +45,7 @@ def setProperties = { props ->
     boolean isAutomatedBuild    = props.getProperty("buildResultUUID") != null && props.getProperty('buildLabel') != null
     boolean isPersonal          = props.getProperty('is.personal') == null              ? false : 'true'.equalsIgnoreCase(props.getProperty('is.personal'))
     boolean isContinuousBuild   = props.getProperty('is.continuous.build') == null      ? false : 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
-    boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
+    boolean isRelease           = props.getProperty('is.release') == null               ? true : true
     boolean isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
     boolean isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
 
