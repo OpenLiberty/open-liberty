@@ -19,7 +19,7 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 /**
- * Check's the version of the Java running before starting the java agent, if Java 5 (or below) is being used
+ * Check's the version of the Java running before starting the java agent, if Java 7 (or below) is being used
  * a translated error message is thrown.
  */
 public class EnvCheck {
