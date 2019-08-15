@@ -43,9 +43,12 @@ import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.adaptor.FixAdaptor;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.InstallAsset;
+import com.ibm.ws.install.internal.cmdline.ExeFindAction;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
 import com.ibm.ws.install.repository.internal.RepositoryUtils;
+import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
@@ -463,7 +466,16 @@ class ResolveDirector extends AbstractDirector {
 
             throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false, isOpenLiberty);
         } catch (RepositoryException e) {
-            throw ExceptionUtils.create(e, featureNamesProcessed, false, proxy, defaultRepo(), isOpenLiberty);
+            ExeFindAction findAction = new ExeFindAction();
+            List<String> invalidFeatures = new ArrayList<>();
+            for (String featureName : featureNamesProcessed) {
+                Arguments args = new ArgumentsImpl(new String[] { featureName });
+                if (findAction.handleTask(System.out, System.err, args).getValue() != 0) {
+                    invalidFeatures.add(featureName);
+                }
+            }
+
+            throw ExceptionUtils.create(e, invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
         }
         List<List<RepositoryResource>> installResourcesCollection = new ArrayList<List<RepositoryResource>>(installResources.size());
         List<RepositoryResource> installResourcesSingleList = new ArrayList<RepositoryResource>();
