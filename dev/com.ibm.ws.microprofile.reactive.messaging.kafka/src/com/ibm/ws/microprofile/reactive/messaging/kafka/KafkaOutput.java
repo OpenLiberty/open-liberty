@@ -33,7 +33,7 @@ public class KafkaOutput<K, V> {
     }
 
     public SubscriberBuilder<Message<V>, Void> getSubscriber() {
-        return ReactiveStreams.<Message<V>> builder().takeWhile(m -> running).onError(this::reportSendException).forEach(this::sendMessage);
+        return ReactiveStreams.<Message<V>> builder().takeWhile(m -> running).onError(KafkaOutput::reportErrorSignal).forEach(this::sendMessage);
     }
 
     public void shutdown(Duration timeout) {
@@ -56,8 +56,12 @@ public class KafkaOutput<K, V> {
         }
     }
 
-    private void reportSendException(Throwable t) {
+    private static void reportSendException(Throwable t) {
         Tr.error(tc, "kafka.send.error.CWMRX1003E", t);
+    }
+
+    private static void reportErrorSignal(Throwable t) {
+        Tr.error(tc, "kafka.output.error.signal.CWMRX1004E", t);
     }
 
 }

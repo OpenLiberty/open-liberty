@@ -42,8 +42,13 @@ kafka.poll.error.CWMRX1002E.useraction=Review the server message.log file and FF
 
 # An error occurred when sending a message to the Kafka broker. The error is: {0}.
 kafka.send.error.CWMRX1003E=CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: {0}.
-kafka.send.error.CWMRX1003E.explanation=An error has occurred in the Kafka Outgoing Connector that prevents normal operation of Reactive Messaging
+kafka.send.error.CWMRX1003E.explanation=An error has occurred in the Kafka Outgoing Connector that prevents normal operation of Reactive Messaging.
 kafka.send.error.CWMRX1003E.useraction=Review the server message.log file and FFDC logs to identify the problem.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=The Kafka Outgoing Connector received an error signal that prevents normal operation of Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Review the server message.log file and FFDC logs to identify the problem.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
