@@ -99,7 +99,9 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
 
         GraphQLSchemaGenerator schemaGen = new GraphQLSchemaGenerator()
                         .withResolverBuilders(new AnnotatedResolverBuilder())
-                        .withValueMapperFactory(new JacksonValueMapperFactory());
+                        .withValueMapperFactory(new JacksonValueMapperFactory())
+                        .withResolverInterceptors(new PartialResultsResolverInterceptor())
+                        .withOutputConverters(new DataFetcherResultOutputConverter());
 
         for (Bean<?> bean : beans) {
             schemaGen.withOperationsFromSingleton(
