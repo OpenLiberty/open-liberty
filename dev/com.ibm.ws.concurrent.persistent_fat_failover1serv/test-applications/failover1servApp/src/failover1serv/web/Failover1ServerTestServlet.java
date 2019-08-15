@@ -11,6 +11,7 @@
 package failover1serv.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -100,6 +101,7 @@ public class Failover1ServerTestServlet extends FATServlet {
         for (long start = System.nanoTime(); (status = executor.getStatus(taskId)).getNextExecutionTime() != null && System.nanoTime() - start < TIMEOUT_NS; )
             Thread.sleep(POLL_INTERVAL_MS);
 
+        assertNull("Task did not complete within allotted interval " + status, status.getNextExecutionTime());
         assertEquals(Integer.valueOf(expected), status.get());
     }
 
@@ -147,7 +149,7 @@ public class Failover1ServerTestServlet extends FATServlet {
                               for (; status == null || System.nanoTime() - start1 < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL_MS))
                                   if ((status = executor.getStatus(taskId)).hasResult())
                                       return status;
-                              throw new RuntimeException("Task " + status + " did complete any executions within the allotted interval.");
+                              throw new RuntimeException("Task " + status + " did not complete any executions within the allotted interval.");
                           } catch (InterruptedException x) {
                               throw new RuntimeException(x);
                           }
