@@ -11,6 +11,8 @@
 #*******************************************************************************
 
 -include= ~../cnf/resources/bnd/bundle.props
+javac.source: 1.7
+javac.target: 1.8
 bVersion=1.0
 
 Bundle-Name: Security Audit

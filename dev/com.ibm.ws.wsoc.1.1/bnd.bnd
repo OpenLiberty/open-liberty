@@ -10,6 +10,8 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props, \
           ~../cnf/resources/bnd/app-resources.bnd
+javac.source: 1.7
+javac.target: 1.8
 -nouses=true
 bVersion=1.0
 bSymbolicName=com.ibm.ws.wsoc11

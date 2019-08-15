@@ -12,6 +12,8 @@
 bVersion=1.1
 
 -include= jar:${fileuri;${repo;org.osgi:org.osgi.service.component;1.4.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -includeresource: \
    @${repo;org.osgi:org.osgi.service.component;1.4.0}!/!(OSGI-OPT/src|META-INF/maven)/*

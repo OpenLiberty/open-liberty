@@ -10,6 +10,8 @@
 #*******************************************************************************
 
 -include= jar:${fileuri;${repo;com.ibm.ws.org.apache.yoko:yoko-osgi;1.5.0.31ef0b15cf}}!/META-INF/MANIFEST.MF,bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -includeresource: @${repo;com.ibm.ws.org.apache.yoko:yoko-osgi;1.5.0.31ef0b15cf}!/!META-INF/maven/*
 

@@ -9,6 +9,8 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.felix:org.apache.felix.gogo.command;0.16.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -includeresource: \
    @${repo;org.apache.felix:org.apache.felix.gogo.command;0.16.0}!/!META-INF/maven/*

@@ -9,6 +9,8 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+javac.source: 1.7
+javac.target: 1.8
 bVersion=1.0
 
 Fragment-Host: com.ibm.ws.prereq.wsdl4j.1.6.2;bundle-version=1.0

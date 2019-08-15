@@ -9,6 +9,8 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.ws.xmlschema:xmlschema-core;2.0.3}}!/META-INF/MANIFEST.MF,bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -includeresource: \
    @${repo;org.apache.ws.xmlschema:xmlschema-core;2.0.3}!/!META-INF/maven/*

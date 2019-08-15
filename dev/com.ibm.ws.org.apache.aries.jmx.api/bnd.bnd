@@ -10,6 +10,8 @@
 #*******************************************************************************
 # this needs to be replaced with a repo reference to a build artifact
 -include= jar:${fileuri;${repo;org.apache.aries.jmx:org.apache.aries.jmx.api;1.1.5}}!/META-INF/MANIFEST.MF,bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -includeresource: \
     @${repo;org.apache.aries.jmx:org.apache.aries.jmx.api;1.1.5}!/!META-INF/maven/*

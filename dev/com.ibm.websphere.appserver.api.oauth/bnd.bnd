@@ -9,6 +9,8 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+javac.source: 1.7
+javac.target: 1.8
 bVersion: 1.2
 
 Bundle-Name: WebSphere OAuth 2.0 web single sign-on API

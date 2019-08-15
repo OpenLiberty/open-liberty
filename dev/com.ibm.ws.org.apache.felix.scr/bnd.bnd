@@ -11,6 +11,8 @@
 -include= \
  jar:${fileuri;${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.17.ibm20190717-1;EXACT}}!/META-INF/MANIFEST.MF,\
  bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -includeresource: \
    OSGI-INF=resources/OSGI-INF, \

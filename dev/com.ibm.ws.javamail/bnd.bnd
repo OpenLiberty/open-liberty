@@ -12,6 +12,8 @@
 ## so that this bnd file can use the app-resources header
 -include= ~../cnf/resources/bnd/bundle.props, \
           ~../cnf/resources/bnd/app-resources.bnd
+javac.source: 1.7
+javac.target: 1.8
 
 bVersion=1.5
 bSymbolicName=com.ibm.ws.javamail

@@ -14,6 +14,8 @@
  jar:${fileuri;${repo;org.apache.httpcomponents:httpcore;4.4.9;EXACT}}!/META-INF/MANIFEST.MF,\
  jar:${fileuri;${repo;org.apache.httpcomponents:httpcore-nio;4.4.9;EXACT}}!/META-INF/MANIFEST.MF,\
  bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -includeresource: \
    @${repo;org.apache.httpcomponents:httpasyncclient;4.1.3;EXACT}!/org/apache/http/*, \

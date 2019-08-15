@@ -15,6 +15,9 @@
           jar:${fileuri;${repo;org.objectweb.asm.util;7.1}}!/META-INF/MANIFEST.MF,\
           bnd.overrides
 
+javac.source: 1.7
+javac.target: 1.8
+
 instrument.disabled: true
 
 asmVersion=7.1

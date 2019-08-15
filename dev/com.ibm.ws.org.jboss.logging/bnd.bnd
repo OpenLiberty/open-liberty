@@ -9,5 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.3.2.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
+javac.source: 1.7
+javac.target: 1.8
 
 -buildpath: org.jboss.logging:jboss-logging;version=3.3.2.Final
