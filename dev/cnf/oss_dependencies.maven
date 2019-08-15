@@ -309,7 +309,7 @@ org.eclipse:yasson:1.0.4
 org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10
 org.glassfish.hk2.external:javax.inject:2.3.0-b10
 org.glassfish.hk2:hk2-api:2.3.0-b10
-org.glassfish.hk2:hk2-api:2.5.0-b42 
+org.glassfish.hk2:hk2-api:2.5.0-b42
 org.glassfish.hk2:hk2-locator:2.3.0-b10
 org.glassfish.hk2:hk2-locator:2.5.0-b42
 org.glassfish.hk2:hk2-utils:2.3.0-b10
@@ -375,6 +375,7 @@ org.objenesis:objenesis:1.0
 org.opensaml:opensaml:2.6.1
 org.opensaml:xmltooling:1.4.4
 org.osgi:org.osgi.annotation.versioning:1.1.0
+org.osgi:org.osgi.compendium:4.2.0
 org.osgi:org.osgi.core:4.2.0
 org.osgi:org.osgi.core:6.0.0
 org.osgi:org.osgi.namespace.service:1.0.0
