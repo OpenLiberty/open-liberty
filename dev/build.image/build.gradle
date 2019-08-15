@@ -683,7 +683,7 @@ if (isBuildOsNativePackages){
         dependsOn updateRulesTemplate
 
         workingDir 'packaging'
-        environment "GPG_PASS", rootProject.userProps.getProperty(gpgPassphrase)
+        environment "GPG_PASS", rootProject.userProps.getProperty('gpgPassphrase')
 
         mkdir("packaging/tempPackagingDir/tempTar")
         
