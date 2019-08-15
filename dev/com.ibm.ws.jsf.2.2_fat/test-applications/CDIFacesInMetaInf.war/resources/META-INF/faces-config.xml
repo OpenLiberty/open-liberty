@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<faces-config
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+    version="2.2">
+    
+    <application>
+       <el-resolver>
+            com.ibm.ws.jsf22.fat.cdicommon.managed.CustomELResolver
+        </el-resolver>
+        <navigation-handler>
+            com.ibm.ws.jsf22.fat.cdicommon.managed.CustomNavigationHandler
+        </navigation-handler>
+        
+        <system-event-listener>
+           <system-event-listener-class>com.ibm.ws.jsf22.fat.cdicommon.managed.CustomSystemEventListener</system-event-listener-class>
+           <system-event-class> javax.faces.event.PostConstructApplicationEvent </system-event-class>
+        </system-event-listener>  
+        
+        
+		 <resource-handler>
+		   com.ibm.ws.jsf22.fat.cdicommon.managed.CustomResourceHandler
+		 </resource-handler> 
+		
+		  <state-manager>
+           com.ibm.ws.jsf22.fat.cdicommon.managed.CustomStateManager
+		 </state-manager>  
+    </application>
+    
+       <factory>
+    
+  
+	   <tag-handler-delegate-factory>
+	      com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomTagHandlerDelegateFactory
+	   </tag-handler-delegate-factory>
+	   
+	   <application-factory>  
+          com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomApplicationFactory
+       </application-factory>  
+      
+       <exception-handler-factory>
+          com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomExceptionHandlerFactory
+       </exception-handler-factory>
+      
+       <external-context-factory>
+        com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomExternalContextFactory
+       </external-context-factory>
+       
+       <faces-context-factory>
+         com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomFacesContextFactory
+       </faces-context-factory>
+      
+       <lifecycle-factory>
+         com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomLifecycleFactory
+       </lifecycle-factory>
+       
+       <partial-view-context-factory>
+         com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomPartialViewContextFactory
+       </partial-view-context-factory>
+      
+       <render-kit-factory>
+         com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomRenderKitFactory
+       </render-kit-factory>
+       
+       <view-declaration-language-factory>
+        com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomViewDeclarationLanguageFactory     
+       </view-declaration-language-factory>
+      
+      
+       <visit-context-factory>
+        com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomVisitContextFactory
+       </visit-context-factory>      
+   
+       
+       <!--      
+           Class not found on this one for some reason
+           <facelet-cache-factory>
+              com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomFaceletCacheFactory;
+            </facelet-cache-factory>    -->
+      
+        <!-- Fixed in 2.3 - https://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-1277 
+            <client-window-factory>
+                  com.ibm.ws.jsf22.fat.cdicommon.managed.factories.CustomClientWindowFactory
+             </client-window-factory>  -->
+    
+	</factory>
+	
+	<lifecycle>
+       <phase-listener>com.ibm.ws.jsf22.fat.cdicommon.managed.CustomPhaseListener</phase-listener>
+    </lifecycle> 
+	
+
+</faces-config>

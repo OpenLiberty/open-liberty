@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" 
+	version="3.1">
+	<display-name>PI89363</display-name>
+	<servlet>
+		<description></description>
+		<display-name>FacesServlet</display-name>
+		<servlet-name>FacesServlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+		<servlet-name>FacesServlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+  	</servlet-mapping>
+	
+	<!-- The default value of this property is false, which means we don't want to strictly follow the
+	JSF 2.x spec which checks the Origin header app path. -->
+	<!-- <context-param>
+		<param-name>org.apache.myfaces.STRICT_JSF_2_ORIGIN_HEADER_APP_PATH</param-name>
+		<param-value>false</param-value>
+	</context-param> -->
+</web-app>
