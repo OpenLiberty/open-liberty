@@ -25,6 +25,7 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.product.utility.extension.IFixUtils;
@@ -59,6 +60,7 @@ public class RepositoryResolver {
     Collection<SampleResource> repoSamples;
     RepositoryConnectionList repoConnections;
     Collection<ProductDefinition> installDefinition;
+    Map<String, Collection<Chain>> featureConflicts;
 
     // ---
     // Fields computed during resolution
@@ -350,6 +352,7 @@ public class RepositoryResolver {
         missingTopLevelRequirements = new ArrayList<>();
         missingRequirements = new ArrayList<>();
         resolverRepository = null;
+        featureConflicts = new HashMap<>();
     }
 
     /**
@@ -428,6 +431,9 @@ public class RepositoryResolver {
         boolean allowMultipleVersions = mode == ResolutionMode.IGNORE_CONFLICTS ? true : false;
         FeatureResolver resolver = new FeatureResolverImpl();
         Result result = resolver.resolveFeatures(resolverRepository, featureNamesToResolve, Collections.<String> emptySet(), allowMultipleVersions);
+
+        featureConflicts.putAll(result.getConflicts());
+
         for (String name : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
             resolvedFeatures.put(feature.getSymbolicName(), feature);
@@ -777,7 +783,7 @@ public class RepositoryResolver {
      * If any errors occurred during resolution, throw a {@link RepositoryResolutionException}
      */
     private void reportErrors() throws RepositoryResolutionException {
-        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty()) {
+        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()) {
             // Everything went fine!
             return;
         }
@@ -794,7 +800,7 @@ public class RepositoryResolver {
             missingRequirementNames.add(req.getRequirementName());
         }
 
-        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements);
+        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
     }
 
     static class ResolvedFeatureSearchResult {
