@@ -10,12 +10,13 @@
  *******************************************************************************/
 package com.ibm.wsspi.threading;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  *
  */
-public interface WorkContext extends Map<String, String> {
+public interface WorkContext extends Map<String, Serializable> {
     static final String WORK_TYPE_IIOP = "IIOP";
     static final String WORK_TYPE_EJB_TIMER = "EJBTimer";
     static final String WORK_TYPE_EJB_ASYNC = "EJBAsync";

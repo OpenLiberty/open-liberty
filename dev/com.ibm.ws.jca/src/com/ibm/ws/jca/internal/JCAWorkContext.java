@@ -10,11 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jca.internal;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.ibm.wsspi.threading.WorkContext;
 
-public class JCAWorkContext extends HashMap<String, String> implements WorkContext {
+public class JCAWorkContext extends HashMap<String, Serializable> implements WorkContext {
 
     @Override
     public String getWorkType() {

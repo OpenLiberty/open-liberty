@@ -51,13 +51,15 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
 
-
 /**
  * A wrapper for Work.
  * This wrapper takes care of execution context handling, work listener notification
  * and startTimeout.
  */
 public class WorkProxy implements Callable<Void>, RunnableWithContext {
+
+    private static com.ibm.wsspi.threading.WorkContext wc = new JCAWorkContext();
+
     /**
      * Constructor for WorkProxy.
      *
@@ -121,9 +123,9 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
                     // JCA 11.6.1.1 Work Name Hint
                     // The value for the hint must be a valid java.lang.String.
                     Serializable value = hints.get(HintsContext.NAME_HINT);
-                    if (value == null || value instanceof String)
+                    if (value == null || value instanceof String) {
                         workName = (String) value;
-                    else
+                    } else
                         hintsContextSetupFailure = new ClassCastException(Tr.formatMessage(TC, "J2CA8687.hint.datatype.invalid", "HintsContext.NAME_HINT", String.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
 
@@ -136,6 +138,7 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
                         hintsContextSetupFailure = new ClassCastException(Tr.formatMessage(TC, "J2CA8687.hint.datatype.invalid", "HintsContext.LONGRUNNING_HINT",
                                                                                            Boolean.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
+                    wc.putAll(hints);
                 }
         executionProperties.put("javax.enterprise.concurrent.IDENTITY_NAME", workName == null ? work == null ? null : work.getClass().getName() : workName);
         executionProperties.put(WSContextService.TASK_OWNER, bootstrapContext.resourceAdapterID);
@@ -447,8 +450,6 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
     // now just in case someone else runs into this.
     private static final long fudgeFactor = 100;
 
-    private static com.ibm.wsspi.threading.WorkContext wc = new JCAWorkContext();
-
     /**
      * Work listener for the work.
      * This method is protected because the WorkScheduler may need to
@@ -459,6 +460,7 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
     @Override
     public com.ibm.wsspi.threading.WorkContext getWorkContext() {
         // TODO Auto-generated method stub
+        wc.putall()
         return this.wc;
     }
 

@@ -10,11 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.internal;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.ibm.wsspi.threading.WorkContext;
 
-public class IIOPWorkContext extends HashMap<String, String> implements WorkContext {
+public class IIOPWorkContext extends HashMap<String, Serializable> implements WorkContext {
 
     @Override
     public String getWorkType() {

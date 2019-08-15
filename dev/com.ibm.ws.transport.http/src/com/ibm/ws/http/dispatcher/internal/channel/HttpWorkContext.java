@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal.channel;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.ibm.wsspi.threading.WorkContext;
@@ -17,7 +18,7 @@ import com.ibm.wsspi.threading.WorkContext;
 /**
  *
  */
-public class HttpWorkContext extends HashMap<String, String> implements WorkContext {
+public class HttpWorkContext extends HashMap<String, Serializable> implements WorkContext {
 
     @Override
     public String getWorkType() {
