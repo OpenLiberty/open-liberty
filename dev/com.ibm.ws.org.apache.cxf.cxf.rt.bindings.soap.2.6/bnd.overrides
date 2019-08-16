@@ -15,7 +15,7 @@ exportVer=2.6.2
 Bundle-Name: Apache CXF Runtime SOAP Binding
 Bundle-Description: Apache CXF Runtime SOAP Binding, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6
-Bundle-Activator: com.ibm.ws.jaxws.cxf.rt.bindings.soap.NoOpActivator
+Bundle-Activator: com.ibm.ws.cxf.rt.bindings.soap.NoOpActivator
 
 Import-Package: \
  javax.xml.bind.*;version="[2.2,3)", \

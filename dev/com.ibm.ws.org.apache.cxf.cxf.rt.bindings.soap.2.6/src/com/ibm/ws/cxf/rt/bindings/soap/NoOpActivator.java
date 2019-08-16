@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxws.cxf.rt.bindings.soap;
+package com.ibm.ws.cxf.rt.bindings.soap;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
