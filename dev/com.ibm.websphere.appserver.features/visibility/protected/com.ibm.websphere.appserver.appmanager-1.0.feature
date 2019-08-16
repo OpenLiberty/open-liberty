@@ -19,7 +19,7 @@ IBM-Process-Types: server, \
  com.ibm.websphere.appserver.classloading-1.0, \
  
 -bundles=com.ibm.websphere.security, \
- com.ibm.ws.app.manager, \
+ com.ibm.ws.app.manager; start-phase:=CONTAINER_EARLY, \
  com.ibm.ws.app.manager.ready; start-phase:=APPLICATION
 -jars=com.ibm.websphere.appserver.api.basics; location:="dev/api/ibm/,lib/",\
  com.ibm.websphere.appserver.spi.application; location:=dev/spi/ibm/
