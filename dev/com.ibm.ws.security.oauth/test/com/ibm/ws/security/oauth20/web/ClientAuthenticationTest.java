@@ -262,6 +262,7 @@ public class ClientAuthenticationTest {
             expectGrantType(GRANT_TYPE_DOESNT_MATTER);
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(false);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, "", true, true);
             validClientAllDone();
 
@@ -297,6 +298,7 @@ public class ClientAuthenticationTest {
             expectGrantType(GRANT_TYPE_DOESNT_MATTER);
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(false);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, "", false, true);
 
             neverSetAuthenticatedClientAttribute();
@@ -333,7 +335,8 @@ public class ClientAuthenticationTest {
             neverGetClientIdOrClientSecretParams();
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE });
             expectClientProvider(oocp);
-            expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectAllowPublicClientsAndAppPasswordCheck(false);
+            expectClientCfgSpecifiesPublicClient(uid, true);
             expectConfidentialClient(uid, pw, true, true);
             validClientAllDone();
 
@@ -371,6 +374,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectPublicClient(uid, false, true);
 
             neverSetAuthenticatedClientAttribute();
@@ -407,7 +411,8 @@ public class ClientAuthenticationTest {
             neverGetClientIdOrClientSecretParams();
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_IMPLICIT });
             expectClientProvider(oocp);
-            expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectAllowPublicClientsAndAppPasswordCheck(false);
+            expectClientCfgSpecifiesPublicClient(uid, true);
             expectPublicClient(uid, true, true);
             validClientAllDone();
 
@@ -441,7 +446,8 @@ public class ClientAuthenticationTest {
             neverGetClientIdOrClientSecretParams();
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS });
             expectClientProvider(oocp);
-            expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectAllowPublicClientsAndAppPasswordCheck(false);
+            expectClientCfgSpecifiesPublicClient(uid, true);
             expectConfidentialClient(uid, pw, true, true);
             validClientAllDone();
 
@@ -471,7 +477,7 @@ public class ClientAuthenticationTest {
         EndpointType endpoint = EndpointType.check_session_iframe;
 
         String description = "CWOAU0071E: A public client attempted to access the " + endpoint + " endpoint using the " + OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS
-                             + " grant type. This grant type can only be used by confidential clients. The client_id is: " + uid;
+                + " grant type. This grant type can only be used by confidential clients. The client_id is: " + uid;
         final String authHeaderResponse = createResponseAuthHeader("Basic", Constants.ERROR_CODE_INVALID_CLIENT, description);
 
         try {
@@ -480,7 +486,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
-
+            expectClientCfgSpecifiesPublicClient(uid, false);
             neverSetAuthenticatedClientAttribute();
             expect401(authHeaderResponse);
 
@@ -527,6 +533,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -578,6 +585,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -679,6 +687,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectPublicClient(uid, true, true);
             validClientAllDone();
 
@@ -714,6 +723,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectPublicClient(uid, true, true);
             validClientAllDone();
 
@@ -750,6 +760,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectPublicClient(uid, true, false);
 
             neverSetAuthenticatedClientAttribute();
@@ -788,6 +799,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
             validClientAllDone();
 
@@ -824,6 +836,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, false);
 
             neverSetAuthenticatedClientAttribute();
@@ -863,6 +876,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
 
             expect400();
 
@@ -897,6 +911,7 @@ public class ClientAuthenticationTest {
             expectGrantType(GRANT_TYPE_DOESNT_MATTER);
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(false);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, "", true, true);
             validClientAllDone();
 
@@ -1008,6 +1023,7 @@ public class ClientAuthenticationTest {
             expectGrantType(GRANT_TYPE_DOESNT_MATTER);
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(false);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
             validClientAllDone();
 
@@ -1042,6 +1058,7 @@ public class ClientAuthenticationTest {
             expectGrantType(GRANT_TYPE_DOESNT_MATTER);
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, false, true);
 
             neverSetAuthenticatedClientAttribute();
@@ -1079,6 +1096,7 @@ public class ClientAuthenticationTest {
             expectGrantType(GRANT_TYPE_DOESNT_MATTER);
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, false, true);
 
             neverSetAuthenticatedClientAttribute();
@@ -1118,6 +1136,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -1165,6 +1184,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -1217,6 +1237,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -1266,6 +1287,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -1316,6 +1338,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -1368,6 +1391,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -1415,6 +1439,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
 
             expectSetAuthenticatedClientAttribute();
@@ -1457,6 +1482,7 @@ public class ClientAuthenticationTest {
             expectGrantType(GRANT_TYPE_DOESNT_MATTER);
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, false, true);
 
             neverSetAuthenticatedClientAttribute();
@@ -1554,6 +1580,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectPublicClient(uid, true, true);
             validClientAllDone();
 
@@ -1584,7 +1611,7 @@ public class ClientAuthenticationTest {
         EndpointType endpoint = EndpointType.revoke;
 
         String description = "CWOAU0071E: A public client attempted to access the " + endpoint + " endpoint using the " + OAuth20Constants.GRANT_TYPE_JWT
-                             + " grant type. This grant type can only be used by confidential clients. The client_id is: " + uid;
+                + " grant type. This grant type can only be used by confidential clients. The client_id is: " + uid;
         final String authHeaderResponse = createResponseAuthHeader(NOT_BASIC_AUTH, Constants.ERROR_CODE_INVALID_CLIENT, description);
 
         try {
@@ -1594,6 +1621,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_JWT });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
 
             neverSetAuthenticatedClientAttribute();
             expect401(authHeaderResponse);
@@ -1640,6 +1668,7 @@ public class ClientAuthenticationTest {
             expectGrantType(new String[] { OAuth20Constants.GRANT_TYPE_PASSWORD });
             expectClientProvider(oocp);
             expectAllowPublicClientsAndAppPasswordCheck(true);
+            expectClientCfgSpecifiesPublicClient(uid, false);
             expectConfidentialClient(uid, pw, true, true);
             expectSetAuthenticatedClientAttribute();
             expectSkipUserValidation(false);
@@ -1666,7 +1695,7 @@ public class ClientAuthenticationTest {
         String error = "error";
         String error_description = "error_description";
         final String responseAuthHeader = authScheme + " " + error + "=\"" + errorCode + "\", " +
-                                          error_description + "=\"" + errorDescription + "\", realm=\"\"";
+                error_description + "=\"" + errorDescription + "\", realm=\"\"";
         return responseAuthHeader;
     }
 
@@ -1823,6 +1852,17 @@ public class ClientAuthenticationTest {
         });
     }
 
+    private void expectClientCfgSpecifiesPublicClient(final String username, final boolean isPublic) throws OidcServerException {
+        mock.checking(new Expectations() {
+            {
+                one(oocp).get(username);
+                will(returnValue(obc));
+                one(obc).isPublicClient();
+                will(returnValue(isPublic));
+            }
+        });
+    }
+
     private void expectConfidentialClient(final String username, final String password, final boolean isValid, final boolean isEnabled) throws OidcServerException {
         mock.checking(new Expectations() {
             {
@@ -1880,7 +1920,7 @@ public class ClientAuthenticationTest {
     }
 
     private void expectCheckPassword(final String username, final String password,
-                                     final String result) throws PasswordCheckFailedException, CustomRegistryException, RemoteException {
+            final String result) throws PasswordCheckFailedException, CustomRegistryException, RemoteException {
         mock.checking(new Expectations() {
             {
                 one(ur).checkPassword(username, password);
@@ -1938,7 +1978,7 @@ public class ClientAuthenticationTest {
             {
                 one(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 one(response).setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                                        OAuth20Constants.HTTP_CONTENT_TYPE_JSON);
+                        OAuth20Constants.HTTP_CONTENT_TYPE_JSON);
                 never(response).setHeader(with(Constants.WWW_AUTHENTICATE), with(any(String.class)));
                 one(response).getWriter();
                 will(returnValue(writer));
@@ -1953,7 +1993,7 @@ public class ClientAuthenticationTest {
             {
                 one(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 one(response).setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                                        OAuth20Constants.HTTP_CONTENT_TYPE_JSON);
+                        OAuth20Constants.HTTP_CONTENT_TYPE_JSON);
                 one(response).setHeader(with(Constants.WWW_AUTHENTICATE), with(authHeaderResponse));
                 one(response).getWriter();
                 will(returnValue(writer));
