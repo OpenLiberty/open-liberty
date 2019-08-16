@@ -303,4 +303,64 @@ public abstract class AbstractTestLogic {
 
         };
     }
+
+    protected String getTestName() {
+        final StackTraceElement[] steArr = Thread.currentThread().getStackTrace();
+
+        String cn = null;
+        for (int index = 0; index < steArr.length; index++) {
+            final String name = steArr[index].getClassName();
+            if (name.startsWith("java.") || name.startsWith("javax.")) {
+                continue;
+            }
+            cn = name;
+            break;
+        }
+
+        String methodName = cn.substring(cn.lastIndexOf('.'));
+
+        return this.getClass().getSimpleName() + "." + methodName;
+    }
+
+    // Basing determination off product version using
+    // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
+    protected boolean isDB2ForZOS(String prodVersion) throws Exception {
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("dsn")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected boolean isDB2ForLUW(String prodVersion) throws Exception {
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("sql")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected boolean isDB2ForISeries(String prodVersion) throws Exception {
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("qsq")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected boolean isDB2ForVM_VSE(String prodVersion) throws Exception {
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("ari")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected boolean isDB2(String prodVersion) throws Exception {
+        return isDB2ForLUW(prodVersion) || isDB2ForZOS(prodVersion) || isDB2ForISeries(prodVersion);
+    }
+
+    protected boolean isDerby(String lDbProductName) throws Exception {
+        return (lDbProductName == null) ? false : lDbProductName.contains("derby");
+    }
 }
