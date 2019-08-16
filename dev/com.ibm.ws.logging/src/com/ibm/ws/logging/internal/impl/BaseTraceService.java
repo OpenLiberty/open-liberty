@@ -521,18 +521,38 @@ public class BaseTraceService implements TrService {
                 entry[2] = entry[2].trim();
                 //add properties to their respective hashmaps and trim whitespaces
                 if (CollectorConstants.MESSAGES_LOG_EVENT_TYPE.equals(entry[0])) {
-                    messageMap.put(entry[1], entry[2]);
+                    if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                        messageMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.TRACE_LOG_EVENT_TYPE.equals(entry[0])) {
-                    traceMap.put(entry[1], entry[2]);
+                    if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                        traceMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.FFDC_EVENT_TYPE.equals(entry[0])) {
-                    ffdcMap.put(entry[1], entry[2]);
+                    if (FFDCList.contains(entry[1])) {
+                        ffdcMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.ACCESS_LOG_EVENT_TYPE.equals(entry[0])) {
-                    accessLogMap.put(entry[1], entry[2]);
+                    if (AccessLogList.contains(entry[1])) {
+                        accessLogMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.AUDIT_LOG_EVENT_TYPE.equals(entry[0])) {
-                    auditMap.put(entry[1], entry[2]);
+                    if (AuditList.contains(entry[1])) {
+                        auditMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else {
                     Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
+                if (!valueFound) {
+                    //if the value does not exist in any of the known keys, give a warning
+                    Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
+                }
+                valueFound = false;
             } else {
                 Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
             }
