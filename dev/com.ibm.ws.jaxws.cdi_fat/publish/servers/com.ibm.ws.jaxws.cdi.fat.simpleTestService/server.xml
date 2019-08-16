@@ -1,0 +1,11 @@
+<server>
+    <featureManager>
+       <feature>jaxws-2.2</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/> 
+    
+    <javaPermission className="java.net.URLPermission" name="http://${host}:${port}/simpleTestService/SimpleImplService" actions="POST:Accept,SOAPAction,User-Agent"/>
+</server>
