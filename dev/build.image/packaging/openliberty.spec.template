@@ -27,7 +27,7 @@ and Eclipse MicroProfile capabilities for building micro-services
 mkdir -p %{buildroot}/opt/ol
 tar -zxf %{_topdir}/SOURCES/%{name}-%{version}.tar.gz -C %{buildroot}/opt/ol
 
-#Creating the server folder and moving defaultServer zip to /usr/share/openliberty
+#Creating the share folder and moving defaultServer zip to /usr/share/openliberty
 mkdir -p %{buildroot}/usr/share/%{name}
 cp %{_topdir}/SOURCES/defaultServer.zip %{buildroot}/usr/share/%{name}
 
@@ -41,7 +41,7 @@ cp %{_topdir}/SOURCES/scripts/openliberty@.service %{buildroot}/usr/lib/systemd/
 exit 0
  
 %files
-%defattr(-,root,root)
+#%defattr(-,root,root)
 /opt/ol
 /usr/libexec
 /usr/share/%{name}
@@ -82,21 +82,28 @@ if [ -x "/usr/libexec/openliberty" ] && [ -r "/usr/lib/systemd/system/openlibert
     systemctl enable openliberty@defaultServer.service
 fi
 
-echo "Moving the LICENSE file to the license directory"
+echo "Creating the license directory"
 mkdir -p /usr/share/doc/openliberty
-mv /opt/ol/LICENSE /usr/share/doc/openliberty
+cp /opt/ol/LICENSE /usr/share/doc/openliberty
+cp /opt/ol/NOTICES /usr/share/doc/openliberty
+
+echo "Creating server,log and run directory"
+mkdir -p /var/lib/openliberty/usr/servers
+mkdir -p /var/run/openliberty
+mkdir -p /var/log/openliberty
 
 echo "Setting up defaultServer for user"
-mkdir -p /var/lib/openliberty/usr/servers
 if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
     unzip /usr/share/openliberty/defaultServer.zip -d /var/lib/openliberty/usr/servers
     printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
 fi
-mkdir -p /var/run/openliberty
-mkdir -p /var/log/openliberty
 
 echo "Setting permissions to files/folders"
 chown -R openliberty:openliberty /opt/ol/lib
+chmod -R a+r /opt/ol/
+chmod 755 /usr/libexec/openliberty
+chmod 755 /opt/ol/etc/
+chmod -R 755 /opt/ol/templates/
 chown -R openliberty:openliberty /var/lib/openliberty
 chmod -R u+w /var/lib/openliberty
 chown -R openliberty:openliberty /var/run/openliberty
@@ -106,8 +113,13 @@ chmod -R u+w /var/log/openliberty
 exit 0
 
 %postun
-echo "Removing all leftover jar files"
-if [ -d "/opt/ol/lib" ]; then
-    rm -rf /opt/ol/lib
+echo "Removing leftover license and run directories"
+if [ -d "/usr/share/doc/openliberty" ]; then
+    rm -rf /usr/share/doc/openliberty
 fi
+if [ -d "/var/run/openliberty" ]; then
+    rm -rf /var/run/openliberty
+fi
+echo "Reloading systemctl services after uninstall of openliberty"
+systemctl daemon-reload
 exit 0
