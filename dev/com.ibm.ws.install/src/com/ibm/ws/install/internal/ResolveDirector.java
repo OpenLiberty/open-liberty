@@ -426,10 +426,6 @@ class ResolveDirector extends AbstractDirector {
     }
 
     List<List<RepositoryResource>> resolve(Collection<String> featureNames, DownloadOption downloadOption, String userId, String password) throws InstallException {
-        Collection<String> featureNamesProcessed = new ArrayList<String>();
-        for (String s : featureNames) {
-            featureNamesProcessed.add(s.replaceAll("\\\\+$", ""));
-        }
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
         boolean isOpenLiberty = false;
         try {
@@ -441,6 +437,32 @@ class ResolveDirector extends AbstractDirector {
             }
         } catch (Exception e) {
             throw ExceptionUtils.create(e);
+        }
+
+        // clean up feature names and check for invalid features
+        Collection<String> featureNamesProcessed = new ArrayList<String>();
+        List<String> invalidFeatures = new ArrayList<>();
+        int rc;
+
+        for (String s : featureNames) {
+            // clean feature name
+            String processedFeature = s.replaceAll("\\\\+$", "");
+            featureNamesProcessed.add(processedFeature);
+
+            // check if feature is invalid
+            logger.info("in resolve director processing" + processedFeature);
+            Arguments args = new ArgumentsImpl(new String[] { ExeAction.find.toString(), processedFeature });
+            rc = ExeAction.find.handleTask(args).getValue();
+
+            // if return code non zero then feature is invalid
+            if (rc != 0) {
+                logger.info("invalid feature " + processedFeature);
+                invalidFeatures.add(processedFeature);
+            }
+        }
+        // throw exception if invalid features found
+        if (invalidFeatures.size() > 0) {
+            throw ExceptionUtils.create(new RepositoryException(), invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
         }
 
         RepositoryConnectionList loginInfo = getRepositoryConnectionList(featureNamesProcessed, userId, password, this.getClass().getCanonicalName() + ".resolve");
@@ -466,20 +488,6 @@ class ResolveDirector extends AbstractDirector {
 
             throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false, isOpenLiberty);
         } catch (RepositoryException e) {
-
-            List<String> invalidFeatures = new ArrayList<>();
-            int rc;
-
-            for (String featureName : featureNamesProcessed) {
-                logger.info("in resolve director processing" + featureName);
-                Arguments args = new ArgumentsImpl(new String[] { ExeAction.find.toString(), featureName });
-                rc = ExeAction.find.handleTask(args).getValue();
-
-                if (rc != 0) {
-                    logger.info("invalid feature " + featureName);
-                    invalidFeatures.add(featureName);
-                }
-            }
 
             throw ExceptionUtils.create(e, invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
         }
