@@ -24,12 +24,6 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 })
 public class FATSuite {
 
-    static {
-        // TODO: temporary debug setting so we can further investigate intermittent
-        // testcontainers ping issues on remote build machines
-        System.setProperty("javax.net.debug", "all");
-    }
-
     @BeforeClass
     public static void setupBukcet() throws Exception {
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
