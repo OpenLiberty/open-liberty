@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+
+  <resource-env-ref>
+    <resource-env-ref-name>java:app/env/cloudant/resRefCtrAuth</resource-env-ref-name>
+    <resource-env-ref-type>com.cloudant.client.api.ClientBuilder</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>java:module/env/cloudant/resRefCtrAuthInvalid</resource-env-ref-name>
+    <resource-env-ref-type>com.cloudant.client.api.ClientBuilder</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>cloudant/resRefCtrAuthInvalidUserDB</resource-env-ref-name>
+    <resource-env-ref-type>com.cloudant.client.api.Database</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-ref>
+    <res-ref-name>java:global/env/cloudant/resRefAppAuthWithCtrAuthAliasDB</res-ref-name>
+    <res-type>com.cloudant.client.api.Database</res-type>
+    <res-auth>Application</res-auth>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/cloudant/defCtrAuthDB</res-ref-name>
+    <res-type>com.cloudant.client.api.Database</res-type>
+    <lookup-name>cloudant/testdb-ctrAuth</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:module/env/cloudant/resRefCtrAuthDB</res-ref-name>
+    <res-type>com.cloudant.client.api.Database</res-type>
+  </resource-ref>
+</web-app>
