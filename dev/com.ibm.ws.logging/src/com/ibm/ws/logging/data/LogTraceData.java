@@ -527,11 +527,9 @@ public class LogTraceData extends GenericData {
             aliasesExt = jsonLoggingNameAliasesTrace.aliasesExtensions;
 
         }
-        if (tempExt != null) {
-            for (int i = 0; i < tempExt.size(); i++) {
-                if (tempExt.get(i).equals(extKey)) {
-                    return aliasesExt.get(i);
-                }
+        for (int i = 0; i < tempExt.size(); i++) {
+            if (tempExt.get(i).equals(extKey)) {
+                return aliasesExt.get(i);
             }
         }
         return extKey;
