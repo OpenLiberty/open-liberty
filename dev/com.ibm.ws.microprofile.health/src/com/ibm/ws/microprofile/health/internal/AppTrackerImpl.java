@@ -100,9 +100,9 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     @Override
     @FFDCIgnore(UnableToAdaptException.class)
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-        String appName = appInfo.getName();
+        String appName = appInfo.getDeploymentName();
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStarting() : appName = " + appInfo.getName());
+            Tr.debug(tc, "applicationStarting() : appName = " + appName);
 
         Container appContainer = appInfo.getContainer();
         if (appContainer == null) {
@@ -128,21 +128,8 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             return;
         }
 
-        //Check if the deployed application is an EAR or WAR file
-        if (appInfo instanceof EARApplicationInfo) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "applicationStarting() : App " + appInfo.getName() + " is an EAR file.");
-            EARApplicationInfo earAppInfo = (EARApplicationInfo) appInfo;
-            registerEARApplication(appContainer, earAppInfo);
-        } else {
-            // If the application is a WAR file, simply get the WebModuleMetaData from the application container to register the appName and appModuleName
-            WebModuleMetaData webModuleMetaData = getWebModuleMetaData(appContainer);
-            if (webModuleMetaData != null) {
-                String appModuleName = getAppModuleNameFromMetaData(webModuleMetaData);
-                // Register the app and module names for the WAR application
-                addAppModuleNames(appName, appModuleName);
-            }
-        }
+        // Process the application to check if it is a WAR or an EAR file and register it.
+        processApplication(appContainer, appInfo, appName, false);
 
         // Add starting application to the starting app map, to keep track of all the application states.
         lock.writeLock().lock();
@@ -154,28 +141,6 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "applicationStarting(): starting app added in appStateMap = " + appStateMap.toString() + " for app: " + appName);
-    }
-
-    @FFDCIgnore(UnableToAdaptException.class)
-    private void registerEARApplication(Container appContainer, EARApplicationInfo earAppInfo) {
-        for (Entry entry : appContainer) {
-            try {
-                Container c = entry.adapt(Container.class);
-                if (c != null) {
-                    WebModuleMetaData webModuleMetaData = getWebModuleMetaData(c);
-                    if (webModuleMetaData != null) {
-                        String appName = earAppInfo.getName();
-                        String appModuleName = getAppModuleNameFromMetaData(webModuleMetaData);
-                        // Register the app and module names
-                        addAppModuleNames(appName, appModuleName);
-                    }
-                }
-            } catch (UnableToAdaptException e) {
-                if (tc.isDebugEnabled()) {
-                    Tr.event(tc, "registerEARApplication() : Failed to adapt entry: entry=" + entry + " : \n" + e.getMessage());
-                }
-            }
-        }
     }
 
     /**
@@ -238,13 +203,13 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         }
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "addAppModuleNames(): modules added = " + appModules.toString() + " for app: " + appName);
+            Tr.debug(tc, "addAppModuleNames(): modules added = " + appModules.toString() + " for app: " + appName + " and for module: " + moduleName);
     }
 
     /** {@inheritDoc} */
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        String appName = appInfo.getName();
+        String appName = appInfo.getDeploymentName();
         lock.writeLock().lock();
         try {
             if (appStateMap.containsKey(appName)) {
@@ -280,7 +245,21 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     /** {@inheritDoc} */
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
-        String appName = appInfo.getName();
+        String appName = appInfo.getDeploymentName();
+
+        // Remove the registered application modules
+        Container appContainer = appInfo.getContainer();
+        if (appContainer == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "applicationStopped() : appContainer=null for " + appInfo);
+            }
+            return;
+        }
+
+        // Process the application to check if it is a WAR or an EAR file and unregister it.
+        processApplication(appContainer, appInfo, appName, true);
+
+        // Remove the stopped application from the appState map
         lock.writeLock().lock();
         try {
             appStateMap.remove(appName);
@@ -290,67 +269,69 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "applicationStopped(): stopped app removed from appStateMap = " + appStateMap.toString() + " for app: " + appName);
-
-        // Remove the registered application modules
-        unregisterApplication(appInfo, appName);
     }
 
     /**
-     * Unregisters the stopped application.
+     * Processes the application and checks if it is an EAR or WAR file and registers/unregisters the application,
+     * depending on the application state.
      *
+     * @param appContainer
      * @param appInfo
      * @param appName
+     * @param isAppStopped
      */
-    private void unregisterApplication(ApplicationInfo appInfo, String appName) {
-        Container appContainer = appInfo.getContainer();
-        if (appContainer == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "unregisterApplication() : appContainer=null for " + appInfo);
-            }
-            return;
-        }
-
+    private void processApplication(Container appContainer, ApplicationInfo appInfo, String appName, boolean isAppStopped) {
         //Check if the deployed application is an EAR or WAR file
         if (appInfo instanceof EARApplicationInfo) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "unregisterApplication() : App " + appInfo.getName() + " is an EAR file.");
+                Tr.debug(tc, "processApplication() : App " + appInfo.getDeploymentName() + " is an EAR file.");
             EARApplicationInfo earAppInfo = (EARApplicationInfo) appInfo;
-            unregisterEARApplication(appContainer, earAppInfo);
+            processEARApplication(appContainer, earAppInfo, isAppStopped);
         } else {
-            // If the application is a WAR file, simply get the WebModuleMetaData from the application container
+            // If the application is a WAR file, simply get the WebModuleMetaData from the application container to register the appName and appModuleName
             WebModuleMetaData webModuleMetaData = getWebModuleMetaData(appContainer);
             if (webModuleMetaData != null) {
                 String appModuleName = getAppModuleNameFromMetaData(webModuleMetaData);
-                // Unregister the app and module names for the WAR application
-                moduleStopped(appName, appModuleName);
+                if (isAppStopped) {
+                    // Unregister the app and module names for the WAR application
+                    moduleStopped(appName, appModuleName);
+                } else {
+                    // Register the app and module names for the WAR application
+                    addAppModuleNames(appName, appModuleName);
+                }
             }
         }
-
     }
 
     /**
-     * Unregisters the stopped EAR application.
+     * Processes the EAR application and registers/unregisters the application, depending on the application state.
      *
      * @param appContainer
      * @param earAppInfo
+     * @param isAppStopped
      */
     @FFDCIgnore(UnableToAdaptException.class)
-    private void unregisterEARApplication(Container appContainer, EARApplicationInfo earAppInfo) {
+    private void processEARApplication(Container appContainer, EARApplicationInfo earAppInfo, boolean isAppStopped) {
         for (Entry entry : appContainer) {
             try {
                 Container c = entry.adapt(Container.class);
                 if (c != null) {
                     WebModuleMetaData webModuleMetaData = getWebModuleMetaData(c);
                     if (webModuleMetaData != null) {
-                        String appName = earAppInfo.getName();
+                        String appName = earAppInfo.getDeploymentName();
                         String appModuleName = getAppModuleNameFromMetaData(webModuleMetaData);
-                        // unregister the app and module names
-                        moduleStopped(appName, appModuleName);
+                        if (isAppStopped) {
+                            // Unregister the app and module names
+                            moduleStopped(appName, appModuleName);
+                        } else {
+                            // Register the app and module names
+                            addAppModuleNames(appName, appModuleName);
+                        }
                     }
                 }
             } catch (UnableToAdaptException e) {
                 if (tc.isDebugEnabled()) {
-                    Tr.event(tc, "unregisterEARApplication() : Failed to adapt entry: entry=" + entry + " : \n" + e.getMessage());
+                    Tr.event(tc, "processEARApplication() : Failed to adapt entry: entry=" + entry + " : \n" + e.getMessage());
                 }
             }
         }
@@ -374,7 +355,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             }
 
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "moduleStopped(): app module removed = " + appModules.toString() + " for app: " + appName);
+                Tr.debug(tc, "moduleStopped(): app module removed = " + appModules.toString() + " for app: " + appName + " and for module: " + moduleName);
 
         }
 
