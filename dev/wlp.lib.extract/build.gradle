@@ -10,20 +10,26 @@
  *******************************************************************************/
 
 task publishManifest(type: Copy) {
-    dependsOn jar
+	dependsOn jar
+	mustRunAfter assemble
     from(zipTree(new File(buildDir, project.name + '.jar')))
     include 'META-INF/MANIFEST.MF'
     into buildImage.file('wlp/lib/extract')
 }
 
 task publishExtract(type: Copy) {
-    dependsOn jar
+	dependsOn jar
+	mustRunAfter assemble
     dependsOn publishManifest
     from(zipTree(new File(buildDir, project.name + '.jar')))
     exclude 'META-INF/'
     into buildImage.projectDir
 }
 
-assemble {
+release {
     dependsOn publishExtract
 }
+
+compileJava.dependsOn ':cnf:initialize'
+
+

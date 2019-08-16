@@ -68,6 +68,7 @@ subprojects {
   // will publish jar updates to the local `build.image/wlp` image and `cnf/release` repository
   release.dependsOn assemble
   release.dependsOn publish
+  publish.mustRunAfter assemble
 }
 
 // Ensure the root project has the 'audit' task so it shows up in the output of `./gradlew tasks`
