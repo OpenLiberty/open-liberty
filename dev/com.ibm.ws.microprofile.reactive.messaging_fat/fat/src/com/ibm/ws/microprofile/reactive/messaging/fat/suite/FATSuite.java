@@ -10,31 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.KafkaContainer;
 
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
-
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.LoginModuleClassloadingTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                BasicReactiveMessagingTest.class,
-                KafkaMessagingTest.class,
-                KafkaAcknowledgementTest.class
+                PlaintextTests.class,
+                TlsTests.class,
+                SaslPlainTests.class,
+                KafkaTestClientProviderTest.class,
+                LoginModuleClassloadingTest.class,
 })
 public class FATSuite {
-
-    @ClassRule
-    public static KafkaContainer kafkaContainer = new KafkaContainer();
-
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
-    }
 
 }

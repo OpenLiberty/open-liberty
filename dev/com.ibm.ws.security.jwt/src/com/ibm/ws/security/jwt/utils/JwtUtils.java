@@ -19,6 +19,7 @@ import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
@@ -579,6 +580,7 @@ public class JwtUtils {
 			// check for NO aliases in the trust store
 			if (aliases == null || aliases.size() == 0) {
 				X509Certificate cert = kss.getX509CertificateFromKeyStore(trustStoreRef);
+				
 				if (cert != null) {
 					return cert.getPublicKey();
 				}
@@ -587,9 +589,14 @@ public class JwtUtils {
 
 			}
 			// check for more than 1 alias in the trust store (with more than 1,
-			// we need to have trustAlias specified (this is part of the no
+			// we need to have one key/cert pair available or trustAlias specified (this is part of the no
 			// trustAlais path))
 			if (aliases.size() > 1) {
+                X509Certificate cert = kss.getX509CertificateFromKeyStore(trustStoreRef);
+                
+                if (cert != null) {
+                    return cert.getPublicKey();
+                }
 				String errorMsg = Tr.formatMessage(tc, "JWT_SIGNER_CERT_AMBIGUOUS");
 				throw new InvalidTokenException(errorMsg);
 

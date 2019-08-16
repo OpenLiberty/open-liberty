@@ -136,6 +136,11 @@ public class WSKeyStore extends Properties {
         setProperty(Constants.SSLPROP_KEY_STORE_CREATE_CMS_STASH, Constants.TRUE);
     }
 
+    WSKeyStore(String _name) { // for testing
+        this.name = _name;
+        this.cfgSvc = null;
+    }
+
     /**
      * Constructor using a provided name and array of properties.
      *
@@ -1399,20 +1404,23 @@ public class WSKeyStore extends Properties {
     private String createCertSANInfo(String hostname) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "createCertSANInfo: " + hostname);
-        String ext = "SAN=dns:localhost";
+        String ext = null;
 
         InetAddress addr;
         try {
             addr = InetAddress.getByName(hostname);
             if (addr != null && addr.toString().startsWith("/"))
                 ext = "SAN=ip:" + hostname;
-            else
-                ext = "SAN=dns:" + hostname;
+            else {
+                // If the hostname start with a digit keytool will not create a SAN with the value
+                if (!Character.isDigit(hostname.charAt(0)))
+                    ext = "SAN=dns:" + hostname;
+            }
         } catch (UnknownHostException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "createCertSANInfo exception -> " + e.getMessage());
             }
-            // use localhost if unknown exception occurs
+            // return null, do not set a SAN if there is a failure here
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createCertSANInfo: " + ext);

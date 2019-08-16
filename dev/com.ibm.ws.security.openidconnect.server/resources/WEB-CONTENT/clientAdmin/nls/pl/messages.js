@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Usuń",
     "DONE": "Gotowe",
     "EDIT": "Edytuj",
+    "FALSE": "Fałsz",
     "GENERATE": "Generuj",
     "LOADING": "Trwa ładowanie",
     "LOGOUT": "Wylogowanie",
@@ -32,6 +33,9 @@ var messages = {
     "PROCESSING": "Przetwarzanie",
     "REGENERATE": "Wygeneruj ponownie",
     "REGISTER": "Zarejestruj",
+    "TABLE_FIELD_SORT_ASC": "Tabela jest sortowana według {0} w kolejności rosnącej.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabela jest sortowana według {0} w kolejności malejącej.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Prawda",
     "TRY_AGAIN": "Spróbuj ponownie...",
     "UPDATE": "Aktualizuj",
 
@@ -46,7 +50,7 @@ var messages = {
     "CLIENT_ADMIN_TITLE": "Zarządzanie klientami OAuth",
     "CLIENT_ADMIN_DESC": "Użyj tego narzędzia do dodawania lub edytowania klientów i ponownego generowania kluczy tajnych klientów.",
     "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtruj według nazwy klienta OAuth",
-    "ADD_NEW_CLIENT": "Dodaj nowego klienta OAuth",
+    "ADD_NEW_CLIENT": "Dodaj nowego klienta OAuth.",
     "CLIENT_NAME": "Nazwa klienta",
     "CLIENT_ID": "Identyfikator klienta",
     "EDIT_ARIA": "Edytuj klienta OAuth {0}",      // {0} - name
@@ -56,30 +60,22 @@ var messages = {
     "SCOPE": "Zasięg",
     "PREAUTHORIZED_SCOPE": "Wstępnie autoryzowany zasięg (opcjonalny)",
     "REDIRECT_URLS": "Adresy URL przekierowania (opcjonalne)",
-    "ADDITIONAL_PROPS": "Właściwości dodatkowe",
-    "ADDITIONAL_PROPS_OPTIONAL": "Właściwości dodatkowe (opcjonalne)",
     "CLIENT_SECRET_CHECKBOX": "Wygeneruj ponownie klucz tajny klienta",
-    "PROPERTY_PLACEHOLDER": "Właściwość",
-    "VALUE_PLACEHOLDER": "Wartość",
-    "GRANT_TYPES_SELECTED": "Liczba wybranych typów nadań",
-    "GRANT_TYPES_NONE_SELECTED": "Nie wybrano żadnego",
+    "NONE_SELECTED": "Nie wybrano żadnego",
     "MODAL_EDIT_TITLE": "Edycja klienta OAut",
     "MODAL_REGISTER_TITLE": "Rejestracja nowego klienta OAuth",
     "MODAL_SECRET_REGISTER_TITLE": "Zapisano rejestrację OAuth",
     "MODAL_SECRET_UPDATED_TITLE": "Zaktualizowano rejestrację OAuth",
     "MODAL_DELETE_CLIENT_TITLE": "Usuń tego klienta OAuth",
-    "VALUE_COL": "Wartość",
-    "ADD": "Dodaj",
-    "DELETE_PROP": "Usuń właściwość niestandardową",
-    "RESET_GRANT_TYPE": "Wyczyść wszystkie typy nadań",
+    "RESET_GRANT_TYPE": "Wyczyść wszystkie typy nadań.",
     "SELECT_ONE_GRANT_TYPE": "Wybierz co najmniej jeden typ nadania",
-    "OPEN_GRANT_TYPE": "Otwórz listę typów nadań",
-    "CLOSE_GRANT_TYPE": "Zamknij listę typów nadań",
     "SPACE_HELPER_TEXT": "Wartości rozdzielane spacjami",
     "REDIRECT_URL_HELPER_TEXT": "Rozdzielane spacjami bezwzględne adresy URL przekierowania",
     "DELETE_OAUTH_CLIENT_DESC": "Ta operacja powoduje usunięcie zarejestrowanego klienta z usługi rejestracji klienta.",
     "REGISTRATION_SAVED": "Wygenerowano i przypisano ID klienta i klucz tajny klienta.",
     "REGISTRATION_UPDATED": "Wygenerowano i przypisano nowy klucz dla tego tajny klienta.",
+    "COPY_CLIENT_ID": "Kopiuj identyfikator klienta do schowka",
+    "COPY_CLIENT_SECRET": "Kopiuj klucz tajny klienta do schowka",
     "REGISTRATION_UPDATED_NOSECRET": "Klient {0} został zaktualizowany.",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "Należy wybrać co najmniej jeden typ nadania.",
     "ERR_REDIRECT_URIS": "Wartości muszą być bezwzględnymi identyfikatorami URI.",
@@ -93,5 +89,15 @@ var messages = {
     "GENERIC_MISSING_CLIENT_MSG": "Nie znaleziono klienta OAuth {0} o ID {1}.",     // {0} - client name; {1} - an ID
     "GENERIC_RETRIEVAL_FAIL_MSG": "Wystąpił błąd podczas pobierania informacji o kliencie OAuth {0}.", // {0} - client name
     "GENERIC_GET_CLIENTS_FAIL": "Błąd podczas pobierania klientów OAuth",
-    "GENERIC_GET_CLIENTS_FAIL_MSG": "Wystąpił błąd podczas pobierania listy klientów OAuth."
+    "GENERIC_GET_CLIENTS_FAIL_MSG": "Wystąpił błąd podczas pobierania listy klientów OAuth.",
+
+    "RESET_SELECTION": "Wyczyść wszystkie wybrane elementy {0}",     // {0} - field name (ie 'Grant types')
+    "NUMBER_SELECTED": "Liczba wybranych elementów {0}",     // {0} - field name
+    "OPEN_LIST": "Otwórz listę elementów {0}.",                   // {0} - field name
+    "CLOSE_LIST": "Zamknij listę elementów {0}.",                 // {0} - field name
+    "ENTER_PLACEHOLDER": "Wprowadź wartość",
+    "ADD_VALUE": "Dodaj element",
+    "REMOVE_VALUE": "Usuń element",
+    "REGENERATE_CLIENT_SECRET": "'*' zachowuje istniejącą wartość. Pusta wartość generuje nowy element client_secret. Niepusta wartość parametru nadpisuje istniejącą wartość nową wartością.",
+    "ALL_OPTIONAL": "Wszystkie pola są opcjonalne"
 };

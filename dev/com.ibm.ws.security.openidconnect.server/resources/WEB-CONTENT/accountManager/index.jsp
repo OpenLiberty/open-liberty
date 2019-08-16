@@ -57,9 +57,9 @@ if (request.getAttribute("ui_app_tok_enabled") != null) {
         </button>
     </div>
 
-    <table id="am_table" class="tool_table" aria-describedby="am_desc">
+    <table id="am_table" role="grid" class="tool_table" aria-labelledby="am_desc" aria-describedby="am_desc">
         <thead>
-            <tr>
+            <tr role="row">
                 <th id="table_name_column" class="table_sort_column" type="button" tabIndex="0" data-externalizedString="NAME_COL" role="columnheader" aria-sort="none" scope="col">
                     <span id="table_name_sort" class="table_sort_direction" data-sortDir="none">
                         <img src='../../WEB-CONTENT/common/images/caretSortUnknown.svg' data-externalizedStringAlt="CLICK_TO_SORT" data-externalizedStringTitle="CLICK_TO_SORT">
@@ -68,8 +68,8 @@ if (request.getAttribute("ui_app_tok_enabled") != null) {
                 <th id="table_type_column" data-externalizedString="TYPE_COL" scope="col" tabindex='-1'></th>
                 <th id="table_issued_column" data-externalizedString="ISSUED_COL" scope="col" tabindex='-1'></th>
                 <th id="table_expires_column" data-externalizedString="EXPIRES_COL" scope="col" tabindex='-1'></th>
-                <th class="table_button_column" tabindex='-1'></th>
-                <th class="table_button_column" tabindex='-1'></th>
+                <th class="table_button_column" scope="col" tabindex='-1'></th>
+                <th class="table_button_column" scope="col" tabindex='-1'></th>
             </tr>
         </thead>
         <tbody>
@@ -114,16 +114,17 @@ if (request.getAttribute("ui_app_tok_enabled") != null) {
                     <div class="tool_modal_body_info_item" style="margin-bottom: 13px;">
                         <span class="tool_modal_body_info_label"></span>
                     </div>
+                    <div class="tool_modal_body_description"></div>
                 </div>
                 <div id='authType'>
                     <fieldset class='tool_modal_radio_button_fieldset'>
                     <legend class="tool_modal_body_field_label" data-externalizedString="TYPE_COL"></legend>
-                    <input id="rb_app_password" class="tool_modal_radio_button" type="radio" name="authType" value="app-password"></input>
+                    <input id="rb_app_password" class="tool_modal_radio_button" type="radio" role="radio" aria-checked="false" name="authType" value="app-password"></input>
                     <label for="rb_app_password" class="tool_modal_radio_button_label">
                         <span class="tool_modal_radio_button_appearance"></span>
                         app-password
                     </label>
-                    <input id="rb_app_token" class="tool_modal_radio_button" type="radio" name="authType" value="app-token"></input>
+                    <input id="rb_app_token" class="tool_modal_radio_button" type="radio" role="radio" aria-checked="false" name="authType" value="app-token"></input>
                     <label for="rb_app_token" class="tool_modal_radio_button_label">
                         <span class="tool_modal_radio_button_appearance"></span>
                         app-token

@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.embeddable.config;
 
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -390,7 +390,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#needToCoordinateServices()
      */
     @Override
@@ -399,4 +399,47 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     */
+    @Override
+    public boolean enableHADBPeerLocking() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getTimeBetweenHeartbeats()
+     */
+    @Override
+    public int getTimeBetweenHeartbeats() {
+        // TODO Auto-generated method stub
+        return 5;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getPeerTimeBeforeStale()
+     */
+    @Override
+    public int getPeerTimeBeforeStale() {
+        // TODO Auto-generated method stub
+        return 10;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLocalTimeBeforeStale()
+     */
+    @Override
+    public int getLocalTimeBeforeStale() {
+        // TODO Auto-generated method stub
+        return 10;
+    }
 }

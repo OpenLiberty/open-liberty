@@ -21,11 +21,13 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -42,6 +44,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.WebUtils;
+import com.ibm.wsspi.ssl.SSLSupport;
 
 public class OidcClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OidcClientHttpUtil.class);
@@ -53,6 +56,30 @@ public class OidcClientHttpUtil {
 
     public void setClientId(String id) {
         this.clientId = id;
+    }
+
+    public SSLSocketFactory getSSLSocketFactory(ConvergedClientConfig config, SSLSupport sslSupport,
+            boolean throwExceptionIfNull, boolean logErrorIfNull) throws com.ibm.websphere.ssl.SSLException {
+        SSLSocketFactory sslSocketFactory = null;
+
+        try {
+            sslSocketFactory = sslSupport.getSSLSocketFactory(config.getSSLConfigurationName());
+        } catch (javax.net.ssl.SSLException e) {
+            throw new com.ibm.websphere.ssl.SSLException(e.getMessage());
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
+        }
+
+        if (sslSocketFactory == null && throwExceptionIfNull) {
+            throw new com.ibm.websphere.ssl.SSLException(Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL",
+                    new Object[] { "Null ssl socket factory", config.getClientId() }));
+
+        }
+        if (sslSocketFactory == null && logErrorIfNull) {
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", config.getClientId() });
+        }
+        return sslSocketFactory;
     }
 
     /**
@@ -353,11 +380,14 @@ public class OidcClientHttpUtil {
             } else {
                 connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
             }
-            client = createBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+            RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+            client = createBuilder(useSystemPropertiesForHttpClientConnections)
+                    .setDefaultCredentialsProvider(credentialsProvider)
+                    .setSSLSocketFactory(connectionFactory)
+                    .setDefaultRequestConfig(rcfg)
+                    .build();
         }
-
         return client;
-
     }
 
     static OidcClientHttpUtil instance = null;;

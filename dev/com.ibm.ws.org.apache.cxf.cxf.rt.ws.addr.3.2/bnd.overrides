@@ -21,10 +21,11 @@ Import-Package: \
 !org.apache.aries.*,\
 !org.apache.cxf.transport.https,\
 !org.osgi.service.blueprint.*,\
-javax.xml.bind;version=!,\
-javax.xml.bind.annotation;version=!,\
-javax.xml.bind.annotation.adapters;version=!,\
-javax.xml.bind.attachment;version=!,\
+javax.xml.bind;version="[2.3,3)",\
+javax.xml.bind.annotation;version="[2.3,3)",\
+javax.xml.bind.annotation.adapters;version="[2.3,3)",\
+javax.xml.bind.attachment;version="[2.3,3)",\
+javax.xml.ws.*;version="[2.3,3)", \
 *
 
 Export-Package: \

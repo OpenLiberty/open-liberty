@@ -59,7 +59,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         CompletableFuture<Void> acknowledged = deliveryBean.sendMessage("test1");
 
         // Assert that message appears on topic
-        SimpleKafkaReader reader = kafkaTestClient.readerFor(KafkaDeliveryBean.CHANNEL_NAME);
+        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(KafkaDeliveryBean.CHANNEL_NAME);
         List<String> messages = reader.waitForMessages(1, TIMEOUT);
         assertThat(messages, contains("test1"));
 
@@ -73,7 +73,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
 
         // Send message directly
-        SimpleKafkaWriter writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
+        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
         writer.sendMessage("test1");
 
         // Assert that message is received
@@ -96,7 +96,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
     public void testOutOfOrderAcknowledgement() throws InterruptedException {
         long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
         // Send three messages directly
-        SimpleKafkaWriter writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
+        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
         writer.sendMessage("test1");
         writer.sendMessage("test2");
         writer.sendMessage("test3");

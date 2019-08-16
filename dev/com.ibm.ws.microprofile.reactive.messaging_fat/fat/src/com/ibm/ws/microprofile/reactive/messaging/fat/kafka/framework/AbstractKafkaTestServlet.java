@@ -38,7 +38,7 @@ public class AbstractKafkaTestServlet extends FATServlet {
 
     @PostConstruct
     private void setup() {
-        kafkaTestClient = new KafkaTestClient(kafkaBootstrap);
+        kafkaTestClient = new KafkaTestClient(getKafkaBootstrap());
     }
 
     @Override
@@ -52,4 +52,7 @@ public class AbstractKafkaTestServlet extends FATServlet {
         kafkaTestClient.cleanUp();
     }
 
+    protected String getKafkaBootstrap() {
+        return kafkaBootstrap;
+    }
 }

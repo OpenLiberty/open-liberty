@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN" "http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd">
+   <ejb-jar id="ejb-jar_ID">
+      <enterprise-beans>
+         <session id="Session_0">
+            <description>Stateless session bean for container tests.</description>
+            <display-name>StatelessSession</display-name>
+            <ejb-name>StatelessSession</ejb-name>
+            <home>com.ibm.ejb2x.base.pitt.ejb.StatelessSessionHome</home>
+            <remote>com.ibm.ejb2x.base.pitt.ejb.StatelessSession</remote>
+            <ejb-class>com.ibm.ejb2x.base.pitt.ejb.StatelessSessionBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_1">
+            <description>Replacement for BMP bean</description>
+            <display-name>BMEntity</display-name>
+            <ejb-name>BMEntity</ejb-name>
+            <home>com.ibm.ejb2x.base.pitt.ejb.BMEntityHome</home>
+            <remote>com.ibm.ejb2x.base.pitt.ejb.BMEntity</remote>
+            <ejb-class>com.ibm.ejb2x.base.pitt.ejb.BMEntityBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_2">
+            <description>BMT session bean for container tests.</description>
+            <display-name>BMTXSession</display-name>
+            <ejb-name>BMTXSession</ejb-name>
+            <home>com.ibm.ejb2x.base.pitt.ejb.BMTXSessionHome</home>
+            <remote>com.ibm.ejb2x.base.pitt.ejb.BMTXSession</remote>
+            <ejb-class>com.ibm.ejb2x.base.pitt.ejb.BMTXSessionBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+         </session>
+         <session id="Session_3">
+            <description>Replacement for CMP bean</description>
+            <display-name>CMEntity</display-name>
+            <ejb-name>CMEntity</ejb-name>
+            <home>com.ibm.ejb2x.base.pitt.ejb.CMEntityHome</home>
+            <remote>com.ibm.ejb2x.base.pitt.ejb.CMEntity</remote>
+            <ejb-class>com.ibm.ejb2x.base.pitt.ejb.CMEntityBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1">
+               <description>Test string ppty.</description>
+               <env-entry-name>CMEntityProperty1</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>cmEntityProperty1</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_2">
+               <description>Second test string ppty.</description>
+               <env-entry-name>CMEntityProperty2</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>cmEntityProperty2</env-entry-value>
+            </env-entry>
+         </session>
+         <session id="Session_4">
+            <description>Stateful session bean for container tests.</description>
+            <display-name>StatefulSession</display-name>
+            <ejb-name>StatefulSession</ejb-name>
+            <home>com.ibm.ejb2x.base.pitt.ejb.StatefulSessionHome</home>
+            <remote>com.ibm.ejb2x.base.pitt.ejb.StatefulSession</remote>
+            <ejb-class>com.ibm.ejb2x.base.pitt.ejb.StatefulSessionBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_5">
+            <description>BMT stateless session bean for container tests.</description>
+            <display-name>BMTXStateless</display-name>
+            <ejb-name>BMTXStateless</ejb-name>
+            <home>com.ibm.ejb2x.base.pitt.ejb.BMTXStatelessHome</home>
+            <remote>com.ibm.ejb2x.base.pitt.ejb.BMTXStateless</remote>
+            <ejb-class>com.ibm.ejb2x.base.pitt.ejb.BMTXStatelessBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+         </session>
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+         <container-transaction id="MethodTransaction_2">
+            <method id="MethodElement_2">
+               <ejb-name>BMEntity</ejb-name>
+               <method-name>*</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_3">
+            <method id="MethodElement_3">
+               <ejb-name>BMEntity</ejb-name>
+               <method-intf>Remote</method-intf>
+               <method-name>txNewIncrement</method-name>
+               <method-params></method-params>
+            </method>
+            <trans-attribute>RequiresNew</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_4">
+            <method id="MethodElement_4">
+               <ejb-name>CMEntity</ejb-name>
+               <method-name>*</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_7">
+            <method id="MethodElement_7">
+               <ejb-name>CMEntity</ejb-name>
+               <method-intf>Remote</method-intf>
+               <method-name>txMandatoryIncrement</method-name>
+               <method-params></method-params>
+            </method>
+            <trans-attribute>Mandatory</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_8">
+            <method id="MethodElement_9">
+               <ejb-name>CMEntity</ejb-name>
+               <method-intf>Remote</method-intf>
+               <method-name>setValue_NotSupported</method-name>
+               <method-params>
+                  <method-param>java.lang.String</method-param>
+               </method-params>
+            </method>
+            <method id="MethodElement_10">
+               <ejb-name>CMEntity</ejb-name>
+               <method-intf>Remote</method-intf>
+               <method-name>getValue_NotSupported</method-name>
+               <method-params>
+               </method-params>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_14">
+            <method id="MethodElement_16">
+               <ejb-name>StatefulSession</ejb-name>
+               <method-intf>Remote</method-intf>
+               <method-name>txNotSupportedDelegate</method-name>
+               <method-params>
+                  <method-param>com.ibm.ejb2x.base.pitt.ejb.CMEntity,com.ibm.ejb2x.base.pitt.ejb.CMEntity</method-param>
+               </method-params>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+         </container-transaction>
+      </assembly-descriptor>
+   </ejb-jar>

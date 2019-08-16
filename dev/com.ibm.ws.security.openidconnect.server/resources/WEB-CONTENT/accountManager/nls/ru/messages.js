@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Удалить",
     "DONE": "Готово",
     "EDIT": "Изменить",
+    "FALSE": "False",
     "GENERATE": "Сгенерировать",
     "LOADING": "Загрузка",
     "LOGOUT": "Выход из системы",
@@ -31,6 +32,9 @@ var messages = {
     "PROCESSING": "Обработка",
     "REGENERATE": "Создать повторно",
     "REGISTER": "Зарегистрировать",
+    "TABLE_FIELD_SORT_ASC": "Таблица отсортирована по {0} в порядке возрастания.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Таблица отсортирована по {0} в порядке убывания.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "Повторить попытку...",
     "UPDATE": "Обновить",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Управление личными маркерами",
     "ACCT_MGR_DESC": "Создать, удалить и заново создать элементы app-password и app-token.",
-    "ADD_NEW_AUTHENTICATION": "Добавить новый элемент app-password или app-token",
+    "ADD_NEW_AUTHENTICATION": "Добавить новый элемент app-password или app-token.",
     "NAME_IDENTIFIER": "Имя: {0}",
     "ADD_NEW_TITLE": "Зарегистрировать новые идентификационные данные",
     "NOT_GENERATED_PLACEHOLDER": "Не создавался",
+    "AUTHENTICAION_GENERATED": "Создана идентификация",
+    "GENERATED_APP_PASSWORD": "Создан элемент app-password",
+    "GENERATED_APP_TOKEN": "Создан элемент app-token",
+    "COPY_APP_PASSWORD": "Скопировать элемент app-password в буфер обмена",
+    "COPY_APP_TOKEN": "Скопировать элемент app-token в буфер обмена",
     "REGENERATE_APP_PASSWORD": "Заново создать элемент App-Password",
     "REGENERATE_PW_WARNING": "Это действие заменит текущий элемент app-password.",
     "REGENERATE_PW_PLACEHOLDER": "Дата создания предыдущего пароля: {0}",        // 0 - date

@@ -73,9 +73,16 @@ public class ContextualInstanceSnapshot {
         this.conInstances = conInstances == null ? emptySet() : conInstances;
     }
 
+    public int getBeanCount() {
+        return reqInstances.size() +
+               sesInstances.size() +
+               conInstances.size();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString())
+                        .append(" beanCount=" + getBeanCount())
                         .append('\n')
                         .append("RequestScoped instances = ")
                         .append(this.reqInstances)

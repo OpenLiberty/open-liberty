@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.container.v21.cdi.internal;
 
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -26,6 +29,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.ejs.util.dopriv.SystemGetPropertyPrivileged;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
@@ -37,14 +41,69 @@ public class JPAContainerCDIExtension implements Extension, WebSphereCDIExtensio
     @Reference
     protected HibernateNotifier notUsed;
 
+    WeakReference<ClassLoader> classLoader = null;
+
+    private final static String ENABLE_HIBERNATE_COMPATIBILITY = "com.ibm.websphere.jpa.hibernate-cdi-compatibility";
+    @SuppressWarnings("unchecked")
+    private static final boolean hibernateEnabled = Boolean.parseBoolean((String) AccessController.doPrivileged(new SystemGetPropertyPrivileged(ENABLE_HIBERNATE_COMPATIBILITY, "false")));
+
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
-    	HibernateNotifier hibernateNotifier = getPropertyProvideder();
-    	hibernateNotifier.notifyHibernateAfterBeanDiscovery(manager);
+        //ClassLoaders are used to match events to the correct extended bean manager instance as they are the only data
+        //unique enough to serve as an id available at the point the extended bean manager is created. 
+        //As AfterDeploymentValidation events do not have any reference to the classLoader, we get it here and remember it
+        if (hibernateEnabled) {
+            ClassLoader cl = extractClassLoaderFromEvent(event);
+            if (cl == null) {
+                throw new IllegalStateException("Unable to find a classloader which can map the correct hibernate ExtendedBeanManager");
+            }
+            classLoader = new WeakReference<ClassLoader>(cl);
+        }
+    }
+
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager manager) {
+        if (hibernateEnabled) {
+            HibernateNotifier hibernateNotifier = getPropertyProvideder();
+            hibernateNotifier.notifyHibernateAfterBeanDiscovery(manager, classLoader.get());
+            classLoader.clear();
+        }
     }
     
     public void beforeShutdown(@Observes BeforeShutdown event, BeanManager manager) {
-    	HibernateNotifier hibernateNotifier = getPropertyProvideder();
-    	hibernateNotifier.notifyHibernateBeforeShutdown(manager);
+        if (hibernateEnabled) {
+    	    HibernateNotifier hibernateNotifier = getPropertyProvideder();
+    	    hibernateNotifier.notifyHibernateBeforeShutdown(manager);
+        }
+    }
+
+    private ClassLoader extractClassLoaderFromEvent(final AfterBeanDiscovery event) {
+        if (event != null && event.getClass().getName().equals("org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl")) {
+            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    try {
+                        Method getDeployment = event.getClass().getSuperclass().getDeclaredMethod("getDeployment");
+                        getDeployment.setAccessible(true);
+                        Object maybeDeployment = getDeployment.invoke(event);
+                        if (maybeDeployment.getClass().getSimpleName().contains("WebSphereCDIDeployment")) {
+                            Method getClassLoader = maybeDeployment.getClass().getDeclaredMethod("getClassLoader");
+                            getClassLoader.setAccessible(true);
+                            Object maybeClassLoader = getClassLoader.invoke(maybeDeployment);
+                            if (maybeClassLoader instanceof ClassLoader) {
+                                return (ClassLoader) maybeClassLoader;
+                            }  else {
+                                return null;
+                            }
+                        } else {
+                            return null;
+                        }
+                    } catch (Throwable t) {
+                        return null;
+                    }
+                }
+            });
+        } else {
+            return null;
+        }    
     }
  
     private HibernateNotifier getPropertyProvideder() {

@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Elimina",
     "DONE": "Eseguito",
     "EDIT": "Modifica",
+    "FALSE": "False",
     "GENERATE": "Genera",
     "LOADING": "Caricamento",
     "LOGOUT": "Logout",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "Rigenera",
     "REGISTER": "Registra",
     "TABLE_BATCH_BAR": "Barra azioni tabella",
+    "TABLE_FIELD_SORT_ASC": "La tabella è ordinata per {0} in sequenza crescente. ",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "La tabella è ordinata per {0} in sequenza decrescente. ", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "Riprova...",
     "UPDATE": "Aggiorna",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "Elimina token",
     "TOKEN_MGR_DESC": "Elimina i token e le password app per l'utente specificato.",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "Immetti ID utente",
-    "DELETE_SELECTED": "Elimina password e token app selezionati",
+    "TABLE_FILLED_WITH": "La tabella è stata aggiornata per mostrare {0} autenticazioni appartenenti a {1}.",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "Elimina password e token app selezionati.",
     "DELETE_ARIA": "Elimina {0} denominato {1}",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "Elimina questa password app",
     "DELETE_TOKEN": "Elimina questo token app",
@@ -58,15 +63,15 @@ var messages = {
     "DELETE_WARNING_TOKEN": "Questa azione rimuoverà il token app attualmente assegnato.",
     "DELETE_MANY": "Elimina password/token app",
     "DELETE_MANY_FOR": "Assegnato a {0}",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "Questa azione eliminerà la password o il token app selezionati",
+    "DELETE_ONE_MESSAGE": "Questa azione eliminerà la password o il token app selezionati.",
     "DELETE_MANY_MESSAGE": "Questa azione eliminerà {0}  password/token app selezionati.",  // 0 - number
     "DELETE_ALL_MESSAGE": "Questa azione eliminerà tutte le password o i token app che appartengono a {0}.", // 0 - user id
     "DELETE_NONE": "Seleziona per eliminazione",
     "DELETE_NONE_MESSAGE": "Selezionare una casella di spunta per indicare quali password o token app devono essere eliminati.",
     "SINGLE_ITEM_SELECTED": "1 elemento selezionato",
     "ITEMS_SELECTED": "{0} elementi selezionati",            // 0 - number
-    "SELECT_ALL_AUTHS": "Selezionare tutte le password e token app per questo utente",
-    "SELECT_SPECIFIC": "Selezionare {0} denominato {1} per l'eliminazione",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "Selezionare tutte le password e token app per questo utente.",
+    "SELECT_SPECIFIC": "Selezionare {0} denominato {1} per l'eliminazione.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Cerchi qualcosa? Immetti un ID utente per visualizzare le password app e i token app.",
     "GENERIC_FETCH_FAIL": "Errore durante il richiamo di {0}",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "Impossibile ottenere l'elenco di {0} che appartengono a {1}.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

@@ -1733,4 +1733,15 @@ public class Http2FullModeTests extends FATServletClient {
     public void testExceedMaxConcurrentStreams() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    /**
+     * Test Coverage: Send a POST request with body data, but no content-length header
+     * Test Outcome: The server response contains a string from the request body
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSendPostRequestWithBody() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
 }

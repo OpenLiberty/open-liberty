@@ -163,7 +163,6 @@ public class URAPIs_TDS_EmptyInputsTest {
      * Hit the test servlet to see if getUniqueUserId works when supplied with a valid user
      * This verifies the various required bundles got installed and are working.
      */
-    @Test(expected = EntryNotFoundException.class)
     public void getUniqueUserId() throws Exception {
         String user = "";
         Log.info(c, "getUniqueUserId", "Checking with a empty input");
@@ -175,7 +174,6 @@ public class URAPIs_TDS_EmptyInputsTest {
      * Hit the test servlet to see if getUserSecurityName works when supplied with a valid user
      * This verifies the various required bundles got installed and are working.
      */
-    @Test(expected = EntryNotFoundException.class)
     public void getUserSecurityName() throws Exception {
         String user = "";
 

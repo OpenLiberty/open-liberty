@@ -22,7 +22,7 @@ var table = (function() {
 
     var __getTableRowByName = function(name, authType) {
         var $table = $('#' + tableId + ' tbody');
-        var $row = $table.find('tr[data-filter="' + name.toLowerCase() + '"]');
+        var $row = $table.find('tr[data-filter="' + utils.escapeString(name.toLowerCase())+ '"]');
         if ($row.length > 1) {
             // Two rows with the same name.   Find requested one based on authType.
             var $correctAuthType = $row.find('td.authType').filter(function(){ return this.textContent === authType; });
@@ -108,7 +108,15 @@ var table = (function() {
 
         // Action buttons
         var regenerateAriaLabel = utils.formatString(messages.REGENERATE_ARIA, [authData.authType, authData.name]);
-        var regenerateButton = "<td><input id='regenerate_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button regenerate_auth_button' value=" + messages.REGENERATE + " aria-label='" + regenerateAriaLabel + "'></td>";
+        var regenerateButton = "<td><input id='regenerate_" + authData.authID + "' type='button' authID = " + authData.authID;
+        if ((authData.authType === 'app-password' && window.globalAppPasswordsAllowed) ||
+            (authData.authType === 'app-token' && window.globalAppTokensAllowed)) {
+                regenerateButton += " class='tool_table_button regenerate_auth_button' value=" + messages.REGENERATE + " aria-label='" + regenerateAriaLabel + "'></td>";
+        } else {
+            // Disable the 'Regenerate' button if the OP was not defined with the appPasswordAllowed 
+            // or appTokenAllowed flags.
+                regenerateButton += " class='tool_table_button regenerate_auth_button' disabled value=" + messages.REGENERATE + " aria-label='" + regenerateAriaLabel + "'></td>";
+        }
         var deleteAriaLabel = utils.formatString(messages.DELETE_ARIA, [authData.authType, authData.name]);
         var deleteButton = "<td><input id='edit_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button delete_auth_button' value=" + messages.DELETE + " aria-label='" + deleteAriaLabel + "'></td>";
 
@@ -127,8 +135,8 @@ var table = (function() {
      * @param {*} authID - unique ID for this app-password or app-token
      */
     var __enableRowActions = function(authID) {
-        $(".regenerate_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".regenerate_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -143,8 +151,8 @@ var table = (function() {
             __regenerateAuthMechanism(authID, name, type, issueDate);                        
         });
 
-        $(".delete_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".delete_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -221,7 +229,7 @@ var table = (function() {
         var $dialogInfo = $regenerateDlg.find('.tool_modal_body_info');
         // insert bidi text direction to the name
         var dirTextName = bidiUtils.getDOMBidiTextDirection(name);
-        var nameLabel = utils.formatString(messages.NAME_IDENTIFIER, ["<span class='tool_modal_body_info_value' " + dirTextName + ">" + name + "</span>"]);
+        var nameLabel = utils.formatString(messages.NAME_IDENTIFIER, ["<span class='tool_modal_body_info_value' " + dirTextName + ">" + utils.encodeData(name) + "</span>"]);
         $dialogInfo.find('.tool_modal_body_info_label').html(nameLabel);
         var $authType = $regenerateDlg.find('#authType');
         var $authValue = $regenerateDlg.find('.authValueDiv');
@@ -306,13 +314,15 @@ var table = (function() {
                 $("#auth_value_copy").get(0).focus();
 
                 // Update the row in the table with the returned information
-                var authData = convertResponseForTable(response, authType, name);
+                var authData = convertResponseForTable(response, authType, utils.encodeData(name));
                 var tableRow = __createTableRow(authData);   // Create new table row with new values
                 var $currentTableRow = __getTableRowByName(name, authType);
                 $currentTableRow.replaceWith(tableRow);      // In place replacement
                 // Get the replaced row in the table.
                 $currentTableRow = __getTableRowByName(name, authType);
                 $currentTableRow.addClass("rowMatched");
+                // Row elements were replaced ... so reset the key traversing event handlers.
+                tableUtils.initTableKeyTraversing(tableId, $currentTableRow);
                 __enableRowActions(authData.authID);
 
                 // Row was replaced so switch out the return focus button to the
@@ -334,7 +344,7 @@ var table = (function() {
                 // So, if something else happended with the request, put up the generic error message.
                 var regenerateTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
                 var errTitle = utils.formatString(messages.GENERIC_REGENERATE_FAIL, [regenerateTypeTitle]);
-                var errDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_CREATE_MSG, [authType, name]);
+                var errDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_CREATE_MSG, [authType, utils.encodeData(name)]);
                 utils.showResultsDialog(true, errTitle, errDescription, true, true, false, reshowAddRegenDialog);
             });            
         }).fail(function(errResponse) {
@@ -345,7 +355,7 @@ var table = (function() {
             // So, if something else happended with the request, put up the generic error message.
             var regenDelTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errDelTitle = utils.formatString(messages.GENERIC_REGENERATE_FAIL, [regenDelTitle]);
-            var errDelDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_MSG, [authType, name]);
+            var errDelDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_MSG, [authType, utils.encodeData(name)]);
             utils.showResultsDialog(true, errDelTitle, errDelDescription, true, true, false, reshowAddRegenDialog);
         });
     };
@@ -364,7 +374,7 @@ var table = (function() {
 
         // Find the delete dialog in the html
         var $deleteDlg = $('.tool_modal_container.ss_delete');
-        $deleteDlg.find('.tool_modal_title').html(name);
+        $deleteDlg.find('.tool_modal_title').html(utils.encodeData(name));
 
         if (type === 'app-password') {
             $deleteDlg.find('.tool_modal_secondary_title').html(messages.DELETE_PW);
@@ -410,7 +420,7 @@ var table = (function() {
             // So, if something else happended with the request, put up the generic error message.
             var deleteTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, [deleteTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, name]);
+            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
         });
     };

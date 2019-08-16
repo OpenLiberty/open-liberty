@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.jndi.internal;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
+import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Hashtable;
@@ -31,15 +32,30 @@ public class WASInitialContextFactoryBuilder implements InitialContextFactoryBui
     public InitialContextFactory createInitialContextFactory(Hashtable<?, ?> environment)
                     throws NamingException {
 
-        String icfFactory = (String) environment.get(Context.INITIAL_CONTEXT_FACTORY);
+        final String icfFactory = (String) environment.get(Context.INITIAL_CONTEXT_FACTORY);
         InitialContextFactory icf = null;
+        Constructor<InitialContextFactory> constructor = null;
 
         if (icfFactory != null) {
-            try {
-                Class<?> clazz = Class.forName(icfFactory, true, getClassLoader());
-                icf = (InitialContextFactory) clazz.newInstance();
-            } catch (Exception e) {
-                //auto FFDC
+            constructor = AccessController.doPrivileged(new PrivilegedAction<Constructor<InitialContextFactory>>() {
+                @Override
+                public Constructor<InitialContextFactory> run() {
+                    try {
+                        Class<?> clazz = Class.forName(icfFactory, false, getClassLoader());
+                        return (Constructor<InitialContextFactory>) clazz.getConstructor();
+                    } catch (Exception e) {
+                        //auto FFDC
+                    }
+                    return null;
+                }
+            });
+
+            if (constructor != null) {
+                try {
+                    icf = constructor.newInstance();
+                } catch (Exception e) {
+                    //auto FFDC
+                }
             }
         }
 

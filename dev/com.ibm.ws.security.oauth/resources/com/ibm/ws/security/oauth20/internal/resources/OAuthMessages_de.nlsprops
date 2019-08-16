@@ -113,8 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Der Wert von {0} in der oauthProv
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Der Wert des angegebenen Attributs ist zu gro\u00df.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Setzen Sie das angegebene Attribut auf einen g\u00fcltigen Wert. 
 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Die OAuth-Clientregistrierung oder -Clientaktualisierung ist fehlgeschlagen, weil die Clientdaten ein ung\u00fcltiges Zeichen [{0}] enthalten.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Das Zeichen ist in den Clientdaten nicht zul\u00e4ssig.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Entfernen Sie ung\u00fcltige Zeichen und \u00fcbergeben Sie die Anforderung erneut. 
+
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Die Client-ID {0} wurde nicht gefunden.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Die Anforderung enth\u00e4lt eine Client-ID {0}, die nicht gefunden wurde. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Die Anforderung enthielt eine Client-ID, die nicht gefunden wurde. 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Wiederholen Sie die Anforderung mit einer g\u00fcltigen Client-ID.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: Es wurde eine Registrierungsanforderung an eine falsche URI abgesetzt.
@@ -134,19 +138,19 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=Die JSON im Anforderungs
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie die Anforderung.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Die Client-ID {0} ist bereits vorhanden.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Die Operation ist fehlgeschlagen, weil die Client-ID {0} bereits vorhanden ist. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Die Operation ist fehlgeschlagen, da die Client-ID bereits vorhanden war. 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie die Anforderung mit den entsprechenden Parametern.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Die Aktualisierung des Clients ist fehlgeschlagen.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=Die Aktualisierungsanforderung gibt an, dass der geheime Schl\u00fcssel des Clients beibehalten wird, aber f\u00fcr die vorhandene Registrierung ist kein geheimer Schl\u00fcssel gesetzt. 
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Die Aktualisierung des Clients ist fehlgeschlagen. Die Aktualisierungsanforderung gibt an, dass der geheime Schl\u00fcssel des Clients beibehalten werden muss, aber f\u00fcr die vorhandene Registrierung ist kein geheimer Schl\u00fcssel gesetzt.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=Die Aktualisierungsanforderung gibt an, dass der geheime Schl\u00fcssel des Clients beibehalten werden muss, aber f\u00fcr die vorhandene Registrierung ist kein geheimer Schl\u00fcssel gesetzt.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie die Anforderung mit den entsprechenden Parametern.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Die Aktualisierung des Clients ist fehlgeschlagen.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=In einer Aktualisierungsanforderung f\u00fcr einen \u00f6ffentlichen Client darf kein geheimer Schl\u00fcssel angegeben werden. 
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Die Aktualisierung des Clients ist fehlgeschlagen. In einer Aktualisierungsanforderung f\u00fcr einen \u00f6ffentlichen Client darf kein geheimer Schl\u00fcssel angegeben werden.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=In einer Aktualisierungsanforderung f\u00fcr einen \u00f6ffentlichen Client darf kein geheimer Schl\u00fcssel angegeben werden.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie die Anforderung mit den entsprechenden Parametern.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Die Aktualisierung des Clients ist fehlgeschlagen.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=Die Anforderung kann nicht ausgef\u00fchrt werden, weil sie eine f\u00fcr den aktuellen Zustand der Clientregistrierung ung\u00fcltige Konfiguration enth\u00e4lt. 
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Die Aktualisierung des Clients ist fehlgeschlagen. Der geheime Clientschl\u00fcssel kann nicht aktualisiert werden, weil die Anforderung eine f\u00fcr den aktuellen Stand der Clientregistrierung ung\u00fcltige Konfiguration enth\u00e4lt.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=Die Anforderung kann nicht ausgef\u00fchrt werden, weil sie eine f\u00fcr den aktuellen Stand der Clientregistrierung ung\u00fcltige Konfiguration enth\u00e4lt.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie die Anforderung mit den entsprechenden Parametern.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: Die HTTP-Methode {0} wird f\u00fcr den Service {1} nicht unterst\u00fctzt.
@@ -431,9 +435,18 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=Die angegebene Anforderung muss Ber
 OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Stellen Sie sicher, dass die Anforderung das Basisauthentifizierungsschema verwendet, um die OAuth-Clientberechtigungsnachweise einzuschlie\u00dfen.
 
 # Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
-OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: Die an den URI {0} gesendete Anforderung wird ignoriert, weil der URI nicht aktiviert ist. Ein oder mehrere Client- oder Providerattribute wurden nicht festgelegt. \u00dcberpr\u00fcfen Sie, dass die Providerattribute internalClientId und internalClientSecret konfiguriert sind. Stellen Sie sicher, dass die Clientattribute isEnabled, appPasswordAllowed und appTokenAllowed konfiguriert sind.
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: Die Anforderung, die an den URI {0} gesendet wurde, kann nicht verarbeitet werden, weil mindestens ein Client- oder Providerattribut nicht definiert wurde. \u00dcberpr\u00fcfen Sie, dass die Providerattribute internalClientId und internalClientSecret konfiguriert sind. Stellen Sie sicher, dass die Clientattribute isEnabled, appPasswordAllowed und appTokenAllowed konfiguriert sind.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Die Client- und Providerattribute m\u00fcssen f\u00fcr den URI festgelegt sein, um Anforderungen zu verarbeiten.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Legen Sie die Client- und Providerattribute korrekt fest, damit der Provider die Anforderung verarbeiten kann.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Der OpenID Connect-Provider kann die URI-Anforderung [{0}] nicht verarbeiten, weil die Java-Version \u00e4lter ist als Java 8. Java 8 oder h\u00f6her ist erforderlich.
+JAVA8_REQUIRED.explanation=Die Java-Version, die momentan verwendet wird, ist nicht Java 8 oder h\u00f6her.
+JAVA8_REQUIRED.useraction=Installieren Sie Java Version 8 oder h\u00f6her.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Der OpenID Connect-Provider {0} hat das {1}-Konfigurationsattribut f\u00fcr die Verwendung des Algorithmus {2} definiert. Hierf\u00fcr ist Java 8 oder h\u00f6her erforderlich. Der angegebene Provider ignoriert die {3}-Einstellung.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Die Java-Version, die momentan verwendet wird, ist nicht Java 8 oder h\u00f6her.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installieren Sie Java Version 8 oder h\u00f6her, um die genannte Konfigurationsoption zu verwenden.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Anmelden

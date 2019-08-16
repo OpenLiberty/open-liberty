@@ -113,8 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Hodnota {0} v konfiguraci oauthPr
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Hodnota v uveden\u00e9m atributu je p\u0159\u00edli\u0161 velk\u00e1.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Nastavte uveden\u00fd atribut na \u0159\u00e1dnou hodnotu. 
 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Registrace nebo aktualizace klienta OAuth se nezda\u0159ila, proto\u017ee data klienta obsahuj\u00ed neplatn\u00fd znak [{0}].
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=V datech klienta nen\u00ed znak povolen.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Odeberte neplatn\u00e9 znaky a pot\u00e9 po\u017eadavek znovu ode\u0161lete. 
+
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Nebylo nalezeno ID klienta {0}.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Po\u017eadavek obsahoval ID klienta {0}, kter\u00e9 nebylo nalezeno. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Po\u017eadavek obsahoval ID klienta, kter\u00e9 nebylo nalezeno. 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Opakujte po\u017eadavek s platn\u00fdm ID klienta.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: Byl zad\u00e1n po\u017eadavek na registraci pro nespr\u00e1vn\u00fd identifik\u00e1tor URI.
@@ -134,19 +138,19 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=JSON v t\u011ble po\u017
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: ID klienta {0} ji\u017e existuje.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operace se nezda\u0159ila, proto\u017ee ID klienta {0} ji\u017e existuje. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operace se nezda\u0159ila, proto\u017ee ID klienta ji\u017e existuje. 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Aktualizace klienta se nezda\u0159ila.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=Po\u017eadavek na aktualizaci uv\u00e1d\u00ed, \u017ee maj\u00ed b\u00fdt utajen\u00e9 \u00fadaje klienta zachov\u00e1ny, ale pro st\u00e1vaj\u00edc\u00ed registraci \u017e\u00e1dn\u00e9 utajen\u00e9 \u00fadaje nastaveny nejsou. 
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Aktualizace klienta se nezda\u0159ila. Po\u017eadavek na aktualizaci uv\u00e1d\u00ed, \u017ee mus\u00ed b\u00fdt utajen\u00e9 \u00fadaje klienta zachov\u00e1ny, ale pro st\u00e1vaj\u00edc\u00ed registraci \u017e\u00e1dn\u00e9 utajen\u00e9 \u00fadaje nastaveny nejsou.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=Po\u017eadavek na aktualizaci uv\u00e1d\u00ed, \u017ee mus\u00ed b\u00fdt utajen\u00e9 \u00fadaje klienta zachov\u00e1ny, ale pro st\u00e1vaj\u00edc\u00ed registraci \u017e\u00e1dn\u00e9 utajen\u00e9 \u00fadaje nastaveny nejsou.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Aktualizace klienta se nezda\u0159ila.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Po\u017eadavek na aktualizaci pro ve\u0159ejn\u00e9ho klienta nesm\u00ed uv\u00e1d\u011bt utajen\u00e9 \u00fadaje klienta. 
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Aktualizace klienta se nezda\u0159ila. Po\u017eadavek na aktualizaci pro ve\u0159ejn\u00e9ho klienta nesm\u00ed uv\u00e1d\u011bt utajen\u00e9 \u00fadaje klienta.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Po\u017eadavek na aktualizaci pro ve\u0159ejn\u00e9ho klienta nesm\u00ed uv\u00e1d\u011bt utajen\u00e9 \u00fadaje klienta.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Aktualizace klienta se nezda\u0159ila.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=Po\u017eadavek nelze dokon\u010dit, proto\u017ee uv\u00e1d\u00ed vzhledem k aktu\u00e1ln\u00edmu stavu registrace klienta neplatnou konfiguraci. 
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Aktualizace klienta se nezda\u0159ila. Tajn\u00fd kl\u00ed\u010d klienta nelze aktualizovat, proto\u017ee vzhledem k aktu\u00e1ln\u00edmu stavu registrace klienta uv\u00e1d\u00ed po\u017eadavek neplatnou konfiguraci.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=Po\u017eadavek nelze dokon\u010dit, proto\u017ee uv\u00e1d\u00ed vzhledem k aktu\u00e1ln\u00edmu stavu registrace klienta neplatnou konfiguraci.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: Metoda HTTP {0} nen\u00ed podporov\u00e1na pro slu\u017ebu {1}.
@@ -432,9 +436,18 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=Ur\u010den\u00fd po\u017eadavek mus
 OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Ujist\u011bte se, \u017ee po\u017eadavek pou\u017e\u00edv\u00e1 sch\u00e9ma z\u00e1kladn\u00edho ov\u011b\u0159en\u00ed pro zahrnut\u00ed pov\u011b\u0159en\u00ed klienta OAuth.
 
 # Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
-OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: Po\u017eadavek odeslan\u00fd na identifik\u00e1tor URI {0} je ignorov\u00e1n, proto\u017ee identifik\u00e1tor URI nen\u00ed povolen. Jeden nebo v\u00edce atribut\u016f klienta nebo poskytovatele nejsou nastaveny. Ov\u011b\u0159te, \u017ee jsou nakonfigurov\u00e1ny atributy poskytovatele internalClientId a internalClientSecret. Ov\u011b\u0159te, zda jsou nakonfigurov\u00e1ny atributy klienta isEnabled, appPasswordAllowed nebo appTokenAllowed.
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: Po\u017eadavek odeslan\u00fd k identifik\u00e1toru URI {0} nelze zpracovat, proto\u017ee jeden nebo v\u00edce atribut\u016f klienta nebo poskytovatele nejsou nastaveny. Ov\u011b\u0159te, \u017ee jsou nakonfigurov\u00e1ny atributy poskytovatele internalClientId a internalClientSecret. Ov\u011b\u0159te, zda jsou nakonfigurov\u00e1ny atributy klienta isEnabled, appPasswordAllowed nebo appTokenAllowed.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Atributy klienta a poskytovatele mus\u00ed b\u00fdt nastaveny pro identifik\u00e1tor URI, aby mohl zpracov\u00e1vat po\u017eadavky.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Nastavte spr\u00e1vn\u011b atributy klienta a poskytovatele, aby mohl poskytovatel zpracovat po\u017eadavek.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Poskytovatel OpenID Connect nem\u016f\u017ee zpracovat po\u017eadavek URI [{0}], proto\u017ee verze Java je ni\u017e\u0161\u00ed ne\u017e Java 8. Je vy\u017eadov\u00e1na Java verze 8 nebo vy\u0161\u0161\u00ed.
+JAVA8_REQUIRED.explanation=Pou\u017e\u00edvan\u00e1 verze Java nen\u00ed verze 8 nebo vy\u0161\u0161\u00ed.
+JAVA8_REQUIRED.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Poskytovatel OpenID Connect {0} m\u00e1 nastaven atribut konfigurace {1} pro pou\u017eit\u00ed algoritmu {2} a vy\u017eaduje verzi Java 8 nebo vy\u0161\u0161\u00ed. Zadan\u00fd poskytovatel bude ignorovat nastaven\u00ed {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Pou\u017e\u00edvan\u00e1 verze Java nen\u00ed verze 8 nebo vy\u0161\u0161\u00ed.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed pro pou\u017eit\u00ed zm\u00edn\u011bn\u00e9 volby konfigurace.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Odhl\u00e1sit

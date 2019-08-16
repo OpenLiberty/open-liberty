@@ -1,0 +1,3 @@
+-Dcom.ibm.tx.jta.impl.PeerRecoveryLeaseTimeout=1
+-Dcom.ibm.tx.jta.impl.PeerLeaseCheckInterval=2
+-Dcom.ibm.ws.recoverylog.spi.CheckPeersAtStartup=true

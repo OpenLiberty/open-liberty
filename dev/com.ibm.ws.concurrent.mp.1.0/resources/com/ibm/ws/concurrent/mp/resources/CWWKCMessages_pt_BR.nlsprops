@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Atualize o aplicativo para usar o m\u00e9todo
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: A propaga\u00e7\u00e3o de transa\u00e7\u00f5es para a\u00e7\u00f5es e tarefas contextuais n\u00e3o \u00e9 suportada.
 CWWKC1157.cannot.propagate.tx.explanation=Um ManagedExecutor ou ThreadContext que est\u00e1 configurado para propagar contextos de transa\u00e7\u00e3o pode propagar apenas contextos de transa\u00e7\u00e3o vazios. Portanto, n\u00e3o \u00e9 poss\u00edvel criar a\u00e7\u00f5es e tarefas contextuais em uma transa\u00e7\u00e3o.
 CWWKC1157.cannot.propagate.tx.useraction=Crie a a\u00e7\u00e3o ou tarefa contextual fora de uma transa\u00e7\u00e3o. Como alternativa, configure o ManagedExecutor ou ThreadContext para n\u00e3o propagar contextos de transa\u00e7\u00e3o.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

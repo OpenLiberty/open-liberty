@@ -32,173 +32,198 @@ import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
  */
 public class JwtData {
 
-    private static final TraceComponent tc = Tr.register(JwtData.class);
+	private static final TraceComponent tc = Tr.register(JwtData.class);
 
-    private static final String SIGNATURE_ALG_HS256 = "HS256";
-    private static final String SIGNATURE_ALG_RS256 = "RS256";
+	private static final String SIGNATURE_ALG_HS256 = "HS256";
+	private static final String SIGNATURE_ALG_RS256 = "RS256";
+	private static final String SIGNATURE_ALG_NONE = "none";
 
-    // public static final String TYPE_ID_TOKEN = "ID Token";
-    public static final String TYPE_JWT_TOKEN = "Json Web Token";
+	// public static final String TYPE_ID_TOKEN = "ID Token";
+	public static final String TYPE_JWT_TOKEN = "Json Web Token";
 
-    boolean bIdToken = false;
-    boolean bJwtToken = false;
+	boolean bIdToken = false;
+	boolean bJwtToken = false;
 
-    private Key _signingKey = null;
-    private String _keyId = null;
+	private Key _signingKey = null;
+	private String _keyId = null;
 
-    JwtConfig jwtConfig = null;
-    String tokenType = TYPE_JWT_TOKEN;
-    JWKProvider jwkProvider = null;
+	JwtConfig jwtConfig = null;
+	JwtDataConfig jwtDataConfig = null;
+	String tokenType = TYPE_JWT_TOKEN;
+	JWKProvider jwkProvider = null;
 
-    String signatureAlgorithm = null;
-    JwtTokenException noKeyException = null;
+	String signatureAlgorithm = null;
+	JwtTokenException noKeyException = null;
 
-    public JwtData(BuilderImpl jwtBuilder, JwtConfig jwtConfig, String tokenType) throws JwtTokenException {
-        this.jwtConfig = jwtConfig;
-        this.tokenType = tokenType;
-        signatureAlgorithm = jwtBuilder.getAlgorithm();
-
-        bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
-        initSigningKey(jwtBuilder, jwtConfig);
-    }
-
-    public JwtConfig getConfig() {
-        return jwtConfig;
-
-    }
-
-    /*
-     * Handle the signingKey here to get the same error messages
-     */
-    @FFDCIgnore(Exception.class)
-    protected void initSigningKey(BuilderImpl jwtBuilder, JwtConfig jwtConfig) throws JwtTokenException {
-        String keyType = Constants.SIGNING_KEY_X509;
-        try {
-            if (jwtConfig.isJwkEnabled() && SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
-                keyType = Constants.SIGNING_KEY_JWK;
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Signing key type is " + keyType);
-                }
-                JSONWebKey jwk = jwtConfig.getJSONWebKey();
-                if (jwk == null) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Did not succcessfully build a JWK");
-                    }
-                    _signingKey = null;
-                    _keyId = null;
-                } else {
-                    _signingKey = jwk.getPrivateKey();
-                    _keyId = jwk.getKeyID();
-                }
-            } else {
-                if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
-                    keyType = Constants.SIGNING_KEY_SECRET;
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Signing key type is " + keyType);
-                    }
-                    String sharedKey = jwtBuilder.getSharedKey();
-                    if (JwtUtils.isNullEmpty(sharedKey)) {
-                        sharedKey = jwtConfig.getSharedKey();
-                    }
-                    if (!JwtUtils.isNullEmpty(sharedKey)) {
-                        _signingKey = new HmacKey(sharedKey.getBytes("UTF-8"));
-                    } else {
-                        _signingKey = null;
-                    }
-
-                } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
-                    _signingKey = jwtBuilder.getKey();
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Signing key type is " + keyType);
-                    }
-                    if (_signingKey == null) {
-                        String keyAlias = null;
-                        String keyStoreRef = null;
-                        keyAlias = jwtConfig.getKeyAlias();
-                        keyStoreRef = jwtConfig.getKeyStoreRef();
-                        _signingKey = JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
-                        _keyId = buildKidFromPublicKey(JwtUtils.getPublicKey(keyAlias, keyStoreRef));
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Key alias: " + keyAlias + ", Keystore: " + keyStoreRef+ ", kid: " + _keyId);
-                        }
-                    }
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "RSAPrivateKey: " + (_signingKey instanceof RSAPrivateKey));
-                    }
-                    if (_signingKey != null && !(_signingKey instanceof RSAPrivateKey)) {
-                        // error handling
-                        // String errorMsg = Tr.formatMessage(tc, "SIGNING_KEY_NOT_RSA", new Object[] { signatureAlgorithm });
-                        // Object[] objs = new Object[] { signatureAlgorithm, errorMsg };
-                        // noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
-                        _signingKey = null; // we will catch this later in jwtSigner
-                        _keyId = null;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // UnsupportedEncodingException e (won't happen)
-            // if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            // Tr.debug(tc, "Exception obtaining the signing key: " + e);
-            // }
-            // error messages
-            // JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key was not available. The signature algorithm is [{0}]. {1}
-
-            Object[] objs = new Object[] { signatureAlgorithm, jwtConfig.isJwkEnabled(), e.getLocalizedMessage() }; // let JWTTokenException handle the exception
-            JwtTokenException jte = JwtTokenException.newInstance(false, "JWT_NO_SIGNING_KEY_WITH_ERROR", objs);
-            jte.initCause(e);
-            throw jte;
-        }
-        if (_signingKey == null) {
-            Object[] objs = new Object[] { signatureAlgorithm, jwtConfig.isJwkEnabled(), "" }; // let JWTTokenException handle the exception
-            throw JwtTokenException.newInstance(true, "JWT_NO_SIGNING_KEY_WITH_ERROR", objs);
-        }
-    }
-    
-    private String buildKidFromPublicKey(PublicKey cert)  {
-    	JwkKidBuilder kidbuilder = new JwkKidBuilder();
-        return kidbuilder.buildKeyId(cert);
+	public JwtData(BuilderImpl jwtBuilder, JwtConfig jwtConfig, String tokenType) throws JwtTokenException {
+		this.jwtConfig = jwtConfig;
+		this.tokenType = tokenType;
+		signatureAlgorithm = jwtBuilder.getAlgorithm();
+		bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
+		String sharedKey = jwtBuilder.getSharedKey();
+		sharedKey = (JwtUtils.isNullEmpty(sharedKey) ? jwtConfig.getSharedKey() : sharedKey);
+		jwtDataConfig = new JwtDataConfig(jwtBuilder.getAlgorithm(), jwtConfig.getJSONWebKey(), sharedKey,
+				jwtBuilder.getKey(), jwtConfig.getKeyAlias(), jwtConfig.getKeyStoreRef(), tokenType,
+				jwtConfig.isJwkEnabled());
+		initSigningKey(jwtDataConfig);
 	}
 
-    public String getSignatureAlgorithm() {
-        return signatureAlgorithm;
-    }
+	public JwtData(JwtDataConfig config) throws JwtTokenException {
+		tokenType = config.tokenType;
+		jwtDataConfig = config;
+		signatureAlgorithm = config.signatureAlgorithm;
+		bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
+		initSigningKey(jwtDataConfig);
+	}
 
-    @Sensitive
-    public JwtData(Key key, String id) {
-        _signingKey = key;
-        _keyId = id;
-    }
+	public JwtConfig getConfig() {
+		return jwtConfig;
+	}
 
-    @Sensitive
-    Key getSigningKey() {
-        return _signingKey;
-    }
+	/*
+	 * Handle the signingKey here to get the same error messages
+	 */
+	@FFDCIgnore(Exception.class)
+	// protected void initSigningKey(BuilderImpl jwtBuilder, JwtConfig jwtConfig)
+	// throws JwtTokenException {
+	protected void initSigningKey(JwtDataConfig config) throws JwtTokenException {
+		String keyType = Constants.SIGNING_KEY_X509;
+		try {
+			if (config.isJwkEnabled && SIGNATURE_ALG_RS256.equals(config.signatureAlgorithm)) {
+				keyType = Constants.SIGNING_KEY_JWK;
+				if (tc.isDebugEnabled()) {
+					Tr.debug(tc, "JWK + RS256 Signing key type is " + keyType);
+				}
+				JSONWebKey jwk = config.jwk;
+				if (jwk == null) {
+					if (tc.isDebugEnabled()) {
+						Tr.debug(tc, "Did not succcessfully build a JWK");
+					}
+					_signingKey = null;
+					_keyId = null;
+				} else {
+					_signingKey = jwk.getPrivateKey();
+					_keyId = jwk.getKeyID();
+				}
+			} else {
+				if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
+					keyType = Constants.SIGNING_KEY_SECRET;
+					if (tc.isDebugEnabled()) {
+						Tr.debug(tc, "hs256 Signing key type is " + keyType);
+					}
+					String sharedKey = config.sharedKey;
+					if (!(sharedKey == null || sharedKey.isEmpty())) {
+						_signingKey = new HmacKey(sharedKey.getBytes("UTF-8"));
+					} else {
+						_signingKey = null;
+					}
 
-    String getKeyID() {
-        return _keyId;
-    }
+				} else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
+					_signingKey = config.signingKey;
+					if (tc.isDebugEnabled()) {
+						Tr.debug(tc, "RS256 Signing key type is " + keyType);
+					}
+					if (_signingKey == null) {
+						String keyAlias = null;
+						String keyStoreRef = null;
+						keyAlias = config.keyAlias;
+						keyStoreRef = config.keyStoreRef;
+						_signingKey = JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+						_keyId = buildKidFromPublicKey(JwtUtils.getPublicKey(keyAlias, keyStoreRef));
+						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+							Tr.debug(tc, "Key alias: " + keyAlias + ", Keystore: " + keyStoreRef + ", kid: " + _keyId);
+						}
+					}
 
-    /**
-     * @return
-     */
-    public String getTokenType() {
-        return tokenType;
-    }
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+						Tr.debug(tc, "RSAPrivateKey: " + (_signingKey instanceof RSAPrivateKey));
+					}
+					if (_signingKey != null && !(_signingKey instanceof RSAPrivateKey)) {
+						// error handling
+						// String errorMsg = Tr.formatMessage(tc, "SIGNING_KEY_NOT_RSA", new Object[] {
+						// signatureAlgorithm });
+						// Object[] objs = new Object[] { signatureAlgorithm, errorMsg };
+						// noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY",
+						// objs);
+						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+							Tr.debug(tc, "clear _signingKey and _keyId");
+						}
+						_signingKey = null; // we will catch this later in jwtSigner
+						_keyId = null;
+					}
+				}
+			}
+		} catch (Exception e) {
+			// UnsupportedEncodingException e (won't happen)
+			// if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			// Tr.debug(tc, "Exception obtaining the signing key: " + e);
+			// }
+			// error messages
+			// JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key was not available. The
+			// signature algorithm is [{0}]. {1}
 
-    public JwtTokenException getNoKeyException() {
-        if (noKeyException != null) {
-            return noKeyException;
-        } else {
-            // this should not happen
-            return new JwtTokenException("No signing key found");
-        }
-    }
+			Object[] objs = new Object[] { signatureAlgorithm, jwtDataConfig.isJwkEnabled, e.getLocalizedMessage() }; // let
+																														// JWTTokenException
+																														// handle
+																														// the
+																														// exception
+			JwtTokenException jte = JwtTokenException.newInstance(false, "JWT_NO_SIGNING_KEY_WITH_ERROR", objs);
+			jte.initCause(e);
+			throw jte;
+		}
+		if (_signingKey == null && !signatureAlgorithm.equals(SIGNATURE_ALG_NONE)) {
+			Object[] objs = new Object[] { signatureAlgorithm, jwtDataConfig.isJwkEnabled, "" }; // let
+																									// JWTTokenException
+																									// handle the
+																									// exception
+			throw JwtTokenException.newInstance(true, "JWT_NO_SIGNING_KEY_WITH_ERROR", objs);
+		}
+	}
 
-    /**
-     * @return
-     */
-    public boolean isJwt() {
-        return bJwtToken;
-    }
+	private String buildKidFromPublicKey(PublicKey cert) {
+		JwkKidBuilder kidbuilder = new JwkKidBuilder();
+		return kidbuilder.buildKeyId(cert);
+	}
+
+	public String getSignatureAlgorithm() {
+		return signatureAlgorithm;
+	}
+
+	@Sensitive
+	public JwtData(Key key, String id) {
+		_signingKey = key;
+		_keyId = id;
+	}
+
+	@Sensitive
+	public Key getSigningKey() {
+		return _signingKey;
+	}
+
+	public String getKeyID() {
+		return _keyId;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getTokenType() {
+		return tokenType;
+	}
+
+	public JwtTokenException getNoKeyException() {
+		if (noKeyException != null) {
+			return noKeyException;
+		} else {
+			// this should not happen
+			return new JwtTokenException("No signing key found");
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isJwt() {
+		return bJwtToken;
+	}
 }

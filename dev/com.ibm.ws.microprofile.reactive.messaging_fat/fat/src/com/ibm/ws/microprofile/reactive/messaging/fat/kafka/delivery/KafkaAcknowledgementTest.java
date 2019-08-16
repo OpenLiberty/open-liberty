@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.FATSuite.kafkaContainer;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
@@ -24,6 +23,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PropertiesAsset;
 
 import componenttest.annotation.Server;
@@ -46,9 +46,10 @@ public class KafkaAcknowledgementTest {
     @BeforeClass
     public static void setup() throws Exception {
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(kafkaContainer, KafkaReceptionBean.CHANNEL_NAME, KafkaAcknowledgementTestServlet.APP_GROUPID))
-                        .include(ConnectorProperties.simpleOutgoingChannel(kafkaContainer, KafkaDeliveryBean.CHANNEL_NAME));
+                        .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.kafkaContainer, KafkaReceptionBean.CHANNEL_NAME,
+                                                                           KafkaAcknowledgementTestServlet.APP_GROUPID))
+                        .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.kafkaContainer, KafkaDeliveryBean.CHANNEL_NAME));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())

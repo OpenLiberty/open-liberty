@@ -62,7 +62,7 @@ public class DefaultComponentBindingsServlet extends FATServlet {
      * lookup and call local business interface using short name.
      */
     @Test
-    public void testLocalBIShort() throws Exception {
+    public void testLocalBIShort_DefaultComponentBindings() throws Exception {
         LocalComponentBusiness bean = Helper.lookupShortLocal(LocalComponentBusiness.class);
         assertNotNull("1 ---> LocalBusiness short default lookup did not succeed.", bean);
         String str = bean.getString();
@@ -73,7 +73,7 @@ public class DefaultComponentBindingsServlet extends FATServlet {
      * lookup and call remote business interface using short name.
      */
     @Test
-    public void testRemoteBIShort() throws Exception {
+    public void testRemoteBIShort_DefaultComponentBindings() throws Exception {
         RemoteComponentBusiness bean = Helper.lookupShortRemote(RemoteComponentBusiness.class);
         assertNotNull("1 ---> RemoteBusiness short default lookup did not succeed.", bean);
         String str = bean.getString();
@@ -84,7 +84,7 @@ public class DefaultComponentBindingsServlet extends FATServlet {
      * lookup and call local component view interface using short name.
      */
     @Test
-    public void testLocalCIShort() throws Exception {
+    public void testLocalCIShort_DefaultComponentBindings() throws Exception {
         TestLocalComponentHome homeBean = Helper.lookupShortLocal(TestLocalComponentHome.class);
         assertNotNull("1 ---> LocalHome short default lookup did not succeed.", homeBean);
 
@@ -99,7 +99,7 @@ public class DefaultComponentBindingsServlet extends FATServlet {
      * lookup and call remote component view interface using short name.
      */
     @Test
-    public void testRemoteCIShort() throws Exception {
+    public void testRemoteCIShort_DefaultComponentBindings() throws Exception {
         TestRemoteComponentHome homeBean = Helper.lookupShortRemote(TestRemoteComponentHome.class);
         assertNotNull("1 ---> RemoteHome short default lookup did not succeed.", homeBean);
 

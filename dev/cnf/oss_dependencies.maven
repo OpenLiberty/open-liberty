@@ -30,6 +30,7 @@ com.googlecode.json-simple:json-simple:1.1.1
 com.graphql-java:graphql-java-servlet:6.1.3
 com.graphql-java:graphql-java:11.0
 com.graphql-java:java-dataloader:2.2.1
+com.ibm.db2:jcc:11.1.4.4
 com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
 com.ibm.ws.componenttest:com.ibm.ws.topology.helper:1.0.0
 com.ibm.ws.componenttest:fat.harness:1.0.0
@@ -170,6 +171,7 @@ org.apache.cxf.xjcplugins:cxf-xjc-dv:2.6.0
 org.apache.cxf.xjcplugins:cxf-xjc-ts:2.6.0
 org.apache.cxf:cxf-api:2.6.2
 org.apache.cxf:cxf-core:3.1.18
+org.apache.cxf:cxf-rt-bindings-soap:2.6.2
 org.apache.cxf:cxf-rt-bindings-soap:3.3.0
 org.apache.cxf:cxf-rt-bindings-xml:3.3.0
 org.apache.cxf:cxf-rt-databinding-jaxb:3.3.0
@@ -223,6 +225,7 @@ org.apache.httpcomponents:httpclient:4.1.2
 org.apache.httpcomponents:httpclient:4.3.1
 org.apache.httpcomponents:httpclient:4.5.4
 org.apache.httpcomponents:httpclient:4.5.5
+org.apache.httpcomponents:httpclient:4.5.7
 org.apache.httpcomponents:httpcore-nio:4.4.9
 org.apache.httpcomponents:httpcore:4.1.2
 org.apache.httpcomponents:httpcore:4.3
@@ -237,6 +240,7 @@ org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.johnzon:johnzon-mapper:1.1.8
 org.apache.kafka:kafka-clients:2.3.0
 org.apache.maven:maven-model:3.5.0
+org.apache.mina:mina-core:2.1.3
 org.apache.myfaces.buildtools:myfaces-builder-annotations:1.0.9
 org.apache.myfaces.core:myfaces-api:2.2.12
 org.apache.myfaces.core:myfaces-api:2.3.3
@@ -395,10 +399,12 @@ org.quartz-scheduler:quartz:2.2.1
 org.quartz-scheduler:quartz:2.2.1
 org.reactivestreams:reactive-streams-examples:1.0.2
 org.reactivestreams:reactive-streams:1.0.2
-org.reactivestreams:reactive-streams:1.0.2
+org.reactivestreams:reactive-streams-tck:1.0.2
 org.rnorth.duct-tape:duct-tape:1.0.7
 org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-jdk14:1.7.7
+org.slf4j:slf4j-simple:1.7.25
+org.sonatype.goodies:package-url-java:1.0.1
 org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.0.0.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.0.4.RELEASE
@@ -446,11 +452,13 @@ org.springframework:spring-webmvc:4.3.13.RELEASE
 org.springframework:spring-webmvc:5.0.8.RELEASE
 org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework:spring-websocket:5.0.8.RELEASE
-org.testcontainers:database-commons:1.11.1
-org.testcontainers:jdbc:1.11.1
-org.testcontainers:kafka:1.11.1
-org.testcontainers:postgresql:1.11.1
-org.testcontainers:testcontainers:1.11.1
+org.testcontainers:database-commons:1.12.0
+org.testcontainers:db2:1.12.0
+org.testcontainers:jdbc:1.12.0
+org.testcontainers:kafka:1.12.0
+org.testcontainers:postgresql:1.12.0
+org.testcontainers:testcontainers:1.12.0
+org.testng:testng:6.14.3
 org.yaml:snakeyaml:1.18
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.1

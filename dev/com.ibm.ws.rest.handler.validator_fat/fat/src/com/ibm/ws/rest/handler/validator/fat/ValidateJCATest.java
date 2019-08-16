@@ -73,6 +73,7 @@ public class ValidateJCATest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("J2CA0046E: .*eis/cf-port-not-in-range", // intentionally raised error to test exception path
+                          "J2CA0021E: .*eis/cf6", // intentional error due to invalid user being supplied by login module
                           "J2CA0021E: .*IllegalStateException: Connection was dropped", // testing exception path
                           "J2CA0021E: .*javax.resource.ResourceException", // testing exception path
                           "J2CA0021E: .*javax.resource.spi.ResourceAllocationException", // testing exception path
@@ -197,16 +198,9 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testConnectionFactoryNotFound() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/NotAConfiguredConnectionFactory").run(JsonObject.class);
-        String err = "unexpected response: " + json;
-        assertEquals(err, "NotAConfiguredConnectionFactory", json.getString("uid"));
-        assertNull(err, json.get("id"));
-        assertNull(err, json.get("jndiName"));
-        assertFalse(err, json.getBoolean("successful"));
-        assertNull(err, json.get("info"));
-        assertNotNull(err, json = json.getJsonObject("failure"));
-        String message = json.getString("message");
-        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("connectionFactory"));
+        String response = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/NotAConfiguredConnectionFactory").expectCode(404).run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E") && response.contains("connectionFactory") && response.contains("NotAConfiguredConnectionFactory"));
     }
 
     /**
@@ -387,6 +381,57 @@ public class ValidateJCATest extends FATServletClient {
     }
 
     /**
+     * Validate a connectionFactory with a container authentication resource reference with login properties, and verify that it
+     * uses the login module indicated by the jaasLoginContextEntryRef to log in, supplying it with the login properties.
+     */
+    @Test
+    public void testJaasLoginModuleForContainerAuthWithLoginProperties() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/jaasLoginCF?auth=container")
+                        .requestProp("X-Login-Config-Props", "loginName=JAASUser,loginNum=6")
+                        .run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "jaasLoginCF", json.getString("uid"));
+        assertEquals(err, "jaasLoginCF", json.getString("id"));
+        assertEquals(err, "eis/cf6", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("connectorSpecVersion"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "JAASUser6", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory with a container authentication resource reference, and verify that it
+     * uses the login module indicated by the jaasLoginContextEntryRef to log in.
+     */
+    @AllowedFFDC("javax.resource.spi.SecurityException")
+    @Test
+    public void testJaasLoginModuleForContainerAuthWithoutLoginProperties() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/jaasLoginCF?auth=container")
+                        .run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "jaasLoginCF", json.getString("uid"));
+        assertEquals(err, "jaasLoginCF", json.getString("id"));
+        assertEquals(err, "eis/cf6", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+        assertNotNull(err, json = json.getJsonObject("failure")); // login module defaults to dbuser/dbpass, which are not considered valid
+        assertEquals(err, "ERR_AUTH", json.getString("errorCode"));
+        assertEquals(err, "javax.resource.spi.SecurityException", json.getString("class"));
+        String message = json.getString("message");
+        assertTrue(err, message.startsWith("Unable to authenticate with dbuser"));
+        JsonArray stack;
+        assertNotNull(err, stack = json.getJsonArray("stack"));
+        assertTrue(err, stack.size() > 3);
+    }
+
+    /**
      * Use /ibm/api/validation/connectionFactory to validate all connection factories
      */
     @AllowedFFDC({
@@ -401,7 +446,7 @@ public class ValidateJCATest extends FATServletClient {
         JsonArray json = request.method("GET").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
-        assertEquals(err, 5, json.size()); // Increase this if you add more connection factories to server.xml
+        assertEquals(err, 6, json.size()); // Increase this if you add more connection factories to server.xml
 
         // Order is currently alphabetical based on config.displayId
 
@@ -515,6 +560,23 @@ public class ValidateJCATest extends FATServletClient {
         assertEquals(err, "TestValDB", j.getString("catalog"));
         assertEquals(err, "DEFAULTUSERNAME", j.getString("schema"));
         assertEquals(err, "DefaultUserName", j.getString("user"));
+
+        // [5]: config.displayId=connectionFactory[jaasLoginCF]
+        j = json.getJsonObject(5);
+        assertEquals(err, "jaasLoginCF", j.getString("uid"));
+        assertEquals(err, "jaasLoginCF", j.getString("id"));
+        assertEquals(err, "eis/cf6", j.getString("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", j.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", j.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
+        assertEquals(err, "OpenLiberty", j.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", j.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", j.getString("eisProductName"));
+        assertEquals(err, "33.56.65", j.getString("eisProductVersion"));
+        assertEquals(err, "DefaultUserName", j.getString("user")); // login module does not apply for direct lookup
     }
 
     /**

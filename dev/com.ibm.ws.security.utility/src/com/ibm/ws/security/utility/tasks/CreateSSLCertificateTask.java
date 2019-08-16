@@ -224,7 +224,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
                arg.equals(ARG_ENCODING) || arg.equals(ARG_KEY) ||
                arg.equals(ARG_CREATE_CONFIG_FILE) || arg.equals(ARG_KEYSIZE) ||
                arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG) ||
-               arg.equals(ARG_KEY_TYPE);
+               arg.equals(ARG_KEY_TYPE) || arg.equals(ARG_EXT);
     }
 
     /** {@inheritDoc} */

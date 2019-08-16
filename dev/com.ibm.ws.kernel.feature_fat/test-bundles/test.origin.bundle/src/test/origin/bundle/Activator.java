@@ -46,6 +46,10 @@ public class Activator implements BundleActivator {
             origins.add(installOrigin(i, tracked, context));
         }
         final CountDownLatch allTrackedRemoved = new CountDownLatch(tracked.size());
+        // Sleeping to make sure the system has had time to successfully track
+        // the origin bundles and the bundles the origin bundles have installed.
+        // The bundle events are asynchronous so we need to make sure enough time
+        // has passed to allow the system to process the events.
         Thread.sleep(5000);
         context.addBundleListener(new BundleListener() {
             @Override

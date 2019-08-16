@@ -96,7 +96,7 @@ public class StatelessTwoNamesServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntLookupAnnBasedComp() throws Exception {
+    public void testBizIntLookupAnnBasedComp_StatelessTwoNames() throws Exception {
         UserTransaction userTran = null;
 
         // --------------------------------------------------------------------
@@ -138,7 +138,7 @@ public class StatelessTwoNamesServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntLookupXmlBasedComp() throws Exception {
+    public void testBizIntLookupXmlBasedComp_StatelessTwoNames() throws Exception {
         UserTransaction userTran = null;
 
         // --------------------------------------------------------------------
@@ -182,7 +182,7 @@ public class StatelessTwoNamesServlet extends FATServlet {
      */
     //@Test
     // TODO: 175480 - Re-enable when merge issue is fixed
-    public void testBizIntLookupCompUsingBeanImplClassName() throws Exception {
+    public void testBizIntLookupCompUsingBeanImplClassName_StatelessTwoNames() throws Exception {
         UserTransaction userTran = null;
 
         // --------------------------------------------------------------------
@@ -226,7 +226,7 @@ public class StatelessTwoNamesServlet extends FATServlet {
      */
     //@Test
     // TODO: 175480 - Re-enable when merge issue is fixed
-    public void testBizIntLookupCompUsingBeanImplClassName2() throws Exception {
+    public void testBizIntLookupCompUsingBeanImplClassName2_StatelessTwoNames() throws Exception {
         UserTransaction userTran = null;
 
         // --------------------------------------------------------------------

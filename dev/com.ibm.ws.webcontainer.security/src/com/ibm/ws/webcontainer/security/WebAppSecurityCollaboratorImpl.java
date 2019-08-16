@@ -1334,10 +1334,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     private boolean shouldWePerformTAIForUnProtectedURI(WebRequest webRequest) {
-        if (taiServiceRef.getService() != null) {
-            return taiServiceRef.getService().isInvokeForUnprotectedURI();
-        } else
+        if (taiServiceRef.getService() != null && taiServiceRef.getService().isInvokeForUnprotectedURI()) {
+            webRequest.setPerformTAIForUnProtectedURI(true);
+            return true;
+        } else {
             return false;
+        }
     }
 
     /**

@@ -26,6 +26,9 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Util;
 import com.ibm.oauth.core.internal.oauth20.granttype.OAuth20GrantTypeHandler;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
+import com.ibm.oauth.core.internal.oauth20.token.impl.OAuth20AuthorizationGrantCodeImpl;
+import com.ibm.ws.security.oauth20.util.HashUtils;
+
 
 public class OAuth20GrantTypeHandlerCodeImpl implements OAuth20GrantTypeHandler {
     final static String CLASS = OAuth20GrantTypeHandlerCodeImpl.class.getName();
@@ -119,7 +122,7 @@ public class OAuth20GrantTypeHandlerCodeImpl implements OAuth20GrantTypeHandler 
             _log.exiting(CLASS, methodName);
         }
     }
-
+        
     public List<OAuth20Token> buildTokensGrantType(AttributeList attributeList,
             OAuth20TokenFactory tokenFactory, List<OAuth20Token> tokens) {
         String methodName = "buildTokensGrantType";

@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "删除",
     "DONE": "完成",
     "EDIT": "编辑",
+    "FALSE": "False",
     "GENERATE": "生成",
     "LOADING": "正在加载",
     "LOGOUT": "注销",
@@ -32,6 +33,9 @@ var messages = {
     "PROCESSING": "处理",
     "REGENERATE": "重新生成",
     "REGISTER": "注册",
+    "TABLE_FIELD_SORT_ASC": "表按 {0} 以升序进行排序。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表按 {0} 以降序进行排序。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "请重试...",
     "UPDATE": "更新",
 
@@ -46,40 +50,32 @@ var messages = {
     "CLIENT_ADMIN_TITLE": "管理 OAuth 客户机",
     "CLIENT_ADMIN_DESC": "使用此工具来添加和编辑客户机以及重新生成客户机密钥。",
     "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "针对 OAuth 客户机名称进行过滤",
-    "ADD_NEW_CLIENT": "添加新的 OAuth 客户机",
+    "ADD_NEW_CLIENT": "添加新的 OAuth 客户机。",
     "CLIENT_NAME": "客户机名称",
     "CLIENT_ID": "客户机标识",
     "EDIT_ARIA": "编辑 {0} OAuth 客户机",      // {0} - name
     "DELETE_ARIA": "删除 {0} OAuth 客户机",  // {0} - name
     "CLIENT_SECRET": "客户机密钥",
-    "GRANT_TYPES": "授予类型",
+    "GRANT_TYPES": "授权类型",
     "SCOPE": "作用域",
     "PREAUTHORIZED_SCOPE": "预授权范围（可选）",
     "REDIRECT_URLS": "重定向 URL（可选）",
-    "ADDITIONAL_PROPS": "其他属性",
-    "ADDITIONAL_PROPS_OPTIONAL": "其他属性（可选）",
-    "CLIENT_SECRET_CHECKBOX": "重新生成客户端密钥",
-    "PROPERTY_PLACEHOLDER": "属性",
-    "VALUE_PLACEHOLDER": "值",
-    "GRANT_TYPES_SELECTED": "所选授权类型的数目",
-    "GRANT_TYPES_NONE_SELECTED": "未选择任何项",
+    "CLIENT_SECRET_CHECKBOX": "重新生成客户机密钥",
+    "NONE_SELECTED": "未选择任何项",
     "MODAL_EDIT_TITLE": "编辑 OAuth 客户机",
     "MODAL_REGISTER_TITLE": "注册新的 OAuth 客户机",
     "MODAL_SECRET_REGISTER_TITLE": "已保存 OAuth 注册",
     "MODAL_SECRET_UPDATED_TITLE": "已更新 OAuth 注册",
     "MODAL_DELETE_CLIENT_TITLE": "删除此 OAuth 客户机",
-    "VALUE_COL": "值",
-    "ADD": "添加",
-    "DELETE_PROP": "删除定制属性",
-    "RESET_GRANT_TYPE": "取消选中所有已选中授权类型",
+    "RESET_GRANT_TYPE": "取消选中所有已选授权类型。",
     "SELECT_ONE_GRANT_TYPE": "选择至少一个授权类型",
-    "OPEN_GRANT_TYPE": "打开授权类型列表",
-    "CLOSE_GRANT_TYPE": "关闭授权类型列表",
     "SPACE_HELPER_TEXT": "空格分隔的值列表",
     "REDIRECT_URL_HELPER_TEXT": "空格分隔的绝对重定向 URL 列表",
     "DELETE_OAUTH_CLIENT_DESC": "此操作将已注册的客户机从客户机注册服务中删除。",
-    "REGISTRATION_SAVED": "已生成并分配客户机标识和客户端密钥。",
-    "REGISTRATION_UPDATED": "已针对此客户机生成并分配新的客户端密钥。",
+    "REGISTRATION_SAVED": "已生成并分配客户机标识和客户机密钥。",
+    "REGISTRATION_UPDATED": "已针对此客户机生成并分配新的客户机密钥。",
+    "COPY_CLIENT_ID": "将客户机标识复制到剪贴板",
+    "COPY_CLIENT_SECRET": "将客户机密钥复制到剪贴板",
     "REGISTRATION_UPDATED_NOSECRET": "已更新 {0} OAuth 客户机。",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "必须选择至少一个授权类型。",
     "ERR_REDIRECT_URIS": "值必须为绝对 URI。",
@@ -93,5 +89,15 @@ var messages = {
     "GENERIC_MISSING_CLIENT_MSG": "找不到标识为 {1} 的 OAuth 客户机 {0}。",     // {0} - client name; {1} - an ID
     "GENERIC_RETRIEVAL_FAIL_MSG": "检索 {0} OAuth 客户机上的信息时发生了错误。", // {0} - client name
     "GENERIC_GET_CLIENTS_FAIL": "检索 OAuth 客户机时出错",
-    "GENERIC_GET_CLIENTS_FAIL_MSG": "检索 OAuth 客户机列表时发生了错误。"
+    "GENERIC_GET_CLIENTS_FAIL_MSG": "检索 OAuth 客户机列表时发生了错误。",
+
+    "RESET_SELECTION": "取消选中所有已选 {0}",     // {0} - field name (ie 'Grant types')
+    "NUMBER_SELECTED": "已选 {0} 的数目",     // {0} - field name
+    "OPEN_LIST": "打开 {0} 列表。",                   // {0} - field name
+    "CLOSE_LIST": "关闭 {0} 列表。",                 // {0} - field name
+    "ENTER_PLACEHOLDER": "输入值",
+    "ADD_VALUE": "添加元素",
+    "REMOVE_VALUE": "移除元素",
+    "REGENERATE_CLIENT_SECRET": "“*”将保留现有值。空白值将生成生成新的 client_secret。非空白参数值使用新指定的值覆盖现有值。",
+    "ALL_OPTIONAL": "所有字段都是可选字段"
 };

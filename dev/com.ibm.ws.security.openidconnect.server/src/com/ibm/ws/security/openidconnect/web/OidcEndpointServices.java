@@ -49,6 +49,7 @@ import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.oauth20.AuthnContext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.claims.UserClaims;
@@ -204,24 +205,49 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         idTokenMediatorRef.deactivate(cc);
     }
 
+    @Trivial
+    protected void logExitMsgFinished() {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO OP PROCESS HAS ENDED.");
+        }
+    }
+
+    @Trivial
+    protected void logExitMsgNo() {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO OP WILL NOT PROCESS THE REQUEST");
+        }
+    }
+
     protected void handleOidcRequest(HttpServletRequest request,
                                      HttpServletResponse response,
                                      ServletContext servletContext) throws ServletException, IOException {
 
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Checking if OIDC Provider should process the request.");
+            Tr.debug(tc, "Inbound request "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
+        }
         OidcRequest oidcRequest = getOidcRequest(request, response);
         if (oidcRequest == null) {
+            logExitMsgNo();
             return;
         }
         String oidcProviderName = oidcRequest.getProviderName();
         OidcServerConfig oidcServerConfig = getOidcServerConfig(response, oidcProviderName);
         if (oidcServerConfig == null) {
+            logExitMsgNo();
             return;
         }
         OAuth20Provider oauth20provider = getOAuthProvider(response, oidcServerConfig);
         if (oauth20provider == null) {
+            logExitMsgNo();
             return;
         }
 
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO OP PROCESS IS STARTING.");
+            Tr.debug(tc, "OIDC _SSO OP inbound URL "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
+        }
         EndpointType endpointType = oidcRequest.getType();
 
         AttributeList optionalParams = null;
@@ -250,28 +276,35 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Response has already been committed, will not continue processing the request");
             }
+            logExitMsgFinished();
             return;
         }
 
         switch (endpointType) {
             case discovery:
                 discovery.processRequest(oidcServerConfig, request, response);
+                logExitMsgFinished();
                 return;
             case userinfo:
                 userinfo(oauth20provider, oidcServerConfig, request, response);
+                logExitMsgFinished();
                 return;
             case end_session:
                 processEndSession(oauth20provider, oidcServerConfig, request, response);
+                logExitMsgFinished();
                 return;
             case check_session_iframe:
                 processCheckSessionRequest(response, oidcServerConfig);
+                logExitMsgFinished();
                 return;
             case jwk:
                 processJWKRequest(response, oidcServerConfig);
+                logExitMsgFinished();
                 return;
             default:
                 break;
         }
+        logExitMsgFinished();
     }
 
     private OidcRequest getOidcRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -485,6 +518,9 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                 }
             }
         }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri +"]");
+        }
         response.sendRedirect(redirectUri);
     }
 
@@ -502,6 +538,9 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
 
         String iframeUrl = oidcServerConfig.getCheckSessionIframeEndpointUrl();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO OP redirecting to [" + iframeUrl +"]");
+        }
         response.sendRedirect(iframeUrl);
 
         if (tc.isEntryEnabled()) {
@@ -972,6 +1011,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * @param value
      * @return
      */
+    @Trivial
     private String printArray(String[] value) {
         String result = null;
         if (value != null && value.length > 0) {

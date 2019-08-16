@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2012 IBM Corporation and others.
+    Copyright (c) 2012, 2019 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -24,12 +24,12 @@
     <servlet-name>JMXRESTProxyServlet</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
-
+  
   <security-constraint id="SecurityConstraint_1">
     <display-name>REST Connector Security Constraint - Administrator Role</display-name>
     <web-resource-collection id="WebResourceCollection_1">
         <web-resource-name>REST Connector URL</web-resource-name>
-        <url-pattern>/*</url-pattern>     
+        <url-pattern>/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>Administrator</role-name>
@@ -52,7 +52,7 @@
   </security-constraint>
 
   <security-constraint id="SecurityConstraint_3">
-    <display-name>REST Connector Security Constraint - Reader Role</display-name>
+    <display-name>REST Connector Security Constraint - Reader Role GET</display-name>
     <web-resource-collection id="WebResourceCollection_3">
         <web-resource-name>REST Connector URL</web-resource-name>
         <url-pattern>/*</url-pattern>
@@ -65,7 +65,23 @@
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
-
+ 
+  <security-constraint id="SecurityConstraint_4">
+    <display-name>REST Connector Security Constraint - Complex MBean Query</display-name>
+    <web-resource-collection id="WebResourceCollection_4">
+        <web-resource-name>REST Connector URL</web-resource-name>
+        <url-pattern>/mbeans</url-pattern>
+        <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Administrator</role-name>
+      <role-name>Reader</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_4">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+ 
   <security-role id="SecurityRole_1">
     <description>Administrator Role</description>
     <role-name>Administrator</role-name>

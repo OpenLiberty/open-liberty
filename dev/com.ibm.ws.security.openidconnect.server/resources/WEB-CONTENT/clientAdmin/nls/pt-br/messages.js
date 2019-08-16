@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Excluir",
     "DONE": "Pronto",
     "EDIT": "Editar",
+    "FALSE": "Falso",
     "GENERATE": "Gerar",
     "LOADING": "Carregando",
     "LOGOUT": "Logout",
@@ -32,6 +33,9 @@ var messages = {
     "PROCESSING": "Processando",
     "REGENERATE": "Regenerar",
     "REGISTER": "Registrar",
+    "TABLE_FIELD_SORT_ASC": "A tabela é classificada por {0} em ordem crescente. ",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "A tabela é classificada por {0} em ordem decrescente. ", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Verdadeiro",
     "TRY_AGAIN": "Tente novamente ...",
     "UPDATE": "Atualizar",
 
@@ -46,7 +50,7 @@ var messages = {
     "CLIENT_ADMIN_TITLE": "Gerenciar clientes OAuth",
     "CLIENT_ADMIN_DESC": "Use esta ferramenta para incluir e editar clientes e para gerar novamente segredos do cliente.",
     "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtrar o nome do cliente OAuth",
-    "ADD_NEW_CLIENT": "Incluir novo cliente OAuth",
+    "ADD_NEW_CLIENT": "Incluir novo cliente OAuth.",
     "CLIENT_NAME": "Nome do cliente",
     "CLIENT_ID": "ID Cliente",
     "EDIT_ARIA": "Editar o cliente OAuth {0}",      // {0} - name
@@ -56,30 +60,22 @@ var messages = {
     "SCOPE": "Escopo",
     "PREAUTHORIZED_SCOPE": "Escopo pré-autorizado (opcional)",
     "REDIRECT_URLS": "URLs de redirecionamento (optional)",
-    "ADDITIONAL_PROPS": "Propriedades adicionais",
-    "ADDITIONAL_PROPS_OPTIONAL": "Propriedades adicionais (opcional)",
     "CLIENT_SECRET_CHECKBOX": "Gerar novamente o segredo do cliente",
-    "PROPERTY_PLACEHOLDER": "Propriedade",
-    "VALUE_PLACEHOLDER": "Valor",
-    "GRANT_TYPES_SELECTED": "Número de tipos de concessão selecionados",
-    "GRANT_TYPES_NONE_SELECTED": "Nenhum selecionado",
+    "NONE_SELECTED": "Nenhum selecionado",
     "MODAL_EDIT_TITLE": "Editar cliente OAuth",
     "MODAL_REGISTER_TITLE": "Registrar novo cliente OAuth",
     "MODAL_SECRET_REGISTER_TITLE": "Registro de OAuth salvo",
     "MODAL_SECRET_UPDATED_TITLE": "Registro de OAuth atualizado",
     "MODAL_DELETE_CLIENT_TITLE": "Excluir este cliente OAuth",
-    "VALUE_COL": "Valor",
-    "ADD": "Incluir",
-    "DELETE_PROP": "Exclua a propriedade customizada",
-    "RESET_GRANT_TYPE": "Limpe todos os tipos de concessão selecionados",
+    "RESET_GRANT_TYPE": "Limpar todos os tipos de concessão selecionados.",
     "SELECT_ONE_GRANT_TYPE": "Selecione pelo menos um tipo de concessão",
-    "OPEN_GRANT_TYPE": "Abrir lista de tipos de concessão",
-    "CLOSE_GRANT_TYPE": "Fechar lista de tipos de concessão",
     "SPACE_HELPER_TEXT": "Valores separados por espaço",
     "REDIRECT_URL_HELPER_TEXT": "URLs de redirecionamento absoluto separadas por espaço",
     "DELETE_OAUTH_CLIENT_DESC": "Esta operação exclui o cliente registrado do serviço de registro do cliente.",
     "REGISTRATION_SAVED": "Um ID do Cliente e um Segredo do Cliente foram gerados e designados.",
     "REGISTRATION_UPDATED": "Um novo Segredo do Cliente foi gerado e designado para este cliente.",
+    "COPY_CLIENT_ID": "Copiar ID do cliente para a área de transferência",
+    "COPY_CLIENT_SECRET": "Copiar segredo do cliente para a área de transferência",
     "REGISTRATION_UPDATED_NOSECRET": "O cliente OAuth {0} foi atualizado.",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "Pelo menos um tipo de concessão deve ser selecionado.",
     "ERR_REDIRECT_URIS": "Os valores devem ser URIs absolutos.",
@@ -93,5 +89,15 @@ var messages = {
     "GENERIC_MISSING_CLIENT_MSG": "O cliente OAuth {0} com o ID {1} não foi localizado.",     // {0} - client name; {1} - an ID
     "GENERIC_RETRIEVAL_FAIL_MSG": "Ocorreu um erro ao recuperar informações sobre o cliente OAuth {0}.", // {0} - client name
     "GENERIC_GET_CLIENTS_FAIL": "Erro ao recuperar clientes OAuth",
-    "GENERIC_GET_CLIENTS_FAIL_MSG": "Ocorreu um erro ao recuperar a lista de clientes OAuth."
+    "GENERIC_GET_CLIENTS_FAIL_MSG": "Ocorreu um erro ao recuperar a lista de clientes OAuth.",
+
+    "RESET_SELECTION": "Limpar todos os {0} selecionados ",     // {0} - field name (ie 'Grant types')
+    "NUMBER_SELECTED": "Número de {0}s selecionados",     // {0} - field name
+    "OPEN_LIST": "Abrir a lista {0}. ",                   // {0} - field name
+    "CLOSE_LIST": "Fechar a lista {0}. ",                 // {0} - field name
+    "ENTER_PLACEHOLDER": "Insira o valor",
+    "ADD_VALUE": "Incluir elemento",
+    "REMOVE_VALUE": "Remover elemento",
+    "REGENERATE_CLIENT_SECRET": "'*' preserva o valor existente. Um valor em branco gera um novo client_secret. Um valor de parâmetro não em branco substitui o valor existente pelo valor recém-especificado.",
+    "ALL_OPTIONAL": "Todos os campos são opcionais"
 };

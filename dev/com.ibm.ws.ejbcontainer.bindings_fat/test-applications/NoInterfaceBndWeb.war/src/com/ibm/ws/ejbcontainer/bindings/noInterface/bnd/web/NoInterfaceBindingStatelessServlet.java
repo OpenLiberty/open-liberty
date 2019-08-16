@@ -88,9 +88,8 @@ public class NoInterfaceBindingStatelessServlet extends NoInterfaceBindingAbstra
      * class.... and it would be best to call a method on that class, it
      * is left up to this subclass to fully implement this variation.
      */
-    @Override
     @Test
-    public void testUniqueNoInterfaceDefaultBindings() throws Exception {
+    public void testUniqueNoInterfaceDefaultBindings_NoInterfaceBindingStateless() throws Exception {
         String beanName = BasicNoInterfaceSLBean.class.getSimpleName();
         String beanInterface = BasicNoInterfaceSLBean.class.getName();
         ivContext = (Context) new InitialContext().lookup("");

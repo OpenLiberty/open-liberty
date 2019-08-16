@@ -69,8 +69,12 @@ var table = (function() {
         var $rowsChecked = $table.find('td.table_column_checkbox input:checkbox:checked');
 
         // Update the message
-        var $tableToolbar = $('.tool_table_toolbar');        
-        $tableToolbar.find('#batch_selected_msg').text(utils.formatString(messages.ITEMS_SELECTED, [$rowsChecked.length]));
+        var $tableToolbar = $('.tool_table_toolbar');
+        if ($rowsChecked.length === 1) {
+            $tableToolbar.find('#batch_selected_msg').text(utils.formatString(messages.SINGLE_ITEM_SELECTED, [$rowsChecked.length]));
+        } else {
+            $tableToolbar.find('#batch_selected_msg').text(utils.formatString(messages.ITEMS_SELECTED, [$rowsChecked.length]));
+        }  
     };
 
     /**
@@ -133,7 +137,7 @@ var table = (function() {
         var selectionAriaLabel = utils.formatString(messages.SELECT_SPECIFIC, [authData.authType, authData.name]);
         var selectBox = "<td class='table_column_checkbox'>" +
                         "   <div class='tool_checkbox_wrapper'>" +
-                        "       <input id='select_" + authData.authID + "' class='tool_checkbox' type='checkbox' aria-checked='false' aria-label='" + selectionAriaLabel + "'>" +
+                        "       <input id='select_" + authData.authID + "' class='tool_checkbox' type='checkbox' role='checkbox' aria-checked='false' aria-label='" + selectionAriaLabel + "'>" +
                         "       <div class='tool_checkbox_label' title='" + selectionAriaLabel + "' aria-label='" + selectionAriaLabel + "'></div>" +
                         "   </div>" +
                         "</td>";
@@ -155,7 +159,7 @@ var table = (function() {
 
         // Create a table row and add the filter data attribute as the name lowecased.
         // This is used in sorting and filtering (when implemented).
-        var tableRow = "<tr data-filter='" + authData.name.toLowerCase() + "' data-authid='" + authData.authID + "' data-userid='" + authData.user + "'>" + selectBox + name + clientName + type + issuedOn + expiresOn + deleteButton + "</tr>";
+        var tableRow = "<tr data-filter='" + utils.encodeData(authData.name.toLowerCase()) + "' data-authid='" + authData.authID + "' data-userid='" + authData.user + "'>" + selectBox + name + clientName + type + issuedOn + expiresOn + deleteButton + "</tr>";
 
         return tableRow;
     };
@@ -168,8 +172,8 @@ var table = (function() {
     var __enableRowActions = function(authID) {
         var $table = $('#' + tableId + ' tbody');
 
-        $(".delete_auth_button[authID='" + authID + "']").click(function(e) {
-            e.preventDefault();
+        $(".delete_auth_button[authID='" + authID + "']").click(function(event) {
+            event.preventDefault();
             var $this = $(this);
             var $row = $(this).closest('tr');
 
@@ -258,7 +262,7 @@ var table = (function() {
 
         // Find the delete dialog in the html
         var $deleteDlg = $('.tool_modal_container.token_manager_delete');
-        var confirmationTitle = utils.formatString(messages.DELETE_FOR_USERID, [name, userID]);
+        var confirmationTitle = utils.formatString(messages.DELETE_FOR_USERID, [utils.encodeData(name), userID]);
         $deleteDlg.find('.tool_modal_title').html(confirmationTitle);
 
         if (type === 'app-password') {
@@ -276,7 +280,7 @@ var table = (function() {
         $deleteDlg.find('.tool_modal_delete_button').off('click');
         $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
             utils.startProcessingSpinner('delete_processing');
-           __deletePWorToken(authID, name, type);
+           __deletePWorToken(authID, name, type, userID);
         });
 
         $deleteDlg.removeClass('hidden');
@@ -320,9 +324,10 @@ var table = (function() {
      * @param String authID - unique ID for this app-password/app-token
      * @param String name - given name for this authentication (app-password/app-token)
      * @param String authType - 'app-password' or 'app-token'
+     * @param String userID - owner id of this authentication
      */
-    var __deletePWorToken = function(authID, name, authType) {
-        apiUtils.deleteAcctAppPasswordToken(authID, authType).done(function() {
+    var __deletePWorToken = function(authID, name, authType, userID) {
+        apiUtils.deleteAcctAppPasswordToken(authID, authType, userID).done(function() {
             deleteTableRow(authID);
             // Stop the processing spinner
             utils.stopProcessingSpinner();
@@ -337,7 +342,7 @@ var table = (function() {
             // So, if something else happended with the request, put up the generic error message.
             var deleteTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, [deleteTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, name]);
+            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
         });
     };
@@ -399,7 +404,13 @@ var table = (function() {
         });
     };
 
-    var __deleteSelectedAuthentications = function() {
+    /**
+     * Delete selected app-passwords and app-tokens for this user and remove all
+     * associated rows from the table.
+     * 
+     * @param String userID - owner of the authentications shown in the table.
+     */
+    var __deleteSelectedAuthentications = function(userID) {
         // Get the selected rows
         var $table = $('#' + tableId + ' tbody');
         var $rows = $table.find('tr');
@@ -412,7 +423,7 @@ var table = (function() {
             var name = $(this).find('td.authName').text();
             var authType = $(this).find('td.authType').text();
             
-            delDeferreds.push(apiUtils.deleteSelectedAppPasswordsTokens(authID, authType, name));
+            delDeferreds.push(apiUtils.deleteSelectedAppPasswordsTokens(authID, authType, name, userID));
         });
 
         // $.when executes a callback based on zero or more Thenable objects.  Pass all the deferreds
@@ -468,7 +479,7 @@ var table = (function() {
     };
 
     var __identifyAuthentication = function(authentication) {
-        return (utils.formatString(messages.IDENTIFY_AUTH, [authentication.authType, authentication.name]));   
+        return (utils.formatString(messages.IDENTIFY_AUTH, [authentication.authType, utils.encodeData(authentication.name)]));   
     };
 
     var __reshowDeleteDialog = function() {
@@ -528,7 +539,7 @@ var table = (function() {
                 $deleteDlg.find('.tool_modal_delete_button').off('click');
                 $deleteDlg.find('.tool_modal_delete_button').on('click', function() {
                     utils.startProcessingSpinner('delete_processing');
-                    __deleteSelectedAuthentications();
+                    __deleteSelectedAuthentications(userID);
                 });
             }
 

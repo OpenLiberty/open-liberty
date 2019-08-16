@@ -93,5 +93,9 @@ public interface OidcOAuth20Client extends OAuth20Client {
     public boolean isAppPasswordAllowed();
 
     public boolean isAppTokenAllowed();
+    
+    public boolean isProofKeyForCodeExchangeEnabled();
+    
+    public boolean isPublicClient();
 
 }

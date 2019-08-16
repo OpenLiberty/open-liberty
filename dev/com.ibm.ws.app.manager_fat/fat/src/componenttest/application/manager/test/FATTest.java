@@ -443,9 +443,12 @@ public class FATTest extends AbstractAppManagerTest {
             server.copyFileToLibertyServerRoot(PUBLISH_FILES, "tmp",
                                                SNOOP_WAR);
 
-            //unzip the application into the location so that we can easily modify the application in a minute
+            //unzip the application into a temp location so that we can easily modify the application in a minute
             TestUtils.unzip(new File(server.getServerRoot() + "/tmp/snoop.war"),
-                            new File(server.getServerRoot() + "/apps/snoop.war"));
+                            new File(server.getServerRoot() + "/tmp/unzip/snoop.war"));
+
+            // Copy the expanded snoop.war to "apps"
+            server.renameLibertyServerRootFile("tmp/unzip/snoop.war", "apps/snoop.war");
 
             //make sure the started message has been output twice by the server (once earlier, once now).
             assertNotNull("The snoop application never resumed running after being stopped",

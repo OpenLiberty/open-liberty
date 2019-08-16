@@ -42,15 +42,33 @@ public class KafkaTestClient {
 
     public static final String TEST_GROUPID = "delivery-test-group";
 
-    private final String kafkaBootstrap;
+    private final Map<String, Object> connectionProperties;
     private final List<AutoCloseable> openClients = new ArrayList<>();
+
+    /**
+     * No-arg constructor to allow CDI proxy, not for general use
+     */
+    KafkaTestClient() {
+        connectionProperties = Collections.emptyMap();
+    }
 
     /**
      * @param kafkaBootstrap the value for the kafka client bootstrap.servers property
      */
     public KafkaTestClient(String kafkaBootstrap) {
-        super();
-        this.kafkaBootstrap = kafkaBootstrap;
+        connectionProperties = new HashMap<>();
+        connectionProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+    }
+
+    /**
+     * Create a test client with the given set of connection properties
+     * <p>
+     * The connection properties are properties common to every consumer or producer connecting to this broker.
+     *
+     * @param connectionProperties the connection properties
+     */
+    public KafkaTestClient(Map<? extends String, ?> connectionProperties) {
+        this.connectionProperties = new HashMap<>(connectionProperties);
     }
 
     /**
@@ -61,14 +79,40 @@ public class KafkaTestClient {
      * @param topicName the topic to read from
      * @return the reader
      */
-    public SimpleKafkaReader readerFor(String topicName) {
-        Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
-        consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
-        consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+    public SimpleKafkaReader<String> readerFor(String topicName) {
+        return readerFor(Collections.emptyMap(), topicName);
+    }
 
-        KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(consumerConfig, new StringDeserializer(), new StringDeserializer());
-        SimpleKafkaReader reader = new SimpleKafkaReader(kafkaConsumer, topicName);
+    /**
+     * Obtain a SimpleKafkaReader configured with the given consumer config
+     * <p>
+     * The following properties will be added with default values if they are not set in {@code config}
+     * <ul>
+     * <li>the connectionProperties</li>
+     * <li>{@value ConsumerConfig#KEY_DESERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * <li>{@value ConsumerConfig#VALUE_DESERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * <li>{@value ConsumerConfig#GROUP_ID_CONFIG} = {@value #TEST_GROUPID}</li>
+     * <li>{@value ConsumerConfig#AUTO_OFFSET_RESET_CONFIG} = earliest</li>
+     * </ul>
+     *
+     * @param config    the consumer config
+     * @param topicName the topic to subscribe to
+     * @return the reader
+     */
+    public SimpleKafkaReader<String> readerFor(Map<String, Object> config, String topicName) {
+        // Set up defaults
+        HashMap<String, Object> localConfig = new HashMap<>(config);
+        localConfig.putAll(connectionProperties);
+        localConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        localConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        localConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
+        localConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Add in provided config (which will overwrite any defaults)
+        localConfig.putAll(config);
+
+        KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(localConfig);
+        SimpleKafkaReader<String> reader = new SimpleKafkaReader<String>(kafkaConsumer, topicName);
         openClients.add(reader);
         return reader;
     }
@@ -81,12 +125,37 @@ public class KafkaTestClient {
      * @param topicName the topic to write to
      * @return the writer
      */
-    public SimpleKafkaWriter writerFor(String topicName) {
-        Map<String, Object> producerConfig = new HashMap<>();
-        producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+    public SimpleKafkaWriter<String> writerFor(String topicName) {
+        return writerFor(Collections.emptyMap(), topicName);
+    }
 
-        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(producerConfig, new StringSerializer(), new StringSerializer());
-        SimpleKafkaWriter writer = new SimpleKafkaWriter(kafkaProducer, topicName);
+    /**
+     * Obtain a SimpleKafkaWriter configured with the given producer config
+     * <p>
+     * The following properties will be added with default values if they are not set in {@code config}
+     * <ul>
+     * <li>the connectionProperties</li>
+     * <li>{@value ProducerConfig#KEY_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
+     * <li>{@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
+     * </ul>
+     *
+     * @param <T>       the type of the message written to Kafka. This must match the type serialized by the class configured with
+     *                      {@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG}
+     * @param config    the producer config
+     * @param topicName the topic to write to
+     * @return the writer
+     */
+    public <T> SimpleKafkaWriter<T> writerFor(Map<String, Object> config, String topicName) {
+        Map<String, Object> localConfig = new HashMap<>();
+        localConfig.putAll(connectionProperties);
+        localConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        localConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // Add in provided config (which will overwrite any defaults)
+        localConfig.putAll(config);
+
+        KafkaProducer<String, T> kafkaProducer = new KafkaProducer<>(localConfig);
+        SimpleKafkaWriter<T> writer = new SimpleKafkaWriter<T>(kafkaProducer, topicName);
         openClients.add(writer);
         return writer;
     }
@@ -101,7 +170,7 @@ public class KafkaTestClient {
      */
     private KafkaConsumer<?, ?> getKafkaTopicOffsetConsumer(String consumerGroupId) {
         Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        consumerConfig.putAll(connectionProperties);
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return new KafkaConsumer<String, String>(consumerConfig, new StringDeserializer(), new StringDeserializer());
@@ -119,6 +188,21 @@ public class KafkaTestClient {
     public long getTopicOffset(String topicName, String consumerGroupId) {
         try (KafkaConsumer<?, ?> kafka = getKafkaTopicOffsetConsumer(consumerGroupId)) {
             TopicPartition topicPartition = getTopicPartition(kafka, topicName);
+            return getOffset(kafka, topicPartition);
+        }
+    }
+
+    /**
+     * Get the current committed offset for the given partition and consumer group
+     *
+     * @param topicName       the topic name
+     * @param partitionId     the partition id
+     * @param consumerGroupId the consumer group id
+     * @return the current committed offset
+     */
+    public long getTopicOffset(String topicName, int partitionId, String consumerGroupId) {
+        try (KafkaConsumer<?, ?> kafka = getKafkaTopicOffsetConsumer(consumerGroupId)) {
+            TopicPartition topicPartition = new TopicPartition(topicName, partitionId);
             return getOffset(kafka, topicPartition);
         }
     }
@@ -165,9 +249,28 @@ public class KafkaTestClient {
      * @throws InterruptedException if a thread interruption occurs
      */
     public void assertTopicOffsetAdvancesTo(long newOffset, Duration timeout, String topicName, String consumerGroupId) throws InterruptedException {
+        assertTopicOffsetAdvancesTo(newOffset, timeout, topicName, -1, consumerGroupId);
+    }
 
+    /**
+     * Assert that the committed offset for the given partition advances to the given point with the timeout
+     *
+     * @param newOffset       the expected new offset
+     * @param timeout         the timeout
+     * @param topicName       the topic name
+     * @param partitionId     the partition ID, or {@code -1} to indicate that there is only one partition and the ID should be looked up automatically
+     * @param consumerGroupId the consumer group id
+     * @throws InterruptedException if a thread interruption occurs
+     */
+
+    public void assertTopicOffsetAdvancesTo(long newOffset, Duration timeout, String topicName, int partitionId, String consumerGroupId) throws InterruptedException {
         try (KafkaConsumer<?, ?> kafka = getKafkaTopicOffsetConsumer(consumerGroupId)) {
-            TopicPartition topicPartition = getTopicPartition(kafka, topicName);
+            TopicPartition topicPartition;
+            if (partitionId == -1) {
+                topicPartition = getTopicPartition(kafka, topicName);
+            } else {
+                topicPartition = new TopicPartition(topicName, partitionId);
+            }
             Duration remaining = timeout;
             long startTime = System.nanoTime();
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -564,5 +564,48 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tmsRef != null) {
             tmsRef.shutDownFramework();
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     */
+    @Override
+    public boolean enableHADBPeerLocking() {
+        return (Boolean) _props.get("enableHADBPeerLocking");
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getTimeBetweenHeartbeats()
+     */
+    @Override
+    public int getTimeBetweenHeartbeats() {
+        Number num = (Number) _props.get("timeBetweenHeartbeats");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getPeerTimeBeforeStale()
+     */
+    @Override
+    public int getPeerTimeBeforeStale() {
+        Number num = (Number) _props.get("peerTimeBeforeStale");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLocalTimeBeforeStale()
+     */
+    @Override
+    public int getLocalTimeBeforeStale() {
+        Number num = (Number) _props.get("localTimeBeforeStale");
+        return num.intValue();
     }
 }

@@ -104,9 +104,9 @@ SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E: Nu se poate ob\u0163ine 
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation=Pagina de eroare personalizat\u0103 nu poate fi \u00eenc\u0103rcat\u0103 din cauza excep\u0163iei la ob\u0163inerea tipului con\u0163inutului.
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction=Examina\u0163i tipul con\u0163inutului paginii de eroare personalizate pentru a v\u0103 asigura c\u0103 este valid.
 
-SPNEGO_CAN_NOT_VALIDATE_TOKEN=CWWKS4320E: Jetonul SPNEGO sau Kerberos inclus \u00een HttpServletRequest nu pot fi validate {0}
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.explanation=Jetonul SPNEGO sau Kerberos utilizat pentru autentificarea cererii nu este valid.
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.useraction=Dac\u0103 nu este afi\u015fat niciun mesaj de eroare suplimentar, v\u0103 rug\u0103m s\u0103 activa\u0163i depanarea JGSS \u015fi KRB5. V\u0103 rug\u0103m s\u0103 consulta\u0163i documenta\u0163ia JDK pentru modul \u00een care s\u0103 activa\u0163i depanarea JGSS \u015fi KRB5. Verifica\u0163i configura\u0163ia SPNEGO \u015fi asigura\u0163i-v\u0103 c\u0103 fi\u015fierele tabel\u0103 de chei Kerberos, SPN \u015fi client folosesc acela\u015fi tip de criptare care este specificat \u00een fi\u015fierul de configurare Kerberos.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: Nu poate fi stabilit GSSContext cu un jeton valid SPNEGO sau Kerberos inclus \u00een {0} HttpServletRequest. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=Jetonul SPNEGO sau Kerberos utilizat pentru autentificarea cererii este valid, dar nu poate fi stabilit GSSContext.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Dac\u0103 nu este afi\u015fat \u015fi alt mesaj de eroare, activa\u0163i depanarea JGSS \u015fi KRB5. consulta\u0163i documenta\u0163ia JDK pentru instruc\u0163iuni referitoare la activarea depan\u0103rii JGSS \u015fi KRB5. Verifica\u0163i configura\u0163ia SPNEGO \u015fi asigura\u0163i-v\u0103 c\u0103 clientul, SPN \u015fi fi\u015fierele keytab Kerberos utilizeaz\u0103 acela\u015fi tip de criptare cu cel specificat \u00een fi\u015fierul de configura\u0163ie Kerberos.
 
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Nu se poate ob\u0163ine serviciul de delegare SPN {0} din GSSCredential. S-a primit o GSSException: {1}
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Nu se poate ob\u0163ine serviciul de delegare SPN din GSSCredential. Clientul GSSCredential pentru proxy nu va fi \u00een subiect.

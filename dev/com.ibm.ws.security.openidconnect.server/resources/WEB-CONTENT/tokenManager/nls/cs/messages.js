@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Odstranit",
     "DONE": "Hotovo",
     "EDIT": "Upravit",
+    "FALSE": "Ne",
     "GENERATE": "Generovat",
     "LOADING": "Načítání",
     "LOGOUT": "Odhlásit",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "Regenerovat",
     "REGISTER": "Registrovat",
     "TABLE_BATCH_BAR": "Řádek s akcemi tabulky",
+    "TABLE_FIELD_SORT_ASC": "Tabulka je řazena podle {0} vzestupném pořadí.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabulka je řazena podle {0} sestupném pořadí.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Ano",
     "TRY_AGAIN": "Zopakujte akci...",
     "UPDATE": "Aktualizovat",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "Odstranit tokeny",
     "TOKEN_MGR_DESC": "Odstraňte hesla aplikací a tokeny aplikací pro určeného uživatele.",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "Zadejte ID uživatele",
-    "DELETE_SELECTED": "Odstranit vybrané hesla aplikací tokeny aplikací",
+    "TABLE_FILLED_WITH": "Tabulka byla aktualizována pro zobrazení {0} ověření patřících do {1}.",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "Odstraňte vybraná hesla aplikací a tokeny aplikací.",
     "DELETE_ARIA": "Odstranit {0} s názvem {1}",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "Odstranit toto heslo aplikace",
     "DELETE_TOKEN": "Odstranit tento token aplikace",
@@ -58,15 +63,15 @@ var messages = {
     "DELETE_WARNING_TOKEN": "Tato akce odebere aktuálně přiřazený token aplikace.",
     "DELETE_MANY": "Odstranit hesla aplikací/tokeny aplikací",
     "DELETE_MANY_FOR": "Přiřazeno uživateli {0}",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "Tato akce odstraní vybrané heslo aplikace/token aplikace",
+    "DELETE_ONE_MESSAGE": "Tato akce odstraní vybrané heslo aplikace/token aplikace.",
     "DELETE_MANY_MESSAGE": "Tato akce odstraní {0} vybraných hesel aplikací/tokenů aplikací.",  // 0 - number
     "DELETE_ALL_MESSAGE": "Tato akce odstraní všechny hesla aplikací/tokeny aplikací patřící k {0}.", // 0 - user id
     "DELETE_NONE": "Vybrat pro odstranění",
     "DELETE_NONE_MESSAGE": "Zaškrtněte políčko, chcete-li označit, která hesla aplikací nebo tokeny aplikací by měly být odstraněny.",
     "SINGLE_ITEM_SELECTED": "Počet vybraných položek: 1",
     "ITEMS_SELECTED": "Počet vybraných položek: {0}",            // 0 - number
-    "SELECT_ALL_AUTHS": "Vybrat všechny hesla aplikací a tokeny aplikací pro tohoto uživatele",
-    "SELECT_SPECIFIC": "Vybrat {0} s názvem {1} pro odstranění",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "Vyberte všechny hesla aplikací a tokeny aplikací pro tohoto uživatele.",
+    "SELECT_SPECIFIC": "Vyberte {0} s názvem {1} pro odstranění.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Hledáte něco? Zadejte ID uživatele pro zobrazení svých hesel aplikací a tokenů aplikací.",
     "GENERIC_FETCH_FAIL": "Chyba při načítání {0}",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "Nelze získat seznam {0} patřící k {1}.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

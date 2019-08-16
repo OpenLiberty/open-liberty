@@ -23,7 +23,7 @@ var tableUtils = (function() {
      */
     var initTableSorting = function(sortColumnName) {
         // Sort column button on Client Name <th>
-        $('#' + sortColumnName).on('click keydown', (function() {
+        $('#' + sortColumnName).on('click keydown', (function(event) {
             var sortTable = true;
             if (event.type === "keydown") {
                 var key = event.which || event.keyCode;
@@ -61,7 +61,7 @@ var tableUtils = (function() {
      */
     var initTableFilter = function(filterInputField, filterClearButton) {
         // Filter field
-        $('#' + filterInputField).keyup(function() {            // Filter field
+        $('#' + filterInputField).keyup(function(event) {       // Filter field
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '9') {   // Tab key
                 return;
@@ -240,6 +240,7 @@ var tableUtils = (function() {
     var filterRows = function(tableId, filterValue) {
         var filter = filterValue.trim().toLowerCase();  // Stored the name in <tr> element
                                                         // lower-cased for a case insensitive search
+        filter = utils.escapeString(filter);                                                        
 
         var $table = $('#' + tableId + ' tbody');
 

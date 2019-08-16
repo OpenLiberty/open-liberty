@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Usuń",
     "DONE": "Gotowe",
     "EDIT": "Edytuj",
+    "FALSE": "Fałsz",
     "GENERATE": "Generuj",
     "LOADING": "Trwa ładowanie",
     "LOGOUT": "Wylogowanie",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "Wygeneruj ponownie",
     "REGISTER": "Zarejestruj",
     "TABLE_BATCH_BAR": "Pasek działań tabeli",
+    "TABLE_FIELD_SORT_ASC": "Tabela jest sortowana według {0} w kolejności rosnącej.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabela jest sortowana według {0} w kolejności malejącej.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Prawda",
     "TRY_AGAIN": "Spróbuj ponownie...",
     "UPDATE": "Aktualizuj",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "Usuń znaczniki",
     "TOKEN_MGR_DESC": "Usuń elementy app-password i app-token dla określonego użytkownika.",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "Wprowadź ID użytkownika",
-    "DELETE_SELECTED": "Usuń wybrane elementy app-password i app-token",
+    "TABLE_FILLED_WITH": "Tabel została zaktualizowana w taki sposób, aby zawierała uwierzytelnienia ({0}) należące do {1}.",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "Usuń wybrane elementy app-password i app-token.",
     "DELETE_ARIA": "Usuń element {0} o nazwie {1}",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "Usuń ten element app-password",
     "DELETE_TOKEN": "Usuń ten element app-token",
@@ -58,15 +63,15 @@ var messages = {
     "DELETE_WARNING_TOKEN": "To działanie spowoduje usunięcie aktualnie przypisanego elementu app-token.",
     "DELETE_MANY": "Usuń elementy App-Password/App-Token",
     "DELETE_MANY_FOR": "Przypisane do {0}",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "To działanie spowoduje usunięcie wybranych elementów app-password/app-token",
+    "DELETE_ONE_MESSAGE": "To działanie spowoduje usunięcie wybranych elementów app-password/app-token.",
     "DELETE_MANY_MESSAGE": "To działanie spowoduje usunięcie następującej liczby {0} wybranych elementów app-password/app-token",  // 0 - number
     "DELETE_ALL_MESSAGE": "To działanie spowoduje usunięcie wszystkich elementów app-password/app-token należących do {0}.", // 0 - user id
     "DELETE_NONE": "Wybierz do usunięcia",
     "DELETE_NONE_MESSAGE": "Zaznacz te pola wyboru, aby wskazać elementy app-password lub app-token do usunięcia.",
     "SINGLE_ITEM_SELECTED": "Wybrano 1 element",
     "ITEMS_SELECTED": "Wybrano następującą liczbę elementów: {0}",            // 0 - number
-    "SELECT_ALL_AUTHS": "Wybierz wszystkie elementy app-password i app-tokens dla tego użytkownika",
-    "SELECT_SPECIFIC": "Czy wybrać element {0} o nazwie {1} do usunięcia",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "Wybierz wszystkie elementy app-password i app-tokens dla tego użytkownika.",
+    "SELECT_SPECIFIC": "Wybierz element {0} o nazwie {1} do usunięcia.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Szukasz czegoś? Wprowadź ID użytkownika, aby wyświetlić jego elementy app-password i app-token.",
     "GENERIC_FETCH_FAIL": "Błąd podczas pobierania elementu {0}",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "Nie można pobrać listy elementów {0} należących do {1}.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

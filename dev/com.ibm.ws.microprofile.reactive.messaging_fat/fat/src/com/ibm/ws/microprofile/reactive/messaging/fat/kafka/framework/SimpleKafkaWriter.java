@@ -26,9 +26,9 @@ import org.apache.kafka.clients.producer.RecordMetadata;
  * <p>
  * This writer is very basic, it only writes String messages.
  */
-public class SimpleKafkaWriter implements AutoCloseable {
+public class SimpleKafkaWriter<T> implements AutoCloseable {
 
-    private final KafkaProducer<String, String> kafkaProducer;
+    private final KafkaProducer<String, T> kafkaProducer;
     private final String topic;
     private static final Duration DEFAULT_SEND_TIMEOUT = Duration.ofSeconds(10);
 
@@ -36,19 +36,29 @@ public class SimpleKafkaWriter implements AutoCloseable {
      * @param kafkaProducer the configured KafkaProducer to use
      * @param topic         the topic name to write to
      */
-    public SimpleKafkaWriter(KafkaProducer<String, String> kafkaProducer, String topic) {
+    public SimpleKafkaWriter(KafkaProducer<String, T> kafkaProducer, String topic) {
         super();
         this.kafkaProducer = kafkaProducer;
         this.topic = topic;
     }
 
-    public RecordMetadata sendMessage(String message) {
+    public RecordMetadata sendMessage(T message) {
         return sendMessage(message, DEFAULT_SEND_TIMEOUT);
     }
 
-    public RecordMetadata sendMessage(String message, Duration timeout) {
+    public RecordMetadata sendMessage(T message, Duration timeout) {
         try {
-            ProducerRecord<String, String> record = new ProducerRecord<String, String>(topic, message);
+            ProducerRecord<String, T> record = new ProducerRecord<>(topic, message);
+            Future<RecordMetadata> ack = kafkaProducer.send(record);
+            return ack.get(timeout.toMillis(), MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException("Error sending Kafka message", e);
+        }
+    }
+
+    public RecordMetadata sendMessage(T message, int partition, Duration timeout) {
+        try {
+            ProducerRecord<String, T> record = new ProducerRecord<>(topic, partition, null, message);
             Future<RecordMetadata> ack = kafkaProducer.send(record);
             return ack.get(timeout.toMillis(), MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {

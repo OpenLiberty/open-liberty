@@ -47,16 +47,19 @@ class ContextualSupplierAction<T> implements Runnable {
             if (threadContextDescriptor != null)
                 contextApplied = threadContextDescriptor.taskStarting();
             result = action.get();
-        } catch (Error x) {
+        } catch (RuntimeException x) {
             failure = x;
             throw x;
-        } catch (RuntimeException x) {
+        } catch (Error x) {
             failure = x;
             throw x;
         } finally {
             try {
                 if (contextApplied != null)
                     threadContextDescriptor.taskStopping(contextApplied);
+            } catch (RuntimeException x) {
+                failure = x;
+                throw x;
             } finally {
                 if (failure == null)
                     if (superComplete)

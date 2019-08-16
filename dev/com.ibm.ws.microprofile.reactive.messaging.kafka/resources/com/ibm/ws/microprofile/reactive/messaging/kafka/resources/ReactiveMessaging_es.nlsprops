@@ -1,0 +1,55 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Se ha producido un error interno en el conector de Reactive Messaging de Kafka. El error es: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Se ha producido un error de Reactive Messaging que impide el funcionamiento normal.
+internal.kafka.connector.error.CWMRX1000E.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Se ha producido un error al confirmar desplazamiento de lectura en el intermediario de Kafka. El error es: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Se ha producido un error en el conector entrante de Kafka que impide el funcionamiento normal de Reactive Messaging.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Se ha producido un error al sondear el intermediario de Kafka. El error es: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Se ha producido un error en el conector entrante de Kafka que impide el funcionamiento normal de Reactive Messaging.
+kafka.poll.error.CWMRX1002E.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Se ha producido un error al enviar un mensaje al intermediario de Kafka. El error es: {0}.
+kafka.send.error.CWMRX1003E.explanation=Se ha producido un error en el conector saliente de Kafka que impide el funcionamiento normal de Reactive Messaging.
+kafka.send.error.CWMRX1003E.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Se ha producido el siguiente error de Reactive Messaging: {0}.
+temporary.CWMRX1999E.explanation=Se ha producido un error de Reactive Messaging que impide el funcionamiento normal.
+temporary.CWMRX1999E.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.

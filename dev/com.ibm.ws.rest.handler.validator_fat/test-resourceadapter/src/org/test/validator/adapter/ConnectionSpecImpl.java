@@ -19,13 +19,12 @@ import javax.resource.spi.ConnectionRequestInfo;
  * Example ConnectionSpec implementation with UserName and Password.
  */
 public class ConnectionSpecImpl implements ConnectionSpec {
-    boolean isJDBC;
+    String connectionImplClass = ConnectionImpl.class.getName();
     private String user, password;
 
-    ConnectionRequestInfoImpl createConnectionRequestInfo() {
+    public ConnectionRequestInfoImpl createConnectionRequestInfo() {
         ConnectionRequestInfoImpl cri = new ConnectionRequestInfoImpl();
-        if (isJDBC)
-            cri.put("JDBC", isJDBC);
+        cri.put("ConnectionClass", connectionImplClass);
         if (user != null)
             cri.put("UserName", user);
         if (password != null)
@@ -33,16 +32,16 @@ public class ConnectionSpecImpl implements ConnectionSpec {
         return cri;
     }
 
+    public String getConnectionImplClass() {
+        return connectionImplClass;
+    }
+
     public String getUserName() {
         return user;
     }
 
-    public boolean isJDBC() {
-        return isJDBC;
-    }
-
-    public void setJDBC(boolean isJDBC) {
-        this.isJDBC = isJDBC;
+    public void setConnectionImplClass(String c) {
+        this.connectionImplClass = c;
     }
 
     public void setPassword(String pwd) {

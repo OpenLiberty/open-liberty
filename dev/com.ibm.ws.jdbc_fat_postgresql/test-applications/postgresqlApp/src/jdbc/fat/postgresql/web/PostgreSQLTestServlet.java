@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Objects;
@@ -41,6 +40,8 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 import org.postgresql.PGConnection;
+import org.postgresql.jdbc.AutoSave;
+import org.postgresql.largeobject.LargeObjectManager;
 
 import componenttest.app.FATServlet;
 
@@ -449,22 +450,51 @@ public class PostgreSQLTestServlet extends FATServlet {
         }
     }
 
+    // Verify PostgreSQL vendor-specific Connection property autoSave can be set and is reset properly
     @Test
-    public void testPostgresApiUsability() throws Exception {
+    public void testPropertyCleanup_postgre_autoSave() throws Exception {
+        // Use a DataSource with maxPoolSize=1 and shareable=false so that we always reuse the same underlying connection (if possible)
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/maxPoolSize1");
+
+        try (Connection con = ds.getConnection()) {
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            assertEquals("Initial value of connection AutoSave was not correct", AutoSave.NEVER, pgCon.getAutosave());
+
+            pgCon.setAutosave(AutoSave.ALWAYS);
+            assertEquals("Connection did not honor setAutoSave(ALWAYS) call", AutoSave.ALWAYS, pgCon.getAutosave());
+        }
+        try (Connection con = ds.getConnection()) {
+            // Now check autoSave to make sure it was reset properly to the original value
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+            assertEquals("Connection did not have its AutoSave value reset to NEVER after being closed", AutoSave.NEVER, pgCon.getAutosave());
+        }
+    }
+
+    @Test
+    public void testPostgresCopyApiUsability() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
         try (Connection con = ds.getConnection()) {
             PGConnection pgCon = con.unwrap(PGConnection.class);
 
             // CopyAPI is allowed
             pgCon.getCopyAPI();
+        }
+    }
 
-            // LargeObject API is not allowed because it has operations that can commit transactions on the underlying PG connection
-            try {
-                pgCon.getLargeObjectAPI();
-                fail("Expected to get a SQLFeatureNotSupportedException on calling PGConnection.getLargeObjectAPI() but did not.");
-            } catch (SQLFeatureNotSupportedException expected) {
-                System.out.println("Caught expected exception: " + expected);
-            }
+    @Test
+    public void testPostgresLargeObjectApiUsability() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
+        try (Connection con = ds.getConnection()) {
+            con.setAutoCommit(false); // Large Objects may not be used in auto-commit mode
+            PGConnection pgCon = con.unwrap(PGConnection.class);
+
+            LargeObjectManager lom = pgCon.getLargeObjectAPI();
+
+            long oid = lom.createLO();
+            lom.open(oid).close();
+            lom.open(oid, false).close();
+
+            con.commit();
         }
     }
 

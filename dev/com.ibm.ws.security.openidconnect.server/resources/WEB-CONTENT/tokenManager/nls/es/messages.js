@@ -21,9 +21,10 @@ var messages = {
     "DELETE": "Suprimir",
     "DONE": "Hecho",
     "EDIT": "Editar",
+    "FALSE": "Falso",
     "GENERATE": "Generar",
     "LOADING": "Cargando",
-    "LOGOUT": "Cierre de sesión",
+    "LOGOUT": "Cerrar sesión",
     "NEXT_PAGE": "Página siguiente",
     "NO_RESULTS_FOUND": "No se han encontrado resultados.",
     "PAGES": "{0} de {1} páginas",   // {0} - current page number; {1} - total pages
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "Volver a generar",
     "REGISTER": "Registrar",
     "TABLE_BATCH_BAR": "Barra de acciones de tabla",
+    "TABLE_FIELD_SORT_ASC": "La tabla está ordenada por {0} en orden ascendente.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "La tabla está ordenada por {0} en orden descendente.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Verdadero",
     "TRY_AGAIN": "Vuelva a intentarlo...",
     "UPDATE": "Actualizar",
 
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "Suprimir señales",
     "TOKEN_MGR_DESC": "Suprimir contraseñas de aplicación o señales de aplicación para un usuario específico.",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "Especificar el ID de usuario",
-    "DELETE_SELECTED": "Suprimir las contraseñas de aplicación o señales de aplicación seleccionadas",
+    "TABLE_FILLED_WITH": "la tabla se ha actualizado para mostrar {0} autenticaciones pertenecientes a {1}.",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "Suprimir las contraseñas de aplicación o señales de aplicación seleccionadas.",
     "DELETE_ARIA": "Suprimir la {0} denominada {1}",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "Suprimir esta contraseña de aplicación",
     "DELETE_TOKEN": "Suprimir esta señal de aplicación",
@@ -58,7 +63,7 @@ var messages = {
     "DELETE_WARNING_TOKEN": "Esta acción eliminará la señal de aplicación asignada actualmente.",
     "DELETE_MANY": "Suprimir contraseñas de aplicación/señales de aplicación",
     "DELETE_MANY_FOR": "Asignada a {0}",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "Esta acción suprimirá la contraseña de aplicación/señal de aplicación seleccionada",
+    "DELETE_ONE_MESSAGE": "Esta acción suprimirá la contraseña de aplicación/señal de aplicación seleccionada.",
     "DELETE_MANY_MESSAGE": "Esta acción suprimirá las contraseñas de aplicación/señales de aplicación {0} seleccionadas.",  // 0 - number
     "DELETE_ALL_MESSAGE": "Esta acción suprimirá todas las contraseñas de aplicación/señales de aplicación que pertenecen a {0}.", // 0 - user id
     "DELETE_NONE": "Seleccionar para supresión",
@@ -66,7 +71,7 @@ var messages = {
     "SINGLE_ITEM_SELECTED": "1 elemento seleccionado",
     "ITEMS_SELECTED": "{0} elementos seleccionados",            // 0 - number
     "SELECT_ALL_AUTHS": "Seleccione todas las contraseñas de aplicación/señales de aplicación de este usuario.",
-    "SELECT_SPECIFIC": "Seleccione la {0} denominada {1} para supresión",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_SPECIFIC": "Seleccione la {0} denominada {1} para supresión.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "¿Está buscando algo? Especifique un ID de usuario para ver sus contraseñas de aplicación/señales de aplicación.",
     "GENERIC_FETCH_FAIL": "Error al recuperar {0}",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "No se puede obtener la lista de {0} que pertenecen a {1}.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

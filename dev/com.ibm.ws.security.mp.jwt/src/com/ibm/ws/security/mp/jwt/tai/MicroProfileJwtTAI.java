@@ -361,6 +361,14 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             }
             return result;
         }
+        if (TAIJwtUtils.isJwtPreviouslyLoggedOut(token)) {
+            Tr.error(tc, "JWT_PREVIOUSLY_LOGGED_OUT");
+            TAIResult result = sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+            if (tc.isDebugEnabled()) {
+                Tr.exit(tc, methodName, result);
+            }
+            return result;
+        }
         TAIResult result = handleMicroProfileJwtValidation(request, response, mpJwtConfig, token, false);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
@@ -388,7 +396,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
                     jwtToken = taiJwtUtils.createJwt(token, clientConfig.getUniqueId());
                 }
             } catch (Exception e) {
-                if( ! JwtUtils.isJwtSsoValidationExpiredTokenCodePath()) {
+                if (!JwtUtils.isJwtSsoValidationExpiredTokenCodePath()) {
                     Tr.error(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() }); //CWWKS5523E
                 } else {
                     Tr.debug(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() }); //CWWKS5523E

@@ -187,8 +187,6 @@ public class BundleInstallOriginBundleListener implements BundleListener {
                 //that way we will try to uninstall them again another time when it might work
                 bundleOrigins.put(installerBundleId, unsuccessfulUninstallLocations);
                 debug("Not all installees were removed", unsuccessfulUninstallLocations);
-            } else {
-                bundleOrigins.remove(installerBundleId);
             }
         }
         if (tracked) {
@@ -241,6 +239,13 @@ public class BundleInstallOriginBundleListener implements BundleListener {
         // the impl bundle is re-installed if a new version is used which means we
         // will be starting clean anyway
         try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(bundleOriginCache)))) {
+            // cache format is as follows:
+            // Int - number of origin bundles being tracked
+            // for each origin bundle ->
+            //   Long - the origin bundle ID
+            //   Int - number of bundles installed by origin bundle
+            //   for each bundle installed ->
+            //      Long - the installed bundle ID
             synchronized (bundleOrigins) {
                 out.writeInt(bundleOrigins.size());
                 for (Entry<Long, Set<Long>> origin : bundleOrigins.entrySet()) {

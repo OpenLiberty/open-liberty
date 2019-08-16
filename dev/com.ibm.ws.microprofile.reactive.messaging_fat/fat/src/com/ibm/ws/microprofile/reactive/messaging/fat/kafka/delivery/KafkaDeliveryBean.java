@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -20,54 +17,18 @@ import javax.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractDeliveryBean;
+
 @ApplicationScoped
-public class KafkaDeliveryBean {
+public class KafkaDeliveryBean extends AbstractDeliveryBean {
 
     public final static String CHANNEL_NAME = "delivery-test-output";
 
-    private final Queue<Message<String>> pendingMessages = new LinkedList<>();
-    private final Queue<CompletableFuture<Message<String>>> incompleteFutures = new LinkedList<>();
-
+    // Overridden to add @Outgoing
+    @Override
     @Outgoing(CHANNEL_NAME)
     public CompletionStage<Message<String>> getMessage() {
-        synchronized (this) {
-            if (pendingMessages.isEmpty()) {
-                CompletableFuture<Message<String>> nextMessage = new CompletableFuture<>();
-                incompleteFutures.add(nextMessage);
-                System.out.println("Delivery bean returning incomplete CS");
-                return nextMessage;
-            } else {
-                System.out.println("Delivery bean returning completed CS");
-                return CompletableFuture.completedFuture(pendingMessages.poll());
-            }
-        }
-    }
-
-    /**
-     * Send a message through the connector
-     * <p>
-     * This creates a {@link Message} wrapper and queues it to be sent into the reactive messaging system
-     *
-     * @param message the string to send in the message
-     * @return a CompletableFuture which completes when the message is acknowledged
-     */
-    public CompletableFuture<Void> sendMessage(String message) {
-        CompletableFuture<Void> ackCf = new CompletableFuture<>();
-        Message<String> msg = Message.of(message, () -> {
-            ackCf.complete(null);
-            return CompletableFuture.completedFuture(null);
-        });
-        synchronized (this) {
-            CompletableFuture<Message<String>> nextMessage = incompleteFutures.poll();
-            if (nextMessage != null) {
-                System.out.println("Delivery bean passing message to incomplete CS");
-                nextMessage.complete(msg);
-            } else {
-                System.out.println("Delivery bean queuing message");
-                pendingMessages.add(msg);
-            }
-        }
-        return ackCf;
+        return super.getMessage();
     }
 
 }

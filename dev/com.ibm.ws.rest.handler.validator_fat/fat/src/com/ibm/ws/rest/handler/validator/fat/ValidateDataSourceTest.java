@@ -182,16 +182,12 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testFeatureOfParentConfigNotEnabled() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/databaseStore[unavailableDBStore]%2FdataSource[unavailableDS]")
-                        .run(JsonObject.class);
-        String err = "unexpected response: " + json;
-        assertEquals(err, "databaseStore[unavailableDBStore]/dataSource[unavailableDS]", json.getString("uid"));
-        assertFalse(err, json.getBoolean("successful"));
-        assertNull(err, json.get("info"));
+        String response = new HttpsRequest(server, "/ibm/api/validation/dataSource/databaseStore[unavailableDBStore]%2FdataSource[unavailableDS]")
+                        .expectCode(404)
+                        .run(String.class);
+        String err = "unexpected response: " + response;
         // Is there any way to know that this configuration is unavailable due to being nested under a config element of a feature that is not enabled?
-        assertNotNull(err, json = json.getJsonObject("failure"));
-        String message = json.getString("message");
-        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("dataSource"));
+        assertTrue(err, response.contains("CWWKO1500E") && response.contains("dataSource") && response.contains("databaseStore[unavailableDBStore]/dataSource[unavailableDS]"));
     }
 
     @Test
@@ -215,7 +211,7 @@ public class ValidateDataSourceTest extends FATServletClient {
     public void testInvalidQueryParameter() throws Exception {
         new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource?badParam=something")
                         .expectCode(400)
-                        .run(JsonObject.class);
+                        .run(String.class);
     }
 
     @Test
@@ -324,9 +320,11 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testMultipleWithNoResults() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase")
-                        .run(JsonArray.class);
-        assertEquals("unexpected response: " + json, 0, json.size());
+        String response = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase")
+                        .expectCode(404)
+                        .run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E"));
     }
 
     @Test
@@ -348,17 +346,11 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testNotFound() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/NotAConfiguredDataSource")
-                        .run(JsonObject.class);
-        String err = "unexpected response: " + json;
-        assertEquals(err, "NotAConfiguredDataSource", json.getString("uid"));
-        assertNull(err, json.get("id"));
-        assertNull(err, json.get("jndiName"));
-        assertFalse(err, json.getBoolean("successful"));
-        assertNull(err, json.get("info"));
-        assertNotNull(err, json = json.getJsonObject("failure"));
-        String message = json.getString("message");
-        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("dataSource"));
+        String response = new HttpsRequest(server, "/ibm/api/validation/dataSource/NotAConfiguredDataSource")
+                        .expectCode(404)
+                        .run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E") && response.contains("dataSource") && response.contains("NotAConfiguredDataSource"));
     }
 
     @Test
@@ -632,11 +624,12 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testPOSTMethodRejected() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/dataSource[default-0]?auth=container")
+        String response = new HttpsRequest(server, "/ibm/api/validation/dataSource/dataSource[default-0]?auth=container")
                         .method("POST")
                         .expectCode(405) // Method Not Allowed
-                        .run(JsonObject.class);
-        assertNull("Expected null response from not allowed HTTP method, but got: " + json, json);
+                        .run(String.class);
+        String err = "Unexpected response: " + response.toString();
+        assertTrue(err, response.contains("SRVE0295E"));
     }
 
     private static void assertSuccessResponse(JsonObject json, String expectedUID, String expectedID) {

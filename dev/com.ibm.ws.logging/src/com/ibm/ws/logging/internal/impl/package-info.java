@@ -6,11 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 @TraceOptions(traceGroup = NLSConstants.GROUP, messageBundle = NLSConstants.LOGGING_NLS)
 package com.ibm.ws.logging.internal.impl;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
 import com.ibm.ws.logging.internal.NLSConstants;
-

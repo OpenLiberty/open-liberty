@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.testcontainers.containers.KafkaContainer;
@@ -51,8 +55,34 @@ public class ConnectorProperties extends PropertiesAsset {
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleOutgoingChannel(KafkaContainer kafka, String channelName) {
+        return simpleOutgoingChannel(kafka.getBootstrapServers(), channelName);
+    }
+
+    /**
+     * Creates a simple configuration for a channel sending to a topic of the same name
+     * <p>
+     * The message type is String
+     *
+     * @param kafkaBootstrapServers the kafka bootstrap server config
+     * @param channelName           the channel and topic name
+     * @return the ConnectorProperties to add to the app configuration
+     */
+    public static ConnectorProperties simpleOutgoingChannel(String kafkaBoostrapServers, String channelName) {
+        return simpleOutgoingChannel(Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBoostrapServers), channelName);
+    }
+
+    /**
+     * Creates a simple configuration for a channel sending to a topic of the same name
+     * <p>
+     * The message type is String
+     *
+     * @param connectionProperties the properties required to connect to the kafka broker
+     * @param channelName          the channel and topic name
+     * @return the ConnectorProperties to add to the app configuration
+     */
+    public static ConnectorProperties simpleOutgoingChannel(Map<? extends String, ?> connectionProperties, String channelName) {
         return new ConnectorProperties(Direction.OUTGOING, channelName)
-                        .addProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers())
+                        .addAll(connectionProperties)
                         .addProperty("connector", "io.openliberty.kafka")
                         .addProperty("topic", channelName)
                         .addProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
@@ -70,8 +100,36 @@ public class ConnectorProperties extends PropertiesAsset {
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleIncomingChannel(KafkaContainer kafka, String channelName, String groupId) {
+        return simpleIncomingChannel(kafka.getBootstrapServers(), channelName, groupId);
+    }
+
+    /**
+     * Creates a simple configuration for a channel receiving from a topic of the same name
+     * <p>
+     * The message type is String
+     *
+     * @param kafkaBootstrapServers the kafka bootstrap server config
+     * @param channelName           the channel and topic name
+     * @param groupId               the reader group id (used to commit message offsets)
+     * @return the ConnectorProperties to add to the app configuration
+     */
+    public static ConnectorProperties simpleIncomingChannel(String kafkaBootstrapServers, String channelName, String groupId) {
+        return simpleIncomingChannel(Collections.singletonMap(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers), channelName, groupId);
+    }
+
+    /**
+     * Creates a simple configuration for a channel receiving from a topic of the same name
+     * <p>
+     * The message type is String
+     *
+     * @param connectionProperties the properties required to connect to the kafka broker
+     * @param channelName          the channel and topic name
+     * @param groupId              the reader group id (used to commit message offsets)
+     * @return the ConnectorProperties to add to the app configuration
+     */
+    public static ConnectorProperties simpleIncomingChannel(Map<? extends String, ?> connectionProperties, String channelName, String groupId) {
         return new ConnectorProperties(Direction.INCOMING, channelName)
-                        .addProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers())
+                        .addAll(connectionProperties)
                         .addProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer")
                         .addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer")
                         .addProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
@@ -81,8 +139,10 @@ public class ConnectorProperties extends PropertiesAsset {
     }
 
     private final String prefix;
+    private final Direction direction;
 
     public ConnectorProperties(Direction direction, String channelName) {
+        this.direction = direction;
         prefix = "mp.messaging." + direction.getValue() + "." + channelName + ".";
     }
 
@@ -92,9 +152,31 @@ public class ConnectorProperties extends PropertiesAsset {
         return this;
     }
 
+    public ConnectorProperties addAll(Map<?, ?> properties) {
+        for (Entry<?, ?> entry : properties.entrySet()) {
+            addProperty((String) entry.getKey(), (String) entry.getValue());
+        }
+        return this;
+    }
+
+    public ConnectorProperties topic(String topic) {
+        switch (direction) {
+            case INCOMING:
+                addProperty("topics", topic);
+                break;
+            case OUTGOING:
+                addProperty("topic", topic);
+                break;
+            default:
+                throw new IllegalArgumentException("topic not allowed");
+        }
+        return this;
+    }
+
     public enum Direction {
         INCOMING("incoming"),
-        OUTGOING("outgoing");
+        OUTGOING("outgoing"),
+        CONNECTOR("connector");
 
         private String value;
 
