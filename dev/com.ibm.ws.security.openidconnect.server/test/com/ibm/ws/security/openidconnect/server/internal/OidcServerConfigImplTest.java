@@ -66,7 +66,7 @@ public class OidcServerConfigImplTest {
     private static final String RSA = "RSA";
     private static final String HS256 = "HS256";
     private static final String RS256 = "RS256";
-    private static final String OP_KEYSTORE = "opKeyStore";
+    private static final String OP_KEYSTORE = OidcServerConfigImpl.CFG_KEYSTORE_REF_DEFAULT;
     private static final String OP_TRUSTSTORE = "opTrustStore";
     private static final String OP_RSA_KEY_ALIAS = "opRSAPrivateKey";
     private static final long ID_TOKEN_LIFETIME = 7200;
@@ -180,6 +180,9 @@ public class OidcServerConfigImplTest {
 
                 allowing(keyStoreService).getCertificateFromKeyStore(OP_TRUSTSTORE, TEST_CERT_ALIAS);
                 will(returnValue(cert));
+
+                allowing(keyStoreService).getKeyStoreLocation(OP_KEYSTORE);
+                will(returnValue("mypath"));
 
                 allowing(cert).getPublicKey();
                 will(returnValue(publicKey));

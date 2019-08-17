@@ -120,6 +120,7 @@ public class OidcEndpointServicesTest {
     private static final String KEY_OIDC_SERVER_CONFIG_SERVICE = "oidcServerConfig";
     private static final String KEY_VMM_SERVICE = "vmmService";
     private static final String TEST_URI = "test URI";
+    private static final StringBuffer TEST_URL = new StringBuffer("http://localhost");
     private final String ACCESS_TOKEN_STRING = "RVNnQ0BKKjVxOnlKz7Be";
     private final String AUTHORIZATION_HEADER = "Authorization";
     private final String TEST_PROVIDER = "testprovider";
@@ -1001,6 +1002,11 @@ public class OidcEndpointServicesTest {
             {
                 allowing(request).getRequestURI();
                 will(returnValue(TEST_URI));
+                allowing(request).getRequestURL();
+                will(returnValue(TEST_URL));
+
+                allowing(request).getQueryString();
+                will(returnValue("test"));
                 // Only one sendError method call is expected. Do not change to "allowing".
                 one(response).sendError(with(HttpServletResponse.SC_NOT_FOUND), with(any(String.class)));
             }
@@ -1023,6 +1029,12 @@ public class OidcEndpointServicesTest {
                 allowing(mockOidcMap).get(with(any(String.class)));
                 will(returnValue(null));
 
+                allowing(request).getRequestURL();
+                will(returnValue(TEST_URL));
+
+                allowing(request).getQueryString();
+                will(returnValue("test"));
+
                 // Only one sendError method call is expected. Do not change to "allowing".
                 one(response).sendError(with(HttpServletResponse.SC_NOT_FOUND), with(any(String.class)));
             }
@@ -1044,6 +1056,10 @@ public class OidcEndpointServicesTest {
                 will(returnValue(TEST_PROVIDER));
                 allowing(oidcServerConfig).getOauthProviderName();
                 will(returnValue(null));
+                allowing(request).getRequestURL();
+                will(returnValue(TEST_URL));
+                allowing(request).getQueryString();
+                will(returnValue("test"));
                 // Only one sendError method call is expected. Do not change to "allowing".
                 one(response).sendError(HttpServletResponse.SC_NOT_FOUND,
                                         "CWWKS1632E: The OAuth provider name referenced by the OpenID Connect provider " + TEST_PROVIDER + " was not found.");
@@ -1066,6 +1082,10 @@ public class OidcEndpointServicesTest {
                 will(returnValue(TEST_PROVIDER));
                 allowing(oidcServerConfig).getOauthProviderName();
                 will(returnValue(TEST_OAUTH_PROVIDER_NAME));
+                allowing(request).getRequestURL();
+                will(returnValue(TEST_URL));
+                allowing(request).getQueryString();
+                will(returnValue("test"));
                 // Only one sendError method call is expected. Do not change to "allowing".
                 one(response).sendError(HttpServletResponse.SC_NOT_FOUND, "CWWKS1630E: OAuth20Provider object is null for the OpenID Connect provider " + TEST_PROVIDER + ".");
             }
