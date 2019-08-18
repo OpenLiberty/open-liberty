@@ -49,6 +49,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.jbatch.container.RASConstants;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
+import com.ibm.jbatch.container.exception.JobInstanceSearchNotSupportedException;
 import com.ibm.jbatch.container.exception.JobStoppedException;
 import com.ibm.jbatch.container.exception.PersistenceException;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
@@ -157,10 +158,12 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     }
 
     @Override
-    public void init(IBatchConfig batchConfig) {}
+    public void init(IBatchConfig batchConfig) {
+    }
 
     @Override
-    public void shutdown() {}
+    public void shutdown() {
+    }
 
     @Override
     public JobInstanceEntity createJobInstance(String appName, String jobXMLName, String submitter, Date createTime) {
@@ -1340,8 +1343,8 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
         if (delieveredQuery.equals(queryHelper.DEFAULT_QUERY)) {
             return getJobInstances(page, pageSize);
         } else {
-            throw new UnsupportedOperationException("The REST URL search parameters requesting this function "
-                                                    + "are not supported by the Java batch memory-based persistence configuration.");
+            throw new JobInstanceSearchNotSupportedException(("The REST URL search parameters requesting this function "
+                                                              + "are not supported by the Java batch memory-based persistence configuration."));
         }
     }
 
