@@ -165,21 +165,22 @@ public class IDTokenHandlerTest {
     public void tearDown() {
         ConfigUtils.setUserClaimsRetrieverService(null);
         OIDCProvidersConfig.removeOidcServerConfig(oidcProviderId);
+        mockery.assertIsSatisfied();
     }
 
-    //@test
+    @Test
     public void testGetTokenType() {
         assertEquals("The token type must be id_token.", "id_token", idTokenHandler.getTypeTokenType());
     }
 
-    //@test
+    @Test
     public void testGetKeysTokenType() throws Exception {
         AttributeList attributeList = null;
         assertNotNull("There must not be token type keys since id_token is not cached.",
                       idTokenHandler.getKeysTokenType(attributeList));
     }
 
-    //@test
+    @Test
     public void testValidateRequestTokenType() {
         try {
             AttributeList attributeList = null;
@@ -190,7 +191,7 @@ public class IDTokenHandlerTest {
         }
     }
 
-    //@test
+    @Test
     public void testBuildResponseTokenType() {
         AttributeList attributeList = new AttributeList();
         attributeList.setAttribute("test", "testType", new String[] { "values" });
@@ -209,7 +210,7 @@ public class IDTokenHandlerTest {
         assertNotNull("There must be an id token.", idToken);
     }
 
-    //@test
+    @Test
     public void createToken_plainTextToken() throws Exception {
         oidcCommonExpectations(issuerIdentifier, jtiClaimEnabledDefault, customClaimsEnabledDefault, SIGNATURE_ALG_NONE);
 
@@ -221,7 +222,7 @@ public class IDTokenHandlerTest {
         assertClaimsValues(idTokenClaimsJSON);
     }
 
-    //@test
+    @Test
     public void createToken_signedToken() throws Exception {
         idTokenMap.put(OAuth20Constants.ACCESS_TOKEN, new String[] { accessToken });
         createOIDCTestDefaultExpectations();
@@ -234,7 +235,7 @@ public class IDTokenHandlerTest {
         assertOptionalClaims(idTokenClaimsJSON);
     }
 
-    //@test
+    @Test
     public void createToken_differentIssuer() throws Exception {
         oidcCommonExpectations(differentIssuer, jtiClaimEnabledDefault, customClaimsEnabledDefault, signatureAlgorithmDefault);
 
@@ -244,7 +245,7 @@ public class IDTokenHandlerTest {
         assertEquals("The issuer identifier must be set.", differentIssuer, idTokenClaimsJSON.get("iss"));
     }
 
-    //@test
+    @Test
     public void createToken_useIssuerFromRequestIfMissingInConfig() throws Exception {
         idTokenMap.put(CFG_KEY_ISSUER_IDENTIFIER, new String[] { issuerIdentifier });
         oidcCommonExpectations(null, jtiClaimEnabledDefault, customClaimsEnabledDefault, signatureAlgorithmDefault);
@@ -255,7 +256,7 @@ public class IDTokenHandlerTest {
         assertEquals("The issuer identifier must be set.", issuerIdentifier, idTokenClaimsJSON.get("iss"));
     }
 
-    //@test
+    @Test
     public void createToken_useIssuerFromRequestIfMissingEmptyInConfig() throws Exception {
         idTokenMap.put(CFG_KEY_ISSUER_IDENTIFIER, new String[] { issuerIdentifier });
         oidcCommonExpectations("", jtiClaimEnabledDefault, customClaimsEnabledDefault, signatureAlgorithmDefault);
@@ -266,7 +267,7 @@ public class IDTokenHandlerTest {
         assertEquals("The issuer identifier must be set.", issuerIdentifier, idTokenClaimsJSON.get("iss"));
     }
 
-    //@test
+    @Test
     public void createToken_validToken_HS256() throws Exception {
         createOIDCTestDefaultExpectations();
 
@@ -276,7 +277,7 @@ public class IDTokenHandlerTest {
         assertTrue("The id token must be valid.", token.verify());
     }
 
-    //@test
+    @Test
     public void createToken_validToken_differentSharedKeyWithHS256() throws Exception {
         idTokenMap.put(SHARED_KEY, new String[] { differentSharedKey });
         createOIDCTestDefaultExpectations();
@@ -287,7 +288,7 @@ public class IDTokenHandlerTest {
         assertTrue("The id token must be valid.", token.verify());
     }
 
-    //@test
+    @Test
     public void createToken_customClaims() throws Exception {
         createOIDCTestDefaultExpectations();
         // Expectations for custom claims
@@ -300,7 +301,7 @@ public class IDTokenHandlerTest {
         assertCustomClaims(idTokenClaimsJSON);
     }
 
-    //@test
+    @Test
     public void createToken_customClaims_differentGroupIdentifier() throws Exception {
         createOIDCTestDefaultExpectations();
         // Expectations for custom claims
@@ -313,7 +314,7 @@ public class IDTokenHandlerTest {
         assertTrue("There must be a claim for group identifier groupIds.", idTokenClaimsJSON.containsKey(differentGroupIdentifier));
     }
 
-    //@test
+    @Test
     public void createToken_customClaims_disabled() throws Exception {
         oidcCommonExpectations(issuerIdentifier, jtiClaimEnabledDefault, false, signatureAlgorithmDefault);
 
@@ -331,7 +332,7 @@ public class IDTokenHandlerTest {
     }
 
     // For coverage, test that the id token is still built.
-    //@test
+    @Test
     public void createToken_noStateId() throws Exception {
         idTokenMap.put(OAuth20Constants.STATE_ID, null);
         createOIDCTestDefaultExpectations();
@@ -379,7 +380,7 @@ public class IDTokenHandlerTest {
         assertFalse("There must not be any groups.", idTokenClaimsJSON.containsKey(groupIdentifier));
     }
 
-    //@test
+    @Test
     public void createToken_without_nonce() throws Exception {
         createOIDCTestDefaultExpectations();
 
@@ -389,7 +390,7 @@ public class IDTokenHandlerTest {
         assertEquals("The nonce value should not be set.", null, idTokenClaimsJSON.get(NONCE));
     }
 
-    //@test
+    @Test
     public void createToken_nonce() throws Exception {
         createOIDCTestDefaultExpectations();
 
@@ -401,7 +402,7 @@ public class IDTokenHandlerTest {
         assertEquals("The nonce value should be set.", nonce_value, idTokenClaimsJSON.get(NONCE));
     }
 
-    //@test
+    @Test
     public void createToken_validToken_differentSharedKeyWithRS256() throws Exception {
         oidcCommonExpectations(issuerIdentifier, jtiClaimEnabledDefault, customClaimsEnabledDefault, SIGNATURE_ALG_RS256);
 
@@ -422,7 +423,7 @@ public class IDTokenHandlerTest {
         assertTrue("The id token must be valid.", token.verify());
     }
 
-    //@test(expected = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void createToken_exceptionGettingRSAPrivateKey_convertsToRuntimeException() throws Exception {
         oidcCommonExpectations(issuerIdentifier, jtiClaimEnabledDefault, customClaimsEnabledDefault, SIGNATURE_ALG_RS256);
 
@@ -436,7 +437,7 @@ public class IDTokenHandlerTest {
         idTokenHandler.createToken(idTokenMap);
     }
 
-    //@test
+    @Test
     public void createToken_jti() throws Exception {
         oidcCommonExpectations(issuerIdentifier, true, customClaimsEnabledDefault, signatureAlgorithmDefault);
 
@@ -448,7 +449,7 @@ public class IDTokenHandlerTest {
         assertFalse("The jti claims must not be the same.", idTokenClaimsJSON.get("jti").equals(secondIDTokenClaimsJSON.get("jti")));
     }
 
-    //@test
+    @Test
     public void missingRequiredClaims_iss() {
         Payload payload = new Payload();
         try {
@@ -461,7 +462,7 @@ public class IDTokenHandlerTest {
         }
     }
 
-    //@test
+    @Test
     public void missingRequiredClaims_sub() {
         Payload payload = new Payload();
         payload.setIssuer(issuerIdentifier);
@@ -475,7 +476,7 @@ public class IDTokenHandlerTest {
         }
     }
 
-    //@test
+    @Test
     public void missingRequiredClaims_aud() {
         Payload payload = new Payload();
         payload.setIssuer(issuerIdentifier);
@@ -490,7 +491,7 @@ public class IDTokenHandlerTest {
         }
     }
 
-    //@test
+    @Test
     public void missingRequiredClaims_exp() {
         Payload payload = new Payload();
         payload.setIssuer(issuerIdentifier);
@@ -506,7 +507,7 @@ public class IDTokenHandlerTest {
         }
     }
 
-    //@test
+    @Test
     public void missingRequiredClaims_iat() {
         Payload payload = new Payload();
         payload.setIssuer(issuerIdentifier);
@@ -587,10 +588,10 @@ public class IDTokenHandlerTest {
                 will(returnValue(signatureAlgorithm));
                 allowing(oidcServerConfig).isJwkEnabled();
                 will(returnValue(false));
-                allowing(oidcServerConfig).getJSONWebKey();
-                allowing(oidcServerConfig).getKeyAliasName();
+                one(oidcServerConfig).getJSONWebKey();
+                one(oidcServerConfig).getKeyAliasName();
                 will(returnValue("alias"));
-                allowing(oidcServerConfig).getKeyStoreRef();
+                one(oidcServerConfig).getKeyStoreRef();
                 will(returnValue("keystore"));
             }
         });

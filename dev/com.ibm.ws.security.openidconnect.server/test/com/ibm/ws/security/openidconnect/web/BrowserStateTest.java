@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.openidconnect.web;
 
 import static org.junit.Assert.assertEquals;
@@ -16,8 +26,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
@@ -26,8 +34,10 @@ import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
+import test.common.SharedOutputManager;
+
 /*
- * 
+ *
  */
 
 public class BrowserStateTest {
@@ -44,7 +54,8 @@ public class BrowserStateTest {
     private final WebAppSecurityConfig webAppSecConfig = context.mock(WebAppSecurityConfig.class);
 
     @Before
-    public void setUp() {}
+    public void setUp() {
+    }
 
     /*
      * test getOriginalBrowserState method with no cookie.
