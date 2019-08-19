@@ -600,7 +600,7 @@ public class InstallKernelMap implements Map {
             }
 
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
-            resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+            resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
 
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
@@ -797,7 +797,7 @@ public class InstallKernelMap implements Map {
     /**
      * Populate the feature name (short name if available, otherwise symbolic name) from the ESA's manifest into the shortNameMap.
      *
-     * @param esa ESA file
+     * @param esa          ESA file
      * @param shortNameMap Map to populate with keys being ESA canonical paths and values being feature names (short name or symbolic name)
      * @throws IOException If the ESA's canonical path cannot be resolved or the ESA cannot be read
      */
@@ -836,7 +836,7 @@ public class InstallKernelMap implements Map {
      * generate a JSON from provided individual ESA files
      *
      * @param generatedJson path
-     * @param shortNameMap contains features parsed from individual esa files
+     * @param shortNameMap  contains features parsed from individual esa files
      * @return singleJson file
      * @throws IOException
      * @throws RepositoryException
