@@ -66,6 +66,56 @@ public class Failover1ServerTest extends FATServletClient {
     }
 
     /**
+     * testFailoverFromMissedHeartbeats - verify that a task fails over due to missed heartbeats alone,
+     * even if the missed task threshold has not yet been reached.
+     */
+    //@Test TODO enable once feature code (8406) is written
+    public void testFailoverFromMissedHeartbeats() throws Exception {
+        StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=2468&delayMS=600&test=testFailoverFromMissedHeartbeats[1]");
+
+        int start = result.indexOf(TASK_ID_MESSAGE);
+        if (start < 0)
+            fail("Task id of scheduled task not found in servlet output: " + result);
+        String taskId = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+        System.out.println("Scheduled task " + taskId);
+
+        try {
+            // Stop heartbeating on the instance where the task is scheduled to run
+            ServerConfiguration config = originalConfig.clone();
+            config.getPersistentExecutors().removeById("persistentExec2");
+
+            // Update other instance such that it can take over, but not due to the missed task threshold,
+            // which we set higher than the test is willing to wait. It will need to find out by detecting
+            // missed heartbeats.
+            PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
+            persistentExec1.setEnableTaskExecution("true");
+            persistentExec1.setPollInterval("1s600ms");
+            persistentExec1.setExtraAttribute("lateTaskThreshold", "6h"); // TODO update simplicity object with proper setter
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            try {
+                runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                        "testTaskIsRunning&taskId=" + taskId + "&jndiName=persistent/exec1&test=testFailoverFromMissedHeartbeats[2]");
+            } finally {
+                // restore original configuration
+                server.setMarkToEndOfLog();
+                server.updateServerConfiguration(originalConfig);
+                server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            }
+
+            // fail over back to second instance once first instance is no longer able to run tasks
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTaskIsRunning&taskId=" + taskId + "&jndiName=persistent/exec1&test=testFailoverFromMissedHeartbeats[3]");
+        } finally {
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testFailoverFromMissedHeartbeats[4]");
+        }
+    }
+
+    /**
      * testMultipleInstancesCompeteToRunManyLateTasks - Have 3 instances available that could take over for running
      * several late tasks.
      */
@@ -338,6 +388,56 @@ public class Failover1ServerTest extends FATServletClient {
             // always cancel the task
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testScheduleOnOneServerRunOnAnotherThenBackToOriginal[5]");
+        }
+    }
+
+    /**
+     * testScheduleToRunOnDifferentServer - Schedule a task using an instance that cannot run tasks.
+     * If it sees another instance that can run tasks polls for missed tasks, then it should schedule
+     * the task to run on that server instead.
+     */
+    @Test
+    public void testScheduleToRunOnDifferentServer() throws Exception {
+        // For this test, we need one instance that cannot run tasks,
+        // and another instance that can, and is able to run missed tasks from another instance,
+        // but is configured such that it will not do so for a longer time into the future
+        // than the test is willing to wait.  The purpose of the test is to ensure that the
+        // instance which cannot run tasks directly schedules the task onto the instance that can run tasks.
+        ServerConfiguration config = originalConfig.clone();
+        PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
+        persistentExec2.setExtraAttribute("lateTaskThreshold", "5h"); // TODO update simplicity object with proper setter
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+        try {
+            // Schedule on the instance that cannot run tasks
+            StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleOneTimeTask&jndiName=persistent/exec1&initialDelayMS=0&test=testScheduleToRunOnDifferentServer[1]");
+
+            int start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of scheduled task not found in servlet output: " + result);
+            String taskId = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled task " + taskId);
+
+            boolean completed = false;
+            try {
+                // TODO enable once the feature code (8406) is written
+                //runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                //        "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[2]");
+                //completed = true;
+            } finally {
+                if (!completed)
+                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                            "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[3]");
+            }
+        } finally {
+            // restore original configuration
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(originalConfig);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
         }
     }
 }
