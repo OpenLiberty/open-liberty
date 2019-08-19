@@ -96,7 +96,7 @@ io.opentracing:opentracing-util:0.31.0
 io.projectreactor:reactor-core:3.1.8.RELEASE
 io.reactivex.rxjava2:rxjava:2.2.4
 io.smallrye.reactive:smallrye-converter-api:1.0.1
-io.smallrye.reactive:smallrye-reactive-messaging-provider-1.0:0.0.10
+io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.1
 io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.0
 javax.activation:activation:1.1
 javax.annotation:javax.annotation-api:1.2
