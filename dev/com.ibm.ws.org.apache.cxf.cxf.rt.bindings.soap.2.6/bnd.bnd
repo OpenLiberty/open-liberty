@@ -13,17 +13,16 @@
 cxfVersion=2.6.2
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion}}!/!*-INF/*,\
+   @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/!*-INF/*,\
    @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/cxf/**, \
    @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
-   com/ibm/ws=${bin}/com/ibm/ws,\
-   org/apache/cxf/binding/soap=${bin}/org/apache/cxf/binding/soap,\
    @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
    @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/wsdl.plugin.xml, \
    @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/schemas/**, \
    @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
    @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/LICENSE, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/NOTICE
+   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+   org/apache/cxf/binding/soap=${bin}/org/apache/cxf/binding/soap
 
 # Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
 # As we have no plan to support that, will add these things back with NLS support in the future 

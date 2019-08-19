@@ -4,8 +4,6 @@ cxfVersion=2.6.2
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.api.2.6
 
-Bundle-Activator: com.ibm.ws.jaxws22.cxf.api.NoOpActivator
-
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Import-Package: \
@@ -29,10 +27,9 @@ Import-Package: \
  *
  
 Export-Package: \
-  !org.apache.cxf.internal, \
-  com.ibm.ws.jaxws22.cxf.api, \
-  org.apache.cxf.*
+  !org.apache.cxf.internal.*, \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)"
  
 Private-Package: \
-  org.apache.cxf.internal
+  org.apache.cxf.internal;version="[2.6.2,2.6.3)"
   
