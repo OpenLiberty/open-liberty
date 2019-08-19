@@ -8,5 +8,5 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
  com.ibm.ws.rest.handler.validator,\
  com.ibm.ws.rest.handler.validator.cloudant
-kind=beta
+kind=ga
 edition=base

@@ -7,5 +7,5 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -bundles=\
  com.ibm.ws.rest.handler.config.openapi
-kind=beta
+kind=ga
 edition=core
