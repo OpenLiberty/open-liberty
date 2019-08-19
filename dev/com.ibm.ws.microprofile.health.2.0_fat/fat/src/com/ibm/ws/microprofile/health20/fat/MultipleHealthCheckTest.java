@@ -42,9 +42,11 @@ public class MultipleHealthCheckTest {
     private final String HEALTH_ENDPOINT = "/health";
     private final String READY_ENDPOINT = "/health/ready";
     private final String LIVE_ENDPOINT = "/health/live";
+    private final String INVALID_ENDPOINT = "/foo";
 
     private final int SUCCESS_RESPONSE_CODE = 200;
     private final int FAILED_RESPONSE_CODE = 503;
+    private final int NOT_FOUND_RESPONSE_CODE = 404;
 
     @Server("MultipleHealthCheck")
     public static LibertyServer server1;
@@ -58,71 +60,84 @@ public class MultipleHealthCheckTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W");
+        server1.stopServer("CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "SRVE0190E");
     }
 
     @Test
     public void testFailureLivenessCheck() throws Exception {
         log("testLivenessCheck", "Testing the /health/live endpoint");
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
-        assertEquals(FAILED_RESPONSE_CODE, conReady.getResponseCode());
+        HttpURLConnection conLive = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
+        assertEquals("The Response Code was not 503 for the following endpoint: " + conLive.getURL().toString(), FAILED_RESPONSE_CODE, conLive.getResponseCode());
 
-        JsonObject jsonResponse = getJSONPayload(conReady);
+        JsonObject jsonResponse = getJSONPayload(conLive);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(2, checks.size());
+        assertEquals("The size of the JSON Liveness health check was not 2.", 2, checks.size());
         assertTrue(checkIfHealthCheckNameExists(checks, "failed-liveness-check"));
-        assertEquals(jsonResponse.getString("status"), "DOWN");
+        assertEquals("The status of the Liveness health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
     }
 
     @Test
     public void testFailureCDIProducerLivenessCheck() throws Exception {
         log("testCDIProducerLivenessCheck", "Testing the /health/live endpoint");
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
-        assertEquals(FAILED_RESPONSE_CODE, conReady.getResponseCode());
+        HttpURLConnection conLive = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
+        assertEquals("The Response Code was not 503 for the following endpoint: " + conLive.getURL().toString(), FAILED_RESPONSE_CODE, conLive.getResponseCode());
 
-        JsonObject jsonResponse = getJSONPayload(conReady);
+        JsonObject jsonResponse = getJSONPayload(conLive);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(2, checks.size());
+        assertEquals("The size of the JSON CDIProducer Liveness health check was not 2.", 2, checks.size());
         assertTrue(checkIfHealthCheckNameExists(checks, "failed-cdi-producer-liveness-check"));
-        assertEquals(jsonResponse.getString("status"), "DOWN");
+        assertEquals("The status of the CDIProducer Liveness health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
     }
 
     @Test
     public void testSuccessReadinessCheck() throws Exception {
         log("testReadinessCheck", "Testing the /health/ready endpoint");
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        assertEquals(SUCCESS_RESPONSE_CODE, conReady.getResponseCode());
+        assertEquals("The Response Code was not 200 for the following endpoint: " + conReady.getURL().toString(), SUCCESS_RESPONSE_CODE, conReady.getResponseCode());
 
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(2, checks.size());
+        assertEquals("The size of the JSON Readiness health check was not 2.", 2, checks.size());
         assertTrue(checkIfHealthCheckNameExists(checks, "successful-readiness-check"));
-        assertEquals(jsonResponse.getString("status"), "UP");
+        assertEquals("The status of the Readiness health check was not UP.", jsonResponse.getString("status"), "UP");
     }
 
     @Test
     public void testSuccessCDIProducerReadinessCheck() throws Exception {
         log("testCDIProducerReadinessCheck", "Testing the /health/ready endpoint");
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        assertEquals(SUCCESS_RESPONSE_CODE, conReady.getResponseCode());
+        assertEquals("The Response Code was not 200 for the following endpoint: " + conReady.getURL().toString(), SUCCESS_RESPONSE_CODE, conReady.getResponseCode());
 
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(2, checks.size());
+        assertEquals("The size of the JSON CDIProducer Readiness health check was not 2.", 2, checks.size());
         assertTrue(checkIfHealthCheckNameExists(checks, "successful-cdi-producer-readiness-check"));
-        assertEquals(jsonResponse.getString("status"), "UP");
+        assertEquals("The status of the CDIProducer Readiness health check was not UP.", jsonResponse.getString("status"), "UP");
     }
 
     @Test
     public void testDeprecatedHealthCheck() throws Exception {
         log("testHealthCheck", "Testing the /health endpoint");
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT);
-        assertEquals(FAILED_RESPONSE_CODE, conReady.getResponseCode());
+        HttpURLConnection conHealth = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT);
+        assertEquals("The Response Code was not 503 for the following endpoint: " + conHealth.getURL().toString(), FAILED_RESPONSE_CODE, conHealth.getResponseCode());
 
-        JsonObject jsonResponse = getJSONPayload(conReady);
+        JsonObject jsonResponse = getJSONPayload(conHealth);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertEquals(4, checks.size());
-        assertEquals(jsonResponse.getString("status"), "DOWN");
+        assertEquals("The size of the JSON overall health check was not 4.", 4, checks.size());
+        assertEquals("The status of the overall health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
+    }
+
+    @Test
+    public void testInvalidHealthEndpoint() throws Exception {
+        log("testInvalidHealthEndpoint", "Testing the /health/foo endpoint");
+        HttpURLConnection conHealth = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT + INVALID_ENDPOINT);
+        assertEquals("The Response Code was not 404 for the following endpoint: " + conHealth.getURL().toString(), NOT_FOUND_RESPONSE_CODE, conHealth.getResponseCode());
+
+        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT + INVALID_ENDPOINT);
+        assertEquals("The Response Code was not 404 for the following endpoint: " + conReady.getURL().toString(), NOT_FOUND_RESPONSE_CODE, conReady.getResponseCode());
+
+        HttpURLConnection conLive = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT + INVALID_ENDPOINT);
+        assertEquals("The Response Code was not 404 for the following endpoint: " + conLive.getURL().toString(), NOT_FOUND_RESPONSE_CODE, conLive.getResponseCode());
     }
 
     /**
