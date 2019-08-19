@@ -45,11 +45,11 @@ public class CloudantTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addEnvVar("cloudant.url", cloudant.getURL(false));
-        server.addEnvVar("cloudant.url.secure", cloudant.getURL(true));
-        server.addEnvVar("cloudant.username", cloudant.getUser());
-        server.addEnvVar("cloudant.password", cloudant.getPassword());
-        server.addEnvVar("cloudant.databaseName", DB_NAME);
+        server.addEnvVar("cloudant_url", cloudant.getURL(false));
+        server.addEnvVar("cloudant_url_secure", cloudant.getURL(true));
+        server.addEnvVar("cloudant_username", cloudant.getUser());
+        server.addEnvVar("cloudant_password", cloudant.getPassword());
+        server.addEnvVar("cloudant_databaseName", DB_NAME);
 
         cloudant.createDb(DB_NAME);
 

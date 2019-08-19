@@ -45,12 +45,12 @@ public class CloudantTestOutboundSSL extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addEnvVar("cloudant.url", cloudant.getURL(false));
-        server.addEnvVar("cloudant.url.secure", cloudant.getURL(true));
-        server.addEnvVar("cloudant.port.secure", "" + cloudant.getMappedPort(CouchDBContainer.PORT_SECURE));
-        server.addEnvVar("cloudant.username", cloudant.getUser());
-        server.addEnvVar("cloudant.password", cloudant.getPassword());
-        server.addEnvVar("cloudant.databaseName", DB_NAME);
+        server.addEnvVar("cloudant_url", cloudant.getURL(false));
+        server.addEnvVar("cloudant_url_secure", cloudant.getURL(true));
+        server.addEnvVar("cloudant_port_secure", "" + cloudant.getMappedPort(CouchDBContainer.PORT_SECURE));
+        server.addEnvVar("cloudant_username", cloudant.getUser());
+        server.addEnvVar("cloudant_password", cloudant.getPassword());
+        server.addEnvVar("cloudant_databaseName", DB_NAME);
 
         cloudant.createDb(DB_NAME);
 
@@ -100,8 +100,8 @@ public class CloudantTestOutboundSSL extends FATServletClient {
 
         //Add the outbound filter to cloudantSSLConfig
         OutboundConnection outConnection = new OutboundConnection();
-        outConnection.setHost("${cloudant.server}");
-        outConnection.setPort("${cloudant.port.secure}");
+        outConnection.setHost("${cloudant_server}");
+        outConnection.setPort("${cloudant_port_secure}");
         cloudSSLCfg.setOutboundConnectionToList(outConnection);
 
         // update the server and wait for configuration change messages
@@ -140,8 +140,8 @@ public class CloudantTestOutboundSSL extends FATServletClient {
 
         //Add the outbound filter to defaultSSLConfig
         OutboundConnection outConnection = new OutboundConnection();
-        outConnection.setHost("${cloudant.server}");
-        outConnection.setPort("${cloudant.port.secure}");
+        outConnection.setHost("${cloudant_server}");
+        outConnection.setPort("${cloudant_port_secure}");
         defaultSSLCfg.setOutboundConnectionToList(outConnection);
 
         // update the server and wait for configuration change messages

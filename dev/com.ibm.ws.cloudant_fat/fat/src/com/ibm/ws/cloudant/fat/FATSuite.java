@@ -44,8 +44,8 @@ public class FATSuite {
                                     .copy("/etc/couchdb/cert/privkey.pem", "/etc/couchdb/cert/privkey.pem")
                                     .build())
                     .withFileFromFile("/opt/couchdb/etc/local.d/testcontainers_config.ini", new File("lib/LibertyFATTestFiles/couchdb-config/testcontainers_config.ini"))
-                    .withFileFromFile("/etc/couchdb/cert/couchdb.pem", new File("lib/LibertyFATTestFiles/ssl-certs/couchdb.pem"))
-                    .withFileFromFile("/etc/couchdb/cert/privkey.pem", new File("lib/LibertyFATTestFiles/ssl-certs/privkey.pem")))
+                    .withFileFromFile("/etc/couchdb/cert/couchdb.pem", new File("lib/LibertyFATTestFiles/ssl-certs/couchdb.pem"), 644)
+                    .withFileFromFile("/etc/couchdb/cert/privkey.pem", new File("lib/LibertyFATTestFiles/ssl-certs/privkey.pem"), 644))
                                     .withLogConsumer(FATSuite::log);
 
     private static void log(OutputFrame frame) {

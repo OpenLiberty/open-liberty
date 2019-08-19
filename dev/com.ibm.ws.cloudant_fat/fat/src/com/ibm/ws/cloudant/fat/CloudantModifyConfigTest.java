@@ -65,10 +65,10 @@ public class CloudantModifyConfigTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addEnvVar("cloudant.url", cloudant.getURL(false));
-        server.addEnvVar("cloudant.username", cloudant.getUser());
-        server.addEnvVar("cloudant.password", cloudant.getPassword());
-        server.addEnvVar("cloudant.databaseName", databaseName);
+        server.addEnvVar("cloudant_url", cloudant.getURL(false));
+        server.addEnvVar("cloudant_username", cloudant.getUser());
+        server.addEnvVar("cloudant_password", cloudant.getPassword());
+        server.addEnvVar("cloudant_databaseName", databaseName);
 
         originalConfig = server.getServerConfiguration();
 

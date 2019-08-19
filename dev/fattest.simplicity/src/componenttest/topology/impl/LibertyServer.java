@@ -2386,7 +2386,7 @@ public class LibertyServer implements LogMonitorClient {
                     Log.warning(c, method + " Server is still running - or server lock file is still locked.");
                     break;
                 case 1:
-                    Log.info(c, method, "Server " + getServerName() + "stopped successfully");
+                    Log.info(c, method, "Server " + getServerName() + " stopped successfully");
                     break;
                 case 2:
                     Log.warning(c, method + " Unknown server - directory deleted? " + serverToUse);
@@ -3899,6 +3899,11 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void addEnvVar(String key, String value) {
+        if (!Pattern.matches("[a-zA-Z_]+[a-zA-Z0-9_]*", key)) {
+            throw new IllegalArgumentException("Invalid environment variable key '" + key +
+                                               "'. Environment variable keys must consist of characers [a-zA-Z0-9_] " +
+                                               "in order to work on all OSes.");
+        }
         if (this.isStarted())
             throw new RuntimeException("Cannot add env vars to a running server");
         envVars.put(key, value);
