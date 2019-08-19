@@ -31,6 +31,11 @@ public interface KafkaConsumer<K, V> extends KafkaAdapter {
 
     /**
      * @param topics
+     */
+    void subscribe(Collection<String> topics);
+
+    /**
+     * @param topics
      * @param ackTracker
      */
     void subscribe(Collection<String> topics, ConsumerRebalanceListener listener);

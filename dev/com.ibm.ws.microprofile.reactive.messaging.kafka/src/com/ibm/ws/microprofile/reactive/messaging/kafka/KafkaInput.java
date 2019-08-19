@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
@@ -69,15 +68,16 @@ public class KafkaInput<K, V> {
      */
     private final ReentrantLock lock = new ReentrantLock();
 
-    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ScheduledExecutorService executor, Collection<String> topics,
-                      int unackedThreshold) {
+    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor, Collection<String> topics, AckTracker ackTracker) {
         super();
         this.kafkaConsumer = kafkaConsumer;
         this.executor = executor;
         this.topics = topics;
-        this.ackTracker = new AckTracker(kafkaAdapterFactory, executor, unackedThreshold);
         this.tasks = new ConcurrentLinkedQueue<>();
-        this.ackTracker.setCommitAction(this::commitOffsets);
+        this.ackTracker = ackTracker;
+        if (ackTracker != null) {
+            this.ackTracker.setCommitAction(this::commitOffsets);
+        }
     }
 
     public PublisherBuilder<Message<V>> getPublisher() {
@@ -89,11 +89,20 @@ public class KafkaInput<K, V> {
     }
 
     private PublisherBuilder<Message<V>> createPublisher() {
-        PublisherBuilder<Message<V>> kafkaStream = ReactiveStreams.generate(() -> 0)
-                                                                  .flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync()))
-                                                                  .flatMap(Function.identity())
-                                                                  .map(this::wrapInMessage)
-                                                                  .takeWhile(record -> this.running);
+        PublisherBuilder<Message<V>> kafkaStream;
+        if (ackTracker != null) {
+            kafkaStream = ReactiveStreams.generate(() -> 0)
+                                         .flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync()))
+                                         .flatMap(Function.identity())
+                                         .map(this::wrapInMessage)
+                                         .takeWhile((record) -> this.running);
+        } else {
+            kafkaStream = ReactiveStreams.generate(() -> 0)
+                                         .flatMapCompletionStage(x -> pollKafkaAsync())
+                                         .flatMap(Function.identity())
+                                         .map(r -> Message.of(r.value()))
+                                         .takeWhile((record) -> this.running);
+        }
         return kafkaStream;
     }
 
@@ -152,7 +161,9 @@ public class KafkaInput<K, V> {
             this.lock.unlock();
         }
 
-        ackTracker.shutdown();
+        if (ackTracker != null) {
+            ackTracker.shutdown();
+        }
     }
 
     @FFDCIgnore(WakeupException.class)
@@ -160,7 +171,11 @@ public class KafkaInput<K, V> {
         if (!this.subscribed) {
             this.lock.lock();
             try {
-                this.kafkaConsumer.subscribe(this.topics, this.ackTracker);
+                if (ackTracker != null) {
+                    this.kafkaConsumer.subscribe(this.topics, this.ackTracker);
+                } else {
+                    this.kafkaConsumer.subscribe(this.topics);
+                }
                 this.subscribed = true;
             } finally {
                 this.lock.unlock();
