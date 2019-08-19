@@ -113,8 +113,11 @@ public class FrameworkConfigurator {
         config.putIfAbsent("equinox.resolver.thread.count", "1");
 
         // By default use multiple threads for activating bundles from start-level
-        // Set 0 for a thread count equal to Runtime.getRuntime().availableProcessors().
-        config.putIfAbsent("equinox.start.level.thread.count", "0");
+        // Set to the min of 4 or Runtime.getRuntime().availableProcessors().
+        // Testing shows that going with more than 4 threads does not help
+        // with startup performance of Liberty
+        config.putIfAbsent("equinox.start.level.thread.count",
+                           Integer.toString(Math.min(4, Runtime.getRuntime().availableProcessors())));
         config.putIfAbsent("equinox.start.level.restrict.parallel", "true");
 
         // default module.lock.timeout value in seconds.
