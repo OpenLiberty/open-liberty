@@ -23,15 +23,13 @@ import org.eclipse.microprofile.reactive.messaging.spi.ConnectorFactory;
 public class KafkaConnectorConstants {
 
     //Our own custom properties that we extract from config for the connector
-    //The producer topic
+    //The producer or consumer topic
     public static final String TOPIC = "topic";
-    //The consumer topics
-    public static final String TOPICS = "topics";
     //The limit on on the number of un-acknowledged messages
     public static final String UNACKED_LIMIT = "unacked.limit";
 
     //The set of properties which should NOT be passed through to the Kafka client
-    public static final Set<String> NON_KAFKA_PROPS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] { TOPIC, TOPICS, ConnectorFactory.CONNECTOR_ATTRIBUTE,
+    public static final Set<String> NON_KAFKA_PROPS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] { TOPIC, ConnectorFactory.CONNECTOR_ATTRIBUTE,
                                                                                                                              ConnectorFactory.CHANNEL_NAME_ATTRIBUTE })));
 
     //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG

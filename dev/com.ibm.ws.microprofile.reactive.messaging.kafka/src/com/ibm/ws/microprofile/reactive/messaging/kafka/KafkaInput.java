@@ -68,11 +68,11 @@ public class KafkaInput<K, V> {
      */
     private final ReentrantLock lock = new ReentrantLock();
 
-    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor, Collection<String> topics, AckTracker ackTracker) {
+    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor, String topic, AckTracker ackTracker) {
         super();
         this.kafkaConsumer = kafkaConsumer;
         this.executor = executor;
-        this.topics = topics;
+        this.topics = Collections.singleton(topic);
         this.tasks = new ConcurrentLinkedQueue<>();
         this.ackTracker = ackTracker;
         if (ackTracker != null) {

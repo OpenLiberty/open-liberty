@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +82,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
     public PublisherBuilder<Message<Object>> getPublisherBuilder(Config config) {
 
         // Extract our config
-        List<String> topics = Arrays.asList(config.getValue(KafkaConnectorConstants.TOPICS, String.class).split(" *, *", -1));
+        String topic = config.getValue(KafkaConnectorConstants.TOPIC, String.class);
         int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
         int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
 
@@ -110,7 +109,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
         }
 
         // Create our connector around the kafkaConsumer
-        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topics, ackTracker);
+        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topic, ackTracker);
         kafkaInputs.add(kafkaInput);
 
         return kafkaInput.getPublisher();

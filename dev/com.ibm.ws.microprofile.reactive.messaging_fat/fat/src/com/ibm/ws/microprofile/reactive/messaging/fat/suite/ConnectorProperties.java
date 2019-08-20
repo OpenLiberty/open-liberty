@@ -176,10 +176,10 @@ public class ConnectorProperties extends PropertiesAsset {
      * @param connectorID          the connector ID
      * @param channelName          the channel name
      * @param groupId              the reader group id (used to commit message offsets)
-     * @param topics               the topic names
+     * @param topic                the topic names
      * @return the ConnectorProperties to add to the app configuration
      */
-    public static ConnectorProperties simpleIncomingChannel(Map<? extends String, ?> connectionProperties, String connectorID, String channelName, String groupId, String topics) {
+    public static ConnectorProperties simpleIncomingChannel(Map<? extends String, ?> connectionProperties, String connectorID, String channelName, String groupId, String topic) {
         return new ConnectorProperties(Direction.INCOMING, channelName)
                         .addAll(connectionProperties)
                         .addProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, DEFAULT_DESERIALIZER)
@@ -187,7 +187,7 @@ public class ConnectorProperties extends PropertiesAsset {
                         .addProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
                         .addProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
                         .addProperty("connector", connectorID)
-                        .addProperty("topics", topics);
+                        .addProperty("topic", topic);
     }
 
     private final String prefix;
@@ -214,7 +214,7 @@ public class ConnectorProperties extends PropertiesAsset {
     public ConnectorProperties topic(String topic) {
         switch (direction) {
             case INCOMING:
-                addProperty("topics", topic);
+                addProperty("topic", topic);
                 break;
             case OUTGOING:
                 addProperty("topic", topic);
