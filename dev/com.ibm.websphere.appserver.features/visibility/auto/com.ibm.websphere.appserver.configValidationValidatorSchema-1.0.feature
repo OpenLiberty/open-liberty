@@ -8,4 +8,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
  com.ibm.ws.rest.handler.validator.openapi
 kind=ga
-edition=base
+edition=core
