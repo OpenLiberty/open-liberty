@@ -38,14 +38,14 @@ public class CollectorJsonUtils_JSON {
     /**
      * Method to return log event data in json format. This method is for collector version greater than 1.0
      *
-     * @param event The object originating from logging source which contains necessary fields
-     * @param eventType The type of event
-     * @param servername The name of the server
-     * @param wlpUserDir The name of wlp user directory
-     * @param serverHostName The name of server host
+     * @param event            The object originating from logging source which contains necessary fields
+     * @param eventType        The type of event
+     * @param servername       The name of the server
+     * @param wlpUserDir       The name of wlp user directory
+     * @param serverHostName   The name of server host
      * @param collectorVersion The version number
-     * @param tags An array of tags
-     * @param maxFieldLength The max character length of strings
+     * @param tags             An array of tags
+     * @param maxFieldLength   The max character length of strings
      */
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String[] tags,
                                       int maxFieldLength) {
@@ -295,15 +295,15 @@ public class CollectorJsonUtils_JSON {
                 for (KeyValuePair k : extensions) {
                     String extKey = k.getKey();
                     if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
+                        CollectorJsonHelpers.addToJSON(sb, LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Integer.toString(k.getIntValue()), false, true, false, false, true);
                     } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
+                        CollectorJsonHelpers.addToJSON(sb, LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Float.toString(k.getFloatValue()), false, true, false, false, true);
                     } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
+                        CollectorJsonHelpers.addToJSON(sb, LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Long.toString(k.getLongValue()), false, true, false, false, true);
                     } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
+                        CollectorJsonHelpers.addToJSON(sb, LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
                     } else {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
+                        CollectorJsonHelpers.addToJSON(sb, LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), k.getStringValue(), false, true, false, false, false);
                     }
                 }
             }
