@@ -17,7 +17,7 @@ Import-Package: \
 Export-Package: \
   !org.apache.cxf.internal, \
   com.ibm.ws.jaxws22.cxf.rt.ws.policy, \
-  org.apache.cxf.*
+  org.apache.cxf.ws.policy.*;version="2.6.2"
 
   Private-Package: \
   org.apache.cxf.internal
