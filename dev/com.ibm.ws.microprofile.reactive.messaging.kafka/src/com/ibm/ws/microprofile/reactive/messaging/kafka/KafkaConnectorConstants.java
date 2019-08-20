@@ -38,6 +38,6 @@ public class KafkaConnectorConstants {
     public static final String ENABLE_AUTO_COMMIT = "enable.auto.commit";
 
     //The unique name of this MicroProfile Reactive Messaging Connector for Kafka
-    public static final String CONNECTOR_NAME = "io.openliberty.kafka";
+    public static final String CONNECTOR_NAME = "liberty-kafka";
 
 }
