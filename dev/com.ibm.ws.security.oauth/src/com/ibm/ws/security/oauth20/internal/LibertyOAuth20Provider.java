@@ -231,6 +231,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public static final String KEY_CLIENT_SECRET_ENCODING = "clientSecretEncoding";
     
     public static final String KEY_CLIENT_PROOF_KEY_FOR_CODE_EXCHANGE = "proofKeyForCodeExchange";
+    public static final String KEY_CLIENT_PUBLIC_CLIENT = "publicClient";
 
     private volatile SecurityService securityService;
 
@@ -1235,6 +1236,11 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         newClient.setAppPasswordAllowed(((Boolean) props.get(KEY_CLIENT_APP_PASSWORD_ALLOWED)).booleanValue());
         newClient.setAppTokenAllowed(((Boolean) props.get(KEY_CLIENT_APP_TOKEN_ALLOWED)).booleanValue());
         newClient.setProofKeyForCodeExchange(((Boolean) props.get(KEY_CLIENT_PROOF_KEY_FOR_CODE_EXCHANGE)).booleanValue());
+        boolean publicClient = false;
+        if (props.get(KEY_CLIENT_PUBLIC_CLIENT) != null) {
+            publicClient = ((Boolean) props.get(KEY_CLIENT_PUBLIC_CLIENT)).booleanValue();
+        }
+        newClient.setPublicClient(publicClient);
         // newClient.setAppPasswordLifetime(((Long) props.get(KEY_CLIENT_APP_PASSWORD_LIFETIME)).longValue());
         // newClient.setAppTokenLifetime(((Long) props.get(KEY_CLIENT_APP_TOKEN_LIFETIME)).longValue());
         // newClient.setAppTokenOrPasswordLimit(((Long) props.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT)).longValue());
