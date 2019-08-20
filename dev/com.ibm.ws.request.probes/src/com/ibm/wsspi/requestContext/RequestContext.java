@@ -38,6 +38,7 @@ public class RequestContext {
 	private volatile int state = -1;
 	private int eventCount = -1;
 	private static final RequestIdGeneratorPUID idgen = new RequestIdGeneratorPUID();
+	public boolean isSlow;
 	
 	/**
 	 * Request states.
@@ -192,5 +193,9 @@ public class RequestContext {
 	public String toString() {
 		return "RequestContext [threadId=" + threadId + ", requestId="
 				+ requestId + ", state=" + state + "]";
+	}
+	
+	public boolean getisSlow() {
+		return isSlow;
 	}
 }

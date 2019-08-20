@@ -133,6 +133,7 @@ public class SlowRequestManager {
 										//Re-check the state of the request, if it has completed don't log it.
 										if(requestContext.getRootEvent().getEndTime() == 0){
 											Tr.warning(tc, "REQUEST_TIMER_WARNING",	requestContext.getRequestId().getId(), threadId, requestDuration, stackTrace,	dumpTree);
+											requestContext.isSlow=true;
 										}
 									}
 									// This enables to count new slow threads and not duplicates

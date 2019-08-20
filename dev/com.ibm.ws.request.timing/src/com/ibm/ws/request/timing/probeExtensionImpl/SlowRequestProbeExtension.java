@@ -17,6 +17,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.request.timing.internal.config.SlowRequestTimingConfig;
 import com.ibm.ws.request.timing.manager.ProbationaryRequestManager;
 import com.ibm.ws.request.timing.manager.SlowRequestManager;
+import com.ibm.ws.request.timing.manager.TraceNLS;
 import com.ibm.ws.request.timing.queue.DelayedRequestQueue;
 import com.ibm.ws.request.timing.queue.SlowRequest;
 import com.ibm.wsspi.probeExtension.ProbeExtension;
@@ -29,6 +30,8 @@ import com.ibm.wsspi.requestContext.RequestContext;
 public class SlowRequestProbeExtension implements ProbeExtension {
 
 	private static final TraceComponent tc = Tr.register(SlowRequestProbeExtension.class);
+	
+	private static final TraceNLS nls = TraceNLS.getTraceNLS(SlowRequestManager.class, "com.ibm.ws.request.timing.internal.resources.LoggingMessages");
 	
 	/** Reference to slow request detection configuration **/
 	private volatile SlowRequestTimingConfig config = new SlowRequestTimingConfig();
@@ -75,6 +78,16 @@ public class SlowRequestProbeExtension implements ProbeExtension {
 			//Clean up activity for this request will be performed in the corresponding slow request timer task.
 
 			/** Instead of this should we just return false from invokeForEventExit? */
+		} else {
+			if ( requestContext.getisSlow()  &&  tc.isWarningEnabled()  &&  TraceComponent.isAnyTracingEnabled()  &&  tc.isDebugEnabled() ) { //if requestContext is a slowRequestContext
+				double activeTime = (System.nanoTime() - requestContext.getRootEvent().getStartTime())/1000000.0; //Calculate the active time for the request
+				
+				String threadId = DataFormatHelper.padHexString((int) requestContext.getThreadId(), 8);
+				String requestDuration = String.format("%.3f", activeTime);
+				String stackTrace = requestContext.getStackTrace().toString();
+				
+				Tr.warning(tc, "REQUEST_TIMER_FINISH_SLOW",	requestContext.getRequestId().getId(), threadId, requestDuration);
+			}
 		}
 	}
 	
