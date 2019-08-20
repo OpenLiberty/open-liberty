@@ -89,7 +89,11 @@ public class KafkaInput<K, V> {
     }
 
     private PublisherBuilder<Message<V>> createPublisher() {
-        PublisherBuilder<Message<V>> kafkaStream = ReactiveStreams.generate(() -> 0).flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync())).flatMap(Function.identity()).map(this::wrapInMessage).takeWhile((record) -> this.running);
+        PublisherBuilder<Message<V>> kafkaStream = ReactiveStreams.generate(() -> 0)
+                                                                  .flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync()))
+                                                                  .flatMap(Function.identity())
+                                                                  .map(this::wrapInMessage)
+                                                                  .takeWhile(record -> this.running);
         return kafkaStream;
     }
 
@@ -154,8 +158,13 @@ public class KafkaInput<K, V> {
     @FFDCIgnore(WakeupException.class)
     private CompletionStage<PublisherBuilder<ConsumerRecord<K, V>>> pollKafkaAsync() {
         if (!this.subscribed) {
-            this.kafkaConsumer.subscribe(this.topics, this.ackTracker);
-            this.subscribed = true;
+            this.lock.lock();
+            try {
+                this.kafkaConsumer.subscribe(this.topics, this.ackTracker);
+                this.subscribed = true;
+            } finally {
+                this.lock.unlock();
+            }
         }
 
         if (!this.running) {
@@ -172,7 +181,7 @@ public class KafkaInput<K, V> {
 
         while (this.lock.tryLock()) {
             try {
-                records = pollKafka(ZERO);
+                records = this.kafkaConsumer.poll(ZERO);
                 break;
             } catch (WakeupException e) {
                 // Asked to stop polling, probably means there are pending actions to process
@@ -186,38 +195,38 @@ public class KafkaInput<K, V> {
             result.complete(fromIterable(records));
         } else {
             this.executor.submit(() -> {
-                this.lock.lock();
-                try {
-                    while (this.running) {
-                        try {
-                            runPendingActions();
-                            ConsumerRecords<K, V> asyncRecords = pollKafka(FOREVER);
-                            result.complete(fromIterable(asyncRecords));
-                            break;
-                        } catch (WakeupException e) {
-                            // We were asked to stop polling, probably means there are pending actions to
-                            // process
-                        } catch (Throwable t) {
-                            result.completeExceptionally(t);
-                            break;
-                        }
-                    }
-                } finally {
-                    this.lock.unlock();
-                }
-
-                runPendingActions();
+                executePollActions(result);
             });
         }
 
         return result;
     }
 
-    private ConsumerRecords<K, V> pollKafka(Duration duration) {
-        synchronized (this.kafkaConsumer) {
-            ConsumerRecords<K, V> records = this.kafkaConsumer.poll(duration);
-            return records;
+    /**
+     * Run any pending actions and then poll Kafka for messages.
+     */
+    @FFDCIgnore(WakeupException.class)
+    private void executePollActions(CompletableFuture<PublisherBuilder<ConsumerRecord<K, V>>> result) {
+        this.lock.lock();
+        try {
+            while (this.running) {
+                try {
+                    runPendingActions();
+                    ConsumerRecords<K, V> asyncRecords = this.kafkaConsumer.poll(FOREVER);
+                    result.complete(fromIterable(asyncRecords));
+                    break;
+                } catch (WakeupException e) {
+                    // We were asked to stop polling, probably means there are pending actions to
+                    // process
+                } catch (Throwable t) {
+                    result.completeExceptionally(t);
+                    break;
+                }
+            }
+        } finally {
+            this.lock.unlock();
         }
+        runPendingActions();
     }
 
     /**
