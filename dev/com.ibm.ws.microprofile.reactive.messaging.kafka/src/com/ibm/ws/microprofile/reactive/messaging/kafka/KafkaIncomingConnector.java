@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+import org.eclipse.microprofile.reactive.messaging.spi.ConnectorFactory;
 import org.eclipse.microprofile.reactive.messaging.spi.IncomingConnectorFactory;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.osgi.framework.Bundle;
@@ -82,7 +83,8 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
     public PublisherBuilder<Message<Object>> getPublisherBuilder(Config config) {
 
         // Extract our config
-        String topic = config.getValue(KafkaConnectorConstants.TOPIC, String.class);
+        String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
+        String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
         int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
         int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
 

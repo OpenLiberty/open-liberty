@@ -102,7 +102,11 @@ public class ConnectorProperties extends PropertiesAsset {
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleOutgoingChannel(Map<? extends String, ?> connectionProperties, String channelName) {
-        return simpleOutgoingChannel(connectionProperties, DEFAULT_CONNECTOR_ID, channelName, channelName);
+        return new ConnectorProperties(Direction.OUTGOING, channelName)
+                        .addAll(connectionProperties)
+                        .addProperty("connector", DEFAULT_CONNECTOR_ID)
+                        .addProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, DEFAULT_SERIALIZER)
+                        .addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, DEFAULT_SERIALIZER);
     }
 
     /**
@@ -117,12 +121,9 @@ public class ConnectorProperties extends PropertiesAsset {
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleOutgoingChannel(Map<? extends String, ?> connectionProperties, String connectorID, String channelName, String topic) {
-        return new ConnectorProperties(Direction.OUTGOING, channelName)
-                        .addAll(connectionProperties)
+        return simpleOutgoingChannel(connectionProperties, channelName)
                         .addProperty("connector", connectorID)
-                        .addProperty("topic", topic)
-                        .addProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, DEFAULT_SERIALIZER)
-                        .addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, DEFAULT_SERIALIZER);
+                        .addProperty("topic", topic);
     }
 
     /**
@@ -164,7 +165,13 @@ public class ConnectorProperties extends PropertiesAsset {
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleIncomingChannel(Map<? extends String, ?> connectionProperties, String channelName, String groupId) {
-        return simpleIncomingChannel(connectionProperties, DEFAULT_CONNECTOR_ID, channelName, groupId, channelName);
+        return new ConnectorProperties(Direction.INCOMING, channelName)
+                        .addAll(connectionProperties)
+                        .addProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, DEFAULT_DESERIALIZER)
+                        .addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, DEFAULT_DESERIALIZER)
+                        .addProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
+                        .addProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+                        .addProperty("connector", DEFAULT_CONNECTOR_ID);
     }
 
     /**
@@ -180,12 +187,7 @@ public class ConnectorProperties extends PropertiesAsset {
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleIncomingChannel(Map<? extends String, ?> connectionProperties, String connectorID, String channelName, String groupId, String topic) {
-        return new ConnectorProperties(Direction.INCOMING, channelName)
-                        .addAll(connectionProperties)
-                        .addProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, DEFAULT_DESERIALIZER)
-                        .addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, DEFAULT_DESERIALIZER)
-                        .addProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
-                        .addProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+        return simpleIncomingChannel(connectionProperties, channelName, groupId)
                         .addProperty("connector", connectorID)
                         .addProperty("topic", topic);
     }
