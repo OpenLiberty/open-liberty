@@ -37,7 +37,7 @@
 
   <servlet-mapping>
     <servlet-name>HealthCheckServlet</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern></url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>

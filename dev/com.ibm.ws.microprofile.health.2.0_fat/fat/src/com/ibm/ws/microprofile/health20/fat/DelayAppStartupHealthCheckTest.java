@@ -77,12 +77,12 @@ public class DelayAppStartupHealthCheckTest {
     public void testDelayedAppStartUpReadinessCheck() throws Exception {
         log("testDelayedAppStartUpHealthCheck", "Testing the /health/ready endpoint, before application has started.");
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        assertEquals(FAILED_RESPONSE_CODE, conReady.getResponseCode());
+        assertEquals("The Response Code was not 503 for the following endpoint: " + conReady.getURL().toString(), FAILED_RESPONSE_CODE, conReady.getResponseCode());
 
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertTrue(checks.isEmpty());
-        assertEquals(jsonResponse.getString("status"), "DOWN");
+        assertTrue("The JSON response was not empty.", checks.isEmpty());
+        assertEquals("The status of the Readiness health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
 
         server1.setMarkToEndOfLog();
 
@@ -95,24 +95,25 @@ public class DelayAppStartupHealthCheckTest {
 
         log("testDelayedAppStartUpHealthCheck", "Testing the /health/ready endpoint, after application has started.");
         HttpURLConnection conReady2 = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        assertEquals(SUCCESS_RESPONSE_CODE, conReady2.getResponseCode());
+        assertEquals("The Response Code was not 200 for the following endpoint: " + conReady2.getURL().toString(), SUCCESS_RESPONSE_CODE,
+                     conReady2.getResponseCode());
 
         JsonObject jsonResponse2 = getJSONPayload(conReady2);
         JsonArray checks2 = (JsonArray) jsonResponse2.get("checks");
-        assertEquals(1, checks2.size());
-        assertEquals(jsonResponse2.getString("status"), "UP");
+        assertEquals("The size of the JSON Readiness health check was not 1.", 1, checks2.size());
+        assertEquals("The status of the Readiness health check was not UP.", jsonResponse2.getString("status"), "UP");
     }
 
     @Test
     public void testDelayedAppStartUpLivenessCheck() throws Exception {
         log("testDelayedAppStartUpLivenessCheck", "Testing the /health/live endpoint, before application has started.");
         HttpURLConnection conLive = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
-        assertEquals(SUCCESS_RESPONSE_CODE, conLive.getResponseCode());
+        assertEquals("The Response Code was not 200 for the following endpoint: " + conLive.getURL().toString(), SUCCESS_RESPONSE_CODE, conLive.getResponseCode());
 
         JsonObject jsonResponse = getJSONPayload(conLive);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertTrue(checks.isEmpty());
-        assertEquals(jsonResponse.getString("status"), "UP");
+        assertTrue("The JSON response was not empty.", checks.isEmpty());
+        assertEquals("The status of the Liveness health check was not UP.", jsonResponse.getString("status"), "UP");
 
         server1.setMarkToEndOfLog();
 
@@ -125,24 +126,24 @@ public class DelayAppStartupHealthCheckTest {
 
         log("testDelayedAppStartUpLivenessCheck", "Testing the /health/live endpoint, after application has started.");
         HttpURLConnection conLive2 = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
-        assertEquals(SUCCESS_RESPONSE_CODE, conLive2.getResponseCode());
+        assertEquals("The Response Code was not 200 for the following endpoint: " + conLive2.getURL().toString(), SUCCESS_RESPONSE_CODE, conLive2.getResponseCode());
 
         JsonObject jsonResponse2 = getJSONPayload(conLive2);
         JsonArray checks2 = (JsonArray) jsonResponse2.get("checks");
-        assertEquals(1, checks2.size());
-        assertEquals(jsonResponse2.getString("status"), "UP");
+        assertEquals("The size of the JSON Liveness health check was not 1.", 1, checks2.size());
+        assertEquals("The status of the Liveness health check was not UP.", jsonResponse2.getString("status"), "UP");
     }
 
     @Test
     public void testDelayedAppStartUpHealthCheck() throws Exception {
         log("testDelayedAppStartUpHealthCheck", "Testing the /health endpoint, before application has started.");
         HttpURLConnection conHealth = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT);
-        assertEquals(FAILED_RESPONSE_CODE, conHealth.getResponseCode());
+        assertEquals("The Response Code was not 503 for the following endpoint: " + conHealth.getURL().toString(), FAILED_RESPONSE_CODE, conHealth.getResponseCode());
 
         JsonObject jsonResponse = getJSONPayload(conHealth);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
-        assertTrue(checks.isEmpty());
-        assertEquals(jsonResponse.getString("status"), "DOWN");
+        assertTrue("The JSON response was not empty.", checks.isEmpty());
+        assertEquals("The status of the overall health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
 
         server1.setMarkToEndOfLog();
 
@@ -155,12 +156,12 @@ public class DelayAppStartupHealthCheckTest {
 
         log("testDelayedAppStartUpHealthCheck", "Testing the /health endpoint, after application has started.");
         HttpURLConnection conHealth2 = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT);
-        assertEquals(SUCCESS_RESPONSE_CODE, conHealth2.getResponseCode());
+        assertEquals("The Response Code was not 200 for the following endpoint: " + conHealth2.getURL().toString(), SUCCESS_RESPONSE_CODE, conHealth2.getResponseCode());
 
         JsonObject jsonResponse2 = getJSONPayload(conHealth2);
         JsonArray checks2 = (JsonArray) jsonResponse2.get("checks");
-        assertEquals(2, checks2.size());
-        assertEquals(jsonResponse2.getString("status"), "UP");
+        assertEquals("The size of the JSON overall health check was not 2.", 2, checks2.size());
+        assertEquals("The status of the overall health check was not UP.", jsonResponse2.getString("status"), "UP");
     }
 
     public JsonObject getJSONPayload(HttpURLConnection con) throws Exception {
