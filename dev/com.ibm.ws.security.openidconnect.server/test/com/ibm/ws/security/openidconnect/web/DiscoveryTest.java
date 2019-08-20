@@ -81,6 +81,8 @@ public class DiscoveryTest {
     private final static boolean REQUEST_URI = false;
     private final static boolean REQUIRE_REQUEST_URI_REGISTRATION = false;
     private final static String REVOCATION_URI = ISSUER_URI + "/revoke";
+    private final static String APP_PASSWORDS_URI = ISSUER_URI + "/app_passwords";
+    private final static String APP_TOKENS_URI = ISSUER_URI + "/app_tokens";
     private static String expectedDiscoveryModelJsonString;
     private static HttpServletRequest request;
     private static OidcServerConfig provider;
@@ -114,8 +116,7 @@ public class DiscoveryTest {
         outputMgr.resetStreams();
     }
 
-    // Disable test until OL code delivered for Issue 17301 (https://github.ibm.com/was-liberty/WS-CD-Open/issues/17301)
-    //   @Test
+    @Test
     public void testProcessRequest() {
         final String methodName = "testProcessRequest";
         try {
@@ -180,7 +181,9 @@ public class DiscoveryTest {
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getCoverageMapEndpoint(), COVERAGE_MAP_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getBackingIdpUriPrefix(), BACKING_IDP_PREFIX_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getProxyEndpoint(), PROXY_URI);
-            //           assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getRevocationEndpoint(), REVOCATION_URI);
+            assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getRevocationEndpoint(), REVOCATION_URI);
+            assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getAppPasswordsEndpoint(), APP_PASSWORDS_URI);
+            assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getAppTokensEndpoint(), APP_TOKENS_URI);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -295,7 +298,9 @@ public class DiscoveryTest {
         model.setCoverageMapEndpoint(COVERAGE_MAP_URI);
         model.setBackingIdpUriPrefix(BACKING_IDP_PREFIX_URI);
         model.setProxyEndpoint(PROXY_URI);
-        //       model.setRevocationEndpoint(REVOCATION_URI);
+        model.setRevocationEndpoint(REVOCATION_URI);
+        model.setAppPasswordsEndpoint(APP_PASSWORDS_URI);
+        model.setAppTokensEndpoint(APP_TOKENS_URI);
 
         return model;
     }
