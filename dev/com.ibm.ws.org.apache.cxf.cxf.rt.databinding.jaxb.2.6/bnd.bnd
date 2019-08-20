@@ -13,12 +13,8 @@
 cxfVersion=2.6.2
 
 Include-Resource:\
- @${repo;org.apache.cxf.cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/META-INF/cxf/**, \
- @${repo;org.apache.cxf.cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
- @${repo;org.apache.cxf.cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/META-INF/LICENSE, \
- @${repo;org.apache.cxf.cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/META-INF/NOTICE, \
- @${repo;org.apache.cxf.cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/org/apache/cxf/**, \
- org/apache/cxf=${bin}/org/apache/cxf
+  @${repo;org.apache.cxf:cxf-rt-databinding-jaxb;${cxfVersion}}!/!*-INF/*,\
+  org/apache/cxf=${bin}/org/apache/cxf
  
  -buildpath: org.apache.cxf:cxf-rt-databinding-jaxb;version=${cxfVersion},\
   com.ibm.ws.org.apache.cxf.cxf.api.2.6, \

@@ -14,14 +14,6 @@ cxfVersion=2.6.2
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/!*-INF/*,\
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/cxf/**, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/wsdl.plugin.xml, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/schemas/**, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/LICENSE, \
-   @${repo;org.apache.cxf.cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/NOTICE, \
    org/apache/cxf/binding/soap=${bin}/org/apache/cxf/binding/soap
 
 # Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
