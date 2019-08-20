@@ -439,7 +439,7 @@ public class PackageCommandTest {
      *
      */
     @Test
-    public void testPackageLooseApp() throws Exception {
+    public void testPackageLooseAppExpanded() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
         try {
 
@@ -452,21 +452,26 @@ public class PackageCommandTest {
             String stdout = server.executeServerScript("package", cmd).getStdout();
             assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
 
+            System.out.println("std: " + stdout);
+
             ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
             try {
                 boolean foundServerEntry = false;
                 boolean foundWarFileEntry = false;
-                boolean foundLooseConfigEntry = false;
+                boolean foundExpandedEntry = false;
+                System.out.println("******** Entries *********");
                 for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
                     ZipEntry entry = en.nextElement();
                     // For Usr and server-root, there should be no /usr in the structure
-                    foundServerEntry |= entry.getName().contains("MyRoot/servers/com.ibm.ws.kernel.boot.root.fat");
-                    foundWarFileEntry |= entry.getName().contains("MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/AppsLooseWeb.war");
-                    foundLooseConfigEntry |= entry.getName().contains("MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/looseConfig");
+                    System.out.println(entry.getName());
+                    //Uses String.matches() to ensure exact path is found
+                    foundServerEntry |= entry.getName().matches("^MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/$");
+                    foundWarFileEntry |= entry.getName().matches("^MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/AppsLooseWeb.war$");
+                    foundExpandedEntry |= entry.getName().matches("^MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/expanded/AppsLooseWeb.war/$");
                 }
-                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat as expected.", foundServerEntry);
+                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/ as expected.", foundServerEntry);
                 assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/AppsLooseWeb.war as expected.", foundWarFileEntry);
-                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/looseConfig as expected.", foundLooseConfigEntry);
+                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/expanded/AppsLooseWeb.war/ as expected.", foundExpandedEntry);
             } finally {
                 try {
                     zipFile.close();

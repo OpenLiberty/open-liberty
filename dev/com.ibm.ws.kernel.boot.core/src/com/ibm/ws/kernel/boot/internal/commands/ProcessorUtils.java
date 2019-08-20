@@ -182,6 +182,9 @@ public class ProcessorUtils {
      * @param looseConfig
      * @param looseFile
      * @param bootProps
+     * @param bootProps
+     * @param archiveEntryPrefix 
+     * @param isUsr
      * @return
      * @throws IOException
      */
@@ -191,64 +194,125 @@ public class ProcessorUtils {
         List<ArchiveEntryConfig> entryConfigs = new ArrayList<ArchiveEntryConfig>();
         String entryPath = generateBaseEntryPath(looseFile, bootProps, archiveEntryPrefix, isUsr);
 
-        try {
+        //Add loose config as archive
+        File archiveFile = processArchive(looseConfig, looseFile.getName(), bootProps);
+        entryConfigs.add(new FileEntryConfig(entryPath, archiveFile));
 
-            Iterator<LooseConfig> configIter = looseConfig.iteration();
-
-            while (configIter.hasNext()) {
-                LooseConfig config = configIter.next();
-                processExpandedArchive(entryPath, config, entryConfigs, bootProps);
-            }
-        } finally {
-
+        //Add expanded folder to entry path
+        int lastSlash = entryPath.lastIndexOf("/") + 1;
+        if (lastSlash != 0) {
+            entryPath = entryPath.substring(0, lastSlash) + "expanded/" + entryPath.substring(lastSlash);
         }
-        return entryConfigs;
 
+        Iterator<LooseConfig> configIter = looseConfig.iteration();
+
+        while (configIter.hasNext()) {
+            LooseConfig config = configIter.next();
+            try {
+                entryConfigs.add(processLooseConfig(entryPath, config, bootProps));
+            } catch (IllegalArgumentException | FileNotFoundException ex) {
+                System.out.println("Unable to add entry config with path:" + config.sourceOnDisk);
+                continue;
+            }
+        }
+        System.out.println("Finished generating loose entry configs");
+        return entryConfigs;
     }
 
-    public static void processExpandedArchive(String entryPath, LooseConfig config, List<ArchiveEntryConfig> entryConfigs, BootstrapConfig bootProps) throws IOException {
-
+    /**
+     * Creates an ArchiveEntryConfig for the LooseConfig at the given entryPath
+     * 
+     * @param entryPath
+     * @param config
+     * @param bootProps
+     * @return
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
+    public static ArchiveEntryConfig processLooseConfig(String entryPath, LooseConfig config, BootstrapConfig bootProps) 
+    		throws IllegalArgumentException, IOException {
         if (LooseType.ARCHIVE.equals(config.type)) { // archive tag
-            //TODO: If loose type is archive need to collect this as expanded app.
-            File childFile = processArchive(null, config, false, bootProps);
-            String combinedEntryPath = entryPath + config.targetInArchive;
-            System.out.println("       %%% combinedEntryPath:  " + combinedEntryPath);
-            processExpandedArchive(combinedEntryPath, config, entryConfigs, bootProps);
-            //TODO - this is an endless loop. Need to change config.type then somehow.
-            entryConfigs.add(new FileEntryConfig(combinedEntryPath, childFile));
-            System.out.println(" ** processArchive:LooseType is ARCHIVE **");
+            System.out.println(" ** processLooseConfig:LooseType is ARCHIVE **");
+            File archiveFile = processArchive(config, null, bootProps);
+            return new FileEntryConfig(createLooseConfigEntryPath(config, entryPath), archiveFile);
 
-        } else if (LooseType.DIR.equals(config.type)) {// directory tag
-            System.out.println(" ** processArchive:LooseType is DIR **");
+        } else if (LooseType.DIR.equals(config.type)) { // directory tag
+            System.out.println(" ** processLooseConfig:LooseType is DIR **");
             final File dir;
+            DirEntryConfig dirConfig;
+
             try {
                 dir = FileUtils.convertPathToFile(config.sourceOnDisk, bootProps);
-            } catch (IllegalArgumentException ex) {
+                dirConfig = new DirEntryConfig(createLooseConfigEntryPath(config, entryPath), dir, true, PatternStrategy.ExcludePreference);
+            } catch (IllegalArgumentException | FileNotFoundException ex) {
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.unableToPackageLooseConfigFileCannotResolveLocSymbol"),
                                                         config.sourceOnDisk));
-                return;
+                System.out.println("Unable to create DirEntryConfig");
+                throw ex;
             }
-            //TODO: Combine targetInArchive with entryPath
-            //DirEntryConfig dirConfig = new DirEntryConfig(config.targetInArchive, dir, true, PatternStrategy.ExcludePreference);
-            String combinedEntryPath = entryPath + config.targetInArchive;
-            System.out.println("       %%% combinedEntryPath:  " + combinedEntryPath);
-            DirEntryConfig dirConfig = new DirEntryConfig(combinedEntryPath, dir, true, PatternStrategy.ExcludePreference);
-            System.out.println("  dirConfig.getEntryPath(): " + dirConfig.getEntryPath());
+
+            System.out.println("Created DirEntryConfig with entry path: " + dirConfig.getEntryPath());
             if (config.excludes != null) {
                 dirConfig.exclude(convertToRegex(config.excludes));
             }
-            entryConfigs.add(dirConfig);
+            return dirConfig;
 
         } else { // file tag
-            System.out.println(" ** processArchive:LooseType is FILE **");
-            //TODO: Combine targetInArchive with entryPath
-            //entryConfigs.add(new FileEntryConfig(config.targetInArchive, FileUtils.convertPathToFile(config.sourceOnDisk, bootProps)));
-            String combinedEntryPath = entryPath + config.targetInArchive;
-            System.out.println("       %%% combinedEntryPath:  " + combinedEntryPath);
-
-            entryConfigs.add(new FileEntryConfig(combinedEntryPath, FileUtils.convertPathToFile(config.sourceOnDisk, bootProps)));
+            System.out.println(" ** processLooseConfig:LooseType is FILE **");
+            return new FileEntryConfig(createLooseConfigEntryPath(config, entryPath), FileUtils.convertPathToFile(config.sourceOnDisk, bootProps));
         }
+    }
 
+    /**
+     * Method creates archive file with resources defined in LooseConfig
+     *
+     * @param looseConfig
+     * @param LooseFileName 
+     * @param bootProps
+     * @return
+     * @throws IOException
+     */
+    private static File processArchive(LooseConfig looseConfig, String LooseFileName, BootstrapConfig bootProps) throws IOException {
+        Archive thisArchive = null;
+        File archiveFile = null;
+
+        try {
+            if (LooseFileName != null) {
+                archiveFile = FileUtils.createTempFile(LooseFileName, null, bootProps.get(BootstrapConstants.LOC_PROPERTY_SRVTMP_DIR));
+            } else {
+                String fileName = looseConfig.targetInArchive.replace("\\", "/");// Make sure always use "/"
+                if (fileName.endsWith("/")) {
+                    fileName = fileName.substring(0, fileName.length() - 1);
+                }
+
+                int index = fileName.lastIndexOf("/");
+                if (index != -1) {
+                    fileName = fileName.substring(index + 1);
+                }
+                archiveFile = FileUtils.createTempFile(fileName, null, bootProps.get(BootstrapConstants.LOC_PROPERTY_SRVTMP_DIR));
+            }
+
+            thisArchive = ArchiveFactory.create(archiveFile);
+
+            Iterator<LooseConfig> configIter = looseConfig.iteration();
+
+            System.out.println("Processing configs in " + archiveFile.getName() + " with path: " + archiveFile.getAbsolutePath());
+
+            while (configIter.hasNext()) {
+                LooseConfig config = configIter.next();
+                try {
+                    thisArchive.addEntryConfig(processLooseConfig("", config, bootProps));
+                } catch (IllegalArgumentException | FileNotFoundException ex) {
+                    System.out.println("ThisArchive skipped entry config, continuing");
+                    continue;
+                }
+            }
+            thisArchive.create();
+
+            return archiveFile;
+        } finally {
+            Utils.tryToClose(thisArchive);
+        }
     }
 
     /**
@@ -275,96 +339,24 @@ public class ProcessorUtils {
         entryPath = entryPath.substring(0, entryPath.length() - 4); // trim the .xml
 
         return entryPath;
-
     }
 
     /**
-     * Using the method to create Loose config's Archive entry config
+     * Adds a leading slash to the given entry path if the 
+     * looseConfig's targetInArchive field is missing one
      *
      * @param looseConfig
-     * @param looseFile
-     * @param bootProps
+     * @param entryPath
      * @return
-     * @throws IOException
      */
-    public static ArchiveEntryConfig createLooseArchiveEntryConfig(LooseConfig looseConfig, File looseFile, BootstrapConfig bootProps,
-                                                                   String archiveEntryPrefix, boolean isUsr) throws IOException {
-
-        File archiveFile = processArchive(looseFile.getName(), looseConfig, true, bootProps);
-
-        return new FileEntryConfig(generateBaseEntryPath(looseFile, bootProps, archiveEntryPrefix, isUsr), archiveFile);
-    }
-
-    /**
-     * Method creates archive file with resources defined in LooseConfig
-     *
-     * @param looseFileName
-     * @param looseConfig
-     * @param isRoot
-     * @param bootProps
-     * @return
-     * @throws IOException
-     */
-    private static File processArchive(String looseFileName, LooseConfig looseConfig, boolean isRoot, BootstrapConfig bootProps) throws IOException {
-        Archive thisArchive = null;
-        File archiveFile = null;
-
-        try {
-            if (isRoot) {
-                archiveFile = FileUtils.createTempFile(looseFileName, null, bootProps.get(BootstrapConstants.LOC_PROPERTY_SRVTMP_DIR));
-            } else {
-                String fileName = looseConfig.targetInArchive.replace("\\", "/");// Make sure always use "/"
-                if (fileName.endsWith("/")) {
-                    fileName = fileName.substring(0, fileName.length() - 1);
-                }
-
-                int index = fileName.lastIndexOf("/");
-                if (index != -1) {
-                    fileName = fileName.substring(index + 1);
-                }
-                archiveFile = FileUtils.createTempFile(fileName, null, bootProps.get(BootstrapConstants.LOC_PROPERTY_SRVTMP_DIR));
-            }
-
-            thisArchive = ArchiveFactory.create(archiveFile);
-
-            Iterator<LooseConfig> configIter = looseConfig.iteration();
-
-            while (configIter.hasNext()) {
-                LooseConfig config = configIter.next();
-
-                if (LooseType.ARCHIVE.equals(config.type)) { // archive tag
-                    File childFile = processArchive(null, config, false, bootProps);
-                    thisArchive.addEntryConfig(new FileEntryConfig(config.targetInArchive, childFile));
-                    System.out.println(" ** processArchive:LooseType is ARCHIVE **");
-
-                } else if (LooseType.DIR.equals(config.type)) {// directory tag
-                    System.out.println(" ** processArchive:LooseType is DIR **");
-                    final File dir;
-                    try {
-                        dir = FileUtils.convertPathToFile(config.sourceOnDisk, bootProps);
-                    } catch (IllegalArgumentException ex) {
-                        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.unableToPackageLooseConfigFileCannotResolveLocSymbol"),
-                                                                config.sourceOnDisk));
-                        continue;
-                    }
-                    DirEntryConfig dirConfig = new DirEntryConfig(config.targetInArchive, dir, true, PatternStrategy.ExcludePreference);
-                    System.out.println("  dirConfig.getEntryPath(): " + dirConfig.getEntryPath());
-                    if (config.excludes != null) {
-                        dirConfig.exclude(convertToRegex(config.excludes));
-                    }
-                    thisArchive.addEntryConfig(dirConfig);
-
-                } else { // file tag
-                    thisArchive.addEntryConfig(new FileEntryConfig(config.targetInArchive, FileUtils.convertPathToFile(config.sourceOnDisk, bootProps)));
-                }
-            }
-            thisArchive.create();
-
-            return archiveFile;
-        } finally {
-            Utils.tryToClose(thisArchive);
+    public static String createLooseConfigEntryPath(LooseConfig looseConfig, String entryPath) {
+        if (looseConfig.targetInArchive.startsWith("/") || entryPath == "") {
+            entryPath += looseConfig.targetInArchive;
+        } else {
+            entryPath += "/" + looseConfig.targetInArchive;
         }
-
+        System.out.println("Created entry path for looseConfig : " + entryPath);
+        return entryPath;
     }
 
     /**
@@ -434,7 +426,8 @@ public class ProcessorUtils {
             return children.iterator();
         }
 
-        public LooseConfig() {};
+        public LooseConfig() {
+        };
 
         public LooseConfig(LooseType type) {
             this.type = type;
