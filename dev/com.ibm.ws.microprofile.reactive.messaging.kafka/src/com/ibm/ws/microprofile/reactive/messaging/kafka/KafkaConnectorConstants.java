@@ -37,6 +37,9 @@ public class KafkaConnectorConstants {
     //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG
     public static final String ENABLE_AUTO_COMMIT = "enable.auto.commit";
 
+    //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_RECORDS_CONFIG
+    public static final String MAX_POLL_RECORDS = "max.poll.records";
+
     //The unique name of this MicroProfile Reactive Messaging Connector for Kafka
     public static final String CONNECTOR_NAME = "liberty-kafka";
 

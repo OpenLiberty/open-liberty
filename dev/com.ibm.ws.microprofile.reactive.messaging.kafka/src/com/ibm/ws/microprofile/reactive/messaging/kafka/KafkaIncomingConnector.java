@@ -84,11 +84,13 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
 
         // Extract our config
         List<String> topics = Arrays.asList(config.getValue(KafkaConnectorConstants.TOPICS, String.class).split(" *, *", -1));
-        int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(20);
+        int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
+        int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
 
         // Configure our defaults
         Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false"); // Connector handles commit in response to ack() automatically
+        // Default behaviour is that connector handles commit in response to ack()
+        consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false");
 
         // Pass the rest of the config directly through to the kafkaConsumer
         consumerConfig.putAll(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
@@ -103,6 +105,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
         // Create the AckTracker
         AckTracker ackTracker = null;
         if (!enableAutoCommit) {
+            // We only need to track acknowledgments if the user hasn't enabled auto commit
             ackTracker = new AckTracker(kafkaAdapterFactory, executor, unackedLimit);
         }
 
