@@ -11,7 +11,11 @@
 package failover1serv.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +24,10 @@ import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
+
+import org.junit.Test;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskStatus;
@@ -50,6 +57,65 @@ public class Failover1ServerTestServlet extends FATServlet {
         PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
 
         executor.getStatus(taskId).cancel(false);
+    }
+
+    /**
+     * testMissedHeartbeatsClearOldPartitionData - insert entries representing missed heartbeats directly into the
+     * database. Verify that they are automatically removed (happens when heartbeat information is checked).
+     */
+    //@Test TODO enable once function (8407) is implemented
+    public void testMissedHeartbeatsClearOldPartitionData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Ensure the database tables are present
+        PersistentExecutor executor = InitialContext.doLookup("persistent/exec2");
+        executor.getProperty("whatever");
+
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement st = con.prepareStatement("INSERT INTO WLPPART(EXECUTOR,HOSTNAME,LSERVER,USERDIR,EXPIRY,STATES) VALUES(?,?,?,?,?,?)");
+
+            // insert partition data to simulate a server that stopped sending heartbeats 100 days ago
+            st.setString(1, "oldExecutor1");
+            st.setString(2, "host1.rchland.ibm.com");
+            st.setString(3, "oldServer1");
+            st.setString(4, "/Users/old1/wlp/usr");
+            st.setLong(5, System.currentTimeMillis() - TimeUnit.DAYS.toMillis(100));
+            st.setLong(6, 0);
+            assertEquals(1, st.executeUpdate());
+
+            // insert partition data to simulate a server that stopped sending heartbeats 200 days ago
+            st.setString(1, "oldExecutor2");
+            st.setString(2, "host2.rchland.ibm.com");
+            st.setString(3, "oldServer2");
+            st.setString(4, "/Users/old2/wlp/usr");
+            st.setLong(5, System.currentTimeMillis() - TimeUnit.DAYS.toMillis(200));
+            st.setLong(6, 0);
+            assertEquals(1, st.executeUpdate());
+
+            // insert partition data to simulate another server that stopped sending heartbeats 200 days ago
+            st.setString(1, "oldExecutor3");
+            st.setString(2, "host2.rchland.ibm.com");
+            st.setString(3, "oldServer3");
+            st.setString(4, "/Users/old2/wlp/usr");
+            st.setLong(5, System.currentTimeMillis() - TimeUnit.DAYS.toMillis(200));
+            st.setLong(6, 0);
+            assertEquals(1, st.executeUpdate());
+            st.close();
+
+            // Wait for the above data to be removed due to missed heartbeats
+            st = con.prepareStatement("SELECT EXECUTOR FROM WLPPART WHERE LSERVER LIKE 'oldServer%'");
+            boolean found = true;
+            for (long start = System.nanoTime(); (found = st.executeQuery().next()) && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL_MS))
+                ;
+
+            if (found) {
+                StringBuilder sb = new StringBuilder();
+                ResultSet result = st.executeQuery();
+                while (result.next())
+                    sb.append(result.getString(1)).append(' ');
+                result.close();
+                assertEquals("The following entries should have been removed upon detecting missed heartbeats: " + sb.toString(), 0, sb.length());
+            }
+        }
     }
 
     /**
@@ -100,6 +166,7 @@ public class Failover1ServerTestServlet extends FATServlet {
         for (long start = System.nanoTime(); (status = executor.getStatus(taskId)).getNextExecutionTime() != null && System.nanoTime() - start < TIMEOUT_NS; )
             Thread.sleep(POLL_INTERVAL_MS);
 
+        assertNull("Task did not complete within allotted interval " + status, status.getNextExecutionTime());
         assertEquals(Integer.valueOf(expected), status.get());
     }
 
@@ -147,7 +214,7 @@ public class Failover1ServerTestServlet extends FATServlet {
                               for (; status == null || System.nanoTime() - start1 < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL_MS))
                                   if ((status = executor.getStatus(taskId)).hasResult())
                                       return status;
-                              throw new RuntimeException("Task " + status + " did complete any executions within the allotted interval.");
+                              throw new RuntimeException("Task " + status + " did not complete any executions within the allotted interval.");
                           } catch (InterruptedException x) {
                               throw new RuntimeException(x);
                           }

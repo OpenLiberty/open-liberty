@@ -65,7 +65,7 @@ public class KafkaSaslPlainTest {
 
         ConnectorProperties incomingProperties = simpleIncomingChannel(bootstrapServers, BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID);
 
-        ConnectorProperties connectorProperties = new ConnectorProperties(Direction.CONNECTOR, "io.openliberty.kafka")
+        ConnectorProperties connectorProperties = new ConnectorProperties(Direction.CONNECTOR, "liberty-kafka")
                         .addProperty(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, KafkaSaslTestServlet.TRUSTSTORE_FILENAME)
                         .addProperty(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, keystorePassword)
                         .addProperty("security.protocol", "SASL_SSL")

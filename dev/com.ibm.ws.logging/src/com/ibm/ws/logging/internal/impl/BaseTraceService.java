@@ -252,7 +252,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -278,10 +278,12 @@ public class BaseTraceService implements TrService {
             }
 
             @Override
-            public void flush() {}
+            public void flush() {
+            }
 
             @Override
-            public void close() {}
+            public void close() {
+            }
         });
     }
 
@@ -298,7 +300,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *            the OSGi managed service.
+     *                   the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -503,6 +505,12 @@ public class BaseTraceService implements TrService {
                     auditMap.put(entry[0], entry[1]);
                     valueFound = true;
                 }
+                //Check if mapped value is an extension
+                if (entry[0].startsWith("ext_")) {
+                    messageMap.put(entry[0], entry[1]);
+                    traceMap.put(entry[0], entry[1]);
+                    valueFound = true;
+                }
                 if (!valueFound) {
                     //if the value does not exist in any of the known keys, give a warning
                     Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
@@ -513,18 +521,38 @@ public class BaseTraceService implements TrService {
                 entry[2] = entry[2].trim();
                 //add properties to their respective hashmaps and trim whitespaces
                 if (CollectorConstants.MESSAGES_LOG_EVENT_TYPE.equals(entry[0])) {
-                    messageMap.put(entry[1], entry[2]);
+                    if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                        messageMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.TRACE_LOG_EVENT_TYPE.equals(entry[0])) {
-                    traceMap.put(entry[1], entry[2]);
+                    if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                        traceMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.FFDC_EVENT_TYPE.equals(entry[0])) {
-                    ffdcMap.put(entry[1], entry[2]);
+                    if (FFDCList.contains(entry[1])) {
+                        ffdcMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.ACCESS_LOG_EVENT_TYPE.equals(entry[0])) {
-                    accessLogMap.put(entry[1], entry[2]);
+                    if (AccessLogList.contains(entry[1])) {
+                        accessLogMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.AUDIT_LOG_EVENT_TYPE.equals(entry[0])) {
-                    auditMap.put(entry[1], entry[2]);
+                    if (AuditList.contains(entry[1])) {
+                        auditMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else {
                     Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
+                if (!valueFound) {
+                    //if the value does not exist in any of the known keys, give a warning
+                    Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
+                }
+                valueFound = false;
             } else {
                 Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
             }
@@ -933,10 +961,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog the trace writer
+     * @param detailLog           the trace writer
      * @param logRecord
-     * @param id the trace object id
-     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -1083,7 +1111,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1208,7 +1236,7 @@ public class BaseTraceService implements TrService {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s String to escape
+     * @param s  String to escape
      */
     private void jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
@@ -1271,7 +1299,8 @@ public class BaseTraceService implements TrService {
 
         /** {@inheritDoc} */
         @Override
-        public void close() throws IOException {}
+        public void close() throws IOException {
+        }
 
         /**
          * Only allow "off" as a valid value for toggling system.out
@@ -1587,8 +1616,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc StreamTraceComponent associated with original stream
-     * @param txt pre-formatted or raw message
+     * @param tc        StreamTraceComponent associated with original stream
+     * @param txt       pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {

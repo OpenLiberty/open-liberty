@@ -83,7 +83,7 @@ public class ConnectorProperties extends PropertiesAsset {
     public static ConnectorProperties simpleOutgoingChannel(Map<? extends String, ?> connectionProperties, String channelName) {
         return new ConnectorProperties(Direction.OUTGOING, channelName)
                         .addAll(connectionProperties)
-                        .addProperty("connector", "io.openliberty.kafka")
+                        .addProperty("connector", "liberty-kafka")
                         .addProperty("topic", channelName)
                         .addProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
                         .addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
@@ -134,7 +134,7 @@ public class ConnectorProperties extends PropertiesAsset {
                         .addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer")
                         .addProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
                         .addProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
-                        .addProperty("connector", "io.openliberty.kafka")
+                        .addProperty("connector", "liberty-kafka")
                         .addProperty("topics", channelName);
     }
 

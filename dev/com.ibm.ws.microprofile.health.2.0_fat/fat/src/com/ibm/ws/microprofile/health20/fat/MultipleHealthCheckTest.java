@@ -72,7 +72,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conLive);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals("The size of the JSON Liveness health check was not 2.", 2, checks.size());
-        assertTrue(checkIfHealthCheckNameExists(checks, "failed-liveness-check"));
+        assertTrue("The health check name did not exist in JSON object.", checkIfHealthCheckNameExists(checks, "failed-liveness-check"));
         assertEquals("The status of the Liveness health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
     }
 
@@ -85,7 +85,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conLive);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals("The size of the JSON CDIProducer Liveness health check was not 2.", 2, checks.size());
-        assertTrue(checkIfHealthCheckNameExists(checks, "failed-cdi-producer-liveness-check"));
+        assertTrue("The health check name did not exist in JSON object.", checkIfHealthCheckNameExists(checks, "failed-cdi-producer-liveness-check"));
         assertEquals("The status of the CDIProducer Liveness health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
     }
 
@@ -98,7 +98,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals("The size of the JSON Readiness health check was not 2.", 2, checks.size());
-        assertTrue(checkIfHealthCheckNameExists(checks, "successful-readiness-check"));
+        assertTrue("The health check name did not exist in JSON object.", checkIfHealthCheckNameExists(checks, "successful-readiness-check"));
         assertEquals("The status of the Readiness health check was not UP.", jsonResponse.getString("status"), "UP");
     }
 
@@ -111,7 +111,7 @@ public class MultipleHealthCheckTest {
         JsonObject jsonResponse = getJSONPayload(conReady);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals("The size of the JSON CDIProducer Readiness health check was not 2.", 2, checks.size());
-        assertTrue(checkIfHealthCheckNameExists(checks, "successful-cdi-producer-readiness-check"));
+        assertTrue("The health check name did not exist in JSON object.", checkIfHealthCheckNameExists(checks, "successful-cdi-producer-readiness-check"));
         assertEquals("The status of the CDIProducer Readiness health check was not UP.", jsonResponse.getString("status"), "UP");
     }
 

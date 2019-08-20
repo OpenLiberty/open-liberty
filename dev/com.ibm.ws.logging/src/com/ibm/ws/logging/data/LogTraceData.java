@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -512,6 +513,27 @@ public class LogTraceData extends GenericData {
 
     public static String getServerNameKeyJSON(boolean isMessageEvent) {
         return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[23] : jsonLoggingNameAliasesTrace.aliases[23];
+    }
+
+    public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
+        ArrayList<String> tempExt = null;
+        ArrayList<String> aliasesExt = null;
+        if (isMessageEvent) {
+            tempExt = jsonLoggingNameAliasesMessages.originalExtensions;
+            aliasesExt = jsonLoggingNameAliasesMessages.aliasesExtensions;
+
+        } else {
+            tempExt = jsonLoggingNameAliasesTrace.originalExtensions;
+            aliasesExt = jsonLoggingNameAliasesTrace.aliasesExtensions;
+
+        }
+        for (int i = 0; i < tempExt.size(); i++) {
+            if (tempExt.get(i).equals(extKey)) {
+                return aliasesExt.get(i);
+            }
+        }
+        return extKey;
+
     }
 
     public long getDatetime() {
