@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.KafkaContainer;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions.KafkaPartitionTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCustomSerializerTest;
@@ -33,6 +34,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 BasicReactiveMessagingTest.class,
                 KafkaMessagingTest.class,
                 KafkaAcknowledgementTest.class,
+                KafkaAutoAckTest.class,
                 KafkaCustomSerializerTest.class,
                 KafkaPartitionTest.class,
                 KafkaSharedLibTest.class,
