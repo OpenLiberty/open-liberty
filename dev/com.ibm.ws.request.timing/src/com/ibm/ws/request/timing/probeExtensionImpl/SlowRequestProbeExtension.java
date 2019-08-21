@@ -86,7 +86,7 @@ public class SlowRequestProbeExtension implements ProbeExtension {
 				String requestDuration = String.format("%.3f", activeTime);
 				String stackTrace = requestContext.getStackTrace().toString();
 				
-				Tr.warning(tc, "REQUEST_TIMER_FINISH_SLOW",	requestContext.getRequestId().getId(), threadId, requestDuration);
+				Tr.info(tc, "REQUEST_TIMER_FINISH_SLOW",	requestContext.getRequestId().getId(), threadId, requestDuration);
 			}
 		}
 	}
