@@ -52,6 +52,7 @@ public class ExeFindAction implements ActionHandler {
     @Override
     public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
         logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_STABILIZING_FEATUREMANAGER", "find") + "\n");
+        logger.log(Level.INFO, "handleTask with args: " + args.toString());
 
         InstallKernel installKernel = InstallKernelFactory.getInstance();
         installKernel.setUserAgent(InstallConstants.FEATURE_MANAGER);
@@ -69,11 +70,14 @@ public class ExeFindAction implements ActionHandler {
         }
 
         String searchStr = args.getPositionalArguments().get(0);
+        logger.log(Level.INFO, "searchStr = " + searchStr);
+
         boolean viewInfo = args.getOption("viewinfo") != null;
         try {
             logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_SEARCHING"));
             logger.log(Level.INFO, "");
 
+            logger.log(Level.INFO, "Passing in searchStr=" + searchStr + " into queryFeatures");
             List<EsaResource> esas = ((InstallKernelImpl) installKernel).queryFeatures(searchStr);
             if (esas.isEmpty()) {
                 logger.log(Level.INFO, NLS.getMessage("find.no.feature"));

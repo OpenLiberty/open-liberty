@@ -57,7 +57,8 @@ public class RepositoryConnectionList extends ArrayList<RepositoryConnection> {
     /**
      * Creates an empty RepositoryConnectionList
      */
-    public RepositoryConnectionList() {}
+    public RepositoryConnectionList() {
+    }
 
     /**
      * Creates a new RepositoryConnectionList, populating it with the contents of the supplied list.
@@ -216,7 +217,7 @@ public class RepositoryConnectionList extends ArrayList<RepositoryConnection> {
      * The matching is done on any of the symbolic name, short name or lower case short name
      * of the resource.
      *
-     * @param attribute The attribute to match against
+     * @param attribute  The attribute to match against
      * @param identifier The identifier to look for
      * @return The EsaResources that match the identifier
      * @throws RepositoryBackendException
@@ -236,7 +237,7 @@ public class RepositoryConnectionList extends ArrayList<RepositoryConnection> {
      * The matching is done on any of the symbolic name, short name or lower case short name
      * of the resource.
      *
-     * @param attribute The attribute to match against
+     * @param attribute  The attribute to match against
      * @param identifier The identifier to look for
      * @return The EsaResources that match the identifier
      * @throws RepositoryBackendException
@@ -355,7 +356,7 @@ public class RepositoryConnectionList extends ArrayList<RepositoryConnection> {
      * Gets all resources of the specified type and license type from the repositories.
      *
      * @param licenseType The {@link LicenseType} of the resources to obtain
-     * @param type The {@link ResourceType} of resource to obtain
+     * @param type        The {@link ResourceType} of resource to obtain
      * @return A {@link Collection} of {@link RepositoryResourceImpl} object
      * @throws RepositoryBackendException
      */
@@ -522,10 +523,11 @@ public class RepositoryConnectionList extends ArrayList<RepositoryConnection> {
      * Gets all resources of the specified <code>types</code> from the repositories returning only those that are relevant to the <code>productDefinitions</code>.
      *
      * @param productDefinitions The products that these resources will be installed into. Can be <code>null</code> or empty indicating resources for any product should be obtained
-     *            (they will just be filtered by type).
-     * @param types The {@link ResourceType} of resource to obtain. <code>null</code> indicates that all types should be obtained.
-     * @param visibility The {@link Visibility} of resources to obtain. <code>null</code> indicates that resources with any visibility should be obtained. This is only relevant if
-     *            {@link ResourceType#FEATURE} is one of the <code>types</code> being obtained, it is ignored for other types.
+     *                               (they will just be filtered by type).
+     * @param types              The {@link ResourceType} of resource to obtain. <code>null</code> indicates that all types should be obtained.
+     * @param visibility         The {@link Visibility} of resources to obtain. <code>null</code> indicates that resources with any visibility should be obtained. This is only
+     *                               relevant if
+     *                               {@link ResourceType#FEATURE} is one of the <code>types</code> being obtained, it is ignored for other types.
      * @return A Map mapping the type to the {@link Collection} of {@link RepositoryResourceImpl} object. There may be a <code>null</code> collection for a supplied type, this
      *         indicates
      *         no assets of that type were found
@@ -572,12 +574,13 @@ public class RepositoryConnectionList extends ArrayList<RepositoryConnection> {
     /**
      * Searches for resources that contained <code>searchTerm</code> from the repository returning only those that are relevant to the <code>productDefinitions</code>.
      *
-     * @param searchTerm The word(s) to search for.
+     * @param searchTerm         The word(s) to search for.
      * @param productDefinitions The products that these resources will be installed into. Can be <code>null</code> or empty indicating resources for any product should be obtained
-     *            (they will just be filtered by type).
-     * @param types The {@link ResourceType} of resource to obtain. <code>null</code> indicates that all types should be obtained.
-     * @param visibility The {@link Visibility} of resources to obtain. <code>null</code> indicates that resources with any visibility should be obtained. This is only relevant if
-     *            {@link ResourceType#FEATURE} is one of the <code>types</code> being obtained, it is ignored for other types.
+     *                               (they will just be filtered by type).
+     * @param types              The {@link ResourceType} of resource to obtain. <code>null</code> indicates that all types should be obtained.
+     * @param visibility         The {@link Visibility} of resources to obtain. <code>null</code> indicates that resources with any visibility should be obtained. This is only
+     *                               relevant if
+     *                               {@link ResourceType#FEATURE} is one of the <code>types</code> being obtained, it is ignored for other types.
      * @return A LinkedHashSet of resources that match the search term for this product. They will be ordered according to the order returned from the repository which should be in
      *         priority order.
      * @throws RepositoryBackendException If there is an error connecting to one of the repositories.
@@ -586,6 +589,7 @@ public class RepositoryConnectionList extends ArrayList<RepositoryConnection> {
                                                                   final Collection<ProductDefinition> productDefinitions,
                                                                   final Collection<ResourceType> types,
                                                                   final Visibility visibility) throws RepositoryBackendException {
+        System.out.println("in find resources searchStr= " + searchTerm);
         return cycleThroughRepositories(new RepositoryInvoker<RepositoryResource>() {
             @SuppressWarnings("unchecked")
             @Override
