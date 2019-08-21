@@ -31,7 +31,8 @@ Import-Package: com.ibm.ejs.ras, \
                 com.ibm.websphere.logging, \
                 com.ibm.tools.attach, \
                 org.osgi.service.cm, \
-                com.ibm.wsspi.logging
+                com.ibm.wsspi.logging, \
+                org.osgi.service.component
 
 Service-Component:\
     com.ibm.ws.collector.manager; \
@@ -61,6 +62,7 @@ Include-Resource: \
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.web;
 
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.AltDDEntryGetter;
 import com.ibm.ws.javaee.dd.web.WebApp;
@@ -22,6 +24,10 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class WebAppAdapter implements ContainerAdapter<WebApp> {
+
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public WebApp adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {

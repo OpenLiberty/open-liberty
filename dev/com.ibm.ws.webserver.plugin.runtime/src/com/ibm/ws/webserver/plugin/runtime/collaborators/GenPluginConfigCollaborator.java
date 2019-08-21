@@ -13,6 +13,8 @@ package com.ibm.ws.webserver.plugin.runtime.collaborators;
 
 import javax.servlet.SessionCookieConfig;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
@@ -29,11 +31,14 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
  * This class provides a plug point into the web container at a certain state of the servlets.
  * We are specifically interested in the state when the servlets are stopping.
  */
-@Component(service = { WebAppInitializationCollaborator.class },
-                immediate = true,
-                property = { "service.vendor=IBM" })
+@Component(service = { WebAppInitializationCollaborator.class }, immediate = true, property = { "service.vendor=IBM" })
 public class GenPluginConfigCollaborator implements WebAppInitializationCollaborator {
     private static final TraceComponent tc = Tr.register(GenPluginConfigCollaborator.class);
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /** {@inheritDoc} */
     @Override

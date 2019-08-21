@@ -30,6 +30,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -134,18 +135,20 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     /**
      * Activate this executor service component.
      */
+    @SuppressWarnings("unchecked")
     @Activate
-    protected void activate(Map<String, Object> componentConfig) {
-        this.componentConfig = componentConfig;
+    protected void activate(ComponentContext cc) {
+        this.componentConfig = (Map<String, Object>) cc.getProperties();
         createExecutor();
     }
 
     /**
      * Modify this executor's configuration.
      */
+    @SuppressWarnings("unchecked")
     @Modified
-    protected void modified(Map<String, Object> componentConfig) {
-        this.componentConfig = componentConfig;
+    protected void modified(ComponentContext cc) {
+        this.componentConfig = (Map<String, Object>) cc.getProperties();
         createExecutor();
     }
 

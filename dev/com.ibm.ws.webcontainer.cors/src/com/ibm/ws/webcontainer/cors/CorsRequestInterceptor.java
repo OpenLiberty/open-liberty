@@ -11,7 +11,6 @@
 package com.ibm.ws.webcontainer.cors;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,13 +31,11 @@ import com.ibm.ws.webcontainer.cors.internal.TraceConstants;
 import com.ibm.ws.webcontainer.osgi.interceptor.RequestInterceptor;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(service = { RequestInterceptor.class },
-                name = "com.ibm.ws.webcontainer.cors.request.interceptor",
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM",
-                            RequestInterceptor.INTERCEPT_POINTS_PROPERTY + "=" + RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS,
-                            Constants.SERVICE_RANKING + ":Integer=" + Integer.MAX_VALUE })
+@Component(service = { RequestInterceptor.class }, name = "com.ibm.ws.webcontainer.cors.request.interceptor", configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
+                                                                                                                                                                                               RequestInterceptor.INTERCEPT_POINTS_PROPERTY
+                                                                                                                                                                                                                     + "="
+                                                                                                                                                                                                                     + RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS,
+                                                                                                                                                                                               Constants.SERVICE_RANKING + ":Integer=" + Integer.MAX_VALUE })
 public class CorsRequestInterceptor implements RequestInterceptor {
     private static final TraceComponent tc = Tr.register(CorsRequestInterceptor.class);
 
@@ -46,10 +43,10 @@ public class CorsRequestInterceptor implements RequestInterceptor {
     private final AtomicServiceReference<CorsHelper> corsHelperRef = new AtomicServiceReference<CorsHelper>(KEY_CORS_HELPER);
 
     @Activate
-    protected void activate(ComponentContext context, Map<String, Object> properties) {
+    protected void activate(ComponentContext context) {
         corsHelperRef.activate(context);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Activating CorsRequestInterceptor", properties);
+            Tr.event(this, tc, "Activating CorsRequestInterceptor", context.getProperties());
         }
     }
 

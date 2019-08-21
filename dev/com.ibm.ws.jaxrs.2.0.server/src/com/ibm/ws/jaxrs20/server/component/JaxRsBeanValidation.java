@@ -12,6 +12,8 @@ package com.ibm.ws.jaxrs20.server.component;
 
 import java.util.List;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -23,12 +25,17 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.api.JaxRsBeanValidationService;
 
 /**
- * 
+ *
  */
 @Component(name = "com.ibm.ws.jaxrs20.server.component.JaxRsBeanValidation", immediate = true, property = { "service.vendor=IBM" })
 public class JaxRsBeanValidation {
     private static final TraceComponent tc = Tr.register(JaxRsBeanValidation.class);
     private static volatile JaxRsBeanValidationService veanValidationService = null;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Reference(name = "jaxRsBeanValidationService",
                service = JaxRsBeanValidationService.class,

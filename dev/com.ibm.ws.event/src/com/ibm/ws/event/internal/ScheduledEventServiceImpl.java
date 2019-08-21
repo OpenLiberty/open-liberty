@@ -15,6 +15,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -40,6 +42,11 @@ public class ScheduledEventServiceImpl implements ScheduledEventService {
      */
     public ScheduledEventServiceImpl() {
         // do nothing
+    }
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
     }
 
     /*
@@ -102,7 +109,7 @@ public class ScheduledEventServiceImpl implements ScheduledEventService {
 
     /**
      * Set the executor service reference.
-     * 
+     *
      * @param ref
      */
     @Reference
@@ -112,7 +119,7 @@ public class ScheduledEventServiceImpl implements ScheduledEventService {
 
     /**
      * Remove the reference to the executor service.
-     * 
+     *
      * @param ref
      */
     protected void unsetScheduledExecutor(ScheduledExecutorService ref) {
@@ -123,7 +130,7 @@ public class ScheduledEventServiceImpl implements ScheduledEventService {
 
     /**
      * Set the reference to the event engine service.
-     * 
+     *
      * @param ref
      */
     @Reference
@@ -133,7 +140,7 @@ public class ScheduledEventServiceImpl implements ScheduledEventService {
 
     /**
      * Remove the event engine service reference.
-     * 
+     *
      * @param ref
      */
     protected void unsetEventEngine(EventEngine ref) {
@@ -154,7 +161,7 @@ public class ScheduledEventServiceImpl implements ScheduledEventService {
 
         /**
          * Constructor.
-         * 
+         *
          * @param topic
          * @param context
          * @param engine

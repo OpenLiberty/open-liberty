@@ -12,6 +12,7 @@ package com.ibm.ws.javaee.ddmodel.permissions;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
@@ -31,6 +32,10 @@ public final class PermissionsAdapter implements ContainerAdapter<PermissionsCon
 
     private ServiceReference<JavaEEVersion> versionRef;
     private volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
+
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     public synchronized void setVersion(ServiceReference<JavaEEVersion> reference) {
         versionRef = reference;

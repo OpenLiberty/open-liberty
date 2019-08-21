@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -32,6 +34,11 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
            property = { "service.vendor=IBM", "toType=com.ibm.ws.classloading.ClassLoadingButler" })
 public class ClassLoadingButlerAdapter implements ContainerAdapter<ClassLoadingButler> {
     private final static TraceComponent tc = Tr.register(ClassLoadingButlerAdapter.class);
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
 
     /*
      * (non-Javadoc)

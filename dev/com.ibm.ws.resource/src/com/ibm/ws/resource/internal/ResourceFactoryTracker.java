@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.resource.internal;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
@@ -31,9 +30,9 @@ public class ResourceFactoryTracker implements ServiceTrackerCustomizer<Resource
 
     private ServiceTracker<ResourceFactory, ResourceFactoryTrackerData> tracker;
 
-    public void activate(BundleContext context) throws InvalidSyntaxException {
+    public void activate(ComponentContext cc) throws InvalidSyntaxException {
         Filter filter = FrameworkUtil.createFilter(FILTER);
-        tracker = new ServiceTracker<ResourceFactory, ResourceFactoryTrackerData>(context, filter, this);
+        tracker = new ServiceTracker<ResourceFactory, ResourceFactoryTrackerData>(cc.getBundleContext(), filter, this);
         tracker.open();
     }
 

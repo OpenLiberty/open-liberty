@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -94,10 +93,13 @@ public class CorsHelper {
     List<CorsConfig> configurations = new CopyOnWriteArrayList<CorsConfig>();
 
     @Activate
-    protected void activate(ComponentContext context, Map<String, Object> properties) {}
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Deactivate
-    protected void deactivate(ComponentContext context, int reason) {}
+    protected void deactivate(ComponentContext context, int reason) {
+    }
 
     @Reference(service = CorsConfig.class, name = "corsConfig", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
     protected void setCorsConfig(CorsConfig corsConfig) {

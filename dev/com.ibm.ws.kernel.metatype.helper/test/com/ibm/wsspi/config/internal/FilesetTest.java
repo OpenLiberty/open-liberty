@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -29,8 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-
-import com.ibm.wsspi.config.internal.FilesetImpl;
 
 public class FilesetTest extends AbstractFilesetTestHelper {
 
@@ -55,6 +55,7 @@ public class FilesetTest extends AbstractFilesetTestHelper {
 
     private final Mockery context = new JUnit4Mockery();
     private ComponentContext mockComponentContext;
+    private final Map<String, Object> attributes = new Hashtable<>();
 
     private static void recursiveDelete(File dir) {
         if (dir.exists()) {
@@ -93,17 +94,20 @@ public class FilesetTest extends AbstractFilesetTestHelper {
         setLocationService(fset);
         mockComponentContext = context.mock(ComponentContext.class);
         final BundleContext mockBundleContext = context.mock(BundleContext.class);
+        attributes.clear();
+        attributes.putAll(getAttributes(DIR_NAME, null, null, null, null));
         context.checking(new Expectations() {
             {
                 allowing(mockComponentContext).getBundleContext();
                 will(returnValue(mockBundleContext));
                 allowing(mockComponentContext).getProperties();
+                will(returnValue(attributes));
                 ignoring(mockBundleContext);
             }
         });
 
-        fset.activate(mockComponentContext, getAttributes(DIR_NAME, null, null, null, null));
-        setAttributes(fset, DIR_NAME, null, null, null);
+        fset.activate(mockComponentContext);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, null, null);
 //        fset.initComplete(Collections.singleton(DIR));
     }
 
@@ -141,10 +145,10 @@ public class FilesetTest extends AbstractFilesetTestHelper {
     @Test
     public void testSetDir() throws Exception {
         // check that setDir has an effect and returns the expected files
-        setAttributes(fset, DIR_NAME, null, null, null);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, null, null);
         assertFilesetsEqual("Unexpected files returned", TEST_FILES, fset.getFileset());
         // check that changing setDir changes the returned collection
-        setAttributes(fset, NODIR_NAME, null, null, null);
+        setAttributes(attributes, mockComponentContext, fset, NODIR_NAME, null, null, null);
         assertFilesetsEqual("Unexpected files returned", EMPTY_FILESET, fset.getFileset());
     }
 
@@ -153,32 +157,32 @@ public class FilesetTest extends AbstractFilesetTestHelper {
         // the default filter is *, which isn't going to be case sensitive
         // either way
         // so set the includes filter to be the list of TEST_FILES
-        setAttributes(fset, DIR_NAME, true, getFilterFromCollection(TEST_FILES), null);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, true, getFilterFromCollection(TEST_FILES), null);
         // check that it works as is
         assertFilesetsEqual("Unexpected files returned", TEST_FILES, fset.getFileset());
         Collection<File> wrongcaseFiles = Arrays.asList(new File[] { new File(DIR, "testFile.txt"),
-                                                                    new File(DIR, "testFile2") });
+                                                                     new File(DIR, "testFile2") });
         // apply the wrong case filter
-        setAttributes(fset, DIR_NAME, true, getFilterFromCollection(wrongcaseFiles), null);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, true, getFilterFromCollection(wrongcaseFiles), null);
         // check that no files come back for the wrong case
         assertFilesetsEqual("Was not case sensitive when should have been", EMPTY_FILESET, fset.getFileset());
         // make it insensitive and check result
-        setAttributes(fset, DIR_NAME, false, getFilterFromCollection(wrongcaseFiles), null);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, false, getFilterFromCollection(wrongcaseFiles), null);
         assertFilesetsEqual("Was case sensitive when should not have been", TEST_FILES, fset.getFileset());
         // return to sensitive and check
-        setAttributes(fset, DIR_NAME, true, getFilterFromCollection(wrongcaseFiles), null);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, true, getFilterFromCollection(wrongcaseFiles), null);
         assertFilesetsEqual("Was not case sensitive when should have been", EMPTY_FILESET, fset.getFileset());
     }
 
     @Test
     public void testSetIncludesAttribute() throws Exception {
-        setAttributes(fset, DIR_NAME, null, TEST_FILE.getName(), null);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, TEST_FILE.getName(), null);
         assertFilesetsEqual("Inlcude filter was incorrectly applied", TEST_FILE, fset.getFileset());
     }
 
     @Test
     public void testSetExcludesAttribute() throws Exception {
-        setAttributes(fset, DIR_NAME, null, null, TEST_FILE.getName());
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, null, TEST_FILE.getName());
         assertFilesetsEqual("Exlcude filter was incorrectly applied", TEST_FILE_2, fset.getFileset());
     }
 
@@ -192,7 +196,7 @@ public class FilesetTest extends AbstractFilesetTestHelper {
     @Test
     public void testNotifyFileChanged() throws Exception {
         // check that nothing is returned for testfile3
-        setAttributes(fset, DIR_NAME, null, "testfile3", null);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, "testfile3", null);
         Collection<File> retrieved = fset.getFileset();
         assertFilesetsEqual("No files should have been returned", EMPTY_FILESET, retrieved);
         // change the contents of the DIR and notify that it was changed
@@ -230,7 +234,7 @@ public class FilesetTest extends AbstractFilesetTestHelper {
             File subFile = new File(sub, "subfile.txt");
             subFile.createNewFile();
 
-            setAttributes(fset, DIR_NAME, null, "**/subfile.txt", null);
+            setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, "**/subfile.txt", null);
 
             assertFilesetsEqual("The sub directory file should have been returned", subFile, fset.getFileset());
 
@@ -243,8 +247,8 @@ public class FilesetTest extends AbstractFilesetTestHelper {
 
     @Test
     public void verifyProperties() {
-        setAttributes(fset, DIR_NAME, null, null, null, 0L);
-        setAttributes(fset, DIR_NAME, null, null, null, 1L);
-        setAttributes(fset, DIR_NAME, null, null, null, -5L);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, null, null, 0L);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, null, null, 1L);
+        setAttributes(attributes, mockComponentContext, fset, DIR_NAME, null, null, null, -5L);
     }
 }

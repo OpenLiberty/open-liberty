@@ -11,6 +11,8 @@
 package com.ibm.ws.kernel.filemonitor.internal.scan;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -30,6 +32,12 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
            service = { FileNotification.class, ServerQuiesceListener.class },
            property = { "service.vendor=IBM" })
 public class ScanningCoreServiceImpl extends CoreServiceImpl {
+
+    @Override
+    @Activate
+    protected void activate(ComponentContext cc) throws Exception {
+        super.activate(cc);
+    }
 
     @Override
     protected MonitorHolder createMonitorHolder(ServiceReference<FileMonitor> monitorRef) {

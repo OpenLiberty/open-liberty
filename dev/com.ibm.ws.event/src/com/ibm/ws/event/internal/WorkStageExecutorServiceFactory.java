@@ -13,6 +13,8 @@ package com.ibm.ws.event.internal;
 
 import java.util.concurrent.ExecutorService;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -24,6 +26,11 @@ import com.ibm.websphere.event.ExecutorServiceFactory;
 public class WorkStageExecutorServiceFactory implements ExecutorServiceFactory {
 
     ExecutorService executorService;
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
 
     @Reference
     protected void setExecutorService(ExecutorService executorService) {

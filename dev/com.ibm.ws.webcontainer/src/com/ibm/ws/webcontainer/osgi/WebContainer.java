@@ -270,7 +270,8 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      * @param componentContext The component context of the activation.
      * @param properties Properties for the activation. 
      */
-    public void activate(ComponentContext compcontext, Map<String, Object> properties) {
+    @SuppressWarnings("unchecked")
+    public void activate(ComponentContext compcontext) {
         String methodName = "activate";
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -285,7 +286,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         }        
         WebContainerConfiguration webconfig = new WebContainerConfiguration(DEFAULT_PORT);
         webconfig.setDefaultVirtualHostName(DEFAULT_VHOST_NAME);
-        this.initialize(webconfig, properties);
+        this.initialize(webconfig, (Map<String, Object>) compcontext.getProperties());
 
         this.classLoadingSRRef.activate(context);
         this.sessionHelperSRRef.activate(context);

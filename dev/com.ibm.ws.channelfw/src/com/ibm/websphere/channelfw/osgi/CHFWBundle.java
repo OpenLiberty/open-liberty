@@ -99,7 +99,8 @@ public class CHFWBundle implements ServerQuiesceListener {
     private ExecutorService executorService = null;
 
     private static boolean serverCompletelyStarted = false;
-    private static Object syncStarted = new Object() {}; // use brackets/inner class to make lock appear in dumps using class name
+    private static Object syncStarted = new Object() {
+    }; // use brackets/inner class to make lock appear in dumps using class name
 
     private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
     private static volatile String httpVersionSetting = null;
@@ -117,15 +118,15 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @param context
      */
     @Activate
-    protected void activate(ComponentContext context, Map<String, Object> config) {
+    protected void activate(ComponentContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Activating ", config);
+            Tr.event(this, tc, "Activating ", context.getProperties());
         }
 
         // handle config (such as TCP factory info) before registering
         // factories, as the register will trigger an automatic load of any
         // delayed configuration, and we need the config before that happens
-        modified(config);
+        modified(context);
 
         this.chfw.registerFactory("TCPChannel", TCPChannelFactory.class);
         this.chfw.registerFactory("UDPChannel", UDPChannelFactory.class);
@@ -168,11 +169,12 @@ public class CHFWBundle implements ServerQuiesceListener {
      * configuration change.
      *
      * @param cfwConfiguration
-     *            the configuration data
+     *                             the configuration data
      */
     @Modified
-    protected synchronized void modified(Map<String, Object> cfwConfiguration) {
-
+    protected synchronized void modified(ComponentContext cc) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> cfwConfiguration = (Map<String, Object>) cc.getProperties();
         if (null == cfwConfiguration) {
             return;
         }
@@ -295,7 +297,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {}
+    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {
+    }
 
     /**
      * Access the event service.
@@ -327,7 +330,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetEventService(EventEngine service) {}
+    protected void unsetEventService(EventEngine service) {
+    }
 
     /**
      * Access the channel framework's {@link java.util.concurrent.ExecutorService} to
@@ -347,7 +351,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * DS method for setting the executor service reference.
      *
      * @param executorService the {@link java.util.concurrent.ExecutorService} to
-     *            queue work to.
+     *                            queue work to.
      */
     @Reference(service = ExecutorService.class,
                cardinality = ReferenceCardinality.MANDATORY)
@@ -361,7 +365,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param executorService the service instance to clear
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Access the scheduled event service.
@@ -393,7 +398,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {}
+    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {
+    }
 
     /**
      * Access the scheduled executor service.
@@ -425,7 +431,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledEventService(ScheduledEventService ref) {}
+    protected void unsetScheduledEventService(ScheduledEventService ref) {
+    }
 
     /**
      * DS method to set a factory provider.

@@ -19,6 +19,8 @@ import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ExceptionMapper;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
@@ -28,6 +30,11 @@ import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
  */
 @Component(immediate = true)
 public class CustomExceptionMapperRegister implements JaxRsProviderRegister {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /*
      * (non-Javadoc)

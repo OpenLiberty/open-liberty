@@ -40,14 +40,15 @@ public class AppMonitorConfigurator {
     }
 
     @Activate
-    protected void activate(ComponentContext ctx, Map<String, Object> config) {
-        modified(ctx, config);
+    protected void activate(ComponentContext ctx) {
+        modified(ctx);
     }
 
     @Modified
-    protected void modified(ComponentContext ctx, Map<String, Object> config) {
+    protected void modified(ComponentContext ctx) {
         ApplicationMonitorConfig prevConfig = appMonitorConfig;
-        ApplicationMonitorConfig newConfig = new ApplicationMonitorConfig(prevConfig, config);
+        @SuppressWarnings("unchecked")
+        ApplicationMonitorConfig newConfig = new ApplicationMonitorConfig(prevConfig, (Map<String, ?>) ctx.getProperties());
 
         appMonitorConfig = newConfig;
         appMonitor.refresh(appMonitorConfig);
@@ -55,19 +56,22 @@ public class AppMonitorConfigurator {
     }
 
     @Deactivate
-    protected void deactivate(ComponentContext ctx, int reason) {}
+    protected void deactivate(ComponentContext ctx, int reason) {
+    }
 
     @Reference
     protected void setApplicationMonitor(ApplicationMonitor appMonitor) {
         this.appMonitor = appMonitor;
     }
 
-    protected void unsetApplicationMonitor(ApplicationMonitor appMonitor) {}
+    protected void unsetApplicationMonitor(ApplicationMonitor appMonitor) {
+    }
 
     @Reference
     protected void setDropinMonitor(DropinMonitor dropinMonitor) {
         this.dropinMonitor = dropinMonitor;
     }
 
-    protected void unsetDropinMonitor(DropinMonitor dropinMonitor) {}
+    protected void unsetDropinMonitor(DropinMonitor dropinMonitor) {
+    }
 }

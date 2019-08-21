@@ -16,6 +16,8 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.web.factories.WeldListenerFactory;
@@ -27,6 +29,11 @@ import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
 @Component(name = "com.ibm.ws.cdi.web.el.WrappedELExpressionFactory", service = { ELFactoryWrapperForCDI.class }, immediate = true, property = { "service.vendor=IBM" })
 public class WrappedELExpressionFactory extends ExpressionFactory implements ELFactoryWrapperForCDI {
     private ExpressionFactory wrapped;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public void setExpressionFactory(ExpressionFactory expressionFactory) {

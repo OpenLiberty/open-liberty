@@ -13,6 +13,8 @@ package com.ibm.ws.container.service.app.deploy.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
@@ -34,10 +36,14 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
 
     /*
      * This adapter processes JEE classpath locations..
-     * 
+     *
      * OSGi classpath locations are managed by the WAB installer,
      * and pre-cached to the overlay, to be returned by this adapter
      */
+
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public WebModuleClassesInfo adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
@@ -50,7 +56,7 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
         ArrayList<String> resolved = new ArrayList<String>();
         final List<ContainerInfo> containerInfos = new ArrayList<ContainerInfo>();
 
-        //This should possibly be processing manifest classpath locations, like the old classloader did.. 
+        //This should possibly be processing manifest classpath locations, like the old classloader did..
         Entry moduleEntry = containerToAdapt.adapt(Entry.class);
         if (moduleEntry != null && !moduleEntry.getPath().isEmpty()) {
             ManifestClassPathUtils.processMFClasspath(moduleEntry, containerInfos, resolved, true);

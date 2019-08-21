@@ -60,11 +60,12 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService, Service
     private Map<String, Object> baseProperties;
     private final ServiceRegistrationModifier<AdapterFactoryService> registration = new ServiceRegistrationModifier<>(AdapterFactoryService.class, this, this);
 
+    @SuppressWarnings("unchecked")
     @Activate
-    protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
+    protected void activate(ComponentContext cCtx) {
         entryHelperMap.activate(cCtx);
         containerHelperMap.activate(cCtx);
-        baseProperties = properties;
+        baseProperties = (Map<String, Object>) cCtx.getProperties();
         registration.registerOrUpdate(cCtx.getBundleContext());
     }
 

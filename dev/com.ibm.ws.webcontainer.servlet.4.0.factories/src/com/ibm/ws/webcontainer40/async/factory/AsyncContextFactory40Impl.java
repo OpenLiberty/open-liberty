@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.async.factory;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 /**
  *
  */
@@ -24,6 +26,11 @@ import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
 @Component(service = AsyncContextFactory.class, property = { "service.vendor=IBM" })
 public class AsyncContextFactory40Impl implements AsyncContextFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public AsyncContext getAsyncContext(IExtendedRequest iExtendedRequest, IExtendedResponse iExtendedResponse, IWebAppDispatcherContext webAppDispatcherContext) {

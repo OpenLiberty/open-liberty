@@ -127,7 +127,7 @@ public class PermissionManager implements PermissionsCombiner {
     private Map<String, ArrayList<Permission>> permissionXMLPermissionMap = new HashMap<String, ArrayList<Permission>>();
 
     @Activate
-    protected void activate(ComponentContext cc, Map<String, Object> properties) {
+    protected void activate(ComponentContext cc) {
         bundleContext = cc.getBundleContext();
         isServer = "server".equals(bundleContext.getProperty("wlp.process.type"));
 

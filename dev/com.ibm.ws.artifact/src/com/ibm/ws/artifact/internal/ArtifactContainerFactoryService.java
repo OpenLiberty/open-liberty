@@ -60,13 +60,14 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
 
     private final ServiceRegistrationModifier<ArtifactContainerFactory> registration = new ServiceRegistrationModifier<>(ArtifactContainerFactory.class, this, this);
 
+    @SuppressWarnings("unchecked")
     @Activate
-    protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
+    protected void activate(ComponentContext cCtx) {
         helperMap.activate(cCtx);
         contributorMap.activate(cCtx);
         helperCategoryMap.activate(cCtx);
         contributorCategoryMap.activate(cCtx);
-        this.baseProperties = properties;
+        this.baseProperties = (Map<String, Object>) cCtx.getProperties();
         registration.registerOrUpdate(cCtx.getBundleContext());
     }
 

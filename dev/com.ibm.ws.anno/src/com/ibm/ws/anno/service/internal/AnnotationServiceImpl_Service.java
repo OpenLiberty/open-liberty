@@ -44,7 +44,7 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
 
     protected BundleContext bundleContext;
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    protected void activate(ComponentContext componentContext) {
         String methodName = "activate";
 
         if (tc.isEntryEnabled()) {

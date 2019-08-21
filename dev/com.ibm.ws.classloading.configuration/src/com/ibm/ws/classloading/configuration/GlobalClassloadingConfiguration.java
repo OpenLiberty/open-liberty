@@ -25,10 +25,11 @@ public class GlobalClassloadingConfiguration {
 
     private Map<String, Object> properties;
 
+    @SuppressWarnings("unchecked")
     @Activate
-    protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
+    protected void activate(ComponentContext cCtx) {
 
-        this.properties = properties;
+        this.properties = (Map<String, Object>) cCtx.getProperties();
     }
 
     @Deactivate
@@ -36,9 +37,10 @@ public class GlobalClassloadingConfiguration {
         properties = null;
     }
 
+    @SuppressWarnings("unchecked")
     @Modified
-    protected void modified(ComponentContext ctx, Map<String, Object> props) {
-        this.properties = props;
+    protected void modified(ComponentContext ctx) {
+        this.properties = (Map<String, Object>) ctx.getProperties();
     }
 
     /**

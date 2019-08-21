@@ -665,7 +665,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         return mof;
     }
 
-    public void activate(ComponentContext compcontext, Map<String, Object> properties) {
+    public void activate(ComponentContext compcontext) {
 
         this.managedObjectServiceRef.activate(compcontext);
 

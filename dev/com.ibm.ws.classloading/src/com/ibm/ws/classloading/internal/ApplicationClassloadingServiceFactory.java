@@ -24,6 +24,8 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -52,6 +54,11 @@ public class ApplicationClassloadingServiceFactory implements ManagedServiceFact
     private static final String LIBRARY_REF_ATT = "privateLibraryRef";
     private static final String COMMON_LIBRARY_REF_ATT = "commonLibraryRef";
     public static final String COMPONENT_FACTORY_PID = "com.ibm.wsspi.classloading.classloader.app";
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
 
     @Reference(name = "configAdmin", policy = ReferencePolicy.STATIC)
     protected void setConfigAdmin(ConfigurationAdmin configAdmin) {

@@ -159,6 +159,9 @@ public abstract class CoreServiceImplTestParent {
             {
                 allowing(mockLocation).resolveString(with(any(String.class)));
                 will(echoArgument());
+
+                allowing(mockComponentContext).getProperties();
+                will(returnValue(null));
             }
         });
 
@@ -763,7 +766,7 @@ public abstract class CoreServiceImplTestParent {
 
     /**
      * @param props the properties being passed to the core service
-     * @param file the file to monitor
+     * @param file  the file to monitor
      */
     private void addFileToPropsForMonitoring(Map<String, Object> props, File... files) {
         final Collection<String> monitoredFiles = new HashSet<String>();
@@ -856,7 +859,7 @@ public abstract class CoreServiceImplTestParent {
      * @throws Exception
      */
     protected void activateCoreService() throws Exception {
-        coreService.activate(mockComponentContext, null);
+        coreService.activate(mockComponentContext);
 
         // Wait for everything to get initialized before changing anything, to make sure our change gets noticed
         waitForMonitorsToStabilise();
@@ -1042,7 +1045,7 @@ public abstract class CoreServiceImplTestParent {
      * Then modifies the file and asserts that the expectations were satisfied.
      *
      * @param mockFileMonitor - JMock of FileMonitor
-     * @param files - files to monitor (can handle multiple files, but normally just one is passed)
+     * @param files           - files to monitor (can handle multiple files, but normally just one is passed)
      *
      * @throws IOException
      * @throws InterruptedException
@@ -1096,7 +1099,7 @@ public abstract class CoreServiceImplTestParent {
      * activateCoreService();
      *
      * @param mockFileMonitor - JMock of FileMonitor
-     * @param files - files to monitor (can handle multiple files, but normally just one is passed)
+     * @param files           - files to monitor (can handle multiple files, but normally just one is passed)
      *
      * @throws IOException
      * @throws InterruptedException
@@ -1376,7 +1379,7 @@ public abstract class CoreServiceImplTestParent {
      * Creates a temporary file.
      *
      * @param identifier - text to be inserted into the actual file name, to differentiate from
-     *            other temp files.
+     *                       other temp files.
      */
     private File createFile(String identifier) throws IOException {
         File file = File.createTempFile("coreservice", identifier + counter);

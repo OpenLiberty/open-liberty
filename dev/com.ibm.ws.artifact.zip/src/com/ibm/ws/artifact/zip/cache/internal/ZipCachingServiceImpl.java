@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipCachingService;
@@ -96,6 +98,10 @@ public class ZipCachingServiceImpl implements ZipCachingService {
     @Trivial
     public ZipFileHandle openZipFile(String path) throws IOException {
         return ZipCachingServiceImpl.getZipFileHandle(path);
+    }
+
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
     }
 
     //

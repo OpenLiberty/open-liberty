@@ -30,4 +30,5 @@ Import-Package: \
     org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

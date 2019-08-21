@@ -71,12 +71,12 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * DS-driven component activation
      */
     @Activate
-    protected void activate(ComponentContext cContext, Map<String, Object> properties) throws Exception {
+    protected void activate(ComponentContext cContext) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "File monitor service activated", properties);
+            Tr.event(tc, "File monitor service activated", cContext.getProperties());
         }
         this.cContext = cContext;
-        modified(properties);
+        modified(cContext);
 
         // Make sure all file monitors have been initialized.
         for (Map.Entry<ServiceReference<FileMonitor>, MonitorHolder> entry : fileMonitors.entrySet()) {
@@ -101,9 +101,11 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
     }
 
     @Modified
-    protected void modified(Map<String, Object> properties) {
+    protected void modified(ComponentContext cContext) {
         final String key = "detailedTraceEnabled";
 
+        @SuppressWarnings("unchecked")
+        Map<String, Object> properties = (Map<String, Object>) cContext.getProperties();
         if (properties != null) {
             try {
                 detailedScanTrace = MetatypeUtils.parseBoolean(properties.get(Constants.SERVICE_PID), key, properties.get(key), false);

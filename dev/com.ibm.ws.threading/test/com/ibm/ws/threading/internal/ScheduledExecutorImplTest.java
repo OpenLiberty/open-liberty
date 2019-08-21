@@ -13,7 +13,7 @@ package com.ibm.ws.threading.internal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
@@ -21,14 +21,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import junit.framework.Assert;
-
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.threading.internal.SchedulingHelper.ExpeditedFutureTask;
+
+import junit.framework.Assert;
 import test.common.SharedOutputManager;
 
 public class ScheduledExecutorImplTest {
@@ -51,25 +55,35 @@ public class ScheduledExecutorImplTest {
     ScheduledExecutorImpl m_scheduledExecutor;
 
     {
-        m_scheduledExecutor = new ScheduledExecutorImpl();
-        ExecutorServiceImpl executorService = new ExecutorServiceImpl();
-        Map<String, Object> componentConfig = new HashMap<String, Object>(6);
+        final Map<String, Object> componentConfig = new Hashtable<String, Object>(6);
         componentConfig.put("name", "testExecutor");
         componentConfig.put("rejectedWorkPolicy", "CALLER_RUNS");
         componentConfig.put("stealPolicy", "STRICT");
         componentConfig.put("keepAlive", 60);
         componentConfig.put("coreThreads", -1);
         componentConfig.put("maxThreads", -1);
-        executorService.activate(componentConfig);
+
+        Mockery context = new JUnit4Mockery();
+        final ComponentContext mockCC = context.mock(ComponentContext.class);
+        context.checking(new Expectations() {
+            {
+                allowing(mockCC).getProperties();
+                will(returnValue(componentConfig));
+            }
+        });
+        m_scheduledExecutor = new ScheduledExecutorImpl();
+        ExecutorServiceImpl executorService = new ExecutorServiceImpl();
+
+        executorService.activate(mockCC);
 
         m_scheduledExecutor.setExecutor(executorService);
     }
 
     /**
      * Test ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit)
-     * 
+     *
      * Submit a Runnable and make sure it executes after the specified delay.
-     * 
+     *
      * @throws Exception
      */
     @Test(timeout = 60000)
@@ -91,9 +105,9 @@ public class ScheduledExecutorImplTest {
 
     /**
      * Test <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit)
-     * 
+     *
      * Submit a Callable and make sure it executes after the specified delay.
-     * 
+     *
      * @throws Exception
      */
     @Test(timeout = 60000)
@@ -115,14 +129,14 @@ public class ScheduledExecutorImplTest {
 
     /**
      * Test ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit)
-     * 
+     *
      * Submit a Runnable and make sure it executes after the initial delay. Also, make sure it executes
      * at least a reasonable amount of times given its fixed delay value.
-     * 
+     *
      * scheduledWithFixedDelay(fixedDelayRunnable, 3 , 2 , TimeUnit.SECONDS): should execute at least three times given
      * an overall time of 20 seconds...With test system performance variance we really can't be precise. Otherwise,
      * we risk failing the test on slow machines.
-     * 
+     *
      * @throws Exception
      */
     @Test(timeout = 60000)
@@ -140,7 +154,7 @@ public class ScheduledExecutorImplTest {
 
             /*
              * (non-Javadoc)
-             * 
+             *
              * @see java.lang.Runnable#run()
              */
             @Override
@@ -193,14 +207,14 @@ public class ScheduledExecutorImplTest {
 
     /**
      * Test ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit)
-     * 
+     *
      * Submit a Runnable and make sure it executes after the initial delay. Also, make sure it executes
      * at least a reasonable amount of times given its fixed rate value.
-     * 
+     *
      * scheduleAtFixedRate(fixedRateRunnable, 3 , 2 , TimeUnit.SECONDS): should execute at least three times given
      * an overall time of 20 seconds...With test system performance variance we really can't be precise. Otherwise,
      * we risk failing the test on slow machines.
-     * 
+     *
      * @throws Exception
      */
     @Test(timeout = 60000)
@@ -219,7 +233,7 @@ public class ScheduledExecutorImplTest {
 
             /*
              * (non-Javadoc)
-             * 
+             *
              * @see java.lang.Runnable#run()
              */
             @Override

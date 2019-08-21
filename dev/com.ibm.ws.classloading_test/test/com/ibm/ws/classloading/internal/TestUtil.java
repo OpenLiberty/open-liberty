@@ -193,7 +193,7 @@ final class TestUtil {
         if (expectations != null) {
             expectations.addExpectations(mockery, componentContext);
         }
-        cls.activate(componentContext, null);
+        cls.activate(componentContext);
         return cls;
     }
 

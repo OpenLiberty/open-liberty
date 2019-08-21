@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.managedobject.internal;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.managedobject.DefaultManagedObjectService;
@@ -24,6 +26,11 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
            immediate = true,
            property = { "service.vendor=IBM", "service.ranking:Integer=-1" })
 public class ManagedObjectServiceImpl implements DefaultManagedObjectService {
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public <T> ManagedObjectFactory<T> createManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, boolean requestManageInjectionAndInterceptors) throws ManagedObjectException {

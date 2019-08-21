@@ -12,6 +12,8 @@ package com.ibm.ws.webcontainer40.servlet.factory;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.webcontainer.servlet.CacheServletWrapper;
@@ -22,6 +24,11 @@ import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 
 @Component(service = CacheServletWrapperFactory.class, property = { "service.vendor=IBM" })
 public class CacheServletWrapperFactory40Impl implements CacheServletWrapperFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public CacheServletWrapper createCacheServletWrapper(IServletWrapper wrapper, HttpServletRequest req,

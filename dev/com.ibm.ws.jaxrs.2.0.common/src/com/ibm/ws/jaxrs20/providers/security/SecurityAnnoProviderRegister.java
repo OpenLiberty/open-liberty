@@ -13,6 +13,8 @@ package com.ibm.ws.jaxrs20.providers.security;
 import java.util.List;
 import java.util.Set;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
@@ -21,6 +23,11 @@ import com.ibm.ws.jaxrs20.security.LibertySimpleAuthorizingInterceptor;
 
 @Component(immediate = true)
 public class SecurityAnnoProviderRegister implements JaxRsProviderRegister {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {

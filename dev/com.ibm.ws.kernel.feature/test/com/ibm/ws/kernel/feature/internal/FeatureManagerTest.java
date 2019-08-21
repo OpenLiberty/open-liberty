@@ -24,7 +24,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -177,6 +176,8 @@ public class FeatureManagerTest {
                 {
                     allowing(mockComponentContext).getBundleContext();
                     will(returnValue(mockBundleContext));
+                    allowing(mockComponentContext).getProperties();
+                    will(returnValue(new HashMap<String, Object>()));
 
                     allowing(mockBundleContext).getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
                     will(returnValue(mockBundle));
@@ -257,7 +258,7 @@ public class FeatureManagerTest {
                     will(returnValue(File.createTempFile("feature.fix.cache", null)));
                 }
             });
-            fm.activate(mockComponentContext, new HashMap<String, Object>());
+            fm.activate(mockComponentContext);
         } catch (Throwable t) {
             outputMgr.failWithThrowable("setUp", t);
         }
@@ -450,6 +451,8 @@ public class FeatureManagerTest {
                 {
                     allowing(mockComponentContext).getBundleContext();
                     will(returnValue(mockBundleContext));
+                    allowing(mockComponentContext).getProperties();
+                    will(returnValue(new HashMap<String, Object>()));
 
                     allowing(mockBundleContext).getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
                     will(returnValue(mockBundle));
@@ -475,9 +478,7 @@ public class FeatureManagerTest {
                 }
             });
 
-            Map<String, Object> componentProps = new HashMap<String, Object>();
-
-            fm.activate(mockComponentContext, componentProps);
+            fm.activate(mockComponentContext);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
         }

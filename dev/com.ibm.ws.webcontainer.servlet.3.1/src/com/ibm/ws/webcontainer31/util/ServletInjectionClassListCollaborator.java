@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import javax.servlet.annotation.WebServlet;
@@ -59,7 +61,12 @@ public class ServletInjectionClassListCollaborator implements WebAppInjectionCla
     
     // List of abstract classes in Servlet3.1 for which extenders require support for CDI 1.2    
     private final String[] _ServletSubClasses = new String[]{"javax.servlet.http.HttpServlet"};   
-    
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
+
     public List<String> getInjectionClasses(Container moduleContainer){
         
        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

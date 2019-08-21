@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.cxf.jaxrs.sse.SseContextProvider;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
@@ -26,6 +28,11 @@ import com.ibm.ws.jaxrs21.sse.LibertySseEventSinkContextProvider;
  */
 @Component(immediate = true)
 public class LibertySseFeature implements JaxRsProviderRegister {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /* (non-Javadoc)
      * @see com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister#installProvider(boolean, java.util.List, java.util.Set)

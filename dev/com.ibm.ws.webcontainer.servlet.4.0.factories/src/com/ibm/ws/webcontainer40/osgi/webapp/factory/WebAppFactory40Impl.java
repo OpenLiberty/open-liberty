@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.osgi.webapp.factory;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.csi.J2EENameFactory;
@@ -26,6 +28,11 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
 */
 @Component(service = WebAppFactory.class, property = { "service.vendor=IBM" })
 public class WebAppFactory40Impl implements WebAppFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /*
      * (non-Javadoc)

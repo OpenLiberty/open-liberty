@@ -22,6 +22,8 @@ import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.StandardEmitterMBean;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -37,28 +39,28 @@ import com.ibm.ws.threading.listeners.CompletionListener;
            immediate = false,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "jmx.objectname=" + RuntimeUpdateNotificationMBean.OBJECT_NAME)
-public class RuntimeUpdateNotificationMBeanImpl extends
-             StandardEmitterMBean implements
-             RuntimeUpdateNotificationMBean, RuntimeUpdateListener {
-    
+public class RuntimeUpdateNotificationMBeanImpl extends StandardEmitterMBean implements RuntimeUpdateNotificationMBean, RuntimeUpdateListener {
+
     private static final TraceComponent tc = Tr.register(RuntimeUpdateNotificationMBeanImpl.class);
-    
+
     private final AtomicLong sequenceNum = new AtomicLong();
-    
+
     public RuntimeUpdateNotificationMBeanImpl() {
-        super(RuntimeUpdateNotificationMBean.class, false, new NotificationBroadcasterSupport((Executor) null,
-                new MBeanNotificationInfo(new String[] { RUNTIME_UPDATE_NOTIFICATION_TYPE },
-                        Notification.class.getName(),
-                        "")));
+        super(RuntimeUpdateNotificationMBean.class, false, new NotificationBroadcasterSupport((Executor) null, new MBeanNotificationInfo(new String[] { RUNTIME_UPDATE_NOTIFICATION_TYPE }, Notification.class.getName(), "")));
     }
-    
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
+
     //
     // RuntimeUpdateListener methods.
     //
 
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager,
-            RuntimeUpdateNotification notification) {
+                                    RuntimeUpdateNotification notification) {
         final String name = notification.getName();
         notification.onCompletion(new CompletionListener<Boolean>() {
             @Override
@@ -68,6 +70,7 @@ public class RuntimeUpdateNotificationMBeanImpl extends
                     Tr.debug(tc, "Notification sent on successful completion: " + name + '.');
                 }
             }
+
             @Override
             public void failedCompletion(Future<Boolean> future, Throwable t) {
                 sendNotification(createNotification(name, Boolean.FALSE, t));
@@ -77,13 +80,10 @@ public class RuntimeUpdateNotificationMBeanImpl extends
             }
         });
     }
-    
+
     private Notification createNotification(String name, Boolean result, Throwable t) {
-        Notification n = new Notification(RUNTIME_UPDATE_NOTIFICATION_TYPE, 
-                this,
-                sequenceNum.incrementAndGet(),
-                System.currentTimeMillis());
-        Map<String,Object> map = new HashMap<String,Object>();
+        Notification n = new Notification(RUNTIME_UPDATE_NOTIFICATION_TYPE, this, sequenceNum.incrementAndGet(), System.currentTimeMillis());
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(RUNTIME_UPDATE_NOTIFICATION_KEY_NAME, name);
         map.put(RUNTIME_UPDATE_NOTIFICATION_KEY_STATUS, result);
         map.put(RUNTIME_UPDATE_NOTIFICATION_KEY_MESSAGE, t != null ? t.getMessage() : null);

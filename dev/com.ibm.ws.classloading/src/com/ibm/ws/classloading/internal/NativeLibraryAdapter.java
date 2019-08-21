@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -31,6 +33,12 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
            immediate = true,
            property = { "service.vendor=IBM", "toType=com.ibm.ws.classloading.internal.NativeLibrary" })
 public class NativeLibraryAdapter implements EntryAdapter<NativeLibrary> {
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
+
     @Override
     public NativeLibrary adapt(Container root, OverlayContainer rootOverlay, ArtifactEntry artifactEntry, Entry entryToAdapt) throws UnableToAdaptException {
         try {

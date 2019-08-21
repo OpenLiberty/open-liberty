@@ -13,7 +13,7 @@ package com.ibm.ws.http.internal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +29,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.http.internal.VirtualHostImpl.EndpointState;
 import com.ibm.ws.http.internal.VirtualHostImpl.RegistrationHolder;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -83,8 +83,8 @@ public class VirtualHostImplTest {
         final ServiceRegistration mockRegistration = context.mock(ServiceRegistration.class);
         final HttpEndpointImpl mockEndpoint = context.mock(HttpEndpointImpl.class);
 
-        Map<String, Object> map = new HashMap<String, Object>();
-
+        final Map<String, Object> map = new Hashtable<String, Object>();
+        map.put("id", "default_host");
         context.checking(new Expectations() {
             {
                 allowing(mockComponentContext).getBundleContext();
@@ -92,11 +92,13 @@ public class VirtualHostImplTest {
 
                 allowing(mockBundleContext).registerService(with(any(Class.class)), with(vi), with(any(Dictionary.class)));
                 will(returnValue(mockRegistration));
+
+                allowing(mockComponentContext).getProperties();
+                will(returnValue(map));
             }
         });
 
-        map.put("id", "default_host");
-        vi.activate(mockComponentContext, map);
+        vi.activate(mockComponentContext);
 
         VirtualHostConfig vhc = new VirtualHostConfig(vi, map);
         vhc.regenerateAliases();

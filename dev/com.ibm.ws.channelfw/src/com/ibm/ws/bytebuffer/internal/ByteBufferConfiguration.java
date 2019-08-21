@@ -14,6 +14,7 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -34,17 +35,17 @@ import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager.DirectByteBufferHelper;
            property = { "service.vendor=IBM" })
 public class ByteBufferConfiguration {
     /** Trace service */
-    private static final TraceComponent tc =
-                    Tr.register(ByteBufferConfiguration.class,
-                                MessageConstants.WSBB_TRACE_NAME,
-                                MessageConstants.WSBB_BUNDLE);
+    private static final TraceComponent tc = Tr.register(ByteBufferConfiguration.class,
+                                                         MessageConstants.WSBB_TRACE_NAME,
+                                                         MessageConstants.WSBB_BUNDLE);
 
     /** Reference to the pool manager, only create once */
     private volatile WsByteBufferPoolManager wsbbmgr = null;
 
+    @SuppressWarnings("unchecked")
     @Activate
-    protected void activate(Map<String, Object> configuration) {
-        modified(configuration);
+    protected void activate(ComponentContext cc) {
+        modified((Map<String, Object>) cc.getProperties());
     }
 
     @Deactivate
@@ -55,7 +56,7 @@ public class ByteBufferConfiguration {
 
     private final AtomicReference<DirectByteBufferHelper> directByteBufferHelper = new AtomicReference<DirectByteBufferHelper>();
 
-    @Reference(name="directByteBufferHelper", service=DirectByteBufferHelper.class, cardinality = ReferenceCardinality.OPTIONAL)
+    @Reference(name = "directByteBufferHelper", service = DirectByteBufferHelper.class, cardinality = ReferenceCardinality.OPTIONAL)
     protected void setDirectByteBufferHelper(DirectByteBufferHelper helper) {
         this.directByteBufferHelper.set(helper);
     }
@@ -86,7 +87,7 @@ public class ByteBufferConfiguration {
 
     /**
      * Create the WSBB pool manager using the input configuration.
-     * 
+     *
      * @param config
      * @return WsByteBufferPoolManager
      */
@@ -169,7 +170,7 @@ public class ByteBufferConfiguration {
      * This is used to provide the runtime configuration changes to an
      * existing pool manager, which is a small subset of the possible
      * creation properties.
-     * 
+     *
      * @param properties
      */
     private void updateBufferManager(Map<String, Object> properties) {

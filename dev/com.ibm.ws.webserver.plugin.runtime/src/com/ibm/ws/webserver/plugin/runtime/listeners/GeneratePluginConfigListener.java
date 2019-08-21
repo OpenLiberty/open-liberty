@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
 
 import javax.servlet.SessionCookieConfig;
 
-import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -74,7 +74,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
     }
 
     @Activate
-    protected void activate(BundleContext bc) {
+    protected void activate(ComponentContext cc) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "GPCL: activate called.");
         theListener = this;
@@ -119,14 +119,16 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
     }
 
     /** Required static reference: will be called after deactivate. Avoid NPE */
-    protected void unsetSessionManager(SessionManager ref) {}
+    protected void unsetSessionManager(SessionManager ref) {
+    }
 
     @Reference(service = WsLocationAdmin.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setLocationService(WsLocationAdmin ref) {
         locationService = ref;
     }
 
-    protected void unsetLocationService(WsLocationAdmin ref) {}
+    protected void unsetLocationService(WsLocationAdmin ref) {
+    }
 
     /*
      * (non-Javadoc

@@ -15,6 +15,8 @@ import java.util.Map;
 import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.Cookie;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -26,12 +28,17 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.api.JaxRsAppSecurityService;
 
 /**
- * 
+ *
  */
 @Component(name = "com.ibm.ws.jaxrs20.client.component.JaxRsAppSecurity", immediate = true, property = { "service.vendor=IBM" })
 public class JaxRsAppSecurity {
     private static final TraceComponent tc = Tr.register(JaxRsAppSecurity.class);
     private static volatile JaxRsAppSecurityService appSecurityService = null;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Reference(name = "JaxRsAppSecurityService",
                service = JaxRsAppSecurityService.class,

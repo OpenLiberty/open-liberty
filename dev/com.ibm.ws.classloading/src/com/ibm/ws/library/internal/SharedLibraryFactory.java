@@ -25,6 +25,7 @@ import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -73,8 +74,8 @@ public class SharedLibraryFactory implements ManagedServiceFactory, ModuleDelega
     private LibraryPackageExporter packageExporter;
 
     @Activate
-    protected void activate(BundleContext ctx) {
-        this.ctx = ctx;
+    protected void activate(ComponentContext cc) {
+        this.ctx = cc.getBundleContext();
         clearContainerCache();
 
         File f = this.ctx.getDataFile(CONT_CACHE);

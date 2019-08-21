@@ -15,7 +15,7 @@ import java.lang.annotation.Annotation;
 import javax.annotation.Resource;
 import javax.naming.spi.ObjectFactory;
 
-import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -30,12 +30,12 @@ public class UOWManagerObjectFactoryInfo extends ObjectFactoryInfo {
     private boolean isClient;
 
     @Activate
-    protected void activate(BundleContext context) {
-        isClient = WsLocationConstants.LOC_PROCESS_TYPE_CLIENT.equals(context.getProperty(WsLocationConstants.LOC_PROCESS_TYPE));
+    protected void activate(ComponentContext cc) {
+        isClient = WsLocationConstants.LOC_PROCESS_TYPE_CLIENT.equals(cc.getBundleContext().getProperty(WsLocationConstants.LOC_PROCESS_TYPE));
     }
 
     @Deactivate
-    protected void deactivate(BundleContext context) {
+    protected void deactivate(ComponentContext cc) {
         isClient = false;
     }
 

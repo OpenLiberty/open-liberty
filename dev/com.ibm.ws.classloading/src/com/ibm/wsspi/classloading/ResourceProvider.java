@@ -20,6 +20,7 @@ import java.util.ServiceConfigurationError;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * This class is to be declared as a service by any component wishing to 'export'
@@ -37,11 +38,12 @@ public class ResourceProvider {
     /**
      * DS method to activate this component
      */
-    protected void activate(BundleContext bCtx, Map<String, Object> properties) {
+    protected void activate(ComponentContext cc) {
+        BundleContext bCtx = cc.getBundleContext();
         bundleID = bCtx.getBundle().getSymbolicName() + "-" + bCtx.getBundle().getVersion();
         bundleLoader = bCtx.getBundle().adapt(BundleWiring.class).getClassLoader();
         try {
-            Object prop = properties.get(RESOURCE_LIST_PROPERTY);
+            Object prop = cc.getProperties().get(RESOURCE_LIST_PROPERTY);
             if (prop instanceof String) {
                 String resource = (String) prop;
                 resourceNames = Arrays.asList(resource);

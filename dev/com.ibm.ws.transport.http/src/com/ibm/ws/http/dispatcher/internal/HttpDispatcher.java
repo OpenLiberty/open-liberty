@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentConstants;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -157,7 +158,8 @@ public class HttpDispatcher {
     /**
      * Constructor.
      */
-    public HttpDispatcher() {}
+    public HttpDispatcher() {
+    }
 
     /**
      * DS method to activate this component.
@@ -165,14 +167,14 @@ public class HttpDispatcher {
      * @param context
      */
     @Activate
-    protected void activate(Map<String, Object> properties) {
-        modified(properties);
+    protected void activate(ComponentContext cc) {
+        modified(cc);
 
         // Set this as the active HttpDispatcher instance
         instance.get().set(this);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "HttpDispatcher activated, id=" + properties.get(ComponentConstants.COMPONENT_ID));
+            Tr.event(this, tc, "HttpDispatcher activated, id=" + cc.getProperties().get(ComponentConstants.COMPONENT_ID));
         }
     }
 
@@ -198,7 +200,9 @@ public class HttpDispatcher {
      * @param config
      */
     @Modified
-    protected void modified(Map<String, Object> config) {
+    protected void modified(ComponentContext cc) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> config = (Map<String, Object>) cc.getProperties();
         if (null == config || config.isEmpty()) {
             return;
         }
@@ -285,15 +289,15 @@ public class HttpDispatcher {
 
     /**
      * Parses the three private header config properties we have: trusted, trustedHeaderOrigin, and trustedSensitiveHeaderOrigin.
-     * 
+     *
      * This class uses these internal flags to keep track of private header behavior:
      * wcTrusted - true if any private headers are allowed; false if no private headers are allowed
      * usePrivateHeaders - true if non-sensitive headers are allowed for some hosts
      * useSensitivePrivateHeaders - true if sensitive headers are allowed for some hosts
      * restrictPrivateHeaderOrigin - a list of hosts trusted for private headers; if null, any host is trusted
      * restrictSensitiveHeaderOrigin - a list of hosts trusted for sensitive headers; if null, no host is trusted
-     * 
-     * @param trustedPrivateHeaderHosts String[] of hosts to trust for non-sensitive private headers
+     *
+     * @param trustedPrivateHeaderHosts   String[] of hosts to trust for non-sensitive private headers
      * @param trustedSensitiveHeaderHosts String[] of hosts to trust for sensitive private headers
      */
     private synchronized void parseTrustedPrivateHeaderOrigin(String[] trustedPrivateHeaderHosts, String[] trustedSensitiveHeaderHosts) {
@@ -431,9 +435,9 @@ public class HttpDispatcher {
 
     /**
      * Check to see if the source host address is one we allow for specification of private headers
-     * 
-     * This takes into account the hosts defined in trustedHeaderOrigin and trustedSensitiveHeaderOrigin.  Note, 
-     * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none" 
+     *
+     * This takes into account the hosts defined in trustedHeaderOrigin and trustedSensitiveHeaderOrigin. Note,
+     * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none"
      * while trustedSensitiveHeaderOrigin="*", non-sensitive headers will still be trusted for all hosts.
      *
      * @param hostAddr The source host address
@@ -444,7 +448,7 @@ public class HttpDispatcher {
             return false;
         }
         if (hostAddr == null) {
-            // no host address information passed in; return the default value 
+            // no host address information passed in; return the default value
             return this.usePrivateHeaders;
         }
         if (HttpHeaderKeys.isSensitivePrivateHeader(headerName)) {
@@ -723,7 +727,7 @@ public class HttpDispatcher {
         boolean newTrusted = MetatypeUtils.parseBoolean("webContainer", PROP_WC_TRUSTED,
                                                         ref.getProperty(PROP_WC_TRUSTED), true);
 
-        if (newTrusted != wcTrusted) {    
+        if (newTrusted != wcTrusted) {
             wcTrusted = newTrusted;
 
             // Check the value of trusted headers..
@@ -733,7 +737,8 @@ public class HttpDispatcher {
         }
     }
 
-    protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {}
+    protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {
+    }
 
     /**
      * DS method for setting the Work Classification service reference.

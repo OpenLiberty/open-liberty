@@ -33,6 +33,7 @@ Service-Component:\
 
 -buildpath: \
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \

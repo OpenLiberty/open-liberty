@@ -306,7 +306,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      *                             the OSGi DS context
      */
     @Activate()
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    protected void activate(ComponentContext componentContext) {
         setSupportedProcessTypes(componentContext);
         bundleContext = componentContext.getBundleContext();
         Bundle systemBundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);

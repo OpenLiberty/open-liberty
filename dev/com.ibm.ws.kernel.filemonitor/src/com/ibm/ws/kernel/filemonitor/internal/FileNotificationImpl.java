@@ -15,6 +15,8 @@ import java.util.Collection;
 import javax.management.DynamicMBean;
 import javax.management.StandardMBean;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -33,6 +35,11 @@ public class FileNotificationImpl extends StandardMBean implements FileNotificat
 
     public FileNotificationImpl() {
         super(FileNotificationMBean.class, false);
+    }
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
     }
 
     @Reference

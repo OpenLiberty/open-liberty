@@ -55,7 +55,7 @@ public class Jaxrs20GlobalHandlerServiceImpl {
      * DS-driven component activation
      */
     @Activate
-    protected void activate(ComponentContext cContext, Map<String, Object> properties) throws Exception {
+    protected void activate(ComponentContext cContext) throws Exception {
         this.cContext = cContext;
         globalHandlerServiceSR.activate(cContext);
         listener = new JaxRSGlobalHandlerBusListener();

@@ -25,8 +25,8 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
@@ -35,13 +35,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.core.IsCollectionContaining;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.internal.matchers.IsCollectionContaining;
 import org.junit.rules.TestRule;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -69,7 +69,7 @@ public abstract class MonitorHolderTestParent {
 
     Mockery context = new JUnit4Mockery();
     CoreService mockCoreService = context.mock(CoreService.class);
-    Map<String, Object> props = new HashMap<String, Object>();
+    Map<String, Object> props = new Hashtable<String, Object>();
 
     ComponentContext mockComponentContext = context.mock(ComponentContext.class);
     BundleContext mockBundleContext = context.mock(BundleContext.class);
@@ -89,12 +89,12 @@ public abstract class MonitorHolderTestParent {
     @Before
     public void setUp() {
         props.clear();
-        props.put(FileMonitor.MONITOR_FILTER, null);
+        //props.put(FileMonitor.MONITOR_FILTER, null);
         props.put(FileMonitor.MONITOR_INTERVAL, "1s");
         props.put(FileMonitor.MONITOR_RECURSE, Boolean.FALSE);
         props.put(FileMonitor.MONITOR_INCLUDE_SELF, Boolean.FALSE);
-        props.put(FileMonitor.MONITOR_FILES, null);
-        props.put(FileMonitor.MONITOR_DIRECTORIES, null);
+        //props.put(FileMonitor.MONITOR_FILES, null);
+        //props.put(FileMonitor.MONITOR_DIRECTORIES, null);
 
         try {
             scheduledFuture = MonitorHolder.class.getDeclaredField("scheduledFuture");
@@ -441,6 +441,8 @@ public abstract class MonitorHolderTestParent {
                 {
                     allowing(mockComponentContext).getBundleContext();
                     will(returnValue(mockBundleContext));
+                    allowing(mockComponentContext).getProperties();
+                    will(returnValue(props));
 
                     allowing(mockBundleContext).getDataFile(with(any(String.class)));
                     will(returnValue(f1));
@@ -457,7 +459,7 @@ public abstract class MonitorHolderTestParent {
                     will(returnValue(mockFileMonitor));
                 }
             });
-            impl.activate(mockComponentContext, props);
+            impl.activate(mockComponentContext);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
         }

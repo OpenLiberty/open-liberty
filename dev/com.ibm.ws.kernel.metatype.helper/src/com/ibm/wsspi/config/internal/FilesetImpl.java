@@ -119,14 +119,14 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
     private final ServiceRegistrationModifier<FileMonitor> fileMonitorRegistration = new ServiceRegistrationModifier<>(FileMonitor.class, this, this);
 
     @Activate
-    protected void activate(ComponentContext context, Map<String, Object> props) {
+    protected void activate(ComponentContext context) {
         this.context = context;
 
         //set the Fileset id
-        this.pid = (String) props.get(Constants.SERVICE_PID);
+        this.pid = (String) context.getProperties().get(Constants.SERVICE_PID);
 
         //set the configured properties as required
-        modified(props);
+        modified(context);
     }
 
     @Deactivate
@@ -233,9 +233,11 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
     }
 
     @Modified
-    protected synchronized void modified(Map<String, Object> props) {
+    protected synchronized void modified(ComponentContext context) {
         // if the attributes are being set or reset then the cached files are
         // no longer current
+        @SuppressWarnings("unchecked")
+        Map<String, Object> props = (Map<String, Object>) context.getProperties();
         fileMonitorProps.putAll(props);
         this.isCurrent = false;
 
@@ -265,7 +267,7 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
                     break;
             }
         }
-        fileMonitorRegistration.registerOrUpdate(context.getBundleContext());
+        fileMonitorRegistration.registerOrUpdate(this.context.getBundleContext());
     }
 
     /**

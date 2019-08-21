@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -264,7 +263,7 @@ public class HandlerHolderTest {
         });
 
         // Activate the event engine
-        eventEngine.activate(componentContext, new HashMap<String, Object>());
+        eventEngine.activate(componentContext);
 
         // Create a handler holder for the test service
         HandlerHolder holder = new HandlerHolder(eventEngine, handlerReference, false);
@@ -316,7 +315,7 @@ public class HandlerHolderTest {
         });
 
         // Activate the event engine
-        eventEngine.activate(componentContext, new HashMap<String, Object>());
+        eventEngine.activate(componentContext);
 
         // Create a handler holder for the test service
         HandlerHolder holder = new HandlerHolder(eventEngine, handlerReference, true);
@@ -366,7 +365,7 @@ public class HandlerHolderTest {
         });
 
         // Activate the event engine
-        eventEngine.activate(componentContext, new HashMap<String, Object>());
+        eventEngine.activate(componentContext);
 
         // Create a handler holder for the test service
         HandlerHolder holder = new HandlerHolder(eventEngine, handlerReference, false);

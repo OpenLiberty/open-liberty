@@ -23,14 +23,19 @@ import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 import javax.naming.spi.InitialContextFactoryBuilder;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 @Component(immediate = true, configurationPolicy = IGNORE, property = "service.vendor=IBM")
 public class WASInitialContextFactoryBuilder implements InitialContextFactoryBuilder {
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
-    public InitialContextFactory createInitialContextFactory(Hashtable<?, ?> environment)
-                    throws NamingException {
+    public InitialContextFactory createInitialContextFactory(Hashtable<?, ?> environment) throws NamingException {
 
         final String icfFactory = (String) environment.get(Context.INITIAL_CONTEXT_FACTORY);
         InitialContextFactory icf = null;
@@ -65,8 +70,7 @@ public class WASInitialContextFactoryBuilder implements InitialContextFactoryBui
     private ClassLoader getClassLoader() {
         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             @Override
-            public ClassLoader run()
-            {
+            public ClassLoader run() {
                 return Thread.currentThread().getContextClassLoader();
             }
 

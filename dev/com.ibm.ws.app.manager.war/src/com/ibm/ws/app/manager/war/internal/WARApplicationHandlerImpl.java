@@ -12,6 +12,8 @@ package com.ibm.ws.app.manager.war.internal;
 
 import java.util.concurrent.Future;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -29,6 +31,11 @@ import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 public class WARApplicationHandlerImpl implements ApplicationHandler<DeployedAppInfo> {
     private FutureMonitor futureMonitor;
     private DeployedAppInfoFactory deployedAppFactory;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Reference
     protected void setFutureMonitor(FutureMonitor fm) {
@@ -60,7 +67,6 @@ public class WARApplicationHandlerImpl implements ApplicationHandler<DeployedApp
         final Future<Boolean> result = futureMonitor.createFuture(Boolean.class);
 
         WARDeployedAppInfo deployedApp = (WARDeployedAppInfo) applicationInformation.getHandlerInfo();
-
 
         if (!deployedApp.deployApp(result)) {
             futureMonitor.setResult(result, false);

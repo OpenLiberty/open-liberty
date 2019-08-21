@@ -12,7 +12,6 @@ package com.ibm.ws.app.manager.internal.monitor;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -63,12 +62,12 @@ public class ApplicationMonitor {
     private final ConcurrentHashMap<String, ApplicationListeners> _appListeners = new ConcurrentHashMap<String, ApplicationListeners>();
 
     @Activate
-    protected void activate(ComponentContext ctx, Map<String, Object> config) {
-        ctx.getBundleContext();
+    protected void activate(ComponentContext ctx) {
+        // here to optimize activate lookup from SCR
     }
 
     @Modified
-    protected void modified(Map<String, Object> config) {
+    protected void modified(ComponentContext ctx) {
         //
     }
 

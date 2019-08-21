@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -36,7 +36,7 @@ import com.ibm.wsspi.logging.IntrospectableService;
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
-                       Constants.SERVICE_VENDOR + "=" + "IBM"
+                        Constants.SERVICE_VENDOR + "=" + "IBM"
            })
 public class ConfigIntrospection implements IntrospectableService {
 
@@ -46,8 +46,8 @@ public class ConfigIntrospection implements IntrospectableService {
     private MetaTypeRegistry metaTypeRegistry;
 
     @Activate
-    protected void activate(BundleContext context) {
-
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
     }
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
@@ -74,7 +74,7 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.IntrospectableService#getName()
      */
     @Override
@@ -84,7 +84,7 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.IntrospectableService#getDescription()
      */
     @Override
@@ -94,7 +94,7 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.IntrospectableService#introspect(java.io.OutputStream)
      */
     @Override
@@ -168,7 +168,7 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /**
      * Filter out password fields
-     * 
+     *
      * @param attributes
      * @return
      */

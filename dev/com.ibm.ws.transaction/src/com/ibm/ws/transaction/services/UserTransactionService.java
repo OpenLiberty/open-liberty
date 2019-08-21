@@ -19,6 +19,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -34,16 +35,17 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 /**
  * This class is to implement UserTransaction by using the
  * embeddable version of UserTransaction
- * 
+ *
  * @author emilyj
- * 
+ *
  */
 @Component(service = { UserTransaction.class, EmbeddableWebSphereUserTransaction.class })
 public class UserTransactionService implements EmbeddableWebSphereUserTransaction {
     private EmbeddableWebSphereUserTransaction ut;
 
     @Activate
-    protected void activate(BundleContext context) {
+    protected void activate(ComponentContext cc) {
+        BundleContext context = cc.getBundleContext();
         if (WsLocationConstants.LOC_PROCESS_TYPE_SERVER.equals(context.getProperty(WsLocationConstants.LOC_PROCESS_TYPE))) {
             ut = EmbeddableUserTransactionImpl.instance();
         } else {
@@ -57,7 +59,8 @@ public class UserTransactionService implements EmbeddableWebSphereUserTransactio
     }
 
     @Reference
-    protected void setTmService(TMService tm) {}
+    protected void setTmService(TMService tm) {
+    }
 
     @Override
     public void begin() throws NotSupportedException, SystemException {

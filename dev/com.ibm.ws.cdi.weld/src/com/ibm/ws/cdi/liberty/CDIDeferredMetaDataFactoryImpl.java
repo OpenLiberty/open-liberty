@@ -13,30 +13,28 @@ package com.ibm.ws.cdi.liberty;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.ejs.util.Util;
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 
-@Component(service = {DeferredMetaDataFactory.class},
-           property = { "deferredMetaData=CDI" })
+@Component(service = { DeferredMetaDataFactory.class }, property = { "deferredMetaData=CDI" })
 public class CDIDeferredMetaDataFactoryImpl implements DeferredMetaDataFactory {
 
-    //Entries are added in applicationStarting() -> beginContext() and removed in the finally block inside applicationStopped. 
-    //If you add annother codepath that adds to this map, be sure to clean it up to prevent memory leaks. 
-    private static Map<String,ComponentMetaData> metaDataMap = new ConcurrentHashMap<String,ComponentMetaData>();
+    //Entries are added in applicationStarting() -> beginContext() and removed in the finally block inside applicationStopped.
+    //If you add annother codepath that adds to this map, be sure to clean it up to prevent memory leaks.
+    private static Map<String, ComponentMetaData> metaDataMap = new ConcurrentHashMap<String, ComponentMetaData>();
 
-    public void registerComponentMetaData(CDIArchive archive, ComponentMetaData cmd) throws CDIException  {
+    public void registerComponentMetaData(CDIArchive archive, ComponentMetaData cmd) throws CDIException {
         metaDataMap.put(getPersistentIdentifier(archive.getMetaData()), cmd);
     }
 
-    public void removeComponentMetaData(CDIArchive archive) throws CDIException  {
+    public void removeComponentMetaData(CDIArchive archive) throws CDIException {
         metaDataMap.remove(getPersistentIdentifier(archive.getMetaData()));
     }
 
@@ -46,16 +44,21 @@ public class CDIDeferredMetaDataFactoryImpl implements DeferredMetaDataFactory {
         return "CDI#" + md.getName();
     }
 
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
+
     @Override
     public ComponentMetaData createComponentMetaData(String identifier) {
-        if (! metaDataMap.containsKey(identifier)) {
+        if (!metaDataMap.containsKey(identifier)) {
             throw new IllegalStateException("Could not find ComponentMetaData");
         }
 
         return metaDataMap.get(identifier);
     }
 
-    @Override  
+    @Override
     public void initialize(ComponentMetaData metadata) throws IllegalStateException {
         return;
     }

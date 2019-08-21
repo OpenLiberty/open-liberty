@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -61,25 +62,25 @@ public class EncodingUtilsImpl implements EncodingUtils {
      * Constructor.
      */
     public EncodingUtilsImpl() {
-    // do nothing
+        // do nothing
     }
 
     /**
      * DS activation method for this component.
-     * 
+     *
      * @param context
      */
     @Activate
-    protected void activate(Map<String, Object> config) {
+    protected void activate(ComponentContext cc) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }
-        modified(config);
+        modified(cc);
     }
 
     /**
      * DS deactivation method for this component.
-     * 
+     *
      * @param context
      */
     @Deactivate
@@ -99,15 +100,16 @@ public class EncodingUtilsImpl implements EncodingUtils {
     /**
      * DS method for runtime updates to configuration without stopping and
      * restarting the component.
-     * 
+     *
      * @param config
      */
     @Modified
-    protected void modified(Map<String, Object> config) {
+    protected void modified(ComponentContext cc) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Config modified: " + this);
         }
-
+        @SuppressWarnings("unchecked")
+        Map<String, Object> config = (Map<String, Object>) cc.getProperties();
         if (null == config) {
             return;
         }
@@ -207,7 +209,7 @@ public class EncodingUtilsImpl implements EncodingUtils {
      * Processes the accept language header into a sublists based on the
      * qvalue. Each sublist is a list of string values for a given qvalue
      * and the overall list is ordered with preferred languages first.
-     * 
+     *
      * @param acceptLanguage to process.
      * @return List<List<String>>
      */
@@ -257,7 +259,7 @@ public class EncodingUtilsImpl implements EncodingUtils {
 
     /**
      * Extract the locales from a passed in language list.
-     * 
+     *
      * @param allLangs
      * @return List<Locale>
      */

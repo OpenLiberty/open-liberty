@@ -13,6 +13,8 @@ package com.ibm.ws.artifact.zip.cache.internal;
 import java.io.PrintWriter;
 
 import org.osgi.framework.Constants;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -33,6 +35,11 @@ import com.ibm.wsspi.logging.Introspector;
 public class ZipCachingIntrospector implements Introspector {
 
     private ZipCachingServiceImpl zipCachingService;
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
 
     @Reference
     protected void setZipCachingService(ZipCachingService zipCachingService) {

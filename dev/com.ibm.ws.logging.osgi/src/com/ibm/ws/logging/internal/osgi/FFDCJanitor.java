@@ -16,6 +16,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.ws.ffdc.FFDCConfigurator;
 
 /**
@@ -27,7 +29,9 @@ public class FFDCJanitor implements Callable<Void> {
     private volatile ScheduledFuture<Void> future = null;
     private ScheduledExecutorService executorService;
 
-    protected void activate() {}
+    protected void activate(ComponentContext cc) {
+    	// only here to optimize SCR activate lookup
+    }
 
     protected void deactivate(int reason) {
         future.cancel(false);

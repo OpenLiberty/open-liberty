@@ -12,6 +12,8 @@ package com.ibm.ws.container.service.naming;
 
 import java.rmi.Remote;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -22,9 +24,14 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
            property = { "service.vendor=IBM", "service.ranking:Integer=1" })
 public class RemoteObjectInstanceFactoryImpl implements RemoteObjectInstanceFactory {
 
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.clientcontainer.remote.common.object.RemoteObjectInstanceFactory#create(java.lang.Object)
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -39,7 +46,7 @@ public class RemoteObjectInstanceFactoryImpl implements RemoteObjectInstanceFact
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.clientcontainer.remote.common.object.RemoteObjectInstanceFactory#create(byte[])
      */
     @Override
@@ -49,7 +56,7 @@ public class RemoteObjectInstanceFactoryImpl implements RemoteObjectInstanceFact
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.clientcontainer.remote.common.object.RemoteObjectInstanceFactory#create(java.rmi.Remote, java.lang.String)
      */
     @Override

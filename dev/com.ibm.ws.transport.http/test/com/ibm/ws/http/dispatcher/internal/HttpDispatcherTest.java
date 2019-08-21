@@ -12,6 +12,7 @@ package com.ibm.ws.http.dispatcher.internal;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -27,6 +28,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
@@ -83,26 +85,42 @@ public class HttpDispatcherTest {
     @Rule
     public TestName name = new TestName();
 
-    @Before
-    public void setUp() throws Exception {
-        // make sure the default instance is clear before we start anything..
-        clearDispatcher();
-    }
-
     final Mockery context = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
 
+    ComponentContext mockCC = context.mock(ComponentContext.class);
+
+    Map<String, Object> componentConfig = new Hashtable<>();
+
+    @Before
+    public void setUp() throws Exception {
+        // make sure the default instance is clear before we start anything..
+        clearDispatcher();
+        componentConfig.clear();
+        context.checking(new Expectations() {
+            {
+                allowing(mockCC).getProperties();
+                will(returnValue(componentConfig));
+            }
+        });
+    }
+
     final ServiceReference<VirtualHostListener> mockWCRef = context.mock(ServiceReference.class, "WebContainer");
 
     public static Map<String, Object> buildMap(boolean enableWelcomePage, String appOrContextRootMissingMessage, String trustedHeaderOrigin, String trustedSensitiveHeaderOrigin) {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put(HttpDispatcher.PROP_ENABLE_WELCOME_PAGE, enableWelcomePage);
-        map.put(HttpDispatcher.PROP_TRUSTED_PRIVATE_HEADER_ORIGIN, trustedHeaderOrigin);
-        map.put(HttpDispatcher.PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN, trustedSensitiveHeaderOrigin);
-        map.put(HttpDispatcher.PROP_VHOST_NOT_FOUND, appOrContextRootMissingMessage);
+        if (trustedHeaderOrigin != null) {
+            map.put(HttpDispatcher.PROP_TRUSTED_PRIVATE_HEADER_ORIGIN, trustedHeaderOrigin);
+        }
+        if (trustedSensitiveHeaderOrigin != null) {
+            map.put(HttpDispatcher.PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN, trustedSensitiveHeaderOrigin);
+        }
+        if (appOrContextRootMissingMessage != null) {
+            map.put(HttpDispatcher.PROP_VHOST_NOT_FOUND, appOrContextRootMissingMessage);
+        }
         return map;
     }
 
@@ -111,8 +129,9 @@ public class HttpDispatcherTest {
         String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
         String wsraHeader = HttpHeaderKeys.HDR_$WSRA.getName();
         HttpDispatcher d = new HttpDispatcher();
-        Map<String, Object> map = buildMap(true, null, (String) null, (String) null);
-        d.activate(map);
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, null, (String) null, (String) null));
+        d.activate(mockCC);
 
         // the static instance value should be set to the newly activated dispatcher instance.
         Assert.assertSame("Dispatcher d should be set as active instance", d, getDispatcher());
@@ -126,12 +145,13 @@ public class HttpDispatcherTest {
         Assert.assertFalse("Sensitive private headers should not be enabled", HttpDispatcher.usePrivateHeaders("a.b.c", wsraHeader));
 
         String missing = "missing context";
-        map = buildMap(true, missing, "*", "*");
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, missing, "*", "*"));
         HttpDispatcher d1 = new HttpDispatcher();
-        d1.activate(map);
+        d1.activate(mockCC);
 
         // this should have no effect: as instance should have been re-set to d1 already
-        d.deactivate(map, 0);
+        d.deactivate(componentConfig, 0);
 
         // the static instance value should be set to the newly activated dispatcher instance.
         Assert.assertSame("Dispatcher d1 should be set as active instance", d1, getDispatcher());
@@ -143,7 +163,7 @@ public class HttpDispatcherTest {
         Assert.assertTrue("Private headers should be enabled", HttpDispatcher.usePrivateHeaders("a.b.c", wsprHeader));
         Assert.assertTrue("Sensitive private headers should be enabled", HttpDispatcher.usePrivateHeaders("a.b.c", wsraHeader));
 
-        d1.deactivate(map, 0);
+        d1.deactivate(componentConfig, 0);
         // the static instance value should be set to the newly activated dispatcher instance.
         Assert.assertNull("Dispatcher d1 should be removed as active instance", getDispatcher());
 
@@ -158,8 +178,8 @@ public class HttpDispatcherTest {
     public void testRestrictPrivateHeaders() throws Exception {
         String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
         HttpDispatcher d = new HttpDispatcher();
-        Map<String, Object> map = buildMap(true, null, "none", "none");
-        d.activate(map);
+        componentConfig.putAll(buildMap(true, null, "none", "none"));
+        d.activate(mockCC);
 
         // both trusted header properties are set to "none", so no private headers are allowed from any host
         Assert.assertFalse("Private headers should be disabled for a.b.c", HttpDispatcher.usePrivateHeaders("a.b.c", wsprHeader));
@@ -167,8 +187,9 @@ public class HttpDispatcherTest {
 
         // "d.e.f" is now trusted with sensitive private headers
         // note the sensitive header list overrides the private header list, so "d.e.f" can pass either
-        map = buildMap(true, null, "none", "d.e.f");
-        d.modified(map);
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, null, "none", "d.e.f"));
+        d.modified(mockCC);
         Assert.assertFalse("Private headers should be disabled for a.b.c", HttpDispatcher.usePrivateHeaders("a.b.c", wsprHeader));
         Assert.assertTrue("Private headers should be enabled for d.e.f", HttpDispatcher.usePrivateHeaders("d.e.f", wsprHeader));
 
@@ -236,7 +257,9 @@ public class HttpDispatcherTest {
 
         // Registered dispatcher, trust all headers
         HttpDispatcher d = new HttpDispatcher();
-        d.activate(buildMap(true, null, "*", "*"));
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, null, "*", "*"));
+        d.activate(mockCC);
 
         context.checking(new Expectations() {
             {
@@ -253,7 +276,9 @@ public class HttpDispatcherTest {
         }
 
         // Registered dispatcher, trust header from non-matching source (no invocation of getHeader)
-        d.modified(buildMap(true, null, "2.3.4.5", "2.3.4.5"));
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, null, "2.3.4.5", "2.3.4.5"));
+        d.modified(mockCC);
 
         // reset the cached value of use private headers for the connection
         // so it re-calculates
@@ -274,7 +299,9 @@ public class HttpDispatcherTest {
         }
 
         // Registered dispatcher, trust header from matching source
-        d.modified(buildMap(true, null, "1.2.3.4", "*"));
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, null, "1.2.3.4", "*"));
+        d.modified(mockCC);
 
         // reset the cached value of use private headers for the connection
         // so it re-calculates
@@ -295,7 +322,9 @@ public class HttpDispatcherTest {
         }
 
         // Registered dispatcher, trust no headers
-        d.modified(buildMap(true, null, "none", "none"));
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, null, "none", "none"));
+        d.modified(mockCC);
 
         // reset the cached value of use private headers for the connection
         // so it re-calculates
@@ -386,7 +415,9 @@ public class HttpDispatcherTest {
 
         // Registered dispatcher, trust all headers
         HttpDispatcher d = new HttpDispatcher();
-        d.activate(buildMap(true, null, "none", "none"));
+        componentConfig.clear();
+        componentConfig.putAll(buildMap(true, null, "none", "none"));
+        d.activate(mockCC);
 
         // reset the cached value of use private headers for the connection
         // so it re-calculates

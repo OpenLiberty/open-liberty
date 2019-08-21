@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.adaptable.module.internal;
 
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -21,6 +23,10 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  *
  */
 public class NonPersistentCacheContainerAdapter implements ContainerAdapter<NonPersistentCache> {
+
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public NonPersistentCache adapt(Container root, OverlayContainer rootOverlay,

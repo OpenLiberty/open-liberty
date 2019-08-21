@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.cxf.message.Message;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -48,6 +50,11 @@ public class AsyncClientRunnableWrapperManager {
             }
         }
         return ret;
+    }
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,

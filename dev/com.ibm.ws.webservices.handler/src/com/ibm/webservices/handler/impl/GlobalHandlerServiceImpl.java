@@ -33,7 +33,7 @@ import com.ibm.wsspi.webservices.handler.HandlerConstants;
 
 /**
  * Core of file global handler service. Looks for registered global handlers (via declarative services).
- * 
+ *
  */
 @Component(immediate = true, property = { "service.vendor=IBM" })
 public class GlobalHandlerServiceImpl implements GlobalHandlerService {
@@ -41,29 +41,21 @@ public class GlobalHandlerServiceImpl implements GlobalHandlerService {
 
     static final TraceComponent tc = Tr.register(GlobalHandlerServiceImpl.class);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxwsInFlowClientSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxwsInFlowClientSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxwsOutFlowClientSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxwsOutFlowClientSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxwsInFlowServerSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxwsInFlowServerSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxwsOutFlowServerSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxwsOutFlowServerSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxrsInFlowClientSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxrsInFlowClientSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxrsInFlowServerSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxrsInFlowServerSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxrsOutFlowClientSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxrsOutFlowClientSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
 
-    private final ConcurrentServiceReferenceSet<Handler> jaxrsOutFlowServerSideGlobalHandlers =
-                    new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
+    private final ConcurrentServiceReferenceSet<Handler> jaxrsOutFlowServerSideGlobalHandlers = new ConcurrentServiceReferenceSet<Handler>(KEY_HANDLERS);
     private static final AtomicInteger saajCount = new AtomicInteger(0);
 
     public CopyOnWriteArrayList<Handler> jaxrsInFlowClientSideGlobalHandlers1 = new CopyOnWriteArrayList<Handler>();
@@ -78,11 +70,16 @@ public class GlobalHandlerServiceImpl implements GlobalHandlerService {
     private volatile ComponentContext cContext = null;
     static final String KEY_HANDLERS = "Handler";
 
+    // only here because something from CL extends this
+    protected void activate(ComponentContext cContext, Map<String, Object> properties) throws Exception {
+        activate(cContext);
+    }
+
     /**
      * DS-driven component activation
      */
     @Activate
-    protected void activate(ComponentContext cContext, Map<String, Object> properties) throws Exception {
+    protected void activate(ComponentContext cContext) throws Exception {
         this.cContext = cContext;
         jaxwsInFlowClientSideGlobalHandlers.activate(cContext);
         jaxwsOutFlowClientSideGlobalHandlers.activate(cContext);
@@ -169,8 +166,7 @@ public class GlobalHandlerServiceImpl implements GlobalHandlerService {
         String dynamicImportPackage = handlerrRef.getBundle().getHeaders("").get("DynamicImport-Package");
 
         if ((importPackage != null && importPackage.contains("javax.xml.ws.handler.soap")) ||
-            (dynamicImportPackage != null && dynamicImportPackage.contains("javax.xml.ws.handler.soap")))
-        {
+            (dynamicImportPackage != null && dynamicImportPackage.contains("javax.xml.ws.handler.soap"))) {
             saajCount.getAndIncrement();
         }
 
@@ -298,7 +294,7 @@ public class GlobalHandlerServiceImpl implements GlobalHandlerService {
     }
 
     /**
-     * 
+     *
      */
     private synchronized void clearAllList() {
         jaxwsInFlowServerSideGlobalHandlers1.clear();
@@ -316,7 +312,7 @@ public class GlobalHandlerServiceImpl implements GlobalHandlerService {
     /**
      * Create a monitor holder for the given FileMonitor. The type of holder we create will
      * depend
-     * 
+     *
      * @param handlerRef
      * @return
      */
@@ -337,8 +333,7 @@ public class GlobalHandlerServiceImpl implements GlobalHandlerService {
         String dynamicImportPackage = handlerRef.getBundle().getHeaders("").get("DynamicImport-Package");
 
         if ((importPackage != null && importPackage.contains("javax.xml.ws.handler.soap")) ||
-            (dynamicImportPackage != null && dynamicImportPackage.contains("javax.xml.ws.handler.soap")))
-        {
+            (dynamicImportPackage != null && dynamicImportPackage.contains("javax.xml.ws.handler.soap"))) {
             saajCount.getAndDecrement();
         }
 

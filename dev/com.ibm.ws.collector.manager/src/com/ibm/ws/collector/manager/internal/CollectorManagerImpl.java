@@ -26,6 +26,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -58,7 +59,7 @@ public class CollectorManagerImpl implements CollectorManager {
     /* Map of bound handlers */
     private final Map<String, HandlerManager> handlerMgrs = new HashMap<String, HandlerManager>();
 
-    protected void activate(Map<String, Object> configuration) {
+    protected void activate(ComponentContext cc) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -28,7 +29,7 @@ import com.ibm.wsspi.http.DefaultMimeTypes;
  * This stores the default (server-wide) mime types. Set/use/configure this
  * only once, rather than once per virtual host. Virtual host supports a nested
  * element for defining custom mime types that can override these general defaults.
- * 
+ *
  * See metatype-mimetype.xml and metatype-mimetype.properties in
  * resources/OSGI-INF for the default types and extensions
  */
@@ -42,11 +43,11 @@ public class DefaultMimeTypesImpl implements DefaultMimeTypes {
 
     @Trivial
     @Activate
-    protected void activate(Map<String, Object> properties) {
+    protected void activate(ComponentContext cc) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Activating");
         }
-        modified(properties);
+        modified(cc);
     }
 
     @Trivial
@@ -59,22 +60,22 @@ public class DefaultMimeTypesImpl implements DefaultMimeTypes {
 
     @Trivial
     @Modified
-    protected void modified(Map<String, Object> properties) {
+    protected void modified(ComponentContext cc) {
         Map<String, String> extensionMap = new HashMap<String, String>();
 
         // Defaults
-        String[] mimeTypeList = (String[]) properties.get(CFG_KEY_DEFAULT_TYPES);
+        String[] mimeTypeList = (String[]) cc.getProperties().get(CFG_KEY_DEFAULT_TYPES);
         processList(mimeTypeList, extensionMap);
 
         // Customizations
-        mimeTypeList = (String[]) properties.get(CFG_KEY_MIME_TYPES);
+        mimeTypeList = (String[]) cc.getProperties().get(CFG_KEY_MIME_TYPES);
         processList(mimeTypeList, extensionMap);
 
         // Volatile map... the whole map is replaced at once.
         extToType = extensionMap;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Default mime configured", properties, extToType);
+            Tr.event(this, tc, "Default mime configured", cc.getProperties(), extToType);
         }
 
     }

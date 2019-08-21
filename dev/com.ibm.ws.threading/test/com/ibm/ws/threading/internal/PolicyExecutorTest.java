@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,9 +26,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyExecutorProvider;
@@ -74,11 +78,21 @@ public class PolicyExecutorTest {
     // Verify that tasks expedited by policy executors are executed ahead of normal tasks.
     @Test
     public void testExpedite() throws Exception {
-        ExecutorServiceImpl globalExecutor = new ExecutorServiceImpl();
-        Map<String, Object> globalExecutorConfig = new HashMap<String, Object>();
+        final Map<String, Object> globalExecutorConfig = new Hashtable<String, Object>();
         globalExecutorConfig.put("coreThreads", ExecutorServiceImpl.MINIMUM_POOL_SIZE);
         globalExecutorConfig.put("maxThreads", ExecutorServiceImpl.MINIMUM_POOL_SIZE);
-        globalExecutor.activate(globalExecutorConfig);
+
+        Mockery context = new JUnit4Mockery();
+        final ComponentContext mockCC = context.mock(ComponentContext.class);
+        context.checking(new Expectations() {
+            {
+                allowing(mockCC).getProperties();
+                will(returnValue(globalExecutorConfig));
+            }
+        });
+        ExecutorServiceImpl globalExecutor = new ExecutorServiceImpl();
+
+        globalExecutor.activate(mockCC);
 
         ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 

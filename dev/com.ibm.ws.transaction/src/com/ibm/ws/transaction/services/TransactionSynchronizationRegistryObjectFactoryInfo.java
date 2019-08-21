@@ -16,6 +16,8 @@ import javax.annotation.Resource;
 import javax.naming.spi.ObjectFactory;
 import javax.transaction.TransactionSynchronizationRegistry;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.wsspi.injectionengine.ObjectFactoryInfo;
@@ -25,6 +27,11 @@ import com.ibm.wsspi.injectionengine.ObjectFactoryInfo;
  */
 @Component(service = { ObjectFactoryInfo.class })
 public class TransactionSynchronizationRegistryObjectFactoryInfo extends ObjectFactoryInfo {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public Class<? extends Annotation> getAnnotationClass() {

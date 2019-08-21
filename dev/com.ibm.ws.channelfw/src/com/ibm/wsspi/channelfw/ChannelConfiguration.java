@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.osgi.framework.Constants;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -25,18 +26,19 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 public class ChannelConfiguration {
 
     /** Trace service */
-    private static final TraceComponent tc =
-                    Tr.register(ChannelConfiguration.class,
-                                ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                ChannelFrameworkConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(ChannelConfiguration.class,
+                                                         ChannelFrameworkConstants.BASE_TRACE_NAME,
+                                                         ChannelFrameworkConstants.BASE_BUNDLE);
 
     private volatile Map<String, Object> config = null;
 
-    protected void activate(Map<String, Object> config) {
+    protected void activate(ComponentContext cc) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> ccConfig = (Map<String, Object>) cc.getProperties();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Activating " + config.get(Constants.SERVICE_PID), config);
+            Tr.event(this, tc, "Activating " + ccConfig.get(Constants.SERVICE_PID), ccConfig);
         }
-        this.config = Collections.unmodifiableMap(config);
+        this.config = Collections.unmodifiableMap(ccConfig);
     }
 
     protected void deactivate(Map<String, Object> config, int reason) {

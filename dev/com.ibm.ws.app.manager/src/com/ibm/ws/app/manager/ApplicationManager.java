@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager;
 
-import java.util.Map;
+import java.util.Dictionary;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -31,8 +31,8 @@ public class ApplicationManager {
     private long startTimeout;
     private long stopTimeout;
 
-    protected void activate(ComponentContext compcontext, Map<String, Object> properties) {
-        modified(compcontext, properties);
+    protected void activate(ComponentContext compcontext) {
+        modified(compcontext);
     }
 
     /**
@@ -48,10 +48,11 @@ public class ApplicationManager {
      * DS method to modify the configuration of this component
      *
      * @param compcontext the context of this component
-     * @param properties the updated configuration properties
+     * @param properties  the updated configuration properties
      */
     @Modified
-    protected void modified(ComponentContext compcontext, Map<String, Object> properties) {
+    protected void modified(ComponentContext compcontext) {
+        Dictionary<String, Object> properties = compcontext.getProperties();
         Boolean autoExpandValue = (Boolean) properties.get("autoExpand");
         setExpandApps(autoExpandValue == null ? false : autoExpandValue);
 
@@ -69,7 +70,7 @@ public class ApplicationManager {
 
     //get a property and if not set, use the supplied default
     @SuppressWarnings("unchecked")
-    private <T> T getProperty(Map<String, Object> properties, String name, T deflt) {
+    private <T> T getProperty(Dictionary<String, Object> properties, String name, T deflt) {
         T value = deflt;
         try {
             T prop = (T) properties.get(name);

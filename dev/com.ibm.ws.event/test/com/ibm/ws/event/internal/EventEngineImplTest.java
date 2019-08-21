@@ -175,7 +175,7 @@ public class EventEngineImplTest {
 
         // Pretend to be DS
         eventEngine.setExecutorServiceFactory(executorServiceFactory);
-        eventEngine.activate(componentContext, new HashMap<String, Object>());
+        eventEngine.activate(componentContext);
         eventEngine.setWsEventHandler(eventHandlerReference);
         eventEngine.setOsgiEventHandler(osgiHandlerReference);
     }

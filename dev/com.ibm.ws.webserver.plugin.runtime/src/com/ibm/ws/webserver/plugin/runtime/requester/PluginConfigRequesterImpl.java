@@ -17,6 +17,7 @@ import javax.management.StandardMBean;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -36,9 +37,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 /**
  *
  */
-@Component(service = { PluginConfigRequester.class },
-                immediate = true,
-                property = { "service.vendor=IBM", "jmx.objectname=" + PluginConfigRequester.OBJECT_NAME, })
+@Component(service = { PluginConfigRequester.class }, immediate = true, property = { "service.vendor=IBM", "jmx.objectname=" + PluginConfigRequester.OBJECT_NAME, })
 public class PluginConfigRequesterImpl extends StandardMBean implements PluginConfigRequester {
 
     private static final TraceComponent tc = Tr.register(PluginConfigRequesterImpl.class, PluginRuntimeConstants.TR_GROUP, PluginRuntimeConstants.NLS_PROPS);
@@ -63,16 +62,15 @@ public class PluginConfigRequesterImpl extends StandardMBean implements PluginCo
     }
 
     @Activate
-    protected void activate(BundleContext bc) {
-        bundleContext = bc;
+    protected void activate(ComponentContext cc) {
+        bundleContext = cc.getBundleContext();
     }
 
     @Deactivate
-    protected void deactivate() {}
+    protected void deactivate() {
+    }
 
-    @Reference(service = PluginUtilityConfigGenerator.class,
-                    cardinality = ReferenceCardinality.MULTIPLE,
-                    policy = ReferencePolicy.DYNAMIC)
+    @Reference(service = PluginUtilityConfigGenerator.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setPluginUtilityConfigGenerator(PluginUtilityConfigGenerator mb) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "PluginConfigRequesterImpl: setPluginUtilityConfigGenerator :" + mb.getPluginConfigType() + " : " + mb.getClass().getSimpleName());
@@ -85,8 +83,7 @@ public class PluginConfigRequesterImpl extends StandardMBean implements PluginCo
         this.pluginConfigMbeans.remove(mb.getPluginConfigType());
     }
 
-    @Reference(service = WsLocationAdmin.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = WsLocationAdmin.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setLocationAdmin(WsLocationAdmin locRef) {
         this.locMgr = locRef;
         WsResource outFile = null;

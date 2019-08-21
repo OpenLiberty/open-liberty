@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.osgi.response.factory;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.servlet.request.IRequest;
@@ -22,6 +24,11 @@ import com.ibm.wsspi.http.HttpInboundConnection;
 
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=31", "servlet.version=3.1" })
 public class IRequestResponseFactory40Impl implements IRequestFactory, IResponseFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /*
      * (non-Javadoc)

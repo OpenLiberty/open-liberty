@@ -26,4 +26,5 @@ Private-Package: com.ibm.ws.timer.internal
 -buildpath: \
 	com.ibm.ws.logging.core,\
 	com.ibm.wsspi.org.osgi.service.component.annotations, \
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

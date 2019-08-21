@@ -13,6 +13,8 @@ package com.ibm.ws.cdi.web.liberty;
 import javax.servlet.ServletContainerInitializer;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -24,10 +26,14 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
-@Component(
-                name = "com.ibm.ws.cdi.servletInitializer",
-                property = { "service.vendor=IBM", "service.ranking:Integer=101" })
+@Component(name = "com.ibm.ws.cdi.servletInitializer", property = { "service.vendor=IBM", "service.ranking:Integer=101" })
 public class WeldServletInitializer extends AbstractServletInitializer implements ServletContainerInitializer {
+
+    @Override
+    @Activate
+    public void activate(ComponentContext context) {
+        super.activate(context);
+    }
 
     @Override
     @Reference(name = "cdiWebRuntime", service = CDIWebRuntime.class)

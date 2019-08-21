@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer40.util.factory;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.wsspi.webcontainer.util.URIMatcher;
@@ -18,6 +20,11 @@ import com.ibm.wsspi.webcontainer40.util.URIMatcher40;
 
 @Component(service = URIMatcherFactory.class, property = { "service.vendor=IBM" })
 public class URIMatcherFactory40Impl implements URIMatcherFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public URIMatcher createURIMatcher() {

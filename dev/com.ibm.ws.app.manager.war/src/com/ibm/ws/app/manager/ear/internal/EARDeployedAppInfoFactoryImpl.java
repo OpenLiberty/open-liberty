@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -65,6 +67,11 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     protected volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
 
     private ApplicationManager applicationManager;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,

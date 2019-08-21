@@ -82,14 +82,15 @@ public class CDI12ContainerConfig implements CDIContainerConfig {
      * DS method to activate this component
      *
      * @param compcontext the context of this component
-     * @param properties the new configuration properties
+     * @param properties  the new configuration properties
      */
-    protected void activate(ComponentContext compcontext, Map<String, Object> properties) {
+    @SuppressWarnings("unchecked")
+    protected void activate(ComponentContext compcontext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Activating " + this);
         }
         INSTANCE.set(this);
-        this.updateConfiguration(properties);
+        this.updateConfiguration((Map<String, Object>) compcontext.getProperties());
     }
 
     /**
@@ -108,7 +109,7 @@ public class CDI12ContainerConfig implements CDIContainerConfig {
      * DS method to modify the configuration of this component
      *
      * @param compcontext the context of this component
-     * @param properties the updated configuration properties
+     * @param properties  the updated configuration properties
      */
     @Modified
     protected void modified(ComponentContext compcontext, Map<String, Object> properties) {

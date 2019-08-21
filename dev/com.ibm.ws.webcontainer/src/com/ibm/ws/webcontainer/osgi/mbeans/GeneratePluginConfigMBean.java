@@ -90,9 +90,10 @@ public class GeneratePluginConfigMBean extends StandardMBean implements Generate
      *
      * @param context
      */
-    protected void activate(BundleContext context, Map<String, Object> config) {
-        bundleContext = context;
-        this.config = config;
+    @SuppressWarnings("unchecked")
+    protected void activate(ComponentContext cc) {
+        bundleContext = cc.getBundleContext();
+        this.config = (Map<String, Object>) cc.getProperties();
         modified(config);
     }
 

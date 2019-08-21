@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.osgi.srt.factory;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContextPool;
@@ -21,6 +23,11 @@ import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=31", "servlet.version=3.1" })
 public class SRTConnectionContextPool40Impl implements SRTConnectionContextPool {
     private final ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext> head = new ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext>();
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public final com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext get() {

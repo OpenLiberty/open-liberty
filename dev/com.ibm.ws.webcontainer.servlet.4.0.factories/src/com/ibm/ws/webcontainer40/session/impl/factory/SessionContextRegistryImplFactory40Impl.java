@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.session.impl.factory;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
@@ -22,6 +24,11 @@ import com.ibm.ws.webcontainer31.session.impl.SessionContextRegistry31Impl;
  */
 @Component(service = SessionContextRegistryImplFactory.class, property = { "service.vendor=IBM" })
 public class SessionContextRegistryImplFactory40Impl implements SessionContextRegistryImplFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /*
      * (non-Javadoc)

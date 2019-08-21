@@ -11,7 +11,7 @@
 package com.ibm.ws.threading.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -19,7 +19,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.Before;
 import org.junit.Test;
+import org.osgi.service.component.ComponentContext;
 
 import junit.framework.Assert;
 
@@ -50,6 +55,21 @@ public class ExecutorServiceImplTest {
         }
     }
 
+    Mockery context = new JUnit4Mockery();
+    Map<String, Object> componentConfig = new Hashtable<>();
+    ComponentContext mockCC = context.mock(ComponentContext.class);
+
+    @Before
+    public void setUp() throws Exception {
+        componentConfig.clear();
+        context.checking(new Expectations() {
+            {
+                allowing(mockCC).getProperties();
+                will(returnValue(componentConfig));
+            }
+        });
+    }
+
     /**
      * Ensure that the ExecutorServiceImpl cannot get into a hang, by submitting Callables in a way to
      * force a hang when the pool size is too low. The ExecutorServiceImpl should be able to detect
@@ -58,14 +78,13 @@ public class ExecutorServiceImplTest {
     @Test(timeout = 60000)
     public void testExecutorHang() throws Exception {
         ExecutorServiceImpl executorService = new ExecutorServiceImpl();
-        Map<String, Object> componentConfig = new HashMap<String, Object>(6);
         componentConfig.put("name", "testExecutor");
         componentConfig.put("rejectedWorkPolicy", "CALLER_RUNS");
         componentConfig.put("stealPolicy", "STRICT");
         componentConfig.put("keepAlive", 10);
         componentConfig.put("coreThreads", 2);
         componentConfig.put("maxThreads", 1000);
-        executorService.activate(componentConfig);
+        executorService.activate(mockCC);
 
         // submit a bunch of quick running work so that the thread pool controller sees very high
         // throughput at a poolSize of 2 threads, making the base throughput algorithm reluctant
@@ -73,7 +92,8 @@ public class ExecutorServiceImplTest {
         for (int i = 0; i < 1000; i++) {
             executorService.execute(new Runnable() {
                 @Override
-                public void run() {}
+                public void run() {
+                }
             });
         }
 
@@ -97,7 +117,6 @@ public class ExecutorServiceImplTest {
     @Test
     public void testCreateExecutor() throws Exception {
         ExecutorServiceImpl executorService = new ExecutorServiceImpl();
-        Map<String, Object> componentConfig = new HashMap<String, Object>(6);
         componentConfig.put("name", "testExecutor");
         componentConfig.put("rejectedWorkPolicy", "CALLER_RUNS");
         componentConfig.put("stealPolicy", "STRICT");
@@ -106,7 +125,7 @@ public class ExecutorServiceImplTest {
         // Normal Case (maxThreads > coreThreads)
         componentConfig.put("coreThreads", 10);
         componentConfig.put("maxThreads", 20);
-        executorService.activate(componentConfig);
+        executorService.activate(mockCC);
         ThreadPoolExecutor executor = executorService.getThreadPool();
 
         Assert.assertEquals(10, executor.getCorePoolSize());
@@ -115,7 +134,7 @@ public class ExecutorServiceImplTest {
         // coreThreads > maxThreads
         componentConfig.put("coreThreads", 20);
         componentConfig.put("maxThreads", 10);
-        executorService.modified(componentConfig);
+        executorService.modified(mockCC);
         executor = executorService.getThreadPool();
 
         Assert.assertEquals(10, executor.getCorePoolSize());
@@ -124,7 +143,7 @@ public class ExecutorServiceImplTest {
         // maxThreads < 0
         componentConfig.put("coreThreads", 10);
         componentConfig.put("maxThreads", -1);
-        executorService.modified(componentConfig);
+        executorService.modified(mockCC);
         executor = executorService.getThreadPool();
 
         Assert.assertEquals(10, executor.getCorePoolSize());
@@ -133,19 +152,19 @@ public class ExecutorServiceImplTest {
         // coreThreads < 0 (simply make sure an IllegalArgumentException isn't thrown)
         componentConfig.put("coreThreads", -1);
         componentConfig.put("maxThreads", 10);
-        executorService.modified(componentConfig);
+        executorService.modified(mockCC);
         executor = executorService.getThreadPool();
 
         // both < 0 (simply make sure an IllegalArgumentException isn't thrown)
         componentConfig.put("coreThreads", -1);
         componentConfig.put("maxThreads", -1);
-        executorService.modified(componentConfig);
+        executorService.modified(mockCC);
 
         // use a very large number of coreThreads to verify that the ThreadPoolController
         // does not shrink the coreThreads below the specified value
         componentConfig.put("coreThreads", 75);
         componentConfig.put("maxThreads", 150);
-        executorService.modified(componentConfig);
+        executorService.modified(mockCC);
         executor = executorService.getThreadPool();
 
         Assert.assertEquals(75, executor.getCorePoolSize());
@@ -162,14 +181,13 @@ public class ExecutorServiceImplTest {
     @Test(timeout = 60000)
     public void testExecutorShutdown() throws Exception {
         ExecutorServiceImpl executorService = new ExecutorServiceImpl();
-        Map<String, Object> componentConfig = new HashMap<String, Object>(6);
         componentConfig.put("name", "testExecutor");
         componentConfig.put("rejectedWorkPolicy", "CALLER_RUNS");
         componentConfig.put("stealPolicy", "STRICT");
         componentConfig.put("keepAlive", 600);
         componentConfig.put("coreThreads", 10);
         componentConfig.put("maxThreads", 20);
-        executorService.activate(componentConfig);
+        executorService.activate(mockCC);
         ThreadPoolExecutor oldThreadPool = executorService.getThreadPool();
 
         // prestart the core threads so we can later verify that they successfully go
@@ -177,7 +195,7 @@ public class ExecutorServiceImplTest {
         oldThreadPool.prestartAllCoreThreads();
 
         componentConfig.put("name", "testExecutor2");
-        executorService.modified(componentConfig);
+        executorService.modified(mockCC);
         ThreadPoolExecutor newThreadPool = executorService.getThreadPool();
 
         // ensure that a new pool got created when we modified the executor
@@ -193,7 +211,8 @@ public class ExecutorServiceImplTest {
         // executor service is using a new pool
         oldThreadPool.submit(new Runnable() {
             @Override
-            public void run() {}
+            public void run() {
+            }
         }).get();
 
         // ensure that the pool size shrinks back down to 0
@@ -205,7 +224,6 @@ public class ExecutorServiceImplTest {
     @Test
     public void testThreadPoolControllerThreadPool() throws Exception {
         ExecutorServiceImpl executorService = new ExecutorServiceImpl();
-        Map<String, Object> componentConfig = new HashMap<String, Object>(6);
         componentConfig.put("name", "testExecutor");
         componentConfig.put("rejectedWorkPolicy", "CALLER_RUNS");
         componentConfig.put("stealPolicy", "STRICT");
@@ -213,7 +231,7 @@ public class ExecutorServiceImplTest {
         componentConfig.put("coreThreads", 5);
         componentConfig.put("maxThreads", 5);
 
-        executorService.activate(componentConfig);
+        executorService.activate(mockCC);
 
         ThreadPoolExecutor executorPool = executorService.getThreadPool();
         ThreadPoolExecutor controllerPool = executorService.threadPoolController.threadPool;

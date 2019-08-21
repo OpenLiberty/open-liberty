@@ -29,6 +29,7 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -91,8 +92,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
     private ExecutorService executorService;
 
     @Activate
-    protected void activate(BundleContext ctx) {
-        bundleCtx = ctx;
+    protected void activate(ComponentContext cc) {
+        bundleCtx = cc.getBundleContext();
         bundleCtx.addBundleListener(this);
 
     }

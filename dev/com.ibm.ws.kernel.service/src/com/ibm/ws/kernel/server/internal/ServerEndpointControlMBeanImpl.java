@@ -20,6 +20,8 @@ import javax.management.MBeanOperationInfo;
 import javax.management.NotCompliantMBeanException;
 import javax.management.StandardMBean;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -56,6 +58,11 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
     public ServerEndpointControlMBeanImpl() throws NotCompliantMBeanException {
         super(ServerEndpointControlMBean.class);
 
+    }
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
     }
 
     /*

@@ -44,10 +44,10 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -69,7 +69,8 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         return EmbeddableTransactionManagerFactory.getTransactionManager();
     }
 
-    protected void activate(BundleContext ctxt) {
+    protected void activate(ComponentContext cc) {
+        BundleContext ctxt = cc.getBundleContext();
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  context " + ctxt);
         // Force embeddable mode
@@ -184,13 +185,15 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
             Tr.exit(tc, "doShutdown");
     }
 
-    protected void deactivate(ComponentContext ctxt) {}
+    protected void deactivate(ComponentContext ctxt) {
+    }
 
     protected void setTmService(TMService tm) {
         // dependency injection ... forces tran service to initialize
     }
 
-    protected void unsetTmService(TMService tm) {}
+    protected void unsetTmService(TMService tm) {
+    }
 
     @Override
     public void setUOWEventListener(UOWEventListener el) {

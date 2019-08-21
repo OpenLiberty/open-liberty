@@ -15,6 +15,8 @@ import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImpl;
 import com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImplFactory;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -30,6 +32,11 @@ public class SessionHelper {
     private SessionManager manager = null;
     private SessionContextRegistryImpl registry = null;
     private SessionContextRegistryImplFactory sessionContextRegistryImplFactory;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /**
      * @return SessionRegistry the current SessionRegistry, or null if one isn't found

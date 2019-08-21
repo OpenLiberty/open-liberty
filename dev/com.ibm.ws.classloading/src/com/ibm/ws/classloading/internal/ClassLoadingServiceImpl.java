@@ -173,7 +173,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     }
 
     @Activate
-    protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
+    protected void activate(ComponentContext cCtx) {
         generatorRefs.activate(cCtx);
         metaInfServicesRefs.activate(cCtx);
         this.bundleContext = cCtx.getBundleContext();

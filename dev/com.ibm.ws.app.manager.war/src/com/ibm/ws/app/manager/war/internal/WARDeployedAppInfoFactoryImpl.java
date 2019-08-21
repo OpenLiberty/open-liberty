@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -44,6 +46,11 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     protected ModuleHandler webModuleHandler;
     @Reference
     protected ApplicationManager applicationManager;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     // WAR expansion ...
 
@@ -79,7 +86,7 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
      * time stamp.
      *
      * @param absPath The absolute path of the file which is to be tested.
-     * @param file The file which is to be tested.
+     * @param file    The file which is to be tested.
      *
      * @return The new time stamp of the file, if the file is to be expanded.
      *         Null if the file is not to be expanded.

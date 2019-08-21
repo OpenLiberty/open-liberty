@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
@@ -36,6 +38,11 @@ import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollabora
            property = { "service.vendor=IBM" })
 public class JaxRsInjectionClassListCollaborator implements WebAppInjectionClassListCollaborator {
     private final static TraceComponent tc = Tr.register(JaxRsInjectionClassListCollaborator.class);
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /** {@inheritDoc} */
     @Override

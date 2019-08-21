@@ -12,6 +12,8 @@ package com.ibm.ws.webcontainer40.osgi.container.config.factory;
 
 import java.util.List;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.container.service.config.ServletConfigurator;
@@ -25,6 +27,11 @@ import com.ibm.ws.webcontainer40.osgi.container.config.WebAppConfiguratorHelper4
  */
 @Component(service = WebAppConfiguratorHelperFactory.class, property = { "service.vendor=IBM" })
 public class WebAppConfiguratorFactory40Impl implements WebAppConfiguratorHelperFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public WebAppConfiguratorHelper createWebAppConfiguratorHelper(ServletConfigurator configurator,

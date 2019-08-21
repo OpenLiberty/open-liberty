@@ -18,6 +18,8 @@ import java.io.FilenameFilter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Map;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -60,6 +62,7 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
 
     private final Mockery context = new JUnit4Mockery();
     private ComponentContext mockComponentContext;
+    private final Map<String, Object> attributes = new Hashtable<>();
 
     @BeforeClass
     public static void setupReflectiveFields() throws Exception {
@@ -77,16 +80,18 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
         // set the dir on the fileset
         mockComponentContext = context.mock(ComponentContext.class);
 
+        attributes.putAll(getAttributes(DIR.toString(), null, null, null, null));
         final BundleContext mockBundleContext = context.mock(BundleContext.class);
         context.checking(new Expectations() {
             {
                 allowing(mockComponentContext).getBundleContext();
                 will(returnValue(mockBundleContext));
                 allowing(mockComponentContext).getProperties();
+                will(returnValue(attributes));
                 ignoring(mockBundleContext);
             }
         });
-        fset.activate(mockComponentContext, getAttributes(DIR.toString(), null, null, null, null));
+        fset.activate(mockComponentContext);
     }
 
     @Test
@@ -126,7 +131,7 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
     @Test
     public void testCaseInsensitive() throws Exception {
         try {
-            setAttributes(fset, DIR.toString(), false, null, null);
+            setAttributes(attributes, mockComponentContext, fset, DIR.toString(), false, null, null);
             filter.addFilter(FilterType.INCLUDE, "testfile");
             // lower case OK
             assertTrue(filter.accept(DIR, "testfile"));
@@ -134,7 +139,7 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
             assertTrue(filter.accept(DIR, "testFile"));
         } finally {
             // return back to the default for other tests
-            setAttributes(fset, DIR.toString(), true, null, null);
+            setAttributes(attributes, mockComponentContext, fset, DIR.toString(), true, null, null);
         }
     }
 

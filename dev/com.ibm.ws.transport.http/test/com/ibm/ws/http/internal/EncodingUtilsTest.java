@@ -17,14 +17,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osgi.service.component.ComponentContext;
 
 import test.common.SharedOutputManager;
 
@@ -35,9 +40,13 @@ public class EncodingUtilsTest {
     private static SharedOutputManager outputMgr;
     private static EncodingUtilsImpl utils = null;
 
+    static Mockery context = new JUnit4Mockery();
+    static Map<String, Object> componentConfig = new Hashtable<>();
+    static ComponentContext mockCC = context.mock(ComponentContext.class);
+
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -45,11 +54,18 @@ public class EncodingUtilsTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
         utils = new EncodingUtilsImpl();
+        componentConfig.clear();
+        context.checking(new Expectations() {
+            {
+                allowing(mockCC).getProperties();
+                will(returnValue(componentConfig));
+            }
+        });
     }
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -61,7 +77,7 @@ public class EncodingUtilsTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -95,11 +111,11 @@ public class EncodingUtilsTest {
     @Test
     public void testGetEncoding() {
         try {
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("encoding.de", "TEST1");
-            props.put("encoding.en", "TEST2");
-            props.put("encoding.fr_FR", "TEST3");
-            utils.modified(props);
+            componentConfig.clear();
+            componentConfig.put("encoding.de", "TEST1");
+            componentConfig.put("encoding.en", "TEST2");
+            componentConfig.put("encoding.fr_FR", "TEST3");
+            utils.modified(mockCC);
 
             assertEquals("TEST1", utils.getEncodingFromLocale(new Locale("de")));
             assertEquals("TEST2", utils.getEncodingFromLocale(new Locale("en", "US")));
@@ -116,11 +132,11 @@ public class EncodingUtilsTest {
     @Test
     public void testGetConverter() {
         try {
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("converter.EUC-JP", "TEST1");
-            props.put("converter.Big5", "TEST2");
-            props.put("converter.ISO-2022", "TEST3");
-            utils.modified(props);
+            componentConfig.clear();
+            componentConfig.put("converter.EUC-JP", "TEST1");
+            componentConfig.put("converter.Big5", "TEST2");
+            componentConfig.put("converter.ISO-2022", "TEST3");
+            utils.modified(mockCC);
 
             assertNull(utils.getJvmConverter(null));
             assertEquals("test1", utils.getJvmConverter("euc-jp"));

@@ -11,6 +11,7 @@
 package com.ibm.ws.container.service.config.internal;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.container.service.config.WebFragmentsInfo;
 import com.ibm.ws.javaee.dd.web.WebApp;
@@ -29,6 +30,10 @@ public class WebFragmentsInfoAdapter implements ContainerAdapter<WebFragmentsInf
     private static final int DEFAULT_MAX_VERSION = WebApp.VERSION_3_0;
     private ServiceReference<ServletVersion> versionRef;
     private volatile int version = DEFAULT_MAX_VERSION;
+
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     public synchronized void setVersion(ServiceReference<ServletVersion> reference) {
 

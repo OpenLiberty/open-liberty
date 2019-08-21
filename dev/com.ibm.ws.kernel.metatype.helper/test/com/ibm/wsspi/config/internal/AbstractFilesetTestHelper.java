@@ -16,10 +16,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.config.internal.ConfigTypeConstants.FilesetAttribute;
@@ -127,7 +131,7 @@ public class AbstractFilesetTestHelper {
 
     protected static Map<String, Object> getAttributes(String dir, Boolean sensitive, String includes,
                                                        String excludes, Long scanInterval) {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new Hashtable<String, Object>();
         attrs.put("id", "FilesetID");
         if (dir == null)
             dir = ".";
@@ -148,12 +152,15 @@ public class AbstractFilesetTestHelper {
         return attrs;
     }
 
-    static void setAttributes(FilesetImpl fset, String dir, Boolean sensitive, String includes, String excludes) {
-        setAttributes(fset, dir, sensitive, includes, excludes, null);
+    static void setAttributes(Map<String, Object> attributes, ComponentContext compContext, FilesetImpl fset, String dir, Boolean sensitive, String includes, String excludes) {
+        setAttributes(attributes, compContext, fset, dir, sensitive, includes, excludes, null);
     }
 
-    static void setAttributes(FilesetImpl fset, String dir, Boolean sensitive, String includes, String excludes, Long scanInterval) {
-        fset.modified(getAttributes(dir, sensitive, includes, excludes, scanInterval));
+    static void setAttributes(Map<String, Object> attributes, final ComponentContext compContext, FilesetImpl fset, String dir, Boolean sensitive, String includes, String excludes,
+                              Long scanInterval) {
+        attributes.clear();
+        attributes.putAll(getAttributes(dir, sensitive, includes, excludes, scanInterval));
+        fset.modified(compContext);
         Dictionary<String, Object> props = fset.getServiceProperties();
         Collection<String> dirs = (Collection<String>) props.get(FileMonitor.MONITOR_DIRECTORIES);
         Assert.assertEquals("wrong size", 1, dirs.size());
@@ -179,8 +186,15 @@ public class AbstractFilesetTestHelper {
         fset.onBaseline(files);
     }
 
-    static void setDefaultAttributes(Fileset fset) {
-        ((FilesetImpl) fset).modified(getDefaultAttributes());
+    static void setDefaultAttributes(Mockery mock, final ComponentContext compContext, Fileset fset) {
+        final Map<String, Object> config = getDefaultAttributes();
+        mock.checking(new Expectations() {
+            {
+                allowing(compContext).getProperties();
+                will(returnValue(config));
+            }
+        });
+        ((FilesetImpl) fset).modified(compContext);
     }
 
     static Collection<File> recursivelyListFiles(File dir) {

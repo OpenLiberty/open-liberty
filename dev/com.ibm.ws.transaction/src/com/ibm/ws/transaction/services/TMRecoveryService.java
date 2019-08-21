@@ -11,6 +11,7 @@
 package com.ibm.ws.transaction.services;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -32,7 +33,8 @@ public class TMRecoveryService {
 
     private static final TraceComponent tc = Tr.register(TMRecoveryService.class);
 
-    protected void activate(BundleContext ctxt) {
+    protected void activate(ComponentContext cc) {
+        BundleContext ctxt = cc.getBundleContext();
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  context " + ctxt);
         final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();

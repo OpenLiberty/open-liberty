@@ -93,7 +93,7 @@ public class PermissionManagerTest {
         permissionManager = new PermissionManager();
         permissionManager.setWsjarURLStreamHandler(urlStreamHandlerServiceRef);
         permissionManager.setClassLoadingService(classLoadingService);
-        permissionManager.activate(componentContext, null);
+        permissionManager.activate(componentContext);
     }
 
     private void inServerProcess() {
@@ -284,7 +284,7 @@ public class PermissionManagerTest {
 
         withSharedLibraryProtectionDomains();
         anotherPermissionManager.setClassLoadingService(classLoadingService);
-        anotherPermissionManager.activate(componentContext, null);
+        anotherPermissionManager.activate(componentContext);
         anotherPermissionManager.deactivate(componentContext);
     }
 
@@ -387,7 +387,7 @@ public class PermissionManagerTest {
         }
 
         permissionManager.deactivate(componentContext);
-        permissionManager.activate(componentContext, null);
+        permissionManager.activate(componentContext);
     }
 
     private void usesBundleClassLoaderToLoadPermissionClass(final String bundlePermissionClassName) throws ClassNotFoundException {

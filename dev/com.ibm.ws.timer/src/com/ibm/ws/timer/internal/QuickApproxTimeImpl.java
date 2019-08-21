@@ -15,6 +15,8 @@ import java.util.concurrent.ScheduledExecutorService;
 //import java.util.concurrent.TimeUnit;
 //import java.util.concurrent.atomic.AtomicReference;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -57,13 +59,12 @@ public class QuickApproxTimeImpl implements ApproximateTime {
 
     /**
      * Activate this component.
-     * 
+     *
      * @param context
      */
-    protected void activate() {
-
-//        instance.set(this);
-//        doCurrentTimeMillis = false;
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
     }
 
 //    private void resetTime() {
@@ -72,7 +73,7 @@ public class QuickApproxTimeImpl implements ApproximateTime {
 
     /**
      * Deactivate this component.
-     * 
+     *
      * @param context
      */
     protected void deactivate() {
@@ -83,7 +84,7 @@ public class QuickApproxTimeImpl implements ApproximateTime {
     /**
      * Set the executor service reference.
      * This is a required reference: will be called before activation.
-     * 
+     *
      * @param ref new scheduled executor service instance/provider
      */
     @Reference(service = ScheduledExecutorService.class)
@@ -94,7 +95,7 @@ public class QuickApproxTimeImpl implements ApproximateTime {
     /**
      * Remove the reference to the executor service.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param ref scheduled executor service instance/provider to remove
      */
     protected void unsetScheduledExecutor(ScheduledExecutorService ref) {
@@ -128,16 +129,16 @@ public class QuickApproxTimeImpl implements ApproximateTime {
 //        long myTime = currentApproxTime;
 //
 //        while (myTime == 0) {
-//            // timer thread isn't running, so get the current time and see if we should start the timer thread 
+//            // timer thread isn't running, so get the current time and see if we should start the timer thread
 //            myTime = System.currentTimeMillis();
 //
-//            // truncate the time to the nearest second by dividing the msec time by 1024            
+//            // truncate the time to the nearest second by dividing the msec time by 1024
 //            // quick way to divide by 1024 with remainder discarded is to shift it right ten times.
 //            long thisSecond = myTime >>> 10;
 //
 //            if (lastSecond == thisSecond) {
 //                unsyncRestartHitCounter++; // increment count of how many times we hit in the same second
-//                // don't restart the timer thread until we get the threshold level of activity using the timer 
+//                // don't restart the timer thread until we get the threshold level of activity using the timer
 //                if (unsyncRestartHitCounter < restartHitCounterThreshold) {
 //                    break;
 //                }
@@ -167,7 +168,7 @@ public class QuickApproxTimeImpl implements ApproximateTime {
 //        return myTime;
     }
 
-//    // Scheduled executor will invoke this runnable at a fixed interval: 
+//    // Scheduled executor will invoke this runnable at a fixed interval:
 //    // update the current approximate time when the runnable is called.
 //    final Runnable approximateTime = new Runnable() {
 //        @Trivial

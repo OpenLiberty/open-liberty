@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.internal;
 
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -141,7 +142,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private final AtomicReference<AccessLog> accessLogger = new AtomicReference<AccessLog>(DisabledLogger.getRef());
 
-    private final Object actionLock = new Object() {};
+    private final Object actionLock = new Object() {
+    };
     private final LinkedList<Runnable> actionQueue = new LinkedList<Runnable>();
     private Future<?> actionFuture = null;
 
@@ -212,7 +214,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     };
 
     @Activate
-    protected void activate(ComponentContext ctx, Map<String, Object> config) {
+    protected void activate(ComponentContext ctx) {
+        Dictionary<String, Object> config = ctx.getProperties();
         Object cid = config.get(ComponentConstants.COMPONENT_ID);
         name = (String) config.get("id");
         pid = (String) config.get(Constants.SERVICE_PID);
@@ -236,7 +239,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         httpChain.init(name, cid, chfw);
         httpSecureChain.init(name, cid, chfw);
 
-        modified(config);
+        modified(ctx);
     }
 
     @Deactivate
@@ -268,7 +271,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * @param config
      */
     @Modified
-    protected void modified(Map<String, Object> config) {
+    protected void modified(ComponentContext cc) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> config = (Map<String, Object>) cc.getProperties();
         boolean endpointEnabled = MetatypeUtils.parseBoolean(HttpServiceConstants.ENPOINT_FPID_ALIAS,
                                                              HttpServiceConstants.ENABLED,
                                                              config.get(HttpServiceConstants.ENABLED),
@@ -339,7 +344,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * Process HTTP chain work.
      *
      * @param enableEndpoint True to enable the associated HTTP chain. False, to disable it.
-     * @param isPause True if this call is being made for pause endpoint processing.
+     * @param isPause        True if this call is being made for pause endpoint processing.
      */
     public void processHttpChainWork(boolean enableEndpoint, boolean isPause) {
         if (enableEndpoint) {
@@ -438,7 +443,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return httpSecureChain.getActivePort();
     }
 
-    public String getProtocolVersion(){
+    public String getProtocolVersion() {
         return this.protocolVersion;
     }
 
@@ -565,7 +570,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetTcpOptions(ChannelConfiguration config) {}
+    protected void unsetTcpOptions(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getTcpOptions() {
         ChannelConfiguration c = tcpOptions;
@@ -603,7 +609,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetHttpOptions(ChannelConfiguration config) {}
+    protected void unsetHttpOptions(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getHttpOptions() {
         ChannelConfiguration c = httpOptions;
@@ -641,7 +648,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetRemoteIp(ChannelConfiguration config) {}
+    protected void unsetRemoteIp(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getRemoteIpConfig() {
         ChannelConfiguration c = remoteIpConfig;
@@ -664,7 +672,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *
      * @param bundle CHFWBundle instance to unset
      */
-    protected void unsetChfwBundle(CHFWBundle bundle) {}
+    protected void unsetChfwBundle(CHFWBundle bundle) {
+    }
 
     protected CHFWBundle getChfwBundle() {
         return chfw;
@@ -724,9 +733,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * @param bundle
      */
     @Reference(name = "httpDispatcher")
-    protected void setHttpDispatcher(HttpDispatcher dispatcher) {}
+    protected void setHttpDispatcher(HttpDispatcher dispatcher) {
+    }
 
-    protected void unsetHttpDispatcher(HttpDispatcher dispatcher) {}
+    protected void unsetHttpDispatcher(HttpDispatcher dispatcher) {
+    }
 
     /**
      * If we can get the chain activity off the SCR action thread, we should
@@ -742,7 +753,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * Schedule an activity to run off the SCR action thread,
      * if the ExecutorService is available
      *
-     * @param action Runnable action to execute
+     * @param action     Runnable action to execute
      * @param addToQueue Set to false if the action should be scheduled independently of the actionQueue
      */
     @Trivial

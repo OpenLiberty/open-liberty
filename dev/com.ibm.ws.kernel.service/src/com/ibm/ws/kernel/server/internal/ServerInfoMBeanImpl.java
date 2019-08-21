@@ -16,6 +16,8 @@ import javax.management.DynamicMBean;
 import javax.management.NotCompliantMBeanException;
 import javax.management.StandardMBean;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -45,6 +47,11 @@ public class ServerInfoMBeanImpl extends StandardMBean implements ServerInfoMBea
 
     public ServerInfoMBeanImpl() throws NotCompliantMBeanException {
         super(ServerInfoMBean.class);
+    }
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
     }
 
     @Reference(service = WsLocationAdmin.class)

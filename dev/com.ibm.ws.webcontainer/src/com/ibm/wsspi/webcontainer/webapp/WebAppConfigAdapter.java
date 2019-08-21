@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer.webapp;
 
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
@@ -20,6 +22,10 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  *
  */
 public class WebAppConfigAdapter implements ContainerAdapter<WebAppConfig> {
+
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     @Override
     public WebAppConfig adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {

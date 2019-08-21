@@ -14,6 +14,8 @@ import java.util.Map;
 
 import javax.servlet.Filter;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.web.factories.WeldListenerFactory;
@@ -47,6 +49,11 @@ import com.ibm.wsspi.webcontainer.filter.IFilterConfig;
  */
 @Component(service = ServletConfiguratorHelperFactory.class, property = { "service.vendor=IBM" })
 public class WeldConfiguratorHelperFactory implements ServletConfiguratorHelperFactory {
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        // only to optimize SCR activate lookup
+    }
 
     /** {@inheritDoc} */
     @Override

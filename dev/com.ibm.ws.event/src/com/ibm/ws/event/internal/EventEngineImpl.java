@@ -12,6 +12,8 @@ package com.ibm.ws.event.internal;
 
 import static org.osgi.service.event.TopicPermission.PUBLISH;
 
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -243,10 +245,10 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * interest in the event topic.
      *
      * @param event
-     *            the OSGi <code>Event</code> to deliver
+     *                  the OSGi <code>Event</code> to deliver
      * @param async
-     *            <code>true</code> if the event delivery can be done
-     *            asynchronously
+     *                  <code>true</code> if the event delivery can be done
+     *                  asynchronously
      */
     void publishOsgiEvent(org.osgi.service.event.Event event, boolean async) {
         String topic = event.getTopic();
@@ -262,9 +264,9 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * interest in the event topic.
      *
      * @param event
-     *            the Liberty <code>Event</code> to deliver
+     *                  the Liberty <code>Event</code> to deliver
      * @param async
-     *            <code>true</code> if the event delivery can be done asynchronously
+     *                  <code>true</code> if the event delivery can be done asynchronously
      * @return EventImpl
      */
     public EventImpl publishEvent(Event event, boolean async) {
@@ -318,7 +320,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * topic.
      *
      * @param topic
-     *            the topic the event is being published to
+     *                  the topic the event is being published to
      */
     void checkTopicPublishPermission(String topic) {
         SecurityManager sm = System.getSecurityManager();
@@ -334,10 +336,10 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * activated and when changes to our configuration have occurred.
      *
      * @param componentContext
-     *            the OSGi DS context
+     *                             the OSGi DS context
      */
     @Activate
-    protected void activate(ComponentContext componentContext, Map<String, Object> props) {
+    protected void activate(ComponentContext componentContext) {
         this.componentContext = componentContext;
 
         // // Parse the configuration that we've been provided
@@ -361,12 +363,12 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
         // as specified in section 113.6.5
         serviceEventAdapter = new ServiceEventAdapter(this);
         bundleContext.addServiceListener(serviceEventAdapter);
-        processConfigProperties(props);
+        processConfigProperties(componentContext.getProperties());
     }
 
     @Modified
-    protected void modified(Map<String, Object> props) {
-        processConfigProperties(props);
+    protected void modified(ComponentContext cc) {
+        processConfigProperties(cc.getProperties());
     }
 
     /**
@@ -400,7 +402,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * Inject a ServiceReference to a service that implements the OSGi <code>EventHandler</code> interface.
      *
      * @param handlerReference
-     *            the service reference
+     *                             the service reference
      */
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC)
@@ -430,7 +432,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
         topicCache.removeHandler(handlerReference);
     }
 
-    private void processConfigProperties(Map<String, Object> properties) {
+    private void processConfigProperties(Dictionary<String, Object> properties) {
         Object value = properties.get(CFG_KEY_REENTRANT_HANDLER_DEFAULT);
         if (value instanceof Boolean) {
             defaultReentrancy = ((Boolean) value).booleanValue();
@@ -446,13 +448,14 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * that point to a list of topics to associate with the stage.
      *
      * @param config
-     *            the service configuration properties
+     *                   the service configuration properties
      */
-    protected void processWorkStageProperties(Map<String, Object> config) {
-        for (Map.Entry<String, Object> entry : config.entrySet()) {
-            if (entry.getKey().startsWith(CFG_KEY_STAGE_PREFIX)) {
+    protected void processWorkStageProperties(Dictionary<String, Object> config) {
+        for (Enumeration<String> eKeys = config.keys(); eKeys.hasMoreElements();) {
+            String key = eKeys.nextElement();
+            if (key.startsWith(CFG_KEY_STAGE_PREFIX)) {
                 String[] topics;
-                Object o = entry.getValue();
+                Object o = config.get(key);
                 if (o instanceof String[]) {
                     topics = (String[]) o;
                 } else if (o instanceof String) {
@@ -461,7 +464,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
                     topics = new String[0];
                 }
 
-                String stageName = entry.getKey().substring(CFG_KEY_STAGE_PREFIX.length());
+                String stageName = key.substring(CFG_KEY_STAGE_PREFIX.length());
                 topicCache.setStageTopics(stageName, topics);
             }
         }
@@ -501,7 +504,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * Bind the OSGi <code>LogService</code> to use for error reporting.
      *
      * @param logService
-     *            the OSGi <code>LogService</code>
+     *                       the OSGi <code>LogService</code>
      */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC)
@@ -513,7 +516,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * Unbind the OSGi <code>LogService</code>.
      *
      * @param logService
-     *            the target <code>LogService</code> to unbind
+     *                       the target <code>LogService</code> to unbind
      */
     protected synchronized void unsetLogService(LogService logService) {
         if (logService == this.logService) {
@@ -525,13 +528,13 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * Log a condition to the OSGi <code>LogService</code> if one is available.
      *
      * @param serviceReference
-     *            the service that caused the condition
+     *                             the service that caused the condition
      * @param level
-     *            the log level
+     *                             the log level
      * @param message
-     *            a human readable message describing the condition
+     *                             a human readable message describing the condition
      * @param exception
-     *            the exception that generated the condition
+     *                             the exception that generated the condition
      */
     synchronized void log(ServiceReference serviceReference, int level, String message, Throwable exception) {
         if (logService != null) {
@@ -544,7 +547,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * for hosting the stage from the {@link WorkStageManager}.
      *
      * @param stageName
-     *            the name of the stage
+     *                      the name of the stage
      *
      * @return the {@code ExecutorService} to use for event delivery or {@code null} if the executor cannot be acquired
      */
@@ -560,7 +563,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * Bind the {@link ExecutorServiceFactory} to use when locating the {@code ExecutorService} backing event delivery for handlers.
      *
      * @param executorServiceFactory
-     *            the factory to use
+     *                                   the factory to use
      */
     @Reference
     protected synchronized void setExecutorServiceFactory(ExecutorServiceFactory executorServiceFactory) {
@@ -571,7 +574,7 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * Unbind the {@link ExecutorServiceFactory} used to locate the {@code ExecutorService} backing event delivery for handlers.
      *
      * @param executorServiceFactory
-     *            the factory to use
+     *                                   the factory to use
      */
     protected synchronized void unsetExecutorServiceFactory(ExecutorServiceFactory executorServiceFactory) {
         if (this.executorServiceFactory == executorServiceFactory) {
@@ -587,9 +590,9 @@ public class EventEngineImpl implements EventEngine, org.osgi.service.event.Even
      * is returned from this method.
      *
      * @param runnable
-     *            The Runnable to queue
+     *                     The Runnable to queue
      * @param executor
-     *            The ExecutorService to run the EventImpl on
+     *                     The ExecutorService to run the EventImpl on
      * @return The Future<?> created by submitting the EventImpl to the
      *         ExecutorService
      */

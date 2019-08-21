@@ -13,6 +13,8 @@ package com.ibm.ws.threading.internal;
 import java.io.PrintWriter;
 
 import org.osgi.framework.Constants;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -31,6 +33,11 @@ public class ThreadingIntrospector implements Introspector {
 
     private ExecutorServiceImpl impl;
 
+    @Activate
+    protected void activate(ComponentContext cc) {
+        // only to optimize SCR activate lookup
+    }
+
     @Reference
     protected void setWSExecutorService(WSExecutorService wses) {
         if (wses instanceof ExecutorServiceImpl) {
@@ -47,7 +54,7 @@ public class ThreadingIntrospector implements Introspector {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.Introspector#getIntrospectorName()
      */
     @Override
@@ -57,7 +64,7 @@ public class ThreadingIntrospector implements Introspector {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.Introspector#getIntrospectorDescription()
      */
     @Override
@@ -67,7 +74,7 @@ public class ThreadingIntrospector implements Introspector {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.Introspector#introspect(java.io.PrintWriter)
      */
     @Override
