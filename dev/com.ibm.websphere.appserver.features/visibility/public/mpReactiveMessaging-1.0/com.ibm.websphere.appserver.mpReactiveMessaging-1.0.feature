@@ -23,5 +23,5 @@ Subsystem-Name: MicroProfile Reactive Messaging 1.0
  com.ibm.ws.microprofile.reactive.messaging.kafka, \
  com.ibm.ws.microprofile.reactive.messaging.kafka.adapter, \
  com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
-kind=beta
+kind=ga
 edition=core
