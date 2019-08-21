@@ -31,6 +31,7 @@ import org.testng.annotations.BeforeMethod;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.AckTracker;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaInput;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
@@ -97,7 +98,8 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, FailingDeserializer.class.getName());
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, Collections.singleton(topicName), MESSAGE_LIMIT);
+        AckTracker ackTracker = new AckTracker(kafkaAdapterFactory, executor, MESSAGE_LIMIT);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, Collections.singleton(topicName), ackTracker);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }
@@ -129,7 +131,8 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, Collections.singleton(topicName), MESSAGE_LIMIT);
+        AckTracker ackTracker = new AckTracker(kafkaAdapterFactory, executor, MESSAGE_LIMIT);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, Collections.singleton(topicName), ackTracker);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }

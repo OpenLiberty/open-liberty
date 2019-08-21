@@ -84,22 +84,33 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
 
         // Extract our config
         List<String> topics = Arrays.asList(config.getValue(KafkaConnectorConstants.TOPICS, String.class).split(" *, *", -1));
-        int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(20);
+        int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
+        int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
+
+        // Configure our defaults
+        Map<String, Object> consumerConfig = new HashMap<>();
+        // Default behaviour is that connector handles commit in response to ack()
+        consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false");
 
         // Pass the rest of the config directly through to the kafkaConsumer
-        Map<String, Object> consumerConfig = new HashMap<>(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
-                                                                        .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
-                                                                        .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
+        consumerConfig.putAll(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
+                                           .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
+                                           .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
 
-        // Set the config values which we hard-code
-        consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false"); // Connector handles commit in response to ack()
-        // automatically
+        boolean enableAutoCommit = "true".equalsIgnoreCase((String) consumerConfig.get(KafkaConnectorConstants.ENABLE_AUTO_COMMIT));
 
         // Create the kafkaConsumer
         KafkaConsumer<String, Object> kafkaConsumer = this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
 
+        // Create the AckTracker
+        AckTracker ackTracker = null;
+        if (!enableAutoCommit) {
+            // We only need to track acknowledgments if the user hasn't enabled auto commit
+            ackTracker = new AckTracker(kafkaAdapterFactory, executor, unackedLimit);
+        }
+
         // Create our connector around the kafkaConsumer
-        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topics, unackedLimit);
+        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topics, ackTracker);
         kafkaInputs.add(kafkaInput);
 
         return kafkaInput.getPublisher();
