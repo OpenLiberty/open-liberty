@@ -51,7 +51,7 @@ import com.ibm.wsspi.session.IStore;
 import com.ibm.wsspi.session.IStorer;
 import com.ibm.wsspi.session.ITimer;
 import com.ibm.wsspi.session.SessionAffinityContext;
-import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
+
 
 public class SessionContext {
 
@@ -449,45 +449,22 @@ public class SessionContext {
         if (_smc.getAllowSerializedSessionAccess()) {
             unlockSession(sess);
         }
-        
         if (s != null) {
             synchronized (s) {
-                //PH14926 use application loader
-                boolean switched = false;
-                ClassLoader origClassLoader = ThreadContextHelper.getContextClassLoader();                              
-                try {
-                    final ClassLoader warClassLoader = _sap.getServletContext().getClassLoader();
-                    if (warClassLoader != origClassLoader) {                        
-                        ThreadContextHelper.setClassLoader(warClassLoader);
-                        switched = true;
-                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SESSION_POST_INVOKE], "Switched to " + warClassLoader.toString());
-                        }
-                    }               
-                    SessionAffinityContext sac = null;
-                    _coreHttpSessionManager.releaseSession(s.getISession(), sac);
-                    if (_coreHttpAppSessionManager != null) {
-                        // try and get the Application Session in memory ... if it is there,
-                        // make sure you update the backend via releaseSession
-                        ISession iSess = (ISession) _coreHttpAppSessionManager.getIStore().getFromMemory(s.getId());
-                        if (iSess != null) {
-                            // iSess.decrementRefCount();
-                            _coreHttpAppSessionManager.releaseSession(iSess, sac);
-                        }
+                SessionAffinityContext sac = null;
+                _coreHttpSessionManager.releaseSession(s.getISession(), sac);
+                if (_coreHttpAppSessionManager != null) {
+                    // try and get the Application Session in memory ... if it is there,
+                    // make sure you update the backend via releaseSession
+                    ISession iSess = (ISession) _coreHttpAppSessionManager.getIStore().getFromMemory(s.getId());
+                    if (iSess != null) {
+                        // iSess.decrementRefCount();
+                        _coreHttpAppSessionManager.releaseSession(iSess, sac);
                     }
-                } finally {
-                    //PH14926 use ExtClassLoader
-                    if (origClassLoader != null && switched) {
-                        final ClassLoader fOrigClassLoader = origClassLoader;                                     
-                        ThreadContextHelper.setClassLoader(fOrigClassLoader);
-                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SESSION_POST_INVOKE], "Switched back " + fOrigClassLoader.toString());
-                        }
-                    }
-                } 
+                }
             }
         }
-        
+
         if (_smc.isDebugSessionCrossover()) {
             currentThreadSacHashtable.set(null);
         }
