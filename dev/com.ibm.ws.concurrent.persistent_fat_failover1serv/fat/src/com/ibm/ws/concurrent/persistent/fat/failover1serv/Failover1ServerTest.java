@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -251,6 +252,10 @@ public class Failover1ServerTest extends FATServletClient {
      * testMultipleInstancesCompeteToRunOneLateTask - Have 3 instances available that could take over for running
      * a single late task. Exactly one of the instances should take over and run it.
      */
+    // If scheduled task execution happens to be attempted while persistentExecutors are being removed, it might fail.
+    // This is expected. After the configuration update completes, tasks will be able to run again successfully
+    // and pass the test.
+    @AllowedFFDC("java.lang.IllegalStateException")
     @Test
     public void testMultipleInstancesCompeteToRunOneLateTask() throws Exception {
         // Schedule on the only instance that is currently able to run tasks
