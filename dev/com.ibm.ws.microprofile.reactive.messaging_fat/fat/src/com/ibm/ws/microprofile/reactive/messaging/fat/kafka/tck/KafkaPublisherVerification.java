@@ -12,7 +12,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +98,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
         AckTracker ackTracker = new AckTracker(kafkaAdapterFactory, executor, MESSAGE_LIMIT);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, Collections.singleton(topicName), ackTracker);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, topicName, ackTracker);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }
@@ -132,7 +131,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
         AckTracker ackTracker = new AckTracker(kafkaAdapterFactory, executor, MESSAGE_LIMIT);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, Collections.singleton(topicName), ackTracker);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, topicName, ackTracker);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }
