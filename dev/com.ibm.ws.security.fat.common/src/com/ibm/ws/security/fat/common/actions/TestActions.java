@@ -13,6 +13,7 @@ package com.ibm.ws.security.fat.common.actions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
@@ -54,6 +55,13 @@ public class TestActions {
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
         }
+    }
+
+    /**
+     * Invoke the specified URL, adding a basic auth header first
+     */
+    public Page invokeUrlWithBasicAuth(String currentTest, String url, String user, String password) throws Exception {
+        return invokeUrlWithBasicAuth(currentTest, createWebClient(), url, user, password);
     }
 
     /**
@@ -123,6 +131,26 @@ public class TestActions {
             WebRequest request = createGetRequest(url);
             if (requestParams != null) {
                 request.setRequestParameters(requestParams);
+            }
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+
+    /**
+     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     */
+    public Page invokeUrlWithParametersAndHeaders(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams, Map<String, String> requestHeaders) throws Exception {
+        String thisMethod = "invokeUrlWithParameters";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);
+            if (requestParams != null) {
+                request.setRequestParameters(requestParams);
+            }
+            if (requestHeaders != null) {
+                request.setAdditionalHeaders(requestHeaders);
             }
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
@@ -220,7 +248,7 @@ public class TestActions {
         return new WebRequest(new URL(url), HttpMethod.POST);
     }
 
-public WebRequest createPostRequest(String url, String body) throws MalformedURLException {
+    public WebRequest createPostRequest(String url, String body) throws MalformedURLException {
         URL reqUrl = new URL(url);
         WebRequest request = new WebRequest(reqUrl, HttpMethod.POST);
         request.setRequestBody(body);

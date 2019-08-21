@@ -1,0 +1,27 @@
+
+<server>
+
+	<featureManager>
+		<feature>servlet-3.1</feature>
+		<feature>jwt-1.0</feature>
+		<feature>jaxrs-2.0</feature>
+		<feature>ssl-1.0</feature>
+	</featureManager>
+
+	<jwtBuilder
+		id="defaultJWT"
+		signatureAlgorithm="RS256"
+		keyStoreRef="configServerDefault"
+		keyAlias="configserverdefault" />
+
+	<keyStore
+		id="configServerDefault"
+		password="LibertyServer"
+		type="jks"
+		location="${server.config.dir}/commonConfigServerDefault.jks" />
+
+	<include location="${shared.config.dir}/jwtBuilderClientApplication.xml" />
+
+	<include location="${shared.config.dir}/op_fatTestPorts.xml" />
+
+</server>

@@ -29,7 +29,7 @@ public class TestValidationUtils {
 
     private final Class<?> thisClass = TestValidationUtils.class;
 
-    private final CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
+    protected final CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
     /**
      * Logs the state of the test assertion and then invokes the JUnit assertTrue method to record the test "status"

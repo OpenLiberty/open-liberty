@@ -1,0 +1,14 @@
+
+<server>
+
+	<featureManager>
+		<feature>servlet-3.1</feature>
+		<feature>jaxrs-2.0</feature>
+		<feature>jwt-1.0</feature>
+	</featureManager>
+
+	<include location="${shared.config.dir}/jwtBuilderClientApplication.xml" />
+
+	<include location="${shared.config.dir}/op_fatTestPorts.xml" />
+
+</server>

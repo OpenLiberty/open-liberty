@@ -129,6 +129,7 @@ public class LDAPUtils {
         /*
          * Determine whether we are running remote or locally.
          */
+        Log.info(c, "<clinit>", "Before USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
         USE_LOCAL_LDAP_SERVER = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
             public Boolean run() {
@@ -141,6 +142,7 @@ public class LDAPUtils {
                 return inMemoryLdap;
             }
         });
+        Log.info(c, "<clinit>", "After USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
 
         try {
             if (!USE_LOCAL_LDAP_SERVER) {
@@ -303,10 +305,10 @@ public class LDAPUtils {
      * Get a list of LDAP services from Consul.
      *
      * @param count The number of services requested. If unable to get unique 'count' instances,
-     *            the returned List will contain duplicate entries.
+     * the returned List will contain duplicate entries.
      * @param service The service to return.
      * @return A list of services returned. This list may return duplicates if unable to return enough
-     *         unique service instances.
+     * unique service instances.
      */
     private static List<ExternalTestService> getLdapServices(int count, String service) throws Exception {
 
@@ -384,7 +386,7 @@ public class LDAPUtils {
      * </ul>
      *
      * @param server
-     *            server for which bootstrap properties file needs updating with LDAP server host/ports
+     * server for which bootstrap properties file needs updating with LDAP server host/ports
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server) throws Exception {
