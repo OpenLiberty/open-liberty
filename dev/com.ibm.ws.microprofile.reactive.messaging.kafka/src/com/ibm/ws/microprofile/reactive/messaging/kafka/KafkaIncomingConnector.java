@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -84,6 +85,13 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
 
         // Extract our config
         String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
+
+        Optional<String> groupID = config.getOptionalValue(KafkaConnectorConstants.GROUP_ID, String.class);
+        if (!groupID.isPresent()) {
+            String msg = Tr.formatMessage(tc, "kafka.groupid.not.set.CWMRX1005E", ConnectorFactory.INCOMING_PREFIX + channelName + "." + KafkaConnectorConstants.GROUP_ID);
+            throw new IllegalArgumentException(msg);
+        }
+
         String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
         int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
         int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);

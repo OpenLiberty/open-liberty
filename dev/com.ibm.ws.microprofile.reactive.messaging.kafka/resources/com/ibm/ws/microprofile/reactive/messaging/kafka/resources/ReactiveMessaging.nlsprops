@@ -50,6 +50,11 @@ kafka.output.error.signal.CWMRX1004E=CWMRX1004E: The Reactive Messaging Kafka Ou
 kafka.output.error.signal.CWMRX1004E.explanation=The Kafka Outgoing Connector received an error signal that prevents normal operation of Reactive Messaging.
 kafka.output.error.signal.CWMRX1004E.useraction=Review the server message.log file and FFDC logs to identify the problem.
 
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E.explanation=The Kafka Consumer Group ID must be set to allow Reactive Messaging to function properly.
+kafka.groupid.not.set.CWMRX1005E.useraction=Set the property into one of the MicroProfile Config Sources for this application e.g. the microprofile-config.properties file.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

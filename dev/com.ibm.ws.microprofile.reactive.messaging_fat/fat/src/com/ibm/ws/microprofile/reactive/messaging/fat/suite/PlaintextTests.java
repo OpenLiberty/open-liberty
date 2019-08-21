@@ -40,6 +40,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 KafkaSharedLibTest.class,
                 ReactiveStreamsTckTest.class,
                 BadConnectorIDTest.class,
+                MissingGroupIDTest.class,
 })
 public class PlaintextTests {
 

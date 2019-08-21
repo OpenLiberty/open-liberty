@@ -32,6 +32,9 @@ public class KafkaConnectorConstants {
     public static final Set<String> NON_KAFKA_PROPS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] { TOPIC, ConnectorFactory.CONNECTOR_ATTRIBUTE,
                                                                                                                              ConnectorFactory.CHANNEL_NAME_ATTRIBUTE })));
 
+    //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG
+    public static final String GROUP_ID = "group.id";
+
     //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG
     public static final String ENABLE_AUTO_COMMIT = "enable.auto.commit";
 

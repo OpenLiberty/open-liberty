@@ -206,6 +206,12 @@ public class ConnectorProperties extends PropertiesAsset {
         return this;
     }
 
+    @Override
+    public ConnectorProperties removeProperty(String key) {
+        super.removeProperty(prefix + key);
+        return this;
+    }
+
     public ConnectorProperties addAll(Map<?, ?> properties) {
         for (Entry<?, ?> entry : properties.entrySet()) {
             addProperty((String) entry.getKey(), (String) entry.getValue());
