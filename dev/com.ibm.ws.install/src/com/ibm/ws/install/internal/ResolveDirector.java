@@ -43,9 +43,12 @@ import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.adaptor.FixAdaptor;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.InstallAsset;
+import com.ibm.ws.install.internal.cmdline.ExeAction;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
 import com.ibm.ws.install.repository.internal.RepositoryUtils;
+import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
@@ -441,6 +444,27 @@ class ResolveDirector extends AbstractDirector {
         }
 
         RepositoryConnectionList loginInfo = getRepositoryConnectionList(featureNamesProcessed, userId, password, this.getClass().getCanonicalName() + ".resolve");
+
+        // check for invalid features
+        List<String> invalidFeatures = new ArrayList<>();
+        int rc;
+
+        for (String processedFeature : featureNamesProcessed) {
+            // check if feature is invalid
+            logger.info("in resolve director processing" + processedFeature);
+            Arguments args = new ArgumentsImpl(new String[] { ExeAction.find.toString(), processedFeature });
+            rc = ExeAction.find.handleTask(args).getValue();
+
+            // if return code non zero then feature is invalid
+            if (rc != 0) {
+                logger.info("invalid feature " + processedFeature);
+                invalidFeatures.add(processedFeature);
+            }
+        }
+        // throw exception if invalid features found
+        if (invalidFeatures.size() > 0) {
+            throw ExceptionUtils.create(new RepositoryException(), invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
+        }
 
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
