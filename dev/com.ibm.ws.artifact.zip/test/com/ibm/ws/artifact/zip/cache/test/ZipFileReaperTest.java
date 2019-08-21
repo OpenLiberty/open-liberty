@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.ws.artifact.zip.cache.test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -22,6 +21,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+//import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -31,6 +31,17 @@ import com.ibm.ws.artifact.zip.cache.internal.ZipFileData;
 import com.ibm.ws.artifact.zip.cache.internal.ZipFileReaper;
 
 public class ZipFileReaperTest {
+
+    public static void sleep(long nanoSec) {
+        long milliSec = nanoSec / ZipCachingProperties.NANO_IN_MILLI;
+        int remainingNanoSec = (int) (nanoSec % ZipCachingProperties.NANO_IN_MILLI);
+
+        try {
+            Thread.sleep(milliSec, remainingNanoSec);
+        } catch ( InterruptedException e ) {
+            // IGNORE
+        }
+    }
 
     // String[] zipPaths, ZipTestOps[] allTestOps, long testDuration) {
 
@@ -50,6 +61,7 @@ public class ZipFileReaperTest {
     // LONG:    (0.1 * 3) s             : 0.3 s
 
     public static final long TRIVIAL_OPEN = 0L;
+    public static final long TINY_OPEN = ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN / 100;
     public static final long SHORT_OPEN = ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN / 4;
     public static final long MEDIUM_OPEN = (ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN / 4) * 10;
     public static final long LONG_OPEN = (ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN) * 3;
@@ -57,13 +69,16 @@ public class ZipFileReaperTest {
     public ZipFileReaperTest() throws IOException {
         this.zipPaths = createZipPaths();
         this.ensureZipFiles(); // throws IOException
+        this.ensureArqFiles(); // throws IOException
 
         this.trivialOpen = TRIVIAL_OPEN;
+        this.tinyOpen = TINY_OPEN;
         this.shortOpen = SHORT_OPEN;
         this.mediumOpen = MEDIUM_OPEN;
         this.longOpen = LONG_OPEN;
 
         this.maxTestDuration = mediumOpen * 120; // Based on the worker data and open times
+        this.tinyTestDuration = tinyOpen * 100 + (ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX * 2);
 
         this.simpleWorkerData = createSimpleWorkerData();
 
@@ -97,6 +112,19 @@ public class ZipFileReaperTest {
             createDribbleWorkerData(41)
         };
 
+        this.tinyWorkerData_One = new ZipTestOps[] {
+            createTinyWorkerData(12, 8)
+        };
+        this.tinyWorkerData_Many = new ZipTestOps[] {
+            createTinyWorkerData(21, 8),
+            createTinyWorkerData(31, 8),
+            createTinyWorkerData(41, 8)
+        };
+
+        this.arqData = new ZipTestOps[] {
+            createArqData()
+        };
+
         // '15' is 5 less than the number of test paths
         this.defaultProfile = createDefaultProfile(15);
         this.noQuickProfile = createNoQuickProfile(15);
@@ -104,105 +132,160 @@ public class ZipFileReaperTest {
 
     //
 
-    public void runProfile(TestProfile profile, ZipTestOps[] allTestOps) throws Exception {
-        profile.runTest(
-            maxTestDuration, trivialOpen, shortOpen, mediumOpen, longOpen,
-            zipPaths,
-            allTestOps); // throws Exception
+    public void runProfile(
+        int iterations,
+        long testDuration,
+        TestProfile profile, ZipTestOps[] allTestOps) throws Exception {
+
+        System.out.println("Test iterations [ " + iterations + " ]");
+
+        for ( int iteration = 0; iteration < iterations; iteration++ ) {
+            try {
+                profile.runTest(
+                    iteration,
+                    testDuration, trivialOpen, tinyOpen, shortOpen, mediumOpen, longOpen,
+                    zipPaths,
+                    allTestOps); // throws Exception
+
+            } catch ( Exception e ) {
+                System.out.println("Failure on iteration [ " + iteration + " ] of [ " + iterations + " ]");
+                throw e;
+            }
+        }
     }
+
+    public void runProfile(int iterations, TestProfile profile, ZipTestOps[] allTestOps)
+        throws Exception {
+
+        runProfile(iterations, maxTestDuration, profile, allTestOps); // throws Exception
+    }
+
+    public static final int TEST_ITERATIONS = 3;
 
     @Test
     public void testDefaultReaper_Simple() throws Exception {
-        runProfile(defaultProfile, simpleWorkerData); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, simpleWorkerData); // throws Exception
     }
 
     @Test
     public void testNoQuick_Simple() throws Exception {
-        runProfile(noQuickProfile, simpleWorkerData); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, simpleWorkerData); // throws Exception
     }
 
     @Test
     public void testDefaultReaper_Burst() throws Exception {
-        runProfile(defaultProfile, burstWorkerData); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, burstWorkerData); // throws Exception
     }
 
     @Test
     public void testNoQuick_Burst() throws Exception {
-        runProfile(noQuickProfile, burstWorkerData); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, burstWorkerData); // throws Exception
     }
 
     @Test
     public void testDefaultReaper_Overflow() throws Exception {
-        runProfile(defaultProfile, overflowWorkerData); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, overflowWorkerData); // throws Exception
     }
 
     @Test
     public void testNoQuick_Overflow() throws Exception {
-        runProfile(noQuickProfile, overflowWorkerData); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, overflowWorkerData); // throws Exception
     }
 
     //
 
     @Test
     public void testDefaultReaper_Scatter_One_Short() throws Exception {
-        runProfile(defaultProfile, scatterWorkerData_One_Short); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, scatterWorkerData_One_Short); // throws Exception
     }
 
     @Test
     public void testNoQuick_Scatter_One_Short() throws Exception {
-        runProfile(noQuickProfile, scatterWorkerData_One_Short); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_One_Short); // throws Exception
     }
 
     @Test
     public void testDefaultReaper_Scatter_One_Long() throws Exception {
-        runProfile(defaultProfile, scatterWorkerData_One_Long); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, scatterWorkerData_One_Long); // throws Exception
     }
 
     @Test
     public void testNoQuick_Scatter_One_Long() throws Exception {
-        runProfile(noQuickProfile, scatterWorkerData_One_Long); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_One_Long); // throws Exception
     }
 
     @Test
     public void testDefaultReaper_Scatter_Many_Short() throws Exception {
-        runProfile(defaultProfile, scatterWorkerData_Many_Short); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, scatterWorkerData_Many_Short); // throws Exception
     }
 
     @Test
     public void testNoQuick_Scatter_Many_Short() throws Exception {
-        runProfile(noQuickProfile, scatterWorkerData_Many_Short); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_Many_Short); // throws Exception
     }
 
     @Test
     public void testDefaultReaper_Scatter_Many_Long() throws Exception {
-        runProfile(defaultProfile, scatterWorkerData_Many_Long); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, scatterWorkerData_Many_Long); // throws Exception
     }
 
     @Test
     public void testNoQuick_Scatter_Many_Long() throws Exception {
-        runProfile(noQuickProfile, scatterWorkerData_Many_Long); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_Many_Long); // throws Exception
     }
 
     //
 
     @Test
     public void testDefaultReaper_Dribble_One() throws Exception {
-        runProfile(defaultProfile, dribbleWorkerData_One); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, dribbleWorkerData_One); // throws Exception
     }
 
     @Test
     public void testNoQuick_Dribble_One() throws Exception {
-        runProfile(noQuickProfile, dribbleWorkerData_One); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, dribbleWorkerData_One); // throws Exception
     }    
 
     @Test
     public void testDefaultReaper_Dribble_Many() throws Exception {
-        runProfile(defaultProfile, dribbleWorkerData_Many); // throws Exception
+        runProfile(TEST_ITERATIONS, defaultProfile, dribbleWorkerData_Many); // throws Exception
     }
 
     @Test
     public void testNoQuick_Dribble_Many() throws Exception {
-        runProfile(noQuickProfile, dribbleWorkerData_Many); // throws Exception
+        runProfile(TEST_ITERATIONS, noQuickProfile, dribbleWorkerData_Many); // throws Exception
+    }
+
+    @Test
+    public void testDefault_Arq() throws Exception {
+        runProfile(TEST_ITERATIONS, defaultProfile, arqData); // throws Exception
+    }
+
+    @Test
+    public void testNoQuick_Arq() throws Exception {
+        runProfile(TEST_ITERATIONS, noQuickProfile, arqData); // throws Exception
+    }
+
+    //
+
+    @Test
+    public void testDefault_Tiny_One() throws Exception {
+        runProfile(TEST_ITERATIONS * 100, tinyTestDuration, defaultProfile, tinyWorkerData_One); // throws Exception
+    }
+
+    @Test
+    public void testNoQuick_Tiny_One() throws Exception {
+        runProfile(TEST_ITERATIONS, tinyTestDuration, noQuickProfile, tinyWorkerData_One); // throws Exception
+    }
+
+    @Test
+    public void testDefault_Tiny_Many() throws Exception {
+        runProfile(TEST_ITERATIONS, tinyTestDuration, defaultProfile, tinyWorkerData_Many); // throws Exception
+    }
+
+    @Test
+    public void testNoQuick_Tiny_Many() throws Exception {
+        runProfile(TEST_ITERATIONS, tinyTestDuration, noQuickProfile, tinyWorkerData_Many); // throws Exception
     }
 
     //
@@ -229,9 +312,16 @@ public class ZipFileReaperTest {
          return useZipPaths;
     }
 
-    public void ensureZipFiles() throws IOException{
+    public void ensureZipFiles() throws IOException {
         for ( int pathNo = 0; pathNo < ZIP_PATH_COUNT; pathNo++ ) {
             ensureZipFile(pathNo, zipPaths[pathNo]); // throws IOException
+        }
+    }
+
+    public void ensureArqFiles() throws IOException {
+        int pathNo = 0;
+        for ( SampleData sampleData : SAMPLE_DATA ) {
+            ensureZipFile( pathNo++, sampleData.name );
         }
     }
 
@@ -504,6 +594,10 @@ public class ZipFileReaperTest {
         return new ZipTestOps("dribble[" + seed + "]", dribbleOperations(seed));
     }
 
+    protected ZipTestOps createTinyWorkerData(int seed, int divisions) {
+        return new ZipTestOps("tiny[" + seed + "]", tinyOperations(seed, divisions));
+    }
+
     // Random pattern:
     //
     // Duration:  Weight:
@@ -606,11 +700,109 @@ public class ZipFileReaperTest {
         return randomPattern;
     }
 
+    protected ZipTestOp[] tinyOperations(long seed, int divisions) {
+        // The tiny test duration includes an extra amount for slow pending
+        // closes.  Take this off the duration used to schedule operations.
+        long testDuration = tinyTestDuration - (ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX * 2);
+
+        // +1 to fit the last close within the overall duration
+        long burstSeparation = testDuration / (divisions + 1);
+
+        int tinySeqNo = 0;
+
+        List<ZipTestOp> tinyOps= new ArrayList<ZipTestOp>();
+
+        for ( int divNo = 0; divNo < divisions; divNo++ ) {
+            long openAt = burstSeparation * divNo;
+            long closeAt = openAt + TINY_OPEN;
+
+            for ( int pathNo = 0; pathNo < zipPaths.length; pathNo++ ) {
+                String nextPath = zipPaths[pathNo];
+                tinyOps.add( new ZipTestOp(tinySeqNo++, nextPath, openAt, DO_OPEN) );
+                tinyOps.add( new ZipTestOp(tinySeqNo++, nextPath, closeAt, DO_CLOSE) );
+            }
+        }
+
+        return tinyOps.toArray( new ZipTestOp[ tinyOps.size() ]);
+    }
+
+    public static class SampleData {
+        public final String name;
+        public final int openCount;
+        public final long firstOpen, lastOpen;
+        public final long firstClose, lastClose;
+        
+        public final long openDur, pendDur;
+
+        public SampleData(
+            String name,
+            int openCount,
+            long firstOpen, long lastOpen,
+            long firstClose, long lastClose,
+            long openDur, long pendDur) {
+
+            this.name = ZIP_PATH_ROOT + "/" + name;
+
+            this.openCount = openCount;
+        
+            this.firstOpen = firstOpen;
+            this.lastOpen = lastOpen;
+        
+            this.firstClose = firstClose;
+            this.lastClose = lastClose;
+            
+            this.openDur = openDur;
+            this.pendDur = pendDur;
+        }
+
+        public void createOperations(List<ZipTestOp> ops) {
+            long openDelta = (lastOpen - firstOpen) / openCount;
+            // long closeDelta = (lastClose - firstClose) / openCount;
+            long closeDelta = openDur / openCount;
+
+            for ( int openNo = 0; openNo < openCount; openNo++ ) {
+                long openAt = firstOpen + (openNo * openDelta);
+                ops.add( new ZipTestOp( ops.size(), name, openAt, DO_OPEN) );
+
+                // long closeAt = firstClose + (openNo * closeDelta);
+                long closeAt = openAt + closeDelta;
+                ops.add( new ZipTestOp( ops.size(), name, closeAt, DO_CLOSE) );
+            }
+        }
+    }
+
+    public static final SampleData[] SAMPLE_DATA = new SampleData[] {
+        new SampleData( "arquillian-junit.jar", 8, 35439000L, 1676142000L, 37283000L, 1677358000L, 474086000L, 1167833000L ),
+        new SampleData( "arquillian-core.jar", 9, 13421000L, 1711152000L, 30729000L, 1711383000L, 536070000L, 1161890000L ),
+        new SampleData( "arquillian-testenricher-initialcontext.jar", 8, 52564000L, 1676372000L, 52796000L, 1677402000L, 377287000L, 1247550000L ),
+        new SampleData( "ef97c071-6901-4626-a774-2c34360ba9d8.war", 1, 70147000L, 7017000L, 70396000L, 70396000L, 249000L, 0L ),
+        new SampleData( "arquillian-protocol.jar", 10, 40817000L, 1680390000L, 41229000L, 1680534000L, 402384000L, 1237333000L ),
+        new SampleData( "arquillian-testenricher-cdi.jar", 7, 46458000L, 1676257000L, 46868000L, 1677384000L, 376613000L, 1254312000L ),
+        new SampleData( "arquillian-testenricher-resource.jar", 8, 56072000L, 1676433000L, 56282000L, 1677410000L, 378085000L, 1243252000L ),
+        new SampleData( "arquillian-testenricher-ejb.jar", 8, 49938000L, 1676315000L, 50161000L, 1677394000L, 378917000L, 1248537000L ),
+        new SampleData( "arquillian-chameleon-runner.jar", 8, 2788000L, 1675987000L, 9647000L, 1676989000L, 386646000L, 1287554000L ),
+        new SampleData( "arquillian-testenricher-cdi.jar", 3, 1165627000L, 1720516000L, 1166296000L, 172069100L, 997000L, 554066000L ),
+    };
+
+    protected ZipTestOps createArqData() {
+        List<ZipTestOp> arqOps = new ArrayList<ZipTestOp>();
+        for ( SampleData sampleData : SAMPLE_DATA ) {
+            sampleData.createOperations(arqOps);
+        }
+        ZipTestOp[] arqOpsArray = arqOps.toArray( new ZipTestOp[ arqOps.size() ]);
+
+        Arrays.sort(arqOpsArray, ZIP_TEST_OP_COMPARATOR);
+
+        return new ZipTestOps("arq", arqOpsArray);
+    }
+
     protected long trivialOpen;
+    protected long tinyOpen;
     protected long shortOpen;
     protected long mediumOpen;
     protected long longOpen;
 
+    protected long tinyTestDuration;
     protected long maxTestDuration;
 
     protected ZipTestOps[] simpleWorkerData;
@@ -626,6 +818,11 @@ public class ZipFileReaperTest {
 
     protected ZipTestOps[] dribbleWorkerData_One;
     protected ZipTestOps[] dribbleWorkerData_Many;
+
+    protected ZipTestOps[] tinyWorkerData_One;
+    protected ZipTestOps[] tinyWorkerData_Many;
+
+    protected ZipTestOps[] arqData;
 
     //
 
@@ -669,64 +866,94 @@ public class ZipFileReaperTest {
         public final long slowPendMax;
 
         // Worker parms ...
+        private class TestErrorConsumer implements ZipFileReaper.ErrorConsumer<String>{
+
+            private List<String> collection;
+
+            public TestErrorConsumer(List<String> collection){
+                this.collection = collection;
+            }
+
+            @Override
+            public void accept(String t) {
+                collection.add(t);
+            }
+            
+        }
 
         public void displayProfile() {
             String methodName = "displayProfile";
 
             debug(methodName, "Max Cache [ " + toCount(maxCache) + " ]");
 
-            debug(methodName, "Quick Pend Min [ " + toAbsSec(quickPendMin) + "s ]");
-            debug(methodName, "Quick Pend Max [ " + toAbsSec(quickPendMin) + "s ]");
-
-            debug(methodName, "Slow Pend Min [ " + toAbsSec(slowPendMin) + "s ]");
-            debug(methodName, "Slow Pend Max [ " + toAbsSec(slowPendMin) + "s ]");
+            debug(methodName, "Quick Pend" +
+                " Min [ " + toAbsSec(quickPendMin) + "s ]" +
+                " Max [ " + toAbsSec(quickPendMin) + "s ]");
+            debug(methodName, "Slow Pend" +
+                " Min [ " + toAbsSec(slowPendMin) + "s ]" +
+                " Max [ " + toAbsSec(slowPendMin) + "s ]");
         }
 
         public void displayParameters(
             long maxTestDuration,
-            long trivialOpen, long shortOpen, long mediumOpen, long longOpen,
+            long trivialOpen, long tinyOpen, long shortOpen, long mediumOpen, long longOpen,
             String[] zipPaths, ZipTestOps[] allTestOps) {
 
             String methodName = "displayParameters";
 
             debug(methodName, "Test Duration [ " + toAbsSec(maxTestDuration) + "s ]");
 
-            debug(methodName, "Trivial Open Duration [ " + toAbsSec(trivialOpen) + "s ]");            
-            debug(methodName, "Short Open Duration [ " + toAbsSec(shortOpen) + "s ]");
-            debug(methodName, "Medium Open Duration [ " + toAbsSec(mediumOpen) + "s ]");
-            debug(methodName, "Long Open Duration [ " + toAbsSec(longOpen) + "s ]");
+            debug(methodName, "Open Durations:" +
+                " [ " + toAbsSec(trivialOpen) + "s ]" +
+                " [ " + toAbsSec(tinyOpen) + "s ]" +
+                " [ " + toAbsSec(shortOpen) + "s ]" +
+                " [ " + toAbsSec(mediumOpen) + "s ]" +
+                " [ " + toAbsSec(longOpen) + "s ]");
 
             debug(methodName, "Zip paths [ " + Integer.toString(zipPaths.length) + " ]");
             debug(methodName, "Test Threads [ " + Integer.toString(allTestOps.length) + " ]");
         }
 
         public void runTest(
+            int iteration,
             long maxTestDuration,
-            long trivialOpen, long shortOpen, long mediumOpen, long longOpen,
+            long trivialOpen, long tinyOpen, long shortOpen, long mediumOpen, long longOpen,
             String[] zipPaths, ZipTestOps[] allTestOps) throws IOException, Exception {
 
             String methodName = "run";
-            debug(methodName, "Begin [ " + profileName + " ]");
+            debug(methodName, "Begin [ " + profileName + " ] [ " + iteration + " ]");
 
             displayProfile();
             displayParameters(
-                maxTestDuration, trivialOpen, shortOpen, mediumOpen, longOpen,
+                maxTestDuration, trivialOpen, tinyOpen, shortOpen, mediumOpen, longOpen,
                 zipPaths, allTestOps);
 
-            ZipFileReaper reaper = startReaper();
+            List<String> reaperErrors = new ArrayList<>();
+            
+            TestErrorConsumer errorHandler = new TestErrorConsumer(reaperErrors);
+
+            //Consumer<String> errorHandler =
+            //    (String errorMessage) -> { reaperErrors.add(errorMessage); };
+
+            ZipFileReaper reaper = startReaper(errorHandler);
 
             ZipTestWorker[] testWorkers = createTestWorkers(reaper, allTestOps);
             Thread[] testThreads = createTestThreads(reaper, allTestOps, testWorkers);
 
-            launchThreads(reaper, allTestOps, testWorkers, testThreads);
-            waitForThreads(reaper, testWorkers, testThreads);
+            long startAt = launchThreads(reaper, allTestOps, testWorkers, testThreads);
+            @SuppressWarnings("unused")
+            long endAt = waitForThreads(reaper, testWorkers, testThreads, startAt, maxTestDuration);
 
             int errorCount = examineResults(reaper, testWorkers);
 
-            reaper.introspect( new PrintWriter(System.out), System.nanoTime());
-            System.out.println();
+            // PrintWriter reaperWriter = new PrintWriter(System.out);
+            // reaper.introspect( reaperWriter, System.nanoTime() );
+            // reaperWriter.flush();
+            // System.out.println();
 
             finishReaper(reaper);
+
+            errorCount += reaperErrors.size();
 
             debug(methodName, "End [ " + profileName + " ]");
 
@@ -735,13 +962,14 @@ public class ZipFileReaperTest {
             }
         }
 
-        public ZipFileReaper startReaper() {
+        public ZipFileReaper startReaper(TestErrorConsumer errorHandler) {
             return new ZipFileReaper(
                 profileName,
                 debugState,
                 maxCache,
                 quickPendMin, quickPendMax,
-                slowPendMin, slowPendMax); 
+                slowPendMin, slowPendMax,
+                errorHandler); 
         }
 
         public void finishReaper(ZipFileReaper reaper) {
@@ -790,13 +1018,15 @@ public class ZipFileReaperTest {
             return testThreads;
         }
 
-        public void launchThreads(
+        public long launchThreads(
             ZipFileReaper reaper,
             ZipTestOps[] allTestOps,
             ZipTestWorker[] testWorkers,
             Thread[] testThreads) {
 
             String methodName = "launchThreads";
+
+            long startAt = System.nanoTime();
 
             int numThreads = allTestOps.length;
 
@@ -805,9 +1035,18 @@ public class ZipFileReaperTest {
             }
 
             debug(methodName, "Threads [ " + Integer.toString( numThreads ) + " ] ... launched");
+
+            return startAt;
         }
 
-        public void waitForThreads(ZipFileReaper reaper, ZipTestWorker[] testWorkers, Thread[] testThreads) {
+        public long waitForThreads(
+            ZipFileReaper reaper,
+            ZipTestWorker[] testWorkers,
+            Thread[] testThreads,
+            long startAt, long maxDuration) {
+
+            System.out.println("Waiting for test worker threads [ " + testThreads.length + " ]");
+
             for ( Thread testThread : testThreads ) {
                 try {
                     testThread.join(); // throws InterruptedException
@@ -815,8 +1054,29 @@ public class ZipFileReaperTest {
                     // IGNORE
                 }
             }
+
+            long endAt = System.nanoTime();
+            long threadDuration = endAt - startAt;
+            System.out.println("Worker duration [ " + toAbsSec(threadDuration) + " ]");
+
+            long remainingDuration = maxDuration - threadDuration;
+            if ( remainingDuration > 0L ) {
+                System.out.println("Remaining duration [ " + toAbsSec(remainingDuration) + " ]");
+
+                sleep(remainingDuration);
+
+                endAt = System.nanoTime();
+                threadDuration = endAt - startAt;
+
+            } else {
+                System.out.println("Extra duration [ " + toAbsSec(-1 * remainingDuration) + " ]");
+            }
+
+            System.out.println("Completed test duration [ " + toAbsSec(threadDuration) + " ]; expected [ " + toAbsSec(maxDuration) + " ]");
+
+            return endAt;
         }
-        
+
         public int examineResults(ZipFileReaper reaper, ZipTestWorker[] testWorkers) {
             int numErrors = 0;
 
@@ -904,7 +1164,7 @@ public class ZipFileReaperTest {
             } else {
                 // debug(methodName, "Close " + actionText(reaper, actualActAt));
                 @SuppressWarnings("unused")
-				ZipFileData.ZipFileState immediateState = reaper.close(path, actualActAt);
+                ZipFileData.ZipFileState immediateState = reaper.close(path, actualActAt);
                 // debug(methodName, "Closed [ " + immediateState + " ] " + actionText(reaper, actualActAt));
 
                 reaper.validate();
@@ -1082,4 +1342,5 @@ public class ZipFileReaperTest {
     public static String toCount(int count) {
         return ZipCachingProperties.toCount(count);
     }
+
 }

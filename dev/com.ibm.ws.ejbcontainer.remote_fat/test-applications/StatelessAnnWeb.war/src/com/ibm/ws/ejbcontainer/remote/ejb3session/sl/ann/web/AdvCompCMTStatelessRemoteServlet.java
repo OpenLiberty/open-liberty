@@ -96,7 +96,7 @@ public class AdvCompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntTxAttribs() throws Exception {
+    public void testCompIntTxAttribs_AdvCompCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         try {
@@ -225,7 +225,7 @@ public class AdvCompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntBizGetters() throws Exception {
+    public void testCompIntBizGetters_AdvCompCMTStatelessRemote() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -256,7 +256,7 @@ public class AdvCompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntBizGetters() throws Exception {
+    public void testBizIntBizGetters_AdvCompCMTStatelessRemote() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -280,7 +280,7 @@ public class AdvCompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntInjection() throws Exception {
+    public void testCompIntInjection_AdvCompCMTStatelessRemote() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------

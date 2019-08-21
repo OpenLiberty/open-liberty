@@ -14,8 +14,6 @@ import org.osgi.service.component.ComponentContext;
 
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import com.ibm.wsspi.artifact.ArtifactEntry;
@@ -55,8 +53,9 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
     private ArtifactContainerFactory containerFactory = null;
     
 
-
-    protected synchronized void activate(ComponentContext ctx) {}
+    protected synchronized void activate(ComponentContext ctx) {
+        // EMPTY
+    }
 
     protected synchronized void deactivate(ComponentContext ctx) {
         this.containerFactory = null;
@@ -83,7 +82,8 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
     /**
      * Registry to store all the containers created with this.createOverlay()
      */
-    private final DirectoryBasedOverlayContainerRegistry registeredContainers = new DirectoryBasedOverlayContainerRegistry();;
+    private final DirectoryBasedOverlayContainerRegistry registeredContainers =
+        new DirectoryBasedOverlayContainerRegistry();
 
     /**
      * method to add a container to the registrt
@@ -91,7 +91,7 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
      */
     private void register(DirectoryBasedOverlayContainerImpl container) {
         registeredContainers.add(container);
-    };
+    }
 
     /**
      * Introspection method to print then number of registered containers, the enclosing and current containers in the registry and the Base / File URLs associated with them
@@ -141,7 +141,9 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
             }
 
             //introspect each of the containers
-            snapshotSet.forEach(containerEntry -> containerEntry.introspect(outputWriter));
+            for(DirectoryBasedOverlayContainerImpl containerEntry : snapshotSet){
+                containerEntry.introspect(outputWriter);
+            }
 
         }
     }

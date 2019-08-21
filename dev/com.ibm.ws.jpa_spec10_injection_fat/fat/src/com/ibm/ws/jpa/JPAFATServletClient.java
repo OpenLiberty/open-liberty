@@ -12,8 +12,11 @@
 package com.ibm.ws.jpa;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
+import java.util.Base64.Decoder;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -73,6 +76,7 @@ public class JPAFATServletClient extends FATServletClient {
             server.startServer();
         }
 
+        System.out.println("Installing DatabaseManagement.war ...");
         final WebArchive webApp = ShrinkWrap.create(WebArchive.class, "DatabaseManagement.war");
         webApp.addPackages(true, "jpahelper.databasemanagement");
         ShrinkHelper.addDirectory(webApp, dbManagementResourcePath + "/databasemanagement.war");
@@ -94,6 +98,8 @@ public class JPAFATServletClient extends FATServletClient {
         appNamesSet.add("DatabaseManagement");
         server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
 
+        System.out.println("Successfully installed DatabaseManagement.war.");
+
         fetchDatabaseMetadata(server);
 
         return progOut;
@@ -108,9 +114,27 @@ public class JPAFATServletClient extends FATServletClient {
         final HttpURLConnection con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, pathAndQuery);
         final int rc = con.getResponseCode();
         if (rc == 200) {
-            Properties dbProps = new Properties();
-            dbProps.load(con.getInputStream());
+            System.out.println("Reading encoded database information.");
+            final StringBuilder sb = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                String buffer;
+                while ((buffer = reader.readLine()) != null) {
+                    sb.append(buffer);
+                }
+            }
+
+            final String base64EncodedData = sb.toString();
+            final Decoder base64Decoder = java.util.Base64.getDecoder();
+            final byte[] objectData = base64Decoder.decode(base64EncodedData);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            Properties dbProps = (Properties) ois.readObject();
+
             System.out.println("Acquired Database Metadata: " + dbProps);
+            for (Object key : dbProps.keySet()) {
+                System.out.println("   " + key + " = " + dbProps.getProperty((String) key));
+            }
 
             dbProductName = dbProps.getProperty("dbproduct_name");
             dbProductVersion = dbProps.getProperty("dbproduct_version");
@@ -118,6 +142,16 @@ public class JPAFATServletClient extends FATServletClient {
             jdbcURL = dbProps.getProperty("jdbc_url");
             jdbcUsername = dbProps.getProperty("jdbc_username");
 
+//            Properties dbProps = new Properties();
+//            dbProps.load(con.getInputStream());
+//            System.out.println("Acquired Database Metadata: " + dbProps);
+//
+//            dbProductName = dbProps.getProperty("dbproduct_name");
+//            dbProductVersion = dbProps.getProperty("dbproduct_version");
+//            jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version");
+//            jdbcURL = dbProps.getProperty("jdbc_url");
+//            jdbcUsername = dbProps.getProperty("jdbc_username");
+//
             dbVendor = DatabaseVendor.resolveDBProduct(dbProductName);
         } else {
             System.out.println("Failed to acquire Database Metadata.");

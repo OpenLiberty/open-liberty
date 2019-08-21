@@ -72,6 +72,16 @@ public class Relationships_OneXOne_Web extends JPAFATServletClient {
         bannerStart(Relationships_OneXOne_Web.class);
         timestart = System.currentTimeMillis();
 
+        int appStartTimeout = server1.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server1.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server1.setConfigUpdateTimeout(120 * 1000);
+        }
+
         server1.startServer();
 
         setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");

@@ -46,6 +46,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.jbatch.container.exception.JobInstanceSearchNotSupportedException;
 import com.ibm.jbatch.container.ws.BatchDispatcherException;
 import com.ibm.jbatch.container.ws.BatchJobNotLocalException;
 import com.ibm.ws.jbatch.rest.utils.PurgeStatus;
@@ -116,9 +117,9 @@ public class JobInstances implements RESTHandler {
 
     /**
      * DS injection
-     * 
+     *
      * @param ref The WSJobRepository to associate.
-     * 
+     *
      *            Note: The dependency is required; however we mark it OPTIONAL to ensure that
      *            the REST handler is started even if the batch container didn't, so we
      *            can respond with useful error messages instead of 404s.
@@ -138,9 +139,9 @@ public class JobInstances implements RESTHandler {
 
     /**
      * Sets the job manager reference.
-     * 
+     *
      * @param ref The job manager to associate.
-     * 
+     *
      *            Note: The dependency is required; however we mark it OPTIONAL to ensure that
      *            the REST handler is started even if the batch container didn't, so we
      *            can respond with useful error messages instead of 404s.
@@ -160,7 +161,7 @@ public class JobInstances implements RESTHandler {
 
     /**
      * DS injection.
-     * 
+     *
      * Note: The dependency is required; however we mark it OPTIONAL to ensure that
      * the REST handler is started even if the batch container didn't, so we
      * can respond with useful error messages instead of 404s.
@@ -180,7 +181,7 @@ public class JobInstances implements RESTHandler {
 
     /**
      * DS injection
-     * 
+     *
      * Note: The dependency is required; however we mark it OPTIONAL to ensure that
      * the REST handler is started even if the batch container didn't, so we
      * can respond with useful error messages instead of 404s.
@@ -236,6 +237,11 @@ public class JobInstances implements RESTHandler {
             response.sendError(HttpURLConnection.HTTP_UNAUTHORIZED, jse.getMessage());
         } catch (BatchNoSuchJobInstanceException bnsjie) {
             response.sendError(HttpURLConnection.HTTP_BAD_REQUEST, bnsjie.getMessage());
+        } catch (JobInstanceSearchNotSupportedException jisnse) {
+        	response.sendError(HttpURLConnection.HTTP_INTERNAL_ERROR,
+        			ResourceBundleRest.getMessage("in.memory.search.not.supported"));
+        } catch (UnsupportedOperationException uoe) {
+        	response.sendError(HttpURLConnection.HTTP_INTERNAL_ERROR, uoe.getMessage());
         } catch (Exception e) {
             response.sendError(HttpURLConnection.HTTP_INTERNAL_ERROR, e.getMessage());
         }
@@ -266,7 +272,7 @@ public class JobInstances implements RESTHandler {
             purgeJobInstances(request, response);
         }
     }
-    
+
     /**
      * Handles "/batch/v3/jobinstances", which is used to perform the pre-purge query and purge
      */
@@ -280,7 +286,7 @@ public class JobInstances implements RESTHandler {
             purgeJobInstances(request, response, 3);
         }
     }
-    
+
     /**
      * Handles "/batch/v4/jobinstances", which is used to perform the pre-purge query and purge
      */
@@ -327,7 +333,7 @@ public class JobInstances implements RESTHandler {
      * Handles
      * "/batch/jobinstances/{jobinstanceid}/joblogs"
      * "/batch/jobinstances/{jobinstanceid}/joblogs?type=zip"
-     * 
+     *
      */
     private class JobLogsHandler extends RequestHandler {
 
@@ -388,18 +394,18 @@ public class JobInstances implements RESTHandler {
          * then just forward the request to that server.
          * Otherwise, fail the request for now... or maybe just return an error
          * code along with all jobexecution log links
-         * @throws IOException 
+         * @throws IOException
          */
         protected void handleJobLogsNotLocalException(RESTRequest request,
                                                       RESTResponse response,
                                                       long jobInstanceId) throws IOException {
 
-        	if ("zip".equals(request.getParameter("type")) 
+        	if ("zip".equals(request.getParameter("type"))
         			|| "text".equals(request.getParameter("type"))) {
         		//This will fail if all executions didn't run on the same endpoint.
         		String restUrl = findSingleJobExecutionEndpoint(jobInstanceId);
 
-        		BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, request.getQueryString()), 
+        		BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, request.getQueryString()),
         				"GET",
         				request,
         				response);
@@ -425,7 +431,7 @@ public class JobInstances implements RESTHandler {
                    + jobInstanceLog.getJobInstance().getInstanceId()
                    + ".zip";
         }
-        
+
         public void delete(RESTRequest request, RESTResponse response) throws Exception {
             purgeLocalJobLogs(request, response, getJobInstanceId(request));
         }
@@ -433,7 +439,7 @@ public class JobInstances implements RESTHandler {
 
     /**
      * @return the job instance ID as a Long
-     * 
+     *
      * @throws IOException
      */
     protected long getJobInstanceId(RESTRequest request) throws RequestException {
@@ -527,7 +533,7 @@ public class JobInstances implements RESTHandler {
                                                  jslBody);
 
             } else {
-                // JSL via singlepart HTTP or No JSL - dependent of value of getJobXML() 
+                // JSL via singlepart HTTP or No JSL - dependent of value of getJobXML()
                 jobInstance = batchManager.start(
                                                  jobSubmission.getApplicationName(),
                                                  jobSubmission.getModuleName(),
@@ -587,11 +593,11 @@ public class JobInstances implements RESTHandler {
                                                + " associated with job instance id "
                                                + e.getJobInstanceId() + " is not currently running.");
         } catch (BatchJobNotLocalException e) {
-        	String restUrl = e.getJobExecution().getRestUrl();        		
-        	BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildStopUrlForJobInstance(jobInstanceID, restUrl), 
+        	String restUrl = e.getJobExecution().getRestUrl();
+        	BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildStopUrlForJobInstance(jobInstanceID, restUrl),
         			"PUT",
         			request,
-        			response);			
+        			response);
         }
     }
 
@@ -599,7 +605,7 @@ public class JobInstances implements RESTHandler {
      * Restarting a job instance should get forwarded to the current running job execution. There is some duplicate
      * code here since I don't konw how to reference another instance of a REST Handler implementation yet.
      */
-    
+
     private void restartJobInstance(final RESTRequest request, final RESTResponse response, long jobInstanceID) throws IOException, RequestException {
 
         // Read the jobParams from the request body, if any.
@@ -659,31 +665,31 @@ public class JobInstances implements RESTHandler {
         if (!purgeJobStoreOnly) { //Try to purge job logs and DB, or send a redirect if not local
 
         	boolean fileSuccess = false;
-        	
+
             try {
             	fileSuccess = purgeJobLogFiles(jobInstanceId);
-            
+
             } catch (BatchJobNotLocalException e) {
             	// If executions exist on only one endpoint, redirect to that endpoint.
             	List<String> restUrls = findJobExecutionEndpoints(jobInstanceId);
-            	
+
             	if (StringUtils.areEqual(restUrls)) {
             		// This call will handle the SSL and redirect enabled checking
-	            	BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildPurgeUrlForJobInstance(jobInstanceId, restUrls.get(0)), 
+	            	BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildPurgeUrlForJobInstance(jobInstanceId, restUrls.get(0)),
 	        				"DELETE",
 	        				request,
 	        				response);
-            
+
 	            	return;
 
             	} else {
             		// Send requests to all endpoints to delete their local job logs.
             		String responses = "";
-            		
+
             		for (String restUrl : restUrls) {
-            			
+
             			try {
-            				HttpURLConnection connection = BatchRequestUtil.sendRESTRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, ""), 
+            				HttpURLConnection connection = BatchRequestUtil.sendRESTRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, ""),
                 																		    "DELETE",
                 																		    request,
                 																		    null);
@@ -703,21 +709,21 @@ public class JobInstances implements RESTHandler {
             							+ "Not all job log files were deleted so no attempt was made to delete database entries. " + responses);
             					return;
             				}
-                			
+
             			} catch (Exception ex) {
-            				responses = responses.concat("Exception occurred during a request to " + BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, "") + 
+            				responses = responses.concat("Exception occurred during a request to " + BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, "") +
             											 ", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
                         	response.sendError(HttpURLConnection.HTTP_INTERNAL_ERROR, "An exception occurred while purging the job instance (" + jobInstanceId + "). "
                         			+ "Not all job log files were deleted so no attempt was made to delete database entries." + responses);
                         	return;
             			}
-            			
+
             		}
             		fileSuccess = true;
             	}
             }
-            
-            
+
+
             if (fileSuccess) {
             	boolean dbSuccess = wsJobOperator.purgeJobInstance(jobInstanceId);
 
@@ -730,7 +736,7 @@ public class JobInstances implements RESTHandler {
             			+ "Not all job log files were deleted so no attempt was made to delete database entries.");
             }
 
-            
+
 
         } else { //We won't even try to purge job logs. Only purge from database.
 
@@ -755,7 +761,7 @@ public class JobInstances implements RESTHandler {
     }
 
     /**
-     * 
+     *
      */
     protected void listJobInstances(RESTRequest request, RESTResponse response) throws Exception {
 
@@ -770,7 +776,7 @@ public class JobInstances implements RESTHandler {
             throw new RequestException(HttpURLConnection.HTTP_BAD_REQUEST, "An error occurred while processing the specified parameters in " +
                                                                            request.getCompleteURL() + "; Original Exception Message: " + e.getMessage());
         }
-        
+
         // call the version of getJobInstances that takes a query helper obj
         List<WSJobInstance> jobInstances = jobRepository.getJobInstances(new JPAQueryHelperImpl(wsso), page, pageSize);
 
@@ -781,19 +787,19 @@ public class JobInstances implements RESTHandler {
                                           BatchRequestUtil.getUrlRoot(request),
                                           response.getOutputStream());
     }
-    
+
     /**
      * Parse the incoming parameters for any fields that we don't recognize
-     * 
+     *
      * @param request The incoming REST request
      * @return a String representation of the unrecognized parameters, separated by commas
-     * @throws Exception 
+     * @throws Exception
      */
     private String getUnrecognizedParameters(RESTRequest request, int version) throws Exception {
-    	
+
     	String unrecognized = null;
     	List<String> validParams = null;
-    	
+
     	if (version == 3) {
     		validParams = WSSearchConstants.VALID_SEARCH_PARAMS_V3;
     	} else if (version == 4) {
@@ -818,7 +824,7 @@ public class JobInstances implements RESTHandler {
  					String field = split[i];
  					if (field.startsWith("-"))
  	                    field = field.substring(1);
- 					
+
  					if(!WSSearchConstants.VALID_SORT_FIELDS.contains(field)) {
  						if (unrecognized != null) {
  	    					unrecognized = unrecognized.concat("," + "sort="+split[i]);
@@ -829,31 +835,31 @@ public class JobInstances implements RESTHandler {
  			      			&& (jobRepository.getJobInstanceTableVersion() < 2)) {
  			      		throw new RequestException(HttpURLConnection.HTTP_NOT_IMPLEMENTED, "A search or sort by last update time was requested, but the job instance table does not contain the UPDATETIME column.");
  			      	}
- 					
+
  				}
-     		} else if (entry.getKey().equals("lastUpdatedTime") 
+     		} else if (entry.getKey().equals("lastUpdatedTime")
      				&& (jobRepository.getJobInstanceTableVersion() < 2)) {
      			throw new RequestException(HttpURLConnection.HTTP_NOT_IMPLEMENTED, "A search or sort by last update time was requested, but the job instance table does not contain the UPDATETIME column.");
-     		}  
+     		}
      	}
-     	
+
      	return unrecognized;
     }
-    
+
     /**
      * Extract the specified job parameters from the incoming REST request.
      * Currently doesn't handle multiple job parameters, new ones will overwrite (keeps current behavior essentially).
-     * 
+     *
      * This code can be modified later to build a proper list without overwriting once we support multiples.
-     * 
+     *
      * @param request The incoming REST request
      * @return a list of job parameter String[] objects.  String[0] is name, String[1] is the value.
-     * @throws Exception 
+     * @throws Exception
      */
     private Map<String, String> getJobParameters(RESTRequest request) throws Exception {
-    	
+
     	Map<String, String> jobParams = new HashMap<String, String>();
-    	
+
     	Map<String, String[]> params = request.getParameterMap();
     	for (Map.Entry<String, String[]> entry : params.entrySet()) {
     		String key = entry.getKey();
@@ -862,38 +868,38 @@ public class JobInstances implements RESTHandler {
     			jobParams.put(key, entry.getValue()[0]);
     		}
     	}
-    	
+
         if ((!jobParams.isEmpty()) && (jobRepository.getJobExecutionTableVersion() < 2)) {
        	 throw new RequestException(HttpURLConnection.HTTP_NOT_IMPLEMENTED, ResourceBundleRest.getMessage("db.tables.not.created.for.jobparm.search"));
         }
-    	
+
     	return jobParams;
     }
-    
+
     /**
-     * Utility method for actually performing the job instances V3 or V4 search. 
+     * Utility method for actually performing the job instances V3 or V4 search.
      * This is shared between search and purge.
-     * 
+     *
      * @param request The incoming REST request
      * @return a List of WSJobIntance objects matching the query parameters
      * @throws Exception
      */
     private List<WSJobInstance> doJobInstanceSearch(RESTRequest request, int version) throws Exception {
-    	
+
     	 int page = Integer.parseInt(StringUtils.firstNonNull(request.getParameter("page"), "0"));
          int pageSize = Integer.parseInt(StringUtils.firstNonNull(request.getParameter("pageSize"), "50"));
-         
+
      	 Map<String, String> jobParameters = getJobParameters(request);
-         
+
          WSSearchObject wsso = null;
          try {
         	 if (version == 3) {
-        		 wsso = new WSSearchObject(request.getParameter("jobInstanceId"), request.getParameter("createTime"), 
-        				 request.getParameter("instanceState"), request.getParameter("exitStatus"), 
+        		 wsso = new WSSearchObject(request.getParameter("jobInstanceId"), request.getParameter("createTime"),
+        				 request.getParameter("instanceState"), request.getParameter("exitStatus"),
         				 request.getParameter("lastUpdatedTime"), request.getParameter("sort"), jobParameters);
         	 } else if (version == 4) {
-        		 wsso = new WSSearchObject(request.getParameter("jobInstanceId"), request.getParameter("createTime"), 
-        				 request.getParameter("instanceState"), request.getParameterValues("exitStatus"), 
+        		 wsso = new WSSearchObject(request.getParameter("jobInstanceId"), request.getParameter("createTime"),
+        				 request.getParameter("instanceState"), request.getParameterValues("exitStatus"),
         				 request.getParameter("lastUpdatedTime"), request.getParameter("sort"), jobParameters,
         				 request.getParameterValues("submitter"), request.getParameterValues("appName"), request.getParameterValues("jobName"),
         				 request.getParameter("ignoreCase"));
@@ -904,7 +910,7 @@ public class JobInstances implements RESTHandler {
          }
 
         List<WSJobInstance> jobInstances = jobRepository.getJobInstances(new JPAQueryHelperImpl(wsso), page, pageSize);
-    	
+
     	return jobInstances;
     }
     /**
@@ -914,25 +920,25 @@ public class JobInstances implements RESTHandler {
      * @throws Exception
      */
     protected void searchJobInstances(RESTRequest request, RESTResponse response, int version) throws Exception {
-    	
+
         String unrecognized = getUnrecognizedParameters(request, version);
 
     	// Add any unrecognized terms to a header for UI to handle
     	if (unrecognized != null) {
     		response.addResponseHeader("X-IBM-Unrecognized-Fields", unrecognized);
     	}
-    	
+
     	List<WSJobInstance> jobInstances = doJobInstanceSearch(request, version);
 
         // Note: headers must be set *before* writing to the output stream
         response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
-        
+
         BatchJSONHelper.writeJobInstances(jobInstances,
                                           BatchRequestUtil.getUrlRoot(request),
                                           response.getOutputStream());
 
     }
-    
+
     /**
      * Queries for Job Instances given the input parameters
      * @param request
@@ -971,9 +977,9 @@ public class JobInstances implements RESTHandler {
 
     /**
      * Queries for jobs matching the input query criteria, and then purges the jobs one by one
-     * 
+     *
      * This method is used when doing a purge via the V2 API
-     * 
+     *
      * @param request
      * @param response
      * @throws Exception
@@ -1018,18 +1024,18 @@ public class JobInstances implements RESTHandler {
         BatchJSONHelper.buildAndWritePurgeJsonObject(purgeResponseList, response.getOutputStream());
 
     }
-    
+
     /**
      * Queries for jobs matching the input query criteria, and then purges the jobs one by one
-     * 
+     *
      * This method is used when doing a purge via the V3 or V4 API.
-     * 
+     *
      * @param request
      * @param response
      * @throws Exception
      */
     protected void purgeJobInstances(RESTRequest request, RESTResponse response, int version) throws Exception {
-    	
+
     	String unrecognized = getUnrecognizedParameters(request, version);
 
     	// Add any unrecognized terms to a header for UI to handle
@@ -1039,7 +1045,7 @@ public class JobInstances implements RESTHandler {
 
     	// Query for jobs
         List<WSJobInstance> jobInstances = doJobInstanceSearch(request, version);
-        
+
         // Extract job instance ids returned by the query given the input parameters
         ArrayList<Long> instanceList = new ArrayList<Long>(jobInstances.size());
         for (WSJobInstance job : jobInstances) {
@@ -1106,11 +1112,11 @@ public class JobInstances implements RESTHandler {
 
             	for (String restUrl : restUrls) {
             		try {
-            			HttpURLConnection connection = BatchRequestUtil.sendRESTRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, ""), 
+            			HttpURLConnection connection = BatchRequestUtil.sendRESTRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, ""),
             																			"DELETE",
             																			request,
             																			null);
-            			
+
             			if (connection != null) {
         					// Log the response code, and if it failed, send an error response
             				responses = responses.concat("A request to " + connection.getURL().getPath() + "/" + BatchRequestUtil.getUrlVersion(request.getURL()) + " returned response code " +  connection.getResponseCode() + ". ");
@@ -1127,7 +1133,7 @@ public class JobInstances implements RESTHandler {
         					purgeResponse.setPurgeStatus(PurgeStatus.FAILED);
         				}
             		} catch (Exception ex) {
-        				responses = responses.concat("Exception occurred during a request to " + BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, "") + 
+        				responses = responses.concat("Exception occurred during a request to " + BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, "") +
 								 ", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
             			purgeResponse.setMessage("An exception occurred while purging the job instance (" + jobInstanceId + "). "
             					+ "Not all job log files were deleted so no attempt was made to delete database entries." + responses);
@@ -1139,7 +1145,7 @@ public class JobInstances implements RESTHandler {
             		fileSuccess = true;
             	}
             }
-        	
+
             if (fileSuccess) {
                 boolean dbSuccess = wsJobOperator.purgeJobInstance(jobInstanceId);
 
@@ -1193,9 +1199,9 @@ public class JobInstances implements RESTHandler {
                                             + " because its job executions ran on different endpoints: " + restUrls);
         }
     }
-    
+
     /**
-     * Returns REST URLs for all endpoints with executions for the given job instance. 
+     * Returns REST URLs for all endpoints with executions for the given job instance.
      */
     private List<String> findJobExecutionEndpoints(long jobInstanceId) {
         List<WSJobExecution> jobExecutions = jobRepository.getJobExecutionsFromInstance(jobInstanceId);
@@ -1204,25 +1210,25 @@ public class JobInstances implements RESTHandler {
         for (JobExecution jobExecution : jobExecutions) {
             restUrls.add(((WSJobExecution) jobExecution).getRestUrl());
         }
-        
+
         return restUrls;
     }
-    
-    /* 
+
+    /*
      * Purges the local job logs given the instanceId, and the URL's host/port.
      */
     protected void purgeLocalJobLogs(RESTRequest request, RESTResponse response, long jobInstanceId) {
 
     	JobInstanceLog instanceLog = null;
     	try {
-    		
-    		instanceLog = jobLogManagerService.getLocalJobInstanceLog(jobInstanceId);  
-    		instanceLog.purge(); 
-    		
+
+    		instanceLog = jobLogManagerService.getLocalJobInstanceLog(jobInstanceId);
+    		instanceLog.purge();
+
     	} catch (NoSuchJobInstanceException e) {
         	// If no Instance is found, throw an exception similar to existing single purge
         	throw new BatchNoSuchJobInstanceException(e, jobInstanceId);
         }
     }
-    
+
 }

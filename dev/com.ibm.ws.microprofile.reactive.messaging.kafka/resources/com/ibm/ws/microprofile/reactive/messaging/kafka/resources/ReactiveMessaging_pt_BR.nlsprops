@@ -1,0 +1,55 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Ocorreu um erro interno no Conector Kafka do Sistema de Mensagens Reativo. O erro \u00e9: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Ocorreu um erro de Sistema de Mensagens Reativo que impede a opera\u00e7\u00e3o normal.
+internal.kafka.connector.error.CWMRX1000E.useraction=Revise o arquivo message.log do servidor e os logs de FFDC para identificar o problema.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Ocorreu um erro ao confirmar os deslocamentos de leitura para o broker Kafka. O erro \u00e9: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Ocorreu um erro no Conector Recebido Kafka que impede a opera\u00e7\u00e3o normal do Sistema de Mensagens Reativo.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Revise o arquivo message.log do servidor e os logs de FFDC para identificar o problema.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Ocorreu um erro ao pesquisar o broker Kafka. O erro \u00e9: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Ocorreu um erro no Conector Recebido Kafka que impede a opera\u00e7\u00e3o normal do Sistema de Mensagens Reativo.
+kafka.poll.error.CWMRX1002E.useraction=Revise o arquivo message.log do servidor e os logs de FFDC para identificar o problema.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Ocorreu um erro ao enviar uma mensagem ao broker Kafka. O erro \u00e9: {0}.
+kafka.send.error.CWMRX1003E.explanation=Ocorreu um erro no Conector de Sa\u00edda Kafka que impede a opera\u00e7\u00e3o normal do Sistema de Mensagens Reativo
+kafka.send.error.CWMRX1003E.useraction=Revise o arquivo message.log do servidor e os logs de FFDC para identificar o problema.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Ocorreu o seguinte erro do Sistema de Mensagens Reativo: {0}.
+temporary.CWMRX1999E.explanation=Ocorreu um erro de Sistema de Mensagens Reativo que impede a opera\u00e7\u00e3o normal.
+temporary.CWMRX1999E.useraction=Revise o arquivo message.log do servidor e os logs de FFDC para identificar o problema.

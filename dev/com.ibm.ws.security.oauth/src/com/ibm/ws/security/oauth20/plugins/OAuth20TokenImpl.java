@@ -338,4 +338,22 @@ public class OAuth20TokenImpl implements OAuth20Token, Serializable {
         _lastAccess = System.currentTimeMillis();
     }
 
+    /* (non-Javadoc)
+     * @see com.ibm.oauth.core.api.oauth20.token.OAuth20Token#getCodeChallenge()
+     */
+    @Override
+    public String getCodeChallenge() {
+        String[] buf = getExtensionProperty(OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.CODE_CHALLENGE);
+        return buf == null ? null : buf[0];
+    }
+
+    /* (non-Javadoc)
+     * @see com.ibm.oauth.core.api.oauth20.token.OAuth20Token#getCodeChallengeMethod()
+     */
+    @Override
+    public String getCodeChallengeMethod() {
+        String[] buf = getExtensionProperty(OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.CODE_CHALLENGE_METHOD);
+        return buf == null ? null : buf[0];
+    }
+
 }

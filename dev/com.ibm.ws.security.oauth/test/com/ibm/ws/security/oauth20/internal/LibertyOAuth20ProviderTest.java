@@ -582,6 +582,7 @@ public class LibertyOAuth20ProviderTest {
         clientProps.put(LibertyOAuth20Provider.KEY_CLIENT_allowRegexpRedirects, Boolean.FALSE);
         clientProps.put(LibertyOAuth20Provider.KEY_CLIENT_APP_PASSWORD_ALLOWED, Boolean.FALSE);
         clientProps.put(LibertyOAuth20Provider.KEY_CLIENT_APP_TOKEN_ALLOWED, Boolean.FALSE);
+        clientProps.put(LibertyOAuth20Provider.KEY_CLIENT_PROOF_KEY_FOR_CODE_EXCHANGE, Boolean.FALSE);
 
         return clientProps;
     }

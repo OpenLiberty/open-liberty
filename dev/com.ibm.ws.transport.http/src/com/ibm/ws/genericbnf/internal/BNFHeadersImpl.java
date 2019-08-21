@@ -1108,7 +1108,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 //instead of marshallHeader
                 if (this.table != null) {
                     try {
-                        if (!H2Headers.checkIsValidH2WriteHeader(elem.getName())) {
+                        if (!H2Headers.checkIsValidH2WriteHeader(elem.getName(), elem.asString())) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "On an HTTP/2 connection - will not encode this header header: " + elem.getName());
                             }

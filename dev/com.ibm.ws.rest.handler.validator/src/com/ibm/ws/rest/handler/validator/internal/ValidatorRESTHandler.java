@@ -63,7 +63,7 @@ import com.ibm.wsspi.validator.Validator;
 @Component(name = "com.ibm.ws.rest.handler.validator",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
-           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation", RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
+           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation/{element}", RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
 public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
 
@@ -223,7 +223,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         Object target = validatorRefs.isEmpty() || targetRef == null ? null : getService(context, targetRef);
         if (target == null) {
             json.put("successful", false);
-            json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1551_CANNOT_VALIDATE")));
+            json.put("failure", toJSONObject("message", Tr.formatMessage(tc, request.getLocale(), "CWWKO1551_CANNOT_VALIDATE")));
         } else {
             // Build a map of params for the testable service
             Map<String, Object> params = new HashMap<String, Object>();
@@ -264,7 +264,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
                         lcProps.put(resolvePotentialVariable(name), resolvePotentialVariable(value));
                     } else {
                         json.put("successful", false);
-                        json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1552_MISSING_DELIMITER")));
+                        json.put("failure", toJSONObject("message", Tr.formatMessage(tc, request.getLocale(), "CWWKO1552_MISSING_DELIMITER")));
                     }
                 }
                 params.put(Validator.LOGIN_CONFIG_PROPS, lcProps);
@@ -273,7 +273,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             Validator validator = getService(context, validatorRefs.iterator().next());
             if (validator == null) {
                 json.put("successful", false);
-                json.put("failure", toJSONObject("message", Tr.formatMessage(tc, "CWWKO1550_VALIDATOR_NOT_FOUND", configElementPid)));
+                json.put("failure", toJSONObject("message", Tr.formatMessage(tc, request.getLocale(), "CWWKO1550_VALIDATOR_NOT_FOUND", configElementPid)));
             } else if (!json.containsKey("successful")) {
                 Map<String, ?> result;
                 try {
@@ -344,6 +344,21 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         }
 
         String jsonString = json.serialize(true);
+
+        /*
+         * com.ibm.json.java.JSONArtifact.serialize() escapes / with \\/.
+         * The list of special characters in proper JSON data is:
+         * \b Backspace (ascii code 08)
+         * \f Form feed (ascii code 0C)
+         * \n New line
+         * \r Carriage return
+         * \t Tab
+         * \" Double quote
+         * \\ Backslash character
+         *
+         * Therefore, we will remove this extraneous formatting.
+         */
+        jsonString = jsonString.replaceAll("\\\\/", "/");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "populateResponse", jsonString);
@@ -453,6 +468,12 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             }
             response.setResponseHeader("Accept", "GET");
             response.sendError(405); // Method Not Allowed
+            return;
+        }
+
+        //Throw 404 for /ibm/api/validation with an empty string element.
+        if (request.getPath().startsWith("/validation//")) {
+            response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1553_HANDLER_NOT_FOUND", request.getContextPath() + request.getPath()));
             return;
         }
 

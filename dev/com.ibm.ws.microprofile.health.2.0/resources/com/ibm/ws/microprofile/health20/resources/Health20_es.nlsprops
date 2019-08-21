@@ -47,7 +47,7 @@ healthcheck.bean.call.exception.CWMH0050E.useraction=Revise el m\u00e9todo de ll
 # The HealthCheck bean call method had a DOWN outcome
 healthcheck.application.down.CWMH0052W=CWMH0052W: El {0} que implementa HealthCheckResponse en la aplicaci\u00f3n {1} en el m\u00f3dulo {2} ha informado de un estado {3} con datos {4}.
 healthcheck.application.down.CWMH0052W.explanation=Es posible que el estado DOWN haga que el servicio de supervisi\u00f3n realice una acci\u00f3n en este servidor.
-healthcheck.application.down.CWMH0052W.useraction=No se requiere ninguna acci\u00f3n del usuario. Este aviso es un registro del estado DOWN.
+healthcheck.application.down.CWMH0052W.useraction=No se requiere ninguna acci\u00f3n del usuario.  Este aviso es un registro del estado DOWN.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
 readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: La comprobaci\u00f3n de estado de preparaci\u00f3n ha informado de un estado general DOWN porque las aplicaciones siguiente a\u00fan no se han iniciado: {0}

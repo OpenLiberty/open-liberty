@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Aktualisieren Sie die Anwendung, um die Metho
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: Die Weitergabe von Transaktionen an kontextbezogene Aktionen und Tasks wird nicht unterst\u00fctzt.
 CWWKC1157.cannot.propagate.tx.explanation=Ein ManagedExecutor oder ThreadContext, der f\u00fcr die Weitergabe von Transaktionskontexten konfiguriert ist, kann nur leere Transaktionskontexte weitergeben. Daher k\u00f6nnen Sie keine kontextbezogenen Aktionen und Tasks in einer Transaktion erstellen.
 CWWKC1157.cannot.propagate.tx.useraction=Erstellen Sie die kontextbezogene Aktion bzw. Task au\u00dferhalb einer Transaktion. Konfigurieren Sie alternativ den ManagedExecutor oder ThreadContext so, dass keine Transaktionskontexte weitergegeben werden.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

@@ -25,6 +25,7 @@ public class KafkaOutput<K, V> {
     private static final TraceComponent tc = Tr.register(KafkaOutput.class);
     private final KafkaProducer<K, V> kafkaProducer;
     private final String topic;
+    private volatile boolean running = true;
 
     public KafkaOutput(String topic, KafkaProducer<K, V> kafkaProducer) {
         this.topic = topic;
@@ -32,15 +33,12 @@ public class KafkaOutput<K, V> {
     }
 
     public SubscriberBuilder<Message<V>, Void> getSubscriber() {
-        return ReactiveStreams.<Message<V>> builder().onError(this::logError).forEach(this::sendMessage);
+        return ReactiveStreams.<Message<V>> builder().takeWhile(m -> running).onError(KafkaOutput::reportErrorSignal).forEach(this::sendMessage);
     }
 
     public void shutdown(Duration timeout) {
+        running = false;
         kafkaProducer.close(timeout);
-    }
-
-    private void logError(Throwable t) {
-        Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
     }
 
     private void sendMessage(Message<V> message) {
@@ -60,6 +58,10 @@ public class KafkaOutput<K, V> {
 
     private static void reportSendException(Throwable t) {
         Tr.error(tc, "kafka.send.error.CWMRX1003E", t);
+    }
+
+    private static void reportErrorSignal(Throwable t) {
+        Tr.error(tc, "kafka.output.error.signal.CWMRX1004E", t);
     }
 
 }

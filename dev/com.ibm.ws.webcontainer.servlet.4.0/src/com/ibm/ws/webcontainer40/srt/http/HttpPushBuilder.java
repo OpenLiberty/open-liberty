@@ -176,8 +176,12 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader()", "name = " + name + ", value = " + value);
         }
-        removeHeader(name);
-        addHeader(name, value);
+
+        if (isValidHeader(name, value)) {
+            removeHeader(name);
+            addHeader(name, value);
+        }
+
         return this;
     }
 
@@ -186,13 +190,15 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "addHeader()", "name = " + name + ", value = " + value);
         }
-        if (_headers.containsKey(name)) {
-            HashSet<HttpHeaderField> values = _headers.get(name);
-            values.add(new HttpHeaderField(name, value));
-        } else {
-            HashSet<HttpHeaderField> values = new HashSet<HttpHeaderField>();
-            values.add(new HttpHeaderField(name, value));
-            _headers.put(name, values);
+        if (isValidHeader(name, value)) {
+            if (_headers.containsKey(name)) {
+                HashSet<HttpHeaderField> values = _headers.get(name);
+                values.add(new HttpHeaderField(name, value));
+            } else {
+                HashSet<HttpHeaderField> values = new HashSet<HttpHeaderField>();
+                values.add(new HttpHeaderField(name, value));
+                _headers.put(name, values);
+            }
         }
         return this;
     }
@@ -395,6 +401,36 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         removeHeader(HDR_IF_NONE_MATCH);
         removeHeader(HDR_IF_RANGE);
         removeHeader(HDR_IF_UNMODIFIED_SINCE);
+    }
+
+    /**
+     * Validates that the name and value being used for a header are non
+     * null values.
+     *
+     * @param name - header name
+     * @param value - header value
+     * @return
+     */
+    private boolean isValidHeader(String name, String value) {
+
+        boolean validity = true;
+
+        if (name == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Invalid null header name found.");
+            }
+            validity = false;
+        }
+
+        else if (value == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Invalid null header value found.");
+            }
+            validity = false;
+        }
+
+        return validity;
+
     }
 
 }

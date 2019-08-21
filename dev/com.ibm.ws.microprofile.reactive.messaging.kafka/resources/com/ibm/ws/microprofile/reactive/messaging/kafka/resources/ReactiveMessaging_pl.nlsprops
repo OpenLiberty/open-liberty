@@ -1,0 +1,56 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny w konektorze Reactive Messaging Kafka Connector. B\u0142\u0105d: {0}.
+
+internal.kafka.connector.error.CWMRX1000E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d rozszerzenia Reactive Messaging, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+internal.kafka.connector.error.CWMRX1000E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas zatwierdzania przesuni\u0119\u0107 odczytu w brokerze Kafka. B\u0142\u0105d: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Incoming Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas odpytywania brokera Kafka. B\u0142\u0105d: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Incoming Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.poll.error.CWMRX1002E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wysy\u0142ania komunikatu do brokera Kafka. B\u0142\u0105d: {0}.
+kafka.send.error.CWMRX1003E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Outgoing Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging
+kafka.send.error.CWMRX1003E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d rozszerzenia Reactive Messaging: {0}.
+temporary.CWMRX1999E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d rozszerzenia Reactive Messaging, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+temporary.CWMRX1999E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.

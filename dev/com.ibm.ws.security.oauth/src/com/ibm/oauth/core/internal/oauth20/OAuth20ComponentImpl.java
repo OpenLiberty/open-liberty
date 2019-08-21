@@ -36,6 +36,8 @@ import com.ibm.oauth.core.api.attributes.Attribute;
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.config.OAuthComponentConfiguration;
 import com.ibm.oauth.core.api.error.OAuthException;
+import com.ibm.oauth.core.api.error.oauth20.InvalidGrantException;
+import com.ibm.oauth.core.api.error.oauth20.OAuth20AuthorizationCodeInvalidClientException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20BadParameterFormatException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20DuplicateParameterException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20InternalException;
@@ -77,6 +79,7 @@ import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
+import com.ibm.ws.security.oauth20.util.HashUtils;
 import com.ibm.ws.security.oauth20.util.MessageDigestUtil;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
@@ -161,7 +164,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
     @Override
     public OAuth20ConfigProvider get20Configuration() {
         if (_log.isLoggable(Level.FINEST)) {
-            _log.logp(Level.FINEST, CLASS, "get20Configuration", "get20Configuration returns ["+_config20+"]");
+            _log.logp(Level.FINEST, CLASS, "get20Configuration", "get20Configuration returns [" + _config20 + "]");
         }
         return _config20;
     }
@@ -216,6 +219,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
 
             OAuth20Client client = getOAuth20Client(requestContext, clientId, null, redirectUri, false);
 
+            processPKCEAndUpdateAttributeList(request, client, attributeList);
             // jwtAccessToken
             if (request != null) {
                 String[] resource = (String[]) request.getAttribute(OAuth20Constants.OAUTH20_AUTHEN_PARAM_RESOURCE); // audiences
@@ -326,6 +330,72 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
             _log.exiting(CLASS, methodName, result);
         }
         return result;
+    }
+
+    /**
+     * @param request
+     * @param client
+     * @param attributeList
+     * @throws OAuth20BadParameterFormatException
+     * @throws OAuth20DuplicateParameterException
+     * @throws OAuth20MissingParameterException
+     */
+    public void processPKCEAndUpdateAttributeList(HttpServletRequest request, OAuth20Client client, AttributeList attributeList) throws OAuth20DuplicateParameterException, OAuth20BadParameterFormatException, OAuth20MissingParameterException {
+        String methodName = "processPKCEAndUpdateAttributeList";
+        _log.entering(CLASS, methodName);
+        String code_challenge = null;
+        String code_challenge_method = null;
+        if (request != null) {
+            code_challenge = request.getParameter(OAuth20Constants.CODE_CHALLENGE);
+            code_challenge_method = request.getParameter(OAuth20Constants.CODE_CHALLENGE_METHOD);
+            // remember that PKCE may not be involved in any way - it may be ok to not have challenge and challenge_method
+            if ((challengeHasValue(code_challenge) || (((OidcOAuth20Client) client).isProofKeyForCodeExchangeEnabled())) && !challengeHasValue(code_challenge_method)) {
+                code_challenge_method = OAuth20Constants.CODE_CHALLENGE_METHOD_PLAIN;
+            }
+            if (challengeHasValue(code_challenge_method) && isValidCodeChallengeMethod(code_challenge_method) && code_challenge == null) {
+                throw new OAuth20MissingParameterException("security.oauth20.error.missing.parameter", "code_challenge", null);
+            }
+
+            if ((challengeHasValue(code_challenge_method)) && (!isValidCodeChallengeMethod(code_challenge_method))) {
+                throw new OAuth20MissingParameterException("security.oauth20.pkce.invalid.method.error", code_challenge_method, null);
+            }
+        }
+        // save challenge and method if set
+        if (challengeHasValue(code_challenge) && challengeHasValue(code_challenge_method)) {
+            addParameterToAttributeList(OAuth20Constants.CODE_CHALLENGE,
+                    OAuth20Constants.ATTRTYPE_PARAM_QUERY, code_challenge, attributeList);
+
+            addParameterToAttributeList(OAuth20Constants.CODE_CHALLENGE_METHOD,
+                    OAuth20Constants.ATTRTYPE_PARAM_QUERY, code_challenge_method, attributeList);
+        } else if (((OidcOAuth20Client) client).isProofKeyForCodeExchangeEnabled()) {
+            throw new OAuth20MissingParameterException("security.oauth20.error.missing.parameter", "code_challenge", null);
+        }
+        _log.exiting(CLASS, methodName);
+    }
+
+    /**
+     * @param code_challenge
+     * @return
+     */
+    private boolean challengeHasValue(String challenge) {
+
+        if (challenge != null && challenge.length() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param code_challenge_method
+     * @return
+     */
+    private boolean isValidCodeChallengeMethod(String code_challenge_method) {
+
+        if (OAuth20Constants.CODE_CHALLENGE_METHOD_PLAIN.equals(code_challenge_method) || OAuth20Constants.CODE_CHALLENGE_METHOD_S256.equals(code_challenge_method)) {
+            return true;
+        }
+
+        return false;
     }
 
     private OAuthResult processAuthorizationException(AttributeList attributeList, OAuth20Mediator mediator, OAuthException e) {
@@ -451,6 +521,24 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                     OAuth20Token token = getOAuth20Token(requestContext, key, OAuth20Constants.TOKENTYPE_AUTHORIZATION_GRANT, grantType, true);
                     tokens.add(token);
                 }
+                if (tokens.size() >= 1) {
+                    OAuth20Token code = tokens.get(0);
+                    String code_challenge = null;
+                    String code_challenge_method = null;
+                    if (client instanceof OidcOAuth20Client) {
+                        code_challenge = code.getCodeChallenge();
+                        code_challenge_method = code.getCodeChallengeMethod();
+                        if ((((OidcOAuth20Client) client).isProofKeyForCodeExchangeEnabled()) || code_challenge != null) {
+                            // if code has code_challenge, then we expect that the request will have code_verifier
+                            // it is error 1) if the code_verifier is missing or 2) if the code_verifier does not match with the verifier that we derive from the code_challenge
+                            //
+                            handlePKCEVerification(code, code_challenge, code_challenge_method, attributeList);
+                        } else if (requestHasCodeVerifier(attributeList) && code_challenge == null) {
+                            String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier");
+                            throw new InvalidGrantException(message, null);
+                        }
+                    }
+                }
             }
 
             populateFromRequestForOpenIDConnect(attributeList, request);
@@ -467,7 +555,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
             while (tokenIter.hasNext()) {
                 OAuth20Token token = tokenIter.next();
                 removeOldToken(token);
-                //_tokenCache.remove(token.getId());
+                // _tokenCache.remove(token.getId());
             }
 
             gth.buildResponseGrantType(attributeList, newTokens);
@@ -529,6 +617,72 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
     }
 
     /**
+     * @param attributeList
+     * @return
+     */
+    private boolean requestHasCodeVerifier(AttributeList attributeList) {
+        String code_verifier = attributeList
+                .getAttributeValueByName(OAuth20Constants.CODE_VERIFIER);
+        if (code_verifier != null && code_verifier.length() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param code_challenge
+     * @param code_challenge_method
+     * @throws OAuth20AuthorizationCodeInvalidClientException
+     * @throws OAuth20MissingParameterException
+     * @throws InvalidGrantException
+     */
+    public void handlePKCEVerification(OAuth20Token code, String code_challenge, String code_challenge_method, AttributeList attributeList) throws OAuth20AuthorizationCodeInvalidClientException, OAuth20MissingParameterException, InvalidGrantException {
+
+        String methodName = "handlePKCEVerification";
+        _log.entering(CLASS, methodName);
+
+        String code_verifier = attributeList
+                .getAttributeValueByName(OAuth20Constants.CODE_VERIFIER);
+        if (code_verifier == null) {
+            throw new OAuth20MissingParameterException("security.oauth20.error.missing.parameter",
+                    "code_verifier", null);
+        } else {
+            if (!isCodeVerifierLengthAcceptable(code_verifier)) {
+                String message = Tr.formatMessage(tc, "security.oauth20.pkce.codeverifier.length.error");
+                throw new InvalidGrantException(message, null);
+            }
+            if (OAuth20Constants.CODE_CHALLENGE_METHOD_PLAIN.equals(code_challenge_method) && !code_challenge.equals(code_verifier)) {
+                String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier");
+                throw new InvalidGrantException(message, null);
+                // throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
+                // code.getTokenString(), code.getClientId());
+            } else if (OAuth20Constants.CODE_CHALLENGE_METHOD_S256.equals(code_challenge_method)) {
+                String derived_code_challenge = HashUtils.encodedDigest(code_verifier, OAuth20Constants.CODE_CHALLENGE_ALG_METHOD_SHA256, OAuth20Constants.CODE_VERIFIER_ASCCI);
+                if (!code_challenge.equals(derived_code_challenge)) {
+                    String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier");
+                    throw new InvalidGrantException(message, null);
+                }
+            }
+        }
+
+        _log.exiting(CLASS, methodName);
+    }
+
+    /**
+     * @param code_verifier
+     * @return
+     */
+    public boolean isCodeVerifierLengthAcceptable(String code_verifier) {
+
+        if (code_verifier != null && (code_verifier.length() >= OAuth20Constants.CODE_VERIFIER_MIN_LENGTH && code_verifier.length() <= OAuth20Constants.CODE_VERIFIER_MAX_LENGTH)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param token
      */
     private void removeOldToken(OAuth20Token token) {
@@ -540,7 +694,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
         } else {
             _tokenCache.remove(key);
         }
-        
+
     }
 
     @Override
@@ -1182,8 +1336,8 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
         try {
             if (isAuthorizationGrantTypeAndCodeSubType && _tokenCache instanceof OAuth20EnhancedTokenCache) {
 
-                key = MessageDigestUtil.getDigest(key);
-                result = ((OAuth20EnhancedTokenCache)_tokenCache).getByHash(key);   
+                String codekey = MessageDigestUtil.getDigest(key);
+                result = ((OAuth20EnhancedTokenCache) _tokenCache).getByHash(codekey);
             } else {
                 result = _tokenCache.get(key);
             }
@@ -1935,7 +2089,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
          * Send it with some recommended headers
          */
         if (finestLoggable) {
-            _log.logp(Level.FINEST, CLASS, methodName,  "_SSO OP redirecting to [" + redirect +"]");
+            _log.logp(Level.FINEST, CLASS, methodName, "_SSO OP redirecting to [" + redirect + "]");
         }
         response.setHeader(OAuth20Constants.HEADER_CACHE_CONTROL, OAuth20Constants.HEADERVAL_CACHE_CONTROL);
         response.setHeader(OAuth20Constants.HEADER_PRAGMA, OAuth20Constants.HEADERVAL_PRAGMA);

@@ -6,7 +6,8 @@ IBM-App-ForceRestart: install, \
  uninstall
 IBM-API-Package: \
   org.eclipse.microprofile.reactive.messaging;  type="stable", \
-  org.eclipse.microprofile.reactive.messaging.spi; type="stable"
+  org.eclipse.microprofile.reactive.messaging.spi; type="stable", \
+  com.ibm.ws.kafka.security; type="internal"
 IBM-ShortName: mpReactiveMessaging-1.0
 Subsystem-Name: MicroProfile Reactive Messaging 1.0
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.messaging-1.0, \

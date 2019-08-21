@@ -17,14 +17,12 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;
 import com.ibm.wsspi.logging.Introspector;
 
-
 @Component( immediate = true,
             configurationPolicy = ConfigurationPolicy.IGNORE,
-            property = { Constants.SERVICE_VENDOR + "=" + "IBM" })
+            property = { Constants.SERVICE_VENDOR + "=" + "IBM" } )
 public class OverlayContainerIntrospector implements Introspector{
 
     private OverlayContainerFactoryImpl factory;
@@ -36,9 +34,9 @@ public class OverlayContainerIntrospector implements Introspector{
         }
     }
 
-    
-    protected synchronized void unsetOverlayContainerFactory(OverlayContainerFactory factory) {
-            this.factory = null;
+    @SuppressWarnings("hiding")
+	protected synchronized void unsetOverlayContainerFactory(OverlayContainerFactory factory) {
+        this.factory = null;
     }
 
     @Override
@@ -55,8 +53,7 @@ public class OverlayContainerIntrospector implements Introspector{
     public void introspect(PrintWriter outputWriter) throws Exception{
         if(factory != null){
             factory.introspect(outputWriter);
-        }
-        else{
+        } else{
             outputWriter.println("No OverlayContainerFactory to Introspect");
         }
     }

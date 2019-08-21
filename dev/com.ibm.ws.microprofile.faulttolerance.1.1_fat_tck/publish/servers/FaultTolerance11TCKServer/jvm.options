@@ -1,1 +1,2 @@
 -Dcom.ibm.tools.attach.enable=yes
+-Xjit:{org/eclipse/microprofile/config/ConfigProvider.getConfig(Ljava/lang/ClassLoader;)Lorg/eclipse/microprofile/config/Config;}(tracefull,traceInlining,traceCG,log=getConfig.trace)

@@ -206,7 +206,7 @@ public class OAuth20TokenFactory {
             if (stateId == null) {
                 stateId = OAuth20Util.generateUUID();
             }
-
+            
             Map<String, String[]> externalClaims = OAuth20TokenHelper.getExternalClaims(tokenMap);
 
             String tokenString = OAuth20Util.getRandom(length);

@@ -231,16 +231,9 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     public void testCloudantDBNotConfigured() throws Exception {
         HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/doesntExist");
-        JsonObject json = request.run(JsonObject.class);
-        String err = "unexpected response: " + json;
-        assertEquals(err, "doesntExist", json.getString("uid"));
-        assertNull(err, json.get("id"));
-        assertNull(err, json.get("jndiName"));
-        assertFalse(err, json.getBoolean("successful"));
-        assertNull(err, json.get("info"));
-        assertNotNull(err, json = json.getJsonObject("failure"));
-        String message = json.getString("message");
-        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("cloudantDatabase"));
+        String response = request.expectCode(404).run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E") && response.contains("cloudantDatabase") && response.contains("doesntExist"));
 
     }
 

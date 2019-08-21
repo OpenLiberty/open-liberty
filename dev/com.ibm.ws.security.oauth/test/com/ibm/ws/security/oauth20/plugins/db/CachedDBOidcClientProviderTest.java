@@ -33,7 +33,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.oauth.core.api.config.OAuthComponentConfiguration;
@@ -92,8 +91,9 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     final OidcBaseClient baseClient = mockery.mock(OidcBaseClient.class);
 
-    //@BeforeClass
+    @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        setHash(false);
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
@@ -102,7 +102,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         SAMPLE_CLIENTS = getsampleOidcBaseClients(5, PROVIDER_NAME);
     }
 
-    //@AfterClass
+    @AfterClass
     public static void setUpAfterClass() throws Exception {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.restoreStreams();
@@ -110,7 +110,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         InitialContextFactoryMock.inMemoryDbConn.close();
     }
 
-    //@Before
+    @Before
     public void setupBefore() {
         String methodName = "setupBefore";
         _testName = testName.getMethodName();
@@ -127,7 +127,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    //@After
+    @After
     public void tearDown() throws Exception {
         mockery.assertIsSatisfied();
         System.out.println("Exiting test: " + _testName);
@@ -241,7 +241,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     /**
      * Test initialization, loadClients and getAll via the 'initialize' function
      */
-    @Ignore
     @Test
     public void testInitializeAndGetAllClients() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -259,7 +258,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     /**
      * Test initialization, loadClients and getAll via the 'init(OAuthComponentConfiguration)' function
      */
-    @Ignore
     @Test
     public void testInitAndGetAllClients() {
         CachedDBOidcClientProvider oidcBaseClientProvider = new CachedDBOidcClientProvider(PROVIDER_NAME, InitialContextFactoryMock.dsMock, SCHEMA_TABLE_NAME, null, null, EMPTY_STRING_ARR);
@@ -292,7 +290,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testPutAndGet() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -313,7 +310,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testPut_SQLException() {
         try {
@@ -345,7 +341,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testGet() {
         try {
@@ -370,7 +365,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testGet_SQLException() {
         try {
@@ -402,19 +396,17 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testGetAll() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
         try {
-            //The @Before test should have hydrated the DB with SAMPLE_CLIENTS
+            // The @Before test should have hydrated the DB with SAMPLE_CLIENTS
             assertEqualsSampleClients(oidcBaseClientProvider.getAll());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
         }
     }
 
-    @Ignore
     @Test
     public void testGetAll_SQLException() {
         try {
@@ -442,7 +434,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testGetAllRequest() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -461,8 +452,8 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
 
             Map<String, OidcBaseClient> clientsMap = getOidcBaseClientMap(clients);
 
-            //Ensure the clients from the client provider match what was expected (the sample clients)
-            //while adding the modification to check for expected registration uri based on mocked request
+            // Ensure the clients from the client provider match what was expected (the sample clients)
+            // while adding the modification to check for expected registration uri based on mocked request
             for (int i = 0; i < SAMPLE_CLIENTS.size(); i++) {
                 OidcBaseClient clientProviderClient = clientsMap.remove(String.valueOf(i));
 
@@ -472,7 +463,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
                     assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(), clientProviderClient);
                 }
 
-                //Add check for checking registration URI which isn't in assertEqualsOidcBaseClients
+                // Add check for checking registration URI which isn't in assertEqualsOidcBaseClients
                 assertEquals(clientProviderClient.getRegistrationClientUri(), REQUEST_URL_STRING + "/" + clientProviderClient.getClientId());
             }
 
@@ -482,7 +473,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testGetAllRequest_SQLException() {
         try {
@@ -510,7 +500,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testExists() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -523,7 +512,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testExists_SQLException() {
         try {
@@ -553,21 +541,19 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testValidateClient() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
         try {
             for (OidcBaseClient sampleClient : SAMPLE_CLIENTS) {
                 assertTrue("The client must be valid.",
-                           oidcBaseClientProvider.validateClient(sampleClient.getClientId(), sampleClient.getClientSecret()));
+                        oidcBaseClientProvider.validateClient(sampleClient.getClientId(), sampleClient.getClientSecret()));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
         }
     }
 
-    @Ignore
     @Test
     public void testValidateClient_SQLException() {
         try {
@@ -598,7 +584,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testUpdate() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -606,10 +591,10 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         try {
             Collection<OidcBaseClient> clients = oidcBaseClientProvider.getAll();
 
-            //New scope must contain the preauthorized scope or validator will clear the preauthorized scope value
+            // New scope must contain the preauthorized scope or validator will clear the preauthorized scope value
             String newScopes = "profile picture email";
 
-            //Update each client with new scope...
+            // Update each client with new scope...
             for (OidcBaseClient client : clients) {
                 client.setScope(newScopes);
                 oidcBaseClientProvider.update(client);
@@ -623,7 +608,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
                 OidcBaseClient updatedClientProviderClient = updatedClientsMap.remove(String.valueOf(i));
                 OidcBaseClient sampleClient = sampleClientMap.remove(String.valueOf(i)).getDeepCopy();
 
-                //Set new scope on sampleClient before comparison
+                // Set new scope on sampleClient before comparison
                 sampleClient.setScope(newScopes);
 
                 if (i > 0) {
@@ -642,7 +627,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testUpdate_SQLException() {
         try {
@@ -674,7 +658,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testDelete() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
@@ -694,7 +677,6 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         }
     }
 
-    @Ignore
     @Test
     public void testDelete_SQLException() {
         try {
@@ -733,12 +715,12 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     }
 
     private void assertClientEquals(OidcBaseClientDBModel expectedClient, OidcBaseClient retrievedClient) {
-        //Ensure client retrieve is client expected
+        // Ensure client retrieve is client expected
         assertEquals(expectedClient.getComponentId(), retrievedClient.getComponentId());
         assertEquals(expectedClient.getClientId(), retrievedClient.getClientId());
         assertEquals(expectedClient.getClientSecret(), retrievedClient.getClientSecret());
         assertEquals(expectedClient.getDisplayName(), retrievedClient.getClientName());
-        assertEquals(expectedClient.getRedirectUri(), retrievedClient.getRedirectUris().get(0).getAsString()); //We know only 1 redirect URI was set
+        assertEquals(expectedClient.getRedirectUri(), retrievedClient.getRedirectUris().get(0).getAsString()); // We know only 1 redirect URI was set
         assertEquals(expectedClient.getEnabled(), retrievedClient.isEnabled() ? 1 : 0);
     }
 

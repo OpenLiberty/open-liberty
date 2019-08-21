@@ -13,10 +13,14 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: SCIM 2.0 rest handler bundle
-Bundle-SymbolicName: com.ibm.ws.security.wim.scim.rest.2.0
-Bundle-Description: SCIM 2.0 rest handler for registry API; version=${bVersion}
+Bundle-Name: SCIM 2.0 bundle
+Bundle-SymbolicName: com.ibm.ws.security.wim.scim.2.0
+Bundle-Description: SCIM 2.0; version=${bVersion}
 
+# Require Java 8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+javac.source: 1.8
+javac.target: 1.8
 
 #
 # Eventually can move the websphere classes to an API project.
@@ -47,4 +51,6 @@ Include-Resource: \
 	com.ibm.ws.management.security;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging.core;version=latest
-	
+
+-testpath: \
+        ../build.sharedResources/lib/junit/old/junit.jar;version=file

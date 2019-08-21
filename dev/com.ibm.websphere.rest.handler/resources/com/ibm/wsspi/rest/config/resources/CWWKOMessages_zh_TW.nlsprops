@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.rest.handler/resources/com/ibm/wsspi/rest/config/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Rest Handler
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   that do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1500 to CWWKO1529
+
+CWWKO1500_NOT_FOUND=CWWKO1500E: \u5728\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u627e\u4e0d\u5230\u6240\u914d\u7f6e\u7684 {0} \u5143\u7d20\u5be6\u4f8b\u3002
+CWWKO1500_NOT_FOUND.explanation=\u5728 server.xml \u6a94\u4e2d\u627e\u4e0d\u5230\u6240\u8981\u6c42\u7684\u914d\u7f6e\u5143\u7d20\u3002
+CWWKO1500_NOT_FOUND.useraction=\u8acb\u9a57\u8b49\u914d\u7f6e\u5143\u7d20\u5b58\u5728\u65bc server.xml \u6a94\u4e2d\uff0c\u4e26\u4e14\u62fc\u5b57\u6b63\u78ba\u800c\u5927\u5c0f\u5beb\u76f8\u7b26\u3002
+
+CWWKO1501_INVALID_IDENTIFIER=CWWKO1501E: \u552f\u4e00 ID {0} \u7121\u6548\u3002\u6b63\u78ba\u7684\u552f\u4e00 ID \u53ef\u80fd\u662f {1}\u3002
+CWWKO1501_INVALID_IDENTIFIER.explanation=\u627e\u4e0d\u5230\u5177\u6709\u6240\u8981\u6c42\u4e4b\u552f\u4e00 ID \u7684\u914d\u7f6e\u5143\u7d20\u3002\u627e\u5230\u4e00\u500b\u4f7f\u7528\u4e0d\u540c\u552f\u4e00 ID \u7684\u5be6\u4f8b\uff0c\u5982\u679c\u5b83\u5c31\u662f\u60a8\u6b63\u5728\u5c0b\u627e\u7684\uff0c\u5c31\u6703\u5831\u544a\u5b83\u3002
+CWWKO1501_INVALID_IDENTIFIER.useraction=\u8acb\u5224\u65b7\u6b63\u78ba\u7684\u552f\u4e00 ID\u3002\u5c0d\u65bc\u6307\u5b9a\u4e86 ID \u5c6c\u6027\u7684\u6700\u4e0a\u5c64\u914d\u7f6e\u5143\u7d20\uff0c\u5176\u552f\u4e00 ID \u6703\u662f ID \u5c6c\u6027\u7684\u503c\u3002\u5426\u5247\uff0c\u6703\u7531\u4f3a\u670d\u5668\u7522\u751f\u552f\u4e00 ID\u3002
+
+CWWKO1502_MULTIPLE_FOUND=CWWKO1502E: \u6307\u5b9a\u4e86\u885d\u7a81\u7684\u552f\u4e00 ID {0}\uff0c\u6216\u8005\u91dd\u5c0d\u591a\u500b\u914d\u7f6e\u7684\u5be6\u4f8b\u8a08\u7b97\u4e86\u8a72\u552f\u4e00 ID\u3002
+CWWKO1502_MULTIPLE_FOUND.explanation=\u552f\u4e00 ID \u53ea\u80fd\u4f7f\u7528\u4e00\u6b21\u3002
+CWWKO1502_MULTIPLE_FOUND.useraction=\u8acb\u66f4\u65b0\u4f3a\u670d\u5668\u914d\u7f6e\uff0c\u4ee5\u65b0\u589e\u6216\u4fee\u6539\u6240\u914d\u7f6e\u5be6\u4f8b\u7684 ID \u5c6c\u6027\uff0c\u4f7f\u6bcf\u4e00\u500b\u552f\u4e00 ID \u53ea\u6703\u4f7f\u7528\u4e00\u6b21\u3002

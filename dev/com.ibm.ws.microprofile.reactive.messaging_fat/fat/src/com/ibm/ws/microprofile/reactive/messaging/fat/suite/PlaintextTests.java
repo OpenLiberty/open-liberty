@@ -21,6 +21,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknow
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions.KafkaPartitionTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCustomSerializerTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sharedLib.KafkaSharedLibTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck.ReactiveStreamsTckTest;
 
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
@@ -35,6 +36,8 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 KafkaCustomSerializerTest.class,
                 KafkaPartitionTest.class,
                 KafkaSharedLibTest.class,
+                ReactiveStreamsTckTest.class,
+                BadConnectorIDTest.class,
 })
 public class PlaintextTests {
 

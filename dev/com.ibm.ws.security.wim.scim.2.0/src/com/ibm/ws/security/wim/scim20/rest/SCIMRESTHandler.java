@@ -14,6 +14,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -74,6 +77,16 @@ public class SCIMRESTHandler implements RESTHandler {
     private static final String ENDPOINT_SERVICE_PROVIDER_CONFIG = "ServiceProviderConfig";
 
     private static final String ENDPOINT_SEARCH = ".search";
+
+    /**
+     * Roles that would be sufficient to perform a read.
+     */
+    private static final Set<String> REQUIRED_ROLES_READ = new HashSet<String>(Arrays.asList(new String[] { ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME,
+                                                                                                            ManagementSecurityConstants.READER_ROLE_NAME }));
+    /**
+     * Roles that would be sufficient to perform a write.
+     */
+    private static final Set<String> REQUIRED_ROLES_WRITE = new HashSet<String>(Arrays.asList(new String[] { ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME }));
 
     /** The SCIM 2.0 service. */
     // TODO When we support SCIM 1.0 and 2.0 in this handler, we will want to rely on the OSGi service.
@@ -426,7 +439,7 @@ public class SCIMRESTHandler implements RESTHandler {
     private static void checkHasWriteRole(RESTRequest request) throws AuthorizationException {
         if (!request.isUserInRole(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME)) {
             // TODO Probably need to make sure this message doesn't make it to the end-user in the HTTP response.
-            throw new AuthorizationException("The 'Administrator' role is required to create, delete, or update a resource.");
+            throw new AuthorizationException("The 'Administrator' role is required to create, delete, or update a resource.", REQUIRED_ROLES_WRITE);
         }
     }
 
@@ -439,7 +452,7 @@ public class SCIMRESTHandler implements RESTHandler {
     private static void checkHasReadRole(RESTRequest request) throws AuthorizationException {
         if (!request.isUserInRole(ManagementSecurityConstants.READER_ROLE_NAME) && !request.isUserInRole(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME)) {
             // TODO Probably need to make sure this message doesn't make it to the end-user in the HTTP response.
-            throw new AuthorizationException("The 'Administrator' or 'Reader' role is required to read a resource.");
+            throw new AuthorizationException("The 'Administrator' or 'Reader' role is required to read a resource.", REQUIRED_ROLES_READ);
         }
     }
 }

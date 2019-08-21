@@ -63,6 +63,11 @@ public class HttpSessionImpl implements HttpSession {
      * @deprecated
      */
     private static final HttpSessionContext _httpSessionContext = new HttpSessionContextImpl();
+    
+    /*
+     * Adding a message for when IllegalStateException is thrown
+     */
+    private static final String iseMessage = "The method is called on an invalidated session: ";
 
     // ----------------------------------------
     // Constructor
@@ -95,7 +100,7 @@ public class HttpSessionImpl implements HttpSession {
      */
     public long getCreationTime() {
         if (!_iSession.isValid())
-            throw new IllegalStateException();
+            throw new IllegalStateException(iseMessage+_iSession.getId());
         return _iSession.getCreationTime();
     }
 
@@ -117,7 +122,7 @@ public class HttpSessionImpl implements HttpSession {
      */
     public long getLastAccessedTime() {
         if (!_iSession.isValid())
-            throw new IllegalStateException();
+            throw new IllegalStateException(iseMessage+_iSession.getId());
         return _iSession.getLastAccessedTime();
     }
 
@@ -184,7 +189,7 @@ public class HttpSessionImpl implements HttpSession {
     public Object getAttribute(String attributeName) {
         synchronized (_iSession) {
             if (!_iSession.isValid())
-                throw new IllegalStateException("The following session is not valid! "+_iSession.getId());
+                throw new IllegalStateException(iseMessage+_iSession.getId());
             return _iSession.getAttribute(attributeName);
         }
     }
@@ -209,7 +214,7 @@ public class HttpSessionImpl implements HttpSession {
     public Enumeration getAttributeNames() {
         synchronized (_iSession) {
             if (!_iSession.isValid())
-                throw new IllegalStateException();
+                throw new IllegalStateException(iseMessage+_iSession.getId());
             return _iSession.getAttributeNames();
         }
     }
@@ -223,7 +228,7 @@ public class HttpSessionImpl implements HttpSession {
      */
     public String[] getValueNames() {
         if (!_iSession.isValid())
-            throw new IllegalStateException();
+            throw new IllegalStateException(iseMessage+_iSession.getId());
         Enumeration enumeration = this.getAttributeNames();
         Vector valueNames = new Vector();
         String name = null;
@@ -244,7 +249,7 @@ public class HttpSessionImpl implements HttpSession {
     public void setAttribute(String attributeName, Object value) {
         synchronized (_iSession) {
             if (!_iSession.isValid())
-                throw new IllegalStateException();
+                throw new IllegalStateException(iseMessage+_iSession.getId());
             if (null != value) {
                 if (!(value instanceof HttpSessionBindingListener)) {
                     _iSession.setAttribute(attributeName, value, Boolean.FALSE);
@@ -276,7 +281,7 @@ public class HttpSessionImpl implements HttpSession {
     public void removeAttribute(String attributeName) {
         synchronized (_iSession) {
             if (!_iSession.isValid())
-                throw new IllegalStateException();
+                throw new IllegalStateException(iseMessage+_iSession.getId());
             Object object = _iSession.removeAttribute(attributeName);
         }
     }
@@ -300,7 +305,7 @@ public class HttpSessionImpl implements HttpSession {
      */
     public void invalidate() {
         if (!_iSession.isValid())
-            throw new IllegalStateException();
+            throw new IllegalStateException(iseMessage+_iSession.getId());
         _iSession.invalidate();
     }
 
@@ -312,7 +317,7 @@ public class HttpSessionImpl implements HttpSession {
      */
     public boolean isNew() {
         if (!_iSession.isValid())
-            throw new IllegalStateException();
+            throw new IllegalStateException(iseMessage+_iSession.getId());
         return _iSession.isNew();
 
     }

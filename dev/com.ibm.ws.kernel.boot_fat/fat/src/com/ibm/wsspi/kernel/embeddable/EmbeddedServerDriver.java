@@ -22,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -33,6 +34,9 @@ import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
 public class EmbeddedServerDriver implements ServerEventListener {
+
+    private static final long SERVER_START_TIMEOUT = 30;
+    private static final TimeUnit SERVER_START_TIMEOUT_UNIT = TimeUnit.SECONDS;
 
     private final Class<?> c = EmbeddedServerDriver.class;
     private String CURRENT_METHOD_NAME = null;
@@ -234,7 +238,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     /**
      * Determine if the input product extension exists in the input string.
      *
-     * @param inputString string to search.
+     * @param inputString      string to search.
      * @param productExtension product extension to search for.
      * @return true if input product extension is found in the input string.
      */
@@ -533,7 +537,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         Future<Result> startFuture = server.start();
 
         try {
-            result = startFuture.get();
+            result = startFuture.get(SERVER_START_TIMEOUT, SERVER_START_TIMEOUT_UNIT);
             dumpResult("Starting a server", result);
             Assert.assertTrue("Result of start attempt should be successful", result.successful());
             Assert.assertEquals("Should have an OK return code", ReturnCode.OK.getValue(), result.getReturnCode());
@@ -547,6 +551,11 @@ public class EmbeddedServerDriver implements ServerEventListener {
         } catch (ExecutionException e) {
             failures.add(new AssertionFailedError("Start operation could not be queued: " + e));
             Log.error(c, CURRENT_METHOD_NAME, e);
+        } catch (TimeoutException e) {
+            failures.add(new AssertionFailedError("Start operation did not complete in time"));
+            Log.error(c, CURRENT_METHOD_NAME, e);
+            // Dumping stack in case this is a hang
+            Thread.dumpStack();
         }
 
         checkServerRunning(true); // server should be started
@@ -556,7 +565,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         Future<Result> startFuture = server.start(new String[] { "--clean" });
 
         try {
-            result = startFuture.get();
+            result = startFuture.get(SERVER_START_TIMEOUT, SERVER_START_TIMEOUT_UNIT);
             dumpResult("Starting a server", result);
             Assert.assertTrue("Result of first start attempt should be successful", result.successful());
             Assert.assertEquals("Should have an OK return code", ReturnCode.OK.getValue(), result.getReturnCode());
@@ -570,6 +579,11 @@ public class EmbeddedServerDriver implements ServerEventListener {
         } catch (ExecutionException e) {
             failures.add(new AssertionFailedError("Start operation could not be queued: " + e));
             Log.error(c, CURRENT_METHOD_NAME, e);
+        } catch (TimeoutException e) {
+            failures.add(new AssertionFailedError("The start operation did not complete within the timeout"));
+            Log.error(c, CURRENT_METHOD_NAME, e);
+            // Dumping stack here because otherwise we don't have much information on why this timed out.
+            Thread.dumpStack();
         }
 
         checkServerRunning(true); // server should be started

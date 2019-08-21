@@ -12,11 +12,14 @@ package com.ibm.ws.webcontainer.osgi.mbeans;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.UnknownHostException;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.AccessController;
@@ -775,7 +778,7 @@ public class PluginGenerator {
                         fOutputStream.getFD().sync();
                         pluginCfgWriter.close();
                     }
-                    Files.copy(cachedFile.toPath(), outFile.asFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    copyFile(cachedFile, outFile.asFile());
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -819,6 +822,26 @@ public class PluginGenerator {
             Tr.exit(tc, "generateXML");
         }
     }
+    
+    public static void copyFile(File in, File out) 
+                    throws IOException
+                {
+                    FileChannel inChannel = new
+                        FileInputStream(in).getChannel();
+                    FileChannel outChannel = new
+                        FileOutputStream(out).getChannel();
+                    try {
+                        inChannel.transferTo(0, inChannel.size(),
+                                outChannel);
+                    } 
+                    catch (IOException e) {
+                        throw e;
+                    }
+                    finally {
+                        if (inChannel != null) inChannel.close();
+                        if (outChannel != null) outChannel.close();
+                    }
+                }
 
     private static TransformerFactory getTransformerFactory() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

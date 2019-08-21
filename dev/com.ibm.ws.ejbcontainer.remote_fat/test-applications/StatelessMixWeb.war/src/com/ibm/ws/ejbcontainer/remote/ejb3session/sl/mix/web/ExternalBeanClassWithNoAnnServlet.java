@@ -67,7 +67,7 @@ public class ExternalBeanClassWithNoAnnServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testLookupXMLBasedName() throws Exception {
+    public void testLookupXMLBasedName_ExternalBeanClassWithNoAnn() throws Exception {
         // --------------------------------------------------------------------
         // Lookup SLRSB by XML name and execute the test
         // --------------------------------------------------------------------

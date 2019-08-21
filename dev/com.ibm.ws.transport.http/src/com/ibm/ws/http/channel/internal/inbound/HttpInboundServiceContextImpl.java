@@ -90,7 +90,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedRemoteAddress = null;
     private String forwardedProto = null;
     private String forwardedHost = null;
-
+    private int h2ContentLength = -1;
     /**
      * Constructor for an HTTP inbound service context object.
      *
@@ -563,7 +563,16 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
         }
         setStartTime();
-        return getMyRequest();
+        HttpRequestMessageImpl req = getMyRequest();
+
+        // if applicable set the HTTP/2 specific content length
+        if (myLink instanceof H2HttpInboundLinkWrap) {
+            int len = ((H2HttpInboundLinkWrap)myLink).getH2ContentLength();
+            if (len != -1) {
+                req.setContentLength(len);
+            }
+        }
+        return req;
     }
 
     /**
@@ -1418,8 +1427,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             throw ioe;
         }
 
+        // check for an HTTP/2 specific content length
+        int h2ContentLength = -1;
+        if (myLink instanceof H2HttpInboundLinkWrap) {
+            h2ContentLength = ((H2HttpInboundLinkWrap)myLink).getH2ContentLength();
+        }
+
         // check to see if a body is allowed before reading for one
-        if (!isIncomingBodyValid()) {
+        if (!isIncomingBodyValid() && h2ContentLength == -1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "getRequestBodyBuffers(sync): No body allowed");
             }
