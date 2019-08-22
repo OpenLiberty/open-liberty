@@ -28,8 +28,8 @@ Import-Package: \
  
 Export-Package: \
   !org.apache.cxf.internal.*, \
-  org.apache.cxf.*;version="[2.6.2,2.6.3)"
+  org.apache.cxf.*;version=2.6.2
  
 Private-Package: \
-  org.apache.cxf.internal;version="[2.6.2,2.6.3)"
+  org.apache.cxf.internal;version=2.6.2
   
