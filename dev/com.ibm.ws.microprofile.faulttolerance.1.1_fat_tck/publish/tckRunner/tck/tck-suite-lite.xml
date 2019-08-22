@@ -78,9 +78,13 @@
                      !method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") &&
                      
                      // RetryTimeoutTest
-                     !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest")
+                     !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest") &&
                      
                      // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
+                     
+                     // AsyncTimeoutTest
+                     // This specific test is broken in the FT 1.1 TCK and was fixed for FT 2.0
+                     !method.getName().startsWith("testAsyncClassLevelTimeout")
                 ]]>
                 </script>
             </method-selector>
