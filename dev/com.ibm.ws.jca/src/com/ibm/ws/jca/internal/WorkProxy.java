@@ -460,7 +460,6 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
     @Override
     public com.ibm.wsspi.threading.WorkContext getWorkContext() {
         // TODO Auto-generated method stub
-        wc.putall()
         return this.wc;
     }
 
