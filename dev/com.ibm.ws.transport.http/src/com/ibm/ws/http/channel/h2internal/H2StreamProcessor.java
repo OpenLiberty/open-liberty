@@ -326,9 +326,8 @@ public class H2StreamProcessor {
                         addFrame = ADDITIONAL_FRAME.RESET;
                         addFrameException = e;
                     } else {
-                        // TODO: otherwise just close the stream/connection at the TCP Channel layer and clean up resources
+                        addFrame = ADDITIONAL_FRAME.NO;
                     }
-                    addFrame = ADDITIONAL_FRAME.NO;
                 }
                 continue;
             }
@@ -526,13 +525,12 @@ public class H2StreamProcessor {
                     }
                     continue;
                 } catch (Http2Exception e) {
-                    if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
+                    if ((addFrame == ADDITIONAL_FRAME.FIRST_TIME) || (addFrame == ADDITIONAL_FRAME.RESET)) {
                         if ((frameType == FrameTypes.DATA) && (e instanceof FlowControlException)) {
                             FCEToThrow = (FlowControlException) e;
                         }
                         if (e.isConnectionError()) {
                             addFrame = ADDITIONAL_FRAME.GOAWAY;
-                            addFrameException = e;
                         } else {
                             addFrame = ADDITIONAL_FRAME.RESET;
                         }
