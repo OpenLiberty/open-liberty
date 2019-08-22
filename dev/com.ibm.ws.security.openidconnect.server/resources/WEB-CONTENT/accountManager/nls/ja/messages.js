@@ -35,7 +35,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "表は {0} によって昇順でソートされます。",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "表は {0} によって降順でソートされます。", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "再試行してください...",
+    "TRY_AGAIN": "再試行...",
     "UPDATE": "更新",
 
     // Common Column Names
@@ -49,7 +49,7 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "個人用トークンの管理",
     "ACCT_MGR_DESC": "app-password と app-token を作成、削除および再生成します。",
-    "ADD_NEW_AUTHENTICATION": "新規 app-password または app-token を追加する。",
+    "ADD_NEW_AUTHENTICATION": "新規 app-password または app-token を追加します。",
     "NAME_IDENTIFIER": "名前: {0}",
     "ADD_NEW_TITLE": "新規認証の登録",
     "NOT_GENERATED_PLACEHOLDER": "生成されません",

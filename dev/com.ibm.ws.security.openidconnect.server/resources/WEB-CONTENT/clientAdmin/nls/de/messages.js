@@ -36,13 +36,13 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "Die Tabelle ist nach {0} in aufsteigender Reihenfolge sortiert. ",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "Die Tabelle ist nach {0} in absteigender Reihenfolge sortiert. ", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "Wiederholen Sie den Vorgang...",
+    "TRY_AGAIN": "Vorgang wiederholen...",
     "UPDATE": "Aktualisieren",
 
     // Common Column Names
     "CLIENT_NAME_COL": "Clientname",
-    "EXPIRES_COL": "Ablaufzeit",
-    "ISSUED_COL": "Ausgegeben am",
+    "EXPIRES_COL": "Ablaufdatum",
+    "ISSUED_COL": "Austelldatum",
     "NAME_COL": "Name",
     "TYPE_COL": "Typ",
 
@@ -98,6 +98,6 @@ var messages = {
     "ENTER_PLACEHOLDER": "Wert eingeben",
     "ADD_VALUE": "Element hinzufügen",
     "REMOVE_VALUE": "Element entfernen",
-    "REGENERATE_CLIENT_SECRET": "Mit '*' wird der vorhandene Wert beibehalten. Bei einem Leerwert wird ein neuer geheimer Clientschlüssel generiert. Ein belegter Parameterwert überschreibt den vorhandenen Wert mit dem neu angegebenen Wert. ",
+    "REGENERATE_CLIENT_SECRET": "Mit '*' wird der vorhandene Wert beibehalten. Wird kein Wert angegeben, wird ein neuer geheimer Clientschlüssel generiert. Ansonsten überschreibt der neu angegebene Parameterwert den vorhandenen Wert. ",
     "ALL_OPTIONAL": "Alle Felder sind optional"
 };

@@ -48,30 +48,30 @@ var messages = {
     // 'app-token' and 'app-password' are keywords - don't translate
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "管理个人令牌",
-    "ACCT_MGR_DESC": "创建、删除和重新生成应用程序密码及应用程序令牌。",
-    "ADD_NEW_AUTHENTICATION": "添加新的应用程序密码或应用程序令牌。",
+    "ACCT_MGR_DESC": "创建、删除和重新生成 app-password 及 app-token。",
+    "ADD_NEW_AUTHENTICATION": "添加新的 app-password 或 app-token。",
     "NAME_IDENTIFIER": "名称：{0}",
     "ADD_NEW_TITLE": "注册新的认证",
     "NOT_GENERATED_PLACEHOLDER": "未生成",
     "AUTHENTICAION_GENERATED": "已生成认证",
-    "GENERATED_APP_PASSWORD": "已生成应用程序密码",
-    "GENERATED_APP_TOKEN": "已生成应用程序令牌",
-    "COPY_APP_PASSWORD": "将应用程序密码复制到剪贴板",
-    "COPY_APP_TOKEN": "将应用程序令牌复制到剪贴板",
-    "REGENERATE_APP_PASSWORD": "重新生成应用程序密码",
-    "REGENERATE_PW_WARNING": "此操作将覆盖当前应用程序密码。",
-    "REGENERATE_PW_PLACEHOLDER": "先前在 {0} 生成的密码",        // 0 - date
-    "REGENERATE_APP_TOKEN": "重新生成应用程序令牌",
-    "REGENERATE_TOKEN_WARNING": "此操作将覆盖当前应用程序令牌。",
-    "REGENERATE_TOKEN_PLACEHOLDER": "先前在 {0} 生成的令牌",        // 0 - date
-    "DELETE_PW": "删除此应用程序密码",
-    "DELETE_TOKEN": "删除此应用程序令牌",
-    "DELETE_WARNING_PW": "此操作将移除当前分配的应用程序密码。",
-    "DELETE_WARNING_TOKEN": "此操作将移除当前分配的应用程序令牌。",
+    "GENERATED_APP_PASSWORD": "已生成 app-password",
+    "GENERATED_APP_TOKEN": "已生成 app-token",
+    "COPY_APP_PASSWORD": "将 app-password 复制到剪贴板",
+    "COPY_APP_TOKEN": "将 app-token 复制到剪贴板",
+    "REGENERATE_APP_PASSWORD": "重新生成 App-Password",
+    "REGENERATE_PW_WARNING": "此操作将覆盖当前 app-password。",
+    "REGENERATE_PW_PLACEHOLDER": "先前在 {0}生成的密码",        // 0 - date
+    "REGENERATE_APP_TOKEN": "重新生成 App-Token",
+    "REGENERATE_TOKEN_WARNING": "此操作将覆盖当前 app-token。",
+    "REGENERATE_TOKEN_PLACEHOLDER": "先前在 {0}生成的令牌",        // 0 - date
+    "DELETE_PW": "删除此 app-password",
+    "DELETE_TOKEN": "删除此 app-token",
+    "DELETE_WARNING_PW": "此操作将移除当前分配的 app-password。",
+    "DELETE_WARNING_TOKEN": "此操作将移除当前分配的 app-token。",
     "REGENERATE_ARIA": "重新生成对应 {1} 的 {0}",     // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_ARIA": "删除名为 {1} 的 {0}",       // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_GENERATE_FAIL": "生成 {0} 时出错", // 0 - 'App-Password' or 'App-Token'
-    "GENERIC_GENERATE_FAIL_MSG": "删除名称为 {1} 的新 {0} 时发生了错误。",  // 0 - 'app-password' or 'app-token'; 1 - name
+    "GENERIC_GENERATE_FAIL_MSG": "生成名为 {1} 的新 {0} 时发生了错误。",  // 0 - 'app-password' or 'app-token'; 1 - name
     "ERR_NAME": "该名称已与 {0} 相关联，或者该名称太长。", // 0 - 'app-password' or 'app-token'
     "GENERIC_DELETE_FAIL": "删除 {0} 时出错",     // 0 - 'App-Password' or 'App-Token'
     "GENERIC_DELETE_FAIL_MSG": "删除名为 {1} 的 {0} 时发生了错误。",  // 0 - 'app-password' or 'app-token'; 1 - name
@@ -79,7 +79,7 @@ var messages = {
     "GENERIC_REGENERATE_FAIL_MSG": "重新生成名为 {1} 的 {0} 时发生了错误。",  // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_REGENERATE_FAIL_CREATE_MSG": "重新生成名为 {1} 的 {0} 时发生了错误。{0} 已被删除，但无法重新创建。", // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_FETCH_FAIL": "检索认证时出错",
-    "GENERIC_FETCH_FAIL_MSG": "无法获取应用程序密码或应用程序令牌的当前列表。",
+    "GENERIC_FETCH_FAIL_MSG": "无法获取 app-password 或 app-token 的当前列表。",
     "GENERIC_NOT_CONFIGURED": "未配置客户机",
     "GENERIC_NOT_CONFIGURED_MSG": "未配置 appPasswordAllowed 和 appTokenAllowed 客户机属性。无法检索数据。",
     "APP_PASSWORD_NOT_CONFIGURED": "未配置 appPasswordAllowed 客户机属性。",  // 'appPasswordAllowed' is a config option. Do not translate.

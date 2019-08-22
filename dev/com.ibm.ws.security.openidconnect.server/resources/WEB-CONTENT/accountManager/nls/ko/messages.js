@@ -35,7 +35,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "테이블은 {0}별로 오름차순으로 정렬됩니다.",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "테이블은 {0}별로 내림차순으로 정렬됩니다.", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "다시 시도하십시오...",
+    "TRY_AGAIN": "다시 시도...",
     "UPDATE": "업데이트",
 
     // Common Column Names

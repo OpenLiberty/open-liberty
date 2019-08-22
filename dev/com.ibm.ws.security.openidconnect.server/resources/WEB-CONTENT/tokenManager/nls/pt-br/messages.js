@@ -26,8 +26,8 @@ var messages = {
     "LOADING": "Carregando",
     "LOGOUT": "Logout",
     "NEXT_PAGE": "Próxima página",
-    "NO_RESULTS_FOUND": "Nenhum Resultado Localizado",
-    "PAGES": "{0} de {1} páginas",   // {0} - current page number; {1} - total pages
+    "NO_RESULTS_FOUND": "Nenhum resultado localizado",
+    "PAGES": "{0} de {1} página(s)",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Selecione o número da página para visualização",
     "PREVIOUS_PAGE": "Página anterior",
     "PROCESSING": "Processando",
@@ -37,7 +37,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "A tabela é classificada por {0} em ordem crescente. ",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "A tabela é classificada por {0} em ordem decrescente. ", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "Verdadeiro",
-    "TRY_AGAIN": "Tente novamente ...",
+    "TRY_AGAIN": "Tentar novamente ...",
     "UPDATE": "Atualizar",
 
     // Common Column Names
@@ -69,7 +69,7 @@ var messages = {
     "DELETE_NONE": "Selecionar para Exclusão",
     "DELETE_NONE_MESSAGE": "Selecione uma caixa de seleção para indicar quais app-passwords ou app-tokens devem ser excluídos.",
     "SINGLE_ITEM_SELECTED": "1 item selecionado",
-    "ITEMS_SELECTED": "{0} itens selecionados",            // 0 - number
+    "ITEMS_SELECTED": "{0} item(ens) selecionado(s)",            // 0 - number
     "SELECT_ALL_AUTHS": "Selecione todos os app-passwords e app-tokens para este usuário.",
     "SELECT_SPECIFIC": "Selecione o {0} chamado {1} para exclusão. ",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Procurando por algo? Insira um ID do usuário para visualizar seus app-passwords e app-tokens.",
