@@ -2026,7 +2026,7 @@ public class ResolutionTests {
     /**
      * Test the resolveAsSet method with 3 level feature dependencies
      *
-     * Feautre I is private
+     * Feature I is private
      *
      * Dependency map
      * Feature A -> Feature X -> Feature I 1.0
@@ -2079,6 +2079,69 @@ public class ResolutionTests {
         assertThat(resolved, containsInAnyOrder(
                                                 Matchers.<RepositoryResource> contains(featureI10, featureX, featureA),
                                                 Matchers.<RepositoryResource> contains(featureI10, featureY, featureB)));
+
+    }
+
+    /**
+     * Test the resolveAsSet method with 3 level feature dependencies
+     *
+     * This is similar to the previous test but with FeatureI 1.1 being the correct choice to resolve the conflict
+     *
+     * This is the more common scenario in the product (feature was written for an old version but tolerates a newer version)
+     *
+     * Feature I is private
+     *
+     * Dependency map
+     * Feature A -> Feature X -> Feature I 1.1
+     * Feature B -> Feature Y -> Feature I 1.0 tolerate 1.1
+     *
+     * Expected: resolution succeeds because although Feature B does not tolerate Feature I 1.1, Feature I is private.
+     */
+    @Test
+    public void testSetTransitivePrivateTolerateNewer() throws RepositoryException {
+        // initialize all the features
+        EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
+        featureA.setProvideFeature("com.example.featureA-1.0");
+        featureA.addRequireFeatureWithTolerates("com.example.featureX-1.0", Collections.<String> emptyList());
+        featureA.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureA);
+
+        EsaResourceWritable featureB = WritableResourceFactory.createEsa(null);
+        featureB.setProvideFeature("com.example.featureB-1.0");
+        featureB.addRequireFeatureWithTolerates("com.example.featureY-1.0", Collections.<String> emptyList());
+        featureB.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureB);
+
+        EsaResourceWritable featureX = WritableResourceFactory.createEsa(null);
+        featureX.setProvideFeature("com.example.featureX-1.0");
+        featureX.addRequireFeatureWithTolerates("com.example.featureI-1.1", Collections.<String> emptyList());
+        featureX.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureX);
+
+        EsaResourceWritable featureY = WritableResourceFactory.createEsa(null);
+        featureY.setProvideFeature("com.example.featureY-1.0");
+        featureY.addRequireFeatureWithTolerates("com.example.featureI-1.0", Arrays.asList("1.1"));
+        featureY.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureY);
+
+        EsaResourceWritable featureI10 = WritableResourceFactory.createEsa(null);
+        featureI10.setProvideFeature("com.example.featureI-1.0");
+        featureI10.setVisibility(Visibility.PRIVATE);
+        featureI10.setSingleton("true");
+        repoFeatures.add(featureI10);
+
+        EsaResourceWritable featureI11 = WritableResourceFactory.createEsa(null);
+        featureI11.setProvideFeature("com.example.featureI-1.1");
+        featureI11.setVisibility(Visibility.PRIVATE);
+        featureI11.setSingleton("true");
+        repoFeatures.add(featureI11);
+
+        // build the repository and resolve the features
+        RepositoryResolver resolver = createResolver();
+        Collection<List<RepositoryResource>> resolved = resolver.resolveAsSet(Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
+        assertThat(resolved, containsInAnyOrder(
+                                                Matchers.<RepositoryResource> contains(featureI11, featureX, featureA),
+                                                Matchers.<RepositoryResource> contains(featureI11, featureY, featureB)));
 
     }
 
