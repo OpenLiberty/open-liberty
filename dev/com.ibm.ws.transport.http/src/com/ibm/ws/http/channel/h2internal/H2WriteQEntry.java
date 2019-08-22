@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 import com.ibm.websphere.ras.Tr;
@@ -31,6 +32,8 @@ public class H2WriteQEntry {
     int priority = 0;
     FrameTypes frameType = FrameTypes.UNKNOWN;
     int payloadLength = 0;
+
+    IOException ioexception = null;
 
     // Latch that will signal when the write is seen as done at the TCP Channel layer.   A rule of the TCP Channel is that no two writes
     // can be outstanding at the same time (which would be really confusing to everyone if there were).
@@ -127,6 +130,14 @@ public class H2WriteQEntry {
 
     public int getPayloadLength() {
         return payloadLength;
+    }
+
+    public IOException getIOException() {
+        return ioexception;
+    }
+
+    public void setIOException(IOException x) {
+        ioexception = x;
     }
 
 }

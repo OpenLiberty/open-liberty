@@ -64,6 +64,8 @@ public class H2MuxTCPWriteCallback implements TCPWriteCompletedCallback {
             return;
         }
 
+        qEntry.setIOException(ioe);
+
         // Release waiting threads, Sync writes are waiting, and/or the queue service thread is waiting so it can start another write
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "hit write complete latch for qentry: " + qEntry.hashCode());
