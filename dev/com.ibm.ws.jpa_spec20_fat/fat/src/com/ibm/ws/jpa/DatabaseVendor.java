@@ -27,6 +27,7 @@ public enum DatabaseVendor {
 
     public static DatabaseVendor resolveDBProduct(String dbProductName) {
         if (dbProductName == null || "".equals(dbProductName.trim())) {
+            System.err.println("Cannot resolve database product " + dbProductName);
             return null;
         }
 
