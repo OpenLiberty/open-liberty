@@ -715,8 +715,8 @@ public abstract class AbstractSingleFileObjectStore
                     while (   newReservedSize > reservationCheckpointThreshold
                            && reservationPacing
                            && paced
-                           && !(   objectManagerState.state == ObjectManagerState.stateColdStarted
-                                || objectManagerState.state == ObjectManagerState.stateWarmStarted) ) {
+                           && (   objectManagerState.state == ObjectManagerState.stateColdStarted
+                               || objectManagerState.state == ObjectManagerState.stateWarmStarted) ) {
                         if (Tracing.isAnyTracingEnabled() && trace.isDebugEnabled())
                             trace.debug(this, cclass, methodName, new Object[] { "wait:728",
                                                                                 new Long(newReservedSize),
