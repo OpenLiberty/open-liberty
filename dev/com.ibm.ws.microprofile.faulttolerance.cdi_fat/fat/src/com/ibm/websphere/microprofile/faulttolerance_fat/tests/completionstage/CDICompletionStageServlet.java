@@ -86,14 +86,7 @@ public class CDICompletionStageServlet extends FATServlet {
         CompletionStage<Void> result = bean.serviceCsTimeout(returnValue);
 
         // If we don't complete the return value, we expect a timeout exception
-        try {
-            toCompletableFuture(result).get(2, SECONDS);
-            fail("No exception thrown");
-        } catch (ExecutionException e) {
-            assertThat(e.getCause(), instanceOf(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class));
-        } catch (TimeoutException e) {
-            fail("Result did not complete");
-        }
+        assertException(result, org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class);
     }
 
     @Test
@@ -160,7 +153,7 @@ public class CDICompletionStageServlet extends FATServlet {
 
     private <T> void assertResult(CompletionStage<T> cs, T expected) throws InterruptedException {
         try {
-            T result = toCompletableFuture(cs).get(2, SECONDS);
+            T result = toCompletableFuture(cs).get(10, SECONDS);
             assertEquals(expected, result);
         } catch (TimeoutException ex) {
             fail("CompletionStage did not complete within 2 seconds");
@@ -171,7 +164,7 @@ public class CDICompletionStageServlet extends FATServlet {
 
     private void assertException(CompletionStage<?> cs, Class<? extends Throwable> exceptionClazz) throws InterruptedException {
         try {
-            toCompletableFuture(cs).get(2, SECONDS);
+            toCompletableFuture(cs).get(10, SECONDS);
             fail("Completion stage completed successfully");
         } catch (ExecutionException ex) {
             assertThat(ex.getCause(), instanceOf(exceptionClazz));
@@ -182,7 +175,7 @@ public class CDICompletionStageServlet extends FATServlet {
 
     private void assertCompleting(CompletionStage<?> cs) throws InterruptedException {
         try {
-            toCompletableFuture(cs).get(2, SECONDS);
+            toCompletableFuture(cs).get(10, SECONDS);
         } catch (TimeoutException ex) {
             fail("CompletionStage did not complete within 2 seconds");
         } catch (ExecutionException ex) {
@@ -192,7 +185,7 @@ public class CDICompletionStageServlet extends FATServlet {
 
     private void assertNotCompleting(CompletionStage<?> cs) throws InterruptedException {
         try {
-            toCompletableFuture(cs).get(2, SECONDS);
+            toCompletableFuture(cs).get(2, SECONDS); // Shorter timeout since we expect Timeout to occur
             fail("CompletionStage completed, exepected not to complete");
         } catch (ExecutionException e) {
             fail("CompletionStage completed exceptionally, expected not to complete");
