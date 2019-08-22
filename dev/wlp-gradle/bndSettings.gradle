@@ -97,17 +97,31 @@ for (def currentDir = startParameter.currentDir; currentDir != rootDir; currentD
 }
 
 // Build a set of project names we need to include from the specified tasks
+def optionsWithArgs = ['--tests']
+def skipNextName = false
 def projectNames = startParameter.taskNames.collect { taskName ->
-    def elements = taskName.split(':')
-    switch (elements.length) {
-        case 1:
-            return defaultProjectName
-        case 2:
-            return elements[0].empty ? bnd_build : elements[0]
-        default:
-            return elements[0].empty ? elements[1] : elements[0]
+    if (skipNextName) {
+        skipNextName = false
+        return
+    } else {
+        if (optionsWithArgs.contains(taskName)) {
+            skipNextName = true
+            return
+        } else {
+            def elements = taskName.split(':')
+            switch (elements.length) {
+                case 1:
+                    return defaultProjectName
+                case 2:
+                    println elements[0]
+                    return elements[0].empty ? bnd_build : elements[0]
+                default:
+                    return elements[0].empty ? elements[1] : elements[0]
+            }
+        }
     }
 }.toSet()
+projectNames.remove(null)
 
 // Include the default project name if in a subproject or no tasks specified
 if ((startParameter.currentDir != rootDir) || projectNames.empty) {
