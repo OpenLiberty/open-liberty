@@ -12,11 +12,15 @@ package com.ibm.ws.webcontainer.osgi.mbeans;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.UnknownHostException;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.AccessController;
@@ -45,6 +49,22 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import java.io.IOException;
+import java.io.StringReader;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.DefaultHandler;
 
 import org.apache.commons.io.FileUtils;
 import org.osgi.framework.BundleContext;
@@ -173,8 +193,9 @@ public class PluginGenerator {
         cachedFile = context.getBundle().getDataFile("cached-PluginCfg.xml");
         if (cachedFile.exists()) {
             try {
-                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cachedFile);
-                previousConfigHash = getHashValue(doc);
+                
+                PluginConfigQuickPeek quickPeek = new PluginConfigQuickPeek(new FileInputStream(cachedFile));
+                previousConfigHash = quickPeek.getHashValue();
             } catch (Exception e) {
                 // Do nothing we are just trying to avoid doing xml serialization twice.
             }
@@ -775,7 +796,7 @@ public class PluginGenerator {
                         fOutputStream.getFD().sync();
                         pluginCfgWriter.close();
                     }
-                    Files.copy(cachedFile.toPath(), outFile.asFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    copyFile(cachedFile, outFile.asFile());
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -819,6 +840,26 @@ public class PluginGenerator {
             Tr.exit(tc, "generateXML");
         }
     }
+    
+    public static void copyFile(File in, File out) 
+                    throws IOException
+                {
+                    FileChannel inChannel = new
+                        FileInputStream(in).getChannel();
+                    FileChannel outChannel = new
+                        FileOutputStream(out).getChannel();
+                    try {
+                        inChannel.transferTo(0, inChannel.size(),
+                                outChannel);
+                    } 
+                    catch (IOException e) {
+                        throw e;
+                    }
+                    finally {
+                        if (inChannel != null) inChannel.close();
+                        if (outChannel != null) outChannel.close();
+                    }
+                }
 
     private static TransformerFactory getTransformerFactory() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -928,13 +969,13 @@ public class PluginGenerator {
     private void storeHashValue(Document newConfig, Integer configHashValue) {
 
         Element root = newConfig.getDocumentElement();
-        Node configHash = newConfig.getElementsByTagName("ConfigHash").item(0);
-        if (configHash == null) {
-            configHash = newConfig.createElement("ConfigHash");
-            root.appendChild(configHash);
+        boolean hasHash = root.hasAttribute("ConfigHash");
+        if (!hasHash) {
+            Attr hashAttribute = newConfig.createAttribute("ConfigHash");
+            hashAttribute.setValue(configHashValue.toString());
+            root.setAttributeNode(hashAttribute);
         } else
-            configHash.removeChild(configHash.getFirstChild());
-        configHash.appendChild(newConfig.createTextNode(configHashValue.toString()));
+            root.setAttribute("ConfigHash",configHashValue.toString());
     }
 
     /**
@@ -972,13 +1013,12 @@ public class PluginGenerator {
         if (doc == null) {
             return null;
         }
-        Node hashElement = doc.getElementsByTagName("ConfigHash").item(0);
-        if (hashElement != null) {
-            String hash = hashElement.getTextContent();
-            if (hash != null)
-                return new Integer(hash);
-        }
+        Element root = doc.getDocumentElement();
+        String hash = root.getAttribute("ConfigHash");
+        if (hash != null)
+            return new Integer(hash);
         return null;
+
 
     }
 
@@ -1295,6 +1335,266 @@ public class PluginGenerator {
             }
         }
         return rc;
+    }
+
+
+protected class XMLRootHandler extends DefaultHandler implements LexicalHandler {
+        /**
+         * An exception indicating that the parsing should stop. This is usually
+         * triggered when the top-level element has been found.
+         * 
+         */
+        private class StopParsingException extends SAXException {
+                /**
+                 * All serializable objects should have a stable serialVersionUID
+                 */
+                private static final long serialVersionUID = 1L;
+
+                /**
+                 * Constructs an instance of <code>StopParsingException</code> with a
+                 * <code>null</code> detail message.
+                 */
+                public StopParsingException() {
+                        super((String) null);
+                }
+        }
+
+        private String hashValue = null;
+
+        /**
+         * This is the name of the top-level element found in the XML file. This
+         * member variable is <code>null</code> unless the file has been parsed
+         * successful to the point of finding the top-level element.
+         */
+        private String elementFound = null;
+
+        /**
+         * These are the attributes of the top-level element found in the XML file.
+         * This member variable is <code>null</code> unless the file has been
+         * parsed successful to the point of finding the top-level element.
+         */
+        private Attributes attributesFound = null;
+
+        public String getRootName() {
+                return elementFound;
+        }
+
+        public Attributes getRootAttributes() {
+                return attributesFound;
+        }
+
+        public XMLRootHandler() {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
+         */
+        public final void comment(final char[] ch, final int start, final int length) {
+                // Not interested.
+        }
+
+        /**
+         * Creates a new SAX parser for use within this instance.
+         * 
+         * @return The newly created parser.
+         * 
+         * @throws ParserConfigurationException
+         *             If a parser of the given configuration cannot be created.
+         * @throws SAXException
+         *             If something in general goes wrong when creating the parser.
+         * @throws SAXNotRecognizedException
+         *             If the <code>XMLReader</code> does not recognize the
+         *             lexical handler configuration option.
+         * @throws SAXNotSupportedException
+         *             If the <code>XMLReader</code> does not support the lexical
+         *             handler configuration option.
+         */
+        private final SAXParser createParser(SAXParserFactory parserFactory) throws ParserConfigurationException, SAXException, SAXNotRecognizedException, SAXNotSupportedException {
+                // Initialize the parser.
+                final SAXParser parser = parserFactory.newSAXParser();
+                final XMLReader reader = parser.getXMLReader();
+                reader.setProperty("http://xml.org/sax/properties/lexical-handler", this); //$NON-NLS-1$
+                try {
+                        // be sure validation is "off" or the feature to ignore DTD's will
+                        // not apply
+                        reader.setFeature("http://xml.org/sax/features/validation", false); //$NON-NLS-1$
+                        reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); //$NON-NLS-1$
+                } catch (SAXNotRecognizedException e) {
+                        // not a big deal if the parser does not recognize the features
+                } catch (SAXNotSupportedException e) {
+                        // not a big deal if the parser does not support the features
+                }
+                return parser;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ext.LexicalHandler#endCDATA()
+         */
+        public final void endCDATA() {
+                // Not interested.
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ext.LexicalHandler#endDTD()
+         */
+        public final void endDTD() {
+                // Not interested.
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
+         */
+        public final void endEntity(final String name) {
+                // Not interested.
+        }
+
+        public boolean parseContents(InputSource contents) throws IOException, ParserConfigurationException, SAXException {
+                // Parse the file into we have what we need (or an error occurs).
+                try {
+                        SAXParserFactory factory = SAXParserFactory.newInstance();
+                        if (factory == null)
+                                return false;
+                        final SAXParser parser = createParser(factory);
+                        contents.setSystemId("/"); //$NON-NLS-1$
+                        parser.parse(contents, this);
+                } catch (StopParsingException e) {
+                        // Abort the parsing normally. Fall through...
+                }
+                return true;
+        }
+
+        /*
+         * Resolve external entity definitions to an empty string. This is to speed
+         * up processing of files with external DTDs. Not resolving the contents of
+         * the DTD is ok, as only the System ID of the DTD declaration is used.
+         * 
+         * @see org.xml.sax.helpers.DefaultHandler#resolveEntity(java.lang.String,
+         *      java.lang.String)
+         */
+        @Override
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
+                return new InputSource(new StringReader("")); //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ext.LexicalHandler#startCDATA()
+         */
+        public final void startCDATA() {
+                // Not interested.
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String,
+         *      java.lang.String, java.lang.String)
+         */
+        public final void startDTD(final String name, final String publicId, final String systemId) throws SAXException {
+         // Not interested.
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ContentHandler#startElement(java.lang.String,
+         *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
+         */
+        @Override
+        public final void startElement(final String uri, final String elementName, final String qualifiedName, final Attributes attributes) throws SAXException {
+                elementFound = elementName == null || elementName.length() == 0 ? qualifiedName: elementName;
+                if(elementFound.indexOf(':') != -1){
+                        elementFound = elementFound.substring(elementFound.indexOf(':')+1);
+                }
+                attributesFound = attributes;
+                throw new StopParsingException();
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
+         */
+        public final void startEntity(final String name) {
+                // Not interested.
+        }
+
+        /**
+         * @return
+         */
+        public int getHashValue() {
+            
+            String hash = attributesFound.getValue("ConfigHash");
+            if (hash != null)
+                return new Integer(hash);
+            return 0;
+        }
+
+}
+
+    
+    protected class PluginConfigQuickPeek  {
+
+            private static final int UNSET = -2;
+
+            private static final int UNKNOWN = -1;
+
+            private XMLRootHandler handler = null;
+            
+            private int hash = UNSET;
+
+            public PluginConfigQuickPeek(InputStream in) {
+                    if (in != null) {
+                            try {
+                                    InputSource inputSource = new InputSource(in);
+                                    handler = new XMLRootHandler();
+                                    handler.parseContents(inputSource);
+                            } catch (Exception ex) {
+                                    // ignore
+                            } finally {
+                                    try {
+                                            in.reset();
+                                    } catch (IOException ex) {
+                                            // ignore
+                                    }
+                            }
+                    } else {
+                            hash = UNKNOWN;
+                    }
+            }
+
+            /**
+             * Returns the hash value
+             * 
+             * @return
+             */
+            public int getHashValue() {
+                    if (hash == UNSET) {
+                            hash = handler.getHashValue();
+                                                     
+                            if (hash == UNSET) {
+                                    hash = UNKNOWN;
+                            }
+                    }
+                    return hash;
+            }
+
+
+            public void setHashValue(int hashValue) {
+                    this.hash = hashValue;
+            }
+
+            
+
     }
 
     protected static class ClusterUriGroup {

@@ -22,11 +22,10 @@ import com.ibm.ws.artifact.ArtifactListenerSelector;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
-import com.ibm.wsspi.artifact.ArtifactNotifier.ArtifactListener;
 import com.ibm.wsspi.artifact.DefaultArtifactNotification;
 
 /**
- *
+ * Notifier implementation type for directory based overlay containers.
  */
 public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.ws.artifact.ArtifactNotifierExtension.ArtifactListener {
     private final DirectoryBasedOverlayContainerImpl root;
@@ -270,10 +269,10 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.
             Set<String> filteredRemoved = filterExistingPaths(removed.getPaths());
 
             //remove the converted from the set..
-            Set<String> newAdd = new HashSet(filterMaskedPaths(added.getPaths()));
+            Set<String> newAdd = new HashSet<String>(filterMaskedPaths(added.getPaths()));
             newAdd.removeAll(filteredAdd);
 
-            Set<String> newRemoved = new HashSet(filterMaskedPaths(removed.getPaths()));
+            Set<String> newRemoved = new HashSet<String>(filterMaskedPaths(removed.getPaths()));
             newRemoved.removeAll(filteredRemoved);
 
             Set<String> newModified = new HashSet<String>(modified.getPaths().size());
@@ -351,8 +350,8 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.
                 for (ArtifactListenerSelector listener : listenersForPath.getValue()) {
                     // If there is no filter, or the artifact listener id does not match the filter, skip the notification.
                     if (filter != null) {
-                        String id = listener.getId();
-                        if (!(filter.equals(id))) {
+                        String listenerId = listener.getId();
+                        if (!(filter.equals(listenerId))) {
                             continue;
                         }
                     }

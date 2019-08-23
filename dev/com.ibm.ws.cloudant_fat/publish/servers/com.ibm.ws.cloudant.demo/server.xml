@@ -1,0 +1,47 @@
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>cloudant-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+  
+  <authData id="cadr" user="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"/>
+    
+  <cloudant id="builder" jndiName="cloudant/builder" libraryRef="CloudantLib" url="${CLOUDANT_URL}" containerAuthDataRef="cadr" 
+  username="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"/>
+
+  <cloudantDatabase jndiName="cloudant/db" cloudantRef="builder" databaseName="${CLOUDANT_DBNAME}" create="false"/>
+  
+  <library id="CloudantLib">
+    <fileset dir="${shared.resource.dir}/cloudant-2.16"/>
+  </library>
+
+  <application location="cloudantapp.war">
+    <classloader commonLibraryRef="CloudantLib"/>
+  </application>
+  
+  <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  <javaPermission className="java.security.SecurityPermission" name="getProperty.networkaddress.cache.ttl"/>
+  
+  <variable name="CloudantCodebase" value="${shared.resource.dir}/cloudant-2.16/cloudant-client-2.16.0.jar"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.lang.RuntimePermission" name="setFactory"/>
+  <javaPermission className="java.security.AllPermission"/> <!-- TODO replace with URLPermission once it permits wildcards-->
+  <!--
+  <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${CLOUDANT_URL}/-" actions="DELETE:AcceptCookieUser-Agent"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${CLOUDANT_URL}/-" actions="GET:AcceptCookieUser-Agent"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${CLOUDANT_URL}/-" actions="PUT:AcceptCookieUser-Agent"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${CLOUDANT_URL}/-" actions="PUT:AcceptCookieExpectUser-Agent"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${CLOUDANT_URL}/_session" actions="POST:ExpectUser-Agent"/>
+  -->
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="java.runtime.version" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="java.vendor" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="java.version" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="os.arch" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="os.name" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="os.version" actions="read"/>
+
+</server>

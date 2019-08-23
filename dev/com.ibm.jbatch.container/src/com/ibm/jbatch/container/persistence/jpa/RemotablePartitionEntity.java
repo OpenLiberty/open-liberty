@@ -16,11 +16,16 @@ import java.util.Date;
 
 import javax.batch.runtime.JobExecution;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.UniqueConstraint;
 
 import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
@@ -29,29 +34,16 @@ import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
  * @author skurz
  *
  */
-/*
- * 222050 - Backout 205106
- *
- * @NamedQueries({
- *
- * @NamedQuery(name = RemotablePartitionEntity.GET_ALL_RELATED_REMOTABLE_PARTITIONS,
- * query =
- * "SELECT r FROM RemotablePartitionEntity r WHERE r.stepExecutionEntity.stepExecutionId IN (SELECT s.stepExecutionId FROM StepThreadExecutionEntity s WHERE s.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId AND TYPE(s) = StepThreadExecutionEntity ) ORDER BY r.stepExecutionEntity.partitionNumber ASC"
- * ),
- *
- * @NamedQuery(name = RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY,
- * query = "SELECT r FROM RemotablePartitionEntity r WHERE r.serverId = :serverid AND r.stepExecutionEntity.batchStatus IN :status ORDER BY r.stepExecutionEntity.startTime DESC"),
- * })
- */
-@IdClass(RemotablePartitionKey.class)
+@NamedQueries({
 
-/*
- * 222050 - Backout 205106
- *
- * @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECUTIONID", "STEPNAME", "PARTNUM" }))
- *
- * @Entity
- */
+                @NamedQuery(name = RemotablePartitionEntity.GET_ALL_RELATED_REMOTABLE_PARTITIONS, query = "SELECT r FROM RemotablePartitionEntity r WHERE r.stepExecutionEntity.stepExecutionId IN (SELECT s.stepExecutionId FROM StepThreadExecutionEntity s WHERE s.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId AND TYPE(s) = StepThreadExecutionEntity ) ORDER BY r.stepExecutionEntity.partitionNumber ASC"),
+
+                @NamedQuery(name = RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY, query = "SELECT r FROM RemotablePartitionEntity r WHERE r.serverId = :serverid AND r.stepExecutionEntity.batchStatus IN :status ORDER BY r.stepExecutionEntity.startTime DESC"),
+})
+
+@IdClass(RemotablePartitionKey.class)
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECUTIONID", "STEPNAME", "PARTNUM" }))
+@Entity
 public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
 
     // Repeat everywhere we use so caller has to think through granting privilege
@@ -97,7 +89,8 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
     @Column(name = "LASTUPDATED")
     private Date lastUpdated;
 
-    public RemotablePartitionEntity() {}
+    public RemotablePartitionEntity() {
+    }
 
     public RemotablePartitionEntity(JobExecutionEntity jobExecution,
                                     RemotablePartitionKey partitionKey) {

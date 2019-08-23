@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -715,8 +715,8 @@ public class H2FATDriverServlet extends FATServlet {
         // Add all the expected frames before sending
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
-        String dataString = " ";
-        h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
+        String dataString = "ABC123";
+        h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, true, false, false));
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -755,7 +755,7 @@ public class H2FATDriverServlet extends FATServlet {
         // Add all the expected frames before sending
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
-        String dataString = " ";
+        String dataString = "ABC123";
         h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -4864,13 +4864,119 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
-        addFirstExpectedHeaders(h2Client);
+        
+        List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
+        firstHeadersReceived.add(new H2HeaderField(":status", "200"));
+        firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/3.1"));
+        firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+        firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeaders.setHeaderFields(firstHeadersReceived);
+        h2Client.addExpectedFrame(frameHeaders);
 
         String dataString = "ABC123";
         h2Client.addExpectedFrame(new FrameData(1, dataString.getBytes(), 0, false, false, false));
 
         h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI, HTTPUtils.HTTPMethod.POST);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Tests initializing a cleartext HTTP/2 connection initialized without the h2c Upgrade header
+     * A single GET request is sent; headers and data are expected back on the same stream
+     * 
+     * @param request
+     * @param response
+     * @throws InterruptedException
+     * @throws Exception
+     */
+    public void testHeaderAndDataPriorKnowledge(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderAndDataPriorKnowledge";
+
+        // config the client to use HTTP/2 with prior knowledge
+        Http2Client h2Client =  new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 
+            defaultTimeoutToSendFrame, true);
+
+        // create expected header response
+        List<H2HeaderField> headersReceived = new ArrayList<H2HeaderField>();
+        headersReceived.add(new H2HeaderField(":status", "200"));
+        headersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+        headersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+        headersReceived.add(new H2HeaderField("content-language", ".*"));
+        FrameHeadersClient serverHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        serverHeaders.setHeaderFields(headersReceived);
+
+        // add expected header and body response to the client
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+        h2Client.addExpectedFrame(serverHeaders);
+        h2Client.addExpectedFrame(new FrameData(1, "ABC123".getBytes(), 0, true, false, false));
+
+        // create a GET request
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        // init the connection and send request to the server
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.sendFrame(frameHeadersToSend);
+
+        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Tests initializing a cleartext HTTP/2 connection initialized without the h2c Upgrade header
+     * A POST request and body are sent; headers and data are expected back on the same stream
+     * 
+     * @param request
+     * @param response
+     * @throws InterruptedException
+     * @throws Exception
+     */
+    public void testPostRequestDataKnowledge(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderAndDataPriorKnowledge";
+
+        // config the client to use HTTP/2 with prior knowledge
+        Http2Client h2Client =  new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 
+            defaultTimeoutToSendFrame, true);
+
+        // create expected header response
+        List<H2HeaderField> headersReceived = new ArrayList<H2HeaderField>();
+        headersReceived.add(new H2HeaderField(":status", "200"));
+        headersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+        headersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+        headersReceived.add(new H2HeaderField("content-language", ".*"));
+        FrameHeadersClient serverHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        serverHeaders.setHeaderFields(headersReceived);
+
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+        h2Client.addExpectedFrame(serverHeaders);
+        h2Client.addExpectedFrame(new FrameData(1, "ABC123".getBytes(), 0, true, false, false));
+
+        // create a POST request and body
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "POST"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("content-length", String.valueOf("test".getBytes().length)), 
+            HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+        FrameDataClient dataFrame = new FrameDataClient(1, "test".getBytes(), 0, true, false, false);
+
+        // init the connection and send the post request and body to the server
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.sendFrame(frameHeadersToSend);
+        h2Client.sendFrame(dataFrame);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);

@@ -162,8 +162,10 @@ public class ClientAuthentication {
             // For the basic auth case, a null password means a password was not included, not that the password was empty.
             password = "";
         }
-
-        if (provider.isAllowPublicClients()) {
+        // adding check to see whether the client config specifies that it is a public client 
+        boolean clientSpecifiesPublic = isPublicClient(clientProvider, data);
+        
+        if (provider.isAllowPublicClients() || clientSpecifiesPublic) {
             isClientAuthenticationDataValid = isValidPublicClient(response, password, clientProvider, data, endpointType, grantType, authScheme);
         } else {
             // Only allow confidential clients; client credentials must be validated
@@ -180,6 +182,24 @@ public class ClientAuthentication {
             RateLimiter.limit();
         }
         return isClientAuthenticationDataValid;
+    }
+
+    /**
+     * @param clientProvider
+     * @param data
+     * @return
+     */
+    private boolean isPublicClient(OidcOAuth20ClientProvider clientProvider, ClientAuthnData data) {
+        OidcBaseClient client = null;
+        try {
+            client = clientProvider.get(data.getUserName());
+        } catch (OidcServerException e) {
+            
+        }
+        if (client != null && client.isPublicClient()) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isValidPublicClient(HttpServletResponse response, String password, OidcOAuth20ClientProvider clientProvider, ClientAuthnData data, EndpointType endpointType, String grantType, String authScheme) throws OidcServerException, ClientAuthenticationDataException {

@@ -522,8 +522,8 @@ ZipFile [Path]
         line = String.format("Last:  [ %s (s) ]", toRelSec(initialAt, lastOpenAt));
         indentLine(output, line, 3);
 
-        String firstPendText = ( (firstPendAt == -1) ? "******.****** (s)" : toRelSec(initialAt, firstPendAt) );
-        String lastPendText = ( (lastPendAt == -1) ? "******.****** (s)" : toRelSec(initialAt, lastPendAt) );
+        String firstPendText = ( (firstPendAt == -1) ? "******.******" : toRelSec(initialAt, firstPendAt) );
+        String lastPendText = ( (lastPendAt == -1) ? "******.******" : toRelSec(initialAt, lastPendAt) );
 
         indentLine(output, "Pend:", 2);
         line = String.format("First: [ %s (s) ]", firstPendText);
@@ -531,8 +531,8 @@ ZipFile [Path]
         line = String.format("Last:  [ %s (s) ]", lastPendText);
         indentLine(output, line, 3);
 
-        String firstFullCloseText = ( (firstFullCloseAt == -1) ? "******.****** (s)" : toRelSec(initialAt, firstFullCloseAt) );
-        String lastFullCloseText = ( (lastFullCloseAt == -1) ? "******.****** (s)" : toRelSec(initialAt, lastFullCloseAt) );
+        String firstFullCloseText = ( (firstFullCloseAt == -1) ? "******.******" : toRelSec(initialAt, firstFullCloseAt) );
+        String lastFullCloseText = ( (lastFullCloseAt == -1) ? "******.******" : toRelSec(initialAt, lastFullCloseAt) );
 
         indentLine(output, "Close:", 2);
         line = String.format("First: [ %s (s) ]", firstFullCloseText);
@@ -541,75 +541,7 @@ ZipFile [Path]
         indentLine(output, line, 3);
     }
 
-    @Trivial
-    public void introspect2(PrintWriter output) {
-        // See the class comment for details of the state model and the
-        // statistics which are gathered.
 
-        output.println("ZipFile [ " + path + " ]");
-        output.println("  State [ " + zipFileState + " ]");
-
-        String openText =
-            "  Open:       [ " + toCount(openCount) + " ]" +
-            " [ " + toAbsSec(openDuration) + " (s) ]";
-        output.println(openText);
-
-        String firstOpenText =
-            "   First:       [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]";
-        output.println(firstOpenText);
-
-        String lastOpenText =
-            "   Last:        [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]";
-        output.println(lastOpenText);
-
-        String pendingText =
-            "  Pending:    [ " + toCount(pendToOpenCount + pendToFullCloseCount) + " ]" +
-            " [ " + toAbsSec(pendToOpenDuration + pendToFullCloseDuration) + " (s) ]";
-        output.println(pendingText);
-
-        String pendingToOpenText =
-            "    to Open:    [ " + toCount(pendToOpenCount) + " ]" +
-            " [ " + toAbsSec(pendToOpenDuration) + " (s) ]";
-        output.println(pendingToOpenText);
-
-        String pendingToFullCloseText =
-            "    to Close:   [ " + toCount(pendToFullCloseCount) + " ]" +
-            " [ " + toAbsSec(pendToFullCloseDuration) + " (s) ]";
-        output.println(pendingToFullCloseText);
-
-        if ( firstPendAt != -1 ) {
-            String firstPendingText =
-                "   First:       [ " + toRelSec(initialAt, firstPendAt) + " (s) ]";
-            output.println(firstPendingText);
-        }
-
-        if ( lastPendAt != -1 ) {
-            String lastPendingText =
-                "   Last:        [ " + toRelSec(initialAt, lastPendAt) + " (s) ]";
-            output.println(lastPendingText);
-        }
-
-        String closeText =
-            "  Close:      [ " + toCount(closeCount) + " ]";
-        output.println(closeText);
-
-        String closeToOpenText =
-            "    to Open:    [ " + toCount(fullCloseToOpenCount) + " ]" +
-            " [ " + toAbsSec(fullCloseToOpenDuration) + " (s) ]";
-        output.println(closeToOpenText);
-
-        if ( firstFullCloseAt != -1 ) {
-            String firstCloseText =
-                "   First:       [ " + toRelSec(initialAt, firstFullCloseAt) + " (s) ]";
-            output.println(firstCloseText);
-        }
-
-        if ( lastFullCloseAt != -1 ) {
-            String lastCloseText =
-                "   Last:        [ " + toRelSec(initialAt, lastFullCloseAt) + " (s) ]";
-            output.println(lastCloseText);
-        }
-    }
 
     @Trivial
     protected IllegalStateException unknownState() {

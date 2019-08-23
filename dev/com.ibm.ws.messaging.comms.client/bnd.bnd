@@ -62,12 +62,10 @@ Service-Component: \
      commsClientService=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;\
      tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
      sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
-     sslSupport=com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;\
      configuration-policy:=require;\
-     dynamic:='tcpOptions,sslOptions,sslSupport';\
-     optional:='sslOptions,sslSupport';\
-     greedy:='tcpOptions,sslOptions,sslSupport';\
-     properties:='sslSupport.target=(type=SSLChannel), service.vendor=IBM
+     optional:='sslOptions';\
+     greedy:='tcpOptions,sslOptions';\
+     properties:='service.vendor=IBM'
 
 instrument.disabled: true
 
