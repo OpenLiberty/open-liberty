@@ -43,12 +43,9 @@ import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.adaptor.FixAdaptor;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.InstallAsset;
-import com.ibm.ws.install.internal.cmdline.ExeAction;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
 import com.ibm.ws.install.repository.internal.RepositoryUtils;
-import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
-import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
@@ -428,41 +425,65 @@ class ResolveDirector extends AbstractDirector {
     List<List<RepositoryResource>> resolve(Collection<String> featureNames, DownloadOption downloadOption, String userId, String password) throws InstallException {
         Collection<String> featureNamesProcessed = new ArrayList<String>();
         for (String s : featureNames) {
-            featureNamesProcessed.add(s.replaceAll("\\\\+$", ""));
+            // clean feature name
+            String processedFeature = s.replaceAll("\\\\+$", "");
+            featureNamesProcessed.add(processedFeature);
         }
+        RepositoryConnectionList loginInfo = getRepositoryConnectionList(featureNamesProcessed, userId, password, this.getClass().getCanonicalName() + ".resolve");
+
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
+        HashSet<String> invalidFeatures = new HashSet<>();
+        List<EsaResource> featuresFound = new ArrayList<>();
+        HashSet<String> featuresFoundNames = new HashSet<>();
         boolean isOpenLiberty = false;
         try {
-            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
-                productDefinitions.add(new ProductInfoProductDefinition(productInfo));
-                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
-                    isOpenLiberty = true;
+            for (String processedFeature : featureNamesProcessed) {
+                logger.info("In resolve director processing" + processedFeature);
+                featuresFound = new ArrayList<>();
+                boolean noVersionMode = false;
+
+                for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                    productDefinitions.add(new ProductInfoProductDefinition(productInfo));
+                    if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                        isOpenLiberty = true;
+                    }
+
+                    try {
+                        String searchStr = noVersionMode == false ? processedFeature : processedFeature.split("-")[0];
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.PUBLIC));
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.INSTALL));
+
+                    } catch (RepositoryException e) {
+                        logger.warning("findMatchingEsa error because of using version with feature name. Msg: " + e.getMessage());
+                        noVersionMode = true;
+
+                        // try to find feature again without the version number
+                        String searchStr = processedFeature.split("-")[0];
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.PUBLIC));
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.INSTALL));
+
+                    }
+                }
+                for (EsaResource foundFeature : featuresFound) {
+                    featuresFoundNames.add(foundFeature.getShortName());
+                }
+                logger.info("Features found using find for " + processedFeature + ": " + featuresFoundNames);
+                // if the feature wasnt found with
+                if (!featuresFoundNames.contains(processedFeature)) {
+                    logger.info("Invalid feature: " + processedFeature);
+                    invalidFeatures.add(processedFeature);
                 }
             }
         } catch (Exception e) {
             throw ExceptionUtils.create(e);
         }
 
-        RepositoryConnectionList loginInfo = getRepositoryConnectionList(featureNamesProcessed, userId, password, this.getClass().getCanonicalName() + ".resolve");
-
-        // check for invalid features
-        List<String> invalidFeatures = new ArrayList<>();
-        int rc;
-
-        for (String processedFeature : featureNamesProcessed) {
-            // check if feature is invalid
-            logger.info("in resolve director processing" + processedFeature);
-            Arguments args = new ArgumentsImpl(new String[] { ExeAction.find.toString(), processedFeature });
-            rc = ExeAction.find.handleTask(args).getValue();
-
-            // if return code non zero then feature is invalid
-            if (rc != 0) {
-                logger.info("invalid feature " + processedFeature);
-                invalidFeatures.add(processedFeature);
-            }
-        }
         // throw exception if invalid features found
-        if (invalidFeatures.size() > 0) {
+        if (invalidFeatures.size() > 0)
+
+        {
+            logger.info("Invalid Features: " + invalidFeatures);
+            logger.info("Throwing invalid feature exception!");
             throw ExceptionUtils.create(new RepositoryException(), invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
         }
 
