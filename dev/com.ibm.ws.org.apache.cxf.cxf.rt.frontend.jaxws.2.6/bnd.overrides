@@ -10,9 +10,9 @@ Bundle-Activator: com.ibm.ws.jaxws22.cxf.rt.frontend.jaxws.NoOpActivator
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
-  org.apache.cxf.jaxws.*;version="[2.6.2,2.6.3)",\
-  org.apache.cxf.tranport.*;version="[2.6.2,2.6.3)",\
-  org.apache.cxf.jaxws22.*;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.jaxws.*;version=2.6.2,\
+  org.apache.cxf.tranport.*;version=2.6.2,\
+  org.apache.cxf.jaxws22.*;version=2.6.2, \
   META-INF.cxf;version=2.6.2
 
 Import-Package: \
