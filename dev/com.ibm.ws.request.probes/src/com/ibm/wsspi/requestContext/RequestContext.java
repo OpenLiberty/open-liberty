@@ -157,6 +157,14 @@ public class RequestContext {
 		return threadId;
 	}
 
+	public boolean isSlow() {
+		return isSlow;
+	}
+	
+	public void setSlow(boolean b) {
+		 isSlow = true;
+	}
+
 	/**
 	 * This method is used to get the stack trace for requested Thread ID. Using
 	 * the Thread class getAllStackTraces() method we get the stack traces for
@@ -195,7 +203,5 @@ public class RequestContext {
 				+ requestId + ", state=" + state + "]";
 	}
 	
-	public boolean getisSlow() {
-		return isSlow;
-	}
+
 }

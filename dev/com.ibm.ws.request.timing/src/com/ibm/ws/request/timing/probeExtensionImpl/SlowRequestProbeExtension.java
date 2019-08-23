@@ -31,7 +31,6 @@ public class SlowRequestProbeExtension implements ProbeExtension {
 
 	private static final TraceComponent tc = Tr.register(SlowRequestProbeExtension.class);
 	
-	private static final TraceNLS nls = TraceNLS.getTraceNLS(SlowRequestManager.class, "com.ibm.ws.request.timing.internal.resources.LoggingMessages");
 	
 	/** Reference to slow request detection configuration **/
 	private volatile SlowRequestTimingConfig config = new SlowRequestTimingConfig();
@@ -73,22 +72,21 @@ public class SlowRequestProbeExtension implements ProbeExtension {
 		if (TraceComponent.isAnyTracingEnabled() &&  tc.isDebugEnabled()) {
 			Tr.debug(tc, "processExitEvent " + event);
 		}
-		if(!hasStopped){
+		if( !hasStopped && requestContext.isSlow() ){
+			
+			//if requestContext is a slowRequestContext
+			double activeTime = (System.nanoTime() - event.getStartTime())/1000000.0; //Calculate the active time for the request
+			
+			String threadId = DataFormatHelper.padHexString((int) requestContext.getThreadId(), 8);
+			String requestDuration = String.format("%.3f", activeTime);
+			
+			Tr.info(tc, "REQUEST_TIMER_FINISH_SLOW", requestContext.getRequestId().getId(), threadId, requestDuration);
+			
 			//Do nothing as no action is required on exit event.
 			//Clean up activity for this request will be performed in the corresponding slow request timer task.
 
 			/** Instead of this should we just return false from invokeForEventExit? */
-		} else {
-			if ( requestContext.getisSlow()  &&  tc.isWarningEnabled()  &&  TraceComponent.isAnyTracingEnabled()  &&  tc.isDebugEnabled() ) { //if requestContext is a slowRequestContext
-				double activeTime = (System.nanoTime() - requestContext.getRootEvent().getStartTime())/1000000.0; //Calculate the active time for the request
-				
-				String threadId = DataFormatHelper.padHexString((int) requestContext.getThreadId(), 8);
-				String requestDuration = String.format("%.3f", activeTime);
-				String stackTrace = requestContext.getStackTrace().toString();
-				
-				Tr.info(tc, "REQUEST_TIMER_FINISH_SLOW",	requestContext.getRequestId().getId(), threadId, requestDuration);
-			}
-		}
+		} 
 	}
 	
 	/** 
