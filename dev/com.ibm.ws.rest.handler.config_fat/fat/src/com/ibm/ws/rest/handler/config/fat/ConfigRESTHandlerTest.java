@@ -633,6 +633,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         try {
             JsonStructure json = new HttpsRequest(server, "/ibm/api/config/dataSource[DefaultDataSource]").run(JsonStructure.class);
             String err = "unexpected response: " + json;
+            fail(err);
         } catch (Exception ex) {
             assertTrue("Expected 404 response", ex.getMessage().contains("404"));
         }
