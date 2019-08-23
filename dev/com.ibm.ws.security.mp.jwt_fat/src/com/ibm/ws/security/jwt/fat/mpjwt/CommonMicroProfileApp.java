@@ -12,6 +12,8 @@ package com.ibm.ws.security.jwt.fat.mpjwt;
 
 import java.io.PrintWriter;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,6 +21,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -30,6 +33,9 @@ import javax.ws.rs.core.MediaType;
 public class CommonMicroProfileApp {
 
     PrintWriter pw = null;
+    
+    @Context
+    HttpServletRequest request;
 
     /**
      */
@@ -39,9 +45,19 @@ public class CommonMicroProfileApp {
     public String myGetter(@PathParam("id") String id) {
 
         try {
-            return doWorker(MpJwtFatConstants.GETMETHOD);
+            String result = doWorker(MpJwtFatConstants.GETMETHOD);
+            if(id.equals("logout")) {
+                System.out.println("*** logging out, request is "+ request);
+                try {
+                    request.logout();
+                } catch (ServletException se) {
+                    System.out.println("Caught exception: " + se);
+                    se.printStackTrace();
+                }
+            }
+            return result;
         } catch (Exception e) {
-            System.out.println("GET catch");
+            System.out.println("GET catch");          
             return e.toString();
 
         }
