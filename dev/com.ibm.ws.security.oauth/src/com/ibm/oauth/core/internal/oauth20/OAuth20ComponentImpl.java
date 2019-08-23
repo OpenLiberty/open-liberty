@@ -534,7 +534,8 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                             //
                             handlePKCEVerification(code, code_challenge, code_challenge_method, attributeList);
                         } else if (requestHasCodeVerifier(attributeList) && code_challenge == null) {
-                            String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier");
+                            String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier", "null", attributeList
+                                    .getAttributeValueByName(OAuth20Constants.CODE_VERIFIER));
                             throw new InvalidGrantException(message, null);
                         }
                     }
@@ -649,18 +650,18 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                     "code_verifier", null);
         } else {
             if (!isCodeVerifierLengthAcceptable(code_verifier)) {
-                String message = Tr.formatMessage(tc, "security.oauth20.pkce.codeverifier.length.error");
+                String message = Tr.formatMessage(tc, "security.oauth20.pkce.codeverifier.length.error", code_verifier.length());
                 throw new InvalidGrantException(message, null);
             }
             if (OAuth20Constants.CODE_CHALLENGE_METHOD_PLAIN.equals(code_challenge_method) && !code_challenge.equals(code_verifier)) {
-                String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier");
+                String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier", code_challenge, code_verifier);
                 throw new InvalidGrantException(message, null);
                 // throw new OAuth20AuthorizationCodeInvalidClientException("security.oauth20.error.invalid.authorizationcode",
                 // code.getTokenString(), code.getClientId());
             } else if (OAuth20Constants.CODE_CHALLENGE_METHOD_S256.equals(code_challenge_method)) {
                 String derived_code_challenge = HashUtils.encodedDigest(code_verifier, OAuth20Constants.CODE_CHALLENGE_ALG_METHOD_SHA256, OAuth20Constants.CODE_VERIFIER_ASCCI);
                 if (!code_challenge.equals(derived_code_challenge)) {
-                    String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier");
+                    String message = Tr.formatMessage(tc, "security.oauth20.pkce.error.mismatch.codeverifier", code_challenge, code_verifier);
                     throw new InvalidGrantException(message, null);
                 }
             }

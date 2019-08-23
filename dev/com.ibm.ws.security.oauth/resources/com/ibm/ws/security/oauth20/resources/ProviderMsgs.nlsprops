@@ -341,14 +341,14 @@ security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: An attempt was made to r
 security.oauth20.apppwtok.revoke.disallowed.explanation=Application passwords or application tokens must be revoked by using the app-passwords or app-tokens endpoints.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Issue the request again with the URI for the appropriate endpoint to revoke application passwords or application tokens.
 
-security.oauth20.pkce.invalid.method.error=CWOAU0079E: The request parameter code_challenge_method contains an unsupported transform algorithm.
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: The request parameter code_challenge_method contains an unsupported transform algorithm: [{0}]. The supported transform algorithms are: plain, S256.
 security.oauth20.pkce.invalid.method.error.explanation=The OAuth provider does not support the specified transform algorithm. 
-security.oauth20.pkce.invalid.method.error.useraction=Either use "plain" or "S256" as the code_challenge_method.
+security.oauth20.pkce.invalid.method.error.useraction=Use one of the transform algorithms shown in the message.
 
-security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: The code_verifier length is invalid.
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: The code_verifier length is [{0}]. code_verifier length must be between 43 and 128 characters.
 security.oauth20.pkce.codeverifier.length.error.explanation=The code_verifier should have a minimum length of 43 characters and a maximum length of 128 characters. 
 security.oauth20.pkce.codeverifier.length.error.useraction=Send the authorization and token requests again with the updated code_verifier that meets the specified length.
 
-security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: The code_challenge and code_verifier do not match.
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: The code_challenge [{0}] and code_verifier [{1}] do not match. 
 security.oauth20.pkce.error.mismatch.codeverifier.explanation=The OAuth provider uses the code_challenge_method specified in the authorization request and transforms the code_verifier unless the code_challenge_method is plain. The transformed value should match with the code_challenge in the authorization request.
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=Make sure to send the matching code_challenge and code_verifier and the correct transformation algorithm with the authorization and token requests.
