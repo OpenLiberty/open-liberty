@@ -1539,7 +1539,7 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Entity enterprise beans declared in a
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Remove the use of the unsupported entity enterprise bean from the application or package the bean in a version 6 or older application.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application has already been bound to the {4} name location. The {4} name location will not be accessible.
+NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
 NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Each enterprise bean interface must specify a unique binding location.
 NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Correct the binding file for one of these two bean interfaces so that each interface has a unique binding location.
 
