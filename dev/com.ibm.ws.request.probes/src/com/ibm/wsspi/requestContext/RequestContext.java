@@ -200,7 +200,7 @@ public class RequestContext {
 	@Override
 	public String toString() {
 		return "RequestContext [threadId=" + threadId + ", requestId="
-				+ requestId + ", state=" + state + "]";
+				+ requestId + ", state=" + state + ", isSlow=" + isSlow() + ", eventCount=" + eventCount + "]";
 	}
 	
 

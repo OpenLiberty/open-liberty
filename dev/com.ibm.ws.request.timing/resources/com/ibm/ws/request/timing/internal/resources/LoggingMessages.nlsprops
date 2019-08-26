@@ -28,7 +28,7 @@ REQUEST_TIMER_WARNING.explanation=The request has been running for longer than t
 REQUEST_TIMER_WARNING.useraction=Use the information in the table to determine what part of the request is slower than expected.  If many warnings are provided for different requests at nearly the same time it may indicate that something slowed down the entire server process, such as another process on the same system consuming a large amount of processing resources.
 
 # Information message telling the user that the previously detected slow request has finished in a set amount of time.
-REQUEST_TIMER_FINISH_SLOW=TRAS0113I: The {0} request on the {1} thread, which was previously detected as slow, completed after {2} ms.
+REQUEST_TIMER_FINISH_SLOW=TRAS0113I: Request {0} on thread {1}, which was previously detected as slow, completed after {2} ms.
 REQUEST_TIMER_FINISH_SLOW.explanation=The request has been running for longer than the configured slow request duration. The request completed in the posted time.
 REQUEST_TIMER_FINISH_SLOW.useraction=No action required.
 
