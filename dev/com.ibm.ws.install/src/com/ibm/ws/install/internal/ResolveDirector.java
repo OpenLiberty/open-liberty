@@ -471,15 +471,15 @@ class ResolveDirector extends AbstractDirector {
         } catch (Exception e) {
             throw ExceptionUtils.create(e);
         }
-
-        // throw exception if invalid features found
-        if (invalidFeatures.size() > 0)
-
-        {
-            logger.info("Invalid Features: " + invalidFeatures);
-            logger.info("Throwing invalid feature exception!");
-            throw ExceptionUtils.create(new RepositoryException(), invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
-        }
+//
+//        // throw exception if invalid features found
+//        if (invalidFeatures.size() > 0)
+//
+//        {
+//            logger.info("Invalid Features: " + invalidFeatures);
+//            logger.info("Throwing invalid feature exception!");
+//            throw ExceptionUtils.create(new RepositoryException(), invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
+//        }
 
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
@@ -502,7 +502,8 @@ class ResolveDirector extends AbstractDirector {
 
             throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false, isOpenLiberty);
         } catch (RepositoryException e) {
-            throw ExceptionUtils.create(e, featureNamesProcessed, false, proxy, defaultRepo(), isOpenLiberty);
+            logger.info("Invalid features: " + invalidFeatures);
+            throw ExceptionUtils.create(e, invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
         }
         List<List<RepositoryResource>> installResourcesCollection = new ArrayList<List<RepositoryResource>>(installResources.size());
         List<RepositoryResource> installResourcesSingleList = new ArrayList<RepositoryResource>();
