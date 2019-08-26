@@ -448,6 +448,8 @@ class ResolveDirector extends AbstractDirector {
         try {
             if (downloadOption == DownloadOption.all || downloadOption == DownloadOption.none) {
                 resolver = new RepositoryResolver(productDefinitions, Collections.<ProvisioningFeatureDefinition> emptySet(), Collections.<IFixInfo> emptySet(), loginInfo);
+                logger.info("Using resolveAsSet");
+                System.out.println("Using resolveAsSet");
                 installResources = resolver.resolveAsSet(featureNamesProcessed);
             } else {
                 Collection<String> featuresToInstall = getFeaturesToInstall(featureNamesProcessed, false);
@@ -456,6 +458,8 @@ class ResolveDirector extends AbstractDirector {
                     return new ArrayList<List<RepositoryResource>>(0);
                 }
                 resolver = new RepositoryResolver(productDefinitions, product.getFeatureDefinitions().values(), FixAdaptor.getInstalledIFixes(product.getInstallDir()), loginInfo);
+                logger.info("Using resolveAsSet");
+                System.out.println("Using resolveAsSet");
                 installResources = resolver.resolveAsSet(featuresToInstall);
             }
 
@@ -637,6 +641,8 @@ class ResolveDirector extends AbstractDirector {
                                                                           && System.getProperty("INTERNAL_DOWNLOAD_FROM_FOR_BUILD") == null ? Collections.<ProvisioningFeatureDefinition> emptySet() : installedFeatureDefinitions.values();
             Collection<IFixInfo> installedIFixes = download ? Collections.<IFixInfo> emptySet() : FixAdaptor.getInstalledIFixes(product.getInstallDir());
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
+            logger.info("Using old resolve api");
+            System.out.println("Using old resolve api");
             installResources = resolver.resolve(assetsToInstall);
         } catch (RepositoryResolutionException e) {
 
