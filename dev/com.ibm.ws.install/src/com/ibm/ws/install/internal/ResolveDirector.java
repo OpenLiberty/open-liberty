@@ -434,7 +434,6 @@ class ResolveDirector extends AbstractDirector {
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
         HashSet<String> invalidFeatures = new HashSet<>();
         List<EsaResource> featuresFound = new ArrayList<>();
-        HashSet<String> featuresFoundNames = new HashSet<>();
         boolean isOpenLiberty = false;
         try {
             for (String processedFeature : featureNamesProcessed) {
@@ -464,12 +463,7 @@ class ResolveDirector extends AbstractDirector {
 
                     }
                 }
-                for (EsaResource foundFeature : featuresFound) {
-                    featuresFoundNames.add(foundFeature.getShortName());
-                }
-                logger.info("Features found using find for " + processedFeature + ": " + featuresFoundNames);
-                // if the feature wasnt found with
-                if (!featuresFoundNames.contains(processedFeature)) {
+                if (featuresFound.isEmpty()) {
                     logger.info("Invalid feature: " + processedFeature);
                     invalidFeatures.add(processedFeature);
                 }
