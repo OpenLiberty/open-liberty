@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.product.utility.extension.IFixUtils;
@@ -35,6 +36,7 @@ import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
 import com.ibm.ws.repository.resolver.RepositoryResolver.ResolvedFeatureSearchResult.ResultCategory;
+import com.ibm.ws.repository.resolver.internal.ResolutionMode;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverRepository;
 import com.ibm.ws.repository.resources.ApplicableToProduct;
@@ -57,6 +59,8 @@ public class RepositoryResolver {
     Collection<EsaResource> repoFeatures;
     Collection<SampleResource> repoSamples;
     RepositoryConnectionList repoConnections;
+    Collection<ProductDefinition> installDefinition;
+    Map<String, Collection<Chain>> featureConflicts;
 
     // ---
     // Fields computed during resolution
@@ -139,10 +143,10 @@ public class RepositoryResolver {
      *
      * @param installDefinition Information about the product(s) installed such as ID and edition. Must not be <code>null</code>.
      * @param installedFeatures The features that are installed. Must not be <code>null</code>.
-     * @param installedIFixes No longer used, parameter retained for backwards compatibility
-     * @param massiveUserId The user ID to use when logging into Massive. Must not be <code>null</code>.
-     * @param massivePassword The password to use when logging into Massive. Must not be <code>null</code>.
-     * @param massiveApiKey The API key to use when logging into Massive. Must not be <code>null</code>.
+     * @param installedIFixes   No longer used, parameter retained for backwards compatibility
+     * @param massiveUserId     The user ID to use when logging into Massive. Must not be <code>null</code>.
+     * @param massivePassword   The password to use when logging into Massive. Must not be <code>null</code>.
+     * @param massiveApiKey     The API key to use when logging into Massive. Must not be <code>null</code>.
      * @throws RepositoryException If there is a connection error with the Massive repository
      * @see ProductInfo#getAllProductInfo()
      * @see IFixUtils#getInstalledIFixes(java.io.File, com.ibm.ws.product.utility.CommandConsole)
@@ -153,8 +157,8 @@ public class RepositoryResolver {
                               RepositoryConnectionList repoConnections) throws RepositoryException {
 
         this.repoConnections = repoConnections;
+        this.installDefinition = installDefinition;
         fetchFromRepository(installDefinition);
-        initializeResolverRepository(installedFeatures, installDefinition);
         this.installedFeatures = installedFeatures;
         indexSamples();
     }
@@ -170,8 +174,8 @@ public class RepositoryResolver {
         this.repoFeatures = new ArrayList<>(repoFeatures);
         this.repoSamples = new ArrayList<>(repoSamples);
         this.installedFeatures = installedFeatures;
+        this.installDefinition = Collections.emptySet();
 
-        initializeResolverRepository(installedFeatures, Collections.<ProductDefinition> emptySet());
         indexSamples();
     }
 
@@ -207,8 +211,8 @@ public class RepositoryResolver {
         }
     }
 
-    void initializeResolverRepository(Collection<ProvisioningFeatureDefinition> installedFeatures, Collection<ProductDefinition> installDefintion) {
-        resolverRepository = new KernelResolverRepository(installDefintion, repoConnections);
+    void initializeResolverRepository(Collection<ProductDefinition> installDefintion, ResolutionMode mode) {
+        resolverRepository = new KernelResolverRepository(installDefintion, repoConnections, mode);
         resolverRepository.addInstalledFeatures(installedFeatures);
         resolverRepository.addFeatures(repoFeatures);
     }
@@ -237,9 +241,10 @@ public class RepositoryResolver {
      * want that, you may want to use {@link #resolveAsSet(Collection)} instead.</p>
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *            <code>{name}/{version}</code></br>
-     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is optional. The
-     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *                      <code>{name}/{version}</code></br>
+     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *                      optional. The
+     *                      collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
      *         at
      *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
@@ -288,9 +293,10 @@ public class RepositoryResolver {
      * javaee-7.0 and javaee-8.0 contain features which conflict with each other (and other versions are not tolerated).
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *            <code>{name}/{version}</code></br>
-     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is optional. The
-     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *                      <code>{name}/{version}</code></br>
+     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *                      optional. The
+     *                      collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
      *         at
      *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
@@ -316,6 +322,7 @@ public class RepositoryResolver {
 
     Collection<List<RepositoryResource>> resolve(Collection<String> toResolve, ResolutionMode resolutionMode) throws RepositoryResolutionException {
         initResolve();
+        initializeResolverRepository(installDefinition, resolutionMode);
 
         processNames(toResolve);
         findAutofeatureDependencies();
@@ -344,7 +351,8 @@ public class RepositoryResolver {
         requirementsFoundForOtherProducts = new HashSet<>();
         missingTopLevelRequirements = new ArrayList<>();
         missingRequirements = new ArrayList<>();
-        resolverRepository.clearPreferredVersions();
+        resolverRepository = null;
+        featureConflicts = new HashMap<>();
     }
 
     /**
@@ -423,6 +431,9 @@ public class RepositoryResolver {
         boolean allowMultipleVersions = mode == ResolutionMode.IGNORE_CONFLICTS ? true : false;
         FeatureResolver resolver = new FeatureResolverImpl();
         Result result = resolver.resolveFeatures(resolverRepository, featureNamesToResolve, Collections.<String> emptySet(), allowMultipleVersions);
+
+        featureConflicts.putAll(result.getConflicts());
+
         for (String name : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
             resolvedFeatures.put(feature.getSymbolicName(), feature);
@@ -629,10 +640,10 @@ public class RepositoryResolver {
      * Having done this, {@code distanceMap.keySet()} gives the set of all the dependencies of com.example.featureA. {@code distanceMap.get("com.example.featureB")} gives
      * the length of the longest dependency chain from featureA to featureB.
      *
-     * @param maxDistanceMap the map to be populated
-     * @param featureName the current feature
+     * @param maxDistanceMap  the map to be populated
+     * @param featureName     the current feature
      * @param currentDistance the distance to use for the current feature
-     * @param currentStack the set of feature names already in the current dependency chain (used to detect loops)
+     * @param currentStack    the set of feature names already in the current dependency chain (used to detect loops)
      * @return true if all requirements were found, false otherwise
      */
     boolean populateMaxDistanceMap(Map<String, Integer> maxDistanceMap, String featureName, int currentDistance, Set<ProvisioningFeatureDefinition> currentStack,
@@ -772,7 +783,7 @@ public class RepositoryResolver {
      * If any errors occurred during resolution, throw a {@link RepositoryResolutionException}
      */
     private void reportErrors() throws RepositoryResolutionException {
-        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty()) {
+        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()) {
             // Everything went fine!
             return;
         }
@@ -789,12 +800,7 @@ public class RepositoryResolver {
             missingRequirementNames.add(req.getRequirementName());
         }
 
-        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements);
-    }
-
-    enum ResolutionMode {
-        DETECT_CONFLICTS,
-        IGNORE_CONFLICTS,
+        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
     }
 
     static class ResolvedFeatureSearchResult {
