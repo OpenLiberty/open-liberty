@@ -279,7 +279,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         HttpInboundServiceContextImpl sc = getHTTPContext();
         if (!sc.isH2Connection()) {
             // if ALPN has selected h2, OR if this link is not secure, check for the HTTP/2 connection preface
-            if ((checkAlpnH2() || !sc.isSecure()) && checkForH2MagicString(sc))
+            if ((checkAlpnH2() || (!sc.isSecure()) && sc.isHttp2Enabled() && checkForH2MagicString(sc)))
             {
                 alreadyH2Upgraded = true;
                 return true;    
