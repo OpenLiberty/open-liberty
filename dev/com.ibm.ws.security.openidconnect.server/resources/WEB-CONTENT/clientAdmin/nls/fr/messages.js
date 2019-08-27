@@ -36,7 +36,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "La table est triée en fonction de {0} suivant l'ordre croissant.",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "La table est triée en fonction de {0} suivant l'ordre décroissant.", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "Réessayez...",
+    "TRY_AGAIN": "Réessayer...",
     "UPDATE": "Mettre à jour",
 
     // Common Column Names
@@ -49,7 +49,7 @@ var messages = {
     // Client Admin
     "CLIENT_ADMIN_TITLE": "Gérer les clients OAuth",
     "CLIENT_ADMIN_DESC": "Utilisez cet outil pour ajouter et éditer des clients, et régénérer les secrets client.",
-    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtrer en fonction d'un nom de client OAuth",
+    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtrer sur un nom de client OAuth",
     "ADD_NEW_CLIENT": "Ajoutez un nouveau client OAuth.",
     "CLIENT_NAME": "Nom du client",
     "CLIENT_ID": "ID client",

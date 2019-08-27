@@ -10,7 +10,7 @@
  *******************************************************************************/
 var messages = {
     // Common Strings
-    "ADD_NEW": "Incluir nova",
+    "ADD_NEW": "Incluir novo",
     "CANCEL": "Cancelar",
     "CLEAR_SEARCH": "Limpar entrada de procura",
     "CLEAR_FILTER": "Limpar Filtro",
@@ -26,8 +26,8 @@ var messages = {
     "LOADING": "Carregando",
     "LOGOUT": "Logout",
     "NEXT_PAGE": "Próxima página",
-    "NO_RESULTS_FOUND": "Nenhum Resultado Localizado",
-    "PAGES": "{0} de {1} páginas",   // {0} - current page number; {1} - total pages
+    "NO_RESULTS_FOUND": "Nenhum resultado localizado",
+    "PAGES": "{0} de {1} página(s)",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Selecione o número da página para visualização",
     "PREVIOUS_PAGE": "Página anterior",
     "PROCESSING": "Processando",
@@ -36,7 +36,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "A tabela é classificada por {0} em ordem crescente. ",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "A tabela é classificada por {0} em ordem decrescente. ", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "Verdadeiro",
-    "TRY_AGAIN": "Tente novamente ...",
+    "TRY_AGAIN": "Tentar novamente ...",
     "UPDATE": "Atualizar",
 
     // Common Column Names
@@ -52,7 +52,7 @@ var messages = {
     "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtrar o nome do cliente OAuth",
     "ADD_NEW_CLIENT": "Incluir novo cliente OAuth.",
     "CLIENT_NAME": "Nome do cliente",
-    "CLIENT_ID": "ID Cliente",
+    "CLIENT_ID": "ID do cliente",
     "EDIT_ARIA": "Editar o cliente OAuth {0}",      // {0} - name
     "DELETE_ARIA": "Excluir o cliente OAuth {0}",  // {0} - name
     "CLIENT_SECRET": "Segredo do cliente",

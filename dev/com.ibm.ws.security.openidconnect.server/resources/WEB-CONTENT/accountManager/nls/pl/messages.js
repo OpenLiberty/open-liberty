@@ -10,7 +10,7 @@
  *******************************************************************************/
 var messages = {
     // Common Strings
-    "ADD_NEW": "Dodaj nowe",
+    "ADD_NEW": "Dodaj nowy",
     "CANCEL": "Anuluj",
     "CLEAR": "Wyczyść dane wejściowe wyszukiwania",
     "CLICK_TO_SORT": "Kliknij, aby posortować kolumnę",
@@ -26,12 +26,12 @@ var messages = {
     "LOGOUT": "Wylogowanie",
     "NEXT_PAGE": "Następna strona",
     "NO_RESULTS_FOUND": "Nie znaleziono żadnych wyników",
-    "PAGES": "{0} z {1} stron",   // {0} - current page number; {1} - total pages
+    "PAGES": "Strona: {0} z {1}",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Wybierz numer strony do wyświetlenia",
     "PREVIOUS_PAGE": "Poprzednia strona",
     "PROCESSING": "Przetwarzanie",
-    "REGENERATE": "Wygeneruj ponownie",
-    "REGISTER": "Zarejestruj",
+    "REGENERATE": "Generuj ponownie",
+    "REGISTER": "Rejestruj",
     "TABLE_FIELD_SORT_ASC": "Tabela jest sortowana według {0} w kolejności rosnącej.",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "Tabela jest sortowana według {0} w kolejności malejącej.", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "Prawda",
@@ -49,23 +49,23 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Zarządzanie znacznikami osobistymi",
     "ACCT_MGR_DESC": "Twórz, usuwaj i generuj ponownie elementy app-password i app-token.",
-    "ADD_NEW_AUTHENTICATION": "Dodaj nowy element app-password lub app-token.",
+    "ADD_NEW_AUTHENTICATION": "Dodaj nowy element app-password lub app-token",
     "NAME_IDENTIFIER": "Nazwa: {0}",
-    "ADD_NEW_TITLE": "Rejestrowanie nowego uwierzytelnienia",
+    "ADD_NEW_TITLE": "Rejestracja nowego uwierzytelnienia",
     "NOT_GENERATED_PLACEHOLDER": "Nie wygenerowano",
     "AUTHENTICAION_GENERATED": "Wygenerowano uwierzytelnienie",
     "GENERATED_APP_PASSWORD": "Wygenerowano element app-password",
     "GENERATED_APP_TOKEN": "Wygenerowano element app-token",
-    "COPY_APP_PASSWORD": "Skopiuj element app-password do schowka",
-    "COPY_APP_TOKEN": "Skopiuj element app-token do schowka",
-    "REGENERATE_APP_PASSWORD": "Wygeneruj ponownie element App-Password",
+    "COPY_APP_PASSWORD": "Kopiuj element app-password do schowka",
+    "COPY_APP_TOKEN": "Kopiuj element app-token do schowka",
+    "REGENERATE_APP_PASSWORD": "Ponowne generowanie elementu App-Password",
     "REGENERATE_PW_WARNING": "To działanie spowoduje zastąpienie bieżącego elementu app-password.",
-    "REGENERATE_PW_PLACEHOLDER": "Hasło zostało wcześniej wygenerowane dnia {0}",        // 0 - date
-    "REGENERATE_APP_TOKEN": "Wygeneruj ponownie element App-Token",
+    "REGENERATE_PW_PLACEHOLDER": "Hasło zostało wcześniej wygenerowane {0}",        // 0 - date
+    "REGENERATE_APP_TOKEN": "Ponowne generowanie elementu App-Token",
     "REGENERATE_TOKEN_WARNING": "To działanie spowoduje zastąpienie bieżącego elementu app-token.",
-    "REGENERATE_TOKEN_PLACEHOLDER": "Znacznik został wcześniej wygenerowany dnia {0}",        // 0 - date
-    "DELETE_PW": "Usuń ten element app-password",
-    "DELETE_TOKEN": "Usuń ten element app-token",
+    "REGENERATE_TOKEN_PLACEHOLDER": "Znacznik został wcześniej wygenerowany {0}",        // 0 - date
+    "DELETE_PW": "Usuń element app-password",
+    "DELETE_TOKEN": "Usuń element app-token",
     "DELETE_WARNING_PW": "To działanie spowoduje usunięcie aktualnie przypisanego elementu app-password.",
     "DELETE_WARNING_TOKEN": "To działanie spowoduje usunięcie aktualnie przypisanego elementu app-token.",
     "REGENERATE_ARIA": "Wygeneruj ponownie element {0} dla {1}",     // 0 - 'app-password' or 'app-token'; 1 - name

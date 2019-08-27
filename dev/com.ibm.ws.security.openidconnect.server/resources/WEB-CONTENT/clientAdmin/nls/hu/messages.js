@@ -41,8 +41,8 @@ var messages = {
 
     // Common Column Names
     "CLIENT_NAME_COL": "Ügyfél neve",
-    "EXPIRES_COL": "Lejárat dátuma",
-    "ISSUED_COL": "Kibocsátás dátuma",
+    "EXPIRES_COL": "Lejárat",
+    "ISSUED_COL": "Kibocsátva",
     "NAME_COL": "Név",
     "TYPE_COL": "Típus",
 
@@ -71,12 +71,12 @@ var messages = {
     "SELECT_ONE_GRANT_TYPE": "Válasszon ki legalább egy feljogosítási típust.",
     "SPACE_HELPER_TEXT": "Szóközzel tagolt lista",
     "REDIRECT_URL_HELPER_TEXT": "Abszolút átirányítási URL címek szóközzel tagolt listája",
-    "DELETE_OAUTH_CLIENT_DESC": "Ez a művelet törli a regisztrált ügyfelet az ügyfél regisztrációs szolgáltatásból.",
+    "DELETE_OAUTH_CLIENT_DESC": "Ez a művelet törli a regisztrált ügyfelet az ügyfél-regisztrációs szolgáltatásból.",
     "REGISTRATION_SAVED": "Ügyfél-azonosító és ügyféltitok került előállításra és hozzárendelésre.",
     "REGISTRATION_UPDATED": "Új ügyféltitok lett előállítva és hozzárendelve az ügyfélhez.",
     "COPY_CLIENT_ID": "Ügyfél-azonosító másolása a vágólapra",
     "COPY_CLIENT_SECRET": "Ügyféltitok másolása a vágólapra",
-    "REGISTRATION_UPDATED_NOSECRET": "A(z) {0} OAuth ügyfél frissítése került.",                 // {0} - client name
+    "REGISTRATION_UPDATED_NOSECRET": "A(z) {0} OAuth ügyfél frissítésre került.",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "Legalább egy feljogosítási típust ki kell választani.",
     "ERR_REDIRECT_URIS": "AZ értékek csak abszolút URI címek lehetnek.",
     "GENERIC_REGISTER_FAIL": "Hiba az OAuth ügyfél regisztrálásakor",

@@ -39,8 +39,8 @@ var messages = {
     "UPDATE": "Frissítés",
 
     // Common Column Names
-    "EXPIRES_COL": "Lejárat dátuma",
-    "ISSUED_COL": "Kibocsátás dátuma",
+    "EXPIRES_COL": "Lejárat",
+    "ISSUED_COL": "Kibocsátva",
     "NAME_COL": "Név",
     "TYPE_COL": "Típus",
 

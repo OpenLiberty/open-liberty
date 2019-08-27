@@ -37,7 +37,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "表は {0} によって昇順でソートされます。",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "表は {0} によって降順でソートされます。", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "再試行してください...",
+    "TRY_AGAIN": "再試行...",
     "UPDATE": "更新",
 
     // Common Column Names
@@ -66,8 +66,8 @@ var messages = {
     "DELETE_ONE_MESSAGE": "このアクションにより、選択した app-password/app-token が削除されます。",
     "DELETE_MANY_MESSAGE": "このアクションにより、選択した {0} 個の app-password/app-token が削除されます。",  // 0 - number
     "DELETE_ALL_MESSAGE": "このアクションにより、{0} に属しているすべての app-password/app-token が削除されます。", // 0 - user id
-    "DELETE_NONE": "削除対象に選択",
-    "DELETE_NONE_MESSAGE": "削除する必要がある app-password または app-token を示すチェック・ボックスを選択します。",
+    "DELETE_NONE": "削除対象を選択",
+    "DELETE_NONE_MESSAGE": "削除する必要がある app-password または app-token を示すチェック・ボックスを選択してください。",
     "SINGLE_ITEM_SELECTED": "1 項目が選択されました",
     "ITEMS_SELECTED": "{0} 項目が選択されました",            // 0 - number
     "SELECT_ALL_AUTHS": "このユーザーのすべての app-password と app-token を選択します。",

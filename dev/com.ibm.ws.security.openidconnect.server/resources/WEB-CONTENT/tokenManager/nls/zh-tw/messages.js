@@ -42,7 +42,7 @@ var messages = {
 
     // Common Column Names
     "CLIENT_NAME_COL": "用戶端名稱",
-    "EXPIRES_COL": "有效期至",
+    "EXPIRES_COL": "到期日",
     "ISSUED_COL": "核發日期",
     "NAME_COL": "名稱",
     "TYPE_COL": "類型",

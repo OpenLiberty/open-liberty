@@ -25,12 +25,12 @@ var messages = {
     "LOADING": "Загрузка",
     "LOGOUT": "Выход из системы",
     "NEXT_PAGE": "Следующая страница",
-    "NO_RESULTS_FOUND": "Совпадений не найдено",
-    "PAGES": "{0} из {1} страниц",   // {0} - current page number; {1} - total pages
+    "NO_RESULTS_FOUND": "Результаты не найдены",
+    "PAGES": "Стр. {0} из {1}",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Выберите номер страницы для просмотра",
     "PREVIOUS_PAGE": "Предыдущая страница",
     "PROCESSING": "Обработка",
-    "REGENERATE": "Создать повторно",
+    "REGENERATE": "Обновить",
     "REGISTER": "Зарегистрировать",
     "TABLE_FIELD_SORT_ASC": "Таблица отсортирована по {0} в порядке возрастания.",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "Таблица отсортирована по {0} в порядке убывания.", // {0} - column name (ie. 'Name', 'Client ID')
@@ -39,8 +39,8 @@ var messages = {
     "UPDATE": "Обновить",
 
     // Common Column Names
-    "EXPIRES_COL": "Дата истечения срока действия",
-    "ISSUED_COL": "Дата выдачи",
+    "EXPIRES_COL": "Действует до",
+    "ISSUED_COL": "Выдано",
     "NAME_COL": "Имя",
     "TYPE_COL": "Тип",
 
@@ -48,27 +48,27 @@ var messages = {
     // 'app-token' and 'app-password' are keywords - don't translate
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Управление личными маркерами",
-    "ACCT_MGR_DESC": "Создать, удалить и заново создать элементы app-password и app-token.",
+    "ACCT_MGR_DESC": "Создание, удаление и обновление элементов app-password и app-token.",
     "ADD_NEW_AUTHENTICATION": "Добавить новый элемент app-password или app-token.",
     "NAME_IDENTIFIER": "Имя: {0}",
     "ADD_NEW_TITLE": "Зарегистрировать новые идентификационные данные",
-    "NOT_GENERATED_PLACEHOLDER": "Не создавался",
-    "AUTHENTICAION_GENERATED": "Создана идентификация",
+    "NOT_GENERATED_PLACEHOLDER": "Не сгенерировано",
+    "AUTHENTICAION_GENERATED": "Созданы идентификационные данные",
     "GENERATED_APP_PASSWORD": "Создан элемент app-password",
     "GENERATED_APP_TOKEN": "Создан элемент app-token",
     "COPY_APP_PASSWORD": "Скопировать элемент app-password в буфер обмена",
     "COPY_APP_TOKEN": "Скопировать элемент app-token в буфер обмена",
-    "REGENERATE_APP_PASSWORD": "Заново создать элемент App-Password",
+    "REGENERATE_APP_PASSWORD": "Обновить App-Password",
     "REGENERATE_PW_WARNING": "Это действие заменит текущий элемент app-password.",
     "REGENERATE_PW_PLACEHOLDER": "Дата создания предыдущего пароля: {0}",        // 0 - date
-    "REGENERATE_APP_TOKEN": "Заново создать элемент App-Token",
+    "REGENERATE_APP_TOKEN": "Обновить App-Token",
     "REGENERATE_TOKEN_WARNING": "Это действие заменит текущий элемент app-token.",
     "REGENERATE_TOKEN_PLACEHOLDER": "Дата создания предыдущего маркера: {0}",        // 0 - date
     "DELETE_PW": "Удалить этот элемент app-password",
     "DELETE_TOKEN": "Удалить этот элемент app-token",
     "DELETE_WARNING_PW": "Это действие удалит текущий элемент app-password.",
     "DELETE_WARNING_TOKEN": "Это действие удалит текущий элемент app-token.",
-    "REGENERATE_ARIA": "Заново создать {0} для {1}",     // 0 - 'app-password' or 'app-token'; 1 - name
+    "REGENERATE_ARIA": "Обновить {0} для {1}",     // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_ARIA": "Удалить {0} с именем {1}",       // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_GENERATE_FAIL": "Ошибка при создании {0}", // 0 - 'App-Password' or 'App-Token'
     "GENERIC_GENERATE_FAIL_MSG": "Произошла ошибка при создании нового {0} с именем {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
@@ -77,7 +77,7 @@ var messages = {
     "GENERIC_DELETE_FAIL_MSG": "Произошла ошибка при удалении {0} с именем {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_REGENERATE_FAIL": "Ошибка при повторном создании {0}",  // 0 - 'App-Password' or 'App-Token'
     "GENERIC_REGENERATE_FAIL_MSG": "Произошла ошибка при повторном создании {0} с именем {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
-    "GENERIC_REGENERATE_FAIL_CREATE_MSG": "Произошла ошибка при повторном создании {0} с именем {1}. Не удалось заново создать {0} после удаления.", // 0 - 'app-password' or 'app-token'; 1 - name
+    "GENERIC_REGENERATE_FAIL_CREATE_MSG": "Произошла ошибка при обновлении {0} с именем {1}. Не удалось заново создать {0} после удаления.", // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_FETCH_FAIL": "Ошибка при извлечении идентификационных данных",
     "GENERIC_FETCH_FAIL_MSG": "Не удалось получить текущий список элементов app-password или app-token.",
     "GENERIC_NOT_CONFIGURED": "Клиент не настроен",
