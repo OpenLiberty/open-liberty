@@ -38,6 +38,31 @@
 
         <AD name="%timerService" description="%timerService.desc"
             id="timerService" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.ejbcontainer.timer.runtime" />
+        
+        <!-- add default=“true" when we remove ibm:beta=“true” -->    
+        <AD name="%bindToServerRoot" description="%bindToServerRoot.desc" 
+        	id="bindToServerRoot" type="Boolean" required="false" ibmui:group="Advanced" ibm:beta="true" />
+        
+        <AD name="%bindToJavaGlobal" description="%bindToJavaGlobal.desc" 
+        	id="bindToJavaGlobal" type="Boolean" required="false" default="true" ibmui:group="Advanced" ibm:beta="true"/>
+        
+        <AD name="%disableShortDefaultBindings" description="%disableShortDefaultBindings.desc" 
+        	id="disableShortDefaultBindings" type="String" required="false" ibmui:group="Advanced" ibm:beta="true"/>
+        	
+       	<AD name="%ignoreDuplicateEJBBindings" description="%ignoreDuplicateEJBBindings.desc"
+            id="ignoreDuplicateEJBBindings" type="Boolean" required="false" default="false" ibmui:group="Advanced" ibm:beta="true"/>
+            
+        <AD name="%customBindings.onError" description="%customBindings.onError.desc"
+            id="customBindingsOnError" type="String" ibm:type="onError" required="false"
+            ibm:variable="onError" default="WARN" ibmui:group="Advanced" ibm:beta="true">
+            <Option label="%customBindings.onError.warn" value="WARN"/>
+            <Option label="%customBindings.onError.fail" value="FAIL"/>
+            <Option label="%customBindings.onError.ignore" value="IGNORE"/>   
+        </AD>  
+        
+        	
+        
+        
 
         <!--  Previously tWAS system properties  -->
 
