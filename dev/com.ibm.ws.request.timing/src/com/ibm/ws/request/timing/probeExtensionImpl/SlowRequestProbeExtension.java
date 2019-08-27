@@ -14,10 +14,10 @@ import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.request.timing.internal.config.SlowRequestTimingConfig;
 import com.ibm.ws.request.timing.manager.ProbationaryRequestManager;
 import com.ibm.ws.request.timing.manager.SlowRequestManager;
-import com.ibm.ws.request.timing.manager.TraceNLS;
 import com.ibm.ws.request.timing.queue.DelayedRequestQueue;
 import com.ibm.ws.request.timing.queue.SlowRequest;
 import com.ibm.wsspi.probeExtension.ProbeExtension;
