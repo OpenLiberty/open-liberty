@@ -113,7 +113,6 @@ def projectNames = startParameter.taskNames.collect { taskName ->
                 case 1:
                     return defaultProjectName
                 case 2:
-                    println elements[0]
                     return elements[0].empty ? bnd_build : elements[0]
                 default:
                     return elements[0].empty ? elements[1] : elements[0]
