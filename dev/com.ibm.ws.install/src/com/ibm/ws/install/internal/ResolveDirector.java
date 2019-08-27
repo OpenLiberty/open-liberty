@@ -429,48 +429,57 @@ class ResolveDirector extends AbstractDirector {
             String processedFeature = s.replaceAll("\\\\+$", "");
             featureNamesProcessed.add(processedFeature);
         }
+
         RepositoryConnectionList loginInfo = getRepositoryConnectionList(featureNamesProcessed, userId, password, this.getClass().getCanonicalName() + ".resolve");
-
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
-        HashSet<String> invalidFeatures = new HashSet<>();
-        List<EsaResource> featuresFound = new ArrayList<>();
         boolean isOpenLiberty = false;
+
         try {
-            for (String processedFeature : featureNamesProcessed) {
-                logger.info("In resolve director processing" + processedFeature);
-                featuresFound = new ArrayList<>();
-                boolean noVersionMode = false;
-
-                for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
-                    productDefinitions.add(new ProductInfoProductDefinition(productInfo));
-                    if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
-                        isOpenLiberty = true;
-                    }
-
-                    try {
-                        String searchStr = noVersionMode == false ? processedFeature : processedFeature.split("-")[0];
-                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.PUBLIC));
-                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.INSTALL));
-
-                    } catch (RepositoryException e) {
-                        logger.warning("findMatchingEsa error because of using version with feature name. Msg: " + e.getMessage());
-                        noVersionMode = true;
-
-                        // try to find feature again without the version number
-                        String searchStr = processedFeature.split("-")[0];
-                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.PUBLIC));
-                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, new ProductInfoProductDefinition(productInfo), Visibility.INSTALL));
-
-                    }
-                }
-                if (featuresFound.isEmpty()) {
-                    logger.info("Invalid feature: " + processedFeature);
-                    invalidFeatures.add(processedFeature);
+            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                productDefinitions.add(new ProductInfoProductDefinition(productInfo));
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    isOpenLiberty = true;
                 }
             }
         } catch (Exception e) {
             throw ExceptionUtils.create(e);
+
         }
+
+        HashSet<String> invalidFeatures = new HashSet<>();
+        List<EsaResource> featuresFound = new ArrayList<>();
+        for (String processedFeature : featureNamesProcessed) {
+            logger.info("In resolve director processing " + processedFeature);
+            featuresFound = new ArrayList<>();
+            boolean noVersionMode = false;
+
+            for (ProductDefinition definition : productDefinitions) {
+                try {
+                    String searchStr = noVersionMode == false ? processedFeature : processedFeature.split("-")[0];
+                    featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
+                    featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
+
+                } catch (RepositoryException e) {
+                    logger.info("Exception found, trying to find feature again, Msg: " + e.getMessage());
+                    noVersionMode = true;
+
+                    // try to find feature again without the version number
+                    String searchStr = processedFeature.split("-")[0];
+                    try {
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
+                    } catch (RepositoryException e1) {
+
+                    }
+
+                }
+            }
+            if (featuresFound.isEmpty()) {
+                logger.info("Invalid feature: " + processedFeature);
+                invalidFeatures.add(processedFeature);
+            }
+        }
+
 //
 //        // throw exception if invalid features found
 //        if (invalidFeatures.size() > 0)
