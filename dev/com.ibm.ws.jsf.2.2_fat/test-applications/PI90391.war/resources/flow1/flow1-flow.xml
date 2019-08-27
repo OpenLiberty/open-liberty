@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <flow-definition id="flow1">
+        <view id="flow1">
+            <vdl-document>/flow1/flow1.xhtml</vdl-document>
+        </view>
+        <flow-return id="goIndex">
+            <from-outcome>/index</from-outcome>
+        </flow-return>
+        <flow-call id="callFlow2">
+            <flow-reference>
+                <flow-id>flow2</flow-id>
+            </flow-reference>
+        </flow-call>
+
+    </flow-definition>
+</faces-config>

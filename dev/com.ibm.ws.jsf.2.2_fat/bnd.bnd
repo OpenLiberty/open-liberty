@@ -1,0 +1,79 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+    fat/src,\
+    test-applications/TestJSF2.2.war/src,\
+    test-applications/TestJSF22ViewAction.war/src,\
+    test-applications/JSF22FaceletsResourceResolverAnnotation.war/src,\
+    test-applications/JSF22FlashEvents.war/src,\
+    test-applications/TestResourceContractsFromJar.war/src,\
+    test-applications/JSF22BackwardCompatibilityTests.war/src,\
+    test-applications/CDITests.war/src,\
+    test-applications/TestJSFEL.war/src,\
+    test-applications/JSF22StatelessView.war/src,\
+    test-applications/JSF22TestResources.war/src,\
+    test-applications/JSF22HTML5.war/src,\
+    test-applications/JSF22SimpleHTML.war/src,\
+    test-applications/JSF22ActionListener.war/src,\
+    test-applications/CDICommon/src,\
+    test-applications/JSF22InputFile.war/src,\
+    test-applications/JSF22ComponentTester.war/src,\
+    test-applications/JSF22ClientWindow.war/src,\
+    test-applications/JSF22ComponentRenderer.war/src,\
+    test-applications/JSF22FacesFlows.war/src,\
+    test-applications/CDIFacesFlows.war/src,\
+    test-applications/JSF22Miscellaneous.jar/src,\
+    test-applications/JSF22Miscellaneous.war/src,\
+    test-applications/TestJSF22Ajax.war/src,\
+    test-applications/JSF22AppConfigPop.jar/src,\
+    test-applications/JSF22AppConfigPop.war/src,\
+    test-applications/CDIConfigByACP.war/src,\
+    test-applications/CDIConfigByACP.jar/src,\
+    test-applications/BeanValidationTests.war/src,\
+    test-applications/PI85492.war/src,\
+    test-applications/PI47600.war/src,\
+    test-applications/PI30335.jar/src,\
+    test-applications/PI50108.war/src,\
+    test-applications/PI46218Flow1.war/src,\
+    test-applications/PI46218Flow2.war/src,\
+    test-applications/PI57255CDI.war/src,\
+    test-applications/PI59422.war/src,\
+    test-applications/PI63135.war/src,\
+    test-applications/ViewScopedCDIBean.war/src,\
+    test-applications/ViewScopedJSFBean.war/src,\
+    test-applications/PI64714.war/src,\
+    test-applications/PI64718.war/src,\
+    test-applications/PI67525.war/src,\
+    test-applications/PI90507.war/src,\
+    test-applications/PH01566.war/src,\
+    test-applications/JSF22LocalizationTester.war/src
+    
+fat.project: true
+tested.features: servlet-4.0, jsf-2.3, cdi-2.0, beanValidation-2.0
+
+javac.source: 1.7
+javac.target: 1.7
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    net.sourceforge.htmlunit:htmlunit;version=2.20,\
+    xml-apis:xml-apis;version=1.4.01,\
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.jsf.2.2;version=latest,\
+    com.ibm.websphere.javaee.validation.1.1;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    com.ibm.ws.jsp.2.3;version=latest,\
+    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest
