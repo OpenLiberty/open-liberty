@@ -115,11 +115,15 @@ public class WSKeyStoreTest {
         final File testKeyFileP12 = new File("test/files/testKey.p12");
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
                 one(locMgr).resolveString("testKey.p12");
                 will(returnValue(testKeyFileP12.getAbsolutePath()));
                 one(locMgr).resolveString(testKeyFileP12.getAbsolutePath());
@@ -155,11 +159,15 @@ public class WSKeyStoreTest {
         final File testKeyFileP12 = new File("test/files/testKey.p12");
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
                 one(locMgr).resolveString("testKey.p12");
                 will(returnValue(testKeyFileP12.getAbsolutePath()));
                 one(locMgr).resolveString(testKeyFileP12.getAbsolutePath());
@@ -187,12 +195,18 @@ public class WSKeyStoreTest {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
         props.put("password", "mytestpassword");
+        // location and type will always come from metatype
+        props.put("location", LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE);
+        props.put("type", "PKCS12");
 
         final String defaultFileName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
         final File projectBuild = new File("../com.ibm.ws.ssl/build/tmp/key.p12");
 
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
@@ -201,6 +215,8 @@ public class WSKeyStoreTest {
                 // is returned.
                 one(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
                 one(locMgr).resolveString(defaultFileName);
                 will(returnValue(projectBuild.getAbsolutePath()));
                 one(locMgr).resolveString(LibertyConstants.DEFAULT_OUTPUT_LOCATION);
@@ -226,14 +242,21 @@ public class WSKeyStoreTest {
     public void missingAllKeyStoreInfoForDefaultKeyStore() throws Exception {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
+        // location and type will always come from metatype
+        props.put("location", LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE);
+        props.put("type", "PKCS12");
 
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
             }
         });
 
@@ -253,14 +276,21 @@ public class WSKeyStoreTest {
     public void missingPasswordForDefaultKeyStore() throws Exception {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
+        // location and type will always come from metatype
+        props.put("location", LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE);
+        props.put("type", "PKCS12");
 
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
             }
         });
 
@@ -285,11 +315,15 @@ public class WSKeyStoreTest {
 
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
             }
         });
 
@@ -307,7 +341,8 @@ public class WSKeyStoreTest {
      * If the configuration is not the default and its missing the type
      * information, this should result in an IllegalArgumentException.
      */
-    @Test
+// Type is never going to be missing its set to pkcs12 by default in the
+//    @Test
     public void missingType() throws Exception {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", "testKeyStore");
@@ -349,11 +384,15 @@ public class WSKeyStoreTest {
 
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
             }
         });
 
