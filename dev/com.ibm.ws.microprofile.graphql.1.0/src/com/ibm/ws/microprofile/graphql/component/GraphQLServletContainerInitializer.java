@@ -29,6 +29,8 @@ import com.ibm.ws.cdi.CDIService;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.SchemaPrinter;
 import graphql.servlet.SimpleGraphQLHttpServlet;
+import graphql.servlet.GraphQLErrorHandler;
+import graphql.servlet.GraphQLObjectMapper;
 
 
 /**
@@ -54,7 +56,14 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         GraphQLSchema schema = GraphQLExtension.createSchema(beanManager);
 
         if (schema != null) {
-            SimpleGraphQLHttpServlet graphQLServlet = SimpleGraphQLHttpServlet.newBuilder(schema).build();
+
+            GraphQLErrorHandler errorHandler = new MPGraphQLExceptionHandler();
+            GraphQLObjectMapper objMapper = GraphQLObjectMapper.newBuilder()
+                                                               .withGraphQLErrorHandler(errorHandler)
+                                                               .build();
+            SimpleGraphQLHttpServlet graphQLServlet = SimpleGraphQLHttpServlet.newBuilder(schema)
+                                                                               .withObjectMapper(objMapper)
+                                                                               .build();
             ServletRegistration.Dynamic endpointservlet = sc.addServlet(servletname, graphQLServlet);
             endpointservlet.addMapping("/" + path + "/*");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
