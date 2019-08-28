@@ -154,6 +154,6 @@ public interface WebAppSecurityConfig {
     /**
      * Is add coolie to the response for LoginContext.login() method call.
      */
-    boolean isAddCookieToResponseForProgrammaticJaasLogin ();
+    boolean isAddSsoCookieToResponseForProgrammaticJaasLogin ();
 
 }

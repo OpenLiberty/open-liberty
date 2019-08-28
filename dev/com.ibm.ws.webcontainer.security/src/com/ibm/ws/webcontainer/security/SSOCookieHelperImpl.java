@@ -216,7 +216,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
         if ((String) req.getAttribute(SSO_COOKIE_ADDED) != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "SSO cookie is already added. ");
+                Tr.debug(tc, "SSO cookie is already added.");
             }
             req.removeAttribute(SSO_COOKIE_ADDED);
             return false;

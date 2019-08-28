@@ -211,7 +211,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         if (customRealm != null || authProvider != null && !authProvider.endsWith("Form")) {
             addCustomAttributesToSSOToken();
         }
-        addCookieToResponseForProgrammaticJaasLogin();
+        addSSOCookiesToResponseForProgrammaticJaasLogin();
         return true;
     }
 

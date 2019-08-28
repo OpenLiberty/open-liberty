@@ -52,7 +52,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
-    private final Boolean addCookieToResponseForProgrammaticJaasLogin  = false;
+    private final Boolean addSsoCookieToResponseForProgrammaticJaasLogin   = false;
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -296,7 +296,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isAddCookieToResponseForProgrammaticJaasLogin () {
-        return addCookieToResponseForProgrammaticJaasLogin ;
+    public boolean isAddSsoCookieToResponseForProgrammaticJaasLogin () {
+        return addSsoCookieToResponseForProgrammaticJaasLogin  ;
     }
 }

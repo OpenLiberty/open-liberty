@@ -401,9 +401,9 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         return false;
     }
 
-    protected void addCookieToResponseForProgrammaticJaasLogin() {
+    protected void addSSOCookiesToResponseForProgrammaticJaasLogin() {
         WebAppSecurityConfig webAppSecurityConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
-        if (webAppSecurityConfig != null && webAppSecurityConfig.isAddCookieToResponseForProgrammaticJaasLogin()) {
+        if (webAppSecurityConfig != null && webAppSecurityConfig.isAddSsoCookieToResponseForProgrammaticJaasLogin()) {
             Callback[] callbacks = getOptionalCallbacks();
             WSServletRequestCallback wsServletRequestCallback = (WSServletRequestCallback) callbacks[0];
             WSServletResponseCallback wsServletResponseCallback = (WSServletResponseCallback) callbacks[1];

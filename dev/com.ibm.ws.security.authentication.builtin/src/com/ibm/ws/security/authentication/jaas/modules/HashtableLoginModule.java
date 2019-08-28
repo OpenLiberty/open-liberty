@@ -297,7 +297,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
             //Recreate the jwtSSOToken with custom Attributes in hashtable such as customCacheKey, customRealm, authProvider
             JwtSSOTokenHelper.addAttributesToJwtSSOToken(subject);
         }
-        addCookieToResponseForProgrammaticJaasLogin();
+        addSSOCookiesToResponseForProgrammaticJaasLogin();
 
         return true;
     }

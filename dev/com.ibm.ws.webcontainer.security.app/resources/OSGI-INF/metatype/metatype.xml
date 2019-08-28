@@ -69,7 +69,7 @@
             required="false" type="Boolean"
             default="false" />
             
-         <AD id="addCookieToResponseForProgrammaticJaasLogin" name="%addCookieToResponseForProgrammaticJaasLogin" description="%addCookieToResponseForProgrammaticJaasLogin.desc"
+         <AD id="addSsoCookieToResponseForProgrammaticJaasLogin" name="%addSsoCookieToResponseForProgrammaticJaasLogin" description="%addSsoCookieToResponseForProgrammaticJaasLogin.desc"
             required="false" type="Boolean"
             default="false" />
             

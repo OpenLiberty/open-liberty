@@ -154,7 +154,7 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
         }
 
         setUpSubject();
-        addCookieToResponseForProgrammaticJaasLogin();
+        addSSOCookiesToResponseForProgrammaticJaasLogin();
         return true;
     }
 
