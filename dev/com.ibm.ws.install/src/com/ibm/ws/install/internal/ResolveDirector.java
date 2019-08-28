@@ -425,7 +425,6 @@ class ResolveDirector extends AbstractDirector {
     List<List<RepositoryResource>> resolve(Collection<String> featureNames, DownloadOption downloadOption, String userId, String password) throws InstallException {
         Collection<String> featureNamesProcessed = new ArrayList<String>();
         for (String s : featureNames) {
-            // clean feature name
             String processedFeature = s.replaceAll("\\\\+$", "");
             featureNamesProcessed.add(processedFeature);
         }
@@ -445,52 +444,6 @@ class ResolveDirector extends AbstractDirector {
             throw ExceptionUtils.create(e);
 
         }
-        logger.info("in first resolve method");
-        System.out.println("In first resolve method");
-
-//        HashSet<String> invalidFeatures = new HashSet<>();
-//        List<EsaResource> featuresFound = new ArrayList<>();
-//        for (String processedFeature : featureNamesProcessed) {
-//            logger.info("In resolve director processing " + processedFeature);
-//            featuresFound = new ArrayList<>();
-//            boolean noVersionMode = false;
-//
-//            for (ProductDefinition definition : productDefinitions) {
-//                try {
-//                    String searchStr = noVersionMode == false ? processedFeature : processedFeature.split("-")[0];
-//                    featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
-//                    featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
-//
-//                } catch (RepositoryException e) {
-//                    logger.info("Exception found, trying to find feature again, Msg: " + e.getMessage());
-//                    noVersionMode = true;
-//
-//                    // try to find feature again without the version number
-//                    String searchStr = processedFeature.split("-")[0];
-//                    try {
-//                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
-//                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
-//                    } catch (RepositoryException e1) {
-//
-//                    }
-//
-//                }
-//            }
-//            if (featuresFound.isEmpty()) {
-//                logger.info("Invalid feature: " + processedFeature);
-//                invalidFeatures.add(processedFeature);
-//            }
-//        }
-
-//
-//        // throw exception if invalid features found
-//        if (invalidFeatures.size() > 0)
-//
-//        {
-//            logger.info("Invalid Features: " + invalidFeatures);
-//            logger.info("Throwing invalid feature exception!");
-//            throw ExceptionUtils.create(new RepositoryException(), invalidFeatures, false, proxy, defaultRepo(), isOpenLiberty);
-//        }
 
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
@@ -513,7 +466,6 @@ class ResolveDirector extends AbstractDirector {
 
             throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false, isOpenLiberty);
         } catch (RepositoryException e) {
-            //logger.info("Invalid features: " + invalidFeatures);
             throw ExceptionUtils.create(e, featureNamesProcessed, false, proxy, defaultRepo(), isOpenLiberty);
         }
         List<List<RepositoryResource>> installResourcesCollection = new ArrayList<List<RepositoryResource>>(installResources.size());
@@ -676,41 +628,6 @@ class ResolveDirector extends AbstractDirector {
             throw ExceptionUtils.create(e);
         }
 
-        HashSet<String> invalidFeatures = new HashSet<>();
-        List<EsaResource> featuresFound = new ArrayList<>();
-        for (String processedFeature : assetNamesProcessed) {
-            logger.info("In resolve director processing " + processedFeature);
-            System.out.println("Processing " + processedFeature);
-            featuresFound = new ArrayList<>();
-            boolean noVersionMode = false;
-
-            for (ProductDefinition definition : productDefinitions) {
-                try {
-                    String searchStr = noVersionMode == false ? processedFeature : processedFeature.split("-")[0];
-                    featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
-                    featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
-
-                } catch (RepositoryException e) {
-                    logger.info("Exception found, trying to find feature again, Msg: " + e.getMessage());
-                    noVersionMode = true;
-
-                    // try to find feature again without the version number
-                    String searchStr = processedFeature.split("-")[0];
-                    try {
-                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
-                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
-                    } catch (RepositoryException e1) {
-
-                    }
-
-                }
-            }
-            if (featuresFound.isEmpty()) {
-                logger.info("Invalid feature: " + processedFeature);
-                invalidFeatures.add(processedFeature);
-            }
-        }
-
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
         try {
@@ -728,9 +645,8 @@ class ResolveDirector extends AbstractDirector {
 
             throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);
         } catch (RepositoryException e) {
-            logger.warning("Invalid features: " + invalidFeatures);
-            System.out.println("Invalid features: " + invalidFeatures);
-            throw ExceptionUtils.create(e, invalidFeatures, true, proxy, defaultRepo(), isOpenLiberty);
+
+            throw ExceptionUtils.create(e, assetNamesProcessed, true, proxy, defaultRepo(), isOpenLiberty);
         }
 
         List<List<RepositoryResource>> installResourcesCollection = new ArrayList<List<RepositoryResource>>(installResources.size());
