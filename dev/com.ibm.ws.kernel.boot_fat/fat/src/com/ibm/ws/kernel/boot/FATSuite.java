@@ -21,6 +21,7 @@ import com.ibm.ws.kernel.boot.commandline.StartCommandTest;
 import com.ibm.ws.kernel.boot.commandport.ServerCommandPortTest;
 import com.ibm.ws.kernel.boot.internal.commands.LogLevelPropertyTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageCommandTest;
+import com.ibm.ws.kernel.boot.internal.commands.PackageLooseConfigTest;
 import com.ibm.ws.kernel.osgi.OSGiEmbedManagerTest;
 import com.ibm.ws.kernel.provisioning.KernelChangeTest;
 import com.ibm.ws.kernel.provisioning.ProvisioningTest;
@@ -51,6 +52,7 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 ServerCommandPortTest.class,
                 DumpCommandTest.class,
                 PackageCommandTest.class,
+                PackageLooseConfigTest.class,
                 LogLevelPropertyTest.class,
                 CreateCommandTest.class,
                 StartCommandTest.class,

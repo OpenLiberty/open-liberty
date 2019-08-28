@@ -434,56 +434,6 @@ public class PackageCommandTest {
     }
 
     /**
-     * This tests that when --server-root is supplied, and you have a loose application
-     * that the loose application is output in the archive as a .war file vs the .xml file.
-     *
-     */
-    @Test
-    public void testPackageLooseAppExpanded() throws Exception {
-        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-        try {
-
-            server.getFileFromLibertyInstallRoot("lib/extract");
-
-            String[] cmd = new String[] { "--archive=" + archivePackage,
-                                          "--include=usr",
-                                          "--server-root=MyRoot" };
-            // Ensure package completes
-            String stdout = server.executeServerScript("package", cmd).getStdout();
-            assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
-
-            System.out.println("std: " + stdout);
-
-            ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
-            try {
-                boolean foundServerEntry = false;
-                boolean foundWarFileEntry = false;
-                boolean foundExpandedEntry = false;
-                System.out.println("******** Entries *********");
-                for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
-                    ZipEntry entry = en.nextElement();
-                    // For Usr and server-root, there should be no /usr in the structure
-                    System.out.println(entry.getName());
-                    //Uses String.matches() to ensure exact path is found
-                    foundServerEntry |= entry.getName().matches("^MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/$");
-                    foundWarFileEntry |= entry.getName().matches("^MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/AppsLooseWeb.war$");
-                    foundExpandedEntry |= entry.getName().matches("^MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/expanded/AppsLooseWeb.war/$");
-                }
-                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/ as expected.", foundServerEntry);
-                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/AppsLooseWeb.war as expected.", foundWarFileEntry);
-                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/apps/expanded/AppsLooseWeb.war/ as expected.", foundExpandedEntry);
-            } finally {
-                try {
-                    zipFile.close();
-                } catch (IOException ex) {
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            assumeTrue(false); // the directory does not exist, so we skip this test.
-        }
-    }
-
-    /**
      * This tests that when --include=runnable is supplied, and --archive is supplied with
      * a file extension not ending with .jar that an error is returned.
      *
