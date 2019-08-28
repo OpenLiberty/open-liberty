@@ -251,8 +251,8 @@
         <!-- max combined quantity allowed per user, per client --> 
         <AD id="appTokenOrPasswordLimit" name="%appTokenOrPasswordLimit" description="%appTokenOrPasswordLimit.desc" required="false" type="Long" default="100" />
         <!-- these next two are used by the app-password UI -->
-        <AD id="internalClientId" name="internal" description="internal use only" required="false" type="String" />
-        <AD id="internalClientSecret" name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
+        <AD id="internalClientId" name="%internalClientId" description="%internalClientId.desc" required="false" type="String" />
+        <AD id="internalClientSecret" name="%internalClientSecret" description="%internalClientSecret.desc" required="false" type="String" ibm:type="password" />
         <AD id="clientSecretEncoding" type="String" required="false" default="xor" name="%clientSecretEncoding" description="%clientSecretEncoding.desc">
 	        <Option label="%clientSecretEncoding.xor" value="xor" />
 		 	<Option label="%clientSecretEncoding.PBKDF2WithHmacSHA512" value="PBKDF2WithHmacSHA512" />	        
