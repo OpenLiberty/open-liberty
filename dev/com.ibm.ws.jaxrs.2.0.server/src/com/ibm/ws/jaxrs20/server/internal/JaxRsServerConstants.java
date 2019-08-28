@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.server.internal;
 
-import java.util.ResourceBundle;
-
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 
 /**
@@ -21,7 +19,6 @@ public class JaxRsServerConstants {
 
     public static final String TR_GROUP = "JaxRsServer";
     public static final String TR_RESOURCE_BUNDLE = "com.ibm.ws.jaxrs20.server.internal.resources.JaxRsServerMessages";
-    public static final ResourceBundle messages = ResourceBundle.getBundle(TR_RESOURCE_BUNDLE);
 
     public static final String JAXRS_APPLICATION_PARAM = "javax.ws.rs.Application";
     public static final String APPLICATION_ROOT_CLASS_NAME = "javax.ws.rs.core.Application";
@@ -36,10 +33,4 @@ public class JaxRsServerConstants {
      * The key value for a set of JaxRsFactoryBeanCustomizer. The expected type is Set of JaxRsFactoryBeanCustomizer.
      */
     public static final String BEAN_CUSTOMIZER = JaxRsFactoryBeanCustomizer.class.getName();
-
-    /**
-     * Identify the key value for IWebAppNameSpaceCollaborator instance, which is mostly used for EJB based Web Services.
-     */
-
-    public static final String NAMESPACE_COLLABORATOR = "NAMESPACE_COLLABORATOR";
 }

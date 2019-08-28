@@ -42,7 +42,7 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
  */
 public class DirectoryUpdateMonitor extends UpdateMonitor {
 
-    TraceComponent tc = Tr.register(DirectoryUpdateMonitor.class);
+    static final TraceComponent tc = Tr.register(DirectoryUpdateMonitor.class);
 
     private final String fileFilter;
     private final boolean filesOnly;

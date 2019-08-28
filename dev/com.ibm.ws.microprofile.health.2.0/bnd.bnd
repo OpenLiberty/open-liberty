@@ -68,6 +68,7 @@ testsrc: test/src
         com.ibm.websphere.org.osgi.core;version=latest,\
         com.ibm.websphere.org.osgi.service.component;version=latest,\
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+        com.ibm.ws.cdi.interfaces;version=latest,\
         com.ibm.ws.classloader.context;version=latest,\
         com.ibm.ws.classloading;version=latest,\
         com.ibm.ws.container.service.compat;version=latest,\

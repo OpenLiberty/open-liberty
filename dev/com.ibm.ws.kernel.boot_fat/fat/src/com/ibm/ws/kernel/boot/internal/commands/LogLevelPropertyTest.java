@@ -10,50 +10,31 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import java.io.File;
-import java.util.Locale;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.Machine;
-import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.log.Log;
-
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 public class LogLevelPropertyTest {
 
     private static LibertyServer server;
-    private static boolean isMac;
-    private static boolean isZos;
 
     @BeforeClass
     public static void before() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.bootstrap.output.fat");
 
-        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
-
         Map<String, String> options = server.getJvmOptionsAsMap();
         String maxPermSize = "-XX:MaxPermSize";
         if (options.containsKey(maxPermSize)) {
             options.remove(maxPermSize);
-        }
-
-        // Temporary debug for 130858.
-        isZos = osName.contains("z/os");
-        if (isZos) {
-            String option = "-Xtrace:output=shared_classes.trc,maximal={j9shr}";
-            Log.info(LogLevelPropertyTest.class, "before", "Adding " + option + " for z/OS");
-            options.put(option, null);
-
         }
 
         // disable serial filter agent message for testing.
@@ -63,64 +44,35 @@ public class LogLevelPropertyTest {
 
         server.startServer();
 
-        isMac = osName.indexOf("mac os") >= 0;
     }
+
+    private static final String LAUNCHING_MESSAGE = "Launching ";
+    private static final String MESSAGE_ID = "CWWK";
+    private static final String AUDIT_MESSAGE = "AUDIT";
+    private static final String INFO_MESSAGE = "INFO";
 
     @Test
     public void testLogLevelPropertyDisabled() throws Exception {
-        // Skip test for java 9, because it will print out error messages complaining about
-        // modularity by default, which causes a non-empty console.log file
-        Assume.assumeTrue(JavaInfo.forServer(server).majorVersion() < 9);
-        try {
-            if (isMac) {
-                // There might (with Java7 on some versions of the OS) be garbage in console.log that is
-                // printed by the JVM (we have no control over it). It looks something like this:
-                // objc[25086]: Class JavaLaunchHelper is implemented in both /.../jre/bin/java and /.../jre/lib/libinstrument.dylib. One of the two will be used. Which one is undefined.
-                // only test for the empty console log if that message isn't present
-                if (server.waitForStringInLog("objc.*", 0, server.getConsoleLogFile()) == null) {
-                    assertEquals("Console log file was not empty.", 0, server.getConsoleLogFile().length());
-                }
-            } else if (JavaInfo.forServer(server).majorVersion() == 8) {
-                // On Oracle JDK and OpenJDK 8, the JVM will complain about the MaxPermSize option
-                if (server.waitForStringInLog(".*MaxPermSize", 0, server.getConsoleLogFile()) == null) {
-                    assertEquals("Console log file was not empty.", 0, server.getConsoleLogFile().length());
-                }
-            } else {
-                assertEquals("Console log file was not empty.", 0, server.getConsoleLogFile().length());
-            }
-        } finally {
-            // Temporary debug for 130858.
-            if (isZos) {
-                final Class<?> c = LogLevelPropertyTest.class;
-                final String m = "testLogLevelPropertyDisabled";
+        // This test used to check for a zero length log file, but various java messages can be printed
+        // to the console even when console logging is disabled. We have added so many special cases over the
+        // years to deal with this that the test was effectively ignored most of the time.
 
-                Machine machine = server.getMachine();
-                ProgramOutput output = machine.execute("ls",
-                                                       new String[] {
-                                                                      "-l",
-                                                                      new File(server.getUserDir(), "servers/.classCache").getAbsolutePath(),
-                                                                      new File(server.getUserDir(), "servers/.classCache/javasharedresources").getAbsolutePath() });
-                Log.info(c, m, "ls -l diagnostic return code: " + output.getReturnCode());
-                Log.info(c, m, "ls -l diagnostic stdout: " + output.getStdout());
-                Log.info(c, m, "ls -l diagnostic stderr: " + output.getStderr());
+        // Instead, we now check for several markers that would indicate that we are actually logging console
+        // output (eg, the launching message and message IDs.)
 
-                output = machine.execute("ipcs");
-                Log.info(c, m, "icps diagnostic return code: " + output.getReturnCode());
-                Log.info(c, m, "icps diagnostic stdout: " + output.getStdout());
-                Log.info(c, m, "icps diagnostic stderr: " + output.getStderr());
+        // First, check to see if the console log is empty. If it is, everything is fine.
+        if (server.getConsoleLogFile().length() == 0)
+            return;
 
-                output = machine.execute(new File(server.getMachineJavaJDK(), "../bin/jar").getAbsolutePath(),
-                                         new String[] {
-                                                        "cfM",
-                                                        // Weird extension to avoid filtering.
-                                                        new File(server.getServerRoot(), "scControlFiles.zip.diag").getAbsolutePath(),
-                                                        new File(server.getUserDir(), "servers/.classCache").getAbsolutePath()
-                                         });
-                Log.info(c, m, "jar cf diagnostic return code: " + output.getReturnCode());
-                Log.info(c, m, "jar cf diagnostic stdout: " + output.getStdout());
-                Log.info(c, m, "jar cf diagnostic stderr: " + output.getStderr());
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(server.getConsoleLogFile().openForReading()))) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                boolean containsMessages = line.contains(LAUNCHING_MESSAGE) || line.contains(MESSAGE_ID) ||
+                                           line.contains(AUDIT_MESSAGE) || line.contains(INFO_MESSAGE);
+                assertFalse("Message content indicates that console logging may be enabled: " + line, containsMessages);
             }
         }
+
     }
 
     @AfterClass

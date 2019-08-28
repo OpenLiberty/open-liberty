@@ -12,15 +12,14 @@
 package com.ibm.ws.microprofile.health20.services.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
 
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
@@ -29,10 +28,11 @@ import org.eclipse.microprofile.health.Liveness;
 import org.eclipse.microprofile.health.Readiness;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.ws.microprofile.health20.internal.HealthCheckConstants;
 import com.ibm.ws.microprofile.health20.services.HealthCheck20CDIBeanInvoker;
@@ -42,26 +42,36 @@ public class HealthCheck20CDIBeanInvokerImpl implements HealthCheck20CDIBeanInvo
 
     private final static TraceComponent tc = Tr.register(com.ibm.ws.microprofile.health20.services.impl.HealthCheck20CDIBeanInvokerImpl.class);
 
-    /** {@inheritDoc} */
-    @Override
-    public Set<HealthCheckResponse> checkAllBeans() throws HealthCheckBeanCallException {
-        return checkAllBeans(HealthCheckConstants.HEALTH_CHECK_ALL);
+    private final Map<String, BeanManager> beanManagers = new HashMap<>();
+
+    private CDIService cdiService;
+
+    @Reference(service = CDIService.class)
+    protected void setCdiService(CDIService cdiService) {
+        this.cdiService = cdiService;
+    }
+
+    protected void unsetCdiService(CDIService cdiService) {
+        if (this.cdiService == cdiService) {
+            this.cdiService = null;
+        }
     }
 
     @Override
-    public Set<HealthCheckResponse> checkAllBeans(String healthCheckProcedure) throws HealthCheckBeanCallException {
+    public Set<HealthCheckResponse> checkAllBeans(String appName, String moduleName, String healthCheckProcedure) throws HealthCheckBeanCallException {
+        BeanManager beanManager = getBeanManager(appName, moduleName);
         Set<HealthCheckResponse> retVal = new HashSet<HealthCheckResponse>();
         Set<Object> healthCheckBeans = new HashSet<Object>();
 
         switch (healthCheckProcedure) {
             case HealthCheckConstants.HEALTH_CHECK_LIVE:
-                healthCheckBeans = getHealthCheckLivenessBeans();
+                healthCheckBeans = getHealthCheckLivenessBeans(beanManager);
                 break;
             case HealthCheckConstants.HEALTH_CHECK_READY:
-                healthCheckBeans = getHealthCheckReadinessBeans();
+                healthCheckBeans = getHealthCheckReadinessBeans(beanManager);
                 break;
             default:
-                healthCheckBeans = getAllHealthCheckBeans();
+                healthCheckBeans = getAllHealthCheckBeans(beanManager);
         }
 
         for (Object obj : healthCheckBeans) {
@@ -78,63 +88,74 @@ public class HealthCheck20CDIBeanInvokerImpl implements HealthCheck20CDIBeanInvo
         return retVal;
     }
 
-    private Set<Object> getHealthCheckLivenessBeans() {
+    private Set<Object> getHealthCheckLivenessBeans(BeanManager beanManager) {
         Set<Object> hcLivenessBeans = new HashSet<Object>();
-        Annotation hcLivenessQualifier = new AnnotationLiteral<Liveness>() {};
-        hcLivenessBeans = getHealthCheckBeans(hcLivenessQualifier);
+        Annotation hcLivenessQualifier = new AnnotationLiteral<Liveness>() {
+        };
+        hcLivenessBeans = getHealthCheckBeans(beanManager, hcLivenessQualifier);
 
         return hcLivenessBeans;
     }
 
-    private Set<Object> getHealthCheckReadinessBeans() {
+    private Set<Object> getHealthCheckReadinessBeans(BeanManager beanManager) {
         Set<Object> hcReadinessBeans = new HashSet<Object>();
 
-        Annotation hcReadinessQualifier = new AnnotationLiteral<Readiness>() {};
-        hcReadinessBeans = getHealthCheckBeans(hcReadinessQualifier);
+        Annotation hcReadinessQualifier = new AnnotationLiteral<Readiness>() {
+        };
+        hcReadinessBeans = getHealthCheckBeans(beanManager, hcReadinessQualifier);
 
         return hcReadinessBeans;
     }
 
-    private Set<Object> getHealthCheckHealthBeans() {
+    private Set<Object> getHealthCheckHealthBeans(BeanManager beanManager) {
         Set<Object> hcHealthBeans = new HashSet<Object>();
 
-        Annotation hcHealthQualifier = new AnnotationLiteral<Health>() {};
-        hcHealthBeans = getHealthCheckBeans(hcHealthQualifier);
+        Annotation hcHealthQualifier = new AnnotationLiteral<Health>() {
+        };
+        hcHealthBeans = getHealthCheckBeans(beanManager, hcHealthQualifier);
 
         return hcHealthBeans;
     }
 
-    private Set<Object> getAllHealthCheckBeans() {
+    private Set<Object> getAllHealthCheckBeans(BeanManager beanManager) {
         Set<Object> hcAllBeans = new HashSet<Object>();
 
-        hcAllBeans.addAll(getHealthCheckLivenessBeans());
-        hcAllBeans.addAll(getHealthCheckReadinessBeans());
-        hcAllBeans.addAll(getHealthCheckHealthBeans());
+        hcAllBeans.addAll(getHealthCheckLivenessBeans(beanManager));
+        hcAllBeans.addAll(getHealthCheckReadinessBeans(beanManager));
+        hcAllBeans.addAll(getHealthCheckHealthBeans(beanManager));
 
         return hcAllBeans;
     }
 
-    @FFDCIgnore(NameNotFoundException.class)
-    private Set<Object> getHealthCheckBeans(Annotation hcQualifier) {
-        BeanManager beanManager = null;
+    private Set<Object> getHealthCheckBeans(BeanManager beanManager, Annotation hcQualifier) {
         Set<Object> healthCheckBeans = new HashSet<Object>();
         Set<Bean<?>> beans;
-        try {
-            InitialContext context = new InitialContext();
-            beanManager = (BeanManager) context.lookup("java:comp/BeanManager");
-        } catch (NameNotFoundException e) {
-            Tr.event(tc, "Catching NameNotFoundException looking up CDI java:comp/BeanManager.  Ignoring assuming the reason is because there are zero CDI managed beans");
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
         if (beanManager != null) {
             beans = beanManager.getBeans(HealthCheck.class, hcQualifier);
             for (Bean<?> bean : beans) {
                 Tr.event(tc, "Bean Found: HealthCheck beanClass = " + bean.getBeanClass() + ", class = " + bean.getClass() + ", name = " + bean.getName());
-                healthCheckBeans.add(beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean)));
+                healthCheckBeans.add(beanManager.getReference(bean, HealthCheck.class, beanManager.createCreationalContext(bean)));
             }
         }
         return healthCheckBeans;
     }
 
+    private BeanManager getBeanManager(String appName, String moduleName) {
+        String key = appName + "#" + moduleName;
+        BeanManager manager = beanManagers.get(key);
+        if (manager == null) {
+            if (beanManagers.containsKey(key) || cdiService == null) {
+                return null;
+            }
+            manager = cdiService.getCurrentModuleBeanManager();
+            beanManagers.put(key, manager);
+        }
+        return manager;
+    }
+
+    @Override
+    public void removeModuleReferences(String appName, String moduleName) {
+        String key = appName + "#" + moduleName;
+        beanManagers.remove(key);
+    }
 }

@@ -191,6 +191,7 @@ public class BadApplicationTests extends AbstractTest {
         server.setServerConfigurationFile("ExtendsThrowable.xml");
         assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
+        server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(installedApps);
     }
@@ -219,6 +220,7 @@ public class BadApplicationTests extends AbstractTest {
         server.setServerConfigurationFile("ExtendsThrowableEE8.xml");
         assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
+        server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(installedApps);
     }

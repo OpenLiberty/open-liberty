@@ -1,0 +1,200 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.spnego/resources/com/ibm/ws/security/spnego/internal/resources/SpnegoMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SPNEGO Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4300 - CWWKS4339
+#Message prefix block: CWWKS4340 - CWWKS4349 - KerberosMessage.nlsprops
+SPNEGO_CONFIG_PROCESSED=CWWKS4300I: Konfiguracja SPNEGO \
+{0} zosta\u0142a pomy\u015blnie przetworzona.
+SPNEGO_CONFIG_PROCESSED.explanation=Konfiguracja SPNEGO zosta\u0142a pomy\u015blnie przetworzona.
+SPNEGO_CONFIG_PROCESSED.useraction=Brak
+
+SPNEGO_CONFIG_MODIFIED=CWWKS4301I: Konfiguracja SPNEGO \
+{0} zosta\u0142a pomy\u015blnie zmodyfikowana.
+SPNEGO_CONFIG_MODIFIED.explanation=Konfiguracja SPNEGO zosta\u0142a pomy\u015blnie zmodyfikowana.
+SPNEGO_CONFIG_MODIFIED.useraction=Brak.
+
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE=CWWKS4302I: Plik konfiguracyjny protoko\u0142u Kerberos nie zosta\u0142 okre\u015blony w pliku server.xml. Zostanie u\u017cyty plik domy\u015blny {0}.
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.explanation=Konfiguracja protoko\u0142u Kerberos nie zosta\u0142a okre\u015blona w pliku server.xml.  \
+Zostanie u\u017cyta domy\u015blna nazwa pliku i \u015bcie\u017cka do pliku konfiguracyjnego \
+protoko\u0142u Kerberos. Informacje o domy\u015blnej nazwie pliku i \u015bcie\u017cce do pliku \
+konfiguracyjnego protoko\u0142u Kerberos mo\u017cna znale\u017a\u0107 w dokumencie pakietu JDK.
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.useraction=Je\u015bli \
+u\u017cytkownik chce u\u017cy\u0107 innej pe\u0142nej nazwy pliku i \u015bcie\u017cki do pliku \
+konfiguracyjnego protoko\u0142u Kerberos, w pliku server.xml nale\u017cy okre\u015bli\u0107 pe\u0142n\u0105 \
+nazw\u0119 pliku i \u015bcie\u017ck\u0119 do pliku konfiguracyjnego protoko\u0142u Kerberos, kt\u00f3ra mo\u017ce \
+r\u00f3wnie\u017c zawiera\u0107 obs\u0142ugiwan\u0105 zmienn\u0105.
+
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND=CWWKS4303E: Nie mo\u017cna znale\u017a\u0107 podanego pliku konfiguracyjnego protoko\u0142u Kerberos {0}.
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 pliku konfiguracyjnego protoko\u0142u Kerberos okre\u015blonego w pliku server.xml. 
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.useraction=Sprawd\u017a pe\u0142n\u0105 \
+nazw\u0119 pliku i \u015bcie\u017ck\u0119 do pliku konfiguracyjnego protoko\u0142u Kerberos, kt\u00f3ra mo\u017ce \
+zawiera\u0107 obs\u0142ugiwan\u0105 zmienn\u0105, aby upewni\u0107 si\u0119, czy jest zgodna z informacjami \
+podanymi w pliku server.xml.
+
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE=CWWKS4304I: Plik tabeli kluczy protoko\u0142u Kerberos nie zosta\u0142 okre\u015blony w pliku server.xml. Zostanie u\u017cyty plik domy\u015blny {0}.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.explanation=Je\u015bli w \
+pliku server.xml nie jest okre\u015blony plik tabeli kluczy protoko\u0142u Kerberos, \
+zostanie u\u017cyta domy\u015blna nazwa pliku i \u015bcie\u017cka do pliku tabeli kluczy protoko\u0142u \
+Kerberos. Informacje o domy\u015blnej nazwie pliku i \u015bcie\u017cce do pliku tabeli kluczy \
+protoko\u0142u Kerberos mo\u017cna znale\u017a\u0107 w dokumencie pakietu JDK.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.useraction=Je\u015bli \
+u\u017cytkownik chce u\u017cy\u0107 innej pe\u0142nej nazwy pliku i \u015bcie\u017cki do pliku tabeli kluczy \
+protoko\u0142u Kerberos, w pliku server.xml nale\u017cy okre\u015bli\u0107 pe\u0142n\u0105 nazw\u0119 pliku i \
+\u015bcie\u017ck\u0119 do pliku tabeli kluczy protoko\u0142u Kerberos, kt\u00f3ra mo\u017ce r\u00f3wnie\u017c zawiera\u0107 \
+obs\u0142ugiwan\u0105 zmienn\u0105.
+
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4305E: Nie mo\u017cna znale\u017a\u0107 podanego pliku tabeli kluczy protoko\u0142u Kerberos {0}.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 pliku tabeli kluczy protoko\u0142u Kerberos okre\u015blonego w pliku server.xml.   \
+Informacje o domy\u015blnej nazwie pliku i \u015bcie\u017cce do pliku tabeli kluczy protoko\u0142u \
+Kerberos mo\u017cna znale\u017a\u0107 w dokumencie pakietu JDK.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Sprawd\u017a pe\u0142n\u0105 \
+nazw\u0119 pliku i \u015bcie\u017ck\u0119 do pliku tabeli kluczy protoko\u0142u Kerberos, kt\u00f3ra mo\u017ce \
+zawiera\u0107 obs\u0142ugiwan\u0105 zmienn\u0105, aby upewni\u0107 si\u0119, czy jest zgodna z informacjami \
+podanymi w pliku server.xml.
+
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE=CWWKS4306E: <html><head><title>Uwierzytelnianie mechanizmu SPNEGO nie jest obs\u0142ugiwane.\
+</title></head> <body>Uwierzytelnianie mechanizmu SPNEGO nie jest obs\u0142ugiwane w \
+tej przegl\u0105darce klienta. \
+</body></html>.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.explanation=Uwierzytelnianie \
+mechanizmu SPNEGO nie jest obs\u0142ugiwane dla tej przegl\u0105darki klienta.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Skonfiguruj w przegl\u0105darce klienta przeprowadzanie uwierzytelniania SPNEGO.
+
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Odebrano znacznik NTLM.\
+</title></head> <body>Konfiguracja przegl\u0105darki klienta jest poprawna, lecz \
+u\u017cytkownik nie zalogowa\u0142 si\u0119 do obs\u0142ugiwanej domeny Windows. \
+<p>Zaloguj si\u0119 do obs\u0142ugiwanej domeny Windows. \
+</html>.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Konfiguracja \
+przegl\u0105darki klienta jest poprawna, lecz u\u017cytkownik nie zalogowa\u0142 si\u0119 do \
+obs\u0142ugiwanej domeny Windows. \
+Inn\u0105 przyczyn\u0105 mo\u017ce by\u0107 niepoprawna konfiguracja uwierzytelniania SPNEGO, co \
+powoduje, \u017ce przegl\u0105darka klienta nie wysy\u0142a znacznika SPNEGO lub Kerberos.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Sprawd\u017a, czy logowanie nast\u0119puje w obs\u0142ugiwanej domenie Windows oraz konfiguracj\u0119 uwierzytelniania SPNEGO na serwerze i w domenie Windows.
+
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN=CWWKS4308E: Nie \
+mo\u017cna utworzy\u0107 referencji GSSCredential dla nazwy u\u017cytkownika us\u0142ugi: {0}.  \
+Odebrano wyj\u0105tek GSSException: {1}
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.explanation=Nie mo\u017cna utworzy\u0107 referencji GSSCredential dla nazwy u\u017cytkownika us\u0142ugi.  \
+Uwierzytelnianie SPNEGO nie b\u0119dzie u\u017cywane dla tej nazwy SPN.
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.useraction=Sprawd\u017a format nazwy u\u017cytkownika us\u0142ugi i upewnij si\u0119, \u017ce ta nazwa istnieje w domenie Windows, a plik tabeli kluczy protoko\u0142u Kerberos zawiera nazw\u0119 u\u017cytkownika us\u0142ugi.
+
+SPNEGO_NO_SPN_GSS_CREDENTIAL=CWWKS4309E: Nie mo\u017cna utworzy\u0107 \
+referencji GSSCredential dla \u017cadnej nazwy u\u017cytkownika us\u0142ugi. W \u017cadnych \
+\u017c\u0105daniach nie b\u0119dzie u\u017cywane uwierzytelnianie SPNEGO.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.explanation=Nie mo\u017cna utworzy\u0107 \
+referencji GSSCredential dla \u017cadnej nazwy u\u017cytkownika us\u0142ugi. Uwierzytelnianie \
+SPNEGO nie b\u0119dzie u\u017cywane.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.useraction=Sprawd\u017a format nazwy u\u017cytkownika us\u0142ugi i upewnij si\u0119, \u017ce ta nazwa istnieje w domenie Windows, a plik tabeli kluczy protoko\u0142u Kerberos zawiera nazw\u0119 u\u017cytkownika us\u0142ugi.
+
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND=CWWKS4310W:  \
+Oczekiwano odebrania referencji GSSCredentials delegowanych przez klient, ale \
+nie zosta\u0142y one odnalezione dla u\u017cytkownika: {0}
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.explanation=Nie \
+znaleziono referencji GSSCredentials delegowanych przez klient, a wi\u0119c temat \
+klienta nie b\u0119dzie mia\u0142 referencji GSSCredentials klienta.
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.useraction=Je\u015bli w \
+temacie wymagane s\u0105 referencje GSSCredentials delegowane przez klient, nale\u017cy \
+skonfigurowa\u0107 nazw\u0119 SPN w taki spos\u00f3b, aby by\u0142a zaufana w us\u0142ugach Kerberos w \
+domenie Windows.
+
+SPNEGO_FAIL_TO_GET_WRITER=CWWKS4311E: Metoda {0} \
+wywo\u0142a\u0142a metod\u0119 getWriter interfejsu HttpServletResponse i zako\u0144czy\u0142a si\u0119 \
+niepowodzeniem z wyj\u0105tkiem {1}
+SPNEGO_FAIL_TO_GET_WRITER.explanation=B\u0142\u0105d podczas \
+pobierania metody getWriter interfejsu HttpServletResponse: nie mo\u017cna zapisa\u0107 \
+strony b\u0142\u0119du w interfejsie HttpServletResponse.
+SPNEGO_FAIL_TO_GET_WRITER.useraction=Dodatkowe szczeg\u00f3\u0142y zawiera tre\u015b\u0107 wyj\u0105tku.
+
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND=CWWKS4312E: Plik konfiguracyjny protoko\u0142u Kerberos nie zosta\u0142 okre\u015blony w pliku server.xml i nie mo\u017cna znale\u017a\u0107 domy\u015blnego pliku konfiguracyjnego protoko\u0142u Kerberos {0}.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.explanation= \
+Plik konfiguracyjny protoko\u0142u Kerberos nie zosta\u0142 okre\u015blony w pliku server.xml \
+i nie mo\u017cna znale\u017a\u0107 domy\u015blnego pliku konfiguracyjnego protoko\u0142u Kerberos.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.useraction=Sprawd\u017a \
+domy\u015bln\u0105 nazw\u0119 pliku i \u015bcie\u017ck\u0119 do pliku konfiguracyjnego protoko\u0142u Kerberos lub \
+zaktualizuj plik server.xml przy u\u017cyciu \u017c\u0105danego pliku konfiguracyjnego, kt\u00f3ry \
+ma zosta\u0107 u\u017cyty.
+
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4313E: Plik tabeli kluczy protoko\u0142u Kerberos nie zosta\u0142 okre\u015blony w pliku server.xml i nie mo\u017cna znale\u017a\u0107 domy\u015blnego pliku tabeli kluczy protoko\u0142u Kerberos {0}.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 domy\u015blnego pliku tabeli kluczy protoko\u0142u Kerberos.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Plik tabeli kluczy protoko\u0142u Kerberos nie zosta\u0142 okre\u015blony w pliku server.xml i nie mo\u017cna znale\u017a\u0107 domy\u015blnego pliku.  \
+Sprawd\u017a domy\u015bln\u0105 nazw\u0119 pliku i \u015bcie\u017ck\u0119 do pliku tabeli kluczy protoko\u0142u \
+Kerberos lub zaktualizuj plik server.xml przy u\u017cyciu \u017c\u0105danego pliku tabeli \
+kluczy, kt\u00f3ry ma zosta\u0107 u\u017cyty.
+
+SPNEGO_DEFAULT_SPNS=CWWKS4314I: Atrybut \
+servicePrincipalNames nie zosta\u0142 okre\u015blony w pliku server.xml lub jego warto\u015b\u0107 \
+jest pusta. Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna {0}.
+SPNEGO_DEFAULT_SPNS.explanation=Sekcja nazw servicePrincipalNames nie zosta\u0142a okre\u015blona w pliku server.xml. Zostanie u\u017cyta nazwa domy\u015blna.
+SPNEGO_DEFAULT_SPNS.useraction=Okre\u015bl warto\u015b\u0107 atrybutu \
+servicePrincipalNames, je\u015bli nie ma by\u0107 u\u017cywana warto\u015b\u0107 domy\u015blna.
+
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN=CWWKS4315E: Nie mo\u017cna znale\u017a\u0107 referencji GSSCredential dla nazwy u\u017cytkownika us\u0142ugi {0}. 
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.explanation=Nie mo\u017cna znale\u017a\u0107 referencji GSSCredential dla nazwy u\u017cytkownika us\u0142ugi.
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.useraction=Sprawd\u017a nazwy u\u017cytkownik\u00f3w us\u0142ugi i upewnij si\u0119, \u017ce s\u0105 zdefiniowane w domenie Windows i pliku tabeli kluczy protoko\u0142u Kerberos.
+
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME=CWWKS4316W:  \
+Atrybut servicePrincipalNames zawiera wi\u0119cej ni\u017c jedn\u0105 nazw\u0119 SPN dla nazwy \
+hosta {0}.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.explanation=Sekcja servicePrincipalNames zawiera wiele nazw SPN dla tej samej nazwy hosta. Zostanie u\u017cyta pierwsza nazwa SPN, a pozosta\u0142e zostan\u0105 zignorowane.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.useraction=Zweryfikuj sekcj\u0119 servicePrincipalNames, upewniaj\u0105c si\u0119, \u017ce zawiera dla ka\u017cdej nazwy hosta tylko jedn\u0105 nazw\u0119 SPN.
+
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED=CWWKS4317E: Adres URL \
+niestandardowej strony b\u0142\u0119du {0} jest zniekszta\u0142cony. Zostanie u\u017cyta domy\u015blna strona b\u0142\u0119du.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.explanation=Nie \
+mo\u017cna za\u0142adowa\u0107 niestandardowej strony b\u0142\u0119du, poniewa\u017c podano zniekszta\u0142cony \
+adres URL.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.useraction=Przejrzyj \
+niestandardow\u0105 stron\u0119 b\u0142\u0119du i zmodyfikuj j\u0105 tak, aby by\u0142a zgodna z poprawn\u0105 \
+sk\u0142adni\u0105 adresu URL.
+
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR=CWWKS4318E: Nie \
+mo\u017cna za\u0142adowa\u0107 niestandardowej strony b\u0142\u0119du {0}. Przyczyna: {1}. Zostanie \
+u\u017cyta domy\u015blna strona b\u0142\u0119du.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.explanation=Nie \
+mo\u017cna za\u0142adowa\u0107 niestandardowej strony b\u0142\u0119du z powodu wyj\u0105tku. Zostanie u\u017cyta \
+warto\u015b\u0107 domy\u015blna.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.useraction=Przejrzyj \
+niestandardow\u0105 stron\u0119 b\u0142\u0119du i upewnij si\u0119, \u017ce istnieje, a tak\u017ce sprawd\u017a typ \
+tre\u015bci i kodowanie tre\u015bci.
+
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E:  \
+Nie mo\u017cna uzyska\u0107 typu tre\u015bci dla niestandardowej strony b\u0142\u0119du {0}. Przyczyna: \
+{1}. Zostanie u\u017cyta domy\u015blna strona b\u0142\u0119du.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation= \
+Nie mo\u017cna za\u0142adowa\u0107 niestandardowej strony b\u0142\u0119du z powodu wyj\u0105tku, kt\u00f3ry \
+wyst\u0105pi\u0142 podczas pobierania typu tre\u015bci.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction= \
+Przejrzyj typ tre\u015bci niestandardowej strony b\u0142\u0119du, aby upewni\u0107 si\u0119, \u017ce jest on \
+poprawny.
+
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: Nie mo\u017cna ustanowi\u0107 kontekstu GSSContext z poprawnym znacznikiem mechanizmu SPNEGO lub protoko\u0142u Kerberos do\u0142\u0105czonym do \u017c\u0105dania HttpServletRequest {0}. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=Znacznik mechanizmu SPNEGO lub protoko\u0142u Kerberos u\u017cywany do uwierzytelniania \u017c\u0105dania jest poprawny, ale nie mo\u017cna ustanowi\u0107 kontekstu GSSContext.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Je\u015bli nie jest \
+wy\u015bwietlany \u017caden dodatkowy komunikat o b\u0142\u0119dzie, w\u0142\u0105cz debugowanie JGSS i KRB5. Instrukcje na temat w\u0142\u0105czania debugowania JGSS i KRB5 zawiera dokumentacja pakietu JDK. Sprawd\u017a konfiguracj\u0119 mechanizmu SPNEGO i upewnij si\u0119, \u017ce klient, \
+g\u0142\u00f3wna nazwa us\u0142ugi i pliki tabeli kluczy protoko\u0142u Kerberos u\u017cywaj\u0105 tego \
+samego typu szyfrowania, kt\u00f3ry jest okre\u015blony w pliku konfiguracyjnym protoko\u0142u \
+Kerberos.
+
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Z obiektu GSSCredential nie mo\u017cna pobra\u0107 nazwy u\u017cytkownika us\u0142ugi {0} na potrzeby delegowania. Odebrano wyj\u0105tek GSSException: {1}
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Z obiektu GSSCredential nie mo\u017cna pobra\u0107 nazwy u\u017cytkownika us\u0142ugi na potrzeby delegowania. Obiekt GSSCredential klienta dla proxy nie b\u0119dzie uwzgl\u0119dniony w podmiocie.
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Zweryfikuj format nazwy u\u017cytkownika us\u0142ugi i upewnij si\u0119, \u017ce ta nazwa istnieje w domenie Windows oraz \u017ce plik tabeli kluczy protoko\u0142u Kerberos zawiera nazw\u0119 u\u017cytkownika us\u0142ugi.
+
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Nazwa u\u017cytkownika us\u0142ugi {0} na potrzeby delegowania nie mo\u017ce zosta\u0107 uwierzytelniona przez centrum dystrybucji kluczy (Key Distribution Center \u2013 KDC) przy u\u017cyciu pliku konfiguracyjnego {1} i pliku tabeli kluczy {2} protoko\u0142u Kerberos. Odebrano nast\u0119puj\u0105cy wyj\u0105tek logowania: {3}
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Nie mo\u017cna wykona\u0107 uwierzytelniania w centrum dystrybucji kluczy (Key Distribution Center \u2013 KDC).
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Zweryfikuj format nazwy u\u017cytkownika us\u0142ugi i upewnij si\u0119, \u017ce ta nazwa istnieje w domenie Windows oraz \u017ce plik tabeli kluczy protoko\u0142u Kerberos zawiera nazw\u0119 u\u017cytkownika us\u0142ugi.

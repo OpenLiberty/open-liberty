@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Nelze ov\u011b\u0159it token JWT po\u017eadovan\u00fd [{0}] kv\u016fli chyb\u011bj\u00edc\u00edmu podpisu v tokenu JWT. Poskytovatel p\u0159ipojen\u00ed OpenID zadal algoritmus [{1}] a o\u010dek\u00e1val, \u017ee bude token JWT podepsan\u00fd.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Nelze ov\u011b\u0159it token JWT, proto\u017ee token nen\u00ed podepsan\u00fd. Poskytovatel p\u0159ipojen\u00ed OpenID o\u010dek\u00e1val, \u017ee bude token podepsan\u00fd.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Zkontrolujte konfiguraci klienta pro p\u0159ipojen\u00ed OpenID a ujist\u011bte se, \u017ee podepisuje token JWT.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Nelze ov\u011b\u0159it token JWT po\u017eadovan\u00fd [{0}], nebo\u0165 existuje neshoda v podpisov\u00fdch algoritmech mezi poskytovatelem p\u0159ipojen\u00ed OpenID [{1}] a klientem pro p\u0159ipojen\u00ed OpenID [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Nelze ov\u011b\u0159it token JWT, proto\u017ee poskytovatel a klient pro p\u0159ipojen\u00ed OpenID pou\u017e\u00edvaj\u00ed r\u016fzn\u00e9 podpisov\u00e9 algoritmy k podeps\u00e1n\u00ed/ov\u011b\u0159en\u00ed tokenu.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Zkontrolujte konfiguraci klienta pro p\u0159ipojen\u00ed OpenID a zadejte podpisov\u00fd algoritmus, kter\u00fd odpov\u00edd\u00e1 poskytovateli p\u0159ipojen\u00ed OpenID.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Podepsan\u00fd token JWT mus\u00ed m\u00edt 3 segmenty odd\u011blen\u00e9 ''.'', ale tento token JWT m\u00e1 tento po\u010det segment\u016f: [{0}]
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Podepsan\u00fd token JWT mus\u00ed m\u00edt p\u0159esn\u011b 3 segmenty odd\u011blen\u00e9 znakem '.'. Tento token JWT m\u00e1 \u0161patn\u00fd po\u010det segment\u016f.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Ujist\u011bte se, \u017ee token JWT je platn\u00fd a \u017ee m\u00e1 3 segmenty.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: \u017d\u00e1dost na koncov\u00fd bod tokenu se nezda\u0159ila. Ov\u011b\u0159en\u00ed tokenu JWT po\u017eadovan\u00e9ho [{0}] se nezda\u0159ilo. Obdr\u017eelo v\u00fdjimku InvalidJwtException se zpr\u00e1vou:[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Token JWT nelze ov\u011b\u0159it, proto\u017ee do\u0161lo k v\u00fdjimce InvalidJwtException, kter\u00e1 je uvedena ve zpr\u00e1v\u011b.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Opravte chybu uvedenou ve zpr\u00e1v\u011b.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Po\u017eadovan\u00fd token JWT nebyl v po\u017eadavku nalezen.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=Po\u017eadavek mus\u00ed poskytnout token JWT, ale v po\u017eadavku koncov\u00e9ho bodu tokenu nebyl nalezen \u017e\u00e1dn\u00fd token JWT.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Zadejte platn\u00fd token JWT do po\u017eadavku koncov\u00e9ho bodu tokenu.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Do\u0161lo k v\u00fdjimce p\u0159i pokusu z\u00edskat RunAsSubject. V\u00fdjimka: [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Do\u0161lo k v\u00fdjimce p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Ujist\u011bte se, \u017ee je server spr\u00e1vn\u011b nakonfigurov\u00e1n a spu\u0161t\u011bn.
+

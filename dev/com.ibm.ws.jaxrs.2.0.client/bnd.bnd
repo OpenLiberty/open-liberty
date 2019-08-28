@@ -36,16 +36,7 @@ Import-Package: \
 Private-Package:\
   com.ibm.ws.jaxrs20.client.*
 
-Service-Component: \
-  com.ibm.ws.jaxrs20.client.support.BundleRuntimeProviderFactoryServiceGateway; \
-     configuration-policy:=optional; \
-     providerFactoryService/setProviderFactoryService=com.ibm.ws.jaxrs20.api.JaxRsProviderFactoryService;\
-     immediate:=true; \
-     activate:=activate; \
-     deactivate:=deactivate; \
-     properties:="service.vendor=IBM"
- 
- -dsannotations: com.ibm.ws.jaxrs20.client.component.*, \
+-dsannotations: com.ibm.ws.jaxrs20.client.component.*, \
  	com.ibm.ws.jaxrs20.client.security.oauth.OAuthPropagationHelper
 
 instrument.classesExcludes: com/ibm/ws/jaxrs20/client/internal/resources/*.class

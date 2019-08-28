@@ -60,10 +60,10 @@ Service-Component: \
     permission=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
     classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
     wsjarURLStreamHandler='org.osgi.service.url.URLStreamHandlerService(url.handler.protocol=wsjar)'; \
-    dynamic:='permission,wsjarURLStreamHandler'; \
+    dynamic:='permission'; \
     multiple:='permission'; \
     greedy:='permission'; \
-    optional:='permission,wsjarURLStreamHandler'; \
+    optional:='permission'; \
     properties:="service.vendor=IBM"
 
 instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class

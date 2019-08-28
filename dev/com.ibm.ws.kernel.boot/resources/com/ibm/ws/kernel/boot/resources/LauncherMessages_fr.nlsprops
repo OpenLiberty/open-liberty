@@ -757,6 +757,8 @@ info.resumeFailedException=La reprise de l''op\u00e9ration du serveur {0} a \u00
 info.resumingListeners.target=Reprise de l''op\u00e9ration des composants cible sp\u00e9cifi\u00e9s sur le serveur {0}.
 info.resumedListeners.target=La reprise de l''op\u00e9ration des composants cible sp\u00e9cifi\u00e9s sur le serveur {0} a abouti.
 info.resumeFailedException.target=La reprise de l''op\u00e9ration des composants cible sp\u00e9cifi\u00e9s sur le serveur {0} a \u00e9chou\u00e9. Consultez les journaux du serveur pour plus d''informations.
+info.serverCommandAuthFailure=La commande {0} a \u00e9chou\u00e9 car le processus n''a pas pu supprimer le fichier {1}.
+info.serverCommandCommFailure=La commande {0} a \u00e9chou\u00e9 en raison d''une erreur de communication avec le serveur.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

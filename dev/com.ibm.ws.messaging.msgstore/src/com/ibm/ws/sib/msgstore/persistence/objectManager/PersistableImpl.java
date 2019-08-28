@@ -688,8 +688,16 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(this, tc, "MetaData=" + metaData);
-
-        tran.lock(metaData);
+        
+        synchronized (metaData) {
+            // If the Persistable has been deleted, do not attempt to update the RedeliveryCount.  
+            if ( metaData.getState() == ManagedObject.stateDeleted ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    SibTr.exit(this, tc, "updateMetaDataOnly", "MetaData deleted, return without update. MetaData=" + metaData);
+                return;
+            }
+            tran.lock(metaData);
+        }
 
         // Update the MetaData with the cached values
         metaData.setLockID(persistable.getLockID());

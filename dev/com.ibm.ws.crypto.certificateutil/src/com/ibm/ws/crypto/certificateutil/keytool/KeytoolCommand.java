@@ -73,8 +73,11 @@ class KeytoolCommand {
         cmd.add(Integer.toString(keySize));
         cmd.add("-storetype");
         cmd.add(ksType);
-        cmd.add("-ext");
-        cmd.add(extInfo);
+
+        if (extInfo != null) {
+            cmd.add("-ext");
+            cmd.add(extInfo);
+        }
     }
 
     /**

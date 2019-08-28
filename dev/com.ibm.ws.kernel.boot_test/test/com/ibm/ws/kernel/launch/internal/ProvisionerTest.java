@@ -19,9 +19,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.osgi.container.Module;
+import org.eclipse.osgi.container.Module.Settings;
+import org.eclipse.osgi.container.ModuleCollisionHook;
+import org.eclipse.osgi.container.ModuleContainer;
+import org.eclipse.osgi.container.ModuleContainerAdaptor;
+import org.eclipse.osgi.container.ModuleDatabase;
+import org.eclipse.osgi.container.ModuleRevision;
+import org.eclipse.osgi.container.SystemModule;
+import org.eclipse.osgi.container.builders.OSGiManifestBuilderFactory;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -38,8 +50,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.hooks.resolver.ResolverHook;
+import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.framework.wiring.BundleRevision;
@@ -56,8 +71,88 @@ import test.shared.TestUtils;
 
 @RunWith(JMock.class)
 public class ProvisionerTest {
+    static class TestContainerAdaptor extends ModuleContainerAdaptor {
+        final ModuleContainer container;
+
+        public TestContainerAdaptor() {
+            this.container = new ModuleContainer(this, new ModuleDatabase(this));
+        }
+
+        @Override
+        public Module createModule(String location, long id, EnumSet<Settings> settings, int startlevel) {
+            return new Module(id, location, container, settings, startlevel) {
+                @Override
+                public Bundle getBundle() {
+                    // no bundle
+                    return null;
+                }
+
+                @Override
+                protected void cleanup(ModuleRevision arg0) {
+                    // do nothing
+                }
+            };
+        }
+
+        @Override
+        public SystemModule createSystemModule() {
+            return new SystemModule(container) {
+                @Override
+                public Bundle getBundle() {
+                    // no bundle
+                    return null;
+                }
+
+                @Override
+                protected void cleanup(ModuleRevision arg0) {
+                    // do nothing
+                }
+            };
+        }
+
+        @Override
+        public ModuleCollisionHook getModuleCollisionHook() {
+            return new ModuleCollisionHook() {
+
+                @Override
+                public void filterCollisions(int arg0, Module arg1, Collection<Module> arg2) {
+                    // do nothing
+                }
+            };
+        }
+
+        @Override
+        public ResolverHookFactory getResolverHookFactory() {
+            return new ResolverHookFactory() {
+
+                @Override
+                public ResolverHook begin(Collection<BundleRevision> arg0) {
+                    // do nothing
+                    return null;
+                }
+            };
+        }
+
+        @Override
+        public void publishContainerEvent(ContainerEvent arg0, Module arg1, Throwable arg2, FrameworkListener... arg3) {
+            // nothing
+        }
+
+        @Override
+        public void publishModuleEvent(ModuleEvent arg0, Module arg1, Module arg2) {
+            // nothing
+        }
+
+    }
+
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
     static SharedBootstrapConfig config;
+    final Module testModule;
+
+    public ProvisionerTest() throws BundleException {
+        TestContainerAdaptor testAdaptor = new TestContainerAdaptor();
+        testModule = testAdaptor.container.install(null, "testModule", OSGiManifestBuilderFactory.createBuilder(Collections.<String, String> emptyMap()), null);
+    }
 
     @Rule
     public TestName testName = new TestName();
@@ -83,13 +178,16 @@ public class ProvisionerTest {
     }
 
     /** Trivial interface that groups Bundle & BundleStartLevel so mock can push through the adapt method */
-    interface TestBundleStartLevel extends Bundle, BundleStartLevel {}
+    interface TestBundleStartLevel extends Bundle, BundleStartLevel {
+    }
 
     /** Trivial interface that groups Bundle & BundleRevision so mock can push through the adapt method */
-    interface TestBundleRevision extends Bundle, BundleRevision {}
+    interface TestBundleRevision extends Bundle, BundleRevision {
+    }
 
     /** Trivial interface that groups Bundle & FrameworkStartLevel so mock can push through the adapt method */
-    interface TestFrameworkStartLevel extends Bundle, FrameworkStartLevel {}
+    interface TestFrameworkStartLevel extends Bundle, FrameworkStartLevel {
+    }
 
     Mockery context = new Mockery();
 
@@ -104,6 +202,7 @@ public class ProvisionerTest {
 
     @Before
     public void setUp() throws Exception {
+        testModule.setParallelActivation(false);
         System.setProperty("java.protocol.handler.pkgs", "com.ibm.ws.kernel.internal");
         context.checking(new Expectations() {
             {
@@ -161,6 +260,8 @@ public class ProvisionerTest {
 
                 one(mockBundle).adapt(BundleRevision.class);
                 will(returnValue(mockBundleRevision));
+                one(mockBundle).adapt(Module.class);
+                will(returnValue(testModule));
 
                 one(mockBundleRevision).getTypes();
                 will(returnValue(0));
@@ -175,8 +276,12 @@ public class ProvisionerTest {
         KernelResolver resolver = new KernelResolver(config.getInstallRoot(), null, "kernelCore-1.0", "emptyLogging-1.0", null);
         config.setKernelResolver(resolver);
 
+        assertFalse("Is parallel activated", testModule.isParallelActivated());
+
         provisioner.getServices(mockBundleContext);
         iStatus = provisioner.installBundles(config);
+
+        assertTrue("Not parallel activated", testModule.isParallelActivated());
 
         if (iStatus.bundlesMissing())
             System.out.println(iStatus.listMissingBundles());
@@ -220,6 +325,8 @@ public class ProvisionerTest {
 
                 one(mockBundleRevision).getTypes();
                 will(returnValue(0));
+                one(mockBundle).adapt(Module.class);
+                will(returnValue(testModule));
 
                 one(mockBundle).adapt(BundleStartLevel.class);
                 will(returnValue(mockBundleStartLevel));
@@ -231,8 +338,11 @@ public class ProvisionerTest {
             }
         });
 
+        assertFalse("Is parallel activated", testModule.isParallelActivated());
+
         provisioner.getServices(mockBundleContext);
         iStatus = provisioner.installBundles(config);
+        assertTrue("Not parallel activated", testModule.isParallelActivated());
 
         if (iStatus.bundlesMissing())
             System.out.println(iStatus.listMissingBundles());
@@ -315,6 +425,8 @@ public class ProvisionerTest {
 
                 one(mockBundleRevision).getTypes();
                 will(returnValue(BundleRevision.TYPE_FRAGMENT));
+                one(mockBundle).adapt(Module.class);
+                will(returnValue(testModule));
 
                 never(mockBundle).adapt(BundleStartLevel.class);
                 never(mockBundleStartLevel).getStartLevel();
@@ -322,8 +434,12 @@ public class ProvisionerTest {
             }
         });
 
+        assertFalse("Is parallel activated", testModule.isParallelActivated());
+
         provisioner.getServices(mockBundleContext);
         iStatus = provisioner.installBundles(config);
+
+        assertTrue("Not parallel activated", testModule.isParallelActivated());
 
         assertFalse("E: The fragment bundle should not be in the list of installed bundles", iStatus.bundlesToStart());
     }

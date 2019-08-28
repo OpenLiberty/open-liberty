@@ -66,3 +66,10 @@ Include-Resource: \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.session;version=latest
+
+	-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest
+
+
+	

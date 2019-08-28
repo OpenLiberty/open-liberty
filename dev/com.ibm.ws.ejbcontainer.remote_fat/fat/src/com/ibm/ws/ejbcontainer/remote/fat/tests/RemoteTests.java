@@ -244,7 +244,14 @@ public class RemoteTests extends AbstractTest {
     }
 
     private void updateServerConfiguration(ServerConfiguration config) throws Exception {
+        server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
+    }
+
+    private void restoreServerConfiguration() throws Exception {
+        server.setMarkToEndOfLog();
+        server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
     }
 
@@ -259,7 +266,7 @@ public class RemoteTests extends AbstractTest {
             updateServerConfiguration(config);
             runTest("BasicRemote/BasicRemoteTestServlet");
         } finally {
-            server.restoreServerConfiguration();
+            restoreServerConfiguration();
         }
     }
 
@@ -275,7 +282,7 @@ public class RemoteTests extends AbstractTest {
             updateServerConfiguration(config);
             runTest("BasicRemote/BasicRemoteTestServlet");
         } finally {
-            server.restoreServerConfiguration();
+            restoreServerConfiguration();
         }
     }
 }

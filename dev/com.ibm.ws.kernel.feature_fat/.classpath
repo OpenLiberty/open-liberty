@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="test-bundles/test.feature.provisioner/src"/>
 	<classpathentry kind="src" path="test-bundles/test.feature.api/src"/>
+	<classpathentry kind="src" path="test-bundles/test.activation.type/src"/>
+	<classpathentry kind="src" path="test-bundles/test.origin.bundle/src"/>
 	<classpathentry kind="src" path="test-applications/test.feature.api.client.war/src"/>
 	<classpathentry kind="src" path="test-applications/ServletTest/src"/>
 	<classpathentry kind="src" path="test-applications/IgnoreAPI.ear/IgnoreAPIEJB.jar/src"/>

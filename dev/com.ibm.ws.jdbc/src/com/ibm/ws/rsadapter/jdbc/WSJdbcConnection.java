@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.jdbc;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method; 
 import java.lang.reflect.Proxy;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Array; 
 import java.sql.Blob; 
 import java.sql.CallableStatement;
@@ -4122,6 +4125,12 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
         }
 
         return super.invoke(proxy, method, args);
+    }
+
+    // PostgreSQL only
+    public Object getLargeObjectAPI() throws SQLException {
+        activate();
+        return mcf.getHelper().getLargeObjectAPI(this);
     }
 
     public void abort(Executor executor) throws SQLException {

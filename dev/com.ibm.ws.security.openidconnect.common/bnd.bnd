@@ -1,0 +1,63 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security OpenID Connect Common 1.0
+Bundle-SymbolicName: com.ibm.ws.security.openidconnect.common
+Bundle-Description: WAS Security OpenID Connect Common, version=${bVersion}
+
+WS-TraceGroup: \
+  OPENIDCONNECT
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+
+Export-Package: \
+	com.ibm.websphere.security.openidconnect, \
+	!com.ibm.ws.security.openidconnect.common.internal.*, \
+	com.ibm.ws.security.openidconnect.common.*
+		
+Import-Package: \
+    com.ibm.oauth.core.internal.oauth20.token, \
+    com.ibm.websphere.security.openidconnect.token, \
+    org.jose4j.*;version="[0.6,1)", \
+    *
+
+Private-Package: \
+        com.ibm.ws.security.openidconnect.common.internal.*, \
+        com.ibm.ws.config.xml.internal.nester
+
+Service-Component: 
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.security.oauth.2.0;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	com.ibm.ws.common.encoder;version=latest, \
+	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.webcontainer.security.provider;version=latest,\
+	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
+	com.ibm.ws.org.joda.time.1.6.2;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
+
+
+instrument.classesExcludes: com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages*.class

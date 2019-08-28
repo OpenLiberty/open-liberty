@@ -1,0 +1,928 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
+#COMPONENTPREFIX CWSCT
+#COMPONENTNAMEFOR CWSCT WebSphere SIP Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+
+info.container.initialized=CWSCT0001I: SIP Container initialization completed.
+info.container.initialized.explanation=The SIP com.ibm.ws.sip.container is up and ready to receive messages from the network.
+info.container.initialized.useraction=This is an informational message.  No user action is necessary.
+
+info.container.version=CWSCT0002I: SIP Container {0}
+info.container.version.explanation=Version number of the SIP container component.
+info.container.version.useraction=This is an informational message.  No user action is necessary.
+
+warning.mean.disabled=CWSCT0003W: SIP Container MBean unable to start.
+warning.mean.disabled.explanation=SIP Container MBean unable to start. JMX operations will not be available for the SIP Container.
+warning.mean.disabled.useraction=No action is required.
+
+error.exception=CWSCT0004E: The following exception has occurred:
+error.exception.explanation=An exception was caught by the SIP com.ibm.ws.sip.container.
+error.exception.useraction=No action is required.
+
+info.failover.started=CWSCT0006I: Failover started. Number of received objects {0} for logical name {1}.
+info.failover.started.explanation=One of the servers in the cluster has terminated, and some of its logical names are transferred to this server. The session objects associated with these logical names are now being activated on this server.
+info.failover.started.useraction=No action is required.
+
+info.failover.ended=CWSCT0008I: Failover ended for logical name {0}
+info.failover.ended.explanation=Finished activation of session objects that are associated with a logical name. See "Failover started" for the logical name and the number of objects.
+info.failover.ended.useraction=No action is required.
+
+error.parser.configuration=CWSCT0010E: Error configuring sip.xml parser.
+error.parser.configuration.explanation=An error has occurred while trying to initialize the XML parser. This does not indicate an error in the sip.xml document.
+error.parser.configuration.useraction=No action is required.
+
+error.parser.not.available=CWSCT0011E: Parser not available; unable to load application configuration.
+error.parser.not.available.explanation=The SIP com.ibm.ws.sip.container cannot load an application from the sip.xml file because there is no XML parser.
+error.parser.not.available.useraction=Look for an earlier error message in the log that reads "Error configuring sip.xml parser".
+
+error.parse.exception=CWSCT0012E: Parse exception; failed to parse sip.xml {0}.
+error.parse.exception.explanation=The SIP com.ibm.ws.sip.container cannot load an application from the sip.xml file because of an error in the sip.xml document.
+error.parse.exception.useraction=Check for errors in the sip.xml file. You can find information about the standard sip.xml format in JSR 116 (SIP Servlet API) chapters 11 (Mapping Requests to Servlets) and  15 (Deployment Descriptor).
+
+error.listener.not.found=CWSCT0013E: Listener Class: {0} not found for application: {1}.
+error.listener.not.found.explanation=The class loader could not find the listener class.
+error.listener.not.found.useraction=Check your sip.xml file and verify that the listener class name is correct. Make sure the listener class is included in the class path.
+
+error.init.listener.failed=CWSCT0014E: Failed to create Listener Class: {0} for application: {1}.
+error.init.listener.failed.explanation=The SIP com.ibm.ws.sip.container could not instantiate the listener class.
+error.init.listener.failed.useraction=Check your sip.xml file and verify that the listener class name is correct. Make sure the listener class has a public constructor that expects no arguments.
+
+error.too.many.timer.listeners=CWSCT0015E: Invalid XML - more than one Timer Listener assigned to application {0}.
+error.too.many.timer.listeners.explanation=The sip.xml document defines more than one TimerListener for the same application.
+error.too.many.timer.listeners.useraction=Check your sip.xml file and make sure there is only one TimerListener class for the application.
+
+error.parsing.session.ttl=CWSCT0016E: Error parsing session TTL for Sip Application: {0}.
+error.parsing.session.ttl.explanation=The sip.xml document does not contain a valid application session time-out value.
+error.parsing.session.ttl.useraction=Check your sip.xml file to make sure the session-timeout setting is expressed in whole number of minutes.
+
+error.mapping.to.nonexisting.siplet=CWSCT0017E: Mapping for nonexisting siplet: {0}, Application: {1}.
+error.mapping.to.nonexisting.siplet.explanation=The sip.xml document contains a servlet mapping for an undefined servlet
+error.mapping.to.nonexisting.siplet.useraction=Check your sip.xml file and make sure that all servlet-name tags under servlet-mapping correspond to an existing servlet, and make sure there is a pattern definition for the servlet mapping.
+
+error.invalid.condition.type=CWSCT0018E: Invalid Condition Type in sip.xml: {0}.
+error.invalid.condition.type.explanation=The sip.xml document does not contain a valid type of servlet matching condition.
+error.invalid.condition.type.useraction=Check your sip.xml file to make sure the matching rules are compliant with JSR 116 (SIP Servlet API) 11.3 (Conditions).
+
+error.parsing.condition=CWSCT0019E: Error parsing {0} condition, var: {1}\t,value: {2}.
+error.parsing.condition.explanation=The sip.xml document does not contain a valid servlet matching rule.
+error.parsing.condition.useraction=Check your sip.xml file to make sure the matching rules are compliant with JSR 116 (SIP Servlet API) chapter 11 (Mapping Requests to Servlets).
+
+error.parsing.and.condition=CWSCT0020E: Error parsing AND condition; sub-elements not found.
+error.parsing.and.condition.explanation=The sip.xml document contains an AND condition with no sub-elements.
+error.parsing.and.condition.useraction=Check your sip.xml file to make sure there are matching rules under the AND tag.
+
+error.parsing.sip.app=CWSCT0021E: Error in xml definition for sip-app.
+error.parsing.sip.app.explanation=The sip.xml document contains zero or multiple sip-app sections. There may only be one.
+error.parsing.sip.app.useraction=Check your sip.xml file to make sure there is exactly one sip-app section.
+
+error.local.sip.dtd.not.found=CWSCT0022E: Error - local SIP DTD document not found.
+error.local.sip.dtd.not.found.explanation=There is no local definition for /javax/servlet/sip/sip-app_1_0.dtd
+error.local.sip.dtd.not.found.useraction=No action is required.
+
+info.server.overload.cleared=CWSCT0023I: Server is no longer overloaded. Load factor reduced to {0}
+info.server.overload.cleared.explanation=The SIP com.ibm.ws.sip.container is no longer considered overloaded, and is now ready to handle new sessions
+info.server.overload.cleared.useraction=No action is required.
+
+error.failed.create.stack=CWSCT0025E: Failed to create SIP stack.
+error.failed.create.stack.explanation=The internal SIP stack failed to initialize.
+error.failed.create.stack.useraction=No action is required.
+
+error.sip.stack.exception=CWSCT0026E: Exception in SIP stack.
+error.sip.stack.exception.explanation=An exception was caught in the SIP stack layer. The stack will attempt to continue running normally.
+error.sip.stack.exception.useraction=No action is required.
+
+info.listening.point=CWSCT0028I: SIP Container Listening Point {0}:{1}/{2}
+info.listening.point.explanation=This is an informational message printed for each host address, port number, and transport protocol, that the SIP com.ibm.ws.sip.container listens to, for incoming SIP traffic.
+info.listening.point.useraction=No action is required.
+
+error.forward.response=CWSCT0029E: SIP failed to forward; response request is {0}
+error.forward.response.explanation=The SIP com.ibm.ws.sip.container failed to forward a SIP message.
+error.forward.response.useraction=No action is required.
+
+error.proxying.to.branch=CWSCT0030E: SIP failed proxying to branch; URI is {0}
+error.proxying.to.branch.explanation=The SIP com.ibm.ws.sip.container, acting as a proxy, failed to forward a request to one of the destinations.
+error.proxying.to.branch.useraction=No action is required.
+
+error.create.record.route.uri=CWSCT0031E: SIP failed to create record route {0}
+error.create.record.route.uri.explanation=The SIP com.ibm.ws.sip.container, acting as a proxy, failed to create a Record-Route header.
+error.create.record.route.uri.useraction=No action is required.
+
+error.proxy.set.parallel.illegal.state=CWSCT0032E: SIP cannot change proxy to parallel after proxyTo
+error.proxy.set.parallel.illegal.state.explanation=The SIP servlet code called Proxy.setParallel() after calling Proxy.proxyTo()
+error.proxy.set.parallel.illegal.state.useraction=Change the application code so Proxy.setParallel() is not called after Proxy.proxyTo()
+
+error.proxy.set.recourse.illegal.state=CWSCT0033E: SIP cannot recurse with stateless proxy.
+error.proxy.set.recourse.illegal.state.explanation=The SIP servlet code called Proxy.setRecurse() on a stateless Proxy.
+error.proxy.set.recourse.illegal.state.useraction=Change the application code so it doesn't call Proxy.setRecurse() on a stateless Proxy.
+
+error.proxy.set.stateful.illegal.state=CWSCT0034E: SIP cannot change proxy to stateful after proxyTo
+error.proxy.set.stateful.illegal.state.explanation=The SIP servlet code called Proxy.setStateful() after calling Proxy.proxyTo()
+error.proxy.set.stateful.illegal.state.useraction=Change the application code so Proxy.setStateful() is not called after Proxy.proxyTo()
+
+error.proxy.cancel.request=CWSCT0035E: SIP failed cancellation request in proxy; cancel request: {0}
+error.proxy.cancel.request.explanation=The SIP com.ibm.ws.sip.container failed sending out a CANCEL request.
+error.proxy.cancel.request.useraction=No action is required.
+
+error.sending.response.upstream=CWSCT0036E: SIP failed to send response upstream; response: {0}
+error.sending.response.upstream.explanation=The SIP com.ibm.ws.sip.container failed to send a response upstream (upstream is the direction that responses flow from the UAS back to the UAC)
+error.sending.response.upstream.useraction=No action is required.
+
+error.proxy.set.recordroute.illegal.state=CWSCT0037E: SIP cannot set record route after proxyTo
+error.proxy.set.recordroute.illegal.state.explanation=The SIP servlet code called Proxy.setRecordRoute() after calling Proxy.proxyTo()
+error.proxy.set.recordroute.illegal.state.useraction=Change the application code so Proxy.setRecordRoute() is not called after Proxy.proxyTo()
+
+error.create.request=CWSCT0040E: SIP failed to create request; request: {0}
+error.create.request.explanation=The SIP com.ibm.ws.sip.container failed creating a SIP request message.
+error.create.request.useraction=No action is required.
+
+error.failed.parse.route.header=CWSCT0041E: Failed to get route header.
+error.failed.parse.route.header.explanation=The SIP com.ibm.ws.sip.container failed getting a Route header in a request.
+error.failed.parse.route.header.useraction=No action is required.
+
+error.resolving.inet.address=CWSCT0042E: Failed to resolve internet address.
+error.resolving.inet.address.explanation=Failed resolving an internet address from host name to IP address.
+error.resolving.inet.address.useraction=No action is required.
+
+error.proxy.set.recordroute.non.dialog.method=CWSCT0043E: Unable to set record route for a non dialog request: {0}
+error.proxy.set.recordroute.non.dialog.method.explanation=The SIP servlet code called Proxy.setRecordRoute() on a request that does not create a dialog.
+error.proxy.set.recordroute.non.dialog.method.useraction=Change the application code so it doesn't call Proxy.setRecordRoute() on requests that don't create a dialog. Examples of requests that do create dialogs are INVITE, REFER, and SUBSCRIBE.
+
+error.call.should.be.invoked=CWSCT0044E: Proxy has reached an unexpected function call.
+error.call.should.be.invoked.explanation=The SIP com.ibm.ws.sip.container received a message where it does not expect it.
+error.call.should.be.invoked.useraction=No action is required.
+
+error.route.header.unavailable=CWSCT0045E: Unable to proxy subsequent requests without route header: {0}
+error.route.header.unavailable.explanation=The SIP com.ibm.ws.sip.container cannot proxy a subsequent request on a dialog, because the incoming request has no Route header.
+error.route.header.unavailable.useraction=No action is required.
+
+
+error.unkown.uri.type=CWSCT0046E: Unknown URI type; unable to access parameters from header: {0}
+error.unkown.uri.type.explanation=The SIP com.ibm.ws.sip.container cannot process a message because the URI is not a sip or sips URI.
+error.unkown.uri.type.useraction=No action is required.
+
+error.processing.strict.routing=CWSCT0048E: Error processing Strict Routing; request URI does not contain session ID. {0}
+error.processing.strict.routing.explanation=The SIP com.ibm.ws.sip.container received a request on a dialog from a strict router, and the session ID parameter in the Request-URI was missing, or had the wrong value.
+error.processing.strict.routing.useraction=No action is required.
+
+error.sending.response=CWSCT0049E: Error sending response
+error.sending.response.explanation=The SIP com.ibm.ws.sip.container failed to send out a response.
+error.sending.response.useraction=No action is required.
+
+error.default.invoke.siplet.not.found=CWSCT0051E: Unable to find a siplet for invocation; default handler not available.
+error.default.invoke.siplet.not.found.explanation=There is no matching SIP servlet for handling a request.
+error.default.invoke.siplet.not.found.useraction=Check the matching rules of the installed SIP applications and make sure that at least one of them can be matched to the request.
+
+error.handling.request=CWSCT0052E: Unable to find dialog for received BYE request. Call-Id is {0}
+error.handling.request.explanation=The SIP com.ibm.ws.sip.container received a BYE request that is not matched to any existing dialog.
+error.handling.request.useraction=No action is required.
+
+error.invalid.operator.var=CWSCT0053E: Invalid variable in operator; var: {0}
+error.invalid.operator.var.explanation=The sip.xml document does not contain a valid variable.
+error.invalid.operator.var.useraction=Check your sip.xml file to make sure the variable is valid according to JSR 116 (SIP Servlet API) 11.2 (SIP Request Object Model)
+
+error.missing.sub.elements=CWSCT0054E: Failed to evaluate operator {0}; subelements not available.
+error.missing.sub.elements.explanation=The sip.xml document contains a condition with no sub-elements.
+error.missing.sub.elements.useraction=Check your sip.xml file to make sure that pattern matching is valid according to JSR 116 (SIP Servlet API) 11.3 (Conditions).
+
+error.ip.parse=CWSCT0055E: IPAuthenticator failed parsing configuration
+error.ip.parse.explanation=The SIP com.ibm.ws.sip.container failed to parse the list of trusted IP addresses from configuration.
+error.ip.parse.useraction=Check the configuration property com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.host=CWSCT0056E: IPAuthenticator failed, unknown host
+error.ip.host.explanation=The list of trusted IP addresses for SIP authentication contains a host name that fails to resolve.
+error.ip.host.useraction=Check the list of trusted IP addresses in the configuration property com.ibm.ws.sip.security.trusted.iplist
+
+error.ip.header.parse=CWSCT0057E: IPAuthenticator failed parse header
+error.ip.header.parse.explanation=The SIP com.ibm.ws.sip.container failed to parse a Via header for IP authentication.
+error.ip.header.parse.useraction=No action is required.
+
+error.ip.header.exception=CWSCT0058E: IPAuthenticator header problem.
+error.ip.header.exception.explanation=The SIP com.ibm.ws.sip.container failed to find a Via header in the message for IP authentication.
+error.ip.header.exception.useraction=No action is required.
+
+error.get.expires=CWSCT0059E: SIP failed to get expirations; not properly formatted: {0}
+error.get.expires.explanation=The application call to Address.setExpires() failed because the message's address header contains a malformed expires parameter value.
+error.get.expires.useraction=No action is required.
+
+error.set.display.name=CWSCT0060E: SIP failed to set display name; name: {0}
+error.set.display.name.explanation=The application call to Address.setDisplayName() failed.
+error.set.display.name.useraction=Check the application code to make sure the display name is valid and not null.
+
+error.set.expires=CWSCT0061E: SIP failed to set expirations; seconds: {0}
+error.set.expires.explanation=The application call to Address.setExpires() failed.
+error.set.expires.useraction=No action is required.
+
+error.set.parameter=CWSCT0062E: SIP failed to set parameters; name: {0}, value: {1}
+error.set.parameter.explanation=The application call to Address.setParameter() or SipURI.setParameter() failed.
+error.set.parameter.useraction=Check the application code to make sure the parameter's name and value are valid.
+
+error.set.q=CWSCT0063E: SIP failed to set q; value: {0}
+error.set.q.explanation=The application call to Address.setQ() failed.
+error.set.q.useraction=Check the application code to make sure the priority value is valid.
+
+error.get.method=CWSCT0064E: SIP failed to get method from submitted request: {0}
+error.get.method.explanation=The application call to SipServletMessage.getMethod() failed.
+error.get.method.useraction=No action is required.
+
+error.get.request.uri=CWSCT0065E: SIP failed to get request URI from submitted request: {0}
+error.get.request.uri.explanation=The application call to SipServletRequest.getRequestURI() failed.
+error.get.request.uri.useraction=No action is required.
+
+error.create.response=CWSCT0066E: SIP failed to create response to request: {0}
+error.create.response.explanation=The SIP com.ibm.ws.sip.container failed to create a response to the request.
+error.create.response.useraction=No action is required.
+
+error.send.request=CWSCT0067E: SIP failed to send request using JAIN; URI: {0}
+error.send.request.explanation=The SIP com.ibm.ws.sip.container failed sending out a request.
+error.send.request.useraction=No action is required.
+
+error.add.header=CWSCT0069E: SIP failed to add header; name: {0}, value: {1}
+error.add.header.explanation=The SIP com.ibm.ws.sip.container failed to add a header to the message.
+error.add.header.useraction=No action is required.
+
+error.send.response=CWSCT0070E: SIP failed to send response, {0}
+error.send.response.explanation=An error occurred while the SIP com.ibm.ws.sip.container was trying to send out a response.
+error.send.response.useraction=No action is required.
+
+error.set.header=CWSCT0071E: SIP failed to set header; name: {0}, value: {1}
+error.set.header.explanation=The SIP com.ibm.ws.sip.container failed to set a header value in the message.
+error.set.header.useraction=No action is required.
+
+error.set.host=CWSCT0072E: SIP failed to set host; host: {0}
+error.set.host.explanation=The application call to SipURI.setHost() failed.
+error.set.host.useraction=Check the application code to make sure the host name is valid and not null.
+
+error.set.port=CWSCT0073E: SIP failed to set port; port: {0}
+error.set.port.explanation=The application call to SipURI.setPort() failed.
+error.set.port.useraction=No action is required.
+
+error.set.secure=CWSCT0074E: SIP failed to set secure; value: {0}
+error.set.secure.explanation=The application call to SipURI.setSecure() failed.
+error.set.secure.useraction=No action is required.
+
+error.set.user=CWSCT0075E: SIP failed to set user; user: {0}
+error.set.user.explanation=The application call to SipURI.setUser() failed.
+error.set.user.useraction=Check the application code to make sure the user name is valid and not null.
+
+error.set.user.password=CWSCT0076E: SIP failed to set user password; password: {0}
+error.set.user.password.explanation=The application call to SipURI.setUserPassword() failed.
+error.set.user.password.useraction=Check the application code to make sure the user password is valid and not null.
+
+error.get.accept.language=CWSCT0077E: SIP failed to get accepted language, {0}
+error.get.accept.language.explanation=The application call to SipServletMessage.getAcceptLanguage() failed.
+error.get.accept.language.useraction=No action is required.
+
+error.get.accept.languages=CWSCT0078E: SIP failed to get accepted languages, {0}
+error.get.accept.languages.explanation=The application call to SipServletMessage.getAcceptLanguages() failed.
+error.get.accept.languages.useraction=No action is required.
+
+error.get.address.header=CWSCT0079E: SIP failed to get address header; name: {0}
+error.get.address.header.explanation=The application call to SipServletMessage.getAddressHeader() failed.
+error.get.address.header.useraction=No action is required.
+
+error.get.address.headers=CWSCT0080E: SIP failed to get address headers; name: {0}
+error.get.address.headers.explanation=The application call to SipServletMessage.getAddressHeaders() failed.
+error.get.address.headers.useraction=No action is required.
+
+error.get.character.encoding=CWSCT0081E: SIP failed to get character encoding {0}
+error.get.character.encoding.explanation=The application call to SipServletMessage.getCharacterEncoding() failed.
+error.get.character.encoding.useraction=No action is required.
+
+error.get.content.length=CWSCT0082E: SIP failed to get content length {0}
+error.get.content.length.explanation=The application call to SipServletMessage.getContentLength() failed.
+error.get.content.length.useraction=No action is required.
+
+error.get.content.type=CWSCT0083E: SIP failed to get content type {0}
+error.get.content.type.explanation=The application call to SipServletMessage.getContentType() failed.
+error.get.content.type.useraction=No action is required.
+
+error.get.header=CWSCT0084E: SIP failed to get header; name: {0}
+error.get.header.explanation=The application call to SipServletMessage.getHeader() failed.
+error.get.header.useraction=No action is required.
+
+error.get.header.names=CWSCT0085E: SIP failed to get header; names {0}
+error.get.header.names.explanation=The application call to SipServletMessage.getHeaderNames() failed.
+error.get.header.names.useraction=No action is required.
+
+error.get.headers=CWSCT0086E: SIP failed to get headers; name: {0}
+error.get.headers.explanation=The application call to SipServletMessage.getHeaders() failed.
+error.get.headers.useraction=No action is required.
+
+error.set.content=CWSCT0087E: SIP failed to set content; content: {0}, content type: {1}
+error.set.content.explanation=The application call to SipServletMessage.setContent() failed.
+error.set.content.useraction=Check the application code to make sure the message content is valid and not null.
+
+error.get.via.headers=CWSCT0088E: SIP failed to get via headers {0}
+error.get.via.headers.explanation=The application call to SipServletMessage.getViaHeaders() failed.
+error.get.via.headers.useraction=No action is required.
+
+error.get.contact.header=CWSCT0089E: SIP failed to get contact header {0}
+error.get.contact.header.explanation=The application call to SipServletMessage.getContactHeader() failed.
+error.get.contact.header.useraction=No action is required.
+
+error.get.jain.sip.headers=CWSCT0090E: SIP failed to get JAIN SIP headers {0}
+error.get.jain.sip.headers.explanation=The SIP com.ibm.ws.sip.container failed getting one or more headers from the internal JAIN message object.
+error.get.jain.sip.headers.useraction=No action is required.
+
+error.get.max.forwards=CWSCT0091E: SIP failed to get maximum forwards {0}
+error.get.max.forwards.explanation=The application call to SipServletRequest.getMaxForwards() failed.
+error.get.max.forwards.useraction=No action is required.
+
+error.get.reason.phrase=CWSCT0092E: SIP failed to get reason phrase {0}
+error.get.reason.phrase.explanation=The application call to SipServletResponse.getReasonPhrase() failed.
+error.get.reason.phrase.useraction=No action is required.
+
+error.get.status=CWSCT0093E: SIP failed to get status {0}
+error.get.status.explanation=The application call to SipServletResponse.getStatus() failed.
+error.get.status.useraction=No action is required.
+
+error.set.status=CWSCT0094E: SIP failed to set status; status: {0}, reason phrase: {1}
+error.set.status.explanation=The application call to SipServletResponse.setStatus() failed.
+error.set.status.useraction=Check the application code to make sure the status code is valid. If you also supplied a reason phrase, make sure it is not null and not empty.
+
+error.create.address=CWSCT0095E: SIP failed to create address; URI: {0}, display name: {1}
+error.create.address.explanation=The application call to SipFactory.createAddress() failed.
+error.create.address.useraction=Check the application code to make sure the URI and display name are valid.
+
+error.create.sip.uri=CWSCT0097E: SIP failed to create SIP URI; user: {0}, host: {1}
+error.create.sip.uri.explanation=The application call to SipFactory.createSipURI() failed.
+error.create.sip.uri.useraction=Check the application code to make sure the user and host parameters are valid and not null.
+
+error.create.uri=CWSCT0098E: SIP failed to create URI; URI: {0}
+error.create.uri.explanation=The application call to SipFactory.createURI() failed.
+error.create.uri.useraction=Check the application code to make sure the URI string represents a valid URI.
+
+error.push.route=CWSCT0099E: Failed to push route; URI: {0}
+error.push.route.explanation=The application call to SipServletRequest.pushRoute() or SipServletRequest.pushRecordRoute() failed.
+error.push.route.useraction=Check the application code to make sure the SipURI is valid.
+
+error.set.uri=CWSCT0100E: SIP failed to set URI; URI: {0}
+error.set.uri.explanation=The application call to Address.setURI() failed.
+error.set.uri.useraction=Check the application code to make sure the URI is valid.
+
+error.sending.ack=CWSCT0101E: Failed to send an ACK request.
+error.sending.ack.explanation=The SIP com.ibm.ws.sip.container failed to send out an ACK request.
+error.sending.ack.useraction=No action is required.
+
+error.sending.cancel=CWSCT0102E: Failed to send a CANCEL request.
+error.sending.cancel.explanation=The SIP com.ibm.ws.sip.container failed to send out a CANCEL request.
+error.sending.cancel.useraction=No action is required.
+
+error.failed.create.timeout.response=CWSCT0103E: Failed to generate a timeout response.
+error.failed.create.timeout.response.explanation=A request that was sent out from the SIP com.ibm.ws.sip.container was not responded to for 32 seconds, and the SIP com.ibm.ws.sip.container failed to generate a timeout response to the application.
+error.failed.create.timeout.response.useraction=No action is required.
+
+error.cloning.address=CWSCT0104E: Failed to clone address.
+error.cloning.address.explanation=Internal error in the SIP com.ibm.ws.sip.container cloning an Address object.
+error.cloning.address.useraction=No action is required.
+
+error.invalid.tel.url=CWSCT0105E: Invalid Telephony URL: {0}
+error.invalid.tel.url.explanation=The SIP com.ibm.ws.sip.container failed to create a tel URL.
+error.invalid.tel.url.useraction=Check that the raw URL string is at least 4 bytes long (3 for the scheme plus 1 for the colon character).
+
+error.sending.487.response=CWSCT0106E: Error on sending a 487 response {0}
+error.sending.487.response.explanation=While canceling a request, the SIP com.ibm.ws.sip.container failed sending the 487 (Request Terminated) response to the original request.
+error.sending.487.response.useraction=No action is required.
+
+error.set.character.encoding=CWSCT0108E: Error setting character encoding: {0}
+error.set.character.encoding.explanation=The application call to SipServletMessage.setCharacterEncoding() failed.
+error.set.character.encoding.useraction=Check the application code to make sure the encoding parameter is valid and not null.
+
+error.setting.tag=CWSCT0109E: Error setting tag value: {0}
+error.setting.tag.explanation=The application call to Address.setTag() failed.
+error.setting.tag.useraction=Check the application code to make sure the tag parameter is valid.
+
+info.sequence.logger.enabled=CWSCT0113I: SIP Session sequence logger is enabled, level: {0}
+info.sequence.logger.enabled.explanation=The logger for SIP session/dialog sequence is enabled.
+info.sequence.logger.enabled.useraction=No action is required.
+
+error.unexpected.uri.in.route=CWSCT0115E: Expected SIP URI but received: {0}
+error.unexpected.uri.in.route.explanation=
+error.unexpected.uri.in.route.useraction=No action is required.
+
+info.standalone.started=CWSCT0116I: SIP Container is using standalone configuration.
+info.standalone.started.explanation=The SIP com.ibm.ws.sip.container is not running as a Websphere service.
+info.standalone.started.useraction=No action is required.
+
+error.init.siplet=CWSCT0117E: Failed to initialize siplet {0}
+error.init.siplet.explanation=The SIP com.ibm.ws.sip.container failed loading or instantiating a SIP servlet class.
+error.init.siplet.useraction=Check your sip.xml file to make sure the class name is correct and has a public constructor that expects no arguments.
+
+error.invoke.servlet=CWSCT0118E: Service siplet failed {0}
+error.invoke.servlet.explanation=An exception was created by the SIP servlet code.
+error.invoke.servlet.useraction=No action is required.
+
+error.servlet.unavailable=CWSCT0119E: Invoke siplet failed; servlet unavailable: {0}, {1}
+error.servlet.unavailable.explanation=The SIP servlet does not exist.
+error.servlet.unavailable.useraction=Check your sip.xml file to make sure the servlet class name is correct.
+
+error.initialize.sip.container=CWSCT0120E: Error initializing the SIP com.ibm.ws.sip.container
+error.initialize.sip.container.explanation=Error initializing the SIP com.ibm.ws.sip.container; additional details can be found in trace file.
+error.initialize.sip.container.useraction=Enable diagnostic tracing for the SIP com.ibm.ws.sip.container, restart the server to recreate the problem, and then pull the trace log.
+
+warning.timer.listener.unavailable=CWSCT0122W: Error dispatching timer event; timer listener not available for: {0}
+warning.timer.listener.unavailable.explanation=The SIP servlet timer was triggered, but no listener is associated with it.
+warning.timer.listener.unavailable.useraction=No action is required.
+
+warning.timer.unavailable=CWSCT0124W: TimerServiceImpl is unavailable
+warning.timer.unavailable.explanation=All timers are disabled in the SIP com.ibm.ws.sip.container
+warning.timer.unavailable.useraction=Check the SIP com.ibm.ws.sip.container configuration and remove the "enable.timers" property, or set its value to "true".
+
+error.transaction.id.alreay.set=CWSCT0125E: Transaction ID already set for transaction; current {0}, new {1}
+error.transaction.id.alreay.set.explanation=The SIP transaction is already initialized with a transaction ID, and cannot be changed.
+error.transaction.id.alreay.set.useraction=No action is required.
+
+error.cannot.lookup.host=CWSCT0336E: VirtualHostAlias.init: cannot lookup host {0}
+error.cannot.lookup.host.explanation=The SIP com.ibm.ws.sip.container failed resolving the host name of a virtual host alias to an IP address.
+error.cannot.lookup.host.useraction=No action is required.
+
+error.invoking.request=CWSCT0139E: SIP Failed to invoke request; message is {0}
+error.invoking.request.explanation=An exception was created while the SIP com.ibm.ws.sip.container tried to invoke a request.
+error.invoking.request.useraction=No action is required.
+
+error.sending.response.from.prepare.for.write=CWSCT0140E: SIP failed to send response to prepare to write.
+error.sending.response.from.prepare.for.write.explanation=The SIP com.ibm.ws.sip.container failed to send out the response from within the call to prepareHeadersForWrite().
+error.sending.response.from.prepare.for.write.useraction=No action is required.
+
+error.message.dispatcher.invalid.state=CWSCT0142E: Error dispatcher has not completed dispatching previous message.
+error.message.dispatcher.invalid.state.explanation=The SIP com.ibm.ws.sip.container cannot dispatch a message because the previous message dispatching has not completed yet.
+error.message.dispatcher.invalid.state.useraction=No action is required.
+
+error.non.http.request=CWSCT0145E: Received a {0} request while expecting javax.servlet.http.HttpServletRequest
+error.non.http.request.explanation=The SIP com.ibm.ws.sip.container received a request from the web com.ibm.ws.sip.container that is not a javax.servlet.http.HttpServletRequest.
+error.non.http.request.useraction=No action is required.
+
+error.failed.to.register.collaborator=CWSCT0146E: Failed to register {0} collaborator
+error.failed.to.register.collaborator.explanation=The SIP com.ibm.ws.sip.container failed to register itself as a listener to Websphere.
+error.failed.to.register.collaborator.useraction=No action is required.
+
+error.exception.cnf=CWSCT0188E: Error - Class Not Found Exception; unable to deserialize.
+error.exception.cnf.explanation=The SIP com.ibm.ws.sip.container caught an exception of type ClassNotFoundException during object serialization.
+error.exception.cnf.useraction=No action is required.
+
+error.exception.io.serialize.deserialize=CWSCT0189E: Error - IO exception; unable to serialize / deserialize.
+error.exception.io.serialize.deserialize.explanation=The SIP com.ibm.ws.sip.container caught an exception of type IOException during object serialization.
+error.exception.io.serialize.deserialize.useraction=No action is required.
+
+error.exception.cache.alg=CWSCT0185E: Error - The cache algorithm does not exist.
+error.exception.cache.alg.explanation=The cache algorithm requested by the SIP com.ibm.ws.sip.container session manager does not exist.
+error.exception.cache.alg.useraction=No action is required.
+
+error.exception.replicator=CWSCT0186E: Error - Replicator exception
+error.exception.replicator.explanation=Replication exception caught by the SIP com.ibm.ws.sip.container session manager.
+error.exception.replicator.useraction=No action is required.
+
+info.sipha.version=CWSCT0187I: SIP HA {0}
+info.sipha.version.explanation=The SIP com.ibm.ws.sip.container high availability component initialized.
+info.sipha.version.useraction=No action is required.
+
+error.exception.drs=CWSCT0219E: Error - drs exception
+error.exception.drs.explanation=Exception caught in the SIP com.ibm.ws.sip.container during DRS replication.
+error.exception.drs.useraction=No action is required.
+
+error.exception.admin=CWSCT0220E: Error - admin JMX exception
+error.exception.admin.explanation=Exception caught in the SIP com.ibm.ws.sip.container while activating the MBean for the session manager.
+error.exception.admin.useraction=No action is required.
+
+error.drs.broker=CWSCT0222E: Error - DRS multibroker exception.
+error.drs.broker.explanation=Exception caught in the SIP com.ibm.ws.sip.container using the DRS multi broker.
+error.drs.broker.useraction=No action is required.
+
+error.drs.setting.mode=CWSCT0224E: Error - DRS mode is not BOTH_CLIENT_SERVER (peer to peer)
+error.drs.setting.mode.explanation=The DRS mode is not suitable for data replication in the SIP com.ibm.ws.sip.container.
+error.drs.setting.mode.useraction=No action is required.
+
+info.drs.setting.missing=CWSCT0225E: Info - DRS not set
+info.drs.setting.missing.explanation=Replication in the SIP com.ibm.ws.sip.container is disabled because DRS is not set.
+info.drs.setting.missing.useraction=Make sure to configure the WebContainer SessionManager to use memory-to-memory replication.
+
+info.drs.enablefailover.disabled=CWSCT0226I: Info - SIP com.ibm.ws.sip.container failover disabled.
+info.drs.enablefailover.disabled.explanation=SIP com.ibm.ws.sip.container failover disabled.
+info.drs.enablefailover.disabled.useraction=Use the "enable.replication" custom property (for sip com.ibm.ws.sip.container) to enable.
+
+info.drs.enablefailover.enabled=CWSCT0227I: Info - SIP com.ibm.ws.sip.container High Availability component enabled.
+info.drs.enablefailover.enabled.explanation=The SIP com.ibm.ws.sip.container High Availability component is enabled for load balancing and failover.
+info.drs.enablefailover.enabled.useraction=No action is required.
+
+error.exception.ha.groupleft=CWSCT0228E: Error - HAGroupLeftException
+error.exception.ha.groupleft.explanation=The SIP com.ibm.ws.sip.container caught an exception of type HAGroupLeftException while being activated as a group member.
+error.exception.ha.groupleft.useraction=No action is required.
+
+error.exception.ha.param.reject=CWSCT0229E: Error - HAParameterRejectedException
+error.exception.ha.param.reject.explanation=The SIP com.ibm.ws.sip.container caught an exception of type HAParameterRejectedException while being activated as a group member.
+error.exception.ha.param.reject.useraction=No action is required.
+
+error.exception.io.deserialize=CWSCT0231E: Error - IO exception; unable to deserialize.
+error.exception.io.deserialize.explanation=Data serialization failed in the SIP com.ibm.ws.sip.container.
+error.exception.io.deserialize.useraction=No action is required.
+
+error.exception.ha=CWSCT0232E: Error - HA exception
+error.exception.ha.explanation=An exception was caught in the SIP com.ibm.ws.sip.container High Availability component.
+error.exception.ha.useraction=No action is required.
+
+error.exception.ds=CWSCT0233E: Error - Datastack exception
+error.exception.ds.explanation=A DataStackException was caught in the SIP com.ibm.ws.sip.container High Availability component.
+error.exception.ds.useraction=No action is required.
+
+error.exception.io=CWSCT0237E: Error - IO excpetion
+error.exception.io.explanation=A IOException was caught in the SIP com.ibm.ws.sip.container.
+error.exception.io.useraction=No action is required.
+
+error.exception.ucf.no_cluster_define=CWSCT0238E: Error - UCF Exception; no cluster defined.
+error.exception.ucf.no_cluster_define.explanation=The SIP com.ibm.ws.sip.container cannot join or depart from cluster because no cluster is defined.
+error.exception.ucf.no_cluster_define.useraction=No action is required.
+
+error.exception.ucf.noclusterservice=CWSCT0240E: Error - no cluster member service.
+error.exception.ucf.noclusterservice.explanation=The SIP com.ibm.ws.sip.container cannot start or stop the High Availability component because an exception occurred while trying to access the cluster service.
+error.exception.ucf.noclusterservice.useraction=No action is required.
+
+error.exception.ucf.no.member.available=CWSCT0241E: Error - UCF Exception - no member available.
+error.exception.ucf.no.member.available.explanation=The SIP com.ibm.ws.sip.container failed getting SIP proxy endpoint information from UCF.
+error.exception.ucf.no.member.available.useraction=No action is required.
+
+error.exception.class.not.found=CWSCT0243E: Error - Class not found exception.
+error.exception.class.not.found.explanation=A ClassNotFoundException was caught in the SIP com.ibm.ws.sip.container.
+error.exception.class.not.found.useraction=No action is required.
+
+error.orb=CWSCT0244E: Error - cannot obtain ORB object
+error.orb.explanation=The SIP com.ibm.ws.sip.container cannot publish its logical names due to an error obtaining ORB object.
+error.orb.useraction=No action is required.
+
+error.orb.cc=CWSCT0245E: Error - ORB class cast exception
+error.orb.cc.explanation=The SIP com.ibm.ws.sip.container cannot publish its logical names due to a ClassCastException.
+error.orb.cc.useraction=No action is required.
+
+error.orb.in=CWSCT0246E: Error - invalid ORB name request
+error.orb.in.explanation=The SIP com.ibm.ws.sip.container cannot publish its logical names due to InvalidName exception.
+error.orb.in.useraction=No action is required.
+
+error.exception.classnotfound=CWSCT0259E: Error - class not found
+error.exception.classnotfound.explanation=The SIP com.ibm.ws.sip.container TAI failed to initialize due to a ClassNotFoundException
+error.exception.classnotfound.useraction=No action is required.
+
+error.exception.instantiate=CWSCT0260E: Error - instantiation exception
+error.exception.instantiate.explanation=The SIP com.ibm.ws.sip.container TAI failed to initialize due to InstantiationException.
+error.exception.instantiate.useraction=No action is required.
+
+error.exception.illegalaccess=CWSCT0261E: Error - illegal access exception.
+error.exception.illegalaccess.explanation=The SIP com.ibm.ws.sip.container TAI failed to initialize due to IllegalAccessException.
+error.exception.illegalaccess.useraction=No action is required.
+
+error.exception.filenotfound=CWSCT0262E: Error - file not found.
+error.exception.filenotfound.explanation=The SIP com.ibm.ws.sip.container security cannot open passwords file.
+error.exception.filenotfound.useraction=No action is required.
+
+error.exception.login=CWSCT0264E: Error - Login Context - failed
+error.exception.login.explanation=A LoginException was caught by the SIP com.ibm.ws.sip.container TAI while getting the user subject.
+error.exception.login.useraction=No action is required.
+
+error.exception.naming=CWSCT0266E: Error - naming exception
+error.exception.naming.explanation=A NamingException was caught in the SIP com.ibm.ws.sip.container security.
+error.exception.naming.useraction=No action is required.
+
+error.exception.parse=CWSCT0267E: Error - parse exception.
+error.exception.parse.explanation=A parse exception was caught in the SIP com.ibm.ws.sip.container TAI (Trust Association Interceptor).
+error.exception.parse.useraction=No action is required.
+
+error.exception.stack=CWSCT0315E: Exception in SIP Stack.
+error.exception.stack.explanation= An exception was caught initializing the SIP stack.
+error.exception.stack.useraction=No action is required.
+
+info.sipstack.version=CWSCT0316I: SIP Stack {0}
+info.sipstack.version.explanation=The SIP stack is initializing
+info.sipstack.version.useraction=No action is required.
+
+error.unknown.host.exception=CWSCT0317E: Unknown host exception; unable to resolve hostname.
+error.unknown.host.exception.explanation=An UnknownHostException was caught in the SIP stack while trying to resolve a host name to IP address.
+error.unknown.host.exception.useraction=No action is required.
+
+error.base64parser.exception=CWSCT0318E: Parser exception; failed to write to output stream.
+error.base64parser.exception.explanation=The SIP stack failed writing to output stream.
+error.base64parser.exception.useraction=No action is required.
+
+error.same.to.tag=CWSCT0319E: Same To tag in two or more responses from multiple proxy branches
+error.same.to.tag.explanation=The same To tag was received  in two or more responses from  different proxy branches.  This action is not valid according to the  RFC 3261 specification.
+error.same.to.tag.useraction=Make sure that  the responding user agent server (UAS) instances generate unique To tags for each dialog, to comply with the RFC 3261 specification. 
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1=CWSCT0321I: SIP stack init configuration
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.explanation=The SIP stack configuration is initialized.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.useraction=No action is required.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2=CWSCT0322I: SIP stack init transport.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.explanation=The SIP stack transport is initialized.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.useraction=No action is required.
+
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3=CWSCT0323I: SIP stack init finished.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.explanation=The SIP stack initialization is complete.
+info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.useraction=No action is required.
+
+info.stack.timer.b=CWSCT0324I: SIP Stack, Timer B Set to {0} milliseconds.
+info.stack.timer.b.explanation=The SIP stack timer B is set. More information on timer B in RFC 3261.
+info.stack.timer.b.useraction=No action is required.
+
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints=CWSCT0328I: SIP starting to listen on {0}.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.explanation=The SIP stack is starting to listen on specified listening point.
+info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.useraction=No action is required.
+
+info.sip.container.launched.but.not.loaded=CWSCT0332I: SIP Container was launched successfully but will only be initialized when first SIP application is loaded.
+info.sip.container.launched.but.not.loaded.explanation=SIP Container will be initialized when first SIP application is loaded.
+info.sip.container.launched.but.not.loaded.useraction=No action is required.
+
+error.replication.failed=CWSCT0333E: Replication failed.
+error.replication.failed.explanation=Exception occurred in the SIP com.ibm.ws.sip.container during replication.
+error.replication.failed.useraction=No action is required.
+
+error.failed.to.deserialize.replication=CWSCT0334E: Failed to deserialize replication.
+error.failed.to.deserialize.replication.explanation=Exception occurred in the SIP com.ibm.ws.sip.container replication during object deserialization.
+error.failed.to.deserialize.replication.useraction=No action is required.
+
+error.failed.to.reactivate.objects.after.failover=CWSCT0335E: Failed to reactivate objects after failover.
+error.failed.to.reactivate.objects.after.failover.explanation=Exception occurred in the SIP com.ibm.ws.sip.container during session activation after failover.
+error.failed.to.reactivate.objects.after.failover.useraction=No action is required.
+
+warning.display.name.different=CWSCT0337W: Display name in sip.xml ({0}) is different from display name in web.xml ({1}).
+warning.display.name.different.explanation=The application's display name in sip.xml is different from the display name in web.xml. This is not compliant with JSR-116 section 15.2.
+warning.display.name.different.useraction=Change the deployment descriptors to match the application display name.
+
+warning.dispatch.failed=CWSCT0338W: Failed to dispatch SIP message to thread pool. Message= {0}, Call ID= {1}, Error code= {2}.
+warning.dispatch.failed.explanation=The SIP com.ibm.ws.sip.container failed to dispatch a message to the thread pool.
+warning.dispatch.failed.useraction=No action is required.
+
+error.cannot.identify.object.type=CWSCT0339E: Deserialize: Cannot identify object type.
+error.cannot.identify.object.type.explanation=The SIP com.ibm.ws.sip.container cannot identify object type for deserialization.
+error.cannot.identify.object.type.useraction=No action is required.
+
+error.security.password.retrieve=CWSCT0340E: Error - cannot retrieve password attribute.
+error.security.password.retrieve.explanation=Authentication failed because the SIP com.ibm.ws.sip.container cannot retrieve the userPassword attribute from the person entry in the directory.
+error.security.password.retrieve.useraction=Change the LDAP configuration settings so the server has access to the userPassword attribute in the directory.
+
+warn.server.overloaded=CWSCT0341W: The server is overloaded.
+warn.server.overloaded.explanation=The Session Initiation Protocol (SIP) server cannot accept any more incoming messages while it is overloaded.
+warn.server.overloaded.useraction=Reduce the incoming messages, or reduce any other possible sources of stress on the server machine.
+
+warn.server.overloaded.too.many.sessions=CWSCT0342W: The server is overloaded because there are too many application sessions. 
+warn.server.overloaded.too.many.sessions.explanation=The SIP server cannot accept any more incoming messages while it is overloaded. Too many application sessions are active.
+warn.server.overloaded.too.many.sessions.useraction=Reduce the number of application sessions that are created or set a higher value for the maximum application sessions on the Session Initiation Protocol (SIP) com.ibm.ws.sip.container.
+
+warn.server.overloaded.too.many.messages=CWSCT0343W: The server is overloaded because too many messages were received during an averaging period. 
+warn.server.overloaded.too.many.messages.explanation=The SIP server cannot accept any more incoming messages while it is overloaded. The messages traffic is too high.
+warn.server.overloaded.too.many.messages.useraction=Reduce the message load or set the maximum messages per averaging period value to a higher value on the Session Initiation Protocol (SIP) com.ibm.ws.sip.container.
+
+warn.server.overloaded.slow.response=CWSCT0344W: The server is overloaded because the server response time is too slow.
+warn.server.overloaded.slow.response.explanation=The SIP server cannot accept any more incoming messages while it is overloaded.
+warn.server.overloaded.slow.response.useraction=Reduce the incoming messages traffic or reduce any other possible source of stress on the server machine. If the maximum response time value is enabled and set on the Session Initiation Protocol (SIP) com.ibm.ws.sip.container, consider modifying it to a higher value.
+
+warn.dispatch.queue.overloaded=CWSCT0345W: The maximum dispatch queue size of {0} has been exceeded. New messages will be dropped.
+warn.dispatch.queue.overloaded.explanation=The SIP server cannot accept any more incoming messages while the dispatch queue is overloaded.
+warn.dispatch.queue.overloaded.useraction=Reduce the message load or set the maximum dispatch queue size value to a higher value on the Session Initiation Protocol (SIP) com.ibm.ws.sip.container.
+
+error.container.queue.overloaded=CWSCT0346E: The dispatch queue is overloaded. The following message has been rejected: {0}
+error.container.queue.overloaded.explanation=The SIP com.ibm.ws.sip.container threads cannot handle the current load of tasks.
+error.container.queue.overloaded.useraction=Reduce any possible sources of stress on the server machine, especially Session Initiation Protocol (SIP) messages traffic. In addition, review the amount of resources that are consumed by the SIP application code.
+
+info.bootstrap.started=CWSCT0347I: Bootstrap replication has started.
+info.bootstrap.started.explanation=The Session Initiation Protocol (SIP) com.ibm.ws.sip.container is replicating its sessions data to a newly connected peer.
+info.bootstrap.started.useraction=No action is required. 
+
+info.bootstrap.finished=CWSCT0348I: Bootstrap replication has finished. 
+info.bootstrap.finished.explanation=The Session Initiation Protocol (SIP) com.ibm.ws.sip.container has finished replicating its sessions data to the newly connected peer.
+info.bootstrap.finished.useraction=No action is required.
+
+info.sip.stack.timer=CWSCT0349I: SIP stack timer [{0}] value set to [{1}]
+info.sip.stack.timer.explanation=The timer value is modified in configuration
+info.sip.stack.timer.useraction=No action is required
+
+info.sip.container.quiesce.on=CWSCT0350I: Entering quiesce mode
+info.sip.container.quiesce.on.explanation=The SIP com.ibm.ws.sip.container MBean received an administrative quiesce command. In this mode, new calls are not serviced on this com.ibm.ws.sip.container instance.
+info.sip.container.quiesce.on.useraction=No action is required
+
+info.sip.container.quiesce.off=CWSCT0351I: Exiting quiesce mode
+info.sip.container.quiesce.off.explanation=The SIP com.ibm.ws.sip.container MBean received an administrative de-quiesce command.
+info.sip.container.quiesce.off.useraction=No action is required
+
+error.sip.get.server.type=CWSCT0352E: Failed to get Server Type.   Error = {0}.
+error.sip.get.server.type.explanation=Exception occured while getting server type.
+error.sip.get.server.type.useraction=No action is required
+
+error.sip.get.configuration=CWSCT0353E: Failed to get Configuration on startup.   Error = {0}.
+error.sip.get.configuration.explanation=Exception occured while getting configration.
+error.sip.get.configuration.useraction=No action is required
+
+info.sip.container.running.stanalone=CWSCT0354I: Running on Stanalone server
+info.sip.container.running.stanalone.explanation=The SIP com.ibm.ws.sip.container is running in a stand-alone environment. The High Availability Manager is not enabled.
+info.sip.container.running.stanalone.useraction=No action is required
+
+error.sip.cannot.run.on.server=CWSCT0355E: Cannot run on this server type:  {0}.
+error.sip.cannot.run.on.server.explanation=SipContainer cannot run on the specified server type.
+error.sip.cannot.run.on.server.useraction=No action is required
+
+error.parse.auth.challange=CWSCT0356E: Failed to parse authentication header.
+error.parse.auth.challange.explanation=The application call to SipServletResponse.getChallangeRealm() failed.
+error.parse.auth.challange.useraction=No action is required.
+
+error.exception.ioeinbody=CWSCT0357E: Error - Couldn't get message body.
+error.exception.ioeinbody.explanation=An IOException was caught in the SIP com.ibm.ws.sip.container security code.
+error.exception.ioeinbody.useraction=No action is required.
+
+warn.unsupported.realm=CWSCT0358W: Unknown authentication realm {0}
+warn.unsupported.realm.explanation=A SIP request for an unknown authentication realm was recieved 
+warn.unsupported.realm.useraction=No action is required
+
+info.unhashed.creds=CWSCT0359I: Hashed Credential attributes not found.
+info.unhashed.creds.explanation=Attributes needed for using hashed credentials were not found. Using unhashed user password lookup for authentication.
+info.unhashed.creds.useraction=No action is required
+
+info.sip.container.quiesce.ended=CWSCT0360I: Server quiesce ended successfully
+info.sip.container.quiesce.ended.explanation=The SIP com.ibm.ws.sip.container quiesce operation has ended and all application sessions have been invalidated.
+info.sip.container.quiesce.ended.useraction=No action is required
+
+info.sip.heartbeat.new.proxy=CWSCT0361I: Network heartbeat from a new proxy {0} timeout {1} limit {2}
+info.sip.heartbeat.new.proxy.explanation=The SIP com.ibm.ws.sip.container detected a new SIP proxy in the cluster, and SIP network outage detection is enabled.
+info.sip.heartbeat.new.proxy.useraction=No action is required
+
+warn.sip.heartbeat.limit.exceeded=CWSCT0362I: Network heartbeat limit exceeded with SIP proxy {0}. {1} heartbeats missed.
+warn.sip.heartbeat.limit.exceeded.explanation=The SIP com.ibm.ws.sip.container has not received heartbeat messages from the front-end proxy within the pre-configured timeout value.
+warn.sip.heartbeat.limit.exceeded.useraction=Verify that the SIP proxy is still running, and the SIP network line between the proxy and the com.ibm.ws.sip.container is in order.
+
+error.sip.heartbeat.server.restart=CWSCT0363I: SIP com.ibm.ws.sip.container detected network outage, and will restart itself.
+error.sip.heartbeat.server.restart.explanation=The SIP com.ibm.ws.sip.container has lost touch with all front-end proxies in the cluster. It is now restarting itself. Active sessions will migrate to a backup com.ibm.ws.sip.container, if one is present in the replication domain.
+error.sip.heartbeat.server.restart.useraction=Determine the cause for SIP network outage. Focus on the network line between the proxy and the application server. You can use a network sniffer to trace the SIP KEEPALIVE messages between the proxy and the com.ibm.ws.sip.container.
+
+error.sip.heartbeat.restart.failure=CWSCT0364I: SIP com.ibm.ws.sip.container failed to restart
+error.sip.heartbeat.restart.failure.explanation=The SIP com.ibm.ws.sip.container attempted to restart itself as a result of network outage, but this action failed. The com.ibm.ws.sip.container will shut down without restarting itself.
+error.sip.heartbeat.restart.failure.useraction=Restart the application server manually.
+
+error.replication.b2blinkage.failed=CWSCT0365E: Failed to find Sip Session for B2B linkage {0} after failover
+error.replication.b2blinkage.failed.explanation=Error occurred in the SIP com.ibm.ws.sip.container during replication.
+error.replication.b2blinkage.failed.useraction=No action is required.
+
+info.dar.init.2=CWSCT0401I: Default application router has been initialized.
+info.dar.init.2.explanation=The default application router choose application by their start order.
+info.dar.init.2.useraction=No action is required 
+
+info.dar.init.3=CWSCT0403I: External application router has been loaded according to the defined custom property - javax.servlet.sip.ar.spi.SipApplicationRouterProvider, class name - {0}.
+info.dar.init.3.explanation=The external application router is application router that is implemented and loaded as a third party.
+info.dar.init.3.useraction=No action is required 
+
+info.dar.init.4=CWSCT0404I: Default Application Router (DAR) property file was loaded, file name - {0}.
+info.dar.init.4.explanation=Default Application Router (DAR) supplied by the user was located and loaded
+info.dar.init.4.useraction=No action is required 
+
+info.dar.init.5=CWSCT0405I: The application router is configured to select applications by its start.
+info.dar.init.5.explanation=The default application router choose application by its start order.
+info.dar.init.5.useraction=No action is required 
+
+error.dar.repository.create.1=CWSCT0406E: Error creating default application router repository: {0}.
+error.dar.repository.create.1.explanation=Some internal error.
+error.dar.repository.create.1.useraction=No action is required 
+
+error.dar.selector.1=CWSCT0407E: No state for default application router.
+error.dar.selector.1.explanation=When application router receives request with directive different than NEW it should contain a state index in the application chain. 
+error.dar.selector.1.useraction=No action is required 
+
+error.dar.property.parser.1=CWSCT0408E: Default application router, property strategy, failed to load property file.
+error.dar.property.parser.1.explanation=Application router property file is in the wrong format.
+error.dar.property.parser.1.useraction=Verify that application router property file is in the right format.
+
+warn.sip.proxy.outboundif.invalid=CWSCT0409W: Proxies are configured with different outbound interfaces.
+warn.sip.proxy.outboundif.invalid.explanation=All proxies must be configured with the same virtual IP.
+warn.sip.proxy.outboundif.invalid.useraction=No action is required.
+
+error.failed.create.500.response=CWSCT0410E: Failed to generate a application router response.
+error.failed.create.500.response.explanation=Application router raised unexpected exception the com.ibm.ws.sip.container have tried to generate 500 response and failed.
+error.failed.create.500.response.useraction=Contact application router owner.
+
+warn.sip.custom.property.deprecated=CWSCT0411W: The custom property [{0}] is deprecated.
+warn.sip.custom.property.deprecated.explanation=It is still honored and it's value is used if it is defined in the configuration, it is higher precedence than the attribute - for backward compatibility reasons.
+warn.sip.custom.property.deprecated.useraction=Set this value via Admin UI Sip Container configuration settings.
+
+warn.sip.queue.hung=CWSCT0412W: a SIP task related to {0} is appeared to be hung. This task will be ignored.
+warn.sip.queue.hung.explanation= The task has exceeded the configuration time for a thread hung detection. Subsequent SIP messages on this session may fail.
+warn.sip.queue.hung.useraction=No action is required.
+
+warn.server.overloaded.message.queue.overloaded=CWSCT0413W: The server is overloaded since com.ibm.ws.sip.container threads queues reached maximum capacity.
+warn.server.overloaded.message.queue.overloaded.explanation=The SIP server cannot accept any more incoming messages while it is overloaded.
+warn.server.overloaded.message.queue.overloaded.useraction=Reduce the incoming messages traffic or set the maximum of Session Initiation Protocol (SIP) com.ibm.ws.sip.container queue size to the higher value.
+
+info.sip.replication.mode=CWSCT0414I: SIP Replication mode is:{0} 
+info.sip.replication.mode.explanation=The frequency in which SIP sessions are replicated across replication domain (if exists).
+info.sip.replication.mode.useraction=No action is required
+
+info.dar.weight=CWSCT0415I: Loading default application router, weight strategy.
+info.dar.weight.explanation=No custom application router or DAR configuration file were supplied, the SIP com.ibm.ws.sip.container will use its default behavior of sorting applications according to weight.
+info.dar.weight.useraction=No action is required
+
+error.dar.no.config=CWSCT0416E: Default Application Router (DAR) configuration file was not located in the path supplied {0}.
+error.dar.no.config.explanation=Default Application Router (DAR) configuration file supplied by the user was not found
+error.dar.no.config.useraction=Check that the path supplied in SIP com.ibm.ws.sip.container properties "javax.servlet.sip.ar.dar.configuration" was correct
+
+error.sip.descriptor.wrong.class=CWSCT0417E: Siplet class name defined in sip.xml was not found, class name: {0}. 
+error.sip.descriptor.wrong.class.explanation=The sip.xml document defines a siplet class name that can not be loaded.
+error.sip.descriptor.wrong.class.useraction=Check your sip.xml file and make sure that the class name was written correctly.
+
+info.sip.outbound.initialized=CWSCT0418I: SIP "outbound" protocol extension initialized successfully.
+info.sip.outbound.initialized.explanation=The SIP servlet com.ibm.ws.sip.container is prepared for re-using client-initiated connections, according to the "outbound" protocol extension.
+info.sip.outbound.initialized.useraction=No action is required. For more information on the "outbound" protocol extension, refer to the topic "SIP Client-Initiated Connection Reuse" in the Websphere Application Server Information Center.
+
+warn.sip.outbound.no.key.set=CWSCT0419W: No key set specified for the SIP "outbound" protocol extension.
+warn.sip.outbound.no.key.set.explanation=The SIP servlet com.ibm.ws.sip.container is managing client-initiated connections, according to the SIP "outbound" protocol extension, but security is disabled. In this situation, flow tokens are vulnerable to being modified by attackers.
+warn.sip.outbound.no.key.set.useraction=In order to enable client-initiated connection security, refer to the topic "SIP Client-Initiated Connection Reuse" in the Websphere Application Server Information Center.
+
+info.sip.outbound.key.set.updated=CWSCT0420I: The key set used for the SIP "outbound" protocol extension was updated.
+info.sip.outbound.key.set.updated.explanation=A new key was generated in the key set.
+info.sip.outbound.key.set.updated.useraction=No action is required.
+
+error.sip.outbound.failure=CWSCT0421E: SIP "outbound" protocol extension failed to initialize with key set {0}.
+error.sip.outbound.failure.explanation=The SIP servlet com.ibm.ws.sip.container cannot process the "outbound" protocol extension, because an error occured while trying to initialize the specified key set.
+error.sip.outbound.failure.useraction=Make sure the specified key set is present in the key set configuration. For more information, refer to the topic "SIP Client-Initiated Connection Reuse" in the Websphere Application Server Information Center.
+
+warn.sip.invalid.comma.separated.headers=CWSCT0422W: Invalid syntax in the custom property "comma.separated.headers".
+warn.sip.invalid.comma.separated.headers.explanation=The SIP com.ibm.ws.sip.container custom property "comma.separated.headers" contains an invalid setting.
+warn.sip.invalid.comma.separated.headers.useraction=Either specify a valid value for the "comma.separated.headers" custom property, or remove this custom property from your SIP com.ibm.ws.sip.container configuration settings. The SIP com.ibm.ws.sip.container custom properties are described in the Websphere Application Server Information Center topic "SIP com.ibm.ws.sip.container custom properties".
+
+sip.app.deployment.failed=CWSCT0423E: Failed to deploy Application {0},reason {1}.
+sip.app.deployment.failed.explanation=Deployment failed due to invalid deployment descriptor.
+sip.app.deployment.failed.useraction=Check that deployment descriptors sip.xml or annotations do not conflict, and are valid according to spec.
+
+info.dar.start.order=CWSCT0424I: Loading default application router, start order strategy.
+info.dar.start.order.explanation=No custom application router or DAR configuration file were supplied, the SIP com.ibm.ws.sip.container will use its default behavior of sorting applications according to start order.
+info.dar.start.order.useraction=No action is required
+
+warn.change.in.endpoints=CWSCT0425W: The SIP channel configuration changed. Changes in SIP endpoints while the server is running can cause ongoing dialogs to fail.
+warn.change.in.endpoints.explanation=The reliability of the SIP dialogs state relies on the persistency of the SIP interfaces configuration.
+warn.change.in.endpoints.useraction=Restart of the server is recommended if existing SIP dialogs are in process.
+
+warn.dar.file.modification=CWSCT0426W: The Default SIP Application Router (DAR) file location or content was not changed.
+warn.dar.file.modification.explanation=The DAR file location or content cannot be changed when the server is running.
+warn.dar.file.modification.useraction=To apply the changes, restart the server.
+
+error.no.main.serv=CWSCT0427E: The application defined a main servlet that does not exist:  {0}.
+error.no.main.serv.explanation=The main servlet does not match any of the existing servlets.
+error.no.main.serv.useraction=Make sure that the main servlet is defined correctly in deployment descriptor or by annotation and is referring to a class of type SipServlet.
+
+cant.both.main.serv.mapping=CWSCT0428E: The application defines both the {0} main servlet and servlet mapping rules, which is not allowed.
+cant.both.main.serv.mapping.explanation=The application cannot define both a main servlet and servlet mapping rules.
+cant.both.main.serv.mapping.useraction=Make sure that application defines either the main servlet or servlet mapping rules, but not both. You can define the main servlet in the deployment descriptor or by annotation.
+
+must.define.main.serv=CWSCT0429E: The application does not define a main servlet but has more than one siplet.
+must.define.main.serv.explanation=If the application has more than one siplet, it must also define a main servlet.
+must.define.main.serv.useraction=Make sure that the main servlet is defined correctly in the deployment descriptor or by annotation. The main servlet definition must refer to a class of type SipServlet.
+
+start.sipChain.error=CWSCT0430E: The SIP chain failed to start.
+start.sipChain.error.explanation=If the SIP chain failed to start, there might be issues with the SIP endpoints definitions.
+start.sipChain.error.useraction=Verify that the SIP endpoints are defined well.
+
+config.sipChain.error=CWSCT0431E: Failed to initialize a SIP chain.
+config.sipChain.error.explanation=If a SIP chain fails to initialize, then a channel in the chain is not created or initialized, or the chain creation failed. This include failed attempts to bind the ports.
+config.sipChain.error.useraction=Verify that the SIP endpoints are defined well.
+
+error.asynchwork.host.unknown=CWSCT0432E: Failed to send asynchronous work since host is unknown.
+error.asynchwork.host.unknown.explanation=SIP Container was trying to send an asynchronous work but failed due to unknown host.
+error.asynchwork.host.unknown.useraction=Verify host configuration prior to sending asynchronous work.
+
+info.sip.queue.stats=CWSCT0433I: SIP Container queues stats print mode= {0} . 1 = only when overloaded, 2 = always. once every {1} msec.
+info.sip.queue.stats.explanation=SIP Container queues printing mode.
+info.sip.queue.stats.useraction=This is an informational message.  No user action is necessary.
+
+error.init.loadonstartup.app=CWSCT0435E: The SIP server failed to initialize application with a loadOnStartup servlet attribute: {0}
+error.init.loadonstartup.app.explanation=An error occurred when the SIP application was initialized with the specified loadOnStartup servlet attribute.
+error.init.loadonstartup.app.useraction=Review the SIP server trace file that is located in the logs directory in the SERVER_DIR folder for more details about this error.
+
+warn.sip.resolver.failed.connection=CWSCT0436W: SIP Resolver Connection failed, remote address = {0}.
+warn.sip.resolver.failed.connection.explanation=The Session Initiation Protocol (SIP) Resolver was not able to connect to a remote node.
+warn.sip.resolver.failed.connection.useraction=The remote name server might not be available. Check name server configuration.
+
+warn.sip.resolver.server.not.responding=CWSCT0437W: Name server is not responding to SIP lookup. Remote address = {0}.
+warn.sip.resolver.server.not.responding.explanation=The remote name server is not responding to the last Session Initiation Protocol (SIP) resolver request.
+warn.sip.resolver.server.not.responding.useraction=Name server might not be functioning. Check name server availability.
+
+info.sip.resolver.established.connection=CWSCT0438I: The SIP Resolver has made a connection to = {0}.
+info.sip.resolver.established.connection.explanation=The Session Initiation Protocol (SIP) resolver has made a TCP connection to a remote name server
+info.sip.resolver.established.connection.useraction=No user action is required.
+
+info.sip.resolver.initialized=CWSCT0439I: The SIP Resolver Service initialized with nameserver {0}.
+info.sip.resolver.initialized.explanation=The Session Initiation Protocol (SIP) Resolver Service initialized.
+info.sip.resolver.initialized.useraction=No user action is required.
+
+info.sip.resolver.not.initialized=CWSCT0440I: The SIP Resolver Service did not initialize.
+info.sip.resolver.not.initialized.explanation=The Session Initiation Protocol (SIP) Resolver Service did not configure a name server.
+info.sip.resolver.not.initialized.useraction=Reconfigure the SIP Resolver Service with a name server.
+
+warning.traditional.enabled=CWSCT0441W: The SIP Container does not support the traditional PMI.
+warning.traditional.enabled.explanation=The attribute enableTraditionalPMI is set to true in the server.xml file. The SIP Container does not support the traditional PMI in Liberty.
+warning.traditional.enabled.useraction=Remove the enableTraditionalPMI property from the server.xml file.

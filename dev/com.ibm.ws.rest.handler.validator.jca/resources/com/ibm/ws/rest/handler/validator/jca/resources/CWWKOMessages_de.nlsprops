@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator.jca/resources/com/ibm/ws/rest/handler/validator/jca/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1560 to CWWKO1569
+
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED=CWWKO1560E: Es wurde keine Validierung f\u00fcr die Verbindungsfactory {0} bereitgestellt, die {1} implementiert.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.explanation=Eine Validierung ist nur f\u00fcr Ressourcenadapterverbindungsfactorys m\u00f6glich, die JMS-Verbindungsfactorys sind oder javax.resource.cci.ConnectionFactory or javax.sql.DataSource implementieren.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.useraction=Versuchen Sie nicht, diesen Verbindungsfactory-Typ zu validieren.
+
+CWWKO1561_JMS_NOT_ENABLED=CWWKO1561E: Der Ressourcenadapter erfordert JMS, aber ein Feature, das JMS aktiviert, ist nicht in der Serverkonfiguration vorhanden.
+CWWKO1561_JMS_NOT_ENABLED.explanation=Ein Feature, das JMS aktiviert, ist f\u00fcr dieses Konfigurationselement erforderlich.
+CWWKO1561_JMS_NOT_ENABLED.useraction=Schlie\u00dfen Sie ein Feature ein, das JMS in der Serverkonfiguration aktiviert.
+
+CWWKO1562_NO_CONSPEC=CWWKO1562E: Eine Validierung mit dem angegebenen Benutzer und dem angegebenen Kennwort ist nicht m\u00f6glich, weil es keine Standardmethode f\u00fcr die Lokalisierung der richtigen ConnectionSpec-Implementierung gibt.
+CWWKO1562_NO_CONSPEC.explanation=Der Validierung-REST-Endpunkt konnte den Namen der ConnectionSpec-Implementierung nicht ermitteln, daher ist es nicht m\u00f6glich, den angegebenen Benutzernamen und das angegebene Kennwort der Verbindungsfactory bereitzustellen.
+CWWKO1562_NO_CONSPEC.useraction=Lassen Sie die Benutzer- und Kennwortparameter weg, wenn Sie die Validierung dieser Verbindungsfactory anfordern.

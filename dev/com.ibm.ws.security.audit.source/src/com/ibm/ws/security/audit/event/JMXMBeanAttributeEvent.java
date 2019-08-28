@@ -51,33 +51,9 @@ public class JMXMBeanAttributeEvent extends AuditEvent {
                     set(AuditEvent.TARGET_JMX_MBEAN_ATTRIBUTE_NAME, attrs.toString());
                 } else if (action.equals("setAttributes") || action.equals("getAttributes")) {
                     StringBuffer buf = new StringBuffer();
-                    AttributeList al = (AttributeList) attrs;
-                    for (int i = 0; i < al.size(); i++) {
-                        if (((Attribute) al.get(i)).getValue() != null && ((Attribute) al.get(i)).getValue().getClass() != null) {
-                            if (((Attribute) al.get(i)).getValue().getClass().isArray()) {
-                                buf.append("[").append(((Attribute) al.get(i)).getName()).append(" = ");
-                                if (((Attribute) al.get(i)).getValue() instanceof long[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((long[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof boolean[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((boolean[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof byte[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((byte[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof int[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((int[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof short[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((short[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof char[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((char[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof float[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((float[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof double[]) {
-                                    buf.append("[").append(java.util.Arrays.toString((double[]) ((Attribute) al.get(i)).getValue())).append("]");
-                                } else if (((Attribute) al.get(i)).getValue() instanceof Object[]) {
-                                    buf.append("[").append(unravelArray(buf, ((Attribute) al.get(i)).getValue())).append("]");
-                                }
-                            } else {
-                                buf.append("[").append(((Attribute) al.get(i)).getName()).append(" = ").append(((Attribute) al.get(i)).getValue()).append("]");
-                            }
+                    for (Object attr : (AttributeList) attrs) {
+                        if (((Attribute) attr).getValue() != null) {
+                            buf.append("[").append(((Attribute) attr).getName()).append(" = ").append(ParameterUtils.format(((Attribute) attr).getValue())).append("]");
                         }
                     }
                     set(AuditEvent.TARGET_JMX_MBEAN_ATTRIBUTE_NAMES, buf.toString());
@@ -108,29 +84,4 @@ public class JMXMBeanAttributeEvent extends AuditEvent {
             }
         }
     }
-
-    public StringBuffer unravelArray(StringBuffer buf, Object param) {
-        if (param instanceof long[]) {
-            buf.append("[").append(java.util.Arrays.toString((long[]) param)).append("]");
-        } else if (param instanceof boolean[]) {
-            buf.append("[").append(java.util.Arrays.toString((boolean[]) param)).append("]");
-        } else if (param instanceof int[]) {
-            buf.append("[").append(java.util.Arrays.toString((int[]) param)).append("]");
-        } else if (param instanceof byte[]) {
-            buf.append("[").append(java.util.Arrays.toString((byte[]) param)).append("]");
-        } else if (param instanceof short[]) {
-            buf.append("[").append(java.util.Arrays.toString((short[]) param)).append("]");
-        } else if (param instanceof char[]) {
-            buf.append("[").append(java.util.Arrays.toString((char[]) param)).append("]");
-        } else if (param instanceof float[]) {
-            buf.append("[").append(java.util.Arrays.toString((float[]) param)).append("]");
-        } else if (param instanceof double[]) {
-            buf.append("[").append(java.util.Arrays.toString((double[]) param)).append("]");
-        } else if (param instanceof Object[]) {
-            buf.append("[").append(unravelArray(buf, param)).append("]");
-        }
-        return buf;
-
-    }
-
 }

@@ -73,15 +73,9 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
                 Object listener = args[0]; //only one argument. 
                 Method proxyMethod = extendedBeanManager.getClass().getMethod("registerLifecycleListener", Object.class);
                 ret = proxyMethod.invoke(extendedBeanManager, listener);
+            //All other methods will be going to the bean manager, not the extended bean manager.
             } else {
-                //This is coming from the proxy object. Which will either recieve registerLifecycleListener or a method from the BeanManager interface
-                //Since we've already handled registerLifecycleListener we need to direct the method to a BeanManager and not an IBMHibernateExtendedBeanManager
-                if (getTarget() instanceof IBMHibernateExtendedBeanManager) {
-                    IBMHibernateExtendedBeanManager extendedBeanManager = (IBMHibernateExtendedBeanManager) getTarget();
-                    ret = method.invoke(extendedBeanManager.getBaseBeanManager(), args);
-                } else {
-                    ret = method.invoke(getTarget(), args);
-                }
+                ret = method.invoke(getTarget(), args);
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Invoked BeanManager method", cdiService, method, args, ret);
@@ -106,12 +100,7 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
             if (bm == null) {
                 throw new UnsupportedOperationException("No current bean manager found in CDI service");
             }
-            if (extendedBeanManager == null) {
-                target = bm;
-            } else {
-                extendedBeanManager.setBaseBeanManager(bm);
-                target = extendedBeanManager;
-            }
+            target = bm;
         }
         return target;
     }

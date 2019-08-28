@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Mettez \u00e0 jour l'application afin d'utili
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: La propagation des transactions vers des t\u00e2ches et des actions contextuelles n'est pas prise en charge.
 CWWKC1157.cannot.propagate.tx.explanation=Un programme d'ex\u00e9cution g\u00e9r\u00e9 ou un contexte d'unit\u00e9 d'ex\u00e9cution qui est configur\u00e9 pour propager des contextes de transaction ne peut propager que des contextes de transaction vides. Par cons\u00e9quent, vous ne pouvez pas cr\u00e9er de t\u00e2che ni d'action contextuelle dans une transaction.
 CWWKC1157.cannot.propagate.tx.useraction=Cr\u00e9ez la t\u00e2che ou l'action contextuelle en dehors d'une transaction. Vous pouvez aussi configurer le programme d'ex\u00e9cution g\u00e9r\u00e9 ou le contexte d'unit\u00e9 d'ex\u00e9cution de sorte qu'il ne propage pas les contextes de transaction.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

@@ -49,8 +49,8 @@ public class WebRequestImpl implements WebRequest {
     private Map<String, Object> propMap = null;
     private boolean requestAuthenticate = false;
     private boolean disableClientCertFailOver = false;
-    private boolean continueAfterUnprotectedURI = true;
     private final SpnegoUtil spnegoUtil = new SpnegoUtil();
+    private boolean isPerformTAIForUnProtectedURI = false;
 
     public WebRequestImpl(HttpServletRequest req, HttpServletResponse resp,
                           SecurityMetadata securityMetadata, WebAppSecurityConfig config) {
@@ -260,16 +260,6 @@ public class WebRequestImpl implements WebRequest {
         return callAfterSSO;
     }
 
-    @Override
-    public void setContinueAfterUnprotectedURI(boolean continueAfterUnprotectedURI) {
-        this.continueAfterUnprotectedURI = continueAfterUnprotectedURI;
-    }
-
-    @Override
-    public boolean isContinueAfterUnprotectedURI() {
-        return continueAfterUnprotectedURI;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -312,4 +302,15 @@ public class WebRequestImpl implements WebRequest {
     public void setDisableClientCertFailOver(boolean isDisable) {
         disableClientCertFailOver = isDisable;
     }
+
+    @Override
+    public void setPerformTAIForUnProtectedURI(boolean isPerformTAIForUnProtectedURI) {
+        this.isPerformTAIForUnProtectedURI = isPerformTAIForUnProtectedURI;
+    }
+
+    @Override
+    public boolean isPerformTAIForUnProtectedURI() {
+        return isPerformTAIForUnProtectedURI;
+    }
+
 }

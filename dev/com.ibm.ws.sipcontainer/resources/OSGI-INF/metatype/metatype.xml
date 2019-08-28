@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+	localization="OSGI-INF/l10n/metatype">
+
+	<!-- Delete this comment: For each component in your configuration (in the 
+		bnd file): * If config is required, add configuration-policy:=require * If 
+		config is not required, add configuration-policy:=ignore * If config may 
+		or may not be used, use configuration-policy:=optional If no components in 
+		the bundle use config (all are ignore), delete the metatype.xml file entirely. -->
+		
+<!-- _______________________________________SipContainer______________________________________________ -->
+
+	<OCD name="%sip.container.name" description="%sip.container.desc"
+		id="com.ibm.ws.sip.container.internal.SipContainerComponent"
+		ibmui:localization="OSGI-INF/l10n/metatype"
+		ibm:alias="sipContainer">
+
+		<!-- invalidate.sessions.on.shutdown -->
+		<AD name="%invalidateSessionOnShutdown.name" description="%invalidateSessionOnShutdown.desc"
+			id="invalidateSessionOnShutdown" required="true" type="Boolean"
+			default="false" />
+
+		<!-- message.arrival.time.attribute -->
+		<AD name="%msgArrivalTimeAttr.name" description="%msgArrivalTimeAttr.desc"
+			id="msgArrivalTimeAttr" required="true" type="Boolean"
+			default="false" />
+			
+		<!-- com.ibm.websphere.sip.container.internal.message -->
+		<AD name="%markInternalResponse.name" description="%markInternalResponse.desc"
+			id="markInternalResponse" required="true" type="Boolean"
+			default="false" />
+	
+		<!-- __________________Start______________sipOverloadProtectionMgr______________________________________________ -->
+			
+		<!-- message.queue.burst.factor -->
+		<AD name="%messageQueueBurstFactor.name" description="%messageQueueBurstFactor.desc"
+			id="messageQueueBurstFactor" required="true" type="Integer"
+			default="10" />
+			
+		<!-- com.ibm.pmi.maxSipAppSessions -->
+		<AD name="%maxAppSessions.name" description="%maxAppSessions.desc"
+			id="maxAppSessions" required="true" type="Integer" default="120000" />
+			
+		<!-- com.ibm.pmi.maxSipTraffic -->
+		<AD name="%maxMessageRate.name" description="%maxMessageRate.desc"
+			id="maxMessageRate" required="true" type="Integer" default="5000" />
+			
+		<!-- com.ibm.pmi.maxSipResponseTime -->
+		<AD name="%maxResponseTime.name" description="%maxResponseTime.desc"
+			id="maxResponseTime" required="false" type="String" ibm:type="duration(ms)" default="0ms" />
+					
+		
+		<!-- thread.message.queue.max.size -->
+		<AD name="%dispatcherMsgQueueSize.name" description="%dispatcherMsgQueueSize.desc"
+			id="dispatcherMessageQueueSize" required="true" type="Integer"
+			default="1000" />
+		
+		<!-- __________________End______________sipOverloadProtectionMgr______________________________________________ -->
+		<AD id="sipIntrospect" name="%sip.introspect.name" description="%sip.introspect.desc"
+            ibm:reference="com.ibm.ws.sip.introspector" ibm:type="pid"
+            type="String" required="false"/>
+	
+		<AD id="sipTasksDispatcher" name="%sip.message.dispatcher" description="%sip.message.dispatcher.desc"
+   	        ibm:reference="com.ibm.ws.sip.container.was.ExecutorMessageDispatchingHandler" ibm:type="pid"
+            type="String" required="false"/>
+            
+	
+	</OCD>
+
+	<Designate pid="com.ibm.ws.sip.container.internal.SipContainerComponent">
+		<Object ocdref="com.ibm.ws.sip.container.internal.SipContainerComponent" />
+	</Designate>
+	
+<!-- _______________________________________DomainResolver______________________________________________ -->
+
+	 <OCD name="%domain.resolver.name" description="%domain.resolver.desc"
+		id="com.ibm.ws.sip.container.resolver.DomainResolverImpl"
+		ibm:alias="domainResolver">
+		
+		
+		<AD name="%dnsServers.name" description="%dnsServers.desc" id="dnsServers"
+			required="true" type="String" cardinality="2" default=""/>
+
+		
+		<AD name="%dnsServersAutoResolve.name" description="%dnsServersAutoResolve.desc"
+			id="dnsAutoResolve" required="true" type="Boolean"
+			default="false"/>
+
+		
+		 <AD name="%dnsEdns.name" description="%dnsEdns.desc" id="dnsEdns"
+			required="true" type="String" default="Y">
+			<Option label="Y" value="Y"/> 
+			<Option label="N" value="N"/> 
+		 </AD>
+
+		
+		 <AD name="%dnsUdpPayload.name" description="%dnsUdpPayload.desc"
+			id="dnsUdpPayloadSize" required="true" type="Short"
+			default="1280" min="512" max="32767"/>
+			
+		
+		<AD name="%dnsSingleQueryTimeout.name" description="%dnsSingleQueryTimeout.desc"
+			id="dnsSingleQueryTimeoutSec" required="true" type="String" ibm:type="duration(s)"
+			default="5s" min="0" max="2147483647"/>
+			
+		
+		<AD name="%dnsAllowedFailures.name" description="%dnsAllowedFailures.desc"
+			id="dnsAllowedFailures" required="true" type="Integer"
+			default="5"/>
+			
+		
+		<AD name="%dnsWindowSizeMin.name" description="%dnsWindowSizeMin.desc"
+			id="dnsWindowSizeMin" required="true" type="Integer"
+			default="600" />
+			
+		
+		<AD name="%dnsWindowSizeInterval.name" description="%dnsWindowSizeInterval.desc"
+			id="dnsWindowSizeInterval" required="true" type="Integer"
+			default="10"/>
+			
+		
+		<AD name="%dnsRequestCacheTimeoutMin.name" description="%dnsRequestCacheTimeoutMin.desc"
+			id="dnsRequestCacheTimeoutMin" required="true" type="String" ibm:type="duration(m)"
+			default="10m" min="0" max="2147483647" />
+
+		
+		<AD name="%addTtl.name" description="%addTtl.desc" id="addTtl"
+			required="true" type="Boolean" default="false" />
+			
+	</OCD>
+
+	<Designate pid="com.ibm.ws.sip.container.resolver.DomainResolverImpl">
+		<Object ocdref="com.ibm.ws.sip.container.resolver.DomainResolverImpl" />
+	</Designate>
+	
+<!-- _______________________________________sipTasksDispatcher______________________________________________ -->
+	
+	<OCD name="%sip.message.dispatcher" description="%sip.message.dispatcher.desc"
+		id="com.ibm.ws.sip.container.was.ExecutorMessageDispatchingHandler">
+
+		<!-- new Liberty property -->
+		<AD name="%concurrentContainerTasks.name" description="%concurrentContainerTasks.desc"
+			id="concurrentContainerTasks" required="true" type="Integer"
+			default="15" />
+	</OCD>
+
+	<Designate
+		factoryPid="com.ibm.ws.sip.container.was.ExecutorMessageDispatchingHandler">
+		<Object
+			ocdref="com.ibm.ws.sip.container.was.ExecutorMessageDispatchingHandler" />
+	</Designate>	
+
+<!-- _______________________________________sipApplicationRouter______________________________________________ -->
+	
+	<OCD name="%sip.application.router" description="%sip.application.router.desc"
+		id="com.ibm.ws.sip.ar"
+		ibmui:localization="OSGI-INF/l10n/metatype"
+		ibm:alias="sipApplicationRouter">
+		
+		<!-- javax.servlet.sip.ar.dar.configuration -->
+		<AD name="%sipDarConfiguration.name" description="%sipDarConfiguration.desc"
+			id="sipDarConfiguration" required="true" type="String" ibm:type="location(file)"
+			default=""/>
+		
+		<!-- javax.servlet.sip.ar.spi.SipApplicationRouterProvider -->
+	 	<AD name="%carProvider.name" description="%carProvider.desc"
+			id="carProvider" required="false" type="String" 
+			default="*"/>  
+			
+		<AD id="SipApplicationRouterProvider.target" 
+		default= "(implementation.class=${carProvider})"
+		 required="false" type="String"
+		 name="internal" description="internal Use only" />
+
+			
+				<!-- javax.servlet.sip.ar.dar.configuration -->
+		<AD name="%enableCar.name" description="%enableCar.desc"
+			id="enable.car" type="Boolean" required="false"
+			default="true"/>
+			
+		<!-- sip.no.route.error.code -->
+		<AD name="%sipNoRouteErrorCode.name" description="%sipNoRouteErrorCode.desc"
+			id="sipNoRouteErrorCode" required="true" type="Integer"
+			default="403" />
+	</OCD>
+	
+	<Designate
+		pid="com.ibm.ws.sip.ar">
+		<Object
+			ocdref="com.ibm.ws.sip.ar" />
+	</Designate>
+	
+<!-- _______________________________________sipStack______________________________________________ -->
+	
+	<OCD name="%sip.stack" description="%sip.stack.desc"
+		id="com.ibm.ws.jain.protocol.ip.sip"
+		ibmui:localization="OSGI-INF/l10n/metatype"
+		ibm:alias="sipStack" >
+			
+		<!-- javax.sip.hide.message.body -->
+		<AD name="%hideMessageBody.name" description="%hideMessageBody.desc"
+			id="hideMessageBody" required="true" type="Boolean"
+			default="false" />
+			
+		<!-- javax.sip.hide.message.headers -->
+		<AD name="%hideMessageHeaders.name" description="%hideMessageHeaders.desc"
+			id="hideMessageHeaders" required="true" type="String" cardinality="2147483647"
+			default="Authorization,Proxy-Authorization" />
+			
+		<!-- javax.sip.hide.request.uri -->
+		<AD name="%hideMessageReqUri.name" description="%hideMessageReqUri.desc"
+			id="hideMessageReqUri" required="true" type="Boolean"
+			default="false" />
+			
+		<!-- javax.sip.transaction.invite.auto100 -->
+		<AD name="%auto100OnInvite.name" description="%auto100OnInvite.desc"
+			id="auto100OnInvite" required="true" type="Boolean"
+			default="true" />
+			
+		<!-- javax.sip.transaction.merged.auto482 -->
+		<AD name="%auto482OnMergedRequests.name" description="%auto482OnMergedRequests.desc"
+			id="auto482OnMergedRequests" required="true" type="Boolean"
+			default="false" />
+			
+		<!-- javax.sip.force.connection.reuse -->
+		<AD name="%forceConnectionReuse.name" description="%forceConnectionReuse.desc"
+			id="forceConnectionReuse" required="true" type="Boolean"
+			default="true" />
+			
+		<!-- sip.accept.non.utf8.bytes -->
+		<AD name="%acceptNonUtf8Bytes.name" description="%acceptNonUtf8Bytes.desc"
+			id="acceptNonUtf8Bytes" required="true" type="Boolean"
+			default="false" />
+			
+		<!-- javax.sip.networkaddress.cache.ttl -->
+		<AD name="%networkAddressCacheTtl.name" description="%networkAddressCacheTtl.desc"
+			id="networkAddressCacheTtl" required="true" type="String"
+			default="" /> 
+			
+		<!-- javax.sip.transaction.timer.t1 -->
+		<AD name="%timerT1.name" description="%timerT1.desc"
+			id="timerT1" required="true" type="String" ibm:type="duration(ms)"
+			default="500ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.t2 -->
+		<AD name="%timerT2.name" description="%timerT2.desc"
+			id="timerT2" required="true" type="String" ibm:type="duration(ms)"
+			default="4000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.t4 -->	
+		<AD name="%timerT4.name" description="%timerT4.desc"
+			id="timerT4" required="true" type="String" ibm:type="duration(ms)"
+			default="5000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.a -->
+		<AD name="%timerA.name" description="%timerA.desc"
+			id="timerA" required="true" type="String" ibm:type="duration(ms)"
+			default="500ms" min="0" max="2147483647" ibmui:group="timers"/>
+			
+		<!-- javax.sip.transaction.timer.b -->
+		<AD name="%timerB.name" description="%timerB.desc"
+			id="timerB" required="true" type="String" ibm:type="duration(ms)"
+			default="32000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.d -->
+		<AD name="%timerD.name" description="%timerD.desc"
+			id="timerD" required="true" type="String" ibm:type="duration(ms)"
+			default="32000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.e -->
+		<AD name="%timerE.name" description="%timerE.desc"
+			id="timerE" required="true" type="String" ibm:type="duration(ms)"
+			default="500ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.f -->
+		<AD name="%timerF.name" description="%timerF.desc"
+			id="timerF" required="true" type="String" ibm:type="duration(ms)"
+			default="32000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.g -->
+		<AD name="%timerG.name" description="%timerG.desc"
+			id="timerG" required="false" type="String" ibm:type="duration(ms)"
+			default="500ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.h -->
+		<AD name="%timerH.name" description="%timerH.desc"
+			id="timerH" required="false" type="String" ibm:type="duration(ms)"
+			default="32000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.i -->
+		<AD name="%timerI.name" description="%timerI.desc"
+			id="timerI" required="true" type="String" ibm:type="duration(ms)"
+			default="5000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.j -->
+		<AD name="%timerJ.name" description="%timerJ.desc"
+			id="timerJ" required="true" type="String" ibm:type="duration(ms)"
+			default="32000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.transaction.timer.k -->
+		<AD name="%timerK.name" description="%timerK.desc"
+			id="timerK" required="true" type="String" ibm:type="duration(ms)"
+			default="5000ms" min="0" max="2147483647" ibmui:group="timers" />
+			
+		<!-- javax.sip.PATH_MTU -->
+		<AD name="%pathMtu.name" description="%pathMtu.desc"
+			id="pathMtu" required="true" type="Integer"
+			default="1500" />
+			
+		<!-- javax.sip.compact.headers -->
+		<AD name="%compactHeaders.name" description="%compactHeaders.desc" id="compactHeaders" required="true" type="String" default="MtuExceeds" >
+			<Option label="%compactHeaders.never" value="Never"/> 
+			<Option label="%compactHeaders.mtuExceeds" value="MtuExceeds"/>
+			<Option label="%compactHeaders.api" value="API"/>
+			<Option label="%compactHeaders.always" value="Always"/>
+		</AD>
+		
+		<!-- javax.sip.quoted.parameters -->
+		<AD name="%sipQuotedParameters.name" description="%sipQuotedParameters.desc"
+			id="sipQuotedParameters" required="false" type="String" cardinality="2147483647"/>
+			
+		<!-- comma.separated.headersl -->
+		<AD name="%commaSeparatedHeaders.name" description="%commaSeparatedHeaders.desc"
+			id="commaSeparatedHeaders" required="true" type="String" cardinality="2147483647"
+			default="" />
+			
+	</OCD>
+
+	<Designate
+		pid="com.ibm.ws.jain.protocol.ip.sip">
+		<Object
+			ocdref="com.ibm.ws.jain.protocol.ip.sip" />
+	</Designate>
+	
+	
+
+	<!-- SIP TCP Endpoint option..................................................................... -->
+
+	<OCD name="%sip.endpoint.name" description="%sip.endpoint.desc" id="com.ibm.ws.sip.endpoint" ibm:alias="sipEndpoint">
+	
+	
+	<AD id="tcpOptionsRef" name="%endpoint.tcpOptions" description="%endpoint.tcpOptions.desc"
+            ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid"
+            type="String" required="false" default="defaultTCPOptions" />
+            
+			
+	<AD id="tcpOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(|(service.pid=${tcpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.tcpchannel.options)(|(id=com.ibm.ws.sip.endpoint-${id}/*)(id=defaultTCPOptions))))" />  
+           
+    <AD id="udpOptionsRef" name="%endpoint.udpOptions" description="%endpoint.udpOptions.desc"
+            ibm:reference="com.ibm.ws.udpchannel.options" ibm:type="pid"
+            type="String" required="false" default="defaultUDPOptions" />  
+            
+           
+	<AD id="udpOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(|(service.pid=${udpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.udpchannel.options)(|(id=com.ibm.ws.sip.endpoint-${id}/*)(id=defaultUDPOptions))))" />
+              
+    <AD id="sslOptionsRef" name="%endpoint.sslOptions" description="%endpoint.sslOptions.desc"
+            ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid"
+            type="String" required="false" />            
+            <!-- type="String" required="false" default="defaultSSLOptions" /> -->
+
+     <AD id="sslOptions.target" name="internal" description="internal use only" 
+	         ibm:final="true" required="false" type="String" 
+	         default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.sip.endpoint-${id}/*)(id=defaultSSLOptions))))" />
+  
+    
+           
+        <!-- SIP TCP Endpoint option..................................................................... -->
+        <AD name="%sipTCPPort.name" description="%sipTCP.desc" id="sipTCPPort"
+        required="false" type="Integer" default="5060" />
+            
+        <!-- SIP UDP Endpoint option..................................................................... -->
+        <AD name="%sipUDPPort.name" description="%sipUDP.desc"
+            id="sipUDPPort"  required="false" type="Integer" default="5060" />
+            
+        <!-- SIP TLS Endpoint option..................................................................... -->
+        <AD name="%sipTLSPort.name"	description="%sipTLS.desc"
+            id="sipTLSPort" required="false" type="Integer" default="5061" />  
+              
+        <!-- SIP UDP Endpoint option..................................................................... -->
+        <AD name="%retries.name" description="%retries.desc"
+            id="bindRetries"  required="false" type="Integer" default="60" />
+            
+       <!-- Delay between retries, in milliseconds ..................................................................... -->
+        <AD name="%retriesDelay.name" description="%retriesDelay.desc"
+            id="bindRetryDelay"  required="false" type="String" ibm:type="duration(ms)"
+            default="5000ms" min="0" max="2147483647"/>
+            
+        <!-- SIP Host Endpoint option..................................................................... -->
+        <AD name="%endpoint.host" description="%endpoint.host.desc"
+            id="host" required="false" type="String" ibm:variable="defaultHostName"
+            default="localhost" />   
+        
+        <!-- Virtual host reference..................................................................... -->
+        <AD name="internal" description="internal Use only"
+            ibm:type="pid"
+            ibm:reference="com.ibm.ws.http.virtualhost"
+            ibm:final="true"
+            id="virtualhostRef" required="false" type="String" default="default_host"/>
+    
+    </OCD>
+      <Designate factoryPid="com.ibm.ws.sip.endpoint">
+        <Object ocdref="com.ibm.ws.sip.endpoint" />
+    </Designate>
+    
+  <!-- __________________________________Sip dumping methods__________________________________________ -->
+    
+    <OCD name="%sip.introspect.name" description="%sip.introspect.desc" id="com.ibm.ws.sip.introspector">	
+		<AD name="%dump.verbosity.name" description="%dump.verbosity.desc" id="method" type="String" required="false" default="SUCCINCT">
+				<Option label="%dump.ids" value="SUCCINCT"/> 
+				<Option label="%dump.details" value="VERBOSE"/>
+		</AD>	
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.sip.introspector">
+        <Object ocdref="com.ibm.ws.sip.introspector" />
+    </Designate>
+    
+</metatype:MetaData>

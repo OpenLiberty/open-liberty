@@ -15,7 +15,7 @@ configurations {
 
 dependencies {
   junitdependencies 'com.sun.xml.ws:jaxws-rt:2.2.10',
-  		'com.sun.xml.messaging.saaj:saaj-impl:1.3.28',
+  		'com.sun.xml.messaging.saaj:saaj-impl:1.4.0',
   		'com.sun.xml.ws:policy:2.4',
   		'com.sun.xml.stream.buffer:streambuffer:1.5.3',
   		'com.sun.org.apache.xml.internal:resolver:20050927',

@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.rest/resources/com/ibm/ws/jbatch/rest/resources/RestMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains:
+# 0151 - 0199: com.ibm.ws.jbatch.rest
+# 
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.instance.not.found=CWWKY0151E: No job instance found for instance id {0}.
+job.instance.not.found.explanation=This error message is issued when an invalid instance id is used in the REST request.
+job.instance.not.found.useraction=Check the submitted REST request to ensure the submitted instance id is valid.
+
+in.memory.search.not.supported=CWWKY0152E: The batch management REST API invocation URL is not supported for in-memory batch persistence.
+in.memory.search.not.supported.explanation=The batch management REST API was invoked with a combination of path and query parameters which is recognized by the server but is not supported when using in-memory batch persistence. This URL may be supported when using the database option for batch persistence.
+in.memory.search.not.supported.useraction=Use the "v1" version of the batch REST API, all of which supports the in-memory batch persistence.
+
+db.tables.not.created.for.jobparm.search=CWWKY0153E: The job repository database doesn't support search or delete by job parameters because no JOBPARAMETER table exists in database.
+db.tables.not.created.for.jobparm.search.explanation=The batch management REST API was invoked with query parameters searching for job instances by job parameter pattern, either by using a search (GET) or a purge (DELETE) operation.  However, this particular search parameter is only supported when the job repository contains the JOBPARAMETER table, which was added in fix pack levels 16.0.0.4 or later.   If the database store that is used by batch persistence was configured with the default of 'createTables=true', this table would have be automatically created when the batch component is started within a server running fix pack level 16.0.0.4 or later.  However, if the database store is configured with 'createTables=false', then the WebSphere administrator or DBA will haveto separately create the new table before executing a search by job parameter.
+db.tables.not.created.for.jobparm.search.useraction=Consult the fix pack documentation for instructions on migrating the database used by batch persistence.
+
+ssl.connection.unavailable=CWWKY0154I: A connection to the Batch endpoint at {0} encountered an SSL handshake error. This request and future requests will attempt to use an HTTP redirect to route to the correct endpoint.
+ssl.connection.unavailable.explanation=Certain actions available through the Batch REST API must be performed at the same server that the corresponding job was run. If the action is initiated on a different server, that server might attempt to create a new connection to forward the request to the required destination. This server was unable to complete an SSL handshake with the destination server. So, this and future requests will attempt to use request redirects in place of new connections.
+ssl.connection.unavailable.useraction=No action is required.
+
+http.options.received=CWWKY0155W: An HTTP OPTIONS request was received on the Batch REST API from a Liberty server at {0}. This is the result of a connection attempt from another Liberty server which is hosting the Admin Center. Configure CORS on this server to accept requests from the server hosting the Admin Center in order to resolve this issue.
+http.options.received.explanation=Certain actions available through the Batch REST API must be performed at the same server that the corresponding job was run. If the action is initiated on a different server, that server might attempt to create a new connection to forward the request to the required destination. Cross-Origin Resource Sharing (CORS) is not configured to permit such a connection to be made from one server to the other. So, this request could not be completed.
+http.options.received.useraction=Configure CORS to permit connections for the Batch REST API from the server hosting the Admin Center to this server.

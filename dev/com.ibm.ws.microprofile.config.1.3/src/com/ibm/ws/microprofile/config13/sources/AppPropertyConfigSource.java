@@ -103,7 +103,11 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
                     applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
                 }
 
-                osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
+                //if the Config is being obtained outside the context of an application then the applicationName may be null
+                //in which case there are no applicable application configuration elements to return
+                if (applicationName != null) {
+                    osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
+                }
             }
             return osgiConfigs;
         };

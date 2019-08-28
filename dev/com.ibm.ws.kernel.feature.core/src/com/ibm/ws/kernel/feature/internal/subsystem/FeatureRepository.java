@@ -50,6 +50,7 @@ import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.ProvisionerConstants;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ImmutableAttributes;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
@@ -65,7 +66,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
  */
 public final class FeatureRepository implements FeatureResolver.Repository {
     private static final TraceComponent tc = Tr.register(FeatureRepository.class);
-    private static final int FEATURE_CACHE_VERSION = 0;
+    private static final int FEATURE_CACHE_VERSION = 1;
     private static final String EMPTY = "";
 
     /**
@@ -368,6 +369,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             out.writeUTF(type.toString());
         }
 
+        out.writeUTF(iAttr.activationType.toString());
+
         // these attributes can be large so lets avoid the arbitrary limit of 65535 chars of writeUTF
         if (iAttr.isAutoFeature) {
             writeLongString(out, details.getCachedRawHeader(FeatureDefinitionUtils.IBM_PROVISION_CAPABILITY));
@@ -438,8 +441,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         for (int i = 0; i < processTypeNum; i++) {
             processTypes.add(valueOf(in.readUTF(), ProcessType.SERVER));
         }
+        ActivationType activationType = valueOf(in.readUTF(), ActivationType.SEQUENTIAL);
         return new ImmutableAttributes(repositoryType, symbolicName, shortName, featureVersion, visibility, appRestart, version, featureFile, lastModified, fileSize, isAutoFeature,
-                                       hasApiServices, hasApiPackages, hasSpiPackages, isSingleton, processTypes);
+                                       hasApiServices, hasApiPackages, hasSpiPackages, isSingleton, processTypes, activationType);
     }
 
     /**

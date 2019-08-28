@@ -865,6 +865,8 @@ info.resumeFailedException=A continua\u00e7\u00e3o do servidor {0} falhou. Verif
 info.resumingListeners.target=Continuando os componentes de destino especificados do servidor {0}.
 info.resumedListeners.target=A continua\u00e7\u00e3o dos componentes de destino especificados do servidor {0} foi conclu\u00edda.
 info.resumeFailedException.target=A continua\u00e7\u00e3o dos componentes de destino especificados do servidor {0} falhou. Verifique os logs do servidor para obter detalhes.
+info.serverCommandAuthFailure=O comando {0} falhou porque o processo n\u00e3o p\u00f4de excluir o arquivo {1}.
+info.serverCommandCommFailure=O comando {0} falhou devido a um erro de comunica\u00e7\u00e3o com o servidor.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

@@ -33,7 +33,7 @@ unreachableLocation.explanation=Die Plattform verwendet einen rudiment\u00e4ren 
 Die Datei README.TXT enth\u00e4lt Informationen zur Konfiguration symbolischer Pfade.
 unreachableLocation.useraction=Suchen Sie in der Datei bootstrap.properties nach konfigurierten Pfaden und stellen Sie sicher, dass der konfigurierte Pfad eine untergeordnete Komponente vorhandener Symbole ist oder dass der Pfad einem explizit definierten Symbol zugeordnet ist.
 
-invalidResourceType=CWWKE0201E: Das Symbol kann nicht erstellt werden. Die angegebene Position ist vorhanden und es liegen Konflikte mit dem erforderlichen Typ vor: {0}={1}
+invalidResourceType=CWWKE0201E: Das Symbol kann nicht erstellt werden. Die angegebene Position ist vorhanden, und es liegen Konflikte mit dem erforderlichen Typ vor: {0}={1}
 invalidResourceType.explanation=Der f\u00fcr ein Symbol angegebene Pfad ist vorhanden, aber dieser hat einen anderen Ressourcentyp als der Pfad (das Symbol beschreibt beispielsweise eine Datei, aber die Ressource ist ein Verzeichnis).
 invalidResourceType.useraction=Stellen Sie sicher, dass der Pfad korrekt angegeben ist. \
 Verzeichnispfade m\u00fcssen mit / enden. \

@@ -110,6 +110,7 @@ public class RemoteFile {
         }
 
         for ( int retryNo = 0; !didAct && retryNo < retryCount; retryNo++ ) {
+            sleep(STANDARD_RETRY_PARTIAL_INTERVAL_NS);
             didAct = op.act();
         }
 

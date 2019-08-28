@@ -15,11 +15,17 @@ Bundle-Name: Artifact API Zip Implementation
 Bundle-SymbolicName: com.ibm.ws.artifact.zip
 Bundle-Description: Implementation of artifact api for on disk zip archives; version=${bVersion}
 
+
 Export-Package: com.ibm.ws.artifact.zip.cache;provide:=true
 
 WS-TraceGroup: archive.artifact.zip
 
 Private-Package: com.ibm.ws.artifact.zip.internal.*,com.ibm.ws.artifact.zip.cache.internal.*
+
+instrument.classesExcludes: com/ibm/ws/artifact/zip/internal/resources/*.class
+
+-dsannotations: \
+	com.ibm.ws.artifact.zip.cache.internal.ZipCachingIntrospector
 
 Service-Component: \
 	com.ibm.ws.artifact.zip.service; \
@@ -39,18 +45,17 @@ Service-Component: \
 		greedy:="globalClassloadingConfiguration"; \
 		properties:="service.vendor=IBM"
 
-instrument.classesExcludes: com/ibm/ws/artifact/zip/internal/resources/*.class
-
 -buildpath: \
-	com.ibm.ws.logging.core,\
-	com.ibm.ws.artifact;version=latest,\
-	com.ibm.ws.kernel.filemonitor,\
-	com.ibm.ws.kernel.service,\
-	com.ibm.ws.kernel.security.thread;version=latest,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.logging.core, \
+	com.ibm.ws.artifact;version=latest, \
+	com.ibm.ws.kernel.filemonitor, \
+	com.ibm.ws.kernel.service, \
+	com.ibm.ws.kernel.security.thread;version=latest, \
+	com.ibm.websphere.org.osgi.core, \
+	com.ibm.websphere.org.osgi.service.component, \
 	com.ibm.ws.classloading.configuration;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

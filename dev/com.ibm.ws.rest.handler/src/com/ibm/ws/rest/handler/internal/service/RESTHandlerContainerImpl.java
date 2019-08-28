@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 import com.ibm.wsspi.rest.handler.helper.DefaultAuthorizationHelper;
 import com.ibm.wsspi.rest.handler.helper.DefaultRoutingHelper;
+import com.ibm.wsspi.rest.handler.helper.RESTHandlerForbiddenError;
 import com.ibm.wsspi.rest.handler.helper.RESTHandlerInternalError;
 import com.ibm.wsspi.rest.handler.helper.RESTHandlerJsonException;
 import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
@@ -52,7 +53,7 @@ import com.ibm.wsspi.rest.handler.helper.RESTRoutingHelper;
 /**
  * <p>This class gets injected with different RESTHandler implementations and holds a reference to those services. It also keeps a set
  * of rest handler registered roots for fast searching.
- * 
+ *
  * <p>The main function of this container is to be able to match an incoming URL request to its appropriate registered rest handler.
  */
 @Component(service = { RESTHandlerContainer.class },
@@ -112,7 +113,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
 
     /**
      * Gets a set of values for a given property
-     * 
+     *
      * @param handler
      * @return
      */
@@ -211,7 +212,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
             contextRootKeys = new String[] { RESTHandler.PROPERTY_REST_HANDLER_DEFAULT_CONTEXT_ROOT };
         }
 
-        //We now augument our root keys to contain context root information
+        //We now augment our root keys to contain context root information
         for (String contextRoot : contextRootKeys) {
             for (String rootKey : rootKeys) {
                 rootKey = contextRoot + rootKey;
@@ -253,7 +254,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
             contextRootKeys = new String[] { RESTHandler.PROPERTY_REST_HANDLER_DEFAULT_CONTEXT_ROOT };
         }
 
-        //We now augument our root keys to contain context root information
+        //We now augment our root keys to contain context root information
         for (String contextRoot : contextRootKeys) {
             for (String rootKey : rootKeys) {
                 rootKey = contextRoot + rootKey;
@@ -319,7 +320,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     /**
      * Try to find the appropriate RESTHandler and HandlerPath pair for the given URL. Return null if no match found.
      * May return null for the HandlerPath field if the RESTHandler matched an URL that did not contain variables.
-     * 
+     *
      * @param requestURL The URL from the HTTP request. This is the URL that needs to be matched.
      */
     public HandlerInfo getHandler(String requestURL) {
@@ -401,82 +402,120 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.rest.handler.RESTHandlerContainer#handleRequest(java.lang.String, com.ibm.wsspi.rest.handler.RESTRequest, com.ibm.wsspi.rest.handler.RESTResponse)
      */
     @Override
     @FFDCIgnore({ RESTHandlerInternalError.class, RESTHandlerUserError.class, RESTHandlerMethodNotAllowedError.class, RESTHandlerUnsupportedMediaType.class,
-                 RESTHandlerJsonException.class })
+                  RESTHandlerJsonException.class, RESTHandlerForbiddenError.class })
     public boolean handleRequest(RESTRequest request, RESTResponse response) throws IOException {
         final String requestURL = request.getContextPath() + request.getPath();
         final HandlerInfo handlerInfo = getHandler(requestURL);
         final boolean isRouting = DefaultRoutingHelper.containsLegacyRoutingContext(request) || DefaultRoutingHelper.containsRoutingContext(request);
 
         if (handlerInfo == null && !isRouting) {
-            //calling proxy servlet will handle this case 
+            //calling proxy servlet will handle this case
             return false;
         }
 
         try {
+            boolean isAuthorized = true;
+
             //Security checks applicable to /ibm/api participants
             if (request.getContextPath().equals(RESTHandler.PROPERTY_REST_HANDLER_DEFAULT_CONTEXT_ROOT)) {
                 //Check if the handler is doing custom security or not.
                 //The first argument will be true if we're routing the call and a corresponding service wasn't present on this controller
                 if (handlerInfo == null || !hasProperty(handlerInfo.handlerRef, RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY)) {
                     //This path is not performing custom security, so check for default authorization
-                    if (!getAuthorizationHelper().checkAdministratorRole(request, response)) {
-                        //We failed the check, so return true, since the default authorization helper would have filled up the response already.
-                        return true;
+                    isAuthorized = getAuthorizationHelper().checkAdministratorRole(request, response);
+                }
+            }
+
+            /*
+             * Is the principal authorized by DefaultAuthorizationHelper or was security delegated to the
+             * RESTHandler implementation? If so, proceed with handling the request.
+             */
+            if (isAuthorized) {
+
+                //If we matched a path that had variables, extended the request to contain the resolved variables
+                if (handlerInfo != null && handlerInfo.path != null && handlerInfo.path.containsVariable()) {
+                    //When mapping variables we don't include the context root
+                    request = new ExtendedRESTRequestImpl(request, handlerInfo.path.mapVariables(requestURL));
+                }
+
+                //Routing special code
+                boolean alreadyHandled = false;
+                if (isRouting) {
+                    //Check if we're doing custom routing or not
+                    if (handlerInfo == null || !hasProperty(handlerInfo.handlerRef, RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_ROUTING)) {
+                        //This path is not doing custom routing, so use the routing helper
+                        getRoutingHelper().routeRequest(request, response);
+                        alreadyHandled = true;
+                    }
+                    //...there's routing context, but matched handler wants to do custom routing, so let the request go through
+                }
+
+                if (!alreadyHandled) {
+                    try {
+                        //Delegate request to handler
+                        handlerInfo.handler.handleRequest(request, response);
+                    } catch (RESTHandlerForbiddenError fe) {
+                        // 403 FORBIDDEN
+                        isAuthorized = false;
+                        response.sendError(fe.getStatusCode(), fe.getMessage());
+                        response.setRequiredRoles(fe.getRequiredRoles());
+                    } catch (RESTHandlerInternalError ie) {
+                        //Handlers general internal errors and osgi errors
+                        response.sendError(ie.getStatusCode(), ie.getMessage());
+                    } catch (RESTHandlerUserError ue) {
+                        response.sendError(ue.getStatusCode(), ue.getMessage());
+                    } catch (RESTHandlerUnsupportedMediaType e) {
+                        response.sendError(e.getStatusCode(), e.getMessage());
+                    } catch (RESTHandlerMethodNotAllowedError e) {
+                        //A 405 response (Method Not Allowed) needs to have the response header of "Allow", to say which methods can be used
+                        response.setResponseHeader("Allow", e.getAllowedMethods());
+                        response.sendError(e.getStatusCode());
+                    } catch (RESTHandlerJsonException e) {
+                        if (e.isMessageContentJSON()) {
+                            response.setStatus(e.getStatusCode());
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write(e.getMessage());
+                        } else {
+                            response.sendError(e.getStatusCode(), e.getMessage());
+                        }
                     }
                 }
             }
-
-            //If we matched a path that had variables, extended the request to contain the resolved variables
-            if (handlerInfo != null && handlerInfo.path != null && handlerInfo.path.containsVariable()) {
-                //When mapping variables we don't include the context root
-                request = new ExtendedRESTRequestImpl(request, handlerInfo.path.mapVariables(requestURL));
-            }
-
-            //Routing special code
-            if (isRouting) {
-                //Check if we're doing custom routing or not
-                if (handlerInfo == null || !hasProperty(handlerInfo.handlerRef, RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_ROUTING)) {
-                    //This path is not doing custom routing, so use the routing helper
-                    getRoutingHelper().routeRequest(request, response);
-                    return true;
-                }
-                //...there's routing context, but matched handler wants to do custom routing, so let the request go through
-            }
-
-            try {
-                //Delegate request to handler
-                handlerInfo.handler.handleRequest(request, response);
-            } catch (RESTHandlerInternalError ie) {
-                //Handlers general internal errors and osgi errors
-                response.sendError(ie.getStatusCode(), ie.getMessage());
-            } catch (RESTHandlerUserError ue) {
-                response.sendError(ue.getStatusCode(), ue.getMessage());
-            } catch (RESTHandlerUnsupportedMediaType e) {
-                response.sendError(e.getStatusCode(), e.getMessage());
-            } catch (RESTHandlerMethodNotAllowedError e) {
-                //A 405 response (Method Not Allowed) needs to have the response header of "Allow", to say which methods can be used
-                response.setResponseHeader("Allow", e.getAllowedMethods());
-                response.sendError(e.getStatusCode());
-            } catch (RESTHandlerJsonException e) {
-                if (e.isMessageContentJSON()) {
-                    response.setStatus(e.getStatusCode());
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(e.getMessage());
-                } else {
-                    response.sendError(e.getStatusCode(), e.getMessage());
-                }
-            }
-
         } catch (IOException ioe) {
             response.sendError(500, ioe.getMessage());
         }
 
+        /*
+         * Audit the response.
+         */
+        auditResponse(request, response);
+
+        /*
+         * The response was filled. Return true.
+         */
         return true;
+    }
+
+    /**
+     * Create any required auditing records for the request and response.
+     *
+     * @param request The REST request.
+     * @param response The generated response.
+     */
+    private static void auditResponse(RESTRequest request, RESTResponse response) {
+        if (response.getStatus() == 403) {
+            // TODO AUDIT AUTHORIZATION
+            // Note: It appears that WebAppSecurityCollaborator audits some of these:
+            // [7/2/19 15:43:31:670 CDT] 00000037 id=00000000 .ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl A CWWKS9104A: Authorization failed for user user:MicroProfileMetrics while invoking com.ibm.ws.management.security.resource on /. The user is not granted access to any of the required roles: [Administrator, Reader].
+            // TODO Should have a message like CWWKS9104A (above).
+            Tr.debug(tc, "Authorization failed for user '" + request.getUserPrincipal() + "' while invoking " + request.getMethod() + " on " + request.getContextPath()
+                         + request.getPath() + ". The user is not granted any of the required roles: " + response.getRequiredRoles());
+        }
     }
 }

@@ -200,6 +200,10 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         // activate before the connection manager
         connectionFactorySvcProps.put(CARDINALITY_MINIMUM_CONNECTION_MANAGER, 1);
 
+        // jaasLoginContextEntryRef is not supported in app-defined connection factory. Avoid matching a random jaasLoginContextEntry
+        connectionFactorySvcProps.put("jaasLoginContextEntry.target", "(service.pid=unbound)");
+        connectionFactorySvcProps.put("jaasLoginContextEntry.cardinality.minimum", 0);
+
         if (application != null) {
             connectionFactorySvcProps.put(AppDefinedResource.APPLICATION, application);
             if (module != null) {

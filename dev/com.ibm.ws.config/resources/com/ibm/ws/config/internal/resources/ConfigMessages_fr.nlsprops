@@ -189,9 +189,12 @@ error.unique.value.conflict=CWWKG0031E: La valeur {1} sp\u00e9cifi\u00e9e pour l
 error.unique.value.conflict.explanation=La valeur de l'attribut sp\u00e9cifi\u00e9 doit \u00eatre unique mais elle est d\u00e9j\u00e0 utilis\u00e9e.
 error.unique.value.conflict.useraction=Changez la valeur de l'attribut afin qu'elle soit unique.
 
-warn.config.invalid.value=CWWKG0032W: Valeur inattendue sp\u00e9cifi\u00e9e pour la propri\u00e9t\u00e9 [{0}], valeur = [{1}]. La valeur ou les valeurs attendues sont : {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: Valeur inattendue sp\u00e9cifi\u00e9e pour la propri\u00e9t\u00e9 [{0}], valeur = [{1}]. La valeur ou les valeurs attendues sont : {2}. {3} 
 warn.config.invalid.value.explanation=La valeur sp\u00e9cifi\u00e9e pour la propri\u00e9t\u00e9 ne peut pas \u00eatre utilis\u00e9e.
 warn.config.invalid.value.useraction=Corrigez la valeur de la propri\u00e9t\u00e9 pour utiliser une valeur attendue.
+
+default.value.in.use=Valeur par d\u00e9faut utilis\u00e9e : {0}.
 
 warning.pid.not.found=CWWKG0033W: La valeur [{1}] sp\u00e9cifi\u00e9e pour l''attribut de r\u00e9f\u00e9rence [{0}] n''a pas \u00e9t\u00e9 trouv\u00e9e dans la configuration.
 warning.pid.not.found.explanation=La valeur sp\u00e9cifi\u00e9e doit \u00eatre un \u00e9l\u00e9ment de la configuration.
@@ -318,25 +321,10 @@ error.factoryOnly.explanation=L'attribut ibm:extends s'applique uniquement aux i
 error.factoryOnly.useraction=Effectuez une nouvelle configuration d'identit\u00e9 persistante afin d'utiliser une identit\u00e9 persistante d'usine ou retirez l'attribut ibm:extends de la d\u00e9finition de composant d'objet. Il s'agit d'une erreur interne. Suivez \
 les proc\u00e9dures d'identification des probl\u00e8mes WebSphere standard.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: L''identit\u00e9 persistante {0} n''est pas une identit\u00e9 persistante d''usine et ne peut donc pas avoir l''attribut ibm:extendsAlias {1}. Effectuez une nouvelle configuration d''identit\u00e9 persistante afin d''utiliser une identit\u00e9 persistante d''usine ou retirez l''attribut ibm:extendsAlias de l''identit\u00e9 persistante.
-error.factoryOnly.extendsAlias.explanation=L'attribut ibm:extendsAlias s'applique uniquement aux identit\u00e9s persistantes d'usine qui \u00e9tendent une autre identit\u00e9 persistante d'usine.
-error.factoryOnly.extendsAlias.useraction=Effectuez une nouvelle configuration d'identit\u00e9 persistante afin d'utiliser une identit\u00e9 persistante d'usine ou retirez l'attribut ibm:extendsAlias de l'identit\u00e9 persistante.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: L''identit\u00e9 persistante {0} n''est pas une identit\u00e9 persistante d''usine et ne peut donc pas \u00eatre \u00e9tendue par l''identit\u00e9 persistante {1}.
 error.superFactoryOnly.explanation=L'attribut ibm:extends s'applique uniquement aux identit\u00e9s persistantes d'usine.
 error.superFactoryOnly.useraction=Effectuez une nouvelle configuration d'identit\u00e9 persistante afin d'utiliser une identit\u00e9 persistante d'usine ou retirez l'attribut ibm:extends de la d\u00e9finition de composant d'objet. Il s'agit d'une erreur interne. Suivez les proc\u00e9dures d'identification des probl\u00e8mes WebSphere standard.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: L''identit\u00e9 persistante {0} indique un attribut ibm:extendsAlias {1} et doit par cons\u00e9quent indiquer l''attribut ibm:extends.
-error.ExtendsAliasMustExtend.explanation=Lorsque vous indiquez un attribut ibm:extendsAlias, vous devez indiquer un attribut ibm:extends.
-error.ExtendsAliasMustExtend.useraction=Indiquez un attribut ibm:extends.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: L''identit\u00e9 persistant {0} indique l''attribut {1} de {2} et doit par cons\u00e9quent indiquer l''attribut {3}.
-error.parentpid.and.childalias.explanation=le m\u00e9tatype indique qu'un \u00e9l\u00e9ment imbriqu\u00e9 de premier enfant a \u00e9t\u00e9 partiellement indiqu\u00e9. Ces \u00e9l\u00e9ments imbriqu\u00e9s doivent indiquer \u00e0 la fois l'attribut ibm:parentPid et l'attribut ibm:childAlias.
-error.parentpid.and.childalias.useraction=Si ce m\u00e9tatype est destin\u00e9 \u00e0 un \u00e9l\u00e9ment imbriqu\u00e9 de premier enfant, fournissez l'attribut manquant. Sinon, retirez l'attribut qui a \u00e9t\u00e9 fourni. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Impossible de renommer la d\u00e9finition d''attribut {1} telle qu''elle est sp\u00e9cifi\u00e9e par l''attribut ibm:rename {2} dans l''identit\u00e9 persistante {0}.
@@ -497,6 +485,21 @@ warning.unrecognized.merge.behavior.useraction=Mettez \u00e0 jour la configurati
 error.missing.required.attribute.singleton=CWWKG0095E: L''attribut requis {1} manque dans l''\u00e9l\u00e9ment {0}.
 error.missing.required.attribute.singleton.explanation=L'attribut manquant est requis dans le fichier de configuration server.xml ou dans un de ses fichiers de configuration r\u00e9f\u00e9renc\u00e9s.
 error.missing.required.attribute.singleton.useraction=Ajoutez l'attribut au fichier de configuration server.xml ou \u00e0 un de ses fichiers de configuration r\u00e9f\u00e9renc\u00e9s.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: L''identit\u00e9 persistante {0} n''est pas une identit\u00e9 persistante d''usine et ne peut donc pas avoir l''attribut ibm:extendsAlias {1}. Effectuez une nouvelle configuration d''identit\u00e9 persistante afin d''utiliser une identit\u00e9 persistante d''usine ou retirez l''attribut ibm:extendsAlias de l''identit\u00e9 persistante.
+error.factoryOnly.extendsAlias.explanation=L'attribut ibm:extendsAlias s'applique uniquement aux identit\u00e9s persistantes d'usine qui \u00e9tendent une autre identit\u00e9 persistante d'usine.
+error.factoryOnly.extendsAlias.useraction=Effectuez une nouvelle configuration d'identit\u00e9 persistante afin d'utiliser une identit\u00e9 persistante d'usine ou retirez l'attribut ibm:extendsAlias de l'identit\u00e9 persistante.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: L''identit\u00e9 persistante {0} indique un attribut ibm:extendsAlias {1} et doit par cons\u00e9quent indiquer l''attribut ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Lorsque vous indiquez un attribut ibm:extendsAlias, vous devez indiquer un attribut ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Indiquez un attribut ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: L''identit\u00e9 persistant {0} indique l''attribut {1} de {2} et doit par cons\u00e9quent indiquer l''attribut {3}.
+error.parentpid.and.childalias.explanation=le m\u00e9tatype indique qu'un \u00e9l\u00e9ment imbriqu\u00e9 de premier enfant a \u00e9t\u00e9 partiellement indiqu\u00e9. Ces \u00e9l\u00e9ments imbriqu\u00e9s doivent indiquer \u00e0 la fois l'attribut ibm:parentPid et l'attribut ibm:childAlias.
+error.parentpid.and.childalias.useraction=Si ce m\u00e9tatype est destin\u00e9 \u00e0 un \u00e9l\u00e9ment imbriqu\u00e9 de premier enfant, fournissez l'attribut manquant. Sinon, retirez l'attribut qui a \u00e9t\u00e9 fourni. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: L''attribut {2} ibm:extendsAlias est en double dans une hi\u00e9rarchie extends unique. Les PID sont {0} et {1}. Rendez chaque attribut ibm:extendsAlias unique au sein de la hi\u00e9rarchie extends.

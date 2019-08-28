@@ -56,9 +56,13 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     public static void setUp() throws Exception {
         JavaArchive ejb = ShrinkWrap.create(JavaArchive.class, "AppDefResourcesEJB.jar").addPackage("test.resthandler.config.appdef.ejb");
         WebArchive web = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage("test.resthandler.config.appdef.web");
+        ResourceAdapterArchive emb_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "EmbTestAdapter.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("org.test.config.adapter"));
         EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
                         .addAsModule(ejb)
-                        .addAsModule(web);
+                        .addAsModule(web)
+                        .addAsModule(emb_rar);
         ShrinkHelper.exportToServer(server, "apps", app);
         server.addInstalledAppForValidation(APP_NAME);
 
@@ -240,6 +244,61 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                      api.getString(0));
 
         // TODO should transactionSupport really show as an attribute of connectionFactory?
+    }
+
+    /**
+     * Use the /ibm/api/config rest endpoint to obtain configuration for an app-defined connection factory from an embedded resource adapter
+     */
+    @Test
+    public void testAppDefinedConnectionFactoryFromEmbeddedResourceAdapter() throws Exception {
+        JsonArray array = new HttpsRequest(server, "/ibm/api/config/connectionFactory?component=AppDefinedResourcesBean")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + array;
+        assertEquals(err, 1, array.size());
+
+        JsonObject ds = array.getJsonObject(0);
+        assertEquals(err, "connectionFactory", ds.getString("configElementName"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     ds.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     ds.getString("id"));
+        assertEquals(err, "java:comp/env/eis/cf2", ds.getString("jndiName"));
+
+        assertEquals(err, "AppDefResourcesApp", ds.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", ds.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", ds.getString("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = ds.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err,
+                     "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]/connectionManager",
+                     cm.getString("uid"));
+        assertEquals(err,
+                     "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]/connectionManager",
+                     cm.getString("id"));
+        assertEquals(err, -1, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertTrue(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 2, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        JsonObject props;
+        assertNotNull(err, props = ds.getJsonObject("properties.AppDefResourcesApp.EmbTestAdapter.DataSource"));
+        assertEquals(err, 4, props.size());
+        assertEquals(err, "^", props.getString("escapeChar"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+        assertEquals(err, "******", props.getString("password"));
+        assertEquals(err, "euser2", props.getString("userName"));
+
+        JsonArray api;
+        assertNotNull(err, api = ds.getJsonArray("api"));
+        assertEquals(err, 1, api.size()); // increase if more REST API is added for connectionFactory
+        assertEquals(err,
+                     "/ibm/api/validation/connectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesEJB.jar%5D%2Fcomponent%5BAppDefinedResourcesBean%5D%2FconnectionFactory%5Bjava%3Acomp%2Fenv%2Feis%2Fcf2%5D",
+                     api.getString(0));
     }
 
     /**
@@ -889,6 +948,64 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "Default.Topic.Space", props.getString("topicSpace"));
     }
 
+    /**
+     * Query the /config/ REST endpoint for a server-config-defined connection factory
+     * for a resource adapter that is embedded in the application and verify that it
+     * returns the correct output.
+     */
+    @Test
+    public void testConnectionFactoryFromEmbeddedResourceAdapter() throws Exception {
+        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory?jndiName=eis/cf3")
+                        .run(JsonArray.class);
+        String err = "unexpected response: " + cfs;
+        assertEquals(err, 1, cfs.size());
+
+        JsonObject cf;
+        assertNotNull(err, cf = cfs.getJsonObject(0));
+
+        assertEquals(err, "connectionFactory", cf.getString("configElementName"));
+        assertEquals(err, "connectionFactory[default-0]", cf.getString("uid"));
+        assertNull(err, cf.get("id"));
+        assertEquals(err, "eis/cf3", cf.getString("jndiName"));
+
+        assertNull(err, cf.get("application"));
+        assertNull(err, cf.get("module"));
+        assertNull(err, cf.get("component"));
+
+        JsonObject cm;
+        assertNotNull(err, cm = cf.getJsonObject("connectionManagerRef"));
+        assertEquals(err, "connectionManager", cm.getString("configElementName"));
+        assertEquals(err, "connectionFactory[default-0]/connectionManager[default-0]", cm.getString("uid"));
+        assertNull(err, cm.get("id"));
+        assertEquals(err, 12783, cm.getJsonNumber("agedTimeout").longValue());
+        assertEquals(err, 30, cm.getJsonNumber("connectionTimeout").longValue());
+        assertFalse(err, cm.getBoolean("enableSharingForDirectLookups"));
+        assertEquals(err, 1800, cm.getJsonNumber("maxIdleTime").longValue());
+        assertEquals(err, 3, cm.getInt("maxPoolSize"));
+        assertEquals(err, "EntirePool", cm.getString("purgePolicy"));
+        assertEquals(err, 180, cm.getJsonNumber("reapTime").longValue());
+
+        JsonObject auth;
+        assertNotNull(err, auth = cf.getJsonObject("containerAuthDataRef"));
+        assertEquals(err, "cfauth1", auth.getString("uid"));
+        assertEquals(err, "cfauth1", auth.getString("id"));
+        assertEquals(err, "cfuser1", auth.getString("user"));
+        assertEquals(err, "******", auth.getString("password"));
+
+        JsonObject props;
+        assertNotNull(err, props = cf.getJsonObject("properties.AppDefResourcesApp.EmbTestAdapter.ConnectionFactory"));
+        assertTrue(err, props.getBoolean("enableBetaContent"));
+        assertEquals(err, "localhost", props.getString("hostName"));
+        assertEquals(err, 3456, props.getInt("portNumber"));
+
+        JsonArray api;
+        assertNotNull(err, api = cf.getJsonArray("api"));
+        assertEquals(err, 1, api.size()); // increase if more REST API is added
+        assertEquals(err,
+                     "/ibm/api/validation/connectionFactory/connectionFactory%5Bdefault-0%5D",
+                     api.getString(0));
+    }
+
     /*
      * Test that a data source nested under a transaction with an atypical case can be accessed
      * by calling the config endpoint matching with the case matching server config.
@@ -953,20 +1070,24 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     }
 
     /**
-     * Use the /ibm/api/validator REST endpoint to validate application-defined connection factories
+     * Use the /ibm/api/validator REST endpoint to validate application-defined connection factories,
+     * and also a server-defined connection factory for resource adapter that is embedded in the application.
      */
     @Test
     public void testValidateAppDefinedConnectionFactories() throws Exception {
         JsonArray array = new HttpsRequest(server, "/ibm/api/validation/connectionFactory")
                         .run(JsonArray.class);
         String err = "unexpected response: " + array;
-        assertEquals(err, 2, array.size());
+        assertEquals(err, 4, array.size());
 
         JsonObject j;
         assertNotNull(err, j = array.getJsonObject(0)); // a javax.resource.cci.ConnectionFactory
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/connectionFactory[java:module/env/eis/cf1]", j.getString("id"));
         assertEquals(err, "java:module/env/eis/cf1", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", j.getString("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
@@ -979,10 +1100,33 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
         assertEquals(err, "cfuser1", j.getString("user"));
 
-        assertNotNull(err, j = array.getJsonObject(1)); // a javax.sql.DataSource
+        assertNotNull(err, j = array.getJsonObject(1)); // javax.sql.DataSource from embedded RAR
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     j.getString("uid"));
+        assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/connectionFactory[java:comp/env/eis/cf2]",
+                     j.getString("id"));
+        assertEquals(err, "java:comp/env/eis/cf2", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", j.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", j.getString("component"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "TestConfig Data Store, Enterprise Edition", j.getString("databaseProductName"));
+        assertEquals(err, "48.55.72", j.getString("databaseProductVersion"));
+        assertEquals(err, "TestConfigJDBCAdapter", j.getString("driverName"));
+        assertEquals(err, "65.72.97", j.getString("driverVersion"));
+        assertEquals(err, "TestConfigDB", j.getString("catalog"));
+        assertEquals(err, "EUSER2", j.getString("schema"));
+        assertEquals(err, "euser2", j.getString("user"));
+
+        assertNotNull(err, j = array.getJsonObject(2)); // a javax.sql.DataSource
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/connectionFactory[java:module/env/eis/cf1]", j.getString("id"));
         assertEquals(err, "java:module/env/eis/cf1", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", j.getString("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
@@ -992,6 +1136,25 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "65.72.97", j.getString("driverVersion"));
         assertEquals(err, "TestConfigDB", j.getString("catalog"));
         assertNull(err, j.get("schema"));
+        assertNull(err, j.get("user"));
+
+        assertNotNull(err, j = array.getJsonObject(3)); // javax.resource.cci.ConnectionFactory from embedded RAR (configured in server.xml)
+        assertEquals(err, "connectionFactory[default-0]", j.getString("uid"));
+        assertNull(err, j.get("id"));
+        assertEquals(err, "eis/cf3", j.getString("jndiName"));
+        assertNull(err, j.get("application"));
+        assertNull(err, j.get("module"));
+        assertNull(err, j.get("component"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "TestConfig Data Store, Enterprise Edition", j.getString("eisProductName"));
+        assertEquals(err, "48.55.72", j.getString("eisProductVersion"));
+        assertEquals(err, "TestConfigAdapter", j.getString("resourceAdapterName"));
+        assertEquals(err, "60.91.109", j.getString("resourceAdapterVersion"));
+        assertEquals(err, "OpenLiberty", j.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", j.getString("resourceAdapterDescription"));
+        assertEquals(err, "1.7", j.getString("connectorSpecVersion"));
         assertNull(err, j.get("user"));
     }
 
@@ -1017,6 +1180,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]", v.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/dataSource[java:app/env/jdbc/ds1]", v.getString("id"));
         assertEquals(err, "java:app/env/jdbc/ds1", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertNull(err, v.get("module"));
+        assertNull(err, v.get("component"));
         assertFalse(err, v.getBoolean("successful"));
         assertNull(err, v.get("info"));
         assertNotNull(err, failure = v.getJsonObject("failure"));
@@ -1050,6 +1216,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", v.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]", v.getString("id"));
         assertEquals(err, "java:comp/env/jdbc/ds3", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", v.getString("module"));
+        assertNull(err, v.get("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1064,6 +1233,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", v.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", v.getString("id"));
         assertEquals(err, "java:module/env/jdbc/ds2", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", v.getString("module"));
+        assertNull(err, v.get("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1080,6 +1252,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]",
                      v.getString("id"));
         assertEquals(err, "java:comp/env/jdbc/ds3", v.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", v.getString("application"));
+        assertEquals(err, "AppDefResourcesEJB.jar", v.getString("module"));
+        assertEquals(err, "AppDefinedResourcesBean", v.getString("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1094,6 +1269,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "DefaultDataSource", v.getString("uid"));
         assertEquals(err, "DefaultDataSource", v.getString("id"));
         assertNull(err, v.get("jndiName"));
+        assertNull(err, v.get("application"));
+        assertNull(err, v.get("module"));
+        assertNull(err, v.get("component"));
         assertFalse(err, v.getBoolean("successful"));
         assertNull(err, v.get("info"));
         assertNotNull(err, failure = v.getJsonObject("failure"));
@@ -1103,6 +1281,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", v.getString("uid"));
         assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", v.getString("id"));
         assertEquals(err, "java:global/env/jdbc/ds4", v.getString("jndiName"));
+        assertNull(err, v.get("application"));
+        assertNull(err, v.get("module"));
+        assertNull(err, v.get("component"));
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
@@ -1126,6 +1307,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/jmsConnectionFactory[java:comp/env/jms/cf]", j.getString("id"));
         assertEquals(err, "java:comp/env/jms/cf", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertEquals(err, "AppDefResourcesApp.war", j.getString("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
@@ -1167,6 +1351,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", j.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/jmsTopicConnectionFactory[java:app/env/jms/tcf]", j.getString("id"));
         assertEquals(err, "java:app/env/jms/tcf", j.getString("jndiName"));
+        assertEquals(err, "AppDefResourcesApp", j.getString("application"));
+        assertNull(err, j.get("module"));
+        assertNull(err, j.get("component"));
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));

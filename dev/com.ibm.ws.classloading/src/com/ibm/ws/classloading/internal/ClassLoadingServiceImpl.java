@@ -667,6 +667,8 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         // meaning the identifier would not be reliable
         if (classloader instanceof ThreadContextClassLoader && !(classloader instanceof ThreadContextClassLoaderForBundles)) {
             return ((ThreadContextClassLoader) classloader).getKey();
+        } else if (classloader instanceof AppClassLoader) {
+            return ((AppClassLoader) classloader).getKey().toString();
         } else {
             return null;
         }

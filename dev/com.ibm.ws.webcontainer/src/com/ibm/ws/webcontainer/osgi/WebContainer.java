@@ -877,7 +877,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     /**
      * This will start a web module in the web container
      */
-    public Future<Boolean> startModule(ExtendedModuleInfo moduleInfo) throws StateChangeException {
+    public Future<Boolean> startModule(final ExtendedModuleInfo moduleInfo) throws StateChangeException {
         final WebModuleInfo webModule = (WebModuleInfo) moduleInfo;
         
         // Track number of modules starting. Rarely a server can begin shutting down while a module is still starting which
@@ -953,7 +953,15 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
                     backgroundWebAppStartFutures.add(es, new Runnable() {
                         @Override
                         public void run() {
-                                startWebApplication(dMod); 
+                            try {
+                                startWebApplication(dMod);
+                            } catch (Throwable e) {
+                                FFDCWrapper.processException(e, getClass().getName(), "startModule async", new Object[] { webModule, this });
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                                    Tr.event(tc, "startModule async: " + webModule.getName() + "; " + e);
+                                }
+                                stopModule(moduleInfo);
+                            }
                         }
                     });
                 }

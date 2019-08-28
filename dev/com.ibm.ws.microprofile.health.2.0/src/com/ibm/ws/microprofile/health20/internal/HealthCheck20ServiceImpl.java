@@ -10,14 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.health20.internal;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.HealthCheckResponse.State;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -43,9 +47,13 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
     private AppTracker appTracker;
     private HealthCheck20Executor hcExecutor;
 
+    final AtomicBoolean warningAlreadyShown = new AtomicBoolean(false);
+    AtomicInteger unstartedAppsCounter = new AtomicInteger(0);
+
     @Reference(service = AppTracker.class)
     protected void setAppTracker(AppTracker service) {
         this.appTracker = service;
+        appTracker.setHealthCheckService(this);
     }
 
     protected void unsetAppTracker(AppTracker service) {
@@ -87,6 +95,7 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
     @Override
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
         Set<HealthCheckResponse> hcResponses = null;
+        Set<String> unstartedAppsSet = new HashSet<String>();
         Set<String> apps = appTracker.getAppNames();
         Iterator<String> appsIt = apps.iterator();
 
@@ -94,12 +103,35 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();
+
+            if (!appTracker.isStarted(appName)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): Application : " + appName + " has not started yet.");
+                if (healthCheckProcedure == HealthCheckConstants.HEALTH_CHECK_READY || healthCheckProcedure == HealthCheckConstants.HEALTH_CHECK_ALL) {
+                    hcHttpResponseBuilder.setOverallState(State.DOWN);
+                    // Keep track of the unstarted applications names
+                    if (!unstartedAppsSet.contains(appName)) {
+                        unstartedAppsSet.add(appName);
+                    }
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "In performHealthCheck(): unstartedAppsSet after adding the unstarted app : " + unstartedAppsSet);
+                } else {
+                    // for liveness check
+                    hcHttpResponseBuilder.setOverallState(State.UP);
+                }
+
+                // Continue and check the state of the other deployed applications
+                continue;
+            }
+
             Set<String> modules = appTracker.getModuleNames(appName);
             Iterator<String> moduleIt = modules.iterator();
+
             while (moduleIt.hasNext()) {
                 String moduleName = moduleIt.next();
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): appName = " + appName + ", moduleName = " + moduleName);
+
                 try {
                     hcResponses = hcExecutor.runHealthChecks(appName, moduleName, healthCheckProcedure);
                 } catch (HealthCheckBeanCallException e) {
@@ -117,6 +149,32 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
             }
         }
 
+        if (unstartedAppsSet.isEmpty()) {
+            // If all applications are started, reset counter
+            unstartedAppsCounter.set(0);
+        } else if (!unstartedAppsSet.isEmpty() && unstartedAppsCounter.get() != unstartedAppsSet.size()) {
+            // Update the new number of unstarted applications, since some applications may have already started.
+            unstartedAppsCounter.set(unstartedAppsSet.size());
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "In performHealthCheck(): numOfUnstartedApps after unstarted app set was updated. = " + unstartedAppsCounter.get());
+
+            // If there are other applications that have not started yet, show the message again, with the updated set.
+            warningAlreadyShown.set(!unstartedAppsSet.isEmpty() ? false : true);
+        }
+
+        if (!unstartedAppsSet.isEmpty() && warningAlreadyShown.compareAndSet(false, true)) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "In performHealthCheck(): numOfUnstartedApps = " + unstartedAppsCounter.get());
+            Tr.warning(tc, "readiness.healthcheck.applications.not.started.down.CWMH0053W", new Object[] { unstartedAppsSet });
+        }
+
         hcHttpResponseBuilder.setHttpResponse(httpResponse);
+    }
+
+    @Override
+    public void removeModuleReferences(String appName, String moduleName) {
+        if (hcExecutor != null) {
+            hcExecutor.removeModuleReferences(appName, moduleName);
+        }
     }
 }

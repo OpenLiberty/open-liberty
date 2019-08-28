@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
+import javax.json.JsonStructure;
 import javax.json.JsonValue;
 
 import org.junit.AfterClass;
@@ -160,7 +161,9 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "builder", j.getString("uid"));
         assertEquals(err, "builder", j.getString("id"));
         assertNull(err, j.get("jndiName"));
-        assertEquals(err, "Check that the spelling is correct and that the right features are enabled for this configuration.", j.getString("error"));
+        String error;
+        error = j.getString("error");
+        assertTrue(err, error.startsWith("CWWKO1531E") && error.contains("mongo"));
         assertEquals(err, "DerbyLib", j.getString("libraryRef"));
         assertEquals(err, "pwd1", j.getString("password")); //TODO Don't reveal password here
         assertEquals(err, "u1", j.getString("user"));
@@ -170,7 +173,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "MongoDBNotEnabled", j.getString("uid"));
         assertEquals(err, "MongoDBNotEnabled", j.getString("id"));
         assertEquals(err, "mongo/db", j.getString("jndiName"));
-        assertEquals(err, "Check that the spelling is correct and that the right features are enabled for this configuration.", j.getString("error"));
+        error = j.getString("error");
+        assertTrue(err, error.startsWith("CWWKO1531E") && error.contains("mongoDB"));
         assertEquals(err, "builder", j.getString("mongoRef"));
         assertEquals(err, "testdb", j.getString("databaseName"));
     }
@@ -623,6 +627,18 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         // other attributes are covered by testConfigDataSources
     }
 
+    // Invoke REST endpoint with uid present, but the config element parameter missing. Expect an error.
+    @Test
+    public void testConfigDefaultDataSourceMissingElementName() throws Exception {
+        try {
+            JsonStructure json = new HttpsRequest(server, "/ibm/api/config/dataSource[DefaultDataSource]").run(JsonStructure.class);
+            String err = "unexpected response: " + json;
+            fail(err);
+        } catch (Exception ex) {
+            assertTrue("Expected 404 response", ex.getMessage().contains("404"));
+        }
+    }
+
     // Ensure that the requested element type matches the returned config.
     // For example, querying for 'application' element type should only return config of type 'application',
     // not 'applicationManager' or 'enterpriseApplication' because they contain the substring 'application'
@@ -697,10 +713,10 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     //Test that a config element with name=internal is not returned
     @Test
     public void testConfigInternalElement() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/udpOptions").run(JsonArray.class);
+        String response = new HttpsRequest(server, "/ibm/api/config/udpOptions").expectCode(404).run(String.class);
 
-        String err = "unexpected response: " + json;
-        assertEquals(err, 0, json.size());
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E"));
     }
 
     // Test a user-defined configuration that has nested flat config elements, for example:
@@ -801,36 +817,35 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         }
     }
 
-    // Invoke /ibm/api/config/ REST API with query parameters to filter in a way that does not match any configuration. Ensure an empty response.
+    // Invoke /ibm/api/config/ REST API with query parameters to filter in a way that does not match any configuration. Ensure a CWWKO1500E response.
     @Test
     public void testConfigNoMatch() throws Exception {
         // Server configuration has a dataSource with jndiName jdbc/defaultauth and another with connectionSharing of MatchCurrentState,
         // but no single dataSource has both.
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource?jndiName=jdbc/defaultauth&connectionSharing=MatchCurrentState").run(JsonArray.class);
-        String err = "unexpected response: " + json;
-        assertEquals(err, 0, json.size());
+        String response = new HttpsRequest(server, "/ibm/api/config/dataSource?jndiName=jdbc/defaultauth&connectionSharing=MatchCurrentState").expectCode(404).run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E"));
 
         // Attribute does not exist on any dataSource instance
-        json = new HttpsRequest(server, "/ibm/api/config/dataSource?cancellationTimeout=60").run(JsonArray.class);
-        err = "unexpected response: " + json;
-        assertEquals(err, 0, json.size());
+        response = new HttpsRequest(server, "/ibm/api/config/dataSource?cancellationTimeout=60").expectCode(404).run(String.class);
+        err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E"));
 
         // Attribute does not match on specific dataSource instance
-        JsonObject j = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource?queryTimeout=130").run(JsonObject.class);
-        err = "unexpected response: " + j;
-        assertEquals(err, "DefaultDataSource", j.getString("uid"));
-        assertNotNull(err, j.getString("error"));
+        response = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource?queryTimeout=130").expectCode(404).run(String.class);
+        err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E") && response.contains("dataSource") && response.contains("uid: DefaultDataSource"));
     }
 
-    // Invoke /ibm/api/config/ REST API for configuration element that is not present in the configuration. Ensure an empty response.
+    // Invoke /ibm/api/config/ REST API for configuration element that is not present in the configuration. Ensure a CWWKO1500E response.
     @Test
     public void testConfigNotPresent() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/connectionFactory").run(JsonArray.class);
-        String err = "unexpected response: " + json;
-        assertEquals(err, 0, json.size());
+        String response = new HttpsRequest(server, "/ibm/api/config/connectionFactory").expectCode(404).run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E"));
 
-        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/connectionFactory/").run(JsonArray.class);
-        assertEquals(json, json2);
+        String response2 = new HttpsRequest(server, "/ibm/api/config/connectionFactory/").expectCode(404).run(String.class);
+        assertEquals(response, response2);
     }
 
     // Invoke /ibm/api/config/ REST API with query parameter to filter across multiple configuration element types.
@@ -921,13 +936,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     @Test
     public void testSingleInstanceJDBCDriverCase() throws Exception {
         //This should not return a value since the incorrect case is used for the element name
-        JsonObject json = new HttpsRequest(server, "/ibm/api/config/jdbcDriver/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
-        String err = "unexpected response: " + json;
-        assertNotNull(err, json);
-        assertEquals(err, "dataSource[NestedElementCase]/JdBcDrIvEr[default-0]", json.getString("uid"));
-        assertEquals(err, "Did not find any configured instances of jdbcDriver matching the request", json.getString("error"));
+        String response = new HttpsRequest(server, "/ibm/api/config/jdbcDriver/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").expectCode(404).run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E") && response.contains("jdbcDriver") && response.contains("uid: dataSource[NestedElementCase]/JdBcDrIvEr[default-0]"));
 
-        json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
         err = "unexpected response: " + json;
         assertNotNull(err, json);
         assertEquals(err, "JdBcDrIvEr", json.getString("configElementName"));
@@ -985,7 +998,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
 
     /*
      * Test that the config endpoint is not accessible to a user who is not assigned the
-     * reader or administrator role
+     * administrator role
      */
     @Test
     public void testConfigUserWithoutRoles() throws Exception {
@@ -1002,5 +1015,29 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         } catch (Exception ex) {
             assertTrue("Expected 403 response", ex.getMessage().contains("403"));
         }
+    }
+
+    // Invoke /ibm/api/config REST API for a configuration element name that includes special characters.
+    // Attempt to use an "OSGi filter injection attack" to match an entry that shouldn't be matched
+    // and verify that no results are returned.
+    @Test
+    public void testElementNameUsesEscapedCharacters() throws Exception {
+        String response = new HttpsRequest(server, "/ibm/api/config/abc(d)\\k*m").expectCode(404).run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E"));
+
+        response = new HttpsRequest(server, "/ibm/api/config/uvw)(id=DefaultDataSource)(id=xyz").expectCode(404).run(String.class);
+        err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E"));
+    }
+
+    // Invoke /ibm/api/config/dataSource/{uid} with HTTP POST (should not be allowed)
+    @Test
+    public void testPOSTRejected() throws Exception {
+        String response = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource")
+                        .method("POST")
+                        .expectCode(405) // Method Not Allowed
+                        .run(String.class);
+        assertTrue("Response should contain SRVE0295E.", response.contains("SRVE0295E"));
     }
 }

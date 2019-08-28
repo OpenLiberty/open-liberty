@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Compruebe que la envoltura y los par\u00e1metros pa
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: No se puede desenvolver el objeto en {0} porque {0} no es una clase de interfaz.
+NOT_AN_INTERFACE.explanation=El m\u00e9todo de desenvoltura s\u00f3lo permite desenvolver en una clase de interfaz.
+NOT_AN_INTERFACE.useraction=Desenvuelva en una clase que sea una interfaz en lugar de una clase concreta.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.

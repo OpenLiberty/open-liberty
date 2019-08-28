@@ -94,7 +94,7 @@ public class CompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntTxAttribs() throws Exception {
+    public void testCompIntTxAttribs_CompCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         try {
@@ -148,7 +148,7 @@ public class CompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntTxAttribs() throws Exception {
+    public void testBizIntTxAttribs_CompCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         try {

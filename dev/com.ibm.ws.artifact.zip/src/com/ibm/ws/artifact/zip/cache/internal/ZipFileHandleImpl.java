@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2018 IBM Corporation and others.
+ * Copyright (c) 2012,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -87,12 +88,22 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private class ZipFileLock {
-        // EMPTY
-    }
-    private final ZipFileLock zipFileLock = new ZipFileLock();
+    private final Integer zipFileLock = new Integer(0);
     private ZipFile zipFile;
     private int openCount;
+
+    //
+
+    public void introspect(PrintWriter output) {
+        synchronized(zipFileLock) {
+            output.println(
+                "  " +
+                "ZipFileHandle@0x" + Integer.toHexString(hashCode()) +
+                "(" + path + ", " + Integer.toString(openCount) + ")" );
+
+            introspectEntryCache(output);
+        }
+    }
 
     //
 
@@ -207,13 +218,10 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private static class ZipEntriesLock {
-        // EMPTY
-    }
-    private static final ZipEntriesLock zipEntriesLock = new ZipEntriesLock();
-    private static final Map<String, byte[]> zipEntries;
+    private final Integer zipEntriesLock = new Integer(1);
+    private final Map<String, byte[]> zipEntries;
 
-    static {
+    {
         if ( (ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT == 0) ||
              (ZipCachingProperties.ZIP_CACHE_ENTRY_MAX == 0) ) {
             zipEntries = null;
@@ -403,5 +411,31 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         }
 
         return bytes;
+    }
+
+    protected void introspectEntryCache(PrintWriter output) {
+        if ( zipEntries == null ) {
+            return;
+        } else if ( zipEntries.isEmpty() ) {
+            return;
+        } else {
+            for ( Map.Entry<String, byte[]> zipEntryEntry : zipEntries.entrySet() ) {
+                output.println(
+                    "    [ " + zipEntryEntry.getKey() + " ]" +
+                    " [ " + Integer.toString(zipEntryEntry.getValue().length) + " bytes ]");
+            }
+        }
+    }
+
+    protected static void introspectZipReaper(PrintWriter output, long introspectAt) {
+        output.println();
+        output.println("Zip Reaper:");
+
+        if ( ZipFileHandleImpl.zipFileReaper == null ) {
+            output.println("  ** DISABLED **");
+
+        } else {
+            ZipFileHandleImpl.zipFileReaper.introspect(output, introspectAt);
+        }
     }
 }

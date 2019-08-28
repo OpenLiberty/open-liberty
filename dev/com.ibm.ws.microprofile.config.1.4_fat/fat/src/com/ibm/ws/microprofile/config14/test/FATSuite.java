@@ -14,12 +14,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 VariableResolutionTest.class,
                 CacheForTest.class,
                 NullDefaultInjectionTest.class,
-                CharacterInjectionTest.class
+                CharacterInjectionTest.class,
+                AlwaysPassesTest.class //Other test classes are experimental only
 })
 public class FATSuite {
 

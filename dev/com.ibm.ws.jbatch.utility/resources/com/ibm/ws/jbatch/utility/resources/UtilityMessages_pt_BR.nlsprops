@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Erro: {0}
+error.inputConsoleNotAvailable=O console de entrada n\u00e3o est\u00e1 dispon\u00edvel.
+error.missingIO=Erro, dispositivo de E/S ausente: {0}.
+
+usage=Uso: {0}
+task.unknown=Tarefa desconhecida: {0}
+for.task.usage=Para o uso e a descri\u00e7\u00e3o de tarefa: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Argumento necess\u00e1rio ausente: {0}.
+argument.unrecognized=Argumento n\u00e3o reconhecido: {0}.
+argument.unrecognized.expected=Argumento n\u00e3o reconhecido: {0}. Talvez voc\u00ea tenha desejado dizer: {1}.
+argument.invalid.value=Valor inaceit\u00e1vel para o argumento: {0}={1}. Valores aceit\u00e1veis: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: A tarefa {0} com o ID da inst\u00e2ncia {1} foi enviada.
+job.submitted.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.submitted.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.restarted=CWWKY0102I: Uma solicita\u00e7\u00e3o de reinicializa\u00e7\u00e3o foi enviada para a tarefa {0} com o ID da inst\u00e2ncia {1}.
+job.restarted.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.restarted.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.stopped=CWWKY0103I: A tarefa {0} com o ID da inst\u00e2ncia {1} foi interrompida. Status do lote: {2}. Status de sa\u00edda: {3}
+job.stopped.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.stopped.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.stop.submitted=CWWKY0104I: Uma solicita\u00e7\u00e3o de parada foi enviada para a tarefa {0} com o ID da inst\u00e2ncia {1}.
+job.stop.submitted.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.stop.submitted.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.finished=CWWKY0105I: A tarefa {0} com o ID da inst\u00e2ncia {1} foi conclu\u00edda. Status do lote: {2}. Status de sa\u00edda: {3}
+job.finished.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.finished.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.instance.record=CWWKY0106I: JobInstance:{0}
+job.instance.record.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.instance.record.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.execution.record=CWWKY0107I: JobExecution:{0}
+job.execution.record.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.execution.record.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+waiting.for.termination=CWWKY0108I: Esperando o t\u00e9rmino de JobExecution:{0}
+waiting.for.termination.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+waiting.for.termination.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+waiting.for.latest.job.execution=CWWKY0109I: Esperando a execu\u00e7\u00e3o da tarefa mais recente para a tarefa com o ID da inst\u00e2ncia {0}
+waiting.for.latest.job.execution.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+waiting.for.latest.job.execution.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+waiting.for.next.job.execution=CWWKY0110I: Esperando a pr\u00f3xima execu\u00e7\u00e3o da tarefa ap\u00f3s JobExecution:{0}
+waiting.for.next.job.execution.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+waiting.for.next.job.execution.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+joblog.to.file=CWWKY0111I: O joblog foi gravado no arquivo {0}
+joblog.to.file.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+joblog.to.file.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+failover.to.next.target=CWWKY0112I: Falha na solicita\u00e7\u00e3o do gerenciador de lote em {0}. Encaminhando a solicita\u00e7\u00e3o do gerenciador de lote em {1}. A falha foi: {2}
+failover.to.next.target.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+failover.to.next.target.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+joblog.location=CWWKY0113I: O log da tarefa para a tarefa {0} com o ID de inst\u00e2ncia {1} ser\u00e1 transferido por download quando a tarefa estiver conclu\u00edda. \
+Enquanto isso, \u00e9 poss\u00edvel visualizar o log da tarefa ao seguir os links aqui: {2}
+joblog.location.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+joblog.location.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+joblog.download=CWWKY0114I: O log da tarefa para a tarefa {0} com ID de inst\u00e2ncia {1} est\u00e1 sendo transferido por download via {2}.
+joblog.download.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+joblog.download.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.purged=CWWKY0115I: A tarefa {0} com ID da inst\u00e2ncia {1} foi limpa com \u00eaxito.
+job.purged.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.purged.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+shutdown.hook=CWWKY0116I: O utilit\u00e1rio do cliente foi encerrado enquanto aguardava a \
+conclus\u00e3o da tarefa {0} com o ID da inst\u00e2ncia {1}.
+shutdown.hook.explanation=Esta mensagem ser\u00e1 emitida quando o utilit\u00e1rio de linha de \
+comandos for encerrado for\u00e7osamente enquanto aguarda a conclus\u00e3o de uma tarefa. \
+Em resposta, o utilit\u00e1rio tenta parar a tarefa, enviando uma solicita\u00e7\u00e3o de parada.
+shutdown.hook.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.purged.multi=CWWKY0117I: Tentativa de limpar a tarefa com o ID da inst\u00e2ncia {0} status retornado: {1}. Mensagem: \
+{2} RedirectUrl: {3}
+job.purged.multi.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.purged.multi.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.parms.vals=CWWKY0118I: O conjunto final de par\u00e2metros da tarefa \u00e9 {0}
+job.parms.vals.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+job.parms.vals.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+control.props.vals=CWWKY0119I: O conjunto final de propriedades de controle \u00e9 {0}
+control.props.vals.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+control.props.vals.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+control.props.file.warning=CWWKY0120W: A propriedade {0} n\u00e3o pode ser usada em um \
+arquivo de propriedades de controle e ser\u00e1 ignorada. A propriedade {0} pode ser usada somente na linha de \
+comandos.
+control.props.file.warning.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+control.props.file.warning.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+

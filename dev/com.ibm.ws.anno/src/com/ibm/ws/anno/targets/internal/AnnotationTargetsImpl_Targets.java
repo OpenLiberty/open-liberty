@@ -26,7 +26,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;
-import com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet;
 import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -1118,7 +1117,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         String i_interfaceName = getClassInternMap().intern(interfaceName, Util_InternMap.DO_NOT_FORCE);
         if (i_interfaceName == null) {
-            return UtilImpl_EmptyStringSet.INSTANCE; // No data is available for a result.
+            return Collections.emptySet(); // No data is available for a result.
         }
 
         if (this.i_allImplementersMap == null) {
@@ -1185,7 +1184,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         String i_superclassName = getClassInternMap().intern(superclassName, Util_InternMap.DO_NOT_FORCE);
         if (i_superclassName == null) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         if (i_descendantsMap == null) {
@@ -1349,7 +1348,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     protected Set<String> restrict(Set<String> candidates, Set<String> allowed) {
         if ((candidates == null) || (allowed == null) || candidates.isEmpty() || allowed.isEmpty()) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         Set<String> restrictedSet = new HashSet<String>();

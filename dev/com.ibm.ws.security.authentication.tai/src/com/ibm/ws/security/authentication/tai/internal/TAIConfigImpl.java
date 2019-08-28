@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,12 +22,10 @@ public class TAIConfigImpl implements TAIConfig {
     static final String KEY_INVOKE_FOR_UNPROTECTED_URI = "invokeForUnprotectedURI";
     static final String KEY_INVOKE_FOR_FORM_LOGIN = "invokeForFormLogin";
     static final String KEY_FAIL_OVER_TO_APP_AUTH_TYPE = "failOverToAppAuthType";
-    static final String KEY_CONTINUE_AFTER_UNPROTECTED_URI = "continueAfterUnprotectedURI";
 
     private boolean failOverToAppAuthType = false;
     private boolean invokeForUnprotectedURI = false;
     private boolean invokeForFormLogin = false;
-    private boolean continueAfterUnprotectedURI = false;
 
     /** The required shared library */
 
@@ -44,7 +42,6 @@ public class TAIConfigImpl implements TAIConfig {
         invokeForUnprotectedURI = (Boolean) props.get(KEY_INVOKE_FOR_UNPROTECTED_URI);
         invokeForFormLogin = (Boolean) props.get(KEY_INVOKE_FOR_FORM_LOGIN);
         failOverToAppAuthType = (Boolean) props.get(KEY_FAIL_OVER_TO_APP_AUTH_TYPE);
-        continueAfterUnprotectedURI = (Boolean) props.get(KEY_CONTINUE_AFTER_UNPROTECTED_URI);
     }
 
     /** {@inheritDoc} */
@@ -63,11 +60,5 @@ public class TAIConfigImpl implements TAIConfig {
     @Override
     public boolean isInvokeForUnprotectedURI() {
         return invokeForUnprotectedURI;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isContinueAfterUnprotectedURI() {
-        return continueAfterUnprotectedURI;
     }
 }

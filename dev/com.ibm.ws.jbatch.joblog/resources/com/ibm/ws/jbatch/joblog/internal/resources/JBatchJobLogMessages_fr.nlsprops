@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: La journalisation de travail par lots n''a pas d\u00e9but\u00e9 pour le travail {0}, instance de travail {1}, ex\u00e9cution de travail {2}, en raison d''une exception.\n{3}
+job.logging.create.new.explanation=La journalisation de travail par lots n'a pas cr\u00e9\u00e9 de fichier journal. Cette journalisation a \u00e9chou\u00e9 en raison d'une exception.
+job.logging.create.new.useraction=Examinez l'exception, v\u00e9rifiez le statut du syst\u00e8me de fichiers et engagez une action corrective. L'ex\u00e9cution du travail par lots se poursuit sans journalisation du travail.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: La journalisation de travail par lots n''a pas cr\u00e9\u00e9 de fichiers suppl\u00e9mentaires de parties de journal en raison d''une exception.\n{0}\nLa journalisation de travail par lots va tenter de continuer avec le fichier en cours. 
+job.logging.create.next.explanation=La journalisation de travail par lots n'a pas cr\u00e9\u00e9 de fichiers suppl\u00e9mentaires de parties de journal. La cr\u00e9ation de nouveau fichier de journalisation de travail par lots a \u00e9chou\u00e9 en raison d'une exception.\n La journalisation de travail par lots va tenter de continuer avec le fichier en cours.
+job.logging.create.next.useraction=Examinez l'exception, v\u00e9rifiez le statut du syst\u00e8me de fichiers et engagez une action corrective. La journalisation de travail par lots va tenter de continuer avec le fichier en cours.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: La journalisation de travail par lots n''a pas cr\u00e9\u00e9 de fichiers suppl\u00e9mentaires de parties de journal en raison d''une exception.\n{0}
+job.logging.read.log.explanation=La journalisation de travail par lots n'a pas lu le fichier suppl\u00e9mentaire de parties de journal. La lecture de journalisation de travail par lots a \u00e9chou\u00e9 en raison d'une exception.\nLa journalisation de travail par lots va se poursuivre sans la publication de l'\u00e9v\u00e9nement de journal de travail.
+job.logging.read.log.useraction=Examinez l'exception, v\u00e9rifiez le statut du syst\u00e8me de fichiers et engagez une action corrective.\nLa journalisation de travail par lots va se poursuivre sans la publication de l'\u00e9v\u00e9nement de journal de travail.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: La journalisation de travail par lots n''a pas supprim\u00e9 le fichier ou le r\u00e9pertoire de parties de journal : {0}. 
+job.logging.delete.log.explanation=La journalisation de travail par lots n'a pas supprim\u00e9 le fichier ou le r\u00e9pertoire de parties de journal.\nLa journalisation de travail par lots va se poursuivre sans la suppression du fichier ou du r\u00e9pertoire.
+job.logging.delete.log.useraction=Examinez l'exception, v\u00e9rifiez le statut du syst\u00e8me de fichiers et engagez une action corrective.\nLa journalisation de travail par lots va se poursuivre sans la suppression du fichier ou du r\u00e9pertoire.

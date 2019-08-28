@@ -14,10 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import javax.net.SocketFactory;
+
 import org.testcontainers.dockerclient.DockerClientProviderStrategy;
 import org.testcontainers.dockerclient.InvalidConfigurationException;
 
-import com.github.dockerjava.api.command.PingCmd;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -51,7 +52,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * automatically switch between using your local Docker install, or a remote Docker host, call this method
      * in FATSuite beforeClass setup.
      */
-    public static void clearTestcontainersConfig() throws Exception {
+    public static void clearTestcontainersConfig() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
         Log.info(c, "clearTestcontainersConfig", "Removing testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
         try {
@@ -99,26 +100,32 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
         public void test() throws InvalidConfigurationException {
             final String m = "test";
-            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 10; // attempt up to 10 times for remote builds
+            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 7; // attempt up to 7 times for remote builds
             config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
             client = getClientForConfig(config);
-//            int timeout = useRemoteDocker() ? 60 : 10;
             Throwable firstIssue = null;
             for (int attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {
                     Log.info(c, m, "Attempting to ping docker daemon. Attempt [" + attempt + "]");
-                    try (PingCmd ping = client.pingCmd()) {
-                        ping.exec();
-                    }
-                    Log.info(c, m, "Ping successful");
-                    Log.info(c, m, "Found docker client settings from environment");
+                    String dockerHost = config.getDockerHost().toASCIIString().replace("tcp://", "https://");
+                    Log.info(c, m, "  Pinging URL: " + dockerHost);
+                    SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
+                    String resp = new HttpsRequest(dockerHost + "/_ping")
+                                    .sslSocketFactory(sslSf)
+                                    .run(String.class);
+                    // Using the Testcontainers API directly causes intermittent failures with ping
+                    // Instead of using their mechanism, attempt to use a manually constructed ping
+                    // try (PingCmd ping = client.pingCmd()) {
+                    //     ping.exec();
+                    // }
+                    Log.info(c, m, "  Ping successful. Response: " + resp);
                     return;
                 } catch (Throwable t) {
-                    Log.error(c, m, t, "ping failed");
+                    Log.error(c, m, t, "  Ping failed.");
                     if (firstIssue == null)
                         firstIssue = t;
                     if (attempt < maxAttempts) {
-                        int sleepForSec = ((15 * attempt) % 120); // increase wait by 15s each attempt up to 120s max
+                        int sleepForSec = Math.min(10 * attempt, 45); // increase wait by 10s each attempt up to 45s max
                         Log.info(c, m, "Waiting " + sleepForSec + " seconds before attempting again");
                         try {
                             Thread.sleep(sleepForSec * 1000);

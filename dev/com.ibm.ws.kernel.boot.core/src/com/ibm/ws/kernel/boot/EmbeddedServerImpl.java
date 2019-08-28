@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -82,9 +83,9 @@ public class EmbeddedServerImpl implements Server {
      * enhancements need new constructors.</p>
      *
      * @param serverName ServerName: defaultServer will be used if this is null
-     * @param userDir WLP_USER_DIR equivalent, may be null
-     * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
-     * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
+     * @param userDir    WLP_USER_DIR equivalent, may be null
+     * @param outputDir  WLP_OUTPUT_DIR equivalent, may be null
+     * @param listener   ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
      *
      * @see {@link ServerEventListener}
      */
@@ -102,9 +103,9 @@ public class EmbeddedServerImpl implements Server {
      * property.</p>
      *
      * @param serverName ServerName: defaultServer will be used if this is null
-     * @param userDir WLP_USER_DIR equivalent, may be null
-     * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
-     * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
+     * @param userDir    WLP_USER_DIR equivalent, may be null
+     * @param outputDir  WLP_OUTPUT_DIR equivalent, may be null
+     * @param listener   ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
      *
      * @see {@link ServerEventListener}
      */
@@ -121,10 +122,10 @@ public class EmbeddedServerImpl implements Server {
      * <p>Note this is a new constructor with new enhancement to support
      * extraProductExtensions.</p>
      *
-     * @param serverName ServerName: defaultServer will be used if this is null
-     * @param userDir WLP_USER_DIR equivalent, may be null
-     * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
-     * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
+     * @param serverName             ServerName: defaultServer will be used if this is null
+     * @param userDir                WLP_USER_DIR equivalent, may be null
+     * @param outputDir              WLP_OUTPUT_DIR equivalent, may be null
+     * @param listener               ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
      * @param extraProductExtensions HashMap of Properties, may be null
      *
      * @see {@link ServerEventListener}
@@ -142,12 +143,12 @@ public class EmbeddedServerImpl implements Server {
      * <p>Note this is a new constructor with new enhancement to support
      * extraProductExtensions and uses the specified ExecutorService</p>
      *
-     * @param serverName ServerName: defaultServer will be used if this is null
-     * @param userDir WLP_USER_DIR equivalent, may be null
-     * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
-     * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
+     * @param serverName             ServerName: defaultServer will be used if this is null
+     * @param userDir                WLP_USER_DIR equivalent, may be null
+     * @param outputDir              WLP_OUTPUT_DIR equivalent, may be null
+     * @param listener               ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
      * @param extraProductExtensions HashMap of Properties, may be null
-     * @param executor the executor service to use for start and stop operations
+     * @param executor               the executor service to use for start and stop operations
      *
      * @see {@link ServerEventListener}
      */
@@ -380,12 +381,32 @@ public class EmbeddedServerImpl implements Server {
      * of trying to stop the server.
      */
     private class StopOperation implements Callable<Result> {
+
+        private boolean isForceShutdown = false;
+
         /**
-         * No arguments yet: someday there may be, we're just being flexible.
+         * Handles argument parsing for stop command.
          *
          * @param arguments
          */
-        StopOperation(String... arguments) {}
+        StopOperation(String... arguments) {
+            List<String> cmdArgs = Arrays.asList(arguments);
+
+            if (0 < cmdArgs.size()) {
+                Iterator<String> i = cmdArgs.listIterator();
+                while (i.hasNext()) {
+                    String arg = i.next();
+
+                    if ((arg != null) && (arg.equalsIgnoreCase("--force"))) {
+                        isForceShutdown = true;
+                    } else {
+                        // Ignore unknown arguments so we do not break anyone
+                        // anyone who is currently passing unknown arguments
+                        continue;
+                    }
+                }
+            }
+        }
 
         @Override
         public Result call() {
@@ -399,7 +420,12 @@ public class EmbeddedServerImpl implements Server {
                 ServerTask server = runningServer.get();
                 if (server != null) {
                     // SHUTDOWN, AND WAIT FOR STOP
-                    ReturnCode rc = server.shutdown();
+                    ReturnCode rc;
+                    if (isForceShutdown) {
+                        rc = server.shutdown(isForceShutdown);
+                    } else {
+                        rc = server.shutdown();
+                    }
                     return new ServerResult(rc == ReturnCode.OK, rc, null);
                 } else {
                     // Server was already stopped
@@ -445,6 +471,10 @@ public class EmbeddedServerImpl implements Server {
 
         public ReturnCode shutdown() throws InterruptedException {
             return kernelBootstrap.shutdown();
+        }
+
+        public ReturnCode shutdown(boolean force) throws InterruptedException {
+            return kernelBootstrap.shutdown(force);
         }
 
         public Set<String> getServerContent(String osRequest) throws FileNotFoundException, IOException, InterruptedException {

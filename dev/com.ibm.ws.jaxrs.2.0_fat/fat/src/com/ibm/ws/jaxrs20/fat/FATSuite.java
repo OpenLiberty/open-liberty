@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jaxrs20.fat.annotationscan.AnnotationScanTest;
+import com.ibm.ws.jaxrs20.fat.beanparam.BeanParamTest;
 import com.ibm.ws.jaxrs20.fat.beanvalidation.JAXRSClientServerValidationTest;
 import com.ibm.ws.jaxrs20.fat.beanvalidation.JAXRSPerRequestValidationTest;
 import com.ibm.ws.jaxrs20.fat.beanvalidation.JAXRSValidationDisabledTest;
@@ -37,6 +38,7 @@ import com.ibm.ws.jaxrs20.fat.jackson1x.JacksonPOJOwithUserJacksonLib1xTest;
 import com.ibm.ws.jaxrs20.fat.jackson2x.JacksonPOJOwithUserJacksonLib2xTest;
 import com.ibm.ws.jaxrs20.fat.jacksonJsonIgnore.JacksonJsonIgnoreTest;
 import com.ibm.ws.jaxrs20.fat.json.UTF8Test;
+import com.ibm.ws.jaxrs20.fat.managedbeans.ManagedBeansTest;
 import com.ibm.ws.jaxrs20.fat.paramconverter.ParamConverterTest;
 import com.ibm.ws.jaxrs20.fat.params.ParamsTest;
 import com.ibm.ws.jaxrs20.fat.providercache.ProviderCacheTest;
@@ -63,6 +65,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 AnnotationScanTest.class,
+                BeanParamTest.class,
                 CheckFeature12Test.class,
                 ClientTest.class,
                 ContextTest.class,
@@ -85,6 +88,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRSValidationDisabledTest.class,
                 JAXRSWebContainerTest.class,
                 JerseyTest.class,
+                ManagedBeansTest.class,
                 ParamConverterTest.class,
                 ParamsTest.class,
                 ProviderCacheTest.class,

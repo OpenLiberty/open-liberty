@@ -19,7 +19,8 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                PostgreSQLTest.class
+                PostgreSQLTest.class,
+                PostgreSQLSSLTest.class
 })
 public class FATSuite {
 

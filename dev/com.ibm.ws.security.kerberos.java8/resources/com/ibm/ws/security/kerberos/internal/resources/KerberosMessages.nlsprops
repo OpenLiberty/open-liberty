@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: Can not impersonate the user {0} to get the user GSSCredential for self when using the delegate service principal name {1} due to the exception {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=Can not impersonate the user due to the unexpected exception.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Ensure the delegate service principal name (SPN) is enabled for the delegate and review the server logs for more information.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: Can not impersonate the user {0} to get the GSSCredential for the back end service when using the delegate service principal name {1} due to the exception {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=Can not impersonate the user due to the unexpected exception.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Ensure that the S4U2proxy attribute is set to true in the SPNEGO element configuration, and that the delegate service SPN is enabled for the delegate in the Key Distribution Center (KDC), and that the client service ticket has a forwardable flag set to true, and the delegate service tickets have a forwardable flag set to true. Review the server logs for more information.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: Can not process method {0} because the constrained delegation S4U2self is not enabled.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=Can not process the method because the constrained delegation S4U2self is not enabled.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Ensure that the constrained delegation feature is enabled, and the S4U2self attribute is set to true in the constrained delegation configuration in the server.xml file. Review the server logs for more information.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: Can not process method {0} because the constrained delegation S4U2proxy is not enabled.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=Can not process the method because the constrained delegation S4U2proxy is not enabled.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Ensure that the constrained delegation feature is enabled, and the S4U2proxy attribute is set to true in the constrained delegation configuration in the server.xml file. Review the server logs for more information.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: The Kerberos constrained delegation feature is not supported with the {0} Java vendor and version {1}.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=The Kerberos constrained delegation feature cannot be enabled due to the Java runtime vendor and version.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Use the Java vendor and version that is supported by the Kerberos constrained delegation feature.
+
+
+
+
+
+
+
+

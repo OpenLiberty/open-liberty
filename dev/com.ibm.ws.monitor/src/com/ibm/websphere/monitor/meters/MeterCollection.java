@@ -32,7 +32,7 @@ import com.ibm.ws.monitor.internal.MonitoringFrameworkExtender;
 public final class MeterCollection<T> {
 
     final ConcurrentMap<String, T> meters = new ConcurrentHashMap<String, T>();
-    private final TraceComponent tc = Tr.register(MeterCollection.class);
+    private static final TraceComponent tc = Tr.register(MeterCollection.class);
     private static final MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
     private static final int REGISTER_MXBEAN = 1;
     private static final int UNREGISTER_MXBEAN = 2;

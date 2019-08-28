@@ -40,7 +40,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -70,10 +69,10 @@ public class ConnectionFactoryValidator implements Validator {
      * Utility method that attempts to construct a ConnectionSpec impl of the specified name,
      * which might or might not exist in the resource adapter.
      *
-     * @param cciConFactory    the connection factory class
+     * @param cciConFactory the connection factory class
      * @param conSpecClassName possible connection spec impl class name to try
-     * @param userName         user name to set on the connection spec
-     * @param password         password to set on the connection spec
+     * @param userName user name to set on the connection spec
+     * @param password password to set on the connection spec
      * @return ConnectionSpec instance if successful. Otherwise null.
      */
     @FFDCIgnore(Throwable.class)
@@ -116,22 +115,24 @@ public class ConnectionFactoryValidator implements Validator {
                                              @Sensitive Map<String, Object> props, // @Sensitive prevents auto-FFDC from including password value
                                              Locale locale) {
         final String methodName = "validate";
-        String user = (String) props.get("user");
-        String password = (String) props.get("password");
-        String auth = (String) props.get("auth");
-        String authAlias = (String) props.get("authAlias");
-        String loginConfig = (String) props.get("loginConfig");
+        String user = (String) props.get(USER);
+        String password = (String) props.get(PASSWORD);
+        String auth = (String) props.get(AUTH);
+        String authAlias = (String) props.get(AUTH_ALIAS);
+        String loginConfig = (String) props.get(LOGIN_CONFIG);
+        @SuppressWarnings("unchecked")
+        Map<String, String> loginConfigProps = (Map<String, String>) props.get(LOGIN_CONFIG_PROPS);
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, methodName, user, password == null ? null : "******", auth, authAlias, loginConfig);
+            Tr.entry(this, tc, methodName, user, password == null ? null : "******", auth, authAlias, loginConfig, loginConfigProps == null ? null : loginConfigProps.entrySet());
 
         JMSValidator jmsValidator = null;
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         try {
             ResourceConfig config = null;
-            int authType = "container".equals(auth) ? 0 //
-                            : "application".equals(auth) ? 1 //
+            int authType = AUTH_CONTAINER.equals(auth) ? 0 //
+                            : AUTH_APPLICATION.equals(auth) ? 1 //
                                             : -1;
 
             if (authType >= 0) {
@@ -142,26 +143,13 @@ public class ConnectionFactoryValidator implements Validator {
                 config.setResAuthType(authType);
                 if (authAlias != null)
                     config.addLoginProperty("DefaultPrincipalMapping", authAlias); // set provided auth alias
-                if (loginConfig != null) {
-                    // Add custom login module name and properties
+                if (loginConfig != null)
                     config.setLoginConfigurationName(loginConfig);
-                    String requestBodyString = (String) props.get("json");
-                    JSONObject requestBodyJson = requestBodyString == null ? null : JSONObject.parse(requestBodyString);
-                    if (requestBodyJson != null && requestBodyJson.containsKey("loginConfigProperties")) {
-                        Object loginConfigProperties = requestBodyJson.get("loginConfigProperties");
-                        if (loginConfigProperties instanceof JSONObject) {
-                            JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
-                            for (Object entry : loginConfigProps.entrySet()) {
-                                @SuppressWarnings("unchecked")
-                                Entry<String, Object> e = (Entry<String, Object>) entry;
-                                if (trace && tc.isDebugEnabled())
-                                    Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
-                                Object value = e.getValue();
-                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
-                            }
-                        }
+                if (loginConfigProps != null)
+                    for (Entry<String, String> entry : loginConfigProps.entrySet()) {
+                        Object value = entry.getValue();
+                        config.addLoginProperty(entry.getKey(), value == null ? null : value.toString());
                     }
-                }
             }
 
             Object cf = ((ResourceFactory) instance).createResource(config);
@@ -184,11 +172,11 @@ public class ConnectionFactoryValidator implements Validator {
                 if (interfaces.contains("javax.jms.ConnectionFactory")) { // also covers QueueConnectionFactory and TopicConnectionFactory
                     jmsValidator = getJMSValidator();
                     if (jmsValidator == null)
-                        result.put("failure", "JMS feature is not enabled.");
+                        result.put(FAILURE, Tr.formatMessage(tc, locale, "CWWKO1561_JMS_NOT_ENABLED"));
                     else
                         jmsValidator.validate(cf, user, password, result);
                 } else
-                    result.put("failure", "Validation is not implemented for " + cf.getClass().getName() + " which implements " + interfaces + ".");
+                    result.put(FAILURE, Tr.formatMessage(tc, locale, "CWWKO1560_VALIDATION_NOT_IMPLEMENTED", cf.getClass().getName(), interfaces));
             }
         } catch (Throwable x) {
             ArrayList<String> sqlStates = new ArrayList<String>();
@@ -204,15 +192,16 @@ public class ConnectionFactoryValidator implements Validator {
                 if (cause instanceof ResourceException)
                     errorCode = ((ResourceException) cause).getErrorCode();
                 else if (cause instanceof SQLException) {
-                    errorCode = cause instanceof SQLException ? ((SQLException) cause).getErrorCode() : null;
-                    if (sqlState == null && Integer.valueOf(0).equals(errorCode))
-                        errorCode = null; // Omit, because it is unlikely that the database actually returned an error code of 0
+                    int ec = ((SQLException) cause).getErrorCode();
+                    errorCode = sqlState == null && ec == 0 //
+                                    ? null // Omit, because it is unlikely that the database actually returned an error code of 0
+                                    : Integer.toString(ec);
                 }
                 errorCodes.add(errorCode);
             }
             result.put("sqlState", sqlStates);
-            result.put("errorCode", errorCodes);
-            result.put("failure", x);
+            result.put(FAILURE_ERROR_CODES, errorCodes);
+            result.put(FAILURE, x);
         }
 
         if (trace && tc.isEntryEnabled())
@@ -223,11 +212,11 @@ public class ConnectionFactoryValidator implements Validator {
     /**
      * Validate a connection factory that implements javax.resource.cci.ConnectionFactory.
      *
-     * @param cf       connection factory instance.
-     * @param cfSvc    connection factory service.
-     * @param user     user name, if any, that is specified in the header of the validation request.
+     * @param cf connection factory instance.
+     * @param cfSvc connection factory service.
+     * @param user user name, if any, that is specified in the header of the validation request.
      * @param password password, if any, that is specified in the header of the validation request.
-     * @param result   validation result to which this method appends info.
+     * @param result validation result to which this method appends info.
      * @throws ResourceException if an error occurs.
      */
     private void validateCCIConnectionFactory(ConnectionFactory cf, ConnectionFactoryService cfSvc,
@@ -262,7 +251,7 @@ public class ConnectionFactoryValidator implements Validator {
 
             if (conSpec == null) {
                 // TODO find ConnectionSpec impl another way?
-                throw new RuntimeException("Unable to locate " + ConnectionSpec.class.getName() + " impl from resource adapter.");
+                throw new RuntimeException(Tr.formatMessage(tc, "CWWKO1562_NO_CONSPEC"));
             }
         }
 
@@ -295,7 +284,7 @@ public class ConnectionFactoryValidator implements Validator {
 
                 String userName = conData.getUserName();
                 if (userName != null && userName.length() > 0)
-                    result.put("user", userName);
+                    result.put(USER, userName);
             } catch (NotSupportedException ignore) {
             } catch (UnsupportedOperationException ignore) {
             }
@@ -313,10 +302,10 @@ public class ConnectionFactoryValidator implements Validator {
     /**
      * Validate a connection factory that implements javax.sql.DataSource.
      *
-     * @param ds       data source instance.
-     * @param user     user name, if any, that is specified in the header of the validation request.
+     * @param ds data source instance.
+     * @param user user name, if any, that is specified in the header of the validation request.
      * @param password password, if any, that is specified in the header of the validation request.
-     * @param result   validation result to which this method appends info.
+     * @param result validation result to which this method appends info.
      * @throws SQLException if an error occurs.
      */
     private void validateDataSource(DataSource ds, String user, @Sensitive String password,
@@ -346,12 +335,12 @@ public class ConnectionFactoryValidator implements Validator {
 
             String userName = metadata.getUserName();
             if (userName != null && userName.length() > 0)
-                result.put("user", userName);
+                result.put(USER, userName);
 
             try {
                 boolean isValid = con.isValid(120); // TODO better ideas for timeout value?
                 if (!isValid)
-                    result.put("failure", "FALSE returned by JDBC driver's Connection.isValid operation");
+                    result.put(FAILURE, "java.sql.Connection.isValid: false");
             } catch (SQLFeatureNotSupportedException x) {
             }
         } finally {

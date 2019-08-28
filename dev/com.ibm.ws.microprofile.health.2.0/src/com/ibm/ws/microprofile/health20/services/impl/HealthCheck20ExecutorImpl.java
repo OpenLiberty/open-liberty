@@ -26,7 +26,6 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.ws.microprofile.health.services.impl.AppModuleContextService;
-import com.ibm.ws.microprofile.health20.internal.HealthCheckConstants;
 import com.ibm.ws.microprofile.health20.services.HealthCheck20CDIBeanInvoker;
 import com.ibm.ws.microprofile.health20.services.HealthCheck20Executor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -66,12 +65,6 @@ public class HealthCheck20ExecutorImpl implements HealthCheck20Executor {
         this.j2eeNameFactory = j2eeNameFactory;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Set<HealthCheckResponse> runHealthChecks(String appName, String moduleName) throws HealthCheckBeanCallException {
-        return runHealthChecks(appName, moduleName, HealthCheckConstants.HEALTH_CHECK_ALL);
-    }
-
     @Override
     public Set<HealthCheckResponse> runHealthChecks(String appName, String moduleName, String healthCheckProcedure) throws HealthCheckBeanCallException {
 
@@ -89,7 +82,7 @@ public class HealthCheck20ExecutorImpl implements HealthCheck20Executor {
         HealthCheck20CDIBeanInvoker proxy = appModuleContextService.createContextualProxy(execProps, j2eeName, healthCheckCDIBeanInvoker, HealthCheck20CDIBeanInvoker.class);
 
         try {
-            retval = proxy.checkAllBeans(healthCheckProcedure);
+            retval = proxy.checkAllBeans(appName, moduleName, healthCheckProcedure);
         } catch (HealthCheckBeanCallException e) {
             logger.log(Level.SEVERE, "healthcheck.bean.call.exception.CWMH0050E", new Object[] { e.getBeanName(),
                                                                                                  appName,
@@ -111,4 +104,8 @@ public class HealthCheck20ExecutorImpl implements HealthCheck20Executor {
         return retval;
     }
 
+    @Override
+    public void removeModuleReferences(String appName, String moduleName) {
+        healthCheckCDIBeanInvoker.removeModuleReferences(appName, moduleName);
+    }
 }

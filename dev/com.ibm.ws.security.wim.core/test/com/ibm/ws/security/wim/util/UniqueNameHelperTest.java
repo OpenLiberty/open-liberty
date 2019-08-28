@@ -55,6 +55,7 @@ public class UniqueNameHelperTest {
         /*
          * Test some of the space handling in getValidDN.
          */
+        assertNull(UniqueNameHelper.getValidUniqueName(null));
         assertEquals("uid=user1,dc=ibm,dc=com", UniqueNameHelper.getValidUniqueName("uid=user1,dc=ibm,dc=com"));
         assertEquals("uid=user1 \\ ,dc=ibm,dc=com", UniqueNameHelper.getValidUniqueName("uid=user1 \\ ,dc=ibm,dc=com"));
         assertEquals("uid=user1    \\ ,dc=ibm,dc=com", UniqueNameHelper.getValidUniqueName("uid=user1\\ \\ \\ \\ \\ ,dc=ibm,dc=com"));
@@ -69,6 +70,7 @@ public class UniqueNameHelperTest {
         /*
          * Test some of the space handling in getValidDN.
          */
+        assertNull(UniqueNameHelper.isDN(null));
         assertEquals("uid=user1,dc=ibm,dc=com", UniqueNameHelper.isDN("uid=user1,dc=ibm,dc=com"));
         assertEquals("uid=user1 \\ ,dc=ibm,dc=com", UniqueNameHelper.isDN("uid=user1 \\ ,dc=ibm,dc=com"));
         assertEquals("uid=user1    \\ ,dc=ibm,dc=com", UniqueNameHelper.isDN("uid=user1\\ \\ \\ \\ \\ ,dc=ibm,dc=com"));

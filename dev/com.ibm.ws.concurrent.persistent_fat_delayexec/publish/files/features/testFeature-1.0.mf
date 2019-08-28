@@ -1,0 +1,8 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: testFeature-1.0
+Subsystem-SymbolicName: test.concurrent.persistent.testFeature-1.0; visibility:=public
+Subsystem-Version: 1.0
+Subsystem-Content: test.concurrent.persistent.delayexec;  version="[1,1.0.100)",
+ com.ibm.ws.runtime.update; version="[1,1.0.100)";  type="jar"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

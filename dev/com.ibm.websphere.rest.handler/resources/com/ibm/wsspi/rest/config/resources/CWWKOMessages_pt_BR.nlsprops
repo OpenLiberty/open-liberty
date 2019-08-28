@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.rest.handler/resources/com/ibm/wsspi/rest/config/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Rest Handler
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   that do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1500 to CWWKO1529
+
+CWWKO1500_NOT_FOUND=CWWKO1500E: Nenhuma inst\u00e2ncia configurada do elemento {0} foi localizada na configura\u00e7\u00e3o do servidor.
+CWWKO1500_NOT_FOUND.explanation=O elemento de configura\u00e7\u00e3o solicitado n\u00e3o foi localizado no arquivo server.xml.
+CWWKO1500_NOT_FOUND.useraction=Verifique se o elemento de configura\u00e7\u00e3o existe no arquivo server.xml e se ele foi digitado corretamente com mai\u00fasculas e min\u00fasculas correspondentes.
+
+CWWKO1501_INVALID_IDENTIFIER=CWWKO1501E: O identificador exclusivo {0} n\u00e3o \u00e9 v\u00e1lido. O identificador exclusivo correto pode ser: {1}.
+CWWKO1501_INVALID_IDENTIFIER.explanation=Um elemento configurado com o identificador exclusivo solicitado n\u00e3o foi localizado. Uma inst\u00e2ncia com um identificador exclusivo diferente foi localizada e ser\u00e1 relatada caso ela seja a que voc\u00ea estava procurando.
+CWWKO1501_INVALID_IDENTIFIER.useraction=Determine o identificador exclusivo correto. Para elementos de configura\u00e7\u00e3o de n\u00edvel superior com um atributo de ID especificado, o identificador exclusivo \u00e9 o valor do atributo de ID. Caso contr\u00e1rio, o identificador exclusivo ser\u00e1 gerado pelo servidor.
+
+CWWKO1502_MULTIPLE_FOUND=CWWKO1502E: Um identificador exclusivo conflitante, {0}, \u00e9 especificado ou calculado para diversas inst\u00e2ncias configuradas.
+CWWKO1502_MULTIPLE_FOUND.explanation=Um identificador exclusivo pode ser usado apenas uma vez.
+CWWKO1502_MULTIPLE_FOUND.useraction=Atualize a configura\u00e7\u00e3o do servidor para incluir ou modificar os atributos de ID das inst\u00e2ncias configuradas para que cada identificador exclusivo seja usado apenas uma vez.

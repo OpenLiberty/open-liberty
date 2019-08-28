@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,28 +30,31 @@ public class LogTraceData extends GenericData {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
     }
 
-    private final static String[] NAMES1_1 = {
-                                               LogFieldConstants.IBM_DATETIME,
-                                               LogFieldConstants.IBM_MESSAGEID,
-                                               LogFieldConstants.IBM_THREADID,
-                                               LogFieldConstants.MODULE,
-                                               LogFieldConstants.SEVERITY,
-                                               LogFieldConstants.LOGLEVEL,
-                                               LogFieldConstants.IBM_METHODNAME,
-                                               LogFieldConstants.IBM_CLASSNAME,
-                                               LogFieldConstants.LEVELVALUE,
-                                               LogFieldConstants.THREADNAME,
-                                               LogFieldConstants.CORRELATION_ID,
-                                               LogFieldConstants.ORG,
-                                               LogFieldConstants.PRODUCT,
-                                               LogFieldConstants.COMPONENT,
-                                               LogFieldConstants.IBM_SEQUENCE,
-                                               LogFieldConstants.THROWABLE,
-                                               LogFieldConstants.THROWABLE_LOCALIZED,
-                                               LogFieldConstants.MESSAGE,
-                                               LogFieldConstants.FORMATTEDMSG,
-                                               LogFieldConstants.EXTENSIONS_KVPL,
-                                               LogFieldConstants.OBJECT_ID
+    public final static String[] NAMES1_1 = {
+                                              LogFieldConstants.IBM_DATETIME,
+                                              LogFieldConstants.IBM_MESSAGEID,
+                                              LogFieldConstants.IBM_THREADID,
+                                              LogFieldConstants.MODULE,
+                                              LogFieldConstants.SEVERITY,
+                                              LogFieldConstants.LOGLEVEL,
+                                              LogFieldConstants.IBM_METHODNAME,
+                                              LogFieldConstants.IBM_CLASSNAME,
+                                              LogFieldConstants.LEVELVALUE,
+                                              LogFieldConstants.THREADNAME,
+                                              LogFieldConstants.CORRELATION_ID,
+                                              LogFieldConstants.ORG,
+                                              LogFieldConstants.PRODUCT,
+                                              LogFieldConstants.COMPONENT,
+                                              LogFieldConstants.IBM_SEQUENCE,
+                                              LogFieldConstants.THROWABLE,
+                                              LogFieldConstants.THROWABLE_LOCALIZED,
+                                              LogFieldConstants.MESSAGE,
+                                              LogFieldConstants.FORMATTEDMSG,
+                                              LogFieldConstants.EXTENSIONS_KVPL,
+                                              LogFieldConstants.OBJECT_ID,
+                                              LogFieldConstants.HOST,
+                                              LogFieldConstants.IBM_USERDIR,
+                                              LogFieldConstants.IBM_SERVERNAME
     };
 
     private final static String[] NAMES = {
@@ -75,6 +80,72 @@ public class LogTraceData extends GenericData {
                                             LogFieldConstants.EXTENSIONS_KVPL,
                                             LogFieldConstants.OBJECT_ID
     };
+
+    public static String[] MESSAGE_NAMES1_1 = {
+                                                LogFieldConstants.IBM_DATETIME,
+                                                LogFieldConstants.IBM_MESSAGEID,
+                                                LogFieldConstants.IBM_THREADID,
+                                                LogFieldConstants.MODULE,
+                                                LogFieldConstants.SEVERITY,
+                                                LogFieldConstants.LOGLEVEL,
+                                                LogFieldConstants.IBM_METHODNAME,
+                                                LogFieldConstants.IBM_CLASSNAME,
+                                                LogFieldConstants.LEVELVALUE,
+                                                LogFieldConstants.THREADNAME,
+                                                LogFieldConstants.CORRELATION_ID,
+                                                LogFieldConstants.ORG,
+                                                LogFieldConstants.PRODUCT,
+                                                LogFieldConstants.COMPONENT,
+                                                LogFieldConstants.IBM_SEQUENCE,
+                                                LogFieldConstants.THROWABLE,
+                                                LogFieldConstants.THROWABLE_LOCALIZED,
+                                                LogFieldConstants.MESSAGE,
+                                                LogFieldConstants.FORMATTEDMSG,
+                                                LogFieldConstants.EXTENSIONS_KVPL,
+                                                LogFieldConstants.OBJECT_ID,
+                                                LogFieldConstants.HOST,
+                                                LogFieldConstants.IBM_USERDIR,
+                                                LogFieldConstants.IBM_SERVERNAME
+    };
+
+    public static String[] TRACE_NAMES1_1 = {
+                                              LogFieldConstants.IBM_DATETIME,
+                                              LogFieldConstants.IBM_MESSAGEID,
+                                              LogFieldConstants.IBM_THREADID,
+                                              LogFieldConstants.MODULE,
+                                              LogFieldConstants.SEVERITY,
+                                              LogFieldConstants.LOGLEVEL,
+                                              LogFieldConstants.IBM_METHODNAME,
+                                              LogFieldConstants.IBM_CLASSNAME,
+                                              LogFieldConstants.LEVELVALUE,
+                                              LogFieldConstants.THREADNAME,
+                                              LogFieldConstants.CORRELATION_ID,
+                                              LogFieldConstants.ORG,
+                                              LogFieldConstants.PRODUCT,
+                                              LogFieldConstants.COMPONENT,
+                                              LogFieldConstants.IBM_SEQUENCE,
+                                              LogFieldConstants.THROWABLE,
+                                              LogFieldConstants.THROWABLE_LOCALIZED,
+                                              LogFieldConstants.MESSAGE,
+                                              LogFieldConstants.FORMATTEDMSG,
+                                              LogFieldConstants.EXTENSIONS_KVPL,
+                                              LogFieldConstants.OBJECT_ID,
+                                              LogFieldConstants.HOST,
+                                              LogFieldConstants.IBM_USERDIR,
+                                              LogFieldConstants.IBM_SERVERNAME
+    };
+
+    private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
+
+    public static void newJsonLoggingNameAliasesMessage(Map<String, String> newAliases) {
+        jsonLoggingNameAliasesMessages.newAliases(newAliases);
+    }
+
+    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
+
+    public static void newJsonLoggingNameAliasesTrace(Map<String, String> newAliases) {
+        jsonLoggingNameAliasesTrace.newAliases(newAliases);
+    }
 
     public LogTraceData() {
         super(21);
@@ -346,6 +417,123 @@ public class LogTraceData extends GenericData {
 
     public String getObjectIdKey1_1() {
         return NAMES1_1[20];
+    }
+
+    public static String getDatetimeKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[0] : jsonLoggingNameAliasesTrace.aliases[0];
+    }
+
+    public static String getMessageIdKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[1] : jsonLoggingNameAliasesTrace.aliases[1];
+    }
+
+    public static String getThreadIdKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[2] : jsonLoggingNameAliasesTrace.aliases[2];
+    }
+
+    public static String getModuleKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[3] : jsonLoggingNameAliasesTrace.aliases[3];
+    }
+
+    public static String getSeverityKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[4] : jsonLoggingNameAliasesTrace.aliases[4];
+    }
+
+    public static String getLoglevelKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[5] : jsonLoggingNameAliasesTrace.aliases[5];
+    }
+
+    public static String getMethodNameKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[6] : jsonLoggingNameAliasesTrace.aliases[6];
+    }
+
+    public static String getClassNameKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[7] : jsonLoggingNameAliasesTrace.aliases[7];
+    }
+
+    public static String getLevelValueKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[8] : jsonLoggingNameAliasesTrace.aliases[8];
+    }
+
+    public static String getThreadNameKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[9] : jsonLoggingNameAliasesTrace.aliases[9];
+    }
+
+    public static String getCorrelationIdKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[10] : jsonLoggingNameAliasesTrace.aliases[10];
+    }
+
+    public static String getOrgKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[11] : jsonLoggingNameAliasesTrace.aliases[11];
+    }
+
+    public static String getProductKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[12] : jsonLoggingNameAliasesTrace.aliases[12];
+    }
+
+    public static String getComponentKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[13] : jsonLoggingNameAliasesTrace.aliases[13];
+    }
+
+    public static String getSequenceKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[14] : jsonLoggingNameAliasesTrace.aliases[14];
+    }
+
+    public static String getThrowableKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[15] : jsonLoggingNameAliasesTrace.aliases[15];
+    }
+
+    public static String getThrowableLocalizedKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[16] : jsonLoggingNameAliasesTrace.aliases[16];
+    }
+
+    public static String getMessageKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[17] : jsonLoggingNameAliasesTrace.aliases[17];
+    }
+
+    public static String getFormattedMsgKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[18] : jsonLoggingNameAliasesTrace.aliases[18];
+    }
+
+    public static String getExtensionsKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[19] : jsonLoggingNameAliasesTrace.aliases[19];
+    }
+
+    public static String getObjectIdKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[20] : jsonLoggingNameAliasesTrace.aliases[20];
+    }
+
+    public static String getHostKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[21] : jsonLoggingNameAliasesTrace.aliases[21];
+    }
+
+    public static String getUserDirKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[22] : jsonLoggingNameAliasesTrace.aliases[22];
+    }
+
+    public static String getServerNameKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[23] : jsonLoggingNameAliasesTrace.aliases[23];
+    }
+
+    public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
+        ArrayList<String> tempExt = null;
+        ArrayList<String> aliasesExt = null;
+        if (isMessageEvent) {
+            tempExt = jsonLoggingNameAliasesMessages.originalExtensions;
+            aliasesExt = jsonLoggingNameAliasesMessages.aliasesExtensions;
+
+        } else {
+            tempExt = jsonLoggingNameAliasesTrace.originalExtensions;
+            aliasesExt = jsonLoggingNameAliasesTrace.aliasesExtensions;
+
+        }
+        for (int i = 0; i < tempExt.size(); i++) {
+            if (tempExt.get(i).equals(extKey)) {
+                return aliasesExt.get(i);
+            }
+        }
+        return extKey;
+
     }
 
     public long getDatetime() {

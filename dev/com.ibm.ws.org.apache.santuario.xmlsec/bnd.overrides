@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.apache.santuario.xmlsec
+Bundle-Description: org.apache.santuario xmlsec; version=1.5.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.santuario.xmlsec.1.5.2
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: XMLSEC
+
+Export-Package: \
+ org.apache.xml.security.*,\
+ org.apache.jcp.xml.dsig.internal.*
+
+Import-Package: \
+ org.apache.commons.logging;resolution:=optional, \
+ org.apache.xml.dtm*;resolution:=optional, \
+ org.apache.xml.utils*;resolution:=optional,\
+ org.apache.xpath*;resolution:=optional, \
+ *
+ 
+Include-Resource: \
+ @${repo;org.apache.santuario:xmlsec;1.5.2}!/META-INF/**, \
+ @${repo;org.apache.santuario:xmlsec;1.5.2}!/templates/**, \
+ @${repo;org.apache.santuario:xmlsec;1.5.2}!/schemas/**, \
+ @${repo;org.apache.santuario:xmlsec;1.5.2}!/*xml
+
+DynamicImport-Package:
+
+Build-Jdk:
+Built-By:
+Bundle-DocURL:
+Bundle-License:
+Implementation-Title:
+Implementation-Vendor:
+Implementation-Vendor-Id:
+Implementation-Version:
+Specification-Title:
+Specification-Vendor:
+Specification-Version:

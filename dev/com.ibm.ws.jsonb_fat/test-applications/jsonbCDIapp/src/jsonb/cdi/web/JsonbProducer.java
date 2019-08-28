@@ -21,7 +21,8 @@ public class JsonbProducer {
     @Produces
     @ApplicationScoped
     public Jsonb produceJsonb() {
-        System.out.println("JsonbProducer.produceJsonb() invoked");
+        Jsonb created = JsonbBuilder.create();
+        System.out.println("JsonbProducer.produceJsonb() invoked. Using provider: " + created.getClass());
         return JsonbBuilder.create();
     }
 

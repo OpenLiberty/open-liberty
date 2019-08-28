@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse.State;
 
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.health.internal.HealthCheckHttpResponseBuilder;
@@ -33,16 +32,14 @@ public class HealthCheck20HttpResponseBuilder extends HealthCheckHttpResponseBui
         httpResponse.setHeader(HealthCheckConstants.HTTP_HEADER_CONTENT_TYPE, HealthCheckConstants.MEDIA_TYPE_APPLICATION_JSON);
         HashMap<String, Object> payload = new HashMap<String, Object>();
 
-        // No health check procedure found
-        if (checks.isEmpty()) {
-            httpResponse.setStatus(200);
-            payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, State.UP);
-        } else { // health check state is UP or DOWN
-            payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallState);
-            httpResponse.setStatus(overallState == State.UP ? 200 : 503);
-        }
+        // Set the HTTP Response code
+        httpResponse.setStatus(overallState == State.UP ? 200 : 503);
 
+        // Populate the payload with the overall status and checks array
+        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallState);
         payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, checks.toArray());
+
+        // Convert it into a JSON payload
         setJSONPayload(payload, httpResponse);
     }
 

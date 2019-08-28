@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: Validation is not provided for configuration elements of type {0}.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=The specified type of configuration element does not have the ability to validate its configuration.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=Do not attempt to validate this type of configuration element.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: One or more dependencies are not satisfied, or the feature that enables the resource is not enabled, or it is not possible to validate this type of resource.
+CWWKO1551_CANNOT_VALIDATE.explanation=The validation request for the specified configuration cannot be completed. This could be due to an unsatisfied dependency, a missing feature that enables a configuration element, or the configuration element might not support validation.
+CWWKO1551_CANNOT_VALIDATE.useraction=Verify that the feature that provides the configuration element is enabled, there are no missing dependencies, and the configuration element supports validation.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: The X-Login-Config-Props header requires an equals sign character (=) as a delimiter between the login configuration property name and value.
+CWWKO1552_MISSING_DELIMITER.explanation=The equals sign delimiter is necessary to determine which part of the X-Login-Config-Props header is the login configuration property name and which part is the value.
+CWWKO1552_MISSING_DELIMITER.useraction=Update the X-Login-Config-Props header to include an equals sign (=) between the login configuration property name and value.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: There are no registered handlers that match the requested URL {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=An attempt was made to access a URL that did not match any of the registered handlers.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Correct the URL to match a registered handler.

@@ -219,12 +219,9 @@ public class JAXRSClientImpl extends ClientImpl {
         return new WebTargetImpl(wt.getUriBuilder(), wt.getConfiguration(), targetClient);
     }
 
-    /**
-     * make the cxf ClientImpl.close works, and we should close all clients too
-     */
-    @Override
-    public void close() {
-        if (closed.compareAndSet(false, true)) {
+    private boolean doClose() {
+        boolean notClosed = closed.compareAndSet(false, true);
+        if (notClosed) {
             super.close();
             synchronized (baseClients) {
                 for (WebClient wc : baseClients) {
@@ -232,6 +229,17 @@ public class JAXRSClientImpl extends ClientImpl {
                 }
             }
 
+            baseClients = null;
+        }
+        return notClosed;
+    }
+
+    /**
+     * make the cxf ClientImpl.close works, and we should close all clients too
+     */
+    @Override
+    public void close() {
+        if (doClose()) {
             String moduleName = getModuleName();
             synchronized (clientsPerModule) {
                 List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
@@ -248,8 +256,26 @@ public class JAXRSClientImpl extends ClientImpl {
                     }
                 }
             }
+        }
+    }
 
-            baseClients = null;
+    public static void closeClients(ModuleMetaData mmd) {
+        String moduleName = getModuleName(mmd);
+        List<JAXRSClientImpl> clients = null;
+        synchronized (clientsPerModule) {
+            clients = clientsPerModule.remove(moduleName);
+        }
+        if (clients != null) {
+            for (JAXRSClientImpl client : clients) {
+                client.doClose();
+            }
+            synchronized (clientsPerModule) {
+                for (String id : busCache.keySet()) {
+                    if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
+                        busCache.remove(id).shutdown(false);
+                    }
+                }
+            }
         }
     }
 
@@ -276,10 +302,14 @@ public class JAXRSClientImpl extends ClientImpl {
         if (cmd != null) {
             ModuleMetaData mmd = cmd.getModuleMetaData();
             if (mmd != null) {
-                return mmd.getName() + ":";
+                return getModuleName(mmd);
             }
         }
         return "unknown:";
+    }
+
+    private static String getModuleName(ModuleMetaData mmd) {
+        return mmd.getName() + ":";
     }
 
     private void checkClosed() {

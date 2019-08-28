@@ -101,7 +101,7 @@ public class MixCompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntTxAttr() throws Exception {
+    public void testCompIntTxAttr_MixCompCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         CMTStatelessEJB bean = slHome.create();
@@ -144,7 +144,7 @@ public class MixCompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntTxAttr() throws Exception {
+    public void testBizIntTxAttr_MixCompCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         assertNotNull("1 ---> SLRSB created successfully.", bizBean);
@@ -184,7 +184,7 @@ public class MixCompCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntTxAttrNoBizInt() throws Exception {
+    public void testCompIntTxAttrNoBizInt_MixCompCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         CMTStatelessEJB bean = slHomeNoBiz.create();

@@ -12,7 +12,7 @@
 /**
  * This package contains the SPI for the rest handler framework.
  *
- * @version 1.6
+ * @version 1.7
  */
-@org.osgi.annotation.versioning.Version("1.6")
+@org.osgi.annotation.versioning.Version("1.7")
 package com.ibm.wsspi.rest.handler;

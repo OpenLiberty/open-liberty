@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+#statements
+pidDir=/var/run/openliberty
+if ( ls $pidDir/*.pid > /dev/null 2>&1 ); then 
+    printf "Your server(s) are still running. Stop them before uninstalling/upgrading!\n"
+    for pidFiles in $pidDir/*.pid
+    do
+        server=$(basename $pidFiles)
+        serverName="${server%.*}"
+        echo "Server - $serverName with process id $(cat $pidFiles)"
+    done
+    exit 1
+fi
+#DEBHELPER#
+exit 0

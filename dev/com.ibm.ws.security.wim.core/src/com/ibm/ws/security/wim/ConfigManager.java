@@ -12,7 +12,10 @@
 package com.ibm.ws.security.wim;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,6 +98,8 @@ public class ConfigManager {
      * Map to store the default RDN Mappings
      */
     private Map<String, Map<String, String[]>> defaultEntityMap = null;
+
+    private RepositoryManager repositoryManager = null;
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
@@ -277,7 +282,13 @@ public class ConfigManager {
         return isAllowOpIfRepoDown;
     }
 
-    public String getDefaultRealmName() {
+    /**
+     * Get the configured primary realm name. This will return a value only if there is a 'primaryRealm'
+     * configured.
+     *
+     * @return The configured primary realm name, if one is configured. Otherwise; null.
+     */
+    public String getConfiguredPrimaryRealmName() {
         String defaultRealmName = null;
         if (realmNameToRealmConfigMap != null) {
             for (RealmConfig realmCfg : realmNameToRealmConfigMap.values()) {
@@ -294,7 +305,7 @@ public class ConfigManager {
 
     @Trivial
     public RealmConfig getDefaultRealmConfig() {
-        return getRealmConfig(getDefaultRealmName());
+        return getRealmConfig(getConfiguredPrimaryRealmName());
     }
 
     public boolean isUniqueNameInRealm(String uniqueName, String realmName) throws InvalidArgumentException {
@@ -324,12 +335,10 @@ public class ConfigManager {
     }
 
     private void validateRealmName(String realmName) throws InvalidArgumentException {
-        Set realms = getRealmNames();
+        Set<?> realms = getRealmNames();
         if (realmName != null && realms != null && !realms.contains(realmName)) {
-            throw new InvalidArgumentException(WIMMessageKey.INVALID_REALM_NAME, Tr.formatMessage(
-                                                                                                  tc,
-                                                                                                  WIMMessageKey.INVALID_REALM_NAME,
-                                                                                                  WIMMessageHelper.generateMsgParms(realmName)));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_REALM_NAME, WIMMessageHelper.generateMsgParms(realmName));
+            throw new InvalidArgumentException(WIMMessageKey.INVALID_REALM_NAME, msg);
         }
     }
 
@@ -348,8 +357,66 @@ public class ConfigManager {
 
     }
 
+    /**
+     * Get all the realm names. This will return a set of one of the following either:
+     *
+     * <ol>
+     * <li>The configured realm names.</li>
+     * <li>The first federated repository's realm name.</li>
+     * <li>The default realm name.</li>
+     * </ol>
+     *
+     * @return The set of valid realm names.
+     * @see #getConfiguredRealmNames()
+     */
     public Set<String> getRealmNames() {
-        return realmNameToRealmConfigMap.keySet();
+
+        Set<String> results = null;
+
+        /*
+         * Were there any realms defined?
+         */
+        Set<String> configuredRealmNames = getConfiguredRealmNames();
+        if (configuredRealmNames != null && !configuredRealmNames.isEmpty()) {
+            results = configuredRealmNames;
+        }
+
+        /*
+         * If no realms were defined, then use the first federated repository's realm name.
+         */
+        if (results == null) {
+            String realmName = null;
+            List<String> repoIds = repositoryManager.getRepoIds();
+            if (repoIds != null && !repoIds.isEmpty()) {
+                Repository repository = repositoryManager.getRepository(repoIds.get(0));
+                if (repository != null) {
+                    realmName = repository.getRealm();
+                }
+            }
+
+            if (realmName != null) {
+                results = new HashSet<String>(Arrays.asList(new String[] { realmName }));
+            }
+        }
+
+        /*
+         * If we still have no realms, use the default realm name.
+         */
+        if (results == null) {
+            results = new HashSet<String>(Arrays.asList(new String[] { ProfileManager.DEFAULT_REALM_NAME }));
+        }
+
+        return results;
+    }
+
+    /**
+     * Get only the configured realm names.
+     *
+     * @return The set of valid realm names.
+     * @see #getRealmNames()
+     */
+    public Set<String> getConfiguredRealmNames() {
+        return Collections.unmodifiableSet(realmNameToRealmConfigMap.keySet());
     }
 
     public void registerRealmConfigChangeListener(RealmConfigChangeListener listener) {
@@ -370,9 +437,9 @@ public class ConfigManager {
             validateRealmName(realmName);
             String parent = null;
             RealmConfig realmConfig = getRealmConfig(realmName);
-            Map defaultParentsMap = realmConfig.getDefaultParentMapping();
+            Map<String, String> defaultParentsMap = realmConfig.getDefaultParentMapping();
             if (defaultParentsMap != null) {
-                parent = (String) defaultParentsMap.get(entType);
+                parent = defaultParentsMap.get(entType);
                 if (parent != null) {
                     defaultParent = parent;
                 }
@@ -417,5 +484,14 @@ public class ConfigManager {
             return (Long) config.get(PAGE_CACHE_TIMEOUT);
         else
             return DEFAULT_PAGE_CACHE_TIMEOUT;
+    }
+
+    /**
+     * Set the {@link RepositoryManager} instance.
+     *
+     * @param repositoryManager The {@link RepositoryManager} instance.
+     */
+    void setRepositoryManager(RepositoryManager repositoryManager) {
+        this.repositoryManager = repositoryManager;
     }
 }

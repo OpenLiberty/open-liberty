@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1303,8 +1303,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     public WebReply performInitialChecks(WebRequest webRequest, String uriName) {
         WebReply webReply = null;
-        HttpServletRequest req = webRequest.getHttpServletRequest();
-        String methodName = req.getMethod();
 
         if (uriName == null || uriName.length() == 0) {
             return new DenyReply("Invalid URI passed to Security Collaborator.");
@@ -1314,11 +1312,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return new DenyReply("Authentication Failed : DIGEST not supported");
         }
 
+        HttpServletRequest req = webRequest.getHttpServletRequest();
         if (wasch.isSSLRequired(webRequest, uriName)) {
             return httpsRedirectHandler.getHTTPSRedirectWebReply(req);
         }
 
-        webReply = unprotectedSpecialURI(webRequest, uriName, methodName);
+        webReply = unprotectedSpecialURI(webRequest, uriName, req.getMethod());
         if (webReply != null) {
             return webReply;
         }
@@ -1335,10 +1334,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     private boolean shouldWePerformTAIForUnProtectedURI(WebRequest webRequest) {
-        if (taiServiceRef.getService() != null) {
-            return taiServiceRef.getService().isInvokeForUnprotectedURI();
-        } else
+        if (taiServiceRef.getService() != null && taiServiceRef.getService().isInvokeForUnprotectedURI()) {
+            webRequest.setPerformTAIForUnProtectedURI(true);
+            return true;
+        } else {
             return false;
+        }
     }
 
     /**
@@ -1360,8 +1361,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     private MatchResponse getMatchResponse(HttpServletRequest req) throws SecurityViolationException {
-
         MatchResponse matchResponse = MatchResponse.NO_MATCH_RESPONSE;
+
         if (req != null) {
             String method = req.getMethod();
             String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
@@ -1373,11 +1374,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             }
             if (MatchResponse.CUSTOM_NO_MATCH_RESPONSE.equals(matchResponse)) {
                 String url = getRequestURL(req);
-                throw new SecurityViolationException(TraceNLS.getFormattedMessage(this.getClass(),
-                                                                                  TraceConstants.MESSAGE_BUNDLE,
-                                                                                  "SEC_WEB_ILLEGAL_REQUEST",
-                                                                                  new Object[] { method, url },
-                                                                                  "CWWKS9117E: The method {0} is not allowed to process for URL {1}. If this error is unexpected, ensure that the application allows the methods that the client is requesting."), HttpServletResponse.SC_FORBIDDEN);
+                String formattedMessage = TraceNLS.getFormattedMessage(this.getClass(),
+                                                                       TraceConstants.MESSAGE_BUNDLE,
+                                                                       "SEC_WEB_ILLEGAL_REQUEST",
+                                                                       new Object[] { method, url },
+                                                                       "CWWKS9117E: The method {0} is not allowed to process for URL {1}. If this error is unexpected, ensure that the application allows the methods that the client is requesting.");
+                throw convertWebSecurityException(new WebSecurityCollaboratorException(formattedMessage, DENY_AUTHZ_FAILED));
             }
         }
         return matchResponse;

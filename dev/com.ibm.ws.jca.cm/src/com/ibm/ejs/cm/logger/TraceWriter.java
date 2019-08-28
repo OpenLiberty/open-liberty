@@ -111,5 +111,5 @@ public class TraceWriter extends StringWriter {
     private final TraceComponent destination;
 
     /** Trace component */
-    private static final TraceComponent tc = Tr.register(TraceWriter.class, null);
+    private static final TraceComponent tc = Tr.register(TraceWriter.class,null);
 }

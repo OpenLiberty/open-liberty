@@ -37,13 +37,7 @@ Import-Package: \
 Export-Package: \
 	com.ibm.ws.opentracing;version=1.1,\
 	com.ibm.ws.opentracing.filters;version=1.1,\
-	com.ibm.ws.opentracing.tracer;version=1.1;provide=true,\
-	io.opentracing;version=0.31.0,\
-	io.opentracing.log;version=0.31.0,\
-	io.opentracing.propagation;version=0.31.0,\
-	io.opentracing.tag;version=0.31.0,\
-    io.opentracing.util;version=0.31.0,\
-    io.opentracing.noop;version=0.31.0
+	com.ibm.ws.opentracing.tracer;version=1.1;provide=true
                 
 Private-Package: com.ibm.ws.opentracing.resources
 

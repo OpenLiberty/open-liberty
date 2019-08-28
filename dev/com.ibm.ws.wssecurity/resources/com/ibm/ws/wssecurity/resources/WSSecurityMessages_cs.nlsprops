@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: Zabezpe\u010den\u00ed WS-Security nelze pou\u017e\u00edt pro \u017e\u00e1dnou webovou slu\u017ebu. P\u0159i pokusu o zaregistrov\u00e1n\u00ed zavad\u011b\u010de z\u00e1sady WS-Security s r\u00e1mcem CXF do\u0161lo k chyb\u011b: [{0}]
+error.policy.notloaded.explanation=Zavad\u011b\u010d z\u00e1sady WS-Security nebylo mo\u017en\u00e9 b\u011bhem spou\u0161t\u011bn\u00ed serveru zaregistrovat s r\u00e1mcem CXF. Z d\u016fvodu chyby nebude pro \u017e\u00e1dn\u00e9 zpr\u00e1vy SOAP vyvol\u00e1no b\u011bhov\u00e9 prost\u0159ed\u00ed WS-Security ani nebudou p\u0159id\u00e1ny omezen\u00ed WS-Security.
+error.policy.notloaded.useraction=Vy\u0159e\u0161te chybu popsanou ve zpr\u00e1v\u011b.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: Zabezpe\u010den\u00ed WS-Security nelze pou\u017e\u00edt pro \u017e\u00e1dnou aplikaci klienta webov\u00e9 slu\u017eby. Konfigura\u010dn\u00ed prvek klienta wsSecurityClient zabezpe\u010den\u00ed WS-Security v souboru server.xml neexistuje.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=Funkce wsSecurity-1.1 je povolen\u00e1, ale komponenta zabezpe\u010den\u00ed WS-Security nem\u016f\u017ee naj\u00edt prvek wsSecurityClient v souboru server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Pokud jsou pro aplikaci klienta webov\u00fdch slu\u017eeb vy\u017eadov\u00e1na omezen\u00ed zabezpe\u010den\u00ed WS-Security, p\u0159idejte do souboru server.xml po\u017eadovan\u00fd konfigura\u010dn\u00ed prvek wsSecurityClient.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: Zabezpe\u010den\u00ed WS-Security nelze pou\u017e\u00edt pro \u017e\u00e1dnou aplikaci poskytovatele webov\u00e9 slu\u017eby. Konfigura\u010dn\u00ed prvek poskytovatele wsSecurityProvider zabezpe\u010den\u00ed WS-Security v souboru server.xml neexistuje.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=Funkce wsSecurity-1.1 je povolen\u00e1, ale komponenta zabezpe\u010den\u00ed WS-Security nem\u016f\u017ee naj\u00edt prvek wsSecurityProvider v souboru server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Pokud jsou pro aplikaci poskytovatele webov\u00fdch slu\u017eeb vy\u017eadov\u00e1na omezen\u00ed zabezpe\u010den\u00ed WS-Security, p\u0159idejte do souboru server.xml po\u017eadovan\u00fd konfigura\u010dn\u00ed prvek wsSecurityProvider.
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Pro aplikace poskytovatele webov\u00fdch slu\u017eeb nelze pou\u017e\u00edt konfiguraci tokenu volaj\u00edc\u00edho. N\u00e1zev [{0}] zadan\u00fd pro prvek tokenu callerToken v konfiguraci wsSecurityProvider v souboru server.xml nen\u00ed platn\u00fd. Platn\u00e9 hodnoty jsou: [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=N\u00e1zev zadan\u00fd pro prvek tokenu callerToken v konfiguraci wsSecurityProvider v souboru server.xml nen\u00ed platn\u00fd.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=Zkontrolujte soubor server.xml a ov\u011b\u0159te zde, \u017ee pro prvek tokenu callerToken je zad\u00e1na podporovan\u00e1 hodnota. Platn\u00e9 hodnoty jsou zobrazeny v chybov\u00e9 zpr\u00e1v\u011b.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: Pro webovou slu\u017ebu nelze vytvo\u0159it p\u0159edm\u011bt zabezpe\u010den\u00ed. V p\u0159\u00edchoz\u00ed zpr\u00e1v\u011b nelze identifikovat token callerToken, proto\u017ee v z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP existuje v\u00edce ne\u017e jeden token jm\u00e9na u\u017eivatele UsernameToken.
+multiple_unt_exist_err.explanation=Token callerToken v souboru security.xml je nastaven na token jm\u00e9na u\u017eivatele UsernameToken a z\u00e1hlav\u00ed zabezpe\u010den\u00ed v p\u0159\u00edchoz\u00ed zpr\u00e1v\u011b SOAP obsahuje v\u00edce ne\u017e jeden token UsernameToken. Z tohoto d\u016fvodu nem\u016f\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed zabezpe\u010den\u00ed WS-Security ur\u010dit, kter\u00fd token UsernameToken pou\u017e\u00edt pro token volaj\u00edc\u00edho.
+multiple_unt_exist_err.useraction=Prove\u010fte jednu z t\u011bchto mo\u017enost\u00ed: 1) Zm\u011b\u0148te konfiguraci klienta tak, aby odes\u00edlal pouze jeden token UsernameToken, 2) Odeberte konfiguraci tokenu callerToken ze souboru server.xml.
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E: Pro webovou slu\u017ebu nelze vytvo\u0159it p\u0159edm\u011bt zabezpe\u010den\u00ed. Token callerToken {0} je nakonfigurov\u00e1n, v p\u0159\u00edchoz\u00edm z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP se v\u0161ak nenach\u00e1z\u00ed \u017e\u00e1dn\u00fd token {0}. Nelze vybrat token volaj\u00edc\u00edho.
+no_caller_exist_err.explanation=Token callerToken konfigurovan\u00fd v souboru server.xml nen\u00ed v z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP. 
+no_caller_exist_err.useraction=Prove\u010fte jednu z t\u011bchto mo\u017enost\u00ed: 1) Zm\u011b\u0148te konfiguraci klienta tak, aby odes\u00edlal spr\u00e1vn\u00fd token volaj\u00edc\u00edho, 2) Odeberte konfiguraci tokenu callerToken ze souboru server.xml.
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: Pro webovou slu\u017ebu nelze vytvo\u0159it p\u0159edm\u011bt zabezpe\u010den\u00ed. P\u0159\u00ed\u010dina: [{0}]
+error_authenticate.explanation=P\u0159edm\u011bt zabezpe\u010den\u00ed pro token volaj\u00edc\u00edho p\u0159ijat\u00e9ho ze z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP nelze vytvo\u0159it. P\u0159\u00ed\u010dina chyby je popsan\u00e1 ve zpr\u00e1v\u011b.
+error_authenticate.useraction=Vy\u0159e\u0161te chybu popsanou ve zpr\u00e1v\u011b.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: Pro webovou slu\u017ebu nelze vytvo\u0159it p\u0159edm\u011bt zabezpe\u010den\u00ed. V p\u0159\u00edchoz\u00ed zpr\u00e1v\u011b nelze identifikovat token volaj\u00edc\u00edho. Token callerToken v souboru server.xml je nastaven na hodnotu X509Token, token endorsingSupportingToken je nastaven na hodnotu true (v\u00fdchoz\u00ed), a v p\u0159\u00edchoz\u00edm z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP existuje v\u00edce ne\u017e jeden token EndorsingSupportingTokens.
+multiple_endorsing_token_err.explanation=Token callerToken v souboru server.xml je nastaven na hodnotu X509Token, token endorsingSupportingToken je nastaven na hodnotu true (v\u00fdchoz\u00ed), a v p\u0159\u00edchoz\u00edm z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP existuje v\u00edce ne\u017e jeden token EndorsingSupportingTokens. Proto\u017ee ve zpr\u00e1v\u011b mus\u00ed b\u00fdt pouze jeden token volaj\u00edc\u00edho, aby mohl b\u00fdt mohl b\u00fdt tento token \u00fasp\u011b\u0161n\u011b vybr\u00e1n, nen\u00ed v\u00edce token\u016f EndorsingSupportingToken povoleno. 
+multiple_endorsing_token_err.useraction=Prove\u010fte jednu z t\u011bchto mo\u017enost\u00ed: 1) Zm\u011b\u0148te z\u00e1sadu tak, aby byl ve zpr\u00e1v\u011b obsa\u017een pouze jeden token endorsingSupportingToken, 2) Odeberte konfiguraci tokenu callerToken ze souboru server.xml, 3) Nastavte token endorsingSupportingToken v konfiguraci tokenu volaj\u00edc\u00edho v souboru server.xml na hodnotu false.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: Pro webovou slu\u017ebu nelze vytvo\u0159it p\u0159edm\u011bt zabezpe\u010den\u00ed. V p\u0159\u00edchoz\u00ed zpr\u00e1v\u011b nelze identifikovat token volaj\u00edc\u00edho. Token callerToken v souboru server.xml je nastaven na hodnotu X509Token, token endorsingSupportingToken je nastaven na hodnotu false, a v p\u0159\u00edchoz\u00edm z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP existuje v\u00edce ne\u017e jeden token asymetrick\u00e9ho podpisu.
+multiple_asymmetric_token_err.explanation=Token callerToken v souboru server.xml je nastaven na hodnotu X509Token, token endorsingSupportingToken je nastaven na hodnotu false, a v p\u0159\u00edchoz\u00edm z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP existuje v\u00edce ne\u017e jeden token asymetrick\u00e9ho podpisu. Proto\u017ee ve zpr\u00e1v\u011b mus\u00ed b\u00fdt pouze jeden token volaj\u00edc\u00edho, aby mohl b\u00fdt mohl b\u00fdt tento token \u00fasp\u011b\u0161n\u011b vybr\u00e1n, nen\u00ed v\u00edce token\u016f asymetrick\u00e9ho podpisu povoleno. 
+multiple_asymmetric_token_err.useraction=Prove\u010fte jednu z t\u011bchto mo\u017enost\u00ed: 1) Zm\u011b\u0148te z\u00e1sadu tak, aby byl ve zpr\u00e1v\u011b obsa\u017een pouze jeden token asymetrick\u00e9ho podpisu, 2) Odeberte konfiguraci tokenu callerToken ze souboru server.xml.
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: Deklarace NotBefore [{0}] v tokenu SAML je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je [{2}] sekund.
+saml_token_not_yet_valid.explanation=Deklarace NotBefore v tokenu SAML ur\u010duje \u010das, kdy token nab\u00fdv\u00e1 platnosti. Do t\u00e9 doby token nelze pou\u017e\u00edt. Chcete-li pou\u017e\u00edt tento token SAML, mus\u00ed hodnota deklarace NotBefore ud\u00e1vat \u010das v minulosti. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami autora deklarace.
+saml_token_not_yet_valid.useraction=Ujist\u011bte se, \u017ee jsou datum a \u010das v poskytovateli identit synchronizovan\u00e9 s t\u00edmto poskytovatelem slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML nebo zvy\u0161te hodnotu posunu hodin.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: Deklarace NotOnOrAfter [{0}] v tokenu SAML je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je [{2}] sekund.
+saml_token_expired.explanation=Deklarace NotOnOrAfter v tokenu SAML ur\u010duje \u010das, kdy token pozb\u00fdv\u00e1 platnosti. Token se mus\u00ed pou\u017e\u00edt do t\u00e9to doby. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami autora deklarace.
+saml_token_expired.useraction=Ujist\u011bte se, \u017ee jsou datum a \u010das v poskytovateli identit synchronizovan\u00e9 s t\u00edmto poskytovatelem slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML nebo zvy\u0161te hodnotu posunu hodin.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: IssueInstant [{0}] v tokenu SAML je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je [{2}] sekund.
+saml_token_issued_too_long_ago.explanation=Deklarace IssueInstant v tokenu SAML je p\u0159\u00edli\u0161 hluboko v minulosti, aby bylo mo\u017en\u00e9 tento token pou\u017e\u00edt. Token SAML mus\u00ed b\u00fdt pou\u017eit v nakonfigurovan\u00e9 dob\u011b po vyd\u00e1n\u00ed. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami autora deklarace.
+saml_token_issued_too_long_ago.useraction=Ujist\u011bte se, \u017ee jsou datum a \u010das v poskytovateli identit synchronizovan\u00e9 s t\u00edmto poskytovatelem slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML nebo zvy\u0161te hodnotu posunu hodin.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: IssueInstant [{0}] v tokenu SAML se nach\u00e1z\u00ed v budoucnosti, a je tedy mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je [{2}] sekund.
+saml_token_issue_instant_in_future.explanation=Deklarace IssueInstant v tokenu SAML byla nastavena na \u010das v budoucnosti, a proto je\u0161t\u011b nen\u00ed pova\u017eov\u00e1n za platn\u00fd. Aby byl token SAML platn\u00fd, mus\u00ed hodnota IssueInstant ur\u010dovat okam\u017eik, kter\u00fd ji\u017e prob\u011bhl. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami autora deklarace.
+saml_token_issue_instant_in_future.useraction=Ujist\u011bte se, \u017ee jsou datum a \u010das v poskytovateli identit synchronizovan\u00e9 s t\u00edmto poskytovatelem slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML nebo zvy\u0161te hodnotu posunu hodin.
+
+failed_to_extract_saml_element=CWWKW0218W: P\u0159i pokusu o extrakci prvku SAML z poskytnut\u00e9ho tokenu SAML do\u0161lo k v\u00fdjimce. V\u00fdjimka: [{0}]
+failed_to_extract_saml_element.explanation=P\u0159i syntaktick\u00e9 anal\u00fdze tokenu SAML do\u0161lo k v\u00fdjimce. Mo\u017en\u00e1 byl token chybn\u00fd, nebo p\u0159i pokusu o anal\u00fdzu \u0159et\u011bzce tokenu do\u0161lo k intern\u00ed chyb\u011b.
+failed_to_extract_saml_element.useraction=Dal\u0161\u00ed informace o chyb\u011b naleznete v protokolech serveru.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: P\u0159i pokusu o extrakci tokenu SAML z p\u0159edm\u011btu do\u0161lo k v\u00fdjimce. V\u00fdjimka: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=P\u0159i extrakci tokenu SAML z p\u0159edm\u011btu do\u0161lo k v\u00fdjimce.
+failed_to_extract_saml_token_from_subject.useraction=Dal\u0161\u00ed informace o chyb\u011b naleznete v protokolech serveru.
+
+failed_to_obtain_subject_info=CWWKW0220E: Ov\u011b\u0159en\u00ed se nezda\u0159ilo kv\u016fli v\u00fdjimce p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed informac\u00ed o p\u0159edm\u011btu z deklarace SAML. V\u00fdjimka: [{0}]
+failed_to_obtain_subject_info.explanation=P\u0159i pokusu o z\u00edsk\u00e1n\u00ed informac\u00ed o p\u0159edm\u011btu z poskytnut\u00e9ho tokenu SAML do\u0161lo k v\u00fdjimce.
+failed_to_obtain_subject_info.useraction=Dal\u0161\u00ed informace o chyb\u011b naleznete v protokolech serveru.
+
+failed_to_authenticate=CWWKW0221E: Ov\u011b\u0159en\u00ed se nezda\u0159ilo kv\u016fli neo\u010dek\u00e1van\u00e9 v\u00fdjimce. V\u00fdjimka: [{0}].
+failed_to_authenticate.explanation=Pravd\u011bpodobn\u011b do\u0161lo k probl\u00e9mu p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed informac\u00ed o identit\u011b nebo p\u0159edm\u011btu b\u011bhem interakce s registrem u\u017eivatel\u016f.
+failed_to_authenticate.useraction=Dal\u0161\u00ed informace o chyb\u011b naleznete v protokolech serveru. Zajist\u011bte, aby byly informace o p\u0159edm\u011btu v tokenu SAML namapovan\u00e9 na o\u010dek\u00e1van\u00e9 hodnoty v nakonfigurovan\u00e9m registru u\u017eivatel\u016f.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: Ov\u011b\u0159en\u00ed tokenu se nezda\u0159ilo, proto\u017ee p\u0159ijat\u00fd typ hesla pro UsernameToken [{0}] neodpov\u00edd\u00e1 po\u017eadovan\u00e9mu typu hesla [{0}].
+password_type_mismatch.explanation=Typ hesla v tokenu UsernameToken neodpov\u00eddal po\u017eadovan\u00e9mu typu hesla definovan\u00e9mu v z\u00e1sad\u011b WS-Security. Tyto typy mus\u00ed b\u00fdt stejn\u00e9. Aby bylo ov\u011b\u0159en\u00ed \u00fasp\u011b\u0161n\u00e9, mus\u00ed klient webov\u00e9 slu\u017eby deklarovat stejn\u00fd typ hesla, jako je definov\u00e1n v z\u00e1sad\u011b WS-Security.
+password_type_mismatch.useraction=Ujist\u011bte se, \u017ee klient webov\u00e9 slu\u017eby deklaruje stejn\u00fd typ hesla, jak\u00fd je definov\u00e1n v z\u00e1sad\u011b WS-Security.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: Ov\u011b\u0159en\u00ed tokenu se nezda\u0159ilo, proto\u017ee byl zji\u0161t\u011bn vlastn\u00ed typ hesla, ale konfigura\u010dn\u00ed data uveden\u00e1 v r\u00e1mci po\u017eadavku stanovuj\u00ed, \u017ee vlastn\u00ed typy hesel podporov\u00e1ny nejsou.
+cannot_handle_custom_password_types.explanation=Heslo v tokenu UsernameToken nebylo ha\u0161ovan\u00e9 ani ve form\u011b prost\u00e9ho textu, a proto je pova\u017eov\u00e1no za vlastn\u00ed typ hesla. Konfigurace v r\u00e1mci dat po\u017eadavku stanovuje, \u017ee vlastn\u00ed typy hesel nejsou podporov\u00e1ny.
+cannot_handle_custom_password_types.useraction=Ujist\u011bte se, \u017ee klient webov\u00e9 slu\u017eby pou\u017e\u00edv\u00e1 typ hesla definovan\u00fd v profilu UsernameToken, nebo nakonfigurujte poskytovatele webov\u00fdch slu\u017eeb tak, aby p\u0159ij\u00edmal vlastn\u00ed typy hesel.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: Jm\u00e9no u\u017eivatele nebo heslo uveden\u00e9 v tokenu UsernameToken bylo pr\u00e1zdn\u00e9. Zkontrolujte UsernameToken a zajist\u011bte, aby bylo v tokenu uvedeno nepr\u00e1zdn\u00e9 jm\u00e9no u\u017eivatele a heslo.
+empty_user_or_password.explanation=V tokenu UsernameToken byla pr\u00e1zdn\u00e1 \u010di zcela chyb\u011bla polo\u017eka jm\u00e9na u\u017eivatele nebo hesla.
+empty_user_or_password.useraction=Zkontrolujte, zda je v tokenu uvedeno jm\u00e9no u\u017eivatele a heslo. Pokud nen\u00ed uvedeno jm\u00e9no u\u017eivatele nebo heslo, z\u00edskejte nov\u00fd UsernameToken.
+
+registry_exception_checking_password=CWWKW0225E: P\u0159i p\u0159\u00edstupu k registru u\u017eivatel\u016f nebo p\u0159i kontrole hesla u\u017eivatele [{0}] do\u0161lo k v\u00fdjimce. V\u00fdjimka: [{1}]
+registry_exception_checking_password.explanation=P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed odkazu na registr u\u017eivatel\u016f ze slu\u017eby registru u\u017eivatel\u016f do\u0161lo k chyb\u011b, nebo do\u0161lo k v\u00fdjimce p\u0159i kontrole hesla dan\u00e9ho u\u017eivatele.
+registry_exception_checking_password.useraction=Dal\u0161\u00ed informace o v\u00fdjimce naleznete v protokolech serveru. Ujist\u011bte se, \u017ee je uvedeno spr\u00e1vn\u00e9 jm\u00e9no u\u017eivatele a heslo a \u017ee odpov\u00eddaj\u00ed polo\u017ece v nakonfigurovan\u00e9m registru u\u017eivatel\u016f.
+
+check_password_failed=CWWKW0226E: U\u017eivatele [{0}] nelze ov\u011b\u0159it. Ov\u011b\u0159te, zda jsou pou\u017eit\u00e1 pov\u011b\u0159en\u00ed, tj. jm\u00e9no u\u017eivatele a heslo, spr\u00e1vn\u00e1.
+check_password_failed.explanation=Uveden\u00e9ho u\u017eivatele nelze ov\u011b\u0159it v nakonfigurovan\u00e9m registru u\u017eivatel\u016f. Pravd\u011bpodobn\u011b kv\u016fli neshod\u011b v oblasti jm\u00e9na u\u017eivatele \u010di hesla.
+check_password_failed.useraction=Zkontrolujte pou\u017eit\u00e1 pov\u011b\u0159en\u00ed a ujist\u011bte se, \u017ee jm\u00e9no u\u017eivatele a heslo odpov\u00eddaj\u00ed polo\u017ece v nakonfigurovan\u00e9m registru u\u017eivatel\u016f.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: Obslu\u017en\u00e1 rutina zp\u011btn\u00e9ho vol\u00e1n\u00ed hesla vr\u00e1tila heslo s hodnotu Null.
+no_password_returned_by_callback.explanation=Obslu\u017en\u00e1 rutina zp\u011btn\u00e9ho vol\u00e1n\u00ed hesla mus\u00ed vracet v tokenu UsernameToken hesla typu PasswordDigest, kter\u00e1 nemaj\u00ed hodnotu Null.
+no_password_returned_by_callback.useraction=Ujist\u011bte se, \u017ee obslu\u017en\u00e1 rutina zp\u011btn\u00e9ho vol\u00e1n\u00ed hesla vrac\u00ed nepr\u00e1zdn\u00e9 heslo platn\u00e9ho u\u017eivatele, kter\u00e9 nem\u00e1 hodnotu Null.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: Deklarace SAML neobsahuje atribut [{0}]. Atribut [{0}] je povinn\u00fd, proto\u017ee jej konfigurace volaj\u00edc\u00edho ur\u010dila jako identifik\u00e1tor pro [{1}]. 
+SAML20_ATTRIBUTE_ERR.explanation=Bu\u010f v deklaraci SAML chyb\u00ed tento atribut, nebo konfigurace volaj\u00edc\u00edho ur\u010dila chybnou hodnotu uveden\u00e9ho identifik\u00e1toru.
+SAML20_ATTRIBUTE_ERR.useraction=Prove\u010fte jednu z t\u011bchto akc\u00ed: 1) P\u0159esv\u011bd\u010dte se, \u017ee dan\u00fd atribut v deklaraci SAML existuje. 2) Nakonfigurujte callerToken tak, aby jako identifik\u00e1tor ud\u00e1val jin\u00fd atribut.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: Deklarace SAML neobsahuje prvek [{0}]. Prvek [{0}] je povinn\u00fd. 
+SAML20_ELEMENT_ERR.explanation=V deklaraci SAML chyb\u00ed prvek, kter\u00fd b\u011bhov\u00e9 prost\u0159ed\u00ed WS-Security vy\u017eaduje pro dokon\u010den\u00ed zpracov\u00e1n\u00ed tokenu volaj\u00edc\u00edho.
+SAML20_ELEMENT_ERR.useraction=Prove\u010fte jednu z t\u011bchto akc\u00ed: 1) P\u0159esv\u011bd\u010dte se, \u017ee po\u017eadovan\u00fd prvek v deklaraci SAML existuje. 2) Nakonfigurujte callerToken tak, aby definoval hodnotu tohoto prvku.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: Slu\u017eba UserCredentialResolver nerozpoznala deklaraci SAML a vrac\u00ed v\u00fdjimku UserIdentityException se zpr\u00e1vou [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Slu\u017eba UserCredentialResolver poskytovan\u00e1 u\u017eivatelskou funkc\u00ed nem\u016f\u017ee \u0159\u00e1dn\u011b namapovat deklaraci SAML a vrac\u00ed v\u00fdjimku UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Pokud v\u00fdjimka UserIdentityException nen\u00ed o\u010dek\u00e1van\u00e1, zkontrolujte, zda je slu\u017eba UserCredentialResolver nastaven\u00e1 spr\u00e1vn\u011b.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: Pro webovou slu\u017ebu nelze vytvo\u0159it p\u0159edm\u011bt zabezpe\u010den\u00ed. V p\u0159\u00edchoz\u00ed zpr\u00e1v\u011b nelze identifikovat callerToken, proto\u017ee se v z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP vyskytuje v\u00edce deklarac\u00ed SAML.
+multiple_saml_exist_err.explanation=Token callerToken v souboru server.xml je nastaven na SamlToken a z\u00e1hlav\u00ed zabezpe\u010den\u00ed v p\u0159\u00edchoz\u00ed zpr\u00e1v\u011b SOAP obsahuje v\u00edce deklarac\u00ed SAML. Proto nem\u016f\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed WS-Security ur\u010dit, kterou deklaraci SAML pou\u017e\u00edt pro token volaj\u00edc\u00edho.
+multiple_saml_exist_err.useraction=Prove\u010fte jednu z t\u011bchto akc\u00ed: 1) Zm\u011b\u0148te konfiguraci klienta tak, aby odes\u00edlal pouze jednu deklaraci SAML. 2) Odeberte konfiguraci tokenu callerToken ze souboru server.xml.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: Pro webovou slu\u017ebu nelze vytvo\u0159it p\u0159edm\u011bt zabezpe\u010den\u00ed pomoc\u00ed ID u\u017eivatele [{0}].
+error_authenticate_maptouser.explanation=P\u0159edm\u011bt zabezpe\u010den\u00ed pro token volaj\u00edc\u00edho p\u0159ijat\u00e9ho ze z\u00e1hlav\u00ed zabezpe\u010den\u00ed SOAP nelze vytvo\u0159it. Ujist\u011bte se, \u017ee u\u017eivatel ur\u010den\u00fd ve zpr\u00e1v\u011b existuje v registru u\u017eivatel\u016f.
+error_authenticate_maptouser.useraction=Prove\u010fte jednu z t\u011bchto akc\u00ed: 1) Ujist\u011bte se, \u017ee u\u017eivatel existuje v registru u\u017eivatel\u016f v souboru server.xml. 2) Nenastavujte atribut mapToUserRegistry v konfiguraci callerToken.
+
+no_callbacks_provided=CWWKW0233E: Ke zpracov\u00e1n\u00ed \u017e\u00e1dosti nebyla dod\u00e1na \u017e\u00e1dn\u00e1 zp\u011btn\u00e1 vol\u00e1n\u00ed.
+no_callbacks_provided.explanation=Abyste mohli zpracovat a vr\u00e1tit token SAML , mus\u00ed b\u00fdt obslu\u017en\u00e9 rutin\u011b zp\u011btn\u00e9ho vol\u00e1n\u00ed p\u0159ed\u00e1no alespo\u0148 jedno zp\u011btn\u00e9 vol\u00e1n\u00ed.
+no_callbacks_provided.useraction=Pro tento p\u0159\u00edpad nen\u00ed dostupn\u00e1 \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+no_saml_found_in_subject=CWWKW0234E: V p\u0159edm\u011btu chyb\u00ed nezbytn\u00fd token SAML.
+no_saml_found_in_subject.explanation=P\u0159i extrakci tokenu SAML z p\u0159edm\u011btu do\u0161lo chyb\u011b, nebo nebyl v aktu\u00e1ln\u00edm p\u0159edm\u011btu nalezen prvek SAML.
+no_saml_found_in_subject.useraction=Vytv\u00e1\u0159\u00edte-li p\u0159edm\u011bt run-as, zajist\u011bte, aby byl do n\u011bj p\u0159id\u00e1n token SAML. Jinak se kontrolou atributu includeTokenInSubject v konfiguraci SAML ujist\u011bte, \u017ee konfigurace serveru podporuje p\u0159id\u00e1v\u00e1n\u00ed tokenu SAML do p\u0159edm\u011btu.

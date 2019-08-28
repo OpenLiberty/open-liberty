@@ -11,6 +11,8 @@
 
 package com.ibm.ws.microprofile.config.fat.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -68,33 +70,31 @@ public class ClassLoaderCacheTest extends FATServletClient {
     public static void setUp() throws Exception {
         JavaArchive testAppUtils = SharedShrinkWrapApps.getTestAppUtilsJar();
 
-        WebArchive classLoaderCacheA1_war = ShrinkWrap.create(WebArchive.class, WARA1_NAME)
-                        .addAsLibrary(testAppUtils)
-                        .addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
+        WebArchive classLoaderCacheA1_war = ShrinkWrap.create(WebArchive.class, WARA1_NAME).addAsLibrary(testAppUtils)
+                                                      .addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
 
         WebArchive classLoaderCacheA2_war = ShrinkWrap.create(WebArchive.class, WARA2_NAME)
-                        .addAsLibrary(testAppUtils)
-                        .addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
+                                                      .addAsLibrary(testAppUtils).addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
 
         WebArchive classLoaderCacheB1_war = ShrinkWrap.create(WebArchive.class, WARB1_NAME)
-                        .addAsLibrary(testAppUtils)
-                        .addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
+                                                      .addAsLibrary(testAppUtils).addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
 
         WebArchive classLoaderCacheB2_war = ShrinkWrap.create(WebArchive.class, WARB2_NAME)
-                        .addAsLibrary(testAppUtils)
-                        .addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
+                                                      .addAsLibrary(testAppUtils).addPackage("com.ibm.ws.microprofile.appConfig.classLoaderCache.test");
 
         EnterpriseArchive classLoaderCacheA_ear = ShrinkWrap.create(EnterpriseArchive.class, EARA_NAME)
-                        .addAsManifestResource(new File("test-applications/" + EARA_NAME + "/resources/META-INF/application.xml"), "application.xml")
-                        .addAsManifestResource(new File("test-applications/" + EARA_NAME + "/resources/META-INF/permissions.xml"), "permissions.xml")
-                        .addAsModule(classLoaderCacheA1_war)
-                        .addAsModule(classLoaderCacheA2_war);
+                                                            .addAsManifestResource(new File("test-applications/" + EARA_NAME + "/resources/META-INF/application.xml"),
+                                                                                   "application.xml")
+                                                            .addAsManifestResource(new File("test-applications/" + EARA_NAME + "/resources/META-INF/permissions.xml"),
+                                                                                   "permissions.xml")
+                                                            .addAsModule(classLoaderCacheA1_war).addAsModule(classLoaderCacheA2_war);
 
         EnterpriseArchive classLoaderCacheB_ear = ShrinkWrap.create(EnterpriseArchive.class, EARB_NAME)
-                        .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/application.xml"), "application.xml")
-                        .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/permissions.xml"), "permissions.xml")
-                        .addAsModule(classLoaderCacheB1_war)
-                        .addAsModule(classLoaderCacheB2_war);
+                                                            .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/application.xml"),
+                                                                                   "application.xml")
+                                                            .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/permissions.xml"),
+                                                                                   "permissions.xml")
+                                                            .addAsModule(classLoaderCacheB1_war).addAsModule(classLoaderCacheB2_war);
 
         ShrinkHelper.exportDropinAppToServer(server, classLoaderCacheA_ear);
         ShrinkHelper.exportDropinAppToServer(server, classLoaderCacheB_ear);
@@ -114,7 +114,7 @@ public class ClassLoaderCacheTest extends FATServletClient {
     public void testClassLoaderCache() throws Exception {
         runConfigTest(WARA1, 0, 2); //initially there are zero configs, the test is expected to load two; one specific to the war and one global one
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)
-        server.restartDropinsApplication(EARA_NAME); //restarting the app should clear out all three configs
+        assertTrue("EARA could not be restarted", server.restartDropinsApplication(EARA_NAME)); //restarting the app should clear out all three configs
         runConfigTest(WARA1, 0, 2); //so performing the same tests again should yeild the same results
         runConfigTest(WARA2, 2, 3);
     }
@@ -125,7 +125,8 @@ public class ClassLoaderCacheTest extends FATServletClient {
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)
         runConfigTest(WARB1, 3, 4); //after the previous test there should be three configs, this test is expected to load one new one specific to the war and reuse the global one (total 4)
         runConfigTest(WARB2, 4, 5); //after the previous test there should be four configs, this test is expected to load one new one specific to the war and reuse the global one (total 5)
-        server.removeAndStopDropinsApplications(EARB_NAME); // removing EARB should clear it's two war specific configs but leave the others (total 3)
+        assertTrue("EARB could not be removed", server.removeAndStopDropinsApplications(EARB_NAME)); // removing EARB should clear it's two war specific configs but leave the others (total 3)
+        server.removeInstalledAppForValidation(EARB); // must do this otherwise EARB will still be expected to start if server is restarted
         runConfigTest(WARA1, 3, 3); //there should be three configs at this point; one for each war and the global one. they should all be reused so the total remains the same
         runConfigTest(WARA2, 3, 3); //there should be three configs at this point; one for each war and the global one. they should all be reused so the total remains the same
     }

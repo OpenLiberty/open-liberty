@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -149,7 +150,7 @@ public class BaseFFDCService implements FFDCFilterService {
 
     /**
      * Process an exception
-     * 
+     *
      * @param th
      *            The exception to be processed
      * @param sourceId
@@ -164,7 +165,7 @@ public class BaseFFDCService implements FFDCFilterService {
 
     /**
      * Process an exception
-     * 
+     *
      * @param th
      *            The exception to be processed
      * @param sourceId
@@ -182,7 +183,7 @@ public class BaseFFDCService implements FFDCFilterService {
 
     /**
      * Process an exception
-     * 
+     *
      * @param th
      *            The exception to be processed
      * @param sourceId
@@ -199,7 +200,7 @@ public class BaseFFDCService implements FFDCFilterService {
 
     /**
      * Process an exception
-     * 
+     *
      * @param th
      *            The exception to be processed
      * @param sourceId
@@ -218,7 +219,7 @@ public class BaseFFDCService implements FFDCFilterService {
 
     /**
      * Log a problem to the global incident stream (creating it if necessary
-     * 
+     *
      * @param txt
      *            A description of the incident (the name of the exception)
      * @param sourceId
@@ -235,7 +236,7 @@ public class BaseFFDCService implements FFDCFilterService {
      */
     @FFDCIgnore(PrivilegedActionException.class)
     private void log(String sourceId, String probeId, Throwable th, Object callerThis, Object[] objectArray) {
-        IncidentImpl incident = getIncident(sourceId, probeId, th, callerThis, objectArray);
+        IncidentImpl incident = getIncident(sourceId, probeId, th);
         incident.log(th, callerThis, objectArray);
         if (System.getSecurityManager() == null) {
             logSummary(ffdcSummaryPolicy == FFDCSummaryPolicy.IMMEDIATE);
@@ -249,16 +250,20 @@ public class BaseFFDCService implements FFDCFilterService {
             });
         }
 
-        for (IncidentForwarder forwarder : FFDC.getIncidentForwarders()) {
-            forwarder.process(incident, th);
+        Set<IncidentForwarder> forwarders = FFDC.getIncidentForwarders();
+        if (forwarders.size() > 0) {
+            ForwardIncident forwardIncident = new ForwardIncident(incident, th, callerThis, objectArray);
+            for (IncidentForwarder forwarder : forwarders) {
+                forwarder.process(forwardIncident, th);
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "FFDC exception: " + th);
     }
 
-    protected IncidentImpl getIncident(String sourceId, String probeId, Throwable th, Object callerThis, Object[] objectArray) {
-        IncidentImpl.Key key = new IncidentImpl.Key(sourceId, probeId, th, callerThis, objectArray);
+    protected IncidentImpl getIncident(String sourceId, String probeId, Throwable th) {
+        IncidentImpl.Key key = new IncidentImpl.Key(sourceId, probeId, th);
         IncidentImpl incident = null;
         synchronized (incidents) {
             incident = incidents.get(key);
@@ -291,7 +296,7 @@ public class BaseFFDCService implements FFDCFilterService {
     /**
      * Update the log summary. Triggered by logging of an exception/incident
      * via {@link #logSummary(boolean)}, or by daily log rolling {@link #rollLogs()}
-     * 
+     *
      * @param incidents Thread-safe list that should be used to write summary contents
      */
     private void logSummary(final List<IncidentImpl> incidents) {
@@ -314,7 +319,7 @@ public class BaseFFDCService implements FFDCFilterService {
                     new IncidentSummaryLogger().logIncidentSummary(os, incidents);
                 } catch (FileNotFoundException e) {
                     // This is FFDC not being able to find itself... we're in bad
-                    // shape if this doesn't work.. 
+                    // shape if this doesn't work..
                     e.printStackTrace();
                 } catch (IOException e) {
                 } finally {
@@ -354,10 +359,10 @@ public class BaseFFDCService implements FFDCFilterService {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * This method is called in response to a scheduled trigger.
      * A new summary log file will be created for the next summary period.
-     * 
+     *
      * @see FFDCJanitor
      */
     @Override
@@ -425,7 +430,7 @@ public class BaseFFDCService implements FFDCFilterService {
     /**
      * This wrapper method for creating streams should be called while
      * synchronized on the targetFile..
-     * 
+     *
      * @param targetFile
      * @return
      * @throws IOException

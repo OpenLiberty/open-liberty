@@ -35,6 +35,9 @@ public class JsonbCDITestServlet extends FATServlet {
     @Inject
     Jsonb jsonb2;
 
+    @Inject
+    PersonBean personBean;
+
     @Test
     public void testReuseInjectedJsonb() {
         assertNotNull(jsonb);
@@ -53,9 +56,9 @@ public class JsonbCDITestServlet extends FATServlet {
         zombies.winLossRatio = 0.85f;
         String teamJson = jsonb.toJson(zombies);
         System.out.println(teamJson);
-        assertTrue(teamJson.contains("\"name\":\"Zombies\""));
-        assertTrue(teamJson.contains("\"size\":9"));
-        assertTrue(teamJson.contains("\"winLossRatio\":0.8"));
+        assertContains(teamJson, "\"name\":\"Zombies\"");
+        assertContains(teamJson, "\"size\":9");
+        assertContains(teamJson, "\"winLossRatio\":0.8");
 
         // Convert JSON --> Java Object
         Team rangers = jsonb.fromJson("{\"name\":\"Rangers\",\"size\":7,\"winLossRatio\":0.6}", Team.class);
@@ -63,5 +66,24 @@ public class JsonbCDITestServlet extends FATServlet {
         assertEquals("Rangers", rangers.name);
         assertEquals(7, rangers.size);
         assertEquals(0.6f, rangers.winLossRatio, 0.01f);
+    }
+
+    @Test
+    public void testSerializeCDIBean() {
+        personBean.setName("Andy");
+        personBean.setAge(12);
+        String json = jsonb.toJson(personBean);
+        System.out.println(json);
+        assertContains(json, "\"age\":12");
+        assertContains(json, "\"name\":\"Andy\"");
+        // TODO: after upgrading to the next version of Yasson, the CDI metadata should be ignored and will not contain extra WELD metadata
+        //       Johnzon gives the correct size (24) but Yasson serializes CDI metadata (119)
+        assertTrue("The JSON was not the expected length using provider: " + jsonb.getClass() + ": " + json,
+                   119 == json.length() || 24 == json.length());
+    }
+
+    private static void assertContains(String fullString, String lookFor) {
+        assertTrue("Did not find expected token '" + lookFor + "' inside of the string: " + fullString,
+                   fullString != null && fullString.contains(lookFor));
     }
 }

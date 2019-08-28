@@ -32,7 +32,7 @@ import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 public class WriteListenerRunnable implements Runnable{
 
     /** RAS tracing variable */
-    private final TraceComponent tc = Tr.register(WriteListenerRunnable.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS ); 
+    private static final TraceComponent tc = Tr.register(WriteListenerRunnable.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS ); 
 
     private WriteListener _listener = null;
     private ThreadContextManager _tcm = null;

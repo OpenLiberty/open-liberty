@@ -755,6 +755,8 @@ info.resumeFailedException=A(z) {0} kiszolg\u00e1l\u00f3 folytat\u00e1sa nem sik
 info.resumingListeners.target=A(z) {0} kiszolg\u00e1l\u00f3 megadott c\u00e9l\u00f6sszetev\u0151inek folytat\u00e1sa.
 info.resumedListeners.target=A(z) {0} kiszolg\u00e1l\u00f3 megadott c\u00e9l\u00f6sszetev\u0151inek folytat\u00e1sa megt\u00f6rt\u00e9nt.
 info.resumeFailedException.target=A(z) {0} kiszolg\u00e1l\u00f3 megadott c\u00e9l\u00f6sszetev\u0151inek folytat\u00e1sa nem siker\u00fclt. A r\u00e9szletek\u00e9rt vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it.
+info.serverCommandAuthFailure=A(z) {0} parancs meghi\u00fasult, mert a feldolgoz\u00e1s nem tudta t\u00f6r\u00f6lni a(z) {1} f\u00e1jlt.
+info.serverCommandCommFailure=A(z) {0} parancs meghi\u00fasult, mert kommunik\u00e1ci\u00f3s hiba l\u00e9pett fel a kiszolg\u00e1l\u00f3val.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

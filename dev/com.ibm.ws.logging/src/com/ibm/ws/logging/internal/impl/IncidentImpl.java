@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,11 +35,8 @@ public class IncidentImpl implements Incident {
         final String probeId;
         final String exceptionName;
         final long threadId;
-        final Throwable th;
-        final Object callerThis;
-        final Object[] objectArray;
 
-        public Key(String sourceId, String probeId, Throwable th, Object callerThis, Object[] objectArray) {
+        public Key(String sourceId, String probeId, Throwable th) {
             this.sourceId = sourceId;
             this.probeId = probeId;
             if (th == null) {
@@ -50,9 +45,6 @@ public class IncidentImpl implements Incident {
                 exceptionName = th.getClass().getName();
             }
             this.threadId = Thread.currentThread().getId();
-            this.th = th;
-            this.callerThis = callerThis;
-            this.objectArray = objectArray;
         }
 
         @Override
@@ -329,34 +321,7 @@ public class IncidentImpl implements Incident {
 
     @Override
     public String getIntrospectedCallerDump() {
-        String dump = null;
-        ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-
-        IncidentStreamImpl iStream = null;
-
-        try {
-            iStream = new IncidentStreamImpl(oStream);
-        } catch (Exception e) {
-            // darn. Prevent the exception logging the error from percolating upward
-        }
-
-        if (iStream != null) {
-            try {
-                new IncidentLogger().logIncident(iStream, this, key.th, key.callerThis, key.objectArray, true);
-            } catch (Throwable e) {
-                iStream.printStackTrace(e);
-            } finally {
-                LoggingFileUtils.tryToClose(iStream);
-
-                try {
-                    dump = oStream.toString("UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    // darn. Prevent the exception logging the error from percolating upward
-                }
-            }
-        }
-
-        return dump;
+        return "";
     }
 
     /**

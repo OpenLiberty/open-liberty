@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Verifica\u0163i c\u0103 wrapper-ul \u015fi parametr
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Nu se poate face unwrap obiectului la {0} deoarece {0} nu este o clas\u0103 de interfa\u0163\u0103.
+NOT_AN_INTERFACE.explanation=Metoda unwrap permite unwrapping numai la o clas\u0103 de interfa\u0163\u0103.
+NOT_AN_INTERFACE.useraction=Face\u0163i unwrap la o clas\u0103 care este interfa\u0163\u0103 \u00een locul unei clase concrete.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.

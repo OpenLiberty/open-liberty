@@ -54,6 +54,7 @@ public class JsonConfigTest {
     public static final String SERVER_XML_BASIC = "basicServer.xml";
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
+    public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
 
     ArrayList<String> ALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog", "ffdc"));
 
@@ -225,6 +226,16 @@ public class JsonConfigTest {
         line = checkMessageLogUpdate(true, messagesourceList, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
         consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
+    }
+
+    @Test
+    public void testJsonFieldExtensions() throws Exception {
+        //Set jsonFields property in server.xml for extensions
+        line = setConfig(SERVER_XML_JSON_CONFIG_FIELD_EXT);
+        TestUtils.runApp(server, "extension");
+        line = checkLine("\\{.*\"Correct_bool123\".*\\}");
+        line = checkLine("\\{.*\"Correct_string123\".*\\}");
+
     }
 
     private String checkMessageLogUpdate(boolean isJson, ArrayList<String> sourceList, String traceSpec) {

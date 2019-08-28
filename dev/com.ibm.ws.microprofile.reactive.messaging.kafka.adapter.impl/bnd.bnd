@@ -1,0 +1,59 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props,\
+          ~../cnf/resources/bnd/app-resources.bnd
+
+bSymbolicName=com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
+Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
+
+Bundle-Description:MicroProfile Reactive Messaging Kafka Adapter Impl, version ${bVersion}
+
+WS-TraceGroup: REACTIVEMESSAGE
+
+-dsannotations-inherit: true
+
+Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
+
+Import-Package: \
+        !org.apache.kafka.*,\
+        *
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+instrument.disabled: true
+
+src: src
+#testsrc: test/src
+
+-buildpath: \
+  com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;version=latest, \
+  com.ibm.ws.logging;version=latest, \
+  com.ibm.ws.logging.core;version=latest, \
+  org.eclipse.osgi;version=latest, \
+  com.ibm.websphere.javaee.cdi.2.0;version=latest, \
+  com.ibm.websphere.org.osgi.core;version=latest, \
+  com.ibm.websphere.org.osgi.service.component;version=latest, \
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.websphere.javaee.annotation.1.2;version=latest, \
+  com.ibm.websphere.javaee.concurrent.1.0;version=latest, \
+  org.apache.kafka:kafka-clients;version=2.3.0
+  

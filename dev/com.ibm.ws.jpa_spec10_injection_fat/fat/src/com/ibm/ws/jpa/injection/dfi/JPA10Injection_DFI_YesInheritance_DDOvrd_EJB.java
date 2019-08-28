@@ -91,6 +91,16 @@ public class JPA10Injection_DFI_YesInheritance_DDOvrd_EJB extends JPAFATServletC
 
     @BeforeClass
     public static void setUp() throws Exception {
+        int appStartTimeout = server1.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server1.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server1.setConfigUpdateTimeout(120 * 1000);
+        }
+
         PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
         bannerStart(JPA10Injection_DFI_YesInheritance_DDOvrd_EJB.class);
         timestart = System.currentTimeMillis();

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -134,7 +135,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     @Resource(name = "java:module/noContextExecutorRef", lookup = "concurrent/noContextExecutor")
     private ManagedExecutor noContextExecutor;
 
-    @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
+    @Resource(name = "java:app/env/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
     private ManagedExecutor oneContextExecutor; // the single enabled context is jeeMetadataContext
 
     // Executor that runs everything on the invoker's thread instead of submitting tasks to run asynchronously.
@@ -1608,6 +1609,73 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertEquals(Long.valueOf(100), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(cf0.isDone());
         assertFalse(cf0.isCompletedExceptionally());
+    }
+
+    /**
+     * Test the CompletionStageFactory.supplyAsync internal interface that is provided to JAX-RS to
+     * create completion stages for the reactive client that enable the supplied to executor to run
+     * all dependent asynchronous actions as well as the initial action.
+     */
+    @Test
+    public void testCompletionStageFactorySupplyAsync() throws Exception {
+        // CompletionStageFactory is more properly obtained via Declarative Services.
+        // However, application code cannot access declarative services or the service registry,
+        // so we are cheating and using reflection. Do not copy this approach in real applications.
+        ClassLoader loader = defaultManagedExecutor.getClass().getClassLoader();
+        Class<?> CompletionStageFactory = loader.loadClass("com.ibm.ws.concurrent.mp.spi.CompletionStageFactory");
+        Object completionStageFactory = CompletionStageFactory.newInstance();
+        Method supplyAsync = CompletionStageFactory.getMethod("supplyAsync", Supplier.class, ExecutorService.class);
+
+        Supplier<String> supplyThreadName = () -> Thread.currentThread().getName();
+
+        Function<String, Object> lookUpResourceRef = s -> {
+            try {
+                return InitialContext.doLookup("java:app/env/oneContextExecutorRef");
+            } catch (NamingException x) {
+                return x;
+            }
+        };
+
+        Function<Object, String> getThreadName = o -> Thread.currentThread().getName();
+
+        String threadName;
+        Object lookupResult;
+
+        // *** custom non-managed executor ***
+        @SuppressWarnings("unchecked")
+        CompletableFuture<String> cf1 = (CompletableFuture<String>) supplyAsync.invoke(completionStageFactory, supplyThreadName, testThreads);
+        CompletableFuture<Object> cf2 = cf1.thenApplyAsync(lookUpResourceRef);
+        CompletableFuture<String> cf3 = cf2.thenApplyAsync(getThreadName);
+
+        threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
+        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
+
+        lookupResult = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(lookupResult.toString(), lookupResult instanceof NamingException); // no access to application's namespace
+
+        threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
+        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
+
+        // there should not be any context clearing without a managed executor service
+        lookupResult = cf3.thenApply(lookUpResourceRef).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(lookupResult.toString(), lookupResult instanceof ManagedExecutor); // current thread has access to application's namespace
+
+        // *** managed executor ***
+        @SuppressWarnings("unchecked")
+        CompletableFuture<String> cf5 = (CompletableFuture<String>) supplyAsync.invoke(completionStageFactory, supplyThreadName, defaultManagedExecutor);
+        CompletableFuture<Object> cf6 = cf5.thenApplyAsync(lookUpResourceRef);
+        CompletableFuture<String> cf7 = cf6.thenApplyAsync(getThreadName);
+
+        threadName = cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // managed executor uses Liberty global thread pool
+
+        lookupResult = cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(lookupResult.toString(), lookupResult instanceof ManagedExecutor); // managed executor thread has access to application's namespace
+
+        threadName = cf7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // managed executor uses Liberty global thread pool
     }
 
     /**
@@ -4877,7 +4945,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
-     * Verify toString output for our MicroProfile Concurrency ThreadContext implementation.
+     * Verify toString output for our ThreadContext implementation.
      */
     @Test
     public void testToStringThreadContext() throws Exception {

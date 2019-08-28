@@ -23,7 +23,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ws.cxf.client.AsyncClientRunnableWrapper;
 
 @Component(name = "com.ibm.ws.cxf.client.component.AsyncClientRunnableWrapperManager",
-           immediate = true,
            property = { "service.vendor=IBM" })
 public class AsyncClientRunnableWrapperManager {
 

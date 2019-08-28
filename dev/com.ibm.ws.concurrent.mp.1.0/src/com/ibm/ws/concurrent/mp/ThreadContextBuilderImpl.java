@@ -53,9 +53,9 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
 
     @Override
     public ThreadContext build() {
-        Set<String> cleared = this.cleared == null ? contextManager.getDefault("mp.context.ThreadContext.cleared", "ThreadContext/cleared", DEFAULT_CLEARED) : this.cleared;
-        Set<String> propagated = this.propagated == null ? contextManager.getDefault("mp.context.ThreadContext.propagated", "ThreadContext/propagated", DEFAULT_PROPAGATED) : this.propagated;
-        Set<String> unchanged = this.unchanged == null ? contextManager.getDefault("mp.context.ThreadContext.unchanged", "ThreadContext/unchanged", DEFAULT_UNCHANGED) : this.unchanged;
+        Set<String> cleared = this.cleared == null ? contextManager.getDefault("mp.context.ThreadContext.cleared", DEFAULT_CLEARED) : this.cleared;
+        Set<String> propagated = this.propagated == null ? contextManager.getDefault("mp.context.ThreadContext.propagated", DEFAULT_PROPAGATED) : this.propagated;
+        Set<String> unchanged = this.unchanged == null ? contextManager.getDefault("mp.context.ThreadContext.unchanged", DEFAULT_UNCHANGED) : this.unchanged;
 
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);

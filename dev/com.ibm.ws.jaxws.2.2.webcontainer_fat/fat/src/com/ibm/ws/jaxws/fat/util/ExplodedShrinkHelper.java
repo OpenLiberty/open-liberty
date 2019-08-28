@@ -45,14 +45,14 @@ public class ExplodedShrinkHelper {
 
     public static Archive<?> explodedArchiveToDestination(LibertyServer server, Archive<?> archive, String dest) throws Exception {
         String localLocation;
-        Log.info(TestUtils.class, "copyFile", "Adam - dest=" + dest);
+        Log.info(TestUtils.class, "explodedArchiveToDestination", "dest=" + dest);
         if (dest.isEmpty()) {
             localLocation = "publish/servers/" + server.getServerName();
             dest = server.getServerName();
         } else {
             localLocation = "publish/servers/" + server.getServerName() + "/" + dest;
         }
-        Log.info(TestUtils.class, "copyFile", "Adam - localLocation=" + localLocation);
+        Log.info(TestUtils.class, "explodedArchiveToDestination", "localLocation=" + localLocation);
         File outputFile = new File(localLocation);
         outputFile.mkdirs();
         archive.as(ExplodedExporter.class).exportExploded(outputFile, archive.getName());
@@ -74,7 +74,7 @@ public class ExplodedShrinkHelper {
     private static void copyFile(LibertyServer server, File file, String dir) throws Exception {
         String path = file.getAbsolutePath().substring(file.getAbsolutePath().indexOf(dir));
         path = path.substring(0, path.lastIndexOf(file.getName()));
-        Log.info(TestUtils.class, "copyFile", "Adam - path=" + path);
+        Log.info(TestUtils.class, "copyFile", "path=" + path);
         server.copyFileToLibertyServerRoot(path, "../../" + file.getPath());
     }
 }

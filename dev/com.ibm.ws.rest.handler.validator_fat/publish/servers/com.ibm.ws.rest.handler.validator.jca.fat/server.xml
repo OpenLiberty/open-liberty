@@ -24,7 +24,7 @@
   <keyStore id="defaultKeyStore" password="Liberty"/>
   <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
 
-  <authData id="auth2" user="containerAuthUser2" password="2containerAuthUser"/>
+  <authData id="auth-&#8561;" user="containerAuthUser2" password="2containerAuthUser"/>
 
   <connectionFactory id="cf1" jndiName="eis/cf1">
     <containerAuthData user="containerAuthUser1" password="1containerAuthUser"/>
@@ -46,6 +46,10 @@
   <connectionFactory id="ds5" jndiName="eis/ds5">
     <containerAuthData user="containerAuthUser5" password="5containerAuthUser"/>
     <properties.TestValidationAdapter.DataSource hostName="myhost.openliberty.io" portNumber="2345"/>
+  </connectionFactory>
+
+  <connectionFactory id="jaasLoginCF" jndiName="eis/cf6" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationAdapter.ConnectionFactory hostName="myhost.openliberty.io" portNumber="6543"/>
   </connectionFactory>
 
   <jaasLoginContextEntry id="customLoginEntry" name="customLoginEntry" loginModuleRef="customLoginModule" />

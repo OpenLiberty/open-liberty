@@ -19,6 +19,8 @@
   <variable name="onError" value="FAIL" />
 
   <javaPermission className="java.lang.RuntimePermission" name="modifyThread" actions="*"/>
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" actions="*"/>
+  <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks" actions="*"/>
   <javaPermission className="java.net.URLPermission" name="http://localhost:8010/BroadcasterApp/broadcaster" actions="POST:AcceptUser-Agent"/>
   <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
 </server>

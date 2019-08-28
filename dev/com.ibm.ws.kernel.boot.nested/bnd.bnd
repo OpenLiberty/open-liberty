@@ -11,8 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.6
-javac.target: 1.6
+javac.source: 1.7
+javac.target: 1.7
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
 	com.ibm.ws.kernel.launch.service,\
@@ -26,8 +28,10 @@ instrument.classesIncludes: com/ibm/ws/kernel/launch/internal/*.class
 publish.wlp.jar.disabled: true
 
 -buildpath: \
+	org.eclipse.osgi;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+

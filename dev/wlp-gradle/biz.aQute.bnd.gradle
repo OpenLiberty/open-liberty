@@ -53,6 +53,7 @@ subprojects {
       audit {
         group = "verification"
         failOnError = true
+        rateLimitAsError = false
       }
     }
 

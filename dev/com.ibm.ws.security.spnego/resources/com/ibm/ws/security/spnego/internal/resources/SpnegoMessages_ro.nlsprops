@@ -1,0 +1,117 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.spnego/resources/com/ibm/ws/security/spnego/internal/resources/SpnegoMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SPNEGO Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4300 - CWWKS4339
+#Message prefix block: CWWKS4340 - CWWKS4349 - KerberosMessage.nlsprops
+SPNEGO_CONFIG_PROCESSED=CWWKS4300I: Configura\u0163ia SPNEGO {0} a fost procesat\u0103 cu succes.
+SPNEGO_CONFIG_PROCESSED.explanation=Configura\u0163ia SPNEGO a fost procesat\u0103 cu succes.
+SPNEGO_CONFIG_PROCESSED.useraction=F\u0103r\u0103
+
+SPNEGO_CONFIG_MODIFIED=CWWKS4301I: Configura\u0163ia SPNEGO {0} a fost modificat\u0103 cu succes.
+SPNEGO_CONFIG_MODIFIED.explanation=Configura\u0163ia SPNEGO a fost modificat\u0103 cu succes.
+SPNEGO_CONFIG_MODIFIED.useraction=F\u0103r\u0103.
+
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE=CWWKS4302I: Fi\u015fierul de configura\u0163ie Kerberos nu este specificat \u00een fi\u015fierul server.xml file \u015fi va fi utilizat\u0103 valoarea implicit\u0103 {0}.
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.explanation=Configura\u0163ia Kerberos nu este specificat\u0103 \u00een fi\u015fierul server.xml. Se vor folosi calea \u015fi numele de fi\u015fier de configurare Kerberos implicite. Consulta\u0163i JDK-ul pentru calea \u015fi numele de fi\u015fier de configurare Kerberos implicite. 
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.useraction=Dac\u0103 utilizatorul ar dori s\u0103 foloseasc\u0103 o alt\u0103 cale \u015fi nume de fi\u015fier de configurare Kerberos complet calificate, trebuie s\u0103 specifica\u0163i calea \u015fi numele de fi\u015fier de configurare Kerberos complet calificate, care pot include \u015fi o variabil\u0103 suportat\u0103, \u00een fi\u015fierul server.xml.
+
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND=CWWKS4303E: Fi\u015fierul de configura\u0163ie Kerberos specificat {0} nu a putut fi g\u0103sit.
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.explanation=Fi\u015fierul de configura\u0163ie Kerberos specificat nu a putut fi g\u0103sit \u00een fi\u015fierul server.xml. 
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.useraction=Verifica\u0163i calea \u015fi numele fi\u015fierului de configurare Kerberos complet calificate, care pot include \u015fi o variabil\u0103 suportat\u0103, pentru a v\u0103 asigura c\u0103 se potrivesc informa\u0163iilor furnizate \u00een fi\u015fierul server.xml.
+
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE=CWWKS4304I: Fi\u015fierul tabel\u0103 de chei Kerberos nu este specificat \u00een fi\u015fierul server.xml \u015fi va fi utilizat\u0103 valoarea implicit\u0103 {0}.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.explanation=Se folosesc calea \u015fi numele de fi\u015fier tabel\u0103 de chei Kerberos implicite dac\u0103 un fi\u015fier tabel\u0103 de chei Kerberos nu este specificat \u00een fi\u015fierul server.xml. Consulta\u0163i documentul JDK pentru calea \u015fi numele de fi\u015fier tabel\u0103 de chei Kerberos implicite.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.useraction=Dac\u0103 utilizatorul ar dori s\u0103 foloseasc\u0103 o alt\u0103 cale \u015fi nume de fi\u015fier tabel\u0103 de chei Kerberos complet calificate, trebuie s\u0103 specifica\u0163i calea \u015fi numele de fi\u015fier tabel\u0103 de chei Kerberos complet calificate, care pot include \u015fi o variabil\u0103 suportat\u0103, \u00een fi\u015fierul server.xml.
+
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4305E: Fi\u015fierul tabel\u0103 de chei Kerberos specificat {0} nu a putut fi g\u0103sit.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=Fi\u015fierul tabel\u0103 de chei Kerberos specificat \u00een fi\u015fierul server.xml nu a putut fi g\u0103sit.  Consulta\u0163i documentul JDK pentru calea \u015fi numele de fi\u015fier tabel\u0103 de chei Kerberos implicite.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Verifica\u0163i calea \u015fi numele fi\u015fierului tabel\u0103 de chei Kerberos complet calificate, care pot include \u015fi o variabil\u0103 suportat\u0103, pentru a v\u0103 asigura c\u0103 se potrivesc informa\u0163iilor furnizate \u00een fi\u015fierul server.xml.  
+
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE=CWWKS4306E: <html><head><title>Autentificarea SPNEGO nu este suportat\u0103.\
+</title></head> <body>Autentificarea SPNEGO nu este suportat\u0103 pe acest browser de client.\
+</body></html>.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.explanation=Autentificarea SPNEGO nu este suportat\u0103 pentru acest browser de client.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configura\u0163i browser-ul clientului pentru a realiza autentificarea SPNEGO.
+
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>A fost primit un jeton NTLM.\
+</title></head> <body>Configura\u0163ia browser-ului dumneavoastr\u0103 de client este corect\u0103, dar nu v-a\u0163i logat \u00eentr-un Domeniu Windows suportat.\
+<p> V\u0103 rug\u0103m s\u0103 v\u0103 loga\u0163i \u00een Domeniul Windows suportat.\
+</html>.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Configura\u0163ia browser-ului clientului este corect\u0103, dar nu v-a\u0163i logat \u00eentr-un domeniu Windows suportat. \
+Sau configura\u0163ia SPNEGO nu este corect\u0103, prin urmare browser-ului clientului nu trimite SPNEGO fie jetonul Kerberos nu este corect.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Verifica\u0163i c\u0103 v\u0103 loga\u0163i \u00een domeniul Windows suportat \u015fi configura\u0163ia SPNEGO pentru server \u015fi domeniul Windows.
+
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN=CWWKS4308E: Nu se poate crea un GSSCredential pentru numele de principal serviciu: {0}. S-a primit o GSSException: {1}
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.explanation=Nu se poate crea un GSSCredential pentru numele de principal serviciu. Autentificarea SPNEGO nu va fi folosit\u0103 pentru acest SPN.
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.useraction=Verifica\u0163i formatul numelui de principal serviciu \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 \u00een domeniul Windows \u015fi c\u0103 fi\u015fierul tabel\u0103 de chei Kerberos con\u0163ine numele de principal serviciu.
+
+SPNEGO_NO_SPN_GSS_CREDENTIAL=CWWKS4309E: Nu se poate crea un GSSCredential pentru niciunul dintre numele de principal serviciu. Nicio cerere nu va folosi autentificarea SPNEGO.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.explanation=Nu se poate crea un GSSCredential pentru niciunul dintre numele de principal serviciu. Nu se va folosi autentificarea SPNEGO.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.useraction=Verifica\u0163i formatul numelui de principal serviciu \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 \u00een domeniul Windows \u015fi c\u0103 fi\u015fierul tabel\u0103 de chei Kerberos con\u0163ine numele de principal serviciu.
+
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND=CWWKS4310W: GSSCredentials delegate de client erau a\u015fteptate s\u0103 fie primite, dar nu s-au g\u0103sit pentru utilizatorul: {0}
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.explanation=GSSCredentials delegate de client nu au fost g\u0103site, a\u015fadar subiectul clientului nu va avea GSSCredentials de client.
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.useraction=Dac\u0103 GSSCredentials delegate de client sunt necesare \u00een subiect, configura\u0163i SPN s\u0103 fie de \u00eencredere pentru serviciile Kerberos \u00een domeniul Windows.
+
+SPNEGO_FAIL_TO_GET_WRITER=CWWKS4311E: Metoda {0} a apelat getWriter al HttpServletResponse \u015fi a e\u015fuat cu o excep\u0163ie {1}
+SPNEGO_FAIL_TO_GET_WRITER.explanation=Eroare la ob\u0163inerea getWriter al HttpServletResponse; nu se poate scrie pagina de eroare la HttpServletResponse.
+SPNEGO_FAIL_TO_GET_WRITER.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.
+
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND=CWWKS4312E: Fi\u015fierul de configura\u0163ie Kerberos nu este specificat \u00een fi\u015fierul server.xml \u015fi fi\u015fierul cu configura\u0163ia Kerberos implicit\u0103 {0} nu a putut fi g\u0103sit.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.explanation=Fi\u015fierul de configurare Kerberos nu este specificat \u00een fi\u015fierul server.xml \u015fi fi\u015fierul de configurare Kerberos implicit nu a putut fi g\u0103sit.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.useraction=Verifica\u0163i calea \u015fi numele fi\u015fierului de configurare Kerberos implicite, sau actualiza\u0163i server.xml cu fi\u015fierul de configurare dorit pentru utilizare.
+
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4313E: Fi\u015fierul tabel\u0103 de chei Kerberos nu este specificat \u00een fi\u015fierul server.xml \u015fi fi\u015fierul tabel\u0103 de chei Kerberos implicit\u0103 {0} nu a putut fi g\u0103sit.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=Fi\u015fierul tabel\u0103 de chei Kerberos nu a putut fi g\u0103sit.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Fi\u015fierul tabel\u0103 de chei Kerberos nu a fost specificat \u00een fi\u015fierul server.xml \u015fi valoarea implicit\u0103 nu a putut fi g\u0103sit\u0103. Verifica\u0163i calea \u015fi numele fi\u015fierului tabel\u0103 de chei Kerberos implicite sau actualiza\u0163i server.xml cu fi\u015fierul tabel\u0103 de chei Kerberos dorit pentru utilizare.
+
+SPNEGO_DEFAULT_SPNS=CWWKS4314I: Atributul servicePrincipalNames nu este specificat \u00een fi\u015fierul server.xml sau valoarea sa este goal\u0103; se va folosi valoarea implicit\u0103 {0}.
+SPNEGO_DEFAULT_SPNS.explanation=Numele servicePrincipalNames nu sunt specificate \u00een fi\u015fierul server.xml \u015fi vor fi utilizate valorile implicite.
+SPNEGO_DEFAULT_SPNS.useraction=Specifica\u0163i o valoare pentru atributul servicePrincipalNames, dac\u0103 valoarea implicit\u0103 nu trebuie folosit\u0103.
+
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN=CWWKS4315E: Nu se poate g\u0103si GSSCredential pentru numele de principal serviciu {0}. 
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.explanation=Nu se poate g\u0103si GSSCredential pentru numele de principal serviciu.
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.useraction=Verifica\u0163i numele de principal serviciu \u015fi asigura\u0163i-v\u0103 c\u0103 este definit \u00een domeniul Windows \u015fi fi\u015fierul tabel\u0103 de chei Kerberos.
+
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME=CWWKS4316W: servicePrincipalNames au mai mult de un SPN pentru numele gazd\u0103 {0}.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.explanation=Numele servicePrincipalNames au mai multe SPN-uri pentru acela\u015fi nume de gazd\u0103. Va fi utilizat primul SPN, iar celelalte SPN-uri vor fi ignorate.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.useraction=Verifica\u0163i numele servicePrincipalNames pentru a v\u0103 asigura c\u0103 exist\u0103 un singur SPN per nume de gazd\u0103.
+
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED=CWWKS4317E: URL-ul paginii de eroare personalizate {0} este formatat gre\u015fit. Se va folosi pagina de eroare implicit\u0103.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.explanation=Pagina de eroare personalizat\u0103 nu poate fi \u00eenc\u0103rcat\u0103 pentru c\u0103 este specificat un URL formatat gre\u015fit.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.useraction=Examina\u0163i pagina de eroare personalizat\u0103 \u015fi modifica\u0163i-o pentru a se conforma unei sintaxe URL bine formatate.
+
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR=CWWKS4318E: Nu se poate \u00eenc\u0103rca pagina de eroare personalizat\u0103 {0} din cauza {1}. Se va folosi pagina de eroare implicit\u0103.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.explanation=Pagina de eroare personalizat\u0103 nu poate fi \u00eenc\u0103rcat\u0103 din cauza excep\u0163iei. Se va folosi valoarea implicit\u0103.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.useraction=Examina\u0163i pagina de eroare personalizat\u0103, asigura\u0163i-v\u0103 c\u0103 exist\u0103 \u015fi verifica\u0163i tipul con\u0163inutului \u015fi cifrarea con\u0163inutului.
+
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E: Nu se poate ob\u0163ine tipul con\u0163inutului pentru pagina de eroare personalizat\u0103 {0} din cauza {1}. Se va folosi pagina de eroare implicit\u0103.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation=Pagina de eroare personalizat\u0103 nu poate fi \u00eenc\u0103rcat\u0103 din cauza excep\u0163iei la ob\u0163inerea tipului con\u0163inutului.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction=Examina\u0163i tipul con\u0163inutului paginii de eroare personalizate pentru a v\u0103 asigura c\u0103 este valid.
+
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: Nu poate fi stabilit GSSContext cu un jeton valid SPNEGO sau Kerberos inclus \u00een {0} HttpServletRequest. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=Jetonul SPNEGO sau Kerberos utilizat pentru autentificarea cererii este valid, dar nu poate fi stabilit GSSContext.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Dac\u0103 nu este afi\u015fat \u015fi alt mesaj de eroare, activa\u0163i depanarea JGSS \u015fi KRB5. consulta\u0163i documenta\u0163ia JDK pentru instruc\u0163iuni referitoare la activarea depan\u0103rii JGSS \u015fi KRB5. Verifica\u0163i configura\u0163ia SPNEGO \u015fi asigura\u0163i-v\u0103 c\u0103 clientul, SPN \u015fi fi\u015fierele keytab Kerberos utilizeaz\u0103 acela\u015fi tip de criptare cu cel specificat \u00een fi\u015fierul de configura\u0163ie Kerberos.
+
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Nu se poate ob\u0163ine serviciul de delegare SPN {0} din GSSCredential. S-a primit o GSSException: {1}
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Nu se poate ob\u0163ine serviciul de delegare SPN din GSSCredential. Clientul GSSCredential pentru proxy nu va fi \u00een subiect.
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Verifica\u0163i formatul numelui principal de serviciu \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 \u00een domeniul Windows \u015fi c\u0103 fi\u015fierul tabel\u0103 de chei Kerberos con\u0163ine numele principal de serviciu.
+
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Delegarea SPN {0} nu se poate autentifica la Key Distribution Center (KDC) utiliz\u00e2nd fi\u015fierul de configura\u0163ie Kerberos {1} \u015fi fi\u015fierul tabel\u0103 de chei {2}. S-a primit o excep\u0163\u00ede de logare: {3}
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Nu se poate face autentificarea la Key Distribution Center (KDC).
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Verifica\u0163i formatul numelui principal de serviciu \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 \u00een domeniul Windows \u015fi c\u0103 fi\u015fierul tabel\u0103 de chei Kerberos con\u0163ine numele principal de serviciu.

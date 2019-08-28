@@ -1,0 +1,3 @@
+# Need to cap ourselves to TLS 1.1 so that the Cloudant client does not initiate a handshake with TLS 1.2, which the DB test server does not understand 
+-Djdk.tls.disabledAlgorithms=TLSv1.2,TLSv1.3
+-Dhttps.protocols=SSLv3,TLSv1,TLSv1.1

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2019 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -52,8 +52,20 @@
             id="recoveryIdentity" required="false" type="String" default="" />
         
         <AD name="%recovery.group" description="%recovery.group.desc"
-            id="recoveryGroup" required="false" type="String" default="" />            
+            id="recoveryGroup" required="false" type="String" default="" />
+
+        <AD name="internal" description="internal use only"
+            id="enableHADBPeerLocking" required="false" type="Boolean" default="false" />
             
+        <AD name="internal" description="internal use only"
+            id="timeBetweenHeartbeats" required="false" type="Integer" default="5" />
+
+        <AD name="internal" description="internal use only"
+            id="peerTimeBeforeStale" required="false" type="Integer" default="10" />
+            
+        <AD name="internal" description="internal use only"
+            id="localTimeBeforeStale" required="false" type="Integer" default="10" />
+                                    
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
         

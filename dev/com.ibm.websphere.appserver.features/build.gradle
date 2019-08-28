@@ -176,6 +176,10 @@ task createFeatureResources {
           from new File(featureFolder, 'resources/l10n')
           into buildImage.file('wlp/lib/features/l10n')
         }
+        copy {
+          from new File(featureFolder, 'resources/icons')
+          into buildImage.file('wlp/lib/features/icons')
+        }
       }
 
       ant.featureBnd(bnd: featureFile.getPath(),

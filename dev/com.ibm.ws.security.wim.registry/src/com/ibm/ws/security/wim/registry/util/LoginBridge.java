@@ -26,6 +26,7 @@ import com.ibm.ws.security.registry.CertificateMapFailedException;
 import com.ibm.ws.security.registry.CertificateMapNotSupportedException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.wim.registry.dataobject.IDAndRealm;
+import com.ibm.wsspi.security.wim.exception.PasswordCheckFailedException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
 import com.ibm.wsspi.security.wim.model.Entity;
@@ -117,13 +118,11 @@ public class LoginBridge {
             List<Entity> returnList = root.getEntities();
             // the user was not authenticated
             if (returnList.isEmpty()) {
+                String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND, WIMMessageHelper.generateMsgParms(inputUser));
                 if (tc.isErrorEnabled()) {
-                    Tr.error(tc, WIMMessageKey.ENTITY_NOT_FOUND, WIMMessageHelper.generateMsgParms(inputUser));
+                    Tr.error(tc, msg);
                 }
-                throw new com.ibm.wsspi.security.wim.exception.PasswordCheckFailedException(WIMMessageKey.ENTITY_NOT_FOUND, Tr.formatMessage(
-                                                                                                                                             tc,
-                                                                                                                                             WIMMessageKey.ENTITY_NOT_FOUND,
-                                                                                                                                             WIMMessageHelper.generateMsgParms(inputUser)));
+                throw new PasswordCheckFailedException(WIMMessageKey.ENTITY_NOT_FOUND, msg);
             }
             // the user was authenticated
             else {
@@ -131,10 +130,15 @@ public class LoginBridge {
                 // f113366
                 // add MAP(userSecurityName) to the return list of properties
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                    returnValue.append(entity.get(outputAttrName));
+                    Object value = entity.get(outputAttrName);
+                    if (value instanceof List<?>) {
+                        returnValue.append(String.valueOf(((List<?>) value).get(0)));
+                    } else {
+                        returnValue.append(String.valueOf(value));
+                    }
                 } else {
                     // d113681
-                    returnValue.append(entity.getIdentifier().get(outputAttrName));
+                    returnValue.append(String.valueOf(entity.getIdentifier().get(outputAttrName)));
                 }
             }
             // if realm is defined
@@ -225,10 +229,15 @@ public class LoginBridge {
                 // ff113366
                 Entity entity = returnList.get(0);
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                    returnValue.append(entity.get(outputAttrName));
+                    Object value = entity.get(outputAttrName);
+                    if (value instanceof List<?>) {
+                        returnValue.append(String.valueOf(((List<?>) value).get(0)));
+                    } else {
+                        returnValue.append(String.valueOf(value));
+                    }
                 } else {
                     // d113681
-                    returnValue.append(entity.getIdentifier().get(outputAttrName));
+                    returnValue.append(String.valueOf(entity.getIdentifier().get(outputAttrName)));
                 }
             }
             // if realm is defined

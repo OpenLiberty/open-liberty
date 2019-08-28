@@ -18,6 +18,7 @@ src: \
 	fat/src,\
 	test-applications/helpers/DatabaseManagement/src,\
 	test-applications/common/src,\
+	test-applications/criteriaapi/src,\
 	test-applications/querylockmode/src,\
 	test-framework/src
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -27,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.osgi.framework.BundleContext;
@@ -61,7 +63,7 @@ import com.ibm.wsspi.validator.Validator;
 @Component(name = "com.ibm.ws.rest.handler.validator",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
-           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation", RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
+           property = { RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation/{element}", RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
 public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
 
@@ -69,6 +71,16 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
 
     @Reference
     VariableRegistry variableRegistry;
+
+    private static class HttpErrorInfo {
+        private final int code;
+        private final String message;
+
+        private HttpErrorInfo(int errorCode, String message) {
+            this.code = errorCode;
+            this.message = message;
+        }
+    }
 
     @Activate
     protected void activate(ComponentContext context) {
@@ -161,7 +173,17 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         String jndiName = (String) config.get("jndiName");
         if (jndiName != null)
             json.put("jndiName", jndiName);
-        // TODO: app-defined data sources: application/module/component
+        Object application = config.get("application");
+        if (application != null) {
+            json.put("application", application);
+            Object module = config.get("module");
+            if (module != null) {
+                json.put("module", module);
+                Object component = config.get("component");
+                if (component != null)
+                    json.put("component", component);
+            }
+        }
 
         // Locate the validator
         String configElementPid = (String) config.get("service.factoryPid");
@@ -179,8 +201,8 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         ServiceReference<?>[] targetRefs;
         try {
             String filter = "(|" + FilterUtils.createPropertyFilter("service.pid", (String) config.get("service.pid")) // config without super type
-                           + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
-                           + ")";
+                            + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
+                            + ")";
             targetRefs = getServiceReferences(context.getBundleContext(), (String) null, filter);
         } catch (InvalidSyntaxException x) {
             targetRefs = null; // same error handling as not found
@@ -201,31 +223,58 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         Object target = validatorRefs.isEmpty() || targetRef == null ? null : getService(context, targetRef);
         if (target == null) {
             json.put("successful", false);
-            json.put("failure",
-                     toJSONObject("message",
-                                  "One or more dependencies not satisfied, or feature that enables the resource is not enabled, or it is not possible to validate this type of resource"));
+            json.put("failure", toJSONObject("message", Tr.formatMessage(tc, request.getLocale(), "CWWKO1551_CANNOT_VALIDATE")));
         } else {
             // Build a map of params for the testable service
             Map<String, Object> params = new HashMap<String, Object>();
-            for (String key : request.getParameterMap().keySet()) {
-                params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
-            }
+            boolean headerParamsURLEncoded = false;
+            for (String key : request.getParameterMap().keySet())
+                if ("headerParamsURLEncoded".equals(key)) {
+                    headerParamsURLEncoded = Boolean.parseBoolean(request.getParameter(key));
+                } else if (isParameter(key)) {
+                    params.put(key, resolvePotentialVariable(request.getParameter(key)));
+                } else {
+                    return new HttpErrorInfo(400, "unrecognized query parameter: " + key);
+                }
+
             String user = request.getHeader("X-Validation-User");
-            if (user != null)
-                params.put("user", resolvePotentialVariable(user));
+            if (user != null) {
+                if (headerParamsURLEncoded)
+                    user = URLDecoder.decode(user, "UTF-8");
+                params.put(Validator.USER, resolvePotentialVariable(user));
+            }
             String pass = request.getHeader("X-Validation-Password");
-            if (pass != null)
-                params.put("password", pass == null ? null : variableRegistry.resolveRawString(pass));
-            String contentType = request.getContentType();
-            if ("application/json".equalsIgnoreCase(contentType)) {
-                params.put(Validator.JSON_BODY_KEY, read(request.getInputStream()));
+            if (pass != null) {
+                if (headerParamsURLEncoded)
+                    pass = URLDecoder.decode(pass, "UTF-8");
+                params.put(Validator.PASSWORD, variableRegistry.resolveRawString(pass));
+            }
+            String loginConfigProps = request.getHeader("X-Login-Config-Props");
+            if (loginConfigProps != null) {
+                Map<String, String> lcProps = new TreeMap<String, String>();
+                for (String entry : loginConfigProps.split(",")) {
+                    int eq = entry.indexOf("=");
+                    if (eq > 0) {
+                        String name = entry.substring(0, eq);
+                        String value = entry.substring(eq + 1);
+                        if (headerParamsURLEncoded) {
+                            name = URLDecoder.decode(name, "UTF-8");
+                            value = URLDecoder.decode(value, "UTF-8");
+                        }
+                        lcProps.put(resolvePotentialVariable(name), resolvePotentialVariable(value));
+                    } else {
+                        json.put("successful", false);
+                        json.put("failure", toJSONObject("message", Tr.formatMessage(tc, request.getLocale(), "CWWKO1552_MISSING_DELIMITER")));
+                    }
+                }
+                params.put(Validator.LOGIN_CONFIG_PROPS, lcProps);
             }
 
             Validator validator = getService(context, validatorRefs.iterator().next());
             if (validator == null) {
                 json.put("successful", false);
-                json.put("failure", toJSONObject("message", "Unable to obtain validator for " + configElementPid));
-            } else {
+                json.put("failure", toJSONObject("message", Tr.formatMessage(tc, request.getLocale(), "CWWKO1550_VALIDATOR_NOT_FOUND", configElementPid)));
+            } else if (!json.containsKey("successful")) {
                 Map<String, ?> result;
                 try {
                     result = validator.validate(target, params, request.getLocale());
@@ -254,6 +303,19 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         return json;
     }
 
+    /**
+     * Identifies whether the specified query parameter is a valid parameter for the validator.
+     * Header parameters such as the user name & password return a false value because they are not query parameters.
+     *
+     * @param name query parameter name.
+     * @return true if a valid parameter for validation. Otherwise false.
+     */
+    public boolean isParameter(String name) {
+        return Validator.AUTH.equals(name)
+               || Validator.AUTH_ALIAS.equals(name)
+               || Validator.LOGIN_CONFIG.equals(name);
+    }
+
     @Override
     @Trivial
     public void populateResponse(RESTResponse response, Object responseInfo) throws IOException {
@@ -263,15 +325,40 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         else if (responseInfo instanceof List) {
             JSONArray ja = new JSONArray();
             for (Object info : (List<?>) responseInfo)
-                if (info instanceof JSONArtifact)
+                if (info instanceof JSONArtifact) {
                     ja.add(info);
-                else
+                } else if (info instanceof HttpErrorInfo) {
+                    HttpErrorInfo errorInfo = (HttpErrorInfo) info;
+                    response.sendError(errorInfo.code, errorInfo.message);
+                    return;
+                } else {
                     throw new IllegalArgumentException(info.toString()); // should be unreachable
+                }
             json = ja;
-        } else
+        } else if (responseInfo instanceof HttpErrorInfo) {
+            HttpErrorInfo errorInfo = (HttpErrorInfo) responseInfo;
+            response.sendError(errorInfo.code, errorInfo.message);
+            return;
+        } else {
             throw new IllegalArgumentException(responseInfo.toString()); // should be unreachable
+        }
 
         String jsonString = json.serialize(true);
+
+        /*
+         * com.ibm.json.java.JSONArtifact.serialize() escapes / with \\/.
+         * The list of special characters in proper JSON data is:
+         * \b Backspace (ascii code 08)
+         * \f Form feed (ascii code 0C)
+         * \n New line
+         * \r Carriage return
+         * \t Tab
+         * \" Double quote
+         * \\ Backslash character
+         *
+         * Therefore, we will remove this extraneous formatting.
+         */
+        jsonString = jsonString.replaceAll("\\\\/", "/");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "populateResponse", jsonString);
@@ -299,7 +386,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
      * Populate JSON object for a top level exception or error.
      *
      * @param errorInfo additional information to append to exceptions and causes
-     * @param error     the top level exception or error.
+     * @param error the top level exception or error.
      * @return JSON object representing the Throwable.
      */
     @SuppressWarnings("unchecked")
@@ -365,6 +452,32 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             Tr.debug(tc, "Was a variable value found for " + value + "?  " + !value.equals(resolvedVariable));
         }
         return resolvedVariable;
+    }
+
+    /**
+     * Restricts use of the validation end-point to GET requests only.
+     * All other requests will respond with a 405 - method not allowed error.
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+        if (!"GET".equals(request.getMethod())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Request method was " + request.getMethod() + " but the validation endpoint is restricted to GET requests only.");
+            }
+            response.setResponseHeader("Accept", "GET");
+            response.sendError(405); // Method Not Allowed
+            return;
+        }
+
+        //Throw 404 for /ibm/api/validation with an empty string element.
+        if (request.getPath().startsWith("/validation//")) {
+            response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1553_HANDLER_NOT_FOUND", request.getContextPath() + request.getPath()));
+            return;
+        }
+
+        super.handleRequest(request, response);
     }
 
     @Override

@@ -25,7 +25,6 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.ws.webcontainer.osgi.osgi.ExtensionFactoryServiceListener;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;

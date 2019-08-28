@@ -12,6 +12,6 @@
 		<user name="mlee" password="p@ssw0rd" />
     </basicRegistry>
 
-	
+	<orb id="defaultOrb" orbSSLInitTimeout="60"/>
 
 </server>

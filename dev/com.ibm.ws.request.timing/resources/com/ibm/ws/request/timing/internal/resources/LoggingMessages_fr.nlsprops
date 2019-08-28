@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: La demande {0} s''est ex\u00e9cut\u00e9e sur l''unit\u00e9 d''ex\u00e9cution {1} pendant au moins {2} ms. La trace de pile suivante ce qu''ex\u00e9cute cette unit\u00e9 d''ex\u00e9cution.\n\n {3}\nLe tableau suivant affiche les \u00e9v\u00e9nements qui se sont ex\u00e9cut\u00e9s lors de cette demande.\n{4} 
+REQUEST_TIMER_WARNING.explanation=La demande s'ex\u00e9cute depuis plus longtemps que la demande lente configur\u00e9e. Les informations du tableau indiquent les \u00e9v\u00e9nements qui ont d\u00e9j\u00e0 \u00e9t\u00e9 ex\u00e9cut\u00e9e dans le cadre de la demande. Les \u00e9v\u00e9nements qui sont encore en cours d'ex\u00e9cution sont signal\u00e9es par un signe + situ\u00e9 en regard de la dur\u00e9e. La valeur par d\u00e9faut pour la dur\u00e9e de demande lente est 10, consultez la valeur en cours dans le fichier server.xml.
+REQUEST_TIMER_WARNING.useraction=Utilisez les informations du tableau pour d\u00e9terminer la partie de la demande qui est plus lente que pr\u00e9vu.  Si de nombreux avertissements sont \u00e9mis pour diff\u00e9rentes demandes alors que presque au m\u00eame moment il est indiqu\u00e9e que quelque chose a ralenti l'int\u00e9gralit\u00e9 du processus serveur, par exemple un autre processus sur le m\u00eame syst\u00e8me qui consomme une grande quantit\u00e9 de ressources de traitement.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: La demande {0} s''est ex\u00e9cut\u00e9e sur l''unit\u00e9 d''ex\u00e9cution {1} pendant au moins {2} ms. Le tableau suivant affiche les \u00e9v\u00e9nements qui se sont ex\u00e9cut\u00e9s lors de cette demande.\n{3}
+HUNG_REQUEST_WARNING.explanation=La demande s'ex\u00e9cute depuis plus longtemps que la demande de suspension configur\u00e9e. Les informations du tableau indiquent les \u00e9v\u00e9nements qui ont d\u00e9j\u00e0 \u00e9t\u00e9 ex\u00e9cut\u00e9e dans le cadre de la demande. Des coeurs Java sont automatiquement d\u00e9clench\u00e9s pour la collecte d'informations suppl\u00e9mentaires sur la cause de la suspension de la demande. La valeur par d\u00e9faut pour la dur\u00e9e de demande de suspension est 10 minutes, consultez la valeur en cours dans le fichier server.xml.
+HUNG_REQUEST_WARNING.useraction=Utilisez les informations du tableau pour d\u00e9terminer la partie de la demande qui est suspendue ou en boucle. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: La demande {0} sur l''unit\u00e9 d''ex\u00e9cution {1} a \u00e9t\u00e9 pr\u00e9alablement d\u00e9tect\u00e9e comme suspendue, s''est termin\u00e9e au bout de {2} ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=La t\u00e2che de demande suspendue informera l'utilisateur lorsqu'une demande suspendue est termin\u00e9e.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Aucune action n'est requise.    
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: La configuration de minutage associ\u00e9e au PID {0} ne peut \u00eatre lue \u00e0 partir de la configuration.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=Le service de minutage des demandes (request timing) a tent\u00e9 de lire une configuration de minutage embarqu\u00e9e \u00e0 partir du fichier server.xml. Le PID associ\u00e9 \u00e0 l'\u00e9l\u00e9ment de minutage (timing) figure dans le message.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Consultez le fichier messages.log pour voir si d'autres messages d'erreur tels que CWWKG0058E ont \u00e9t\u00e9 consign\u00e9s ainsi que pour trouver des d\u00e9tails sur le probl\u00e8me de configuration. Corrigez la configuration afin de rem\u00e9dier \u00e0 l'erreur.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Il existe d\u00e9j\u00e0 une configuration de minutage du type {0} avec le motif d''informations de contexte {1}. La configuration de minutage associ\u00e9e au PID {2} remplace la configuration de minutage pr\u00e9c\u00e9dente.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=Une configuration de minutage en double a \u00e9t\u00e9 trouv\u00e9e dans le fichier server.xml. La combinaison du type et du motif d'informations de contexte indiqu\u00e9s a d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9finie.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Inspectez le fichier server.xml et supprimez les configurations de minutage en double.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: La configuration de minutage associ\u00e9e au PID {0} fournit un motif d''informations de contexte, mais l''attribut includeContextInfo est mis \u00e0 false dans la configuration de minutage des demandes. La configuration de minutage sera ignor\u00e9e.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=Le service de minutage des demandes (request timing) a lu une configuration de minutage embarqu\u00e9e dans le fichier server.xml. Cette configuration de minutage sp\u00e9cifie un motif d'informations de contexte \u00e0 rechercher. Or, le service de minutage des demandes \u00e9tant configur\u00e9 pour d\u00e9sactiver les informations de contexte pour toutes les demandes, il ne peut pas comparer les demandes \u00e0 cette configuration de minutage.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Inspectez le fichier server.xml et rem\u00e9diez au conflit entre configurations en mettant \u00e0 true l'attribut includeContextInfo dans la configuration de minutage des demandes ou en supprimant le motif d'informations de contexte de la configuration de minutage.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: La configuration de minutage associ\u00e9e au PID {0} fournit un motif d''informations de contexte qui contient une partie g\u00e9n\u00e9rique \u00e0 une position non tol\u00e9r\u00e9e. La partie g\u00e9n\u00e9rique sera trait\u00e9e litt\u00e9ralement, c''est-\u00e0-dire comme un ast\u00e9risque. Le motif d''informations de contexte est {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=Le service de minutage des demandes (request timing) a lu une configuration de minutage embarqu\u00e9e dans le fichier server.xml. Si un ast\u00e9risque figure dans le motif d'informations de contexte, il est trait\u00e9 comme une partie g\u00e9n\u00e9rique, sauf s'il est \u00e9chapp\u00e9 avec une barre oblique. Une partie g\u00e9n\u00e9rique n'est cependant tol\u00e9r\u00e9e qu'\u00e0 la fin (derni\u00e8re position de caract\u00e8re) du motif d'informations de contexte.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Pour que le caract\u00e8re g\u00e9n\u00e9rique soit interpr\u00e9t\u00e9 litt\u00e9ralement comme un ast\u00e9risque, \u00e9chappez-le avec une barre oblique invers\u00e9e.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nLe tableau a \u00e9t\u00e9 tronqu\u00e9 car le nombre d'\u00e9v\u00e9nements pour la demande est sup\u00e9rieur \u00e0 la limite autoris\u00e9e.

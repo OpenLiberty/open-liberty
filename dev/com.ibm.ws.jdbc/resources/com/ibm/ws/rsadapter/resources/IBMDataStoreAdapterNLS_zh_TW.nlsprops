@@ -556,6 +556,13 @@ NO_WRAPPED_OBJECT.useraction=\u8acb\u78ba\u8a8d\u5df2\u6b63\u78ba\u6307\u5b9a\u5
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: \u7121\u6cd5\u5c07\u7269\u4ef6\u89e3\u9664\u5c01\u88dd\u81f3 {0}\uff0c\u56e0\u70ba {0} \u4e0d\u662f\u4ecb\u9762\u985e\u5225\u3002
+NOT_AN_INTERFACE.explanation=\u89e3\u9664\u5c01\u88dd\u65b9\u6cd5\u53ea\u5141\u8a31\u89e3\u9664\u5c01\u88dd\u81f3\u4ecb\u9762\u985e\u5225\u3002
+NOT_AN_INTERFACE.useraction=\u8acb\u89e3\u9664\u5c01\u88dd\u81f3\u4e00\u500b\u4f5c\u70ba\u4ecb\u9762\u7684\u985e\u5225\uff0c\u800c\u975e\u89e3\u9664\u5c01\u88dd\u81f3\u5177\u9ad4\u985e\u5225\u3002
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.

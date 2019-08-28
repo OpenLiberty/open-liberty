@@ -92,7 +92,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     private long lastTimeCheck = 0L;
     private int leakDetectionInterval = -1;
     private String leakDetectionOutput = null;
-    private final Object leakDetectionSyncObject = new Object() {};
+    private final Integer leakDetectionSyncObject = new Integer(1);
 
     /**
      * Create the one WsByteBufferPool Manager that is to be used.

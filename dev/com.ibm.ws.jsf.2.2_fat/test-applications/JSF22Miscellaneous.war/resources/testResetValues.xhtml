@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+ 
+    <h:body>
+    	<f:view>
+	        <br/><br/>
+		        <h1>JSF 2.2 Test ResetValues</h1>
+				<h:form  id="form1">
+					<h:messages />
+					<h:inputText id="firstName" value="#{miscellaneousEmployeeBean.firstName}" required="true"/>
+					<h:inputText id="lastName" value="#{miscellaneousEmployeeBean.lastName}" required="true"/>
+				
+					<h:commandButton id="save" value="Save">
+						<f:ajax render="@form" execute="@form"/>
+					</h:commandButton>
+				
+					<h:commandButton id="reset" value="Reset" actionListener="#{miscellaneousEmployeeBean.reset}">
+						<f:ajax resetValues="true" render="firstName lastName" execute="@this"/>
+					</h:commandButton>
+				</h:form>
+	    </f:view>
+    </h:body>
+</html>

@@ -1,0 +1,393 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Descrizione:
+global.actions=Azioni:
+global.options=Opzioni:
+global.required=Richiesta:
+global.usage=Uso:
+global.usage.options=\t{0} {1} [opzioni]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\tUtilizzare il comando help [azione] per ottenere informazioni dettagliate relative alle opzioni per ciascuna azione.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\tStampare le informazioni della guida per l'azione specificata.
+
+help.usage.options=\t{0} {1} [nomeAzione]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\ \ \ \ --batchManager=[host]:[port],[host2]:[port2],...
+connect.required-desc.--batchManager=\tL'host e la porta dell'API REST del gestore batch. possibile specificare \n\
+\tpi\u00f9 destinazioni per l'HA (high availability) e il fail-over. Le destinazioni sono\n\
+\tdelimitate da una virgola ','. 
+
+connect.required-key.--user=\ \ \ \ --user=[nomeutente]
+connect.required-desc.--user=\tIl nome utente per accedere al gestore batch.
+
+connect.required-key.--password=\ \ \ \ --password[=pwd]
+connect.required-desc.--password=\tLa password per accedere al gestore batch. Se non viene definito alcun \n\
+\tvalore, esso verr\u00e0 richiesto all'utente.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\ \ \ \ --controlPropertiesFile=[file-propriet\u00e0-controllo]
+connect.optional-desc.--controlPropertiesFile=\tUn file di propriet\u00e0 che contiene i parametri di controllo, come l'host \n\
+\te la porta a cui connettersi. Questi parametri sono sovrascritti dai parametri \n\
+\tspecificati direttamente sulla riga comandi.
+
+connect.optional-key.--httpTimeout_s=\ \ \ \ --httpTimeout_s=[timeout http in secondi]
+connect.optional-desc.--httpTimeout_s=\tIl timeout in secondi applicato alle richieste HTTP effettuate dal programma di utilit\u00e0\n\
+\tall'API REST del gestore batch. Lo stesso valore di timeout viene applicato\n\
+\talle operazioni di connessione e lettura. Se non specificato, viene utilizzato il valore predefinito\n\
+\tdi 30 secondi.
+
+connect.optional-key.--trustSslCertificates=\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\tIndica che l'utility deve ritenere affidabili tutti i certificati SSL. L'utility \n\
+\tcomunica con l'API REST gestore batch su HTTPS. \n\
+\tPer impostazione predefinita verifica il certificato SSL del gestore batch, a meno che\n \tnon sia specificata questa opzione, nel qual caso considera affidabile il certificato SSL \n\
+\te non esegue alcuna verifica.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\ \ \ \ --wait
+wait.optional-desc.--wait=\tSe viene specificata, il programma attender\u00e0 il completamento\n\
+\tdel lavoro prima di uscire. Il codice di uscita viene impostato in base allo stato \n\
+\tbatch del lavoro (a meno che non sia specificata --returnExitStatus).\n\
+\tCodici di uscita stato batch:\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\ \ \ \ --pollingInterval_s=[intervallo di polling in secondi]
+wait.optional-desc.--pollingInterval_s=\tL'intervallo di tempo al quale eseguire il polling per lo stato del lavoro. \n\
+\tIl valore predefinito \u00e8 30 secondi.
+
+wait.optional-key.--verbose=\ \ \ \ --verbose
+wait.optional-desc.--verbose=\tSe viene specificata, il programma registrer\u00e0 un messaggio ogni\n\
+\tvolta che esegue il polling dello stato del lavoro.
+
+wait.optional-key.--getJobLog=\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\tSe specificata, il programma scaricher\u00e0 il log lavori e lo stamper\u00e0 in\n\
+\tSTDOUT al termine del lavoro. Questa opzione deve essere combinata con --wait.
+
+wait.optional-key.--returnExitStatus=\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\tUtilizzare lo stato di uscita del lavoro come codice di uscita di questo programma. Questa opzione \n\
+\tdeve essere combinata con --wait. Se lo stato di uscita corrisponde a un nome \n\
+\tBatchStatus (ad es. "COMPLETED"), il codice di uscita viene impostato \n\
+\tin base all'associazione descritta dall'opzione --wait. Altrimenti, il\n\
+\tcodice di uscita viene analizzato dall'inizio della stringa di stato di uscita.\n\
+\tAd esempio:\n\
+\t\texitStatus="0", codice di uscita: 0\n\
+\t\texitStatus="8:il messaggio di errore pu\u00f2 andare qui", codice di uscita: 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\tInoltrare un nuovo lavoro batch. 
+
+submit.optional-key.--applicationName=\ \ \ \ --applicationName=[nomeApplicazione]
+submit.optional-desc.--applicationName=\tIl nome dell'applicazione batch. \n\
+\tNota: \u00e8 necessario specificare --applicationName o --moduleName. \n\
+\tSe non si specifica --applicationName, assume il valore predefinito di [nomeModulo] \n\
+\tsenza l'estensione ".war" o ".jar".
+
+submit.optional-key.--moduleName=\ \ \ \ --moduleName=[nomeModulo]
+submit.optional-desc.--moduleName=\tIdentifica un modulo WAR o EJB all'interno dell'applicazione batch.\n\
+\tIl lavoro viene inoltrato nel contesto componente del modulo. \n\
+\tNota: \u00e8 necessario specificare --applicationName o --moduleName. \n\
+\tSe non si specifica --moduleName, assume il valore predefinito "[nomeApplicazione].war".
+
+submit.optional-key.--componentName=\ \ \ \ --componentName=[nomeComponente]
+submit.optional-desc.--componentName=\tIdentifica un componente EJB all'interno del modulo EJB dell'applicazione batch.\n\
+\tIl lavoro viene inoltrato nel contesto componente dell'EJB.
+
+submit.optional-key.--jobXMLName=\ \ \ \ --jobXMLName=[jobXMLName]
+submit.optional-desc.--jobXMLName=\tIl nome dell'XML lavoro che descrive il lavoro. Il file viene letto\n\
+\tdalla directory batch-jobs nel modulo applicazione. \n\
+\tNota: \u00e8 necessario specificare --jobXMLName o --jobXMLFile.
+
+submit.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[file-propriet\u00e0-lavoro]
+submit.optional-desc.--jobPropertiesFile=\tUn file di propriet\u00e0 che contiene i parametri di lavoro.\n\
+\tQuesto \u00e8 un alias dell'opzione --jobParametersFile.
+
+submit.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[file-parametri-lavoro]
+submit.optional-desc.--jobParametersFile=\tUn file di propriet\u00e0 che contiene i parametri di lavoro.\n\
+\tQuesto \u00e8 un alias dell'opzione --jobPropertiesFile.
+
+submit.optional-key.--jobParameter=\ \ \ \ --jobParameter=[key]=[value]
+submit.optional-desc.--jobParameter=\tSpecificare un parametro lavoro. \u00c8 possibile specificare pi\u00f9 di una opzione\n\
+\t--jobParameter. L'opzione --jobParameter sovrascrive propriet\u00e0 con nome simile\n \t in --jobParametersFile.
+
+submit.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\tQuesta opzione pu\u00f2 essere utilizzata insieme a --wait. Registra un hook di arresto\n\
+\tcon la JVM che acquisisce il controllo quando il programma batchManager \n\
+\tviene chiuso in modo anomalo.  L'hook di arresto tenta di arrestare il lavoro \n\
+\tper cui \u00e8 in attesa inviando una richiesta di arresto al server. \n\
+\tNota: gli hook di arresto della JVM acquisiscono il controllo solo quando la JVM \n\
+\tviene chiusa in determinati modi. Per ulteriori informazioni, consultare la documentazione Java per \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+submit.optional-key.--jobXMLFile=\ \ \ \ --jobXMLFile=[jobXMLFile]
+submit.optional-desc.--jobXMLFile=\tIl nome di un file contenente il JSL per il lavoro. Il file viene \n\
+\tletto dall'utility batchManager e inoltrato in-line con la \n\
+\trichiesta, invece di essere letto dalla directory batch-jobs\n \tnel modulo applicazione.\n\
+\tNota: \u00e8 necessario specificare --jobXMLName o --jobXMLFile.
+
+submit.optional-key.--restartTokenFile=\ \ \ \ --restartTokenFile=[restart-token-file]
+submit.optional-desc.--restartTokenFile=\tIl nome di un file che contiene l'id istanza del lavoro\n\
+\tda riavviare.  La lettura e la scrittura del file viene effettuata dall'utility\n\
+\tbatchManager.  Se il file contiene un id istanza, il lavoro viene riavviato.  Altrimenti, \n\
+\tviene inoltrato un nuovo lavoro e l'id istanza risultante viene memorizzata\n\
+\tnel file.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\tRiavviare un lavoro batch.
+
+restart.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[IdIstanzaLavoro]
+restart.optional-desc.--jobInstanceId=\tL'istanza lavoro da riavviare.\n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+restart.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[IdEsecuzioneLavoro]
+restart.optional-desc.--jobExecutionId=\tL'esecuzione lavoro da riavviare.\n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+restart.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[file-propriet\u00e0-lavoro]
+restart.optional-desc.--jobPropertiesFile=\tUn file di propriet\u00e0 che contiene i parametri di lavoro.\n\
+\tQuesto \u00e8 un alias dell'opzione --jobParametersFile.
+
+restart.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[file-parametri-lavoro]
+restart.optional-desc.--jobParametersFile=\tUn file di propriet\u00e0 che contiene i parametri di lavoro.\n\
+\tQuesto \u00e8 un alias dell'opzione --jobPropertiesFile.
+
+restart.optional-key.--jobParameter=\ \ \ \ --jobParameter=[key]=[value]
+restart.optional-desc.--jobParameter=\tSpecificare un parametro lavoro. \u00c8 possibile specificare pi\u00f9 di una opzione\n\
+\t--jobParameter. L'opzione --jobParameter sovrascrive propriet\u00e0 con nome simile\n \t in --jobParametersFile.
+
+restart.optional-key.--reusePreviousParams=\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\tSe specificato, il lavoro riutilizza i parametri del lavoro precedente.
+
+restart.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\tQuesta opzione pu\u00f2 essere utilizzata insieme a --wait. Registra un hook di arresto\n\
+\tcon la JVM che acquisce il controllo quando il programma batchManager \n\
+\tviene chiuso in modo anomalo.  L'hook di arresto tenta di arrestare il lavoro \n\
+\tper cui \u00e8 in attesa inviando una richiesta di arresto al server. \n\
+\tNota: gli hook di arresto della JVM acquisiscono il controllo solo quando la JVM \n\
+\tviene chiusa in determinati modi. Per ulteriori informazioni, consultare la documentazione Java per \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\tArrestare un lavoro batch.
+
+stop.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[IdIstanzaLavoro]
+stop.optional-desc.--jobInstanceId=\tL'istanza lavoro da arrestare.\n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+stop.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[IdEsecuzioneLavoro]
+stop.optional-desc.--jobExecutionId=\tL'esecuzione lavoro da arrestare.\n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\tVisualizzare lo stato di un lavoro.
+
+status.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[IdIstanzaLavoro]
+status.optional-desc.--jobInstanceId=\tL'istanza lavoro da visualizzare.\n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+status.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[IdEsecuzioneLavoro]
+status.optional-desc.--jobExecutionId=\tL'esecuzione lavoro da visualizzare.\n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\tScarica il log lavori per un lavoro batch.
+
+getJobLog.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[IdIstanzaLavoro]
+getJobLog.optional-desc.--jobInstanceId=\tScarica il log lavori per l'istanza lavoro indicata. \n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+getJobLog.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[IdEsecuzioneLavoro]
+getJobLog.optional-desc.--jobExecutionId=\tScarica il log lavori per l'esecuzione lavoro indicata. \n\
+\tNota: \u00e8 necessario specificare --jobInstanceId o --jobExecutionId.
+
+getJobLog.optional-key.--outputFile=\ \ \ \ --outputFile=[FileDiOutput]
+getJobLog.optional-desc.--outputFile=\tPercorso a un file locale.  Il log lavori viene scritto in questo file.\n\
+\tSe non specificato, l'ubicazione di output predefinita dipende da --type.\n\
+\tSe --type=text, il log lavori viene scritto in STDOUT.\n\
+\tSe --type=zip, il log lavori viene scritto in un file con il nome suggerito dall'intestazione\n \t'Content-Disposition' nella risposta HTTP.
+
+getJobLog.optional-key.--type=\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\tScarica il log lavori come testo semplice o come file zip.\n\
+\tSe non specificato, il valore predefinito \u00e8 text.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\tElencare le istanze lavoro. 
+
+listJobs.optional-key.--page=\ \ \ \ --page=[pagina]
+listJobs.optional-desc.--page=\tLa pagina di record di istanza lavoro da restituire. I numeri di pagina iniziano da 0.\n\
+\tAd esempio:\n\
+\t\t--page=0 --pageSize=10 restituisce i primi 10 record.\n\
+\t\t--page=2 --pageSize=10 restituisce i record da 20 a 29.\n\
+\tSe non specificato, il valore predefinito \u00e8 0.
+
+listJobs.optional-key.--pageSize=\ \ \ \ --pageSize=[dimensionePagina]
+listJobs.optional-desc.--pageSize=\tLa dimensione della pagina di record di istanza lavoro da restituire.\n\
+\tAd esempio:\n\
+\t\t--page=0 --pageSize=10 restituisce i primi 10 record.\n\
+\t\t--page=1 --pageSize=20 restituisce i record da 20 a 39.\n\
+\tSe non specificato, il valore predefinito \u00e8 50.
+
+listJobs.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[IdIstanzaLavoro]
+listJobs.optional-desc.--jobInstanceId=\tIl filtro id istanza lavoro applicato ai record istanza lavoro. \n\
+\tAd esempio:\n\
+\t\t--jobInstanceId=10:20 restituisce i record da 10 a 20.\n\
+\t\t--jobInstanceId=">10" restituisce i record superiori o uguali a 10.\n\
+\t\t--jobInstanceId="<10" restituisce i record inferiori o uguali a 10.\n\
+\t\t--jobInstanceId=10,12,15 restituisce i record 10, 12 e 15.\n\
+\t\tSe non si specifica --page e --pageSize, viene restituito il numero massimo\n\
+\t\tdi record predefinito di 50.
+
+listJobs.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+listJobs.optional-desc.--createTime=\tIl filtro ora di creazione applicato ai record istanza lavoro. \n\
+\tAd esempio:\n\
+\t\t--createTime=2015-09-10:2015-09-27 restituisce i record creati\n\
+\t\t\ttra 2015-09-10 e 2015-09-27, inclusi.\n\
+\t\t--createTime=">3d" restituisce i record creati 3 giorni fa UTC o\n\
+\t\t\tdopo (la data di creazione \u00e8 posteriore o uguale alla data di 3 giorni fa).\n\
+\t\t--createTime="<3d" restituisce i record creati 3 giorni fa UTC o\n\
+\t\t\tprima (la data di creazione \u00e8 precedente o uguale alla data di 3 giorni fa).\n\
+\t\t--createTime=2015-09-15 restituisce tutti i record creati in data 2015-09-15.\n\
+\t\tSe non si specifica --page e --pageSize, viene restituito il numero massimo\n\
+\t\tdi record predefinito di 50.  Quando si specifica createTime=>Xd o\n\
+\t\tcreateTime<Xd la data viene calcolata sul server dispatcher\n\
+\t\tin ora UTC. 
+
+listJobs.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+listJobs.optional-desc.--instanceState=\tIl filtro stato istanza applicato ai record istanza lavoro. \n\
+\tAd esempio:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED restituisce i record\n\
+\t\tnegli stati COMPLETED, FAILED e STOPPED.\n\
+\t\tSe non si specifica --page e --pageSize, viene restituito il numero massimo\n\
+\t\tdi record predefinito di 50.
+
+listJobs.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+listJobs.optional-desc.--exitStatus=\tIl filtro dello stato di uscita applicato ai record di esecuzione del lavoro che sono\n\
+\tassociati con i record istanza lavoro.\n\
+\tAd esempio:\n\
+\t\t--exitStatus=*JOB* restituisce i record istanza lavoro che hanno record di esecuzione\n\
+\t\tcontenenti la parola JOB nello stato di uscita.\n\
+\t\tNota: i criteri possono utilizzare l'operatore carattere jolly (*) su una\n \t\tdelle estremit\u00e0.\n\
+\t\tSe non si specifica --page e --pageSize, viene restituito il numero massimo\n\
+\t\tdi record predefinito di 50.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\tEliminare tutti i record e i log per un'istanza lavoro o elimina un elenco di\n\
+\trecord di istanze log.
+
+purge.optional-key.--page=\ \ \ \ --page=[pagina]
+purge.optional-desc.--page=\tLa pagina di record di istanza lavoro da restituire. I numeri di pagina iniziano da 0.\n\
+\tAd esempio:\n\
+\t\t--page=0 --pageSize=10 restituisce i primi 10 record.\n\
+\t\t--page=2 --pageSize=10 restituisce i record da 20 a 29.\n\
+\tSe non specificato, il valore predefinito \u00e8 0.
+
+purge.optional-key.--pageSize=\ \ \ \ --pageSize=[dimensionePagina]
+purge.optional-desc.--pageSize=\tLa dimensione della pagina di record di istanza lavoro da restituire.\n\
+\tAd esempio:\n\
+\t\t--page=0 --pageSize=10 restituisce i primi 10 record.\n\
+\t\t--page=1 --pageSize=20 restituisce i record da 20 a 39.\n\
+\tSe non specificato, il valore predefinito \u00e8 50.
+
+purge.optional-key.--purgeJobStoreOnly=\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\tIndica che l'operazione di eliminazione deve cancellare solo le voci\n\
+\tdal database archivio lavoro. Non verranno effettuati tentativi di eliminazione di log lavori\n \tdal file system.
+
+purge.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[IdIstanzaLavoro]
+purge.optional-desc.--jobInstanceId=\tIl filtro id istanza lavoro applicato all'eliminazione dei record istanza lavoro. \n\
+\tAd esempio:\n\
+\t\t--jobInstanceId=10:20 elimina i record da 10 a 20.\n\
+\t\t--jobInstanceId=">10" elimina i record superiori o uguali a 10.\n\
+\t\t--jobInstanceId="<10" elimina i record inferiori o uguali a 10.\n\
+\t\t--jobInstanceId=10,12,15 elimina i record 10, 12 e 15.\n\
+\t\tSe non si specifica --page e --pageSize, viene eliminato il numero massimo\n\
+\t\tdi record predefinito di 50.
+
+purge.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+purge.optional-desc.--createTime=\tIl filtro ora di creazione applicato all'eliminazione dei record istanza lavoro. \n\
+\tAd esempio:\n\
+\t\t--createTime=2015-09-10:2015-09-27 elimina i record creati\n\
+\t\t\ttra 2015-09-10 e 2015-09-27, inclusi.\n\
+\t\t--createTime=">3d" elimina i record creati 3 giorni fa UTC o\n\
+\t\t\tdopo (la data di creazione \u00e8 posteriore o uguale alla data di 3 giorni fa).\n\
+\t\t--createTime="<3d" elimina i record creati 3 giorni fa UTC o\n\
+\t\t\tprima (la data di creazione \u00e8 precedente o uguale alla data di 3 giorni fa).\n\
+\t\t--createTime=2015-09-15 elimina tutti i record creati in data 2015-09-15.\n\
+\t\tSe non si specifica --page e --pageSize, viene eliminato il numero massimo\n\
+\t\tdi record predefinito di 50. Quando si specifica createTime=>Xd o\n\
+\t\tcreateTime<Xd la data viene calcolata sul server dispatcher\n\
+\t\tin ora UTC. 
+
+purge.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+purge.optional-desc.--instanceState=\tIl filtro stato istanza applicato all'eliminazione dei record istanza lavoro. \n\
+\tAd esempio:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED elimina i record\n\
+\t\tnegli stati COMPLETED, FAILED e STOPPED.\n\
+\t\tSe non si specifica --page e --pageSize, viene eliminato il numero massimo\n\
+\t\tdi record predefinito di 50.
+
+purge.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+purge.optional-desc.--exitStatus=\tIl filtro dello stato di uscita applicato ai record di esecuzione del lavoro che sono\n\
+\tassociati con l'eliminazione dei record istanza lavoro.\n\
+\tAd esempio:\n\
+\t\t--exitStatus=*JOB* elimina i record istanza lavoro che hanno record di esecuzione\n\
+\t\tcontenenti la parola JOB nello stato di uscita.\n\
+\t\tNota: i criteri possono utilizzare l'operatore carattere jolly (*) su una\n \t\tdelle estremit\u00e0.\n\
+\t\tSe non si specifica --page e --pageSize, viene eliminato il numero massimo\n\
+\t\tdi record predefinito di 50.

@@ -158,8 +158,8 @@ def javaee8Features() {
     features
 }
 
-def microProfile2Features() {
-    String features = project.file('profiles/microProfile2/features.xml').readLines()
+def microProfile3Features() {
+    String features = project.file('profiles/microProfile3/features.xml').readLines()
     features
 }
 
@@ -250,7 +250,7 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
     }
 }
 
-task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
+task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
     doFirst {
         excludedFeatures.each {
             this.&removeFeature("${it}")
@@ -260,11 +260,11 @@ task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
     enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-    withFeatures this.&microProfile2Features
+    withFeatures this.&microProfile3Features
     outputTo packageDir
     doLast {
         copy {
-            from "$packageDir/wlp/templates/servers/microProfile2/server.xml" 
+            from "$packageDir/wlp/templates/servers/microProfile3/server.xml" 
             into "$packageDir/wlp/templates/servers/defaultServer" 
         }
         excludedFeatures.each {
@@ -272,6 +272,23 @@ task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
         }
     }
 }
+
+// Includes all features.
+task zipOpenLibertyAll(type: Zip) {
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    baseName 'openliberty-all'
+    from projectDir
+    include 'wlp/**'
+    exclude 'wlp/usr/servers/**'
+    destinationDir distsDir
+    version releaseVersion
+    doLast {
+        rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyAll
 
 // Includes only kind=ga features.
 task zipOpenLiberty(type: Zip) {
@@ -329,35 +346,18 @@ task zipOpenLibertyJavaee8(type: Zip) {
 }
 publish.dependsOn zipOpenLibertyJavaee8
 
-task zipOpenLibertyMicroProfile2(type: Zip) {
-    dependsOn packageOpenLibertyMicroProfile2
-    baseName 'openliberty-microProfile2'
+task zipOpenLibertyMicroProfile3(type: Zip) {
+    dependsOn packageOpenLibertyMicroProfile3
+    baseName 'openliberty-microProfile3'
     from packageDir
     destinationDir distsDir
     version releaseVersion
     doLast {
-        rootProject.userProps.setProperty('zipopenliberty.microprofile2.archivename', archivePath.toString())
+        rootProject.userProps.setProperty('zipopenliberty.microprofile3.archivename', archivePath.toString())
         rootProject.storeProps()
     }
 }
-publish.dependsOn zipOpenLibertyMicroProfile2
-
-// Includes all features.
-task zipOpenLibertyAll(type: Zip) {
-    dependsOn parent.subprojects.assemble
-    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-    baseName 'openliberty-all'
-    from projectDir
-    include 'wlp/**'
-    destinationDir distsDir
-    version releaseVersion
-    doLast {
-        rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
-        rootProject.storeProps()
-    }
-}
-publish.dependsOn zipOpenLibertyAll
-
+publish.dependsOn zipOpenLibertyMicroProfile3
 
 clean.doLast {
     file('wlp').deleteDir()
@@ -631,4 +631,84 @@ task createJSONForPublicArtifacts {
 
 task gatherTestResults {
     dependsOn zipTestReport,createJSONForPublicArtifacts
+}
+
+if (isBuildOsNativePackages){
+    task copyOpenLiberty(type: Sync) {
+       dependsOn zipOpenLiberty
+
+       mkdir("packaging/tempPackagingDir")
+
+       from zipOpenLiberty
+       into 'packaging/tempPackagingDir'
+    }
+
+    task updateSpecTemplate(type: Copy) {
+        from 'packaging'
+        include 'openliberty.spec.template'
+        into 'packaging/rpmbuild/SPECS'
+        filter { line -> line.replaceAll('@SPEC_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateChangelogTemplate(type: Copy) {
+        from 'packaging'
+        include 'changelog.template'
+        into 'packaging/debuild/openliberty/debian'
+        filter { line -> line.replaceAll('@CHANGELOG_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateBuildPackageScriptTemplate(type: Copy) {
+        from 'packaging'
+        include 'buildOsNativePackages.sh.template'
+        into 'packaging'
+        filter { line -> line.replaceAll('@DRIVER_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateRulesTemplate(type: Copy) {
+        from 'packaging'
+        include 'rules.template'
+        into 'packaging/debuild/openliberty/debian'
+        filter { line -> line.replaceAll('@VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task buildOsNativePackages(type:Exec) {
+        dependsOn copyOpenLiberty
+        dependsOn updateChangelogTemplate
+        dependsOn updateSpecTemplate
+        dependsOn updateBuildPackageScriptTemplate
+        dependsOn updateRulesTemplate
+
+        workingDir 'packaging'
+        mkdir("packaging/tempPackagingDir/tempTar")
+        
+        def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
+        def debs = file("./packaging/debuild/openliberty_" + bnd('libertyServiceVersion') + "-1ubuntu1_all.deb")
+        
+        inputs.dir('packaging/tempPackagingDir')
+        outputs.file(rpms)
+        outputs.file(debs)
+
+        errorOutput = new ByteArrayOutputStream()
+
+        commandLine 'sh', './buildOsNativePackages.sh'
+
+        ignoreExitValue true
+
+        doLast {
+            file('packaging/tempPackagingDir').deleteDir()
+            file('packaging/rpmbuild/SPECS/openliberty.spec').delete()
+            file('packaging/debuild/openliberty/debian/changelog').delete()
+            file('packaging/buildOsNativePackages.sh').delete()
+            file('packaging/debuild/openliberty/debian/rules').delete()
+            if (execResult.getExitValue() != 0) {
+                throw new GradleException("Script buildOsNativePackages.sh failed to run rpmbuild and debuild: " + errorOutput.toString())
+            }
+        }
+        
+    }
+    publish.dependsOn buildOsNativePackages
 }

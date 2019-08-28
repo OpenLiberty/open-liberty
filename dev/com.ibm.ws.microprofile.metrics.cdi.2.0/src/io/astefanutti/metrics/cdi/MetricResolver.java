@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -301,14 +301,16 @@ public class MetricResolver {
      * Checks whether the metric should be re-usable
      */
     private <T extends Annotation> boolean checkReusable(MetricResolver.Of<T> of) {
-        String name = of.metadata().getName();
-        String[] tags = of.tags();
-        MetricID MetricID = new MetricID(name, Utils.tagsToTags(tags));
+
         // If the metric has been registered before (eg. metrics found in RequestScoped beans),
         // we don't need to worry about re-usable
         if (!of.isInitialDiscovery()) {
             return true;
         }
+
+        String name = of.metadata().getName();
+        String[] tags = of.tags();
+        MetricID MetricID = new MetricID(name, Utils.tagsToTags(tags));
 
         Metadata existingMetadata = registry.getMetadata().get(MetricID);
 

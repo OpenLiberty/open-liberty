@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 //------------------------------------------------------------------------------
 //Class: RecLogServiceImpl
@@ -111,18 +112,30 @@ public class RecLogServiceImpl {
             director.setRecoveryLogFactory(fac);
             ((RecoveryDirectorImpl) director).driveLocalRecovery();/* @LI1578-22C */
         } catch (RecoveryFailedException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.startRecovery", "421", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Local recovery failed.");
-//          if (tc.isEntryEnabled()) Tr.exit(tc, "start", "RuntimeError");
-//          throw new RuntimeError("Unable to complete local recovery processing", exc);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "start", "RuntimeError");
+            throw new RuntimeException("Unable to complete local recovery processing", exc);
         } catch (InternalLogException ile) {
             FFDCFilter.processException(ile, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.startRecovery", "478", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Local recovery not attempted.", ile);
-//          if (tc.isEntryEnabled()) Tr.exit(tc, "start", "RuntimeError");
-//          throw new RuntimeError("Unable to complete local recovery processing", ile);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "start", "RuntimeError");
+            throw new RuntimeException("Unable to complete local recovery processing", ile);
         }
+
+        startPeerRecovery(director);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "startRecovery");
+    }
+
+    @FFDCIgnore({ RecoveryFailedException.class })
+    public void startPeerRecovery(RecoveryDirector director) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "startPeerRecovery", director);
 
         if (director != null && _isPeerRecoverySupported) // used to test _recoveryGroup != null
         {
@@ -132,15 +145,14 @@ public class RecLogServiceImpl {
                         ((LibertyRecoveryDirectorImpl) director).drivePeerRecovery();
                     }
                 } catch (RecoveryFailedException exc) {
-                    FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.startRecovery", "421", this);
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Local peer failed.");
+                        Tr.debug(tc, "Peer recovery failed.");
                 }
             }
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "startRecovery");
+            Tr.exit(tc, "startPeerRecovery");
     }
 
     //------------------------------------------------------------------------------

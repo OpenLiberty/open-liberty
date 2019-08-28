@@ -1,0 +1,80 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: Security Kerberos constrained delegation (S4U2self and S4U2proxy) for IBM Java version 1.8
+Bundle-SymbolicName: com.ibm.ws.security.kerberos.java8; singleton:=true
+Bundle-Description: Security KerberosExtService, version=${bVersion}
+Bundle-ActivationPolicy: lazy
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+WS-TraceGroup: \
+  Kerberos
+
+Export-Package: \
+  com.ibm.ws.security.kerberos, \
+  com.ibm.ws.security.kerberos.internal; provide:=true , \
+  com.ibm.websphere.security.s4u2proxy; provide:=true
+  
+Import-Package: \
+  com.sun.security.auth.module;resolution:=optional, \
+  com.sun.security.auth.callback;resolution:=optional , \
+  com.sun.security.jgss;resolution:=optional, \
+  com.ibm.security.auth.module;resolution:=optional, \
+  com.ibm.security.auth.callback;resolution:=optional , \
+  com.ibm.security.jgss;resolution:=optional, *
+   
+Private-Package: \
+  com.ibm.ws.security.kerberos.internal.*, \
+  com.ibm.ws.security.token.krb5.*
+
+#  com.ibm.security.auth.module, \
+#  com.ibm.security.auth.callback, \
+#  com.ibm.security.jgss
+  
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+-dsannotations: \
+  com.ibm.ws.security.kerberos.Krb5HelperJdk8,\
+  com.ibm.ws.security.kerberos.Krb5HelperJdk11,\
+  com.ibm.ws.security.kerberos.internal.KerberosExtServiceImpl,\
+  com.ibm.websphere.security.s4u2proxy.SpnegoHelper
+  
+-dsannotations-inherit: true
+
+-buildpath: \
+	com.ibm.ws.internal.prereq.java:java.rtSunKrb5;version=1.8.0,\
+	com.ibm.ws.internal.prereq.java:java.ibmjgssprovider;version=1.8.0,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.jaas.common;version=latest,\
+	com.ibm.ws.security.token.s4u2;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+
+instrument.classesExcludes: com/ibm/ws/security/kerberos/internal/resources/KerberosMessages*.class

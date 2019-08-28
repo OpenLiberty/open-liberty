@@ -1021,6 +1021,8 @@ info.resumeFailedException=Wznawianie serwera {0} nie powiod\u0142o si\u0119. Sz
 info.resumingListeners.target=Wznawianie okre\u015blonych komponent\u00f3w docelowych serwera {0}.
 info.resumedListeners.target=Wznawianie okre\u015blonych komponent\u00f3w docelowych serwera {0} zosta\u0142o wykonane.
 info.resumeFailedException.target=Wznawianie okre\u015blonych komponent\u00f3w docelowych serwera {0} nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe informacje znajduj\u0105 si\u0119 w dziennikach serwera.
+info.serverCommandAuthFailure=Komenda {0} nie powiod\u0142a si\u0119, poniewa\u017c proces nie m\u00f3g\u0142 usun\u0105\u0107 pliku {1}.
+info.serverCommandCommFailure=Komenda {0} nie powiod\u0142a si\u0119 ze wzgl\u0119du na b\u0142\u0105d komunikacji z serwerem.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

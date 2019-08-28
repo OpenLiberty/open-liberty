@@ -136,6 +136,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             // initiating a recycle, so there's no need to proceed with pending actions here, and doing so will likely result in
             // an NPE because the app handler no longer exists.
             cleanupActions();
+
+            // Clear interruptible flag
+            if (!isInterruptible())
+                setInterruptible();
+
             ApplicationDependency appHandlerFuture = createDependency("resolves when the app handler for app " + getAppName() + " arrives");
             appHandlerFuture = waitingForAppHandlerFuture.getAndSet(appHandlerFuture);
             if (appHandlerFuture != null) {

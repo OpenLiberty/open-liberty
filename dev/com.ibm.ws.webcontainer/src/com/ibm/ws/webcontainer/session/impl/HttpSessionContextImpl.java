@@ -763,7 +763,10 @@ private String getUser() {
           Object params[] = { auth, owner };
           if (!_smc.getInvalidateOnUnauthorizedSessionRequestException()) { //PM93356 (SCWI 105957) only log if InvalidateOnUnauthorizedSessionRequestException is not set
               LoggingUtil.SESSION_LOGGER_CORE.logp(Level.SEVERE, methodClassName, methodNames[CHECK_SECURITY], "SessionContext.unauthAccessError", params);
-          }
+          }          
+          if (_smc.isDebugSessionCrossover()) {
+              new Throwable("Throw exception to find out who sent the unauthorized request !!!").printStackTrace(System.out);  
+          }          
           UnauthorizedSessionRequestException usre;
           ResourceBundle rb = LoggingUtil.SESSION_LOGGER_CORE.getResourceBundle();
           if (rb != null)

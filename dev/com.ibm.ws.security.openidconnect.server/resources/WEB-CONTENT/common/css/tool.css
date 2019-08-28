@@ -1,0 +1,1426 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+@font-face {
+    font-family: IBMPlexSans-Light;
+    src: url("../../common/fonts/IBMPlexSans-Light.woff") format('woff');
+}
+
+@font-face {
+    font-family: IBMPlexSans;
+    src: url("../../common/fonts/IBMPlexSans-Regular.woff") format('woff');
+}
+
+@font-face {
+    font-family: IBMPlexSans-Bold;
+    src: url("../../common/fonts/IBMPlexSans-Bold.woff") format('woff');
+}
+
+@font-face {
+    font-family: IBMPlexSans-SemiBold;
+    src: url("../../common/fonts/IBMPlexSans-SemiBold.woff") format('woff');}
+
+.tool_container {
+    padding: 50px 72px;
+    width: calc(100% - 144px);
+}
+
+.tool_title {
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 18px;
+    color: #152935;
+    line-height: 23px;
+    text-align: left;
+}
+
+.tool_desc_block {
+    width: 100%;
+    align-items: center;
+}
+
+.tool_desc {
+    font-family: IBMPlexSans;
+    font-size: 14px;
+    color: #5a6872;
+    line-height: 20px;
+    margin: 5px 0;
+    display: inline-block;
+}
+
+.tool_starter {
+    float: right;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    margin-bottom: 11px;
+}
+
+.tool_desc_block_button {
+    float: right;
+    background: #3D70B2;
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #FFFFFF;
+    letter-spacing: 0;
+    line-height: 18px;
+    padding: 7px 10px 7px 12px;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    text-align: left;
+    cursor: pointer;
+    border: 1px solid transparent;
+    -webkit-order: 1;
+    order: 1;
+}
+.tool_desc_block_button:hover {
+    background: #2f5789;
+}
+.tool_desc_block_button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+.tool_desc_block_button>img {
+    float: right;
+    margin-left: 8px;
+    cursor: pointer;
+    -webkit-order: 2;
+    order: 2;
+}
+
+/* Filter box for tool table */
+.tool_filter_div {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    position: relative;
+    width: 300px;
+    border: none;
+    margin-right: 10px;
+}
+
+.tool_filter_input {
+    font-family: IBMPlexSans-Light;
+    font-size: 14px;
+    color: #171717;
+    letter-spacing: 0.16px;
+    line-height: 18px;
+    padding: 5px 32px;
+    text-overflow: ellipsis;
+    width: 100%;
+    border: 1px solid #dfe3e6;
+}
+.tool_filter_input:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.tool_filter_img, .tool_search_img {
+    left: 8px;
+    position: absolute;
+}
+
+.tool_filter_clear {
+    background: none;
+    cursor: pointer;
+    visibility: hidden;
+    position: absolute;
+    right: 1px;
+    border: 1px solid transparent;
+    padding: 5px 7px;
+}
+.tool_filter_clear:hover {
+    background-color: #E5E5E5;
+}
+
+/* Main display table shown in all tools */
+.tool_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 11px;
+    border: 1px solid #dfe3e6;
+}
+
+.tool_table thead {
+    background: #F4F7FB;
+}
+
+.tool_table th, .tool_table td {
+    border-bottom: 1px solid #dfe3e6;
+}
+
+.tool_table th, .tool_table td {
+    font-family: IBMPlexSans;
+    font-size: 14px;
+    color: #152935;
+    letter-spacing: 0;
+    text-align: left;
+    line-height: 20px;
+    word-break: break-word;
+    padding: 15px 0px 18px 28px;
+}
+
+.tool_table th {
+    font-family: IBMPlexSans-SemiBold;
+    line-height: 15px;
+}
+
+/* Sort Column */
+.table_sort_column {
+    cursor: pointer;
+}
+
+.tool_table tr:hover {            /* Hover over rows of table */
+    background: #f3f3f3;
+}
+.tool_table thead tr:hover {      /* Don't change background of thead row .... */
+    background: #F4F7FB;
+}
+th.table_sort_column:hover {      /* ....except for the button in the sortable column */
+    background-color: #ebf1f9;
+}
+
+.table_sort_direction {           /* Span to hold sort direction image */
+    margin-right: 8px;
+    float: right;
+    visibility: hidden;
+}
+.table_sort_direction:hover {
+    visibility: visible;
+}
+
+
+/* Blue batch bar that appears at the top of the table */
+.tool_table_toolbar {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 48px;
+    position: relative;
+    align-items: center;
+}
+
+.tool_table_batch {
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #3D70B2;
+    pointer-events: none;
+    visibility: hidden;
+}
+.tool_table_batch_active {
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.tool_table_batch_action_list {
+    position: absolute;
+    right: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+.batch_bar_button {
+    color: #fff;
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    line-height: 18px;
+    cursor: pointer;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    -ms-flex-negative: 0;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    min-height: 46px;
+    padding: 16px 14px 10px 16px;
+    max-width: 20rem;  /* 320px? */
+    background-color: #3D70B2;
+    border: 1px solid transparent;
+    -webkit-order: 1;
+    order: 1;
+}
+.batch_bar_button:hover {
+    background: #2f5789;
+}
+.batch_bar_button>img {
+    float: right;
+    margin-left: 8px;
+    cursor: pointer;
+    -webkit-order: 2;
+    order: 2;
+}
+.batch_bar_button>img>svg {
+    fill: #fff;
+}
+/* White bar between batch buttons ... if needed */
+/* .batch_bar_button::before {
+    display: block;
+    position: absolute;
+    opacity: 1;
+    top: 15px;
+    left: 0;
+    height: 16px;
+    width: 1px;
+    content: '';
+    background-color: #fff;
+    border: none;
+    -webkit-transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+    transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+} */
+
+.tool_table_batch_summary {
+    position: absolute;
+    left: 0;
+    margin-left: 16px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: #fff;
+}
+
+.batch_bar_summary{
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+
+/* Actions within the table columns */
+.tool_table_button {
+    margin: 2px;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #3D70B2;
+    letter-spacing: 0;
+    background-color: transparent;   /* for mobile */
+}
+
+.tool_table_button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+
+/* Table footer ... pagination */
+.tool_table_pagination {
+    border: 1px solid #dfe3e6;
+    border-top: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    height: 36px;
+}
+
+.tool_table_pagination_right {
+    display: -webkit-flex;
+    display: flex;
+    height: 100%;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.tool_table_page_number_label {
+    font-family: IBMPlexSans;
+    font-size: 12px;
+    color: #5a6872;
+    line-height: 15px;
+    text-align: left;
+    margin-right: 10px;
+}
+
+.tool_table_pagination_button {
+    height: 100%;
+    cursor: pointer;
+    border: none;
+    border-bottom: 1px solid #dfe3e6;
+}
+.tool_table_pagination_button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+.tool_table_pagination_button:hover {
+    background-color: #E5E5E5;
+}
+.tool_table_pagination_button_backward {
+    border-left: 1px solid #dfe3e6;
+}
+
+.tool_table_page_select_input.select-input {
+    border: 1px solid #dfe3e6;
+    border-top: none;
+}
+
+.select-input {
+    padding: 2px 32px 2px 16px;
+    margin-right: 3px;
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
+    -webkit-appearance: none;    /* Prevent the browser select */
+    -moz-appearance: none;       /* arrow from showing         */
+    -ms-appearance: none;
+    appearance: none;
+    background: url(../images/caretDownPaging.svg) no-repeat 90%;  /* Our arrow */
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #3d70b2;
+    line-height: 18px;
+    text-align: left;
+    height: 100%;
+}
+.select-input:hover {
+    background-color: #e5e5e5;
+}
+
+.select-option {
+    color: #3d70b2;
+}
+
+/* Tool modal dialog styling */
+.tool_modal_container,
+.tool_modal {
+    z-index: 900;
+}
+
+.tool_modal_container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color:rgba(211,211,211,.8);
+}
+
+.tool_modal {
+    background-color: #ffffff;
+    position: relative;
+    width: 40%;
+    min-width: 600px;
+    max-width: 800px;
+    max-height: 90%;
+    margin: 35px auto;
+    animation-name: modalbox;
+    animation-duration: .4s;
+    animation-timing-function: cubic-bezier(0,0,.3,1.6);
+    border-top: 4px solid #3D70B2;
+    box-shadow: 0 12px 24px 0 rgba(0,0,0,0.10);
+    overflow: hidden;
+}
+
+/* Small dialog centered on the page */
+.tool_modal_center_view {
+    background-color: #ffffff;
+    min-width: 675px;
+    position: absolute;
+    width: 40%;
+    left: 30%;
+    top: 30%;
+    border-top: 4px solid #3D70B2;
+    box-shadow: 0 12px 24px 0 rgba(0,0,0,0.10);
+    overflow: auto;
+}
+.tool_modal_alert .tool_modal_center_view {
+    border-top: 4px solid #da1e28;
+}
+
+.tool_modal_header {
+    padding: 20px 40px 28px 48px;
+}
+
+.tool_modal_x_close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 12px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background-color: transparent;
+    cursor: pointer;
+    margin: 3px;
+}
+.tool_modal_x_close>img {
+    height: 20px;
+    width: 20px;
+    padding: 4px;
+}
+
+.tool_modal_body {
+    padding: 0px 40px 28px 48px;
+    max-height: calc(75vh - 171px);   /* Allow scrolling of dialog body when necessary */
+    overflow: auto;                   /* with header and buttons stationary            */
+}
+
+.tool_modal_title {
+    font-family: IBMPlexSans-Light;
+    font-size: 28px;
+    color: #5A6872;
+    line-height: 35px;
+    text-align: left;
+}
+
+.tool_modal_secondary_title {         /* Goes above the main title */
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #152935;
+    letter-spacing: 0;
+    line-height: 18px;
+    text-align: left;
+    margin-bottom: 2px;
+}
+.tool_modal_secondary_title.tool_modal_information {    /* Goes below the main title */
+    font-family: IBMPlexSans;
+    margin-top: 2px;
+}
+
+.tool_modal_body_field {
+    margin: 0 0 16px 0;
+}
+
+.tool_modal_body_field_label {
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #152935;
+    letter-spacing: 0;
+    line-height: 18px;
+    text-align: left;
+}
+
+.tool_modal_body_field_helper_text {
+    font-family: IBMPlexSans;
+    font-size: 12px;
+    line-height: 16px;
+    font-style: italic;
+    color: #0e212f;
+    z-index: 0;
+    margin-bottom: 8px;
+    margin-top: 3px;
+    max-width: 95%;
+    padding: 0;
+    border: 0;
+}
+
+.tool_modal_body_field_input, .tool_modal_body_field_auth_value {
+    font-family: IBMPlexSans;
+    font-size: 14px;
+    color: #5A6872;
+    line-height: 18px;
+    display: block;
+    border: none;
+    width: calc(100% - 32px);    /* 100% - left & right padding */
+    margin-top: 10px;
+    height: 40px;
+    outline: none;
+    padding: 0 16px;
+    border-bottom: 1px solid #5a6872;
+    text-overflow: ellipsis;
+}
+
+/* Authentication token or password output-only field with clipboard copy button */
+.tool_modal_body_auth_value {
+    display: -wekit-flex;
+    display: flex;
+    -wekit-justify-content: space-between;
+    justify-content: space-between;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.tool_modal_body_field_auth_value {
+    border-bottom: none;
+    display: inline-block;
+    width: calc(100% - 45px);  /* allow for copy to clipboard button */
+    margin: 0px;
+}
+
+.tool_modal_field_copy_button {
+    background-color: transparent;
+    border: none;
+    margin: 0 1rem 0 0;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-block;
+}
+.tool_modal_field_copy_button>img {
+    width: 11px;
+    height: 11px;
+}
+.tool_modal_field_copy_button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+#copied_confirmation {
+    position: absolute;
+    display: none;
+    font-size: 11px;
+    color: #5e6b8d;
+    font-family: IBMPlexSans;
+    z-index: 910;        /* To see on top of the dialogs */
+}
+
+/* Button that appears on the same line as a field label, like the 'Add' additional props */
+.tool_modal_body_field_button {
+    float: right;
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #3D70B2;
+    letter-spacing: 0;
+    text-align: right;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    padding-right: 0px;
+    background-color: transparent;    /* for mobile */
+}
+.tool_modal_body_field_button:hover {
+    color: #2f5789;
+}
+
+/* Read-only information appearing at the top of the dialogs */
+.tool_modal_body_info_item {
+    margin-bottom: 12px;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: 22px;
+}
+
+span.tool_modal_body_info_label {
+    font-family: IBMPlexSans;
+    color: #152935;
+}
+
+span.tool_modal_body_info_value {
+    font-family: IBMPlexSans-SemiBold;
+    color: #000017;
+}
+
+.tool_modal_body_description {
+    font-family: IBMPlexSans;
+    font-size: 16px;
+    color: #5a6872;
+    line-height: 20px;
+    max-height: calc(65vh - 172px);
+    overflow: auto;
+}
+
+/* Modal dialog array (table) input (ie. Array Properties for Add/Edit OAuth Clients) */
+.tool_modal_array {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.tool_modal_table {
+    background: #FFFFFF;
+    border: 1px solid #0e212f;
+    border-collapse: collapse;
+    flex-grow: 1;
+}
+
+.tool_modal_table tr {
+    border: 1px solid #0e212f;
+}
+
+.tool_modal_table th, .tool_modal_table td {
+    font-family: IBMPlexSans;
+    font-size: 14px;
+    color: #CDD1D4;
+    text-align: left;
+    line-height: 15px;
+    width: 100%;
+}
+
+.tool_modal_table th {
+    background: #F4F7FB;
+    border-bottom: 1px solid #0e212f;
+    font-family: IBMPlexSans-SemiBold;
+    color: #152935;
+    letter-spacing: 0;
+    padding: 9px 0 11px 15px;
+}
+
+.tool_modal_array .tool_modal_table thead {   /* Hide the header on Array table widgets */
+    display: none;
+}
+
+.tool_modal_table td input {
+    width: calc(100% - 34px);    /* factor in border and padding */
+    font-family: IBMPlexSans;
+    font-size: 14px;
+    border: none;
+    color: #5a6872;
+    line-height: 35px;
+    padding: 0px 15px;
+    outline: none;
+    text-overflow: ellipsis;
+}
+.tool_modal_table td input:focus {
+    color: #152935;
+}
+
+.tool_modal_array_button_div {  /* div to hold the add element button for array tables */
+    height: 35px;
+    display: flex;
+}
+.tool_modal_add_array_button_div {
+    border: 2px solid transparent;
+}
+
+.tool_modal_array_button {      /* Delete/Add in the input array tables */
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+.tool_modal_array_button>img {
+    height: 16px;
+    width: 16px;
+}
+
+/* Modal dialog radio button input */
+.tool_modal_radio_button {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+    white-space: nowrap;
+}
+
+.tool_modal_radio_button_fieldset {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.tool_modal_radio_button_horizontal_wrapper {
+    display: -webkit-flex;
+    display: flex;
+}
+
+.tool_modal_radio_button_label {
+    font-size: 14px;
+    font-family: IBMPlexSans;
+    color: #152935;
+    line-height: 18px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 15px;
+    padding: 0;
+}
+
+.tool_modal_radio_button_horizontal_wrapper .tool_modal_radio_button_label {
+    margin-right: 30px;
+}
+
+.tool_modal_radio_button_appearance {
+    border-radius: 50%;
+    border: 1px solid #5a6872;
+    background-color: #fff;
+    flex-shrink: 0;
+    height: 18px;
+    width: 18px;
+    margin-right: 8px;
+}
+
+.tool_modal_radio_button:checked+.tool_modal_radio_button_label .tool_modal_radio_button_appearance {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    border-color: #3d70b2;
+}
+.tool_modal_radio_button:checked+.tool_modal_radio_button_label .tool_modal_radio_button_appearance:before {
+    content: "";
+    display: inline-block;
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #3d70b2;
+}
+
+.tool_modal_radio_button:focus+tool_modal_radio_button_label .tool_modal_radio_button_appearance {   
+    box-shadow: 0 0 0 2px #3b99fc;
+    outline: 1px solid transparent;
+}
+.radio_button_focus {
+    box-shadow: 0 0 0 2px #3b99fc;
+    outline: 1px solid transparent;
+}
+
+.tool_modal_radio_button:disabled+.tool_modal_radio_button_label {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* Multiselect list box */
+.tool_multiSelect_listbox {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    max-height: 40px;
+    border: none;
+    cursor: pointer;
+    color: #0e212f;
+    margin-top: 10px;
+}
+
+.tool_multiSelect_field {
+    padding: 0;
+    background: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    border: 0;
+    width: 100%;
+    position: relative;
+    display: -webkit-flex;
+    display: inline-flex;
+    -webkit-align-items: center;
+    align-items: center;
+    vertical-align: top;
+    height: 40px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: #f4f7fb;
+    border-bottom: 1px solid #5a5872;
+}
+.tool_multiSelect_field:hover, .tool_multiSelect_field:focus {
+    background-color: #ebf1f9;
+}
+.tool_multiSelect_field_error {
+    border: 2px solid#da1e28;
+}
+.tool_multiSelect_field_error>img {
+    display: block;
+}
+
+
+.tool_multiSelect_selection {
+    position: static;
+    display: flex;
+    align-items: center;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    background-color: #3D70B2;
+    height: 8px;
+    line-height: 16px;
+    padding: 8px 2px 8px 8px;
+    margin-left: 10px;
+    border-radius: 12px;
+    top: 0;
+    right: 26px;
+    bottom: 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select:  none;
+    user-select: none;color: #fff;
+    font-family: IBMPlexSans;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+    text-align: left;
+}
+.tool_multiSelect_selection:hover {
+    background-color: #2f5789;
+}
+.tool_multiSelect_selection>svg {
+    fill: #fff;
+    margin-left: 4px;
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+}
+
+.tool_multiSelect_selection_text {
+    padding-right: 48px;
+    border-bottom: none;
+    height: auto;
+    background: transparent;
+    padding-left: 16px;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    font-family: IBMPlexSans;
+    font-size: 14px;
+    line-height: 18px;
+    text-overflow: ellipsis;
+    color: #5a6872;   /*  #0e212f;  */
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.tool_multiSelect_menu_icon {
+    display: inline-block;
+    position: absolute;
+    top:0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    padding: 0 16px;
+    cursor: pointer;
+}
+.tool_multiSelect_menu_icon>img {
+    height: 16px;
+    width: 16px;
+    margin-top: 50%
+}
+
+.tool_multiSelect_dropdown {
+    position: absolute;
+    left: 0;
+    right:0;
+    width: 100%;
+    min-width: auto;
+    max-height: 120px;
+    overflow-y: auto;
+    z-index: 1000;
+    background-color: #fff;
+    border-bottom: 1px solid #3d70b2;
+    box-shadow: 0px 3px 3px 0px rgba(0,0,0,0.1);
+}
+
+.tool_multiSelect_menuItem {
+    height: 40px;
+    cursor: pointer;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.tool_multiSelect_menuItem:first-of-type {
+    border-top-color: transparent;
+}
+.tool_multiSelect_menuItem:hover, .tool_multiSelect_menuItem:focus {
+    background-color: #f4f7fb;
+    border-color: transparent;
+}
+
+.tool_multiSelect_menuItem_option {
+    display: block;
+    height: 20px;
+    padding: 8px 0;
+    margin: 0 16px;
+    border: 1px solid transparent;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.tool_checkbox_wrapper {
+    width: 100%;
+    height: 100%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    margin: 0;
+}
+
+.tool_single_checkbox {
+    margin-top: 10px;
+}
+
+.tool_checkbox {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+    visibility: visible;
+    white-space: nowrap;
+    cursor: pointer
+}
+
+.tool_checkbox_label {
+    width: 100%;
+    line-height: 24px;
+    position: relative;
+    padding-left: 26px;
+    min-height: 24px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    font-family: IBMPlexSans;
+    font-size: 14px;
+    color: #152935;
+}
+
+.tool_checkbox_label::before {   /* Creates checkbox outer box - from Carbon */
+    box-sizing: border-box;
+    content: "";                 /* required to make pseudo-element visible */
+    width: 16px;
+    height: 16px;
+    margin: 2px;
+    position: absolute;          /* position relative to checkbox label */
+    left: 0;
+    top: 2px;
+    background-color: transparent;
+    border: 1px solid #152935;
+    border-radius: 1px;
+}
+.tool_checkbox:checked + .tool_checkbox_label::before {
+    background-color: #3d70b2;
+    border-color: #3d70b2;
+    border-width: 1px;
+}
+.tool_checkbox:focus + .tool_checkbox_label::before {
+    border-color: #3b99fc;
+    border-width: 3px;
+    width: 20px;
+    height: 20px;
+    left: -2px;
+    top: 0;
+}
+
+.tool_checkbox_label::after {   /* Creates checkmark in checkbox - from Carbon */
+    content: "";
+    position: absolute;         /* Position relative to checkbox label */
+    left: 6px;
+    top: 8px;
+    width: 7px;
+    height: 3px;
+    background: none;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    margin-top: -3px;
+    -webkit-transform: scale(0) rotate(-45deg);
+    transform: scale(0) rotate(-45deg);   /* Hides the checkmark */
+    -webkit-transform-origin: bottom right;
+    transform-origin: bottom right;
+}
+.tool_checkbox:checked + .tool_checkbox_label::after {
+    -webkit-transform: scale(1) rotate(-45deg);
+    transform: scale(1) rotate(-45deg);
+}
+
+/* Action buttons on bottom of Dialog */
+.tool_modal_button_container {
+    width: 100%;
+    background-color: #F4F7FB;
+    min-height: 88px;
+}
+
+.tool_modal_button_right_frame {
+   float: right;
+   margin-right: 49px;
+}
+
+.tool_modal_action_button {
+    background: #3d70b2;
+    border: 2px solid #3d70b2;
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 18px;
+    padding: 10px 18px;
+    margin: 24px 16px 24px 0px;
+    cursor: pointer;
+}
+.tool_modal_action_button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+.tool_modal_action_button:hover {
+    background: #2f5789;
+    border-color: #2f5789;
+}
+
+.tool_modal_cancel_button, .tool_modal_alert  .tool_modal_done_button  {
+    background: #FFF;
+    color: #3d70b2; 
+}
+.tool_modal_cancel_button:hover, .tool_modal_alert .tool_modal_done_button:hover {
+    background: #e5e5e5;
+    border-color: #2f5789;
+    color: #2f5789;
+}
+.tool_modal_alert .tool_modal_cancel_button, .tool_modal_alert .tool_modal_done_button {
+    border-color: #152935;
+    color: #152935;
+}
+.tool_modal_alert .tool_modal_cancel_button:hover, .tool_modal_alert .tool_modal_done_button:hover {
+    border-color: #0e212f;
+    color: #0e212f;
+}
+
+.tool_modal_delete_button {
+    background: #da1e28;
+    border-color: #da1e28;
+    color: #fff;
+}
+.tool_modal_delete_button:hover {
+    background: #b51a22;
+    border-color: #b51a22;
+    color: #fff;
+}
+
+/* Animation for dialogs */
+@-webkit-keyframes modalbox {
+    0% {
+      top: -250px; 
+      opacity: 0;
+    }
+    100% {
+      top: 0; 
+      opacity: 1;
+    }
+}
+
+@keyframes modalbox {
+    0% {
+      top: -250px; 
+      opacity: 0;
+    }
+    100% {
+      top: 0; 
+      opacity: 1;
+    }
+}
+
+/* Processing spinner */
+.tool_processing_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    z-index: 8000;
+}
+.tool_processing_overlay_transparent {
+    background-color: rgba(211,211,211,.8);
+}
+.tool_processing_overlay_modal {
+    background-color: #fff;
+}
+
+.tool_processing {
+    -webkit-animation-name: rotate;
+    animation-name: rotate;
+    -webkit-animation-duration: .69s;
+    animation-duration: .69s;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    width: 10.5rem;
+    height: 10.5rem;
+}
+
+.tool_processing svg circle {
+    -webkit-animation-name: init-stroke;
+    animation-name: init-stroke;
+    -webkit-animation-duration: 10ms;
+    animation-duration: 10ms;
+    -webkit-animation-timing-function: cubic-bezier(.2,0,.38,.9);
+    animation-timing-function: cubic-bezier(.2,0,.38,.9);
+}
+
+.tool_processing_svg {
+    fill: transparent;
+}
+.tool_processing_svg circle {
+    stroke-width: 8;
+    stroke-linecap: butt;
+    stroke-dasharray: 240;
+}
+.tool_processing_stroke {
+    stroke: #3d70b2;
+    stroke-dashoffset: 40;
+}
+
+.tool_processing_stop {
+    -webkit-animation:rotate-end-p1 .7s cubic-bezier(.2,0,1,.9) forwards,rotate-end-p2 .7s cubic-bezier(.2,0,1,.9) .7s forwards;
+    animation:rotate-end-p1 .7s cubic-bezier(.2,0,1,.9) forwards,rotate-end-p2 .7s cubic-bezier(.2,0,1,.9) .7s forwards
+}
+.tool_processing_stop svg circle {
+    -webkit-animation-name:stroke-end;
+    animation-name:stroke-end;
+    -webkit-animation-duration:.7s;
+    animation-duration:.7s;
+    -webkit-animation-timing-function:cubic-bezier(.2,0,1,.9);
+    animation-timing-function:cubic-bezier(.2,0,1,.9);
+    -webkit-animation-delay:.7s;
+    animation-delay:.7s;
+    -webkit-animation-fill-mode:forwards;
+    animation-fill-mode:forwards
+}
+
+@-webkit-keyframes rotate {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes rotate-end-p1 {
+    to {
+        -webkit-transform:rotate(360deg);
+    }
+}
+@keyframes rotate-end-p1 {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes rotate-end-p2 {
+    to {
+        -webkit-transform:rotate(-360deg);
+    }
+}
+@keyframes rotate-end-p2 {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@-webkit-keyframes init-stroke {
+    0% {
+        stroke-dashoffset:240;
+    }
+    100% {
+        stroke-dashoffset:40;
+    }
+}
+@keyframes init-stroke {
+    0% {
+        stroke-dashoffset: 240;
+    }
+    100% {
+        stroke-dashoffset: 40;
+    }
+}
+
+@-webkit-keyframes stroke-end {
+    0% {
+        stroke-dashoffset: 40;
+    }
+    to {
+        stroke-dashoffset: 240;
+    }
+}
+@keyframes stroke-end {
+    0% {
+        stroke-dashoffset: 40;
+    }
+    to {
+        stroke-dashoffset: 240;
+    }
+}
+
+/* Logout button */
+.tool_logout_div {
+    display: -webkit-flex;
+    display: flex;
+    width: 100%;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    margin: 0;
+}
+
+.tool_logout_button {
+    background: #FFF;
+    border: 2px solid #3d70b2;
+    font-family: IBMPlexSans-SemiBold;
+    font-size: 14px;
+    color: #3d70b2;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 18px;
+    cursor: pointer;
+    margin: 0;
+    padding: 7px 10px;
+}
+.tool_logout_button:hover {
+    background: #e5e5e5;
+    border-color: #2f5789;
+    color: #2f5789;
+}
+
+.hidden {
+    display: none;
+}
+
+.rowHidden {               /* Used with paging on the main table */
+    display: none;
+}
+
+.hiddenColumn {
+    display: none;
+}
+
+.hide {                    /* Save the space in the DOM until ready to show element */
+    visibility: hidden;
+}
+
+.readonly {
+    background-color: #F4F7FB;
+    color: #0e212f !important;
+}
+
+/* Error Processing */
+.tool_field_error {        /* Red border around a field in error */
+    outline: 2px solid #da1e28;
+    outline-offset: -2px;
+}
+
+.tool_err_img {            /* Red exclamation marker next to field name */
+    margin-left: 5px;
+    vertical-align: top;
+}
+
+.tool_err_msg {            /* Red message that appears under a field */
+    color: #da1e28;
+    font-family: IBMPlexSans;
+    margin-top: 4px;
+    line-height: 18px;
+    font-size: 12px;
+}
+
+/* The following is for an error Results dialog */
+.tool_modal_alert .tool_modal_try_again_button {
+    background: #da1e28;
+    border-color: #da1e28;
+    color: #fff;
+}
+.tool_modal_alert .tool_modal_try_again_button:hover {
+    background: #b51a22;
+    border-color: #b51a22;
+    color: #fff;
+}
+
+
+@media (max-width: 550px) {
+    .tool_desc {
+        width: 70%;
+    }
+
+    .tool_modal_center_view {
+        width: 75%;
+        left: 12%;
+        top: 25%;
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .tool_modal_center_view {
+        width: 60%;
+        left: 20%;
+        top: 25%;
+        min-width: 250px;
+    }
+}
+
+.visuallyhidden { 
+	border: 0; 
+	clip: rect(0 0 0 0); 
+	height: 1px; 
+	margin: -1px; 
+	overflow: hidden; 
+	padding: 0; 
+	position: absolute; 
+	width: 1px; 
+}
+
+/* Placeholder text styling  */
+::-webkit-input-placeholder {   /* Chrome, Opera, Safari   */
+    color: #cdd1d4;
+}
+::-moz-placeholder {            /* Firefox 19+             */
+    color: #cdd1d4;
+    opacity: 1;                 /* Firefox applies opacity to placeholder text, so reset it */
+}
+:-ms-input-placeholder {        /* Internet Explorer 10-11 */
+    color: #CDD1D4;
+}
+::placeholder {                 /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #CDD1D4;
+    opacity: 1;                 /* Firefox applies opacity to placeholder text, so reset it */
+}

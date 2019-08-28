@@ -131,7 +131,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
 
         generateRSServerTestApps(server);
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile);
+        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
     }

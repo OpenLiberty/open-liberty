@@ -1612,7 +1612,11 @@ public final class JAXBUtils {
                 .loadClass("com.sun.xml" + postFix + ".bind.marshaller.CharacterEscapeHandler",
                            cls);
             Object targetHandler = ReflectionUtil.getDeclaredField(handlerClass, "theInstance").get(null);
-            return ProxyHelper.getProxy(cls.getClassLoader(),
+            ClassLoader loader = System.getSecurityManager() == null ? cls.getClassLoader() : 
+                AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+                return cls.getClassLoader();
+            });
+            return ProxyHelper.getProxy(loader,
                                         new Class[] {handlerInterface},
                                         new EscapeHandlerInvocationHandler(targetHandler));
         } catch (Exception e) {

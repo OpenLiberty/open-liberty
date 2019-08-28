@@ -27,6 +27,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 
 /**
  *
@@ -42,11 +43,8 @@ public class MetricsAuthenticationTest {
 
     @Before
     public void setUp() throws Exception {
-
         HttpUtils.trustAllCertificates();
-
         server.startServer("MetricsAuthenticationServer.log", true);
-
     }
 
     @After
@@ -59,22 +57,18 @@ public class MetricsAuthenticationTest {
     @Test
     public void testMetrics10Auth() throws Exception {
         addFeature("mpMetrics-1.0");
-
         testMetricsAuth();
     }
 
     @Test
     public void testMetrics11Auth() throws Exception {
         addFeature("mpMetrics-1.1");
-
         testMetricsAuth();
     }
 
     private void addFeature(String feature) throws Exception {
         server.setMarkToEndOfLog();
-
         MetricsAuthTestUtil.addFeature(server, feature);
-
         waitForMetricsEndpoint(server);
     }
 
@@ -83,12 +77,13 @@ public class MetricsAuthenticationTest {
         assertNotNull("Web application is not available at */metrics/", server.waitForStringInLogUsingMark("CWWKT0016I.*/metrics/"));
     }
 
-    private void waitForPrerequisites(LibertyServer server) throws Exception {
-        String regex1 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default", "8010") + ".*";
-        String regex2 = "CWWKO0219I.*" + System.getProperty("bvt.prop.HTTP_default.secure", "8020") + ".*";
-        assertNotNull("TCP Channel defaultHttpEndpoint has not started", server.waitForStringInLog(regex1));
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started", server.waitForStringInLog(regex2));
+    private void waitForMetricsFeature(LibertyServer server) throws Exception {
         assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*"));
+    }
+
+    private void waitForTCPChannels(LibertyServer server) throws Exception {
+        assertNotNull("TCP Channel defaultHttpEndpoint has not started", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint"));
+        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl"));
     }
 
     private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication) throws Exception {
@@ -103,52 +98,65 @@ public class MetricsAuthenticationTest {
 
     private void testMetricsAuth() throws Exception {
 
-        // wait for installations to complete and TCP channels to be started before running test
-        waitForPrerequisites(server);
+        // wait for metrics installations to complete before running test
+        waitForMetricsFeature(server);
+        // wait for TCP Channels to start listening
+        waitForTCPChannels(server);
 
         //1. When authentication is not explicitly set in server.xml, it defaults to private,
         //  i.e. requires authentication into metrics endpoint
-
-        //check that opening connection to /metrics requires authentication by default
-
-        MetricsConnection authenticationNotSpecified = MetricsConnection.connection_administratorRole(server);
-        authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
-
-        // check that when the authenticated user is in the Reader role, authorization is granted
-        MetricsConnection readerRole200 = MetricsConnection.connection_readerRole(server);
-        readerRole200.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
-
-        // check that when the valid user is not in an authorized role, 403 FORBIDDEN is returned
-        MetricsConnection unauthorized403 = MetricsConnection.connection_unauthorized(server);
-        unauthorized403.expectedResponseCode(HttpURLConnection.HTTP_FORBIDDEN).getConnection();
-
-        //check that opening connection to /metrics with default authentication with invalid credentials returns HTTP 401 ERROR
-        MetricsConnection invalidUser401 = MetricsConnection.connection_invalidUser(server);
-        invalidUser401.expectedResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED).getConnection();
+        privateAsserts();
 
         //2. When authentication is explicitly set to true in server.xml, metrics endpoint requires authentication,
         //  i.e. is private
-
         setMetricsAuthConfig(server, true);
-        MetricsConnection authenticationTrue = MetricsConnection.connection_administratorRole(server);
-        authenticationTrue.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+        privateAsserts();
 
-        //3. When authentication is explicitly set to false in server.xml, metrics enpoint does not require authentication,
+        //3. When authentication is explicitly set to false in server.xml, metrics endpoint does not require authentication,
         // i.e. is public
-
         setMetricsAuthConfig(server, false);
         waitForMetricsEndpoint(server);
-        MetricsConnection authenticationFalse = MetricsConnection.connection_unauthenticated(server);
-        authenticationFalse.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+        publicAsserts();
 
         //4. When mpMetrics authentication option is removed from the server.xml,
         // the default metrics endpoint requires authentication
-
         setMetricsAuthConfig(server, null);
         waitForMetricsEndpoint(server);
-        MetricsConnection authenticationRemoved = MetricsConnection.connection_administratorRole(server);
-        authenticationRemoved.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
-
+        privateAsserts();
     }
 
+    /**
+     * Make assertions to verify that the public metrics endpoint allows unauthenticated access.
+     */
+    private static void publicAsserts() throws Exception {
+        // Authentication is NOT required.
+        MetricsConnection.connection_unauthenticated(server).expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+        MetricsConnection.connection_unauthenticated(server).method(HTTPRequestMethod.OPTIONS).header("accept", "application/json")
+                        .expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+    }
+
+    /**
+     * Make assertions to verify that the private metrics endpoint restricts access to authenticated/authorized users.
+     */
+    private static void privateAsserts() throws Exception {
+        // check that when the authenticated user is in the Administrator role, authorization is granted
+        MetricsConnection.connection_administratorRole(server).expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+        MetricsConnection.connection_administratorRole(server).method(HTTPRequestMethod.OPTIONS).header("accept", "application/json")
+                        .expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+
+        // check that when the authenticated user is in the Reader role, authorization is granted
+        MetricsConnection.connection_readerRole(server).expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+        MetricsConnection.connection_readerRole(server).method(HTTPRequestMethod.OPTIONS).header("accept", "application/json")
+                        .expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+
+        // check that when the valid user is not in an authorized role, 403 FORBIDDEN is returned
+        MetricsConnection.connection_unauthorized(server).expectedResponseCode(HttpURLConnection.HTTP_FORBIDDEN).getConnection();
+        MetricsConnection.connection_unauthorized(server).method(HTTPRequestMethod.OPTIONS).header("accept", "application/json")
+                        .expectedResponseCode(HttpURLConnection.HTTP_FORBIDDEN).getConnection();
+
+        //check that opening connection to /metrics with default authentication with invalid credentials returns HTTP 401 ERROR
+        MetricsConnection.connection_invalidUser(server).expectedResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED).getConnection();
+        MetricsConnection.connection_invalidUser(server).method(HTTPRequestMethod.OPTIONS).header("accept", "application/json")
+                        .expectedResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED).getConnection();
+    }
 }

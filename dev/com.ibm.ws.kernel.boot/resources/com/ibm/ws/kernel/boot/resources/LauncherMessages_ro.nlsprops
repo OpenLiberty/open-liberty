@@ -754,6 +754,8 @@ info.resumeFailedException=Reluarea serverului {0} a e\u015fuat. Pentru detalii 
 info.resumingListeners.target=Se reiau componentele \u0163int\u0103 specificate ale serverului {0}.
 info.resumedListeners.target=Reluarea componentelor \u0163int\u0103 specificate ale serverului {0} s-a finalizat.
 info.resumeFailedException.target=Reluarea componentelor \u0163int\u0103 specificate ale serverului {0} a e\u015fuat. Pentru detalii verifica\u0163i \u00een istoricele de server.
+info.serverCommandAuthFailure=Comanda {0} a e\u015fuat deoarece procesul nu a putut \u015fterge fi\u015fierul {1}.
+info.serverCommandCommFailure=Comanda {0} a e\u015fuat din cauza unei erori de comunica\u0163ie cu serverul.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

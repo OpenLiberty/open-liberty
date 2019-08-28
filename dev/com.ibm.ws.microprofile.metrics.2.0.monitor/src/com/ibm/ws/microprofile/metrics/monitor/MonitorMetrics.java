@@ -55,7 +55,7 @@ public class MonitorMetrics {
             if (metricTagName != null) {
             	metricTag = new Tag(metricTagName, getMBeanStatsString());
             }
-            MetricID metricID = new MetricID(metricTagName, metricTag);
+            MetricID metricID = new MetricID(metricName, metricTag);
             MetricType type = MetricType.valueOf(metricData[MappingTable.METRIC_TYPE]);
             
             if (MetricType.COUNTER.equals(type)) {

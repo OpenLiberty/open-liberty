@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -267,3 +267,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Authenticate using a user ID a
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: The user registry operation could not be completed because the repository {0} is a read-only repository. It does not support write operations. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=The repository is a read-only repository. It does not support create, update, or delete operations.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Ensure that a write operation is not invoked on a read-only repository.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: The required identifiers for the entity are missing.
+REQUIRED_IDENTIFIERS_MISSING.explanation=The identifiers uniqueName and uniqueId are not specified. At least one identifier must be specified.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Ensure that the identifier property is specified for each entity passed in. If an identifier is not specified, add the property and specify either the uniqueName or the uniqueId.

@@ -14,9 +14,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.LoginModuleClassloadingTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-                BasicReactiveMessagingTest.class
+                PlaintextTests.class,
+                TlsTests.class,
+                SaslPlainTests.class,
+                KafkaTestClientProviderTest.class,
+                LoginModuleClassloadingTest.class,
 })
 public class FATSuite {
 

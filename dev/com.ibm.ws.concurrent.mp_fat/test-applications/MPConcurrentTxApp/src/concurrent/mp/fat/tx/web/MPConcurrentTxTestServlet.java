@@ -116,7 +116,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     }
 
     /**
-     * This case demonstrates that the com.ibm.tx.jta.TransactionManagerFactory public API, even without MP Concurrency,
+     * This case demonstrates that the com.ibm.tx.jta.TransactionManagerFactory public API, even without MP Context Propagation,
      * already enables applications to concurrently run multiple operations within a single transaction
      * by resuming the transaction onto another thread and performing transactional operations in it
      * while it simultaneously remains actively in use on the main thread.
@@ -853,7 +853,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
     /**
      * Serially use an unshared connection handle across multiple threads in a resource local transaction,
-     * where transaction context is left unchanged by MicroProfile Concurrency.
+     * where transaction context is left unchanged by MicroProfile Context Propagation.
      * Commit the transaction and verify the updates.
      */
     @Test
@@ -910,7 +910,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
     /**
      * Serially use an unshared connection handle across multiple threads in a resource local transaction,
-     * where transaction context is left unchanged by MicroProfile Concurrency.
+     * where transaction context is left unchanged by MicroProfile Context Propagation.
      * Roll back the transaction and verify that no updates were made.
      */
     @Test

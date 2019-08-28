@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.kernel.boot.ReturnCode;
@@ -32,6 +34,9 @@ import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
 public class EmbeddedServerDriver implements ServerEventListener {
+
+    private static final long SERVER_START_TIMEOUT = 30;
+    private static final TimeUnit SERVER_START_TIMEOUT_UNIT = TimeUnit.SECONDS;
 
     private final Class<?> c = EmbeddedServerDriver.class;
     private String CURRENT_METHOD_NAME = null;
@@ -156,7 +161,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
             String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
             Log.info(c, "testStartingAStoppedServer", "consoleOutput = " + serverConsoleOutput);
             try {
-                Assert.assertTrue("No indication that application started", serverConsoleOutput.contains("CWWKZ0001I: Application simpleApp started"));
+                Pattern p = Pattern.compile(".*CWWKZ0001I:.*simpleApp.*", Pattern.DOTALL);
+                Assert.assertTrue("No indication that application started", p.matcher(serverConsoleOutput).matches());
             } catch (Throwable t) {
                 failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
                 Log.error(c, CURRENT_METHOD_NAME, t);
@@ -232,7 +238,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     /**
      * Determine if the input product extension exists in the input string.
      *
-     * @param inputString string to search.
+     * @param inputString      string to search.
      * @param productExtension product extension to search for.
      * @return true if input product extension is found in the input string.
      */
@@ -357,6 +363,35 @@ public class EmbeddedServerDriver implements ServerEventListener {
         verifyServerEvent("\"STARTING\" ServerEvent should have fired", startingEventOccurred);
         verifyServerEvent("\"STARTED\" ServerEvent should have fired", startedEventOccurred);
         stopRunningServer();
+    }
+
+    public void testForceStoppingAStartedServer() {
+        PrintStream originalSysOut = System.out;
+        try {
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(baos, true, "UTF-8"));
+
+            warmStartServer();
+            verifyServerEvent("\"STARTING\" ServerEvent should have fired", startingEventOccurred);
+            verifyServerEvent("\"STARTED\" ServerEvent should have fired", startedEventOccurred);
+            stopRunningServer("--force");
+
+            String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
+            Log.info(c, "testForceStoppingAStartedServer", "consoleOutput = " + serverConsoleOutput);
+            try {
+                Assert.assertFalse("Waiting for server to quiesce message found. Server stop with --force did not work correctly",
+                                   serverConsoleOutput.contains("CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce."));
+                Assert.assertFalse("Server completed quiesce message found. Server stop with --force did not work correctly",
+                                   serverConsoleOutput.contains("CWWKE1101I: Server quiesce complete."));
+            } catch (Throwable t) {
+                failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
+                Log.error(c, CURRENT_METHOD_NAME, t);
+            }
+        } catch (UnsupportedEncodingException ex) {
+        } finally {
+            System.setOut(originalSysOut);
+        }
     }
 
     public void testBadArgument() {
@@ -502,7 +537,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         Future<Result> startFuture = server.start();
 
         try {
-            result = startFuture.get();
+            result = startFuture.get(SERVER_START_TIMEOUT, SERVER_START_TIMEOUT_UNIT);
             dumpResult("Starting a server", result);
             Assert.assertTrue("Result of start attempt should be successful", result.successful());
             Assert.assertEquals("Should have an OK return code", ReturnCode.OK.getValue(), result.getReturnCode());
@@ -516,6 +551,11 @@ public class EmbeddedServerDriver implements ServerEventListener {
         } catch (ExecutionException e) {
             failures.add(new AssertionFailedError("Start operation could not be queued: " + e));
             Log.error(c, CURRENT_METHOD_NAME, e);
+        } catch (TimeoutException e) {
+            failures.add(new AssertionFailedError("Start operation did not complete in time"));
+            Log.error(c, CURRENT_METHOD_NAME, e);
+            // Dumping stack in case this is a hang
+            Thread.dumpStack();
         }
 
         checkServerRunning(true); // server should be started
@@ -525,7 +565,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         Future<Result> startFuture = server.start(new String[] { "--clean" });
 
         try {
-            result = startFuture.get();
+            result = startFuture.get(SERVER_START_TIMEOUT, SERVER_START_TIMEOUT_UNIT);
             dumpResult("Starting a server", result);
             Assert.assertTrue("Result of first start attempt should be successful", result.successful());
             Assert.assertEquals("Should have an OK return code", ReturnCode.OK.getValue(), result.getReturnCode());
@@ -539,13 +579,18 @@ public class EmbeddedServerDriver implements ServerEventListener {
         } catch (ExecutionException e) {
             failures.add(new AssertionFailedError("Start operation could not be queued: " + e));
             Log.error(c, CURRENT_METHOD_NAME, e);
+        } catch (TimeoutException e) {
+            failures.add(new AssertionFailedError("The start operation did not complete within the timeout"));
+            Log.error(c, CURRENT_METHOD_NAME, e);
+            // Dumping stack here because otherwise we don't have much information on why this timed out.
+            Thread.dumpStack();
         }
 
         checkServerRunning(true); // server should be started
     }
 
-    private void stopRunningServer() {
-        Future<Result> stopFuture = server.stop();
+    private void stopRunningServer(String... arg) {
+        Future<Result> stopFuture = server.stop(arg);
         try {
             result = stopFuture.get();
             dumpResult("Stopping a started server", result);

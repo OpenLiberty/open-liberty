@@ -1,0 +1,404 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Le\u00edr\u00e1s:
+global.actions=M\u0171veletek:
+global.options=Param\u00e9terek:
+global.required=K\u00f6telez\u0151:
+global.usage=Haszn\u00e1lat:
+global.usage.options=\t{0} {1} [param\u00e9terek]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\tAz egyes m\u0171veletek param\u00e9tereinek r\u00e9szletes inform\u00e1ci\u00f3i\u00e9rt haszn\u00e1lja \n\
+\ta help [m\u0171velet] parancsot.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\tS\u00fag\u00f3inform\u00e1ci\u00f3kat jelen\u00edt meg a megadott m\u0171veletr\u0151l.
+
+help.usage.options=\t{0} {1} [m\u0171veletn\u00e9v]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\ \ \ \ --batchManager=[hoszt]:[port],[hoszt2]:[port2],...
+connect.required-desc.--batchManager=\tA k\u00f6tegkezel\u0151 REST API hosztneve \u00e9s portja. Megadhat \n\
+\tt\u00f6bb c\u00e9lt is magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1shoz \u00e9s feladat\u00e1tv\u00e9telhez. A c\u00e9lokat \n\
+\tvessz\u0151vel ',' kell elv\u00e1lasztani. 
+
+connect.required-key.--user=\ \ \ \ --user=[felhaszn\u00e1l\u00f3n\u00e9v]
+connect.required-desc.--user=\tA k\u00f6tegkezel\u0151be val\u00f3 bejelentkez\u00e9shez haszn\u00e1lt felhaszn\u00e1l\u00f3n\u00e9v.
+
+connect.required-key.--password=\ \ \ \ --password[=jelsz\u00f3]
+connect.required-desc.--password=\tA k\u00f6tegkezel\u0151be val\u00f3 bejelentkez\u00e9shez haszn\u00e1lt jelsz\u00f3. Ha nincs megadva\n\
+\t\u00e9rt\u00e9k, akkor a rendszer bek\u00e9ri.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\ \ \ \ --controlPropertiesFile=[vez\u00e9rl\u0151-tulajdons\u00e1gf\u00e1jl]
+connect.optional-desc.--controlPropertiesFile=\tA vez\u00e9rl\u0151param\u00e9tereket (mint p\u00e9ld\u00e1ul a hosztn\u00e9v \u00e9s port, amelyhez csatlakozni kell)\n\
+\ttartalmaz\u00f3 tulajdons\u00e1gf\u00e1jl. Ezeket a param\u00e9tereket a k\u00f6zvetlen\u00fcl a parancssorban\n\
+\tmegadott param\u00e9terek fel\u00fclb\u00edr\u00e1lj\u00e1k.
+
+connect.optional-key.--httpTimeout_s=\ \ \ \ --httpTimeout_s=[http id\u0151korl\u00e1t m\u00e1sodpercben]
+connect.optional-desc.--httpTimeout_s=\tA seg\u00e9dprogram fel\u0151l a k\u00f6tegkezel\u0151 REST API fel\u00e9 k\u00fcld\u00f6tt k\u00e9r\u00e9sekre\n\
+\talkalmazott id\u0151korl\u00e1t (m\u00e1sodperc). Ugyanez az id\u0151korl\u00e1t vonatkozik \n\
+\ta csatlakoz\u00e1si \u00e9s olvas\u00e1si m\u0171veletekre is. Ha nincs megadva, akkor \n\
+\taz alap\u00e9rtelmez\u00e9s 30 m\u00e1sodperc.
+
+connect.optional-key.--trustSslCertificates=\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\tAzt jelzi, hogy a seg\u00e9dprogramnak meg kell b\u00edznia minden \
+SSL tan\u00fas\u00edtv\u00e1nyban. A \n\
+\tseg\u00e9dprogram HTTPS protokollal kommunik\u00e1l a k\u00f6tegkezel\u0151 REST API fel\u00fclettel. \n\
+\tAlap\u00e9rtelmez\u00e9sben ellen\u0151rzi a k\u00f6tegkezel\u0151 SSL tan\u00fas\u00edtv\u00e1ny\u00e1t, hacsak nincs\n\
+\tmegadva ez a be\u00e1ll\u00edt\u00e1s, amely esetben megb\u00edzik az SSL tan\u00fas\u00edtv\u00e1nyban \u00e9s\n\
+\tnem hajt v\u00e9gre ellen\u0151rz\u00e9st.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\ \ \ \ --wait
+wait.optional-desc.--wait=\tHa meg van adva, akkor a program a kil\u00e9p\u00e9s el\u0151tt megv\u00e1rja, hogy\n\
+\ta feladat befejez\u0151dj\u00f6n. A kil\u00e9p\u00e9si k\u00f3d a feladat k\u00f6teg\u00e1llapota \n\
+\tszerint van be\u00e1ll\u00edtva (kiv\u00e9ve, ha --returnExitStatus meg van adva).\n\
+\tK\u00f6teg\u00e1llapot kil\u00e9p\u00e9si k\u00f3dok:\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\ \ \ \ --pollingInterval_s=[lek\u00e9rdez\u00e9si_id\u0151k\u00f6z_m\u00e1sodpercekben]
+wait.optional-desc.--pollingInterval_s=\tA feladat\u00e1llapot lek\u00e9rdez\u00e9s\u00e9nek id\u0151k\u00f6ze. \n\
+\tAz alap\u00e9rtelmez\u00e9s 30 m\u00e1sodperc.
+
+wait.optional-key.--verbose=\ \ \ \ --verbose
+wait.optional-desc.--verbose=\tHa meg van adva, akkor a program minden alkalommal \u00fczenetet napl\u00f3z, amikor lek\u00e9rdezi \n\
+\ta feladat\u00e1llapotot.
+
+wait.optional-key.--getJobLog=\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\tHa meg van adva, akkor a program let\u00f6lti a munkanapl\u00f3t, \u00e9s a feladat befejez\u00e9se ut\u00e1n ki\u00edrja \n\
+\ta STDOUT kimenetre. Ezt a be\u00e1ll\u00edt\u00e1st a --wait be\u00e1ll\u00edt\u00e1ssal egy\u00fctt kell haszn\u00e1lni.
+
+wait.optional-key.--returnExitStatus=\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\tA feladat kil\u00e9p\u00e9si \u00e1llapot\u00e1nak haszn\u00e1lata a program kil\u00e9p\u00e9si k\u00f3djak\u00e9nt. Ezt a \n\
+\tparam\u00e9tert a --wait param\u00e9terrel kell haszn\u00e1lni. Ha a kil\u00e9p\u00e9si \u00e1llapot megegyezik egy \n\
+\tk\u00f6teg\u00e1llapot n\u00e9vvel (pl. "COMPLETED"), akkor a kil\u00e9p\u00e9si k\u00f3d a --wait \n\
+\tparam\u00e9ter \u00e1ltal le\u00edrt lek\u00e9pez\u00e9s szerint van be\u00e1ll\u00edtva. Ellenkez\u0151 esetben\n\
+\ta kil\u00e9p\u00e9si k\u00f3d a kil\u00e9p\u00e9si \u00e1llapot karaktersorozat elej\u00e9b\u0151l van \u00e9rtelmezve.\n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\texitStatus="0", exit code: 0\n\
+\t\texitStatus="8:hiba\u00fczenet helye itt", exit code: 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\t\u00daj k\u00f6tegfeladat elk\u00fcld\u00e9se. 
+
+submit.optional-key.--applicationName=\ \ \ \ --applicationName=[alkalmaz\u00e1sn\u00e9v]
+submit.optional-desc.--applicationName=\tA k\u00f6tegalkalmaz\u00e1s neve. \n\
+\tMegjegyz\u00e9s: Vagy az --applicationName, vagy a --moduleName megad\u00e1sa k\u00f6telez\u0151. \n\
+\tHa az --applicationName nincs megadva, akkor a [moduleName] \u00e9rt\u00e9kre ker\u00fcl alap\u00e9rtelmez\u00e9sre \n\
+\ta ".war" vagy a ".jar" kiterjeszt\u00e9s n\u00e9lk\u00fcl.
+
+submit.optional-key.--moduleName=\ \ \ \ --moduleName=[modulN\u00e9v]
+submit.optional-desc.--moduleName=\tA WAR vagy az EJB modult azonos\u00edtja a k\u00f6tegelt alkalmaz\u00e1sban. \n\
+\tA feladat a modul \u00f6sszetev\u0151 kontextusa alatt ker\u00fcl elk\u00fcld\u00e9sre. \n\
+\tMegjegyz\u00e9s: Vagy az --applicationName, vagy a --moduleName megad\u00e1sa k\u00f6telez\u0151. \n\
+\tHa nincs megadva --moduleName, akkor az alap\u00e9rtelmez\u00e9se: "[alkalmaz\u00e1sN\u00e9v].war".
+
+submit.optional-key.--componentName=\ \ \ \ --componentName=[\u00f6sszetev\u0151N\u00e9v]
+submit.optional-desc.--componentName=\tAz EJB \u00f6sszetev\u0151t azonos\u00edtja a k\u00f6tegelt alkalmaz\u00e1s EJB modulj\u00e1ban.\n\
+\tTA feladat az EJB \u00f6sszetev\u0151 kontextusa alatt ker\u00fcl elk\u00fcld\u00e9sre.
+
+submit.optional-key.--jobXMLName=\ \ \ \ --jobXMLName=[feladatXMLneve]
+submit.optional-desc.--jobXMLName=\tA feladatot le\u00edr\u00f3 feladat XML neve. A f\u00e1jl az\n\
+\talkalmaz\u00e1smodulban tal\u00e1lhat\u00f3 batch-jobs k\u00f6nyvt\u00e1rb\u00f3l ker\u00fclt beolvas\u00e1sra. \n\
+\tMegjegyz\u00e9s: A --jobXMLName vagy a --jobXMLFile \u00e9rt\u00e9ket k\u00f6telez\u0151 megadni.
+
+submit.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[feladat-tulajdons\u00e1gf\u00e1jl]
+submit.optional-desc.--jobPropertiesFile=\tA feladat param\u00e9tereit tartalmaz\u00f3 tulajdons\u00e1gf\u00e1jl.\n\
+\tEz a --jobParametersFile param\u00e9ter \u00e1lneve.
+
+submit.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[feladatparam\u00e9ter-f\u00e1jl]
+submit.optional-desc.--jobParametersFile=\tA feladat param\u00e9tereit tartalmaz\u00f3 tulajdons\u00e1gf\u00e1jl.\n\
+\tEz a --jobPropertiesFile param\u00e9ter \u00e1lneve.
+
+submit.optional-key.--jobParameter=\ \ \ \ --jobParameter=[kulcs]=[\u00e9rt\u00e9k]
+submit.optional-desc.--jobParameter=\tFeladatparam\u00e9ter megad\u00e1sa. T\u00f6bb --jobParameter param\u00e9ter is\n\
+\tmegadhat\u00f3. A --jobParameter param\u00e9ter fel\u00fclb\u00edr\u00e1lja a hasonl\u00f3 nev\u0171 tulajdons\u00e1gokat\n\
+\ta --jobParametersFile param\u00e9terben.
+
+submit.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\tEz a param\u00e9ter a --wait param\u00e9terrel egy\u00fctt haszn\u00e1lhat\u00f3. Le\u00e1ll\u00edt\u00e1si horgot regisztr\u00e1l\n\
+\ta JVM-mel, amely \u00e1tveszi a vez\u00e9rl\u00e9st, ha a batchManager program rendellenesen \n\
+\tker\u00fcl lez\u00e1r\u00e1sra.  A le\u00e1ll\u00edt\u00e1si horog egy le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9s k\u00fcld\u00e9s\u00e9vel \n\
+\tmegpr\u00f3b\u00e1lja le\u00e1ll\u00edtani a feladatot, amelyre v\u00e1rakozik. \n\
+\tMegjegyz\u00e9s: A JVM le\u00e1ll\u00edt\u00e1s horgok csak akkor kapj\u00e1k meg a vez\u00e9rl\u00e9st, ha a JVM bizonyos \n\
+\tm\u00f3dokon ker\u00fcl lez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt l\u00e1sd a \n\
+\tjava.lang.Runtime.addShutdownHook Java dokument\u00e1ci\u00f3j\u00e1t.
+
+submit.optional-key.--jobXMLFile=\ \ \ \ --jobXMLFile=[jobXMLFile]
+submit.optional-desc.--jobXMLFile=\tA feladathoz tartoz\u00f3 JSL elemet tartalmaz\u00f3 f\u00e1jl neve. A f\u00e1jlt \n\
+\ta batchManager seg\u00e9dprogram olvassa be \u00e9s a k\u00e9r\u00e9snek megfelel\u0151en ker\u00fcl \n\
+\telk\u00fcld\u00e9sre, ahelyett, hogy a rendszer az alkalmaz\u00e1smodulban tal\u00e1lhat\u00f3 batch-jobs \n\
+\tk\u00f6nyvt\u00e1rb\u00f3l olvasn\u00e1 be. \n\
+\tMegjegyz\u00e9s: A --jobXMLName vagy a --jobXMLFile \u00e9rt\u00e9ket k\u00f6telez\u0151 megadni.
+
+submit.optional-key.--restartTokenFile=\ \ \ \ --restartTokenFile=[tokenf\u00e1jl \u00fajraind\u00edt\u00e1sa]
+submit.optional-desc.--restartTokenFile=\tA f\u00e1jl neve, amely tartalmazza az \u00fajraind\u00edtand\u00f3 feladat\n\
+\tp\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00e1t.  A f\u00e1jl olvas\u00e1s\u00e1t \u00e9s \u00edr\u00e1s\u00e1t a batchManager seg\u00e9dprogram\n\
+\tv\u00e9gzi.  Ha a f\u00e1jl tartalmaz p\u00e9ld\u00e1nyazonos\u00edt\u00f3t, akkor a feladat \u00fajraindul.  Ha nem tartalmaz,\n\
+\takkor \u00faj feladat indul \u00e9s a l\u00e9trej\u00f6tt p\u00e9ld\u00e1nyazonos\u00edt\u00f3 t\u00e1rol\u00f3dik a \n\
+\tf\u00e1jlban.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\tEgy k\u00f6tegfeladat \u00fajraind\u00edt\u00e1sa.
+
+restart.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[feladat-p\u00e9ld\u00e1nyazonos\u00edt\u00f3]
+restart.optional-desc.--jobInstanceId=\tAz \u00fajraind\u00edtand\u00f3 feladatp\u00e9ld\u00e1ny. \n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+restart.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[feladatv\u00e9grehajt\u00e1si-azonos\u00edt\u00f3]
+restart.optional-desc.--jobExecutionId=\tAz \u00fajraind\u00edtand\u00f3 feladatv\u00e9grehajt\u00e1s. \n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+restart.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[feladat-tulajdons\u00e1gf\u00e1jl]
+restart.optional-desc.--jobPropertiesFile=\tA feladat param\u00e9tereit tartalmaz\u00f3 tulajdons\u00e1gf\u00e1jl.\n\
+\tEz a --jobParametersFile param\u00e9ter \u00e1lneve.
+
+restart.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[feladatparam\u00e9ter-f\u00e1jl]
+restart.optional-desc.--jobParametersFile=\tA feladat param\u00e9tereit tartalmaz\u00f3 tulajdons\u00e1gf\u00e1jl.\n\
+\tEz a --jobPropertiesFile param\u00e9ter \u00e1lneve.
+
+restart.optional-key.--jobParameter=\ \ \ \ --jobParameter=[kulcs]=[\u00e9rt\u00e9k]
+restart.optional-desc.--jobParameter=\tFeladatparam\u00e9ter megad\u00e1sa. T\u00f6bb --jobParameter param\u00e9ter is\n\
+\tmegadhat\u00f3. A --jobParameter param\u00e9ter fel\u00fclb\u00edr\u00e1lja a hasonl\u00f3 nev\u0171 tulajdons\u00e1gokat\n\
+\ta --jobParametersFile param\u00e9terben.
+
+restart.optional-key.--reusePreviousParams=\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\tMegad\u00e1sa eset\u00e9n a feladat \u00fajra felhaszn\u00e1lja az el\u0151z\u0151 feladatparam\u00e9tereket.
+
+restart.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\tEz a param\u00e9ter a --wait param\u00e9terrel egy\u00fctt haszn\u00e1lhat\u00f3. Le\u00e1ll\u00edt\u00e1si horgot regisztr\u00e1l\n\
+\ta JVM-mel, amely \u00e1tveszi a vez\u00e9rl\u00e9st, ha a batchManager program rendellenesen \n\
+\tker\u00fcl lez\u00e1r\u00e1sra.  A le\u00e1ll\u00edt\u00e1si horog egy le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9s k\u00fcld\u00e9s\u00e9vel \n\
+\tmegpr\u00f3b\u00e1lja le\u00e1ll\u00edtani a feladatot, amelyre v\u00e1rakozik. \n\
+\tMegjegyz\u00e9s: A JVM le\u00e1ll\u00edt\u00e1s horgok csak akkor kapj\u00e1k meg a vez\u00e9rl\u00e9st, ha a JVM bizonyos \n\
+\tm\u00f3dokon ker\u00fcl lez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt l\u00e1sd a \n\
+\tjava.lang.Runtime.addShutdownHook Java dokument\u00e1ci\u00f3j\u00e1t.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\tEgy k\u00f6tegfeladat le\u00e1ll\u00edt\u00e1sa.
+
+stop.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[feladat-p\u00e9ld\u00e1nyazonos\u00edt\u00f3]
+stop.optional-desc.--jobInstanceId=\tA le\u00e1ll\u00edtand\u00f3 feladatp\u00e9ld\u00e1ny. \n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+stop.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[feladatv\u00e9grehajt\u00e1si-azonos\u00edt\u00f3]
+stop.optional-desc.--jobExecutionId=\tA le\u00e1ll\u00edtand\u00f3 feladatv\u00e9grehajt\u00e1s. \n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\tA feladat \u00e1llapot\u00e1nak megtekint\u00e9se.
+
+status.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[feladat-p\u00e9ld\u00e1nyazonos\u00edt\u00f3]
+status.optional-desc.--jobInstanceId=\tA megjelen\u00edtend\u0151 feladatp\u00e9ld\u00e1ny.\n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+status.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[feladatv\u00e9grehajt\u00e1si-azonos\u00edt\u00f3]
+status.optional-desc.--jobExecutionId=\tA megjelen\u00edtend\u0151 feladatv\u00e9grehajt\u00e1s.\n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\tA munkanapl\u00f3 let\u00f6lt\u00e9se egy k\u00f6tegfeladathoz.
+
+getJobLog.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[feladat-p\u00e9ld\u00e1nyazonos\u00edt\u00f3]
+getJobLog.optional-desc.--jobInstanceId=\tA munkanapl\u00f3 let\u00f6lt\u00e9se az adott feladatp\u00e9ld\u00e1nyhoz.\n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+getJobLog.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[feladatv\u00e9grehajt\u00e1si-azonos\u00edt\u00f3]
+getJobLog.optional-desc.--jobExecutionId=\tA munkanapl\u00f3 let\u00f6lt\u00e9se az adott feladatv\u00e9grehajt\u00e1shoz.\n\
+\tMegjegyz\u00e9s: Vagy a --jobInstanceId, vagya --jobExecutionId param\u00e9tert meg kell adni.
+
+getJobLog.optional-key.--outputFile=\ \ \ \ --outputFile=[kimenetiF\u00e1jl]
+getJobLog.optional-desc.--outputFile=\tEgy helyi f\u00e1jl el\u00e9r\u00e9si \u00fatja.  A munkanapl\u00f3 ebbe a f\u00e1jlba van \u00edrva.\n\
+\tHa nincs megadva, akkor az alap\u00e9rtelmezett kimeneti hely \n\
+\ta --type f\u00fcggv\u00e9nye.\n\
+\tHa --type=text, a munkanapl\u00f3 a STDOUT kimenetre van \u00edrva.\n\
+\tHa --type=zip, a munkanapl\u00f3 a HTTP v\u00e1laszban a 'Content-Disposition'\n\
+\tfejl\u00e9c \u00e1ltal javasolt f\u00e1jln\u00e9vbe lesz \u00edrva.
+
+getJobLog.optional-key.--type=\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\tA munkanapl\u00f3 let\u00f6lt\u00e9se sima sz\u00f6vegk\u00e9nt vagy zip f\u00e1jlk\u00e9nt.\n\
+\tHa nincs megadva, akkor az alap\u00e9rtelmez\u00e9s: text.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\tA feladatp\u00e9ld\u00e1nyok list\u00e1z\u00e1sa. 
+
+listJobs.optional-key.--page=\ \ \ \ --page=[oldal]
+listJobs.optional-desc.--page=\tA feladatp\u00e9ld\u00e1ny-rekordok visszaadand\u00f3 oldala. Az oldalsz\u00e1mok 0-t\u00f3l indulnak.\n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--page=0 --pageSize=10 az els\u0151 10 rekordot adja vissza.\n\
+\t\t--page=2 --pageSize=10 20-t\u00f3l 29-ig adja vissza a rekordokat.\n\
+\tHa nincs megadva, akkor az alap\u00e9rtelmez\u00e9s 0.
+
+listJobs.optional-key.--pageSize=\ \ \ \ --pageSize=[oldalM\u00e9ret]
+listJobs.optional-desc.--pageSize=\tA feladatp\u00e9ld\u00e1ny-rekordok visszaadott oldal\u00e1nak m\u00e9rete.\n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--page=0 --pageSize=10 az els\u0151 10 rekordot adja vissza.\n\
+\t\t--page=1 --pageSize=20 20-t\u00f3l 39-ig adja vissza a rekordokat.\n\
+\tHa nincs megadva, akkor az alap\u00e9rtelmez\u00e9s 50.
+
+listJobs.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[feladat-p\u00e9ld\u00e1nyazonos\u00edt\u00f3]
+listJobs.optional-desc.--jobInstanceId=\tA feladatp\u00e9ld\u00e1ny-rekordokra alkalmazott p\u00e9ld\u00e1nyazonos\u00edt\u00f3 sz\u0171r\u0151. \n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--jobInstanceId=10:20 a 10-20. rekordot adja vissza.\n\
+\t\t--jobInstanceId=">10" a 10-es vagy enn\u00e9l nagyobb rekordokat adja vissza.\n\
+\t\t--jobInstanceId="<10" a 10-es vagy enn\u00e9l kisebb rekordokat adja vissza.\n\
+\t\t--jobInstanceId=10,12,15 a 10., 12. \u00e9s 15. rekordot adja vissza.\n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot ad vissza.
+
+listJobs.optional-key.--createTime=\ \ \ \ --createTime=[l\u00e9trehoz\u00e1si_id\u0151]
+listJobs.optional-desc.--createTime=\tA feladatp\u00e9ld\u00e1ny-rekordokra alkalmazott sz\u0171r\u0151 l\u00e9trehoz\u00e1si id\u0151pontja. \n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--createTime=2015-09-10:2015-09-27 a 2015-09-10 \u00e9s 2015-09-27 k\u00f6z\u00f6tt l\u00e9trehozott\n\
+\t\t\trekordokat adja vissza, a sz\u00e9ls\u0151 \u00e9rt\u00e9keket is bele\u00e9rtve.\n\
+\t\t--createTime=">3d" az UTC szerint 3 napja vagy az\u00f3ta l\u00e9trehozott rekordokat adja\n\
+\t\t\tvissza (a l\u00e9trehoz\u00e1s d\u00e1tuma nagyobb vagy egyenl\u0151 a 3 nappal ezel\u0151tti d\u00e1tumn\u00e1l)\n\
+\t\t--createTime="<3d" az UTC szerint 3 napja vagy kor\u00e1bban l\u00e9trehozott rekordokat adja\n\
+\t\t\tvissza (a l\u00e9trehoz\u00e1s d\u00e1tuma kisebb vagy egyenl\u0151 a 3 nappal ezel\u0151tti d\u00e1tumn\u00e1l)\n\
+\t\t--createTime=2015-09-15 az \u00f6sszes 2015-09-15 d\u00e1tumon l\u00e9trehozott rekordot adja vissza.\n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot ad vissza.  Ha a createTime=>Xd vagy a\n\
+\t\tcreateTime<Xd \u00e9rt\u00e9ket adja meg, akkor a d\u00e1tum az ir\u00e1ny\u00edt\u00f3 kiszolg\u00e1l\u00f3 alapj\u00e1n\n\
+\t\tlesz kisz\u00e1m\u00edtva (UTC id\u0151 szerint). 
+
+listJobs.optional-key.--instanceState=\ \ \ \ --instanceState=[p\u00e9ld\u00e1ny_\u00e1llapota]
+listJobs.optional-desc.--instanceState=\tA feladatp\u00e9ld\u00e1ny-rekordokra alkalmazott p\u00e9ld\u00e1ny \u00e1llapot sz\u0171r\u0151. \n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED a COMPLETED, FAILED\n\
+\t\t\u00e9s STOPPED \u00e1llapot\u00fa rekordokat adja vissza. \n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot ad vissza.
+
+listJobs.optional-key.--exitStatus=\ \ \ \ --exitStatus=[kil\u00e9p\u00e9si_\u00e1llapot]
+listJobs.optional-desc.--exitStatus=\tA feladatp\u00e9ld\u00e1ny-rekordokkal t\u00e1rs\u00edtott feladat-v\u00e9grehajt\u00e1si \n\
+\trekordokra alkalmazott kil\u00e9p\u00e9si \u00e1llapot sz\u0171r\u0151.\n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--exitStatus=*JOB* a kil\u00e9p\u00e9si \u00e1llapotban a JOB sz\u00f3t tartalmaz\u00f3 v\u00e9grehajt\u00e1si rekordokkal\n\
+\t\trendelkez\u0151 feladatp\u00e9ld\u00e1ny-rekordokat adja vissza.\n\
+\t\tMegjegyz\u00e9s: A felt\u00e9tel haszn\u00e1lhat helyettes\u00edt\u0151 karakter (*) oper\u00e1tort\n\
+\t\ta sz\u0171r\u0151 b\u00e1rmelyik v\u00e9g\u00e9n. \n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot ad vissza.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\tEgy feladat p\u00e9ld\u00e1ny \u00f6sszes rekordj\u00e1nak \u00e9s napl\u00f3j\u00e1nak ki\u00fcr\u00edtse, vagy \n\
+\ta feladatp\u00e9ld\u00e1ny-rekordok egy list\u00e1j\u00e1nak ki\u00fcr\u00edt\u00e9se.
+
+purge.optional-key.--page=\ \ \ \ --page=[oldal]
+purge.optional-desc.--page=\tA feladatp\u00e9ld\u00e1ny-rekordok visszaadand\u00f3 oldala. Az oldalsz\u00e1mok 0-t\u00f3l indulnak.\n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--page=0 --pageSize=10 az els\u0151 10 rekordot adja vissza.\n\
+\t\t--page=2 --pageSize=10 20-t\u00f3l 29-ig adja vissza a rekordokat.\n\
+\tHa nincs megadva, akkor az alap\u00e9rtelmez\u00e9s 0.
+
+purge.optional-key.--pageSize=\ \ \ \ --pageSize=[oldalM\u00e9ret]
+purge.optional-desc.--pageSize=\tA feladatp\u00e9ld\u00e1ny-rekordok visszaadott oldal\u00e1nak m\u00e9rete.\n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--page=0 --pageSize=10 az els\u0151 10 rekordot adja vissza.\n\
+\t\t--page=1 --pageSize=20 20-t\u00f3l 39-ig adja vissza a rekordokat.\n\
+\tHa nincs megadva, akkor az alap\u00e9rtelmez\u00e9s 50.
+
+purge.optional-key.--purgeJobStoreOnly=\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\tAzt jelzi, hogy a v\u00e9gleges t\u00f6rl\u00e9si m\u0171veletnek csak a feladatt\u00e1rol\u00f3 adatb\u00e1zisb\u00f3l \n\
+\tkell t\u00f6r\u00f6lnie a bejegyz\u00e9seket. Nem t\u00f6rt\u00e9nik majd k\u00eds\u00e9rlet a feladatnapl\u00f3k \n\
+\tf\u00e1jlrendszerb\u0151l val\u00f3 t\u00f6rl\u00e9s\u00e9re.
+
+purge.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[feladat-p\u00e9ld\u00e1nyazonos\u00edt\u00f3]
+purge.optional-desc.--jobInstanceId=\tA feladatp\u00e9ld\u00e1ny-rekordok ki\u00fcr\u00edt\u00e9s\u00e9hez alkalmazott p\u00e9ld\u00e1nyazonos\u00edt\u00f3 sz\u0171r\u0151. \n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--jobInstanceId=10:20 a 10-20. rekordot \u00fcr\u00edti ki.\n\
+\t\t--jobInstanceId=">10" a 10-es vagy enn\u00e9l nagyobb rekordokat \u00fcr\u00edti ki.\n\
+\t\t--jobInstanceId="<10" a 10-es vagy enn\u00e9l kisebb rekordokat \u00fcr\u00edti ki.\n\
+\t\t--jobInstanceId=10,12,15 a 10., 12. \u00e9s 15. rekordot \u00fcr\u00edti ki.\n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot \u00fcr\u00edt ki.
+
+purge.optional-key.--createTime=\ \ \ \ --createTime=[l\u00e9trehoz\u00e1si_id\u0151]
+purge.optional-desc.--createTime=\tA feladatp\u00e9ld\u00e1ny-rekordok ki\u00fcr\u00edt\u00e9s\u00e9hez alkalmazott sz\u0171r\u0151 l\u00e9trehoz\u00e1si id\u0151pontja. \n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--createTime=2015-09-10:2015-09-27 a 2015-09-10 \u00e9s 2015-09-27 k\u00f6z\u00f6tt l\u00e9trehozott\n\
+\t\t\trekordokat \u00fcr\u00edti ki, a sz\u00e9ls\u0151 \u00e9rt\u00e9keket is bele\u00e9rtve.\n\
+\t\t--createTime=">3d" az UTC szerint 3 napja vagy az\u00f3ta l\u00e9trehozott rekordokat \u00fcr\u00edti\n\
+\t\t\tki (a l\u00e9trehoz\u00e1s d\u00e1tuma nagyobb vagy egyenl\u0151 a 3 nappal ezel\u0151tti d\u00e1tumn\u00e1l)\n\
+\t\t--createTime="<3d" az UTC szerint 3 napja vagy kor\u00e1bban l\u00e9trehozott rekordokat \u00fcr\u00edti\n\
+\t\t\tki (a l\u00e9trehoz\u00e1s d\u00e1tuma kisebb vagy egyenl\u0151 a 3 nappal ezel\u0151tti d\u00e1tumn\u00e1l)\n\
+\t\t--createTime=2015-09-15 az \u00f6sszes 2015-09-15 d\u00e1tumon l\u00e9trehozott rekordot \u00fcr\u00edti ki.\n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot \u00fcr\u00edt ki. Ha a createTime=>Xd vagy a\n\
+\t\tcreateTime<Xd \u00e9rt\u00e9ket adja meg, akkor a d\u00e1tum az ir\u00e1ny\u00edt\u00f3 kiszolg\u00e1l\u00f3 alapj\u00e1n\n\
+\t\tlesz kisz\u00e1m\u00edtva (UTC id\u0151 szerint). 
+
+purge.optional-key.--instanceState=\ \ \ \ --instanceState=[p\u00e9ld\u00e1ny_\u00e1llapota]
+purge.optional-desc.--instanceState=\tA feladatp\u00e9ld\u00e1ny-rekordok ki\u00fcr\u00edt\u00e9s\u00e9hez alkalmazott p\u00e9ld\u00e1ny \u00e1llapot sz\u0171r\u0151. \n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED a COMPLETED, FAILED\n\
+\t\t\u00e9s STOPPED \u00e1llapot\u00fa rekordokat \u00fcr\u00edti ki. \n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot \u00fcr\u00edt ki.
+
+purge.optional-key.--exitStatus=\ \ \ \ --exitStatus=[kil\u00e9p\u00e9si_\u00e1llapot]
+purge.optional-desc.--exitStatus=\tA feladatp\u00e9ld\u00e1ny-rekordok ki\u00fcr\u00edt\u00e9s\u00e9vel t\u00e1rs\u00edtott feladat-v\u00e9grehajt\u00e1si \n\
+\trekordokra alkalmazott kil\u00e9p\u00e9si \u00e1llapot sz\u0171r\u0151.\n\
+\tP\u00e9ld\u00e1ul:\n\
+\t\t--exitStatus=*JOB* a kil\u00e9p\u00e9si \u00e1llapotban a JOB sz\u00f3t tartalmaz\u00f3 v\u00e9grehajt\u00e1si rekordokkal\n\
+\t\trendelkez\u0151 feladatp\u00e9ld\u00e1ny-rekordokat \u00fcr\u00edti ki.\n\
+\t\tMegjegyz\u00e9s: A felt\u00e9tel haszn\u00e1lhat helyettes\u00edt\u0151 karakter (*) oper\u00e1tort\n\
+\t\ta sz\u0171r\u0151 b\u00e1rmelyik v\u00e9g\u00e9n. \n\
+\t\tHa a --page \u00e9s --pageSize param\u00e9ter nincs megadva, akkor a program \n\
+\t\talap\u00e9rtelmez\u00e9s szerint 50 rekordot \u00fcr\u00edt ki.

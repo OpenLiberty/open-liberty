@@ -162,4 +162,11 @@ public interface KeyStoreService {
      */
     String[] getAllKeyStoreAliases();
 
+    /**
+     * Returns the number of distinct keystores known to the server
+     *
+     * @return
+     */
+    int getKeyStoreCount();
+
 }

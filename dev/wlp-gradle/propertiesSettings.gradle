@@ -28,7 +28,7 @@ def setProperties = { props ->
         'zipopenliberty.kernel.archivename',
         'zipopenliberty.webprofile8.archivename',
         'zipopenliberty.javaee8.archivename',
-        'zipopenliberty.microprofile2.archivename'
+        'zipopenliberty.microprofile3.archivename'
     ]
     if (genPropsFile.exists()) {
         Properties genProps = new Properties()
@@ -56,6 +56,10 @@ def setProperties = { props ->
     props.setProperty('is.public.publishing',     isPublicPublishing.toString())
     props.setProperty('disable.run.runUnitTests', isUnittestsDisabled.toString())
 
+    //Sets my RPM/DEB flag to true on every release build
+    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
+    props.setProperty('build.os.native.packages', isBuildOsNativePackages.toString())
+
     gradle.rootProject { rootProject ->
         rootProject.ext.isUsingArtifactory  = isUsingArtifactory
         rootProject.ext.isAutomatedBuild    = isAutomatedBuild
@@ -64,6 +68,7 @@ def setProperties = { props ->
         rootProject.ext.isRelease           = isRelease
         rootProject.ext.isPublicPublishing  = isPublicPublishing
         rootProject.ext.isUnittestsDisabled = isUnittestsDisabled
+        rootProject.ext.isBuildOsNativePackages = isBuildOsNativePackages
 
         // Test results for this run
         rootProject.ext.testCountTotal           = 0
@@ -116,17 +121,19 @@ def setProperties = { props ->
      * Properties used for to version build outputs.
      */
     String timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
-    String qualifier = timestamp
 
     // For release builds we use the buildLabel as a consistent qualifier.
     // buildLabel is set by the RTC build engines.
-    if (isRelease && isAutomatedBuild) {
-        qualifier = props.getProperty('buildLabel')
-    }
+    String qualifier = (isRelease && isAutomatedBuild) ? props.getProperty('buildLabel') : timestamp
 
     props.setProperty('version.qualifier', qualifier)
     props.setProperty('buildLabel', timestamp)
 
+    // The qualifier below is needed for service builds only, do not delete it.
+    gradle.rootProject { rootProject ->
+        rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")
+        rootProject.ext.releaseVersionOverride = gradle.userProps.getProperty('release.version.override')
+    }
     /**
      * For each property in `gradle.userProps`, set it to rootProject's extra project properties.
      */

@@ -30,6 +30,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.DeltaSpikeSchedulerTest;
+import com.ibm.ws.cdi12.fat.tests.HibernateSearchTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -37,7 +38,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-             DeltaSpikeSchedulerTest.class
+             DeltaSpikeSchedulerTest.class,
+             HibernateSearchTest.class
 })
 public class FATSuite {
     

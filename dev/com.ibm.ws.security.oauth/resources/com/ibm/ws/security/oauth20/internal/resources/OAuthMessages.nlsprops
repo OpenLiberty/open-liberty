@@ -1,0 +1,464 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/oauth20/internal/resources/OauthMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OAUTH Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1400 - CWWKS1499
+OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: The OAuth provider {0} configuration is not valid.
+OAUTH_PROVIDER_CONFIG_INVALID.explanation=Cannot get specified oauth provider configuration.
+OAUTH_PROVIDER_CONFIG_INVALID.useraction=Specify a valid oauth provider configuration.
+
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: OAuth provider {0} has a mediator class specified but libraryRef is either not specified or the library is not activated.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.explanation=The OAuth provider has a mediator class specified but libraryRef is either not specified or the library is not activated. This might be a config error, or the library might have been activated after the provider had been activated.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.useraction=Ensure the OAuth provider's libraryRef is correctly defined.
+
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE=CWWKS1402I: OAuth provider {0} libraryRef activated for mediator class {1}.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.explanation=The OAuth provider has a mediator class specified and the libraryRef is activated.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.useraction=None.
+
+OAUTH_PROVIDER_CONFIG_PROCESSED=CWWKS1403I: OAuth provider {0} configuration successfully processed.
+OAUTH_PROVIDER_CONFIG_PROCESSED.explanation=The OAuth provider's configuration has been successfully processed.
+OAUTH_PROVIDER_CONFIG_PROCESSED.useraction=None.
+
+OAUTH_ROLE_CONFIG_PROCESSED=CWWKS1404I: OAuth roles configuration successfully processed.
+OAUTH_ROLE_CONFIG_PROCESSED.explanation=The OAuth roles configuration has been successfully processed.
+OAUTH_ROLE_CONFIG_PROCESSED.useraction=None.
+
+OAUTH_INTROSPECT_NO_TOKEN=CWWKS1405E: The introspect request did not have a token parameter. The request URI was {0}.
+OAUTH_INTROSPECT_NO_TOKEN.explanation=The introspect request must have a token request parameter specifying the access token to be introspected.
+OAUTH_INTROSPECT_NO_TOKEN.useraction=Invoke the request again with a token parameter that specifies a valid access token.
+
+OAUTH_INVALID_CLIENT=CWWKS1406E: The {0} request had an invalid client credential. The request URI was {1}.
+OAUTH_INVALID_CLIENT.explanation=The indicated request must have a valid client ID and password, and the client ID must match the client ID that created the access token.
+OAUTH_INVALID_CLIENT.useraction=Invoke the request again with a valid client credential.
+
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR=CWWKS1407E: The class name {0} of customized Grant Type Handler cannot be instantiated {1}
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.explanation=The class name of customized Grant Type Handler cannot be instantiated.
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.useraction=Double check the class name in the configuration.
+
+CUSTOMIZED_CLASS_NOT_FOUND=CWWKS1408E: The class name {0} of customized Grant Type Handler cannot be found {1}
+CUSTOMIZED_CLASS_NOT_FOUND.explanation=The class name of customized Grant Type Handler cannot be found.
+CUSTOMIZED_CLASS_NOT_FOUND.useraction=Double check the class name in the configuration.
+
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1409E: A configuration error has occurred. No endpoint service is available. Ensure that you have the oauth-2.0 or openidConnectServer-1.0 feature configured. 
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.explanation=No endpoint service is available through the OSGi service registry.
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Include the oauth-2.0 or openidConnectServer-1.0 feature in your server configuration.
+
+OAUTH_ENDPOINT_SERVICE_ACTIVATED=CWWKS1410I: The OAuth endpoint service is activated.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.explanation=The OAuth connect service is activated.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.useraction=None
+
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT=CWWKS1411E: The request had a client ID that was not the same client ID that created the access token, or the request had an invalid client ID or client secret. The request URI was {0}.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.explanation=The request had a client ID that was not the same client ID that created the access token, or the request had an invalid client ID or client secret.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.useraction=Invoke the request again with a valid client credential.
+
+OAUTH_REQUEST_ATTRIBUTE_MISSING=CWWKS1412E: The request endpoint {0} does not have attribute {1}.
+OAUTH_REQUEST_ATTRIBUTE_MISSING.explanation=The attribute is missing from the request
+OAUTH_REQUEST_ATTRIBUTE_MISSING.useraction=Inspect the request endpoint in the server.xml file to ensure you have the right provider 
+
+OAUTH_PROVIDER_OBJECT_NULL=CWWKS1413E: The OAuth20Provider object is null for OAuth provider {0}.
+OAUTH_PROVIDER_OBJECT_NULL.explanation=Can not create an OAuth20Provider for the OAuth provider name
+OAUTH_PROVIDER_OBJECT_NULL.useraction=Double check the provider configuration  
+
+# Tr.error
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR=CWWKS1414E: The token endpoint request failed because scope [{0}] in the scope parameter of the request was not defined in the list of ''preAuthorizedScope'' in client [{1}].
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.explanation=All scopes requested in the scope parameter of the token endpoint request have to be defined in the 'preAuthorizedScope' list of the client configuration.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.useraction=Make sure all scopes in the token endpoint request are defined in the 'preAuthorizedScope' list of the client configuration.
+
+# 
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR=CWWKS1415E: The token endpoint request failed because one of the scopes in the scope parameter of the request was not defined in the ''preAuthorizedScope'' list of client [{0}].
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.explanation=All scopes requested in the scope parameter of the token endpoint request have to be defined in the 'preAuthorizedScope' list of the client configuration.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.useraction=Make sure all scopes specified in the token endpoint request are defined in the 'preAuthorizedScope' of the client configuration.
+
+# 
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR=CWWKS1416E: The token endpoint request failed because the client [{0}] is not autoAuthorized and it does not define the ''preAuthorizedScope'' list in its configuration. No scopes can be authorized.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.explanation=The client needs to be autoAuthorized to authorize the scopes from the http request. Otherwise the scopes have to be defined in the 'preAuthorizedScope' list of the client configuration.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.useraction=Make sure the client is autoAuthorized or the scopes are defined in the 'preAuthorizedScope' list of the client configuration.
+
+# do not translate urn:ietf:params:oauth:grant-type:jwt-bearer
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR=CWWKS1417E: The token endpoint request failed. The client [{0}] does not support the grant type: [{0}].
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.explanation=The client indicated in the message does not support the grant type since it is not specified in the grantType list of the client configuration.
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.useraction=Specify the indicated grant type in the grantType list of the client configuration.
+
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR=CWWKS1418E: The token endpoint request failed. The OpenID Connect Provider can not process the request because it contains more than one [{0}] parameter.
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.explanation=The token endpoint request can not contains more than one of the indicated parameters. Otherwise the OpenID Connect Provider can not process it.
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.useraction=Make sure only one of the indicated parameters is in the token endpoint request.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED=CWWKS1419E: The client is not authorized to introspect access tokens. The request URI was {0}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.explanation=The request had a client ID that is not authorized to introspect tokens.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.useraction=Authorize the client to introspect access tokens by setting introspectTokens to true in the OAuth client configuration.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG=CWWKS1420E: The client {0} is not authorized to introspect access tokens. The request URI was {1}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.explanation=The request had a client ID that is not authorized to introspect tokens.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.useraction=Authorize the client to introspect access tokens by setting introspectTokens to true in the OAuth client configuration.
+
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED=CWWKS1421I: The value of {0} in the oauthProvider configuration is {1}. It is less than the recommended value. It had been set to the default value {2}.
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.explanation=The value of the indicated attribute is too small. It is reset to the default value. 
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.useraction=Set the indicated attribute to a proper value that is not less than the default value.
+
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: The value of {0} in the oauthProvider configuration is {1}. It had been set to the allowed maximum value {2}.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=The value in the indicated attribute is too large.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Set the indicated attribute to a proper value.  
+
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: OAuth client registration or update failed because the client data contains the "{0}" illegal character.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=The character is not allowed in client data.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Remove the illegal character and resubmit the request. 
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: The client id {0} was not found.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=The request contained a client id that was not found.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Retry the request with a valid client id.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: The registration request was made to an incorrect URI.
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.explanation=Clients can only be created by making a POST request to the registration end point URI.  
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.useraction=Review the API documentation for this service, and retry the request to the registration end point URI.
+
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID=CWWKS1426E: The {0} operation failed as the request did not contain the {1} parameter.
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.explanation=Clients can only be created by making a POST request to the registration end point URI.  
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.useraction=Review the API documentation for this service, and retry the request to the registration end point URI.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID=CWWKS1427E: The {0} operation failed as the request contains an invalid {1} parameter {2}.
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.explanation=Operations can only be done on registered and valid clients.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST=CWWKS1428E: The request body is malformed.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=The JSON in the request body is malformed.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Review the API documentation for this service, and retry the request.
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Client id {0} already exists.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=The operation failed because the client id already exists.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: An update of the client fails. The update request indicates that the client secret must be preserved but the existing registration has no secret set.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=TThe update request indicates that the client secret must be preserved but the existing registration has no secret set.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: An update of the client fails. An update request for a public client must not specify a client secret.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=An update request for a public client must not specify a client secret.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: An update of the client fails. The client secret cannot be updated because the request specifies an invalid configuration given the current state of the client registration.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=The request cannot be completed because it specifies an invalid configuration given the current state of the client's registration.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: The HTTP method {0} is not supported for the service {1}.
+OAUTH_UNSUPPORTED_METHOD.explanation=Only some HTTP methods are supported for a given service.  
+OAUTH_UNSUPPORTED_METHOD.useraction=Correct the HTTP request.
+
+OAUTH_COVERAGE_MAP_MISSING_PARAMS=CWWKS1434E: Missing required parameters in the request.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.explanation=The request to this service was denied because it is missing the required parameter {0}.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM=CWWKS1435E: Missing {0} parameter in the request.
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.explanation=The request to this service was denied because it is missing required parameter {0}.  
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM=CWWKS1436E: Request contains multiple {0} parameters.
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.explanation=The request to this service was denied because it contains invalid parameters. Only one {0} parameter may be specified.  
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM=CWWKS1437E: Request contains unrecognized token type parameter {0}.
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.explanation=The request to this service was denied because an unrecognized token type {0} was specified.  
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE=CWWKS1438E: Creation of the client fails.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.explanation=A client_secret cannot be specified when creating a public client.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.useraction=Either do not specify a client_secret or create a non-public client.
+
+OAUATH_CERT_AUTH_WITH_NO_CERT=CWWKS1439E: The user authentication of the request failed because the certAuthentication attribute in the oauthProvider configuration is set to true but the HTTP request does not provide a Client Certificate during the SSL handshake for the user authentication.
+OAUATH_CERT_AUTH_WITH_NO_CERT.explanation=The request needs to provide a Client Certificate during the SSL handshake for the user authentication when the certAuthentication attribute in the oauthProvider configuration is enabled.
+OAUATH_CERT_AUTH_WITH_NO_CERT.useraction=Enable the request with a proper Client Certificate during the SSL handshake for the user authentication and set the clientAuthenticationSupported attribute in the ssl configuration to true, or set the certAuthentication attribute to false to disable it. 
+
+OAUATH_BASIC_AUTH_FAIL=CWWKS1440E: The user authentication of the request failed because the Authorization header in the request failed to be verified as a valid user.
+OAUATH_BASIC_AUTH_FAIL.explanation=The request needs to provide a valid Authorization header, which needs to be a valid user and password.
+OAUATH_BASIC_AUTH_FAIL.useraction=Make sure the Authorization header in the request has a valid user and password, and the user has to be registered in the OpenId Connect Provider.
+
+OAUATH_CLIENT_CERT_AUTH_FAIL=CWWKS1441E: The user authentication of the request failed because the Client Certificate provided through the SSL handshake in the request can not be verified as a valid user. Cause:{0} 
+OAUATH_CLIENT_CERT_AUTH_FAIL.explanation=Since the certAuthentication attribute in the oauthProvider configuration is enabled, the request needs to provide a Client Certificate during the SSL handshake with a valid user for the user authentication.
+OAUATH_CLIENT_CERT_AUTH_FAIL.useraction=Make sure the Client Certificate provided during the SSL handshake in the request has a valid user, and the user has to be registered in the OpenID Connect Provider.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED=CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.explanation=This client property is restricted to approved values and the specified value is not approved.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.useraction=Review the API documentation for this service, and retry the request with an approved value.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE=CWWKS1443E: The value {0} is a duplicate for the {1} client registration metadata field.
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.explanation=The specified values for this property contain duplicates, which is not allowed. 
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.useraction=Review the API documentation for this service, and retry the request with the appropriate property not containing duplicate values.
+
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION=CWWKS1444E: The client registration metadata field response_type contains value {0}, which requires at least a matching grant_type value {1}.
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.explanation=The request contains an invalid grant_type value and response_type value combination. 
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.useraction=Review the API documentation and the OpenID Connect Client Registration specification to determine a valid grant_type value and response_type value combination.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI=CWWKS1445E: The value {0} for the client registration metadata field {1} contains a malformed URI syntax.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.explanation=The request cannot be completed because it specifies the property value with a malformed URI syntax.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.useraction=Review the property value in the request and modify it to conform with a well-formed URI syntax.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI=CWWKS1446E: The value {0} for the client registration metadata field {1} is not an absolute URI.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.explanation=The request cannot be completed because it specifies a non-absolute URI, when one is required.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.useraction=Review the property value in the request and modify it to conform with an absolute URI syntax.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED=CWWKS1447E: The client registration metadata field {0} cannot be specified for a create or update action because it is an output parameter.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.explanation=The request cannot be completed because the property value specified is a non-modifiable output parameter.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.useraction=Remove the property value from the request, as it is not valid to specify an output parameter for create or update actions.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF=CWWKS1448E: The OAuth provider {0} has a databaseStore element specified but the dataSourceRef attribute is either not specified or the datasource is not activated.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.explanation=The OAuth provider has a databaseStore element specified but the dataSourceRef attribute is either not specified or the datasource is not activated. This might be due to a configuration error.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.useraction=Ensure the dataSourceRef attribute of the databaseStore element in the OAuth provider is correctly defined.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE=CWWKS1449E: The OAuth provider {0} has a databaseStore element specified but the {1} attribute is either not specified or is invalid.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.explanation=The OAuth provider has a databaseStore element specified but the attribute is either not specified or is invalid. This might be due to a configuration error.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.useraction=Ensure the attribute of the databaseStore element in the OAuth provider is correctly defined.
+
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: A configuration error has occurred. OpenID Connect provider {0} and {1} have the same OAuth provider {2}. Both OpenID Connect providers are deactivated.
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.explanation=Each OpenID Connect provider is required to have a unique OAuth provider in the server.xml file. Otherwise, the duplicated OpenID Connect provider is deactivated.  
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.useraction=Make sure that every OpenID Connect provider has a unique OAuth provider in the server.xml file.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: The OAuth provider {0} has a databaseStore element specified but the dataSourceFactory for the specified dataSource is not activated.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.explanation=The OAuth provider has a databaseStore element specified but the dataSourceFactory for the specified dataSource is not activated. This might be due to a configuration error with the dataSource.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.useraction=Ensure the dataSourceRef attribute of the databaseStore element in the OAuth provider is correctly defined to refer to a valid dataSource.
+
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR=CWWKS1452E: The JSONObject for {0} returned by Liberty user feature {1} is null or bad.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.explanation=The TokenIntrospectProvider installed in Liberty is returning null or a bad JSON format string for the given user.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.useraction=Make sure the TokenIntrospectProvider returns a valid JSON format string.
+
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED=CWWKS1453I: There are multiple TokenIntrospectProviders configured.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.explanation=There are more than one TokenIntrospectProviders configured in the server.xml file.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=No user action required.
+
+OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: The request failed because the access_token is not valid or has expired.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Failed to process the request because the access_token is not valid.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Make sure the access_token is valid and is not expired.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=The OpenId Connect provider configuration attribute keyStoreRef might be missing or incorrect.
+
+#This message is intended to be a child of CWWKS1456E
+#0=signatureAlgorithm, 1=exception or error message if any
+JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key required by signature algorithm [{0}] was not available. {1}
+JWT_BAD_SIGNING_KEY.explanation=A signing key could not be found or a key that uses the configured signature algorithm could not be found.
+JWT_BAD_SIGNING_KEY.useraction=Make sure the signing key and signature algorithm are configured correctly.
+
+#0=oidc OP ID, 1=exception or error message
+JWT_CANNOT_GENERATE_JWT=CWWKS1456E: The OpenID Connect Provider [{0}] can not create a token. [{1}]
+JWT_CANNOT_GENERATE_JWT.explanation=The OpenID Connect Provider can not create a token. The reason is displayed in the message.
+JWT_CANNOT_GENERATE_JWT.useraction=See the user action for the error displayed in the message.
+
+#0=Configured signature algorithm
+SIGNING_KEY_NOT_RSA=CWWKS1457E: The type of the signing key is not RSA. An RSA signing key is needed for signature algorithm [{0}].
+SIGNING_KEY_NOT_RSA.explanation=An RSA key is required for this signature algorithm.
+SIGNING_KEY_NOT_RSA.useraction=Configure a different signature algorithm or specify an RSA key to use for signatures.
+
+#0=Java runtime level
+JWT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1458W: The Java version used by this run time [{0}] is not supported by the JWT Mediator SPI. The supported Java version is 1.7 or higher.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.explanation=The Java version in the message can not support the JWT Mediator SPI function.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Install Java version 1.7 or higher.
+
+#0=Expired token count
+#1=value of the cleanupExpiredTokenInterval
+#2=cleanupExpiredTokenInterval
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN=CWWKS1459W: The number of expired tokens to remove from the database is [{0}]. This high quantity of expired tokens might impact performance. The token cleanup task is configured to run every [{1}] seconds. Consider reducing this time interval by modifying the [{2}] attribute in the OAuth Provider configuration to run the expired token cleanup task more often.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.explanation=The database cache has a large quantity of expired tokens, which might lead to performance issues with token lookups. By reducing the value of the specified attribute, the cleanup task will run more often and reduce the number of expired tokens that are kept in the database.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.useraction=Update the specified attribute of the OAuth Provider configuration by lowering the value.
+
+# 0=SQL operation (such as "SELECT", "UPDATE", "DELETE"), 1=OAuth client ID, 2=Exception message (if present)
+ERROR_PERFORMING_DB_OPERATION=CWWKS1460E: The OAuth feature encountered an error while running the [{0}] operation with the [{1}] OpenID Connect client in the cached database. {2}
+ERROR_PERFORMING_DB_OPERATION.explanation=A connection to the database might not be available, the database table might have columns with incorrect data types, or a database command is malformed.
+ERROR_PERFORMING_DB_OPERATION.useraction=Verify that the database connection is still open and available. Ensure that the database tables are configured with the appropriate data types.
+
+# 0=Exception message (if present)
+ERROR_GETTING_CLIENTS_FROM_DB=CWWKS1461E: The OAuth feature encountered an error while retrieving all OpenID Connect clients from the cached database. {0}
+ERROR_GETTING_CLIENTS_FROM_DB.explanation=A connection to the database might not be available, the database table might have columns with incorrect data types, or a database command is malformed.
+ERROR_GETTING_CLIENTS_FROM_DB.useraction=Verify that the database connection is still open and available. Ensure that the database tables are configured with the appropriate data types.
+
+# This is migrated from com.ibm.ws.security.openidconnect.server-1.0
+# It is an existing message. So, it keeps the same ID as before
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: An internal server error occurred while processing a userinfo request. The error was {0}. The request URI was {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=An internal server error occurred while processing a userinfo request. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Contact IBM support.
+
+# intended for  use with regular expressions in redirects
+regexp.evaluation.error=CWWKS1462E: The regular expression could not be evaluated: {0}.
+regexp.evaluation.error.explanation=An exception occurred when evaluating the regular expression.
+regexp.evaluation.error.useraction=Correct the regular expression. 
+
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT=CWWKS1463E: The OpenID Connect registration request does not contain a client. Ensure that the request body is not empty and contains a client encoded in JSON format.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.explanation=The body of the request must contain a client encoded in JSON format.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.useraction=Ensure that the request body is not empty and contains a client encoded in JSON format.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT=CWWKS1464E: The OAuth feature encountered an error while creating an OAuthClient entry with the {0} identifier in the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN=CWWKS1465E: The OAuth feature encountered an error while creating an OAuthToken entry with the {0} lookup key in the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT=CWWKS1466E: The OAuth feature encountered an error while creating an OAuthConsent entry in the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT=CWWKS1467E: The OAuth feature encountered an error while reading an OAuthClient entry with the {0} identifier from the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS=CWWKS1468E: The OAuth feature encountered an error while reading all the OAuthClient entries from the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN=CWWKS1469E: The OAuth feature encountered an error while reading an OAuthToken entry with the {0} lookup key from the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS=CWWKS1470E: The OAuth feature encountered an error while reading all the OAuthToken entries from the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS=CWWKS1471E: The OAuth feature encountered an error while counting the OAuthToken entries in the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT=CWWKS1472E: The OAuth feature encountered an error while reading an OAuthConsent entry from the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT=CWWKS1473E: The OAuth feature encountered an error while updating an OAuthClient entry with the {0} identifier in the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN=CWWKS1474E: The OAuth feature encountered an error while updating an OAuthToken entry with the {0} lookup key in the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT=CWWKS1475E: The OAuth feature encountered an error while updating an OAuthConsent entry in the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT=CWWKS1476E: The OAuth feature encountered an error while deleting an OAuthClient entry with the {0} identifier in the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN=CWWKS1477E: The OAuth feature encountered an error while deleting an OAuthToken entry with the {0} lookup key in the OAuthStore implementation. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS=CWWKS1478E: The OAuth feature encountered an error while deleting the expired OAuthToken entries from the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT=CWWKS1479E: The OAuth feature encountered an error while deleting an OAuthConsent entry in the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS=CWWKS1480E: The OAuth feature encountered an error while deleting the expired OAuthConsent entries from the OAuthStore implementation. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.explanation=The OAuthStore implementation could not perform the operation. Possible configurations issues include missing or incorrect attributes for the OAuthStore implementation specific elements in the server.xml file or other implementation specific configuration file. Possible operational issues include database, networking, or file system errors.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.useraction=Verify that the OAuthStore implementation is still available and is configured appropriately.
+
+# 0=OAuth provider name, 1=customStore attribute name
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE=CWWKS1481E: The {0} OAuth provider has a customStore element specified but the {1} attribute is either not specified or is invalid.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.explanation=The OAuth provider has a customStore element specified, but the attribute is either not specified or is invalid. This problem might be due to a configuration error.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.useraction=Ensure that the attribute of the customStore element in the OAuth provider is correctly defined.
+
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG=CWWKS1482E: The application name [{0}] sent to the provider [{1}] is already associated with an application password or application token, or it is too long.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.explanation=An application password or application token was requested for the application, but one already exists or the requested name is too long.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.useraction=Delete the existing application password or application token before requesting a new one for this application, or use a different application name.
+
+# Do not translate user_id or tokenManager
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: The {0} request sent to URI {1} is not valid. The user_id attribute is specified, but the authenticated user does not have permission to use it.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Only users in the tokenManager role can supply the user_id attribute for this request URI.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Issue the request again with the required tokenManager role and a valid user_id.
+
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: The {0} request that was sent to URI {1} is not valid. The client ID, client secret, or both the client ID and client secret are missing.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=The indicated request is not valid. A valid client ID and client secret must be supplied in the Authorization header for the request that is sent to the URI.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Correct the request. Issue the request again with a valid client ID and client secret in the Authorization header.
+
+OAUTH_INVALID_REQUEST_AUTHN_FAIL=CWWKS1485E: Client authentication failed. Either the client ID, client secret, or both the client ID and client secret are not valid for the {0} request that was sent to URI {1}.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.explanation=A valid client ID and client secret must be supplied in the Authorization header for the request that is sent to the URI.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.useraction=Issue the request again with a valid client ID and client secret in the Authorization header.
+
+# Do not translate appPasswordAllowed
+OAUTH_UNAUTHORIZED_CLIENT=CWWKS1486E: The client {0} is not authorized to use application passwords or application tokens.
+OAUTH_UNAUTHORIZED_CLIENT.explanation=The client is not configured to allow the use of application passwords or application tokens.
+OAUTH_UNAUTHORIZED_CLIENT.useraction=Correct the OpenID Connect provider configuration for the specified client to set the value of the appPasswordAllowed attribute to true.
+
+# Do not translate userClientTokenLimit
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS=CWWKS1487E: The request is not valid. The user [{0}] has reached the maximum number of application tokens or application passwords that are allowed.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.explanation=The request to create a new application password or application token would exceed the configured number of application passwords or application tokens that are allowed per user for a given client and provider.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.useraction=Delete application passwords or application tokens, or change the OAuth client configuration userClientTokenLimit attribute to increase the number of application passwords and application tokens that are allowed for each user.
+
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG=CWWKS1488E: The value of the [{0}] parameter submitted to URI [{1}] exceeds the maximum allowed length of {2} characters.
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.explanation=The length of the specified parameter value must be limited to a reasonable length.
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.useraction=Correct the specified parameter so that its length is less than the specified number of characters, and submit the request again.
+
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL=CWWKS1489E: Client authentication failed. The access token is not valid for the {0} request sent to URI {1}.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.explanation=A valid access token must be supplied with the specified request URI.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.useraction=Issue the request again with a valid access token.
+
+OAUTH_INVALID_REQUEST_NO_TOKEN=CWWKS1490E: The {0} request sent to URI {1} is not valid. The access token is missing.
+OAUTH_INVALID_REQUEST_NO_TOKEN.explanation=The specified request must include a valid access token.
+OAUTH_INVALID_REQUEST_NO_TOKEN.useraction=Issue the request again with a valid access token.
+
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER=CWWKS1491E: The {0} request is missing client authentication information. The request URI is {1}.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.explanation=The specified request must include client authentication information.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.useraction=Issue the request again with valid client authentication information in the Authorization header.
+
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT=CWWKS1492E: The {0} request sent to URI {1} is not valid. The client that is represented by the access token does not match the client that is provided in the request.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.explanation=The specified request must include an access token for the same client that is provided in the Authorization header.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.useraction=Issue the request again with an access token for the client that is provided in the Authorization header.
+
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH=CWWKS1493E: The {0} request sent to the {1} URI does not contain Basic authentication credentials.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=The specified request must contain credentials in the Authorization header for a configured OAuth client so that the request can be authenticated.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Ensure that the request uses the Basic authentication scheme to include OAuth client credentials.
+
+# Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: The request sent to the {0} URI cannot be processed because one or more of the client or provider attributes are not set. Verify that the internalClientId and internalClientSecret provider attributes are configured. Verify that the isEnabled, appPasswordAllowed, or appTokenAllowed client attributes are configured.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=The client and provider attributes must be set for the URI to process requests.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Set the client and provider attributes correctly so the provider can process the request.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: The OpenID Connect provider cannot process the [{0}] URI request because the Java version is lower than Java 8. Java 8 or higher is required.
+JAVA8_REQUIRED.explanation=The Java version in  use is not 8 or higher.
+JAVA8_REQUIRED.useraction=Install Java version 8 or higher.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: The {0} OpenID Connect provider has the {1} configuration attribute set to use {2} algorithm and this requires Java 8 or higher. The specified OpenID Connect provider ignores the {3} setting.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=The Java version in use is not 8 or higher.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Install Java version 8 or higher to use the mentioned configuration option.
+
+# html title of logout page
+LOGOUT_PAGE_TITLE=Logout
+# html body of logout page
+LOGOUT_PAGE_BODY=Logout successful.
+
+# html title of logout error page
+LOGOUT_ERROR_PAGE_TITLE=Logout
+# html body of logout error page
+LOGOUT_ERROR_PAGE_BODY=An exception occurred during logout.  It is recommended that you close your web browser to complete the logout.

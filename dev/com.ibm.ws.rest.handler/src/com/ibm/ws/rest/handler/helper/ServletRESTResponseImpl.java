@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package com.ibm.ws.rest.handler.helper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,12 +28,14 @@ public class ServletRESTResponseImpl implements RESTResponse {
 
     private final HttpServletResponse response;
 
+    private Set<String> requiredRoles = null;
+
     /**
      * Currently, RESTResponseImpl merely wraps a HttpServletResponse.
      * That said, we do not want to expose this object directly as we may
      * replace the underlying mechanism some day to make the handler
      * lighter-weight.
-     * 
+     *
      * @param response The HttpServletResponse to wrap.
      */
     public ServletRESTResponseImpl(HttpServletResponse response) {
@@ -95,5 +100,23 @@ public class ServletRESTResponseImpl implements RESTResponse {
     @Override
     public void setCharacterEncoding(String charset) {
         response.setCharacterEncoding(charset);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getStatus() {
+        return response.getStatus();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setRequiredRoles(Set<String> requiredRoles) {
+        this.requiredRoles = new HashSet<String>(requiredRoles);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getRequiredRoles() {
+        return requiredRoles == null || requiredRoles.isEmpty() ? null : Collections.unmodifiableSet(requiredRoles);
     }
 }

@@ -530,12 +530,14 @@ public class WebApp31 extends com.ibm.ws.webcontainer.osgi.webapp.WebApp
               cmdai = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
               cmdai.beginContext(getModuleMetaData().getCollaboratorComponentMetaData());
         }
-        
-        super.handleRequest(request, response);
-        
-        //defect 168286 - end the context after the request for CDI 1.2
-        if(cmdai != null) {
-            cmdai.endContext();
+
+        try {
+            super.handleRequest(request, response);
+        } finally {
+            //defect 168286 - end the context after the request for CDI 1.2
+            if(cmdai != null) {
+                cmdai.endContext();
+            }
         }
     }
 

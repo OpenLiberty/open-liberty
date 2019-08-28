@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Ellen\u0151rizze, hogy az \u00e1talak\u00edt\u00f3 
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Az objektum nem bonthat\u00f3 ki a(z) {0} oszt\u00e1lyba, mert a(z) {0} nem fel\u00fcleti oszt\u00e1ly.
+NOT_AN_INTERFACE.explanation=A kicsomagol\u00e1si met\u00f3dus csak fel\u00fcleti oszt\u00e1lyba t\u00f6rt\u00e9n\u0151 kicsomagol\u00e1st tesz lehet\u0151v\u00e9.
+NOT_AN_INTERFACE.useraction=V\u00e9gezze a kibont\u00e1st egy fel\u00fcletoszt\u00e1lyba konkr\u00e9t oszt\u00e1ly helyett.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.

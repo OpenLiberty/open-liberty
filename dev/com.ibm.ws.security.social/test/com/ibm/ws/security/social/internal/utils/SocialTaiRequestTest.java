@@ -33,6 +33,7 @@ import org.junit.Test;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.test.CommonTestClass;
+import javax.servlet.http.HttpServletRequest;
 
 import test.common.SharedOutputManager;
 
@@ -495,6 +496,61 @@ public class SocialTaiRequestTest extends CommonTestClass {
     }
 
     /************************************** getTheOnlySocialLoginConfig **************************************/
+    
+    class SocialTaiRequestForTest extends SocialTaiRequest{
+    	SocialTaiRequestForTest(HttpServletRequest req){
+    		super(req);
+    	}
+    	@Override
+    	protected boolean isLocalAuthEnabled() {
+    		return true;
+    	}
+    }
+    
+    // local auth enabled counts just like having a second provider when deciding to show the selection page or not.
+    @Test
+    public void getTheOnlySocialLoginConfigWithLocalAuthEnabledFiltered() {    	
+    	SocialTaiRequestForTest treq = new SocialTaiRequestForTest(request);
+    	boolean gotException = false;
+    	try {
+    		mockery.checking(new Expectations() {
+                {
+                    allowing(config1).getUniqueId();
+                    will(returnValue(config1Id));                  
+                }
+            });
+	    	treq.addFilteredConfig(config1);
+	    	SocialLoginConfig result = treq.getTheOnlySocialLoginConfig();
+    	} catch (SocialLoginException e) {
+    		gotException = true;
+    	} catch (Throwable t) {
+    		outputMgr.failWithThrowable(testName.getMethodName(), t);
+    	}
+    	assertTrue("should have caught an exception", gotException);
+    	verifyNoLogMessage(outputMgr, MSG_BASE);
+    }
+    
+    @Test
+    public void getTheOnlySocialLoginConfigWithLocalAuthEnabledGeneric() {    	
+    	SocialTaiRequestForTest treq = new SocialTaiRequestForTest(request);
+    	boolean gotException = false;
+    	try {
+    		mockery.checking(new Expectations() {
+                {
+                    allowing(config1).getUniqueId();
+                    will(returnValue(config1Id));                  
+                }
+            });
+	    	treq.addGenericConfig(config1);
+	    	SocialLoginConfig result = treq.getTheOnlySocialLoginConfig();	    	
+    	} catch (SocialLoginException e) {
+    		gotException = true;
+    	} catch (Throwable t) {
+    		outputMgr.failWithThrowable(testName.getMethodName(), t);
+    	}
+    	assertTrue("should have caught an exception", gotException);
+    	verifyNoLogMessage(outputMgr, MSG_BASE);
+    }
 
     @Test
     public void getTheOnlySocialLoginConfig_noConfigs() {

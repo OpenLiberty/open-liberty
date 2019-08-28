@@ -12,10 +12,15 @@
   <include location="../fatTestPorts.xml" />
 
   <featureManager>
+    <feature>cloudant-1.0</feature>
     <feature>componenttest-1.0</feature>
     <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
     <feature>jdbc-4.2</feature>
+    <feature>jca-1.7</feature>
+    <feature>jms-2.0</feature>
     <feature>mpOpenApi-1.1</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>  
   </featureManager>
 
   <variable name="onError" value="FAIL"/>
@@ -33,7 +38,16 @@
   <reader-role>
     <user>reader</user>
   </reader-role>
-    
+
+  <!-- configuration error: this points at Derby jars, not Cloudant -->
+  <cloudant id="cloudant" libraryRef="Derby" url="http://myhost.rchland.ibm.com:5984"/>
+  <cloudantDatabase id="cldb" jndiName="cloudant/testdb" cloudantRef="cloudant" databaseName="exampledb" create="true"/>
+
+  <connectionFactory id="cf1" jndiName="eis/cf1">
+    <containerAuthData user="cfuser1" password="1cfuser"/>
+    <properties.TestValAdapter.ConnectionFactory hostName="myhost.openliberty.io" portNumber="6543"/>
+  </connectionFactory>
+
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="Derby"/>
    	<properties.derby.embedded databaseName="memory:derbydb" createDatabase="create"/>
@@ -43,6 +57,19 @@
   <library id="Derby">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>
+
+  <messagingEngine id="defaultME"/>
+
+  <!-- DefaultJMSConnectionFactory doesn't need configuration -->
+
+  <jmsQueueConnectionFactory id="cf2" jndiName="jms/qcf2">
+    <properties.wasJms temporaryQueueNamePrefix="TEMPQ2"/>
+  </jmsQueueConnectionFactory>
+
+  <jmsTopicConnectionFactory id="cf3" jndiName="jms/tcf3">
+    <containerAuthData user="tcfuser3" password="tcfpwd3"/>
+    <properties.wasJms temporaryTopicNamePrefix="TMPTOP3"/>
+  </jmsTopicConnectionFactory>
 
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 </server>

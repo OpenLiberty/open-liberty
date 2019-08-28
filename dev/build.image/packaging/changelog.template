@@ -1,0 +1,15 @@
+openliberty (@CHANGELOG_VERSION@-1ubuntu1) unstable; urgency=medium
+
+  * Fixed many lintian errors and warnings
+  * Added template argument in 'create' script
+  * Added java weak dependency
+  * Added SystemD service files for instance servers
+
+ -- Michael Zhang <Michael.Zhang@ibm.com>  Mon, 25 Feb 2019 22:38:40 +0000
+
+openliberty (19.0.0.1-1) unstable; urgency=medium
+
+  * Initial release
+  * This is my first debian package for Open Liberty
+
+ -- Michael Zhang <Michael.Zhang@ibm.com>  Wed, 10 Oct 2018 12:56:59 -0700

@@ -12,6 +12,7 @@
 package com.ibm.ws.anno.util.internal;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -160,7 +161,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     @Override
     public Set<String> getHolderSet() {
-        return (getIsEnabled() ? i_holderToHeldMap.keySet() : UtilImpl_EmptyStringSet.INSTANCE);
+        return (getIsEnabled() ? i_holderToHeldMap.keySet() : Collections.<String>emptySet());
     }
 
     //
@@ -169,7 +170,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     @Override
     public Set<String> getHeldSet() {
-        return (getIsEnabled() ? i_heldToHoldersMap.keySet() : UtilImpl_EmptyStringSet.INSTANCE);
+        return (getIsEnabled() ? i_heldToHoldersMap.keySet() : Collections.<String>emptySet());
     }
 
     //
@@ -212,17 +213,17 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     @Override
     public Set<String> selectHeldOf(String holderName) {
         if (!getIsEnabled()) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         String i_holderName = internHolder(holderName, Util_InternMap.DO_NOT_FORCE);
         if (i_holderName == null) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         Set<String> i_held = i_holderToHeldMap.get(i_holderName);
         if (i_held == null) { // See the note (*), above.
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         return i_held;
@@ -231,19 +232,19 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     @Override
     public Set<String> selectHoldersOf(String heldName) {
         if (!getIsEnabled()) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         String i_heldName = internHeld(heldName, Util_InternMap.DO_NOT_FORCE);
 
         if (i_heldName == null) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         Set<String> i_holders = i_heldToHoldersMap.get(i_heldName);
 
         if (i_holders == null) { // See the note (*), above.
-            return UtilImpl_EmptyStringSet.INSTANCE;
+            return Collections.emptySet();
         }
 
         return i_holders;

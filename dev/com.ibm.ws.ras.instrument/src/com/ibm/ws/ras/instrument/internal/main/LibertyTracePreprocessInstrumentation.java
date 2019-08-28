@@ -299,7 +299,13 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
             for (int i = traceComponentFields.size() - 1; i >= 0; i--) {
                 FieldNode fn = traceComponentFields.get(i);
                 if ((fn.access & Opcodes.ACC_STATIC) != Opcodes.ACC_STATIC) {
+                	// Trace Component fields found, but not static
                     traceComponentFields.remove(i);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("WARNING: TraceComponent field declared but must be static in class: ");
+                    sb.append(info.classNode.name.replaceAll("/", "\\."));
+                    info.warnings.add(sb.toString());
+                    info.failInstrumentation = true;
                 }
             }
             if (traceComponentFields.size() > 1) {

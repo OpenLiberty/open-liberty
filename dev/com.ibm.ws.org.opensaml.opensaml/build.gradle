@@ -1,0 +1,47 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+audit {
+    failOnError = false
+}
+
+configurations {
+    opensaml
+}
+
+dependencies {
+    opensaml 'org.opensaml:opensaml:2.6.1'
+}
+
+task extractInjectedClasses(type: Copy) {
+   from zipTree(configurations.opensaml[0])
+   include "org/opensaml/saml2/binding/decoding/HTTPPostDecoder.class"
+   into compileJava.destinationDir
+}
+
+compileJava.dependsOn extractInjectedClasses
+
+task instrument {
+  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
+    inputs.files { rasInstrumentationInputFiles() }
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd('instrument.classesExcludes').split("\\s*,\\s*"))
+    doLast {
+      if (instrument.isEmpty())
+        return
+      rasInstrumentationTaskdef(ant)
+      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
+          fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
+      }
+    }
+  }
+}
+
+jar.dependsOn instrument

@@ -1,0 +1,55 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Im Kafka-Connector f\u00fcr Reactive Messaging ist ein interner Fehler aufgetreten. Der Fehler ist: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Es ist ein Reactive-Messaging-Fehler aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+internal.kafka.connector.error.CWMRX1000E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Beim Festschreiben von Leseoffsets im Kafka-Broker ist ein Fehler aufgetreten. Der Fehler ist: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Im Kafka-Eingangsconnector ist ein Fehler aufgetreten, durch den die normale Ausf\u00fchrung von Reactive Messaging verhindert wird.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Beim Polling des Kafka-Brokers ist ein Fehler aufgetreten. Der Fehler ist: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Im Kafka-Eingangsconnector ist ein Fehler aufgetreten, durch den die normale Ausf\u00fchrung von Reactive Messaging verhindert wird.
+kafka.poll.error.CWMRX1002E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Beim Senden einer Nachricht an den Kafka-Broker ist ein Fehler aufgetreten. Der Fehler ist: {0}.
+kafka.send.error.CWMRX1003E.explanation=Im Kafka-Ausgangsconnector ist ein Fehler aufgetreten, durch den die normale Ausf\u00fchrung von Reactive Messaging verhindert wird.
+kafka.send.error.CWMRX1003E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Der folgende Reactive-Messaging-Fehler ist aufgetreten: {0}.
+temporary.CWMRX1999E.explanation=Es ist ein Reactive-Messaging-Fehler aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMRX1999E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.

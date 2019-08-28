@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,27 +10,32 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.Map;
+
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
 /**
  *
  */
 public class AccessLogData extends GenericData {
-    private final static String[] NAMES1_1 = {
-                                               LogFieldConstants.IBM_REQUESTSTARTTIME,
-                                               LogFieldConstants.IBM_URIPATH,
-                                               LogFieldConstants.IBM_REQUESTMETHOD,
-                                               LogFieldConstants.IBM_QUERYSTRING,
-                                               LogFieldConstants.IBM_REQUESTHOST,
-                                               LogFieldConstants.IBM_REQUESTPORT,
-                                               LogFieldConstants.IBM_REMOTEHOST,
-                                               LogFieldConstants.IBM_USERAGENT,
-                                               LogFieldConstants.IBM_REQUESTPROTOCOL,
-                                               LogFieldConstants.IBM_BYTESRECEIVED,
-                                               LogFieldConstants.IBM_RESPONSECODE,
-                                               LogFieldConstants.IBM_ELAPSEDTIME,
-                                               LogFieldConstants.IBM_DATETIME,
-                                               LogFieldConstants.IBM_SEQUENCE
+    public static final String[] NAMES1_1 = {
+                                              LogFieldConstants.IBM_REQUESTSTARTTIME,
+                                              LogFieldConstants.IBM_URIPATH,
+                                              LogFieldConstants.IBM_REQUESTMETHOD,
+                                              LogFieldConstants.IBM_QUERYSTRING,
+                                              LogFieldConstants.IBM_REQUESTHOST,
+                                              LogFieldConstants.IBM_REQUESTPORT,
+                                              LogFieldConstants.IBM_REMOTEHOST,
+                                              LogFieldConstants.IBM_USERAGENT,
+                                              LogFieldConstants.IBM_REQUESTPROTOCOL,
+                                              LogFieldConstants.IBM_BYTESRECEIVED,
+                                              LogFieldConstants.IBM_RESPONSECODE,
+                                              LogFieldConstants.IBM_ELAPSEDTIME,
+                                              LogFieldConstants.IBM_DATETIME,
+                                              LogFieldConstants.IBM_SEQUENCE,
+                                              LogFieldConstants.HOST,
+                                              LogFieldConstants.IBM_USERDIR,
+                                              LogFieldConstants.IBM_SERVERNAME
     };
 
     private final static String[] NAMES = {
@@ -49,6 +54,12 @@ public class AccessLogData extends GenericData {
                                             LogFieldConstants.DATETIME,
                                             LogFieldConstants.SEQUENCE
     };
+
+    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
+
+    public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
+        jsonLoggingNameAliases.newAliases(newAliases);
+    }
 
     public AccessLogData() {
         super(14);
@@ -289,4 +300,73 @@ public class AccessLogData extends GenericData {
     public String getSequenceKey1_1() {
         return NAMES1_1[13];
     }
+
+    public static String getRequestStartTimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[0];
+    }
+
+    public static String getUriPathKeyJSON() {
+        return jsonLoggingNameAliases.aliases[1];
+    }
+
+    public static String getRequestMethodKeyJSON() {
+        return jsonLoggingNameAliases.aliases[2];
+    }
+
+    public static String getQueryStringKeyJSON() {
+        return jsonLoggingNameAliases.aliases[3];
+    }
+
+    public static String getRequestHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[4];
+    }
+
+    public static String getRequestPortKeyJSON() {
+        return jsonLoggingNameAliases.aliases[5];
+    }
+
+    public static String getRemoteHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[6];
+    }
+
+    public static String getUserAgentKeyJSON() {
+        return jsonLoggingNameAliases.aliases[7];
+    }
+
+    public static String getRequestProtocolKeyJSON() {
+        return jsonLoggingNameAliases.aliases[8];
+    }
+
+    public static String getBytesReceivedKeyJSON() {
+        return jsonLoggingNameAliases.aliases[9];
+    }
+
+    public static String getResponseCodeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[10];
+    }
+
+    public static String getElapsedTimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[11];
+    }
+
+    public static String getDatetimeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[12];
+    }
+
+    public static String getSequenceKeyJSON() {
+        return jsonLoggingNameAliases.aliases[13];
+    }
+
+    public static String getHostKeyJSON() {
+        return jsonLoggingNameAliases.aliases[14];
+    }
+
+    public static String getUserDirKeyJSON() {
+        return jsonLoggingNameAliases.aliases[15];
+    }
+
+    public static String getServerNameKeyJSON() {
+        return jsonLoggingNameAliases.aliases[16];
+    }
+
 }

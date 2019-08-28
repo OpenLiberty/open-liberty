@@ -13,7 +13,9 @@ package com.ibm.wsspi.rest.config;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,6 +29,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.management.security.ManagementSecurityConstants;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
@@ -94,7 +97,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
     /**
      * Returns the properties for the specified service.pid.
      *
-     * @param servicePid     service.pid value to match.
+     * @param servicePid service.pid value to match.
      * @param configurations an already-obtained list of configurations.
      * @return properties of the configuration which matches the service.pid.
      * @throws IllegalArgumentException if no configuration with the specified service.pid appears in the list.
@@ -114,7 +117,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      * Otherwise, the config.displayId is the unique identifier.
      *
      * @param configDisplayId config.displayId of configuration element.
-     * @param id              id of configuration element. Null if none.
+     * @param id id of configuration element. Null if none.
      * @return the unique identifier (uid)
      */
     @Trivial
@@ -125,8 +128,8 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
     /**
      * Collects response information for an error condition.
      *
-     * @param request      the REST API request.
-     * @param uid          identifier that is unique per instance of the configuration element type. Null if unavailable.
+     * @param request the REST API request.
+     * @param uid identifier that is unique per instance of the configuration element type. Null if unavailable.
      * @param errorMessage error message.
      * @return implementation-specific object that is used to track response information for the specified error.
      * @throws IOException
@@ -140,14 +143,16 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      * @see com.ibm.wsspi.rest.handler.RESTHandler#handleRequest(com.ibm.wsspi.rest.handler.RESTRequest, com.ibm.wsspi.rest.handler.RESTResponse)
      */
     @Override
-    public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+    public void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+
         String path = request.getPath();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "handleRequest", path); // /apiRoot/{elementName}/{uid}
 
-        if (requireAdministratorRole() && !request.isUserInRole("Administrator")) {
+        if (requireAdministratorRole() && !request.isUserInRole(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME)) {
             response.sendError(403, "Forbidden");
+            response.setRequiredRoles(new HashSet<String>(Arrays.asList(new String[] { ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME })));
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "handleRequest", "403 Forbidden");
             return;
@@ -169,12 +174,36 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         }
         String elementName = path.length() < (apiRoot.length() + 1) ? "" : URLDecoder.decode(path.substring(apiRoot.length() + 1, endElementName), "UTF-8");
 
+        // Just in case someone tries to do /config/dataSource[DefaultDataSource] missing the config element parameter,
+        // which was somehow getting through and erroneously returning a list of one data source.
+        // TODO it would be preferable to detect this more cleanly, but for now, at least reject it so that
+        // data isn't erroneously returned.
+        if (elementName.indexOf('[') >= 0) {
+            response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName));
+            return;
+        }
+
         StringBuilder filter = new StringBuilder("(&");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
             filter.append(FilterUtils.createPropertyFilter("config.displayId", uid));
         else if (elementName.length() > 0) {
             // If an element name was specified, ensure the filter matches the requested elementName exactly
-            filter.append("(|(config.displayId=*" + elementName + "[*)(config.displayId=*" + elementName + "))"); // TODO either check elementName for invalid chars or use something similar to createPropertyFilter, but preserving the * characters
+
+            // Escape invalid characters from filter
+            StringBuilder e = null;
+            for (int i = elementName.length() - 1; i >= 0; i--)
+                switch (elementName.charAt(i)) {
+                    case '*':
+                    case '\\':
+                    case '(':
+                    case ')':
+                        if (e == null)
+                            e = new StringBuilder(elementName);
+                        e.insert(i, '\\');
+                }
+            String en = e == null ? elementName : e.toString();
+
+            filter.append("(|(config.displayId=*").append(en).append("[*)(config.displayId=*").append(en).append("))");
             if (uid != null)
                 filter.append(FilterUtils.createPropertyFilter("id", uid));
         } else {
@@ -262,8 +291,11 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 }
             }
 
-        Object result;
-        if (uid == null) { // apply to all instances of element type
+        Object result = null;
+
+        if (configMap.isEmpty()) {
+            result = null;
+        } else if (uid == null) { // apply to all instances of element type
             ArrayList<Object> results = new ArrayList<Object>();
             for (Map.Entry<String, Dictionary<String, Object>> entry : configMap.entrySet()) {
                 // Filter out entries for nested configurations that we aren't trying to return. Example: dataSource[ds1]/connectionManager[default-0]
@@ -274,13 +306,14 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                     String uniqueId = configDisplayId.endsWith("]") ? getUID(configDisplayId, (String) configProps.get("id")) : null;
                     String id = (String) configProps.get("id");
                     Object r = handleSingleInstance(request, uniqueId, id == null || isGenerated(id) ? null : id, configProps);
-                    if (r != null)
+                    if (r != null) {
                         results.add(r);
+                    }
                 }
             }
-            result = results;
-        } else if (configMap.isEmpty()) {
-            result = null;
+            if (!results.isEmpty()) {
+                result = results;
+            }
         } else if (configMap.size() == 1) {
             Map.Entry<String, Dictionary<String, Object>> entry = configMap.firstEntry();
             String configDisplayId = entry.getKey();
@@ -289,15 +322,19 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
             if (uid.equals(uniqueId)) { // require the correct uid
                 String id = (String) configProps.get("id");
                 result = handleSingleInstance(request, uid, id == null || isGenerated(id) ? null : id, entry.getValue());
-            } else // TODO need correct error message
-                result = handleError(request, null, "Unique identifier " + uid + " is not valid. Expected: " + uniqueId);
+            } else
+                result = handleError(request, null, Tr.formatMessage(tc, request.getLocale(), "CWWKO1501_INVALID_IDENTIFIER", uid, uniqueId));
         } else {
-            result = handleError(request, null, "multiple found");
+            result = handleError(request, null, Tr.formatMessage(tc, request.getLocale(), "CWWKO1502_MULTIPLE_FOUND", uid));
         }
 
-        // TODO better message for instance not found?
-        if (result == null)
-            result = handleError(request, uid, "Did not find any configured instances of " + elementName + " matching the request");
+        if (result == null) {
+            if (uid != null)
+                response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName + "(uid: " + uid + ")"));
+            else
+                response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName));
+            return;
+        }
 
         populateResponse(response, result);
 
@@ -308,10 +345,10 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
     /**
      * Collects response information for a single configuration element instance.
      *
-     * @param request     the REST API request
-     * @param uid         identifier that is unique per instance of the configuration element type. Null if configuration element type is a singleton (only allows a single
-     *                        instance).
-     * @param id          the id attribute of the configuration element instance, if one is specified. Otherwise null.
+     * @param request the REST API request
+     * @param uid identifier that is unique per instance of the configuration element type. Null if configuration element type is a singleton (only allows a single
+     *            instance).
+     * @param id the id attribute of the configuration element instance, if one is specified. Otherwise null.
      * @param configProps name/value pairs representing the configuration of an instance.
      * @return implementation-specific object that is used to track response information for the specified.
      * @throws IOException
@@ -332,14 +369,14 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      * Populates the response based on the previously computed information for 0 or more configuration element instances,
      * or error conditions.
      *
-     * @param response     response to populate.
+     * @param response response to populate.
      * @param responseInfo can be any of the following <ul>
-     *                         <li>Single response information, as generated by <code>handleSingleInstance</code>.</li>
-     *                         <li>Error information, as generated by <code>handleError</code>.</li>
-     *                         <li>ArrayList of response information, as generated by <code>handleSingleInstance</code>
-     *                         and/or <code>handleError</code>, for 0 or more configuration element instances.
-     *                         This is used when the {uid} path parameter is omitted.</li>
-     *                         </ul>
+     *            <li>Single response information, as generated by <code>handleSingleInstance</code>.</li>
+     *            <li>Error information, as generated by <code>handleError</code>.</li>
+     *            <li>ArrayList of response information, as generated by <code>handleSingleInstance</code>
+     *            and/or <code>handleError</code>, for 0 or more configuration element instances.
+     *            This is used when the {uid} path parameter is omitted.</li>
+     *            </ul>
      * @throws IOException
      */
     public abstract void populateResponse(RESTResponse response, Object responseInfo) throws IOException;

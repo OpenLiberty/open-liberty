@@ -17,6 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 // Disabled FeatureProcessTypeTest.class,
+                BundleOriginTest.class,
+                ActivationTypeTest.class,
                 AutoFeaturesTest.class,
                 FeatureTest.class,
                 ProductFeatureTest.class,
@@ -29,7 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 SimpleFeatureUpdateTest.class,
                 SystemBundleOverrideTest.class,
                 FeatureAPITest.class,
-                RegionProvisioningTest.class
+                RegionProvisioningTest.class,
+                RemoteServerInclude.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

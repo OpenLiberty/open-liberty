@@ -1,0 +1,117 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.spnego/resources/com/ibm/ws/security/spnego/internal/resources/SpnegoMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SPNEGO Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4300 - CWWKS4339
+#Message prefix block: CWWKS4340 - CWWKS4349 - KerberosMessage.nlsprops
+SPNEGO_CONFIG_PROCESSED=CWWKS4300I: La configurazione SPNEGO {0} \u00e8 stata elaborata correttamente.
+SPNEGO_CONFIG_PROCESSED.explanation=La configurazione SPNEGO \u00e8 stata elaborata correttamente.
+SPNEGO_CONFIG_PROCESSED.useraction=Nessuno
+
+SPNEGO_CONFIG_MODIFIED=CWWKS4301I: La configurazione SPNEGO {0} \u00e8 stata modificata correttamente.
+SPNEGO_CONFIG_MODIFIED.explanation=La configurazione SPNEGO \u00e8 stata modificata correttamente.
+SPNEGO_CONFIG_MODIFIED.useraction=Si \u00e8 verificata un'eccezione imprevista durante l'inizializzazione del componente del server di sicurezza.
+
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE=CWWKS4302I: Il file di configurazione Kerberos non \u00e8 specificato nel file server.xml, verr\u00e0 utilizzata l''impostazione predefinita {0}.
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.explanation=La configurazione Kerberos non \u00e8 specificata nel file server.xml. Verranno utilizzati il nome e il percorso del file di configurazione Kerberos predefiniti. Consultare il JDK per il nome e il percorso del file di configurazione Kerberos predefiniti. 
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.useraction=Se l'utente desidera utilizzare un nome e un percorso del file di configurazione Kerberos completi differenti, \u00e8 necessario specificare il nome e il percorso del file di configurazione Kerberos completi, che possono includere anche una variabile supportata, nel file server.xml.
+
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND=CWWKS4303E: Impossibile trovare il file di configurazione Kerberos {0} specificato.
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.explanation=Impossibile trovare il file di configurazione Kerberos specificato nel file server.xml. 
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.useraction=Verificare il nome e il percorso del file di configurazione Kerberos completi, che possono includere anche una variabile supportata, per assicurarsi che corrispondano alle informazioni fornite nel file server.xml.
+
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE=CWWKS4304I: Il file keytab Kerberos non \u00e8 specificato nel file server.xml, verr\u00e0 utilizzata l''impostazione predefinita {0}.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.explanation=Il nome e il percorso del file keytab Kerberos vengono utilizzati se un file keytab Kerberos non \u00e8 specificato nel file server.xml. Consultare il documento JDK per il nome e il percorso del file keytab Kerberos predefiniti.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.useraction=Se l'utente desidera utilizzare un nome e un percorso del file keytab Kerberos completi differenti, \u00e8 necessario specificare il nome e il percorso del file keytab Kerberos completi, che possono includere anche una variabile supportata, nel file server.xml.
+
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4305E: Impossibile trovare il file keytab Kerberos {0} specificato.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=Impossibile trovare il file keytab Kerberos specificato nel file server.xml.  Consultare il documento JDK per il nome e il percorso del file keytab Kerberos predefiniti.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Verificare il nome e il percorso del file keytab Kerberos completi, che possono includere anche una variabile supportata, per assicurarsi che corrispondano alle informazioni fornite nel file server.xml.  
+
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE=CWWKS4306E: <html><head><title>Autenticazione SPNEGO non supportata.\
+</title></head> <body>L'autenticazione SPNEGO non \u00e8 supportata su questo browser client.\
+</body></html>.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.explanation=L'autenticazione SPNEGO non \u00e8 supportata per questo browser client.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configurare il browser client per eseguire l'autenticazione SPNEGO.
+
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>\u00c8 stato ricevuto un Token NTLM.\
+</title></head> <body>La configurazione del browser client \u00e8 corretta, ma non si \u00e8 collegati a un dominio Windows supportato.\
+<p> Eseguire il login al dominio Windows supportato.\
+</html>.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=La configurazione del browser client \u00e8 corretta, ma non si \u00e8 collegati a un dominio Windows supportato. \
+\u00c8 anche possibile che la configurazione SPNEGO non sia corretta, quindi il browser client non invia il token SPNEGO o Kerberos.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Verificare di aver effettuato il login al dominio Windows supportato e verificare anche la configurazione SPNEGO sul server e sul dominio Windows.
+
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN=CWWKS4308E: Impossibile creare GSSCredential per il nome principal del servizio: {0}. Si \u00e8 verificata una GSSException: {1}
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.explanation=Impossibile creare GSSCredential per il nome principal del servizio. L'autenticazione SPNEGO non verr\u00e0 utilizzata per questo SPN.
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.useraction=Verificare il formato del nome del principal del servizio e assicurarsi che esista sul dominio Windows e che il file keytab Kerberos contenga il nome del principal del servizio.
+
+SPNEGO_NO_SPN_GSS_CREDENTIAL=CWWKS4309E: Impossibile creare GSSCredential per i nomi principal del servizio. Tutte le richieste non utilizzeranno l'autenticazione SPNEGO.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.explanation=Impossibile creare GSSCredential per i nomi principal del servizio. L'autenticazione SPNEGO non verr\u00e0 utilizzata.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.useraction=Verificare il formato del nome del principal del servizio e assicurarsi che esista sul dominio Windows e che il file keytab Kerberos contenga il nome del principal del servizio.
+
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND=CWWKS4310W: Era prevista la ricezione delle GSSCredential delegate client ma non sono state trovate per l''utente: {0}
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.explanation=Le GSSCredential delegate client non sono state trovate e, pertanto, il soggetto client non avr\u00e0 le GSSCredential client.
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.useraction=Se le GSSCredential delegate client sono necessarie nel soggetto, configurare l'SPN in modo che sia considerato affidabile per i servizi Kerberos sul dominio Windows.
+
+SPNEGO_FAIL_TO_GET_WRITER=CWWKS4311E: Il metodo {0} ha richiamato il getWriter della HttpServletResponse e l''operazione non \u00e8 riuscita con un''eccezione {1}
+SPNEGO_FAIL_TO_GET_WRITER.explanation=Errore di ottenimento del getWriter della HttpServletResponse; impossibile scrivere la pagina di errore nella HttpServletResponse.
+SPNEGO_FAIL_TO_GET_WRITER.useraction=Consultare le informazioni di eccezione per ulteriori dettagli.
+
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND=CWWKS4312E: Il file di configurazione Kerberos non \u00e8 specificato nel file server.xml e il file di configurazione Kerberos predefinito {0} non \u00e8 stato trovato.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.explanation=Il file di configurazione Kerberos non \u00e8 specificato nel file server.xml e non \u00e8 stato possibile trovare il file di configurazione Kerberos predefinito.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.useraction=Verificare il nome e il percorso del file di configurazione Kerberos predefiniti oppure aggiornare il file server.xml con il file di configurazione desiderato da utilizzare.
+
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4313E: Il file keytab Kerberos non \u00e8 specificato nel file server.xml e il file keytab Kerberos predefinito {0} non \u00e8 stato trovato.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=Impossibile trovare il file keytab Kerberos predefinito.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Il file keytab Kerberos non \u00e8 stato specificato nel file server.xml e il file predefinito non \u00e8 stato trovato. Verificare il nome e il percorso del file keytab Kerberos predefiniti oppure aggiornare il file server.xml con il file keytab Kerberos desiderato da utilizzare.
+
+SPNEGO_DEFAULT_SPNS=CWWKS4314I: L''attributo servicePrincipalNames non \u00e8 specificato nel file server.xml oppure il suo valore \u00e8 vuoto; verr\u00e0 utilizzato il valore predefinito {0}.
+SPNEGO_DEFAULT_SPNS.explanation=servicePrincipalNames non specificati nel file server.xml, verr\u00e0 utilizzata l'impostazione predefinita.
+SPNEGO_DEFAULT_SPNS.useraction=Specificare un valore per l'attributo servicePrincipalNames se non deve essere utilizzato il valore predefinito.
+
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN=CWWKS4315E: Impossibile trovare GSSCredential per il nome principal del servizio {0}. 
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.explanation=Impossibile trovare GSSCredential per il nome principal del servizio.
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.useraction=Verificare i nomi principal del servizio e assicurarsi che siano definiti nel dominio Windows e nel file keytab Kerberos.
+
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME=CWWKS4316W: servicePrincipalNames ha pi\u00f9 di un SPN per il nome host {0}.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.explanation=servicePrincipalNames ha pi\u00f9 SPN per lo stesso nome host. Il primo SPN verr\u00e0 utilizzato e gli altri verranno ignorati.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.useraction=Verificare servicePrincipalNames per assicurarsi che ci sia un solo SPN per nome host.
+
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED=CWWKS4317E: L''URL della pagina di errore personalizzata {0} non ha un formato valido. Verr\u00e0 utilizzata la pagina di errore predefinita.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.explanation=La pagina di errore personalizzata non pu\u00f2 essere caricata perch\u00e9 \u00e8 stato specificato un URL non corretto.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.useraction=Esaminare la pagina di errore personalizzata e modificarla in modo che sia conforme a una sintassi URL dal formato corretto.
+
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR=CWWKS4318E: Impossibile caricare la pagina di errore personalizzata {0} a causa di {1}. Verr\u00e0 utilizzata la pagina di errore predefinita.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.explanation=La pagina di errore personalizzata non pu\u00f2 essere caricata a causa dell'eccezione. Verr\u00e0 utilizzato il valore predefinito.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.useraction=Esaminare la pagina di errore personalizzata, accertarsi che esista e verificare il tipo e la codifica del contenuto.
+
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E: Impossibile ottenere il tipo di contenuto per la pagina di errore personalizzata {0} a causa di {1}. Verr\u00e0 utilizzata la pagina di errore predefinita.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation=La pagina di errore personalizzata non pu\u00f2 essere caricata a causa dell'eccezione in fase di ottenimento del tipo di contenuto.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction=Esaminare il tipo di contenuto della pagina di errore personalizzata per assicurarsi che sia valido.
+
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: Impossibile stabilire GSSContext con un il token SPNEGO o Kerberos valido incluso in {0} HttpServletRequest. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=Il token SPNEGO o Kerberos utilizzato per autenticare la richiesta \u00e8 valido, ma \u00e8 impossibile stabilire GSSContext.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Se non viene visualizzato alcun messaggio di errore aggiuntivo, abilitare il debug JGSS e KRB5. Consultare la documentazione JDK per la modalit\u00e0 di abilitazione del debug JGSS e KRB5. Verificare la configurazione SPNEGO e assicurarsi che i file keytab Kerberos, SPN e client utilizzino lo stesso tipo di codifica che \u00e8 specificato nel file di configurazione Kerberos.
+
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Impossibile ottenere l''SPN del servizio di delega {0} da GSSCredential. Si \u00e8 verificata una GSSException: {1}
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Impossibile ottenere l'SPN del servizio di delega da GSSCredential. GSSCredential del client per il proxy non sar\u00e0 nel soggetto.
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Verificare il formato del nome del principal del servizio e assicurarsi che esista sul dominio Windows e che il file keytab Kerberos contenga il nome del principal del servizio.
+
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: L''SPN di delega {0} non pu\u00f2 autenticarsi con il KDC (Key Distribution Center) utilizzando il file di configurazione Kerberos {1} e il file keytab {2}. Ricevuta eccezione di login: {3}
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Impossibile autenticarsi con il KDC (Key Distribution Center).
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Verificare il formato del nome del principal del servizio e assicurarsi che esista sul dominio Windows e che il file keytab Kerberos contenga il nome del principal del servizio.

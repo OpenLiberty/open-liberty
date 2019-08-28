@@ -11,26 +11,22 @@
 package com.ibm.ws.microprofile.health20.test;
 
 import java.lang.annotation.Annotation;
-
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 import java.net.URI;
+
+import org.jboss.arquillian.container.test.impl.enricher.resource.URIResourceProvider;
+import org.jboss.arquillian.test.api.ArquillianResource;
+
 /**
  *
  */
-public class URIProviderProducer implements ResourceProvider {
+public class URIProviderProducer extends URIResourceProvider {
 
     public final static String LIBERTY_ROOT_URI = System.getProperty("test.url");
-    
+
     @Override
     public Object lookup(ArquillianResource arquillianResource, Annotation... annotations) {
         System.out.println("WLP: Liberty Root URI: " + LIBERTY_ROOT_URI);
         return URI.create(LIBERTY_ROOT_URI);
-    }
-
-    @Override
-    public boolean canProvide(Class<?> type) {
-        return type.isAssignableFrom(URI.class);
     }
 
 }

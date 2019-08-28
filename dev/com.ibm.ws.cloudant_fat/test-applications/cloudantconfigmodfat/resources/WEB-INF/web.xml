@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+
+  <!-- Valid based on default configuration of server.xml -->
+  <resource-ref>
+    <res-ref-name>java:module/env/cloudant/builderRef</res-ref-name>
+    <res-type>com.cloudant.client.api.ClientBuilder</res-type>
+    <lookup-name>cloudant/builder</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/cloudant/cfgmoddbRef</res-ref-name>
+    <res-type>com.cloudant.client.api.Database</res-type>
+    <lookup-name>cloudant/cfgmoddb</lookup-name>
+  </resource-ref>
+
+  <!-- Only valid when the test case adds config or modifies jndiName to cloudant/modified -->
+  <resource-ref>
+    <res-ref-name>java:module/env/cloudant/builderModRef</res-ref-name>
+    <res-type>com.cloudant.client.api.ClientBuilder</res-type>
+    <lookup-name>cloudant/modified</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/cloudant/cfgmoddbModRef</res-ref-name>
+    <res-type>com.cloudant.client.api.Database</res-type>
+    <lookup-name>cloudant/dbmodified</lookup-name>
+  </resource-ref>
+</web-app>

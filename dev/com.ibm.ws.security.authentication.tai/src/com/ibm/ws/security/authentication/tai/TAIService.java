@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,6 @@ public interface TAIService {
     public boolean isFailOverToAppAuthType();
 
     public boolean isInvokeForFormLogin();
-
-    public boolean isContinueAfterUnprotectedURI();
 
     public Map<String, TrustAssociationInterceptor> getTais(boolean invokeBeforeSSO);
 }

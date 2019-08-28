@@ -95,7 +95,7 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
      * in the server.xml, implicit bean archive scanning is disabled.
      *
      * @param moduleContainer the module container
-     * @param type the module type
+     * @param type            the module type
      * @return whether the jar will be ignored by CDI
      */
     @Override

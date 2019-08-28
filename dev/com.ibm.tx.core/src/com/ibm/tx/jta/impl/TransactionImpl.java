@@ -296,7 +296,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * on importing a transaction through ExecutionContextHandler (JCA1.5)
      *
      * @param timeout Transaction timeout in seconds
-     * @param xid The imported XID for the transaction
+     * @param xid     The imported XID for the transaction
      */
     public TransactionImpl(int timeout, Xid xid, JCARecoveryData jcard) {
         if (tc.isEntryEnabled())
@@ -684,23 +684,23 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      *
      * This call should only be made from the root.
      *
-     * @exception RollbackException Thrown to indicate that
-     *                the transaction has been rolled back rather than committed.
+     * @exception RollbackException          Thrown to indicate that
+     *                                           the transaction has been rolled back rather than committed.
      *
-     * @exception HeuristicMixedException Thrown to indicate that a heuristic
-     *                mix decision was made.
+     * @exception HeuristicMixedException    Thrown to indicate that a heuristic
+     *                                           mix decision was made.
      *
      * @exception HeuristicRollbackException Thrown to indicate that a
-     *                heuristic rollback decision was made.
+     *                                           heuristic rollback decision was made.
      *
-     * @exception SecurityException Thrown to indicate that the thread is
-     *                not allowed to commit the transaction.
+     * @exception SecurityException          Thrown to indicate that the thread is
+     *                                           not allowed to commit the transaction.
      *
-     * @exception IllegalStateException Thrown if the transaction in the
-     *                target object is inactive.
+     * @exception IllegalStateException      Thrown if the transaction in the
+     *                                           target object is inactive.
      *
-     * @exception SystemException Thrown if the transaction manager
-     *                encounters an unexpected error condition
+     * @exception SystemException            Thrown if the transaction manager
+     *                                           encounters an unexpected error condition
      */
     @Override
     public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
@@ -728,26 +728,26 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * a commit_one_phase request from the superior. Any other
      * subordinate requests should call the internal methods directly.
      *
-     * @exception RollbackException Thrown to indicate that
-     *                the transaction has been rolled back rather than committed.
+     * @exception RollbackException          Thrown to indicate that
+     *                                           the transaction has been rolled back rather than committed.
      *
-     * @exception HeuristicMixedException Thrown to indicate that a heuristic
-     *                mix decision was made.
+     * @exception HeuristicMixedException    Thrown to indicate that a heuristic
+     *                                           mix decision was made.
      *
-     * @exception HeuristicHazardException Thrown to indicate that a heuristic
-     *                hazard decision was made.
+     * @exception HeuristicHazardException   Thrown to indicate that a heuristic
+     *                                           hazard decision was made.
      *
      * @exception HeuristicRollbackException Thrown to indicate that a
-     *                heuristic rollback decision was made.
+     *                                           heuristic rollback decision was made.
      *
-     * @exception SecurityException Thrown to indicate that the thread is
-     *                not allowed to commit the transaction.
+     * @exception SecurityException          Thrown to indicate that the thread is
+     *                                           not allowed to commit the transaction.
      *
-     * @exception IllegalStateException Thrown if the transaction in the
-     *                target object is inactive.
+     * @exception IllegalStateException      Thrown if the transaction in the
+     *                                           target object is inactive.
      *
-     * @exception SystemException Thrown if the transaction manager
-     *                encounters an unexpected error condition
+     * @exception SystemException            Thrown if the transaction manager
+     *                                           encounters an unexpected error condition
      */
     public void commit_one_phase() throws RollbackException, HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
@@ -2155,7 +2155,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * return with the direction in which the 1PC completed.
      *
      * @exception SystemException
-     *                Thrown if the state change is invalid.
+     *                                Thrown if the state change is invalid.
      */
     public void logLPSState() throws SystemException {
         if (tc.isEntryEnabled())
@@ -2173,9 +2173,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * Log the fact that we have encountered a heuristic outcome.
      *
      * @param commit boolean to indicate whether we were committing or rolling
-     *            back
+     *                   back
      * @exception SystemException
-     *                Thrown if the state change is invalid.
+     *                                Thrown if the state change is invalid.
      */
     protected void logHeuristic(boolean commit) throws SystemException {
         if (tc.isEntryEnabled())
@@ -2207,12 +2207,12 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * list)
      *
      * @param xaRes The XAResouce object associated with the XAConnection
-     * @param flag TMSUSPEND, TMFAIL or TMSUCCESS flag to xa_end
+     * @param flag  TMSUSPEND, TMFAIL or TMSUCCESS flag to xa_end
      *
      * @exception IllegalStateException Thrown if the transaction in the
-     *                target object is inactive
-     * @exception SystemException Thrown if the transaction manager encounters
-     *                an unexpected error condition.
+     *                                      target object is inactive
+     * @exception SystemException       Thrown if the transaction manager encounters
+     *                                      an unexpected error condition.
      *
      */
     @Override
@@ -2471,11 +2471,16 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         // created within the scope of this tran.
         try {
             if (!_inRecovery) {
-                Object tScopeDestroyer = tsr.getResource("transactionScopeDestroyer");
-                if (tScopeDestroyer != null && tScopeDestroyer instanceof TransactionScopeDestroyer) {
+                final Object tScopeDestroyer = tsr.getResource("transactionScopeDestroyer");
+                if (tScopeDestroyer instanceof TransactionScopeDestroyer) {
                     ((TransactionScopeDestroyer) tScopeDestroyer).destroy();
                 }
             }
+        } catch (IllegalStateException e) {
+            // This happens when we get unexpected ws-at messages e.g. a prepared for
+            // a tran that has already been taken off this thread. No need for FFDC.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception getting transactionScopeDestroyer", e);
         } catch (RuntimeException e) {
             // WELD currently eats (and logs) runtime errors coming out of bean instance destructors
             // so catching here is just a precaution.

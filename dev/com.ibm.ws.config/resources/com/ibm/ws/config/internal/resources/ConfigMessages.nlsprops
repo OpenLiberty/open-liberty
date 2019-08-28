@@ -170,9 +170,12 @@ error.unique.value.conflict=CWWKG0031E: The value {1} specified for unique attri
 error.unique.value.conflict.explanation=The value for the specified attribute must be unique but it is already being used.
 error.unique.value.conflict.useraction=Change the attribute value so that it is unique.
 
-warn.config.invalid.value=CWWKG0032W: Unexpected value specified for property [{0}], value = [{1}]. Expected value(s) are: {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: Unexpected value specified for property [{0}], value = [{1}]. Expected value(s) are: {2}. {3} 
 warn.config.invalid.value.explanation=The specified value for the property cannot be used.
 warn.config.invalid.value.useraction=Correct the value of the property to use an expected value.
+
+default.value.in.use=Default value in use: {0}.
 
 warning.pid.not.found=CWWKG0033W: The value [{1}] specified for the reference attribute [{0}] was not found in the configuration.
 warning.pid.not.found.explanation=The specified value must be an element in the configuration.
@@ -292,25 +295,10 @@ error.factoryOnly=CWWKG0061E: The persisted identity {0} is not a factory persis
 error.factoryOnly.explanation=The ibm:extends attribute is only applicable to factory persisted identities.
 error.factoryOnly.useraction=Reconfigure the persisted identity to use a factory persisted identity or remove the ibm:extends attribute from the object component definition. This is an internal error. Follow standard WebSphere problem determination procedures.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: The {0} persisted identity is not a factory persisted identity and so cannot have an ibm:extendsAlias attribute of {1}. Reconfigure the persisted identity to use a factory persisted identity or remove the ibm:extendsAlias attribute from the persisted identity.
-error.factoryOnly.extendsAlias.explanation=The ibm:extendsAlias attribute is only applicable to factory persisted identities that extend another factory persisted identity.
-error.factoryOnly.extendsAlias.useraction=Reconfigure the persisted identity to use a factory persisted identity or remove the ibm:extendsAlias attribute from the persisted identity.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: The persisted identity {0} is not a factory persisted identity so cannot be extended by the persisted identity {1}.
 error.superFactoryOnly.explanation=The ibm:extends attribute is only applicable to factory persisted identities.
 error.superFactoryOnly.useraction=Reconfigure the persisted identity to use a factory persisted identity or remove the ibm:extends attribute from the object component definition. This is an internal error. Follow standard WebSphere problem determination procedures.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: The {0} persisted identity specifies an ibm:extendsAlias attribute of {1} and must therefore specify the ibm:extends attribute.
-error.ExtendsAliasMustExtend.explanation=When you specify an ibm:extendsAlias attribute you must specify an ibm:extends attribute.
-error.ExtendsAliasMustExtend.useraction=Specify an ibm:extends attribute.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: The {0} persisted identity specifies the {1} attribute of {2} and must therefore specify the {3} attribute.
-error.parentpid.and.childalias.explanation=The metatype indicates that a child-first nested element was partly specified. Child-first nested elements must specify both the ibm:parentPid attribute and the ibm:childAlias attribute.
-error.parentpid.and.childalias.useraction=If this metatype is intended for a child-first nested element, supply the missing attribute. Otherwise, remove the attribute that was provided. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Unable to rename attribute definition {1} as specified by the ibm:rename attribute {2} in persisted identity {0}.
@@ -446,6 +434,21 @@ warning.unrecognized.merge.behavior.useraction=Update the server configuration t
 error.missing.required.attribute.singleton=CWWKG0095E: The element {0} is missing the required attribute {1}.
 error.missing.required.attribute.singleton.explanation=The missing attribute is required in the configuration file server.xml or one of its referenced configuration files.
 error.missing.required.attribute.singleton.useraction=Add the attribute to the configuration file server.xml or one of its referenced configuration files.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: The {0} persisted identity is not a factory persisted identity and so cannot have an ibm:extendsAlias attribute of {1}. Reconfigure the persisted identity to use a factory persisted identity or remove the ibm:extendsAlias attribute from the persisted identity.
+error.factoryOnly.extendsAlias.explanation=The ibm:extendsAlias attribute is only applicable to factory persisted identities that extend another factory persisted identity.
+error.factoryOnly.extendsAlias.useraction=Reconfigure the persisted identity to use a factory persisted identity or remove the ibm:extendsAlias attribute from the persisted identity.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: The {0} persisted identity specifies an ibm:extendsAlias attribute of {1} and must therefore specify the ibm:extends attribute.
+error.ExtendsAliasMustExtend.explanation=When you specify an ibm:extendsAlias attribute you must specify an ibm:extends attribute.
+error.ExtendsAliasMustExtend.useraction=Specify an ibm:extends attribute.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: The {0} persisted identity specifies the {1} attribute of {2} and must therefore specify the {3} attribute.
+error.parentpid.and.childalias.explanation=The metatype indicates that a child-first nested element was partly specified. Child-first nested elements must specify both the ibm:parentPid attribute and the ibm:childAlias attribute.
+error.parentpid.and.childalias.useraction=If this metatype is intended for a child-first nested element, supply the missing attribute. Otherwise, remove the attribute that was provided. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: The {2} ibm:extendsAlias attribute is duplicated in a single extends hierarchy. The PIDs are {0} and {1}. Make each ibm:extendsAlias attribute unique within the extends hierarchy.

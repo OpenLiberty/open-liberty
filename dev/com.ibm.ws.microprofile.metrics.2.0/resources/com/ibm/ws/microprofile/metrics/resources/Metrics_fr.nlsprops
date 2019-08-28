@@ -118,6 +118,7 @@ connectionpool.destroy.total.description=Nombre total de connexions g\u00e9r\u00
 connectionpool.managedConnections.description=Nombre de connexions g\u00e9r\u00e9es dans les pools libres, partag\u00e9s et non partag\u00e9s.
 connectionpool.connectionHandles.description=Nombre de connexions utilis\u00e9es. Il peut inclure plusieurs connexions partag\u00e9es \u00e0 partir d'une seule connexion g\u00e9r\u00e9e.
 connectionpool.freeConnections.description=Nombre de connexions g\u00e9r\u00e9es dans le pool libre.
+
 session.create.total.description=Nombre de sessions connect\u00e9es depuis l'activation de la m\u00e9trique.
 session.liveSessions.description=Nombre d'utilisateurs actuellement connect\u00e9s.
 session.activeSessions.description=Nombre de sessions actives simultan\u00e9ment. (Une session est active si le produit est en train de traiter une demande qui utilise cette session utilisateur).

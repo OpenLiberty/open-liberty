@@ -1,0 +1,55 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Bels\u0151 hiba t\u00f6rt\u00e9nt a reakt\u00edv \u00fczenetkezel\u00e9s Kafka csatol\u00f3ban. A hiba: {0} 
+internal.kafka.connector.error.CWMRX1000E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 reakt\u00edv \u00fczenetkezel\u00e9si hiba t\u00f6rt\u00e9nt.
+internal.kafka.connector.error.CWMRX1000E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Hiba t\u00f6rt\u00e9nt az olvas\u00e1si eltol\u00e1sok v\u00e9gleges\u00edt\u00e9sekor a Kafka k\u00f6zvet\u00edt\u0151 fel\u00e9. A hiba: {0}
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Hiba t\u00f6rt\u00e9nt a Kafka bej\u00f6v\u0151 csatol\u00f3ban, amely megakad\u00e1lyozza a reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Hiba t\u00f6rt\u00e9nt a Kafka k\u00f6zvet\u00edt\u0151 lek\u00e9rdez\u00e9sekor. A hiba: {0}
+kafka.poll.error.CWMRX1002E.explanation=Hiba t\u00f6rt\u00e9nt a Kafka bej\u00f6v\u0151 csatol\u00f3ban, amely megakad\u00e1lyozza a reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
+kafka.poll.error.CWMRX1002E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Hiba t\u00f6rt\u00e9nt egy \u00fczenet Kafka k\u00f6zvet\u00edt\u0151re k\u00fcld\u00e9se sor\u00e1n. A hiba: {0}
+kafka.send.error.CWMRX1003E.explanation=Hiba t\u00f6rt\u00e9nt a Kafka kimen\u0151 csatol\u00f3ban, amely megakad\u00e1lyozza a reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
+kafka.send.error.CWMRX1003E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: A k\u00f6vetkez\u0151 reakt\u00edv \u00fczenetkezel\u00e9si hiba t\u00f6rt\u00e9nt: {0}.
+temporary.CWMRX1999E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 reakt\u00edv \u00fczenetkezel\u00e9si hiba t\u00f6rt\u00e9nt.
+temporary.CWMRX1999E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.

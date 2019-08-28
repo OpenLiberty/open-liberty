@@ -39,8 +39,8 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppNameSpaceCollaborator;
 
 /**
- * JaxWsHttpServletRequestAdapter is used to recover the Web Component Context MetaData while invoking the methods from request instance,
- * as in EJB based Web Services, the EJB invocation context is built very earlier in one intercepter, which may cause issue for those methods requiring
+ * JaxRsHttpServletRequestAdapter is used to recover the Web Component Context MetaData while invoking the methods from request instance,
+ * as in EJB based REST Services, the EJB invocation context is built very earlier in one intercepter, which may cause issue for those methods requiring
  * Web Component Context MetaData
  */
 public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper implements HttpServletRequest {
@@ -84,7 +84,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getAsyncContext()
      */
     @Override
@@ -99,7 +99,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getAttribute(java.lang.String)
      */
     @Override
@@ -114,7 +114,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getAttributeNames()
      */
     @Override
@@ -129,7 +129,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getCharacterEncoding()
      */
     @Override
@@ -144,7 +144,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getContentLength()
      */
     @Override
@@ -159,7 +159,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getContentType()
      */
     @Override
@@ -174,7 +174,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getDispatcherType()
      */
     @Override
@@ -189,7 +189,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getInputStream()
      */
     @Override
@@ -204,7 +204,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getLocalAddr()
      */
     @Override
@@ -219,7 +219,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getLocalName()
      */
     @Override
@@ -234,7 +234,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getLocalPort()
      */
     @Override
@@ -249,7 +249,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getLocale()
      */
     @Override
@@ -264,7 +264,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getLocales()
      */
     @Override
@@ -279,7 +279,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
     @Override
@@ -294,7 +294,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
     @Override
@@ -309,7 +309,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
     @Override
@@ -324,7 +324,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
      */
     @Override
@@ -339,7 +339,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getProtocol()
      */
     @Override
@@ -354,7 +354,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getReader()
      */
     @Override
@@ -369,7 +369,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getRealPath(java.lang.String)
      */
     @SuppressWarnings("deprecation")
@@ -385,7 +385,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getRemoteAddr()
      */
     @Override
@@ -400,7 +400,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getRemoteHost()
      */
     @Override
@@ -415,7 +415,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getRemotePort()
      */
     @Override
@@ -430,7 +430,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getRequestDispatcher(java.lang.String)
      */
     @Override
@@ -445,7 +445,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getScheme()
      */
     @Override
@@ -460,7 +460,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getServerName()
      */
     @Override
@@ -475,7 +475,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getServerPort()
      */
     @Override
@@ -490,7 +490,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getServletContext()
      */
     @Override
@@ -505,7 +505,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#isAsyncStarted()
      */
     @Override
@@ -520,7 +520,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#isAsyncSupported()
      */
     @Override
@@ -535,7 +535,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#isSecure()
      */
     @Override
@@ -550,7 +550,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#removeAttribute(java.lang.String)
      */
     @Override
@@ -566,7 +566,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#setAttribute(java.lang.String, java.lang.Object)
      */
     @Override
@@ -582,7 +582,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#setCharacterEncoding(java.lang.String)
      */
     @Override
@@ -598,7 +598,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#startAsync()
      */
     @Override
@@ -613,7 +613,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#startAsync(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     @Override
@@ -628,7 +628,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#authenticate(javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -643,7 +643,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getAuthType()
      */
     @Override
@@ -658,7 +658,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getContextPath()
      */
     @Override
@@ -673,7 +673,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getCookies()
      */
     @Override
@@ -688,7 +688,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getDateHeader(java.lang.String)
      */
     @Override
@@ -703,7 +703,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getHeader(java.lang.String)
      */
     @Override
@@ -718,7 +718,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getHeaderNames()
      */
     @Override
@@ -733,7 +733,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getHeaders(java.lang.String)
      */
     @Override
@@ -748,7 +748,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getIntHeader(java.lang.String)
      */
     @Override
@@ -763,7 +763,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getMethod()
      */
     @Override
@@ -778,7 +778,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getPart(java.lang.String)
      */
     @Override
@@ -793,7 +793,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getParts()
      */
     @Override
@@ -808,7 +808,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getPathInfo()
      */
     @Override
@@ -823,7 +823,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getPathTranslated()
      */
     @Override
@@ -838,7 +838,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getQueryString()
      */
     @Override
@@ -853,7 +853,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getRequestURI()
      */
     @Override
@@ -868,7 +868,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getRequestURL()
      */
     @Override
@@ -883,7 +883,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getRequestedSessionId()
      */
     @Override
@@ -898,7 +898,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getServletPath()
      */
     @Override
@@ -913,7 +913,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getSession()
      */
     @Override
@@ -928,7 +928,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getSession(boolean)
      */
     @Override
@@ -943,7 +943,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromCookie()
      */
     @Override
@@ -958,7 +958,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromURL()
      */
     @Override
@@ -973,7 +973,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromUrl()
      */
     @SuppressWarnings("deprecation")
@@ -989,7 +989,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdValid()
      */
     @Override
@@ -1004,7 +1004,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#isUserInRole(java.lang.String)
      */
     @Override
@@ -1019,7 +1019,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#login(java.lang.String, java.lang.String)
      */
     @Override
@@ -1035,7 +1035,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#logout()
      */
     @Override
@@ -1050,7 +1050,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.ServletRequest#getContentLengthLong()
      */
     @Override
@@ -1061,7 +1061,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#changeSessionId()
      */
 //    @Override
@@ -1072,7 +1072,7 @@ public class JaxRsHttpServletRequestAdapter extends HttpServletRequestWrapper im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#upgrade(java.lang.Class)
      */
     @Override

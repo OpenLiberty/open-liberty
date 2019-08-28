@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -89,13 +90,13 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
     /**
      * Validates configuration of a resource and returns the result as a JSON object.
      *
-     * @param uid       unique identifier.
-     * @param config    configuration of a resource instance.
+     * @param uid unique identifier.
+     * @param config configuration of a resource instance.
      * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return JSON representing the configuration. Null if not an external configuration element.
      * @throws IOException
      */
-    private JSONObject getConfigInfo(String uid, Dictionary<String, Object> config, Set<String> processed) throws IOException {
+    private JSONObject getConfigInfo(String uid, Dictionary<String, Object> config, Set<String> processed, Locale locale) throws IOException {
         String configDisplayId = (String) config.get("config.displayId");
 
         boolean isAppDefined;
@@ -134,7 +135,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
             json.put("uid", uid);
 
         if (!processed.add(configDisplayId)) {
-            json.put("error", "Circular dependency in configuration.");
+            json.put("error", Tr.formatMessage(tc, locale, "CWWKO1530_CIRCULAR_DEPENDENCY", configElementName));
             return json;
         }
 
@@ -258,12 +259,12 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
             json.put("jndiName", config.get("jndiName"));
 
         if (!registryEntryExists) { //registry entry doesn't exist - config service can't find the specified pid
-            json.put("error", "Check that the spelling is correct and that the right features are enabled for this configuration.");
+            json.put("error", Tr.formatMessage(tc, locale, "CWWKO1531_NOT_FOUND", configElementName));
         }
 
         for (String key : keys) {
             Integer cardinality = configHelper.getMetaTypeAttributeCardinality(extendsSourcePid == null ? servicePid : extendsSourcePid, key);
-            json.put(key, getJSONValue(config.get(key), cardinality, processed));
+            json.put(key, getJSONValue(config.get(key), cardinality, processed, locale));
         }
 
         for (Map.Entry<String, SortedSet<String>> entry : flattenedPids.entrySet()) {
@@ -288,7 +289,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
                             if (isAppDefined && value instanceof String)
                                 value = configHelper.convert(pid, key, (String) value);
 
-                            j.put(key, getJSONValue(value, cardinality, processed));
+                            j.put(key, getJSONValue(value, cardinality, processed, locale));
                         }
                     }
                 list.add(j);
@@ -356,14 +357,14 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
     /**
      * Converts the specified value to one that can be included in JSON
      *
-     * @param value       the value to convert
+     * @param value the value to convert
      * @param cardinality cardinality of the metatype AD attribute (if any) that defines this value.
-     * @param processed   configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
+     * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return a String, primitive wrapper, JSONArray, or JSONObject.
      * @throws IOException
      */
     @Trivial // generates too much trace
-    private Object getJSONValue(Object value, Integer cardinality, Set<String> processed) throws IOException {
+    private Object getJSONValue(Object value, Integer cardinality, Set<String> processed, Locale locale) throws IOException {
         if (value instanceof String) {
             String s = (String) value;
             if (s.matches(".*_\\d+")) {
@@ -380,7 +381,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
                 if (c != null) {
                     Dictionary<String, Object> props = c[0].getProperties();
                     String uid = getUID((String) props.get("config.displayId"), (String) props.get("id"));
-                    Object configInfo = getConfigInfo(uid, props, new HashSet<String>(processed));
+                    Object configInfo = getConfigInfo(uid, props, new HashSet<String>(processed), locale);
                     if (configInfo != null)
                         value = configInfo;
                 }
@@ -392,22 +393,22 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
         else if (value.getClass().isArray()) { // list supplied as an array for positive cardinality
             int length = Array.getLength(value);
             if (length == 1 && Integer.valueOf(1).equals(cardinality))
-                value = getJSONValue(Array.get(value, 0), null, processed);
+                value = getJSONValue(Array.get(value, 0), null, processed, locale);
             else {
                 JSONArray a = new JSONArray();
                 for (int i = 0; i < length; i++)
-                    a.add(getJSONValue(Array.get(value, i), null, processed));
+                    a.add(getJSONValue(Array.get(value, i), null, processed, locale));
                 value = a;
             }
         } else if (value instanceof Collection) { // list supplied as a Vector for negative cardinality
             Collection<?> list = (Collection<?>) value;
             int length = list.size();
             if (length == 1 && Integer.valueOf(-1).equals(cardinality))
-                value = getJSONValue(list.iterator().next(), null, processed);
+                value = getJSONValue(list.iterator().next(), null, processed, locale);
             else {
                 JSONArray a = new JSONArray();
                 for (Object o : list)
-                    a.add(getJSONValue(o, null, processed));
+                    a.add(getJSONValue(o, null, processed, locale));
                 value = a;
             }
         } else
@@ -422,7 +423,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
      * Otherwise, the config.displayId is the unique identifier.
      *
      * @param configDisplayId config.displayId of configuration element.
-     * @param id              id of configuration element. Null if none.
+     * @param id id of configuration element. Null if none.
      * @return the unique identifier (uid)
      */
     @Trivial
@@ -440,7 +441,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
 
     @Override
     public Object handleSingleInstance(RESTRequest request, String uid, String id, Dictionary<String, Object> configProps) throws IOException {
-        return getConfigInfo(uid, configProps, new HashSet<String>());
+        return getConfigInfo(uid, configProps, new HashSet<String>(), request.getLocale());
     }
 
     /**
@@ -494,12 +495,47 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
 
         String jsonString = json.serialize(true);
 
+        /*
+         * com.ibm.json.java.JSONArtifact.serialize() escapes / with \\/.
+         * The list of special characters in proper JSON data is:
+         * \b Backspace (ascii code 08)
+         * \f Form feed (ascii code 0C)
+         * \n New line
+         * \r Carriage return
+         * \t Tab
+         * \" Double quote
+         * \\ Backslash character
+         *
+         * Therefore, we will remove this extraneous formatting.
+         */
+        jsonString = jsonString.replaceAll("\\\\/", "/");
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "populateResponse", jsonString);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getOutputStream().write(jsonString.getBytes("UTF-8"));
+    }
+
+    /**
+     * Restricts use of the config end-point to GET requests only.
+     * All other requests will respond with a 405 - method not allowed error.
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+        if (!"GET".equals(request.getMethod())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Request method was " + request.getMethod() + " but the config endpoint is restricted to GET requests only.");
+            }
+            response.setResponseHeader("Accept", "GET");
+            response.sendError(405); // Method Not Allowed
+            return;
+        }
+
+        super.handleRequest(request, response);
     }
 
     @Override

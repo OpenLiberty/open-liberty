@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +38,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
     protected final MpJwtFatActions actions = new MpJwtFatActions();
     protected final static MpJwtAppSetupUtils setupUtils = new MpJwtAppSetupUtils();
+    protected final static List<String> commonStartMsgs = Arrays.asList(MpJwtMessageConstants.CWWKS0008I_SECURITY_SERVICE_READY);
 
     protected static enum ExpectedResult {
         GOOD, BAD
@@ -67,7 +69,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile, boolean jwtEnabled) throws Exception {
         bootstrapUtils.writeBootstrapProperty(server, "oidcJWKEnabled", String.valueOf(jwtEnabled));
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile);
+        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_2_PORT_NAME_ROOT);
     }
 

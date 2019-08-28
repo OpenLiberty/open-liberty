@@ -112,9 +112,16 @@ public class FrameworkConfigurator {
         // It is not clear that multi-threading really helps with performance of the resolver.
         config.putIfAbsent("equinox.resolver.thread.count", "1");
 
-        // By default use single thread for activating bundles from start-level
-        // Set to -1 in bootstrap.properties results in using the number of threads == to num processors
-        config.putIfAbsent("equinox.start.level.thread.count", "1");
+        // By default use multiple threads for activating bundles from start-level
+        // Set to the min of 4 or Runtime.getRuntime().availableProcessors().
+        // Testing shows that going with more than 4 threads does not help
+        // with startup performance of Liberty
+        config.putIfAbsent("equinox.start.level.thread.count",
+                           Integer.toString(Math.min(4, Runtime.getRuntime().availableProcessors())));
+        config.putIfAbsent("equinox.start.level.restrict.parallel", "true");
+
+        // default module.lock.timeout value in seconds.
+        config.putIfAbsent("osgi.module.lock.timeout", "5");
 
         // The IBM shared class adapter issues a message if it's loaded on a
         // non-IBM JVM.  Since it does no harm, we'll suppress the message.
@@ -160,6 +167,7 @@ public class FrameworkConfigurator {
         config.put("org.apache.aries.blueprint.parser.service.ignore.unknown.namespace.handlers", "true");
 
         config.put("ds.global.extender", "true");
+        config.putIfAbsent("ds.cache.metadata", "true");
     }
 
     /**

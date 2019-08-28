@@ -150,4 +150,13 @@ public class HealthCheckHttpResponseBuilder {
         }
         return json;
     }
+
+    /**
+     * Sets the overall state for the health check
+     *
+     * @param state
+     */
+    public void setOverallState(State state) {
+        this.overallState = state;
+    }
 }

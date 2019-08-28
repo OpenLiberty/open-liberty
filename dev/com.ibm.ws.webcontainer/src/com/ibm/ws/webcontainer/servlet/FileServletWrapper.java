@@ -58,7 +58,6 @@ import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.WebContainer;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.collaborator.ICollaboratorHelper;
-import com.ibm.wsspi.webcontainer.collaborator.IWebAppNameSpaceCollaborator;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.security.SecurityViolationException;
@@ -90,7 +89,6 @@ public abstract class FileServletWrapper implements IServletWrapper, IServletWra
   protected WebApp context;
   protected DefaultExtensionProcessor parentProcessor;
   private ICollaboratorHelper collabHelper;
-  private IWebAppNameSpaceCollaborator webAppNameSpaceCollab;
   private IWebAppSecurityCollaborator secCollab;
   private IPlatformHelper platformHelper;
   // PK44379 - number of threads currently executing the service method
@@ -136,7 +134,6 @@ public abstract class FileServletWrapper implements IServletWrapper, IServletWra
     this.context = (WebApp) parent;
     this.parentProcessor = parentProcessor;
     collabHelper = context.getCollaboratorHelper();
-    webAppNameSpaceCollab = collabHelper.getWebAppNameSpaceCollaborator();
     secCollab = collabHelper.getSecurityCollaborator();
 
     sessionSecurityIntegrationEnabled = context.getSessionContext().getIntegrateWASSecurity();
@@ -1120,16 +1117,6 @@ public abstract class FileServletWrapper implements IServletWrapper, IServletWra
 
   // end 268176 Welcome file wrappers are not checked for resource existence
   // WAS.webcontainer
-
-  // Begin PK27620
-
-    public void nameSpacePostInvoke() {
-    this.webAppNameSpaceCollab.postInvoke();
-  }
-
-    public void nameSpacePreInvoke() {
-    this.webAppNameSpaceCollab.preInvoke(context.getModuleMetaData().getCollaboratorComponentMetaData());
-  }
 
   // PK55965 Start
     private ServletEvent getServletEvent() {

@@ -550,6 +550,13 @@ NO_WRAPPED_OBJECT.useraction=Stellen Sie sicher, dass der Wrapper und die Parame
 
 # 9123 deleted
 
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Das Objekt-Wrapping f\u00fcr {0} kann nicht aufgehoben werden, weil {0} keine Schnittstellenklasse ist.
+NOT_AN_INTERFACE.explanation=Die Unwrap-Methode erlaubt nur das Aufheben von Wrapping f\u00fcr eine Schnittstellenklasse.
+NOT_AN_INTERFACE.useraction=Heben Sie das Wrapping f\u00fcr eine Klasse auf, die eine Schnittstelle ist, anstatt f\u00fcr eine konkrete Klasse.
+
 # 9130E      OPERATION_NOT_PERMITTED
 # 
 # {0}        The operation.

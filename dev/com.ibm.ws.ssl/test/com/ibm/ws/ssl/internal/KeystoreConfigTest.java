@@ -178,11 +178,15 @@ public class KeystoreConfigTest {
 
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locSrv).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locSrv).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
 
                 one(locSrv).resolveString("someBadLoc");
                 will(returnValue("key.p12"));
@@ -265,11 +269,16 @@ public class KeystoreConfigTest {
     public void updateRegistration_registeredWithProps() {
         final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
 
         mock.checking(new Expectations() {
             {
                 one(locSrv).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locSrv).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
+
             }
         });
 

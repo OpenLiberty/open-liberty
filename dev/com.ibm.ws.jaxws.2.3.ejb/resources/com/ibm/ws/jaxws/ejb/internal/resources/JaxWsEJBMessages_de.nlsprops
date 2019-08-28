@@ -25,5 +25,5 @@
 #{1} is the exception message
 warn.could.not.find.handler=CWWKW0500W: Die Handlerklasse {0} wurde nicht gefunden. Ursache: {1}
 warn.could.not.find.handler.explanation=Die angegebene Handlerklasse kann nicht geladen werden.
-warn.could.not.find.handler.useraction=Aktualisieren Sie die Anwendung, und schlie\u00dfen Sie die Handlerklasse ein.
+warn.could.not.find.handler.useraction=Aktualisieren Sie die Anwendung und schlie\u00dfen Sie die Handlerklasse ein.
 

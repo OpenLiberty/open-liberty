@@ -49,7 +49,7 @@ public class ModuleConfigParser extends DefaultHandler implements PmiConstants {
 
     private PmiDataInfo submoduleData;
     private String currentChars = null;
-    private final TraceComponent tc = Tr.register(ModuleConfigParser.class);
+    private static final TraceComponent tc = Tr.register(ModuleConfigParser.class);
     private String submoduleName = null;
     private boolean isModule = true;
     private String _fileName = null;

@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: Nu se poate personifica utilizatorul {0} pentru a ob\u0163ine GSSCredential de utilizator pentru sine la utilizarea numelui principal de serviciu de delegare {1} din cauza excep\u0163iei {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=Nu se poate personifica utilizatorul din cauza unei excep\u0163ii nea\u015fteptate.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Asigura\u0163i-v\u0103 c\u0103 numele principal de serviciu de delegare (SPN) este activat pentru delegare \u015fi examina\u0163i istoricele de server pentru informa\u0163ii suplimentare.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: Nu se poate personifica utilizatorul {0} pentru a ob\u0163ine GSSCredential pentru serviciul back end la utilizarea numelui principal de serviciu de delegare {1} din cauza excep\u0163iei {2}.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=Nu se poate personifica utilizatorul din cauza unei excep\u0163ii nea\u015fteptate.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul S4U2proxy este setat la true \u00een configura\u0163ia elementului SPNEGO, c\u0103 serviciul de delegare SPN este activat pentru delegare \u00een Key Distribution Center (KDC), c\u0103 tichetul serviciului client are un stegule\u0163 \u00eenaintabil setat la true \u015fi c\u0103 tichetele serviciului de delegare servicii au un stegule\u0163 \u00eenaintabil setat la true. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: Nu se poate procesa metoda {0} deoarece nu este activat\u0103 delegarea constr\u00e2ns\u0103 S4U2self.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=Nu se poate procesa metoda deoarece nu este activat\u0103 delegarea constr\u00e2ns\u0103 S4U2self.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Asigura\u0163i-v\u0103 c\u0103 este activat\u0103 caracteristica de delegare constr\u00e2ns\u0103 \u015fi c\u0103 atributul S4U2self este setat la true \u00een configura\u0163ia de delegare constr\u00e2ns\u0103 \u00een fi\u015fierul server.xml. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: Nu se poate procesa metoda {0} deoarece nu este activat\u0103 delegarea constr\u00e2ns\u0103 S4U2proxy.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=Nu se poate procesa metoda deoarece nu este activat\u0103 delegarea constr\u00e2ns\u0103 S4U2proxy.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Asigura\u0163i-v\u0103 c\u0103 este activat\u0103 caracteristica de delegare constr\u00e2ns\u0103 \u015fi c\u0103 atributul S4U2proxy este setat la true \u00een configura\u0163ia de delegare constr\u00e2ns\u0103 \u00een fi\u015fierul server.xml. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: Caracteristica de delegare impus\u0103 de Kerberos nu este suportat\u0103 cu vendorul Java {0} \u015fi versiunea {1}.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Caracteristica de delegare impus\u0103 de Kerberos nu poate fi activat\u0103 din cauza vendorului de runtime Java \u015fi versiunii.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utiliza\u0163i vendor Java \u015fi versiune corecte care sunt suportate de caracteristica de delegare impus\u0103 de Kerberos.
+
+
+
+
+
+
+
+
+
+
+
+

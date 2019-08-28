@@ -27,4 +27,6 @@ fat.project: true
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.registry_test.servlet;version=latest,\
 	com.ibm.ws.security.wim.core;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.com.unboundid;version=latest,\
+	com.unboundid:unboundid-ldapsdk;version=latest

@@ -43,7 +43,8 @@ instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
   com.ibm.ws.concurrent.mp.ManagedExecutorImpl,\
   com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl,\
   com.ibm.ws.concurrent.mp.MicroProfileClearedContextProvider,\
-  com.ibm.ws.concurrent.mp.MPConfigAccessorImpl
+  com.ibm.ws.concurrent.mp.MPConfigAccessorImpl,\
+  com.ibm.ws.concurrent.mp.spi.CompletionStageFactory
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\

@@ -52,7 +52,7 @@ public class BasicMutationTestServlet extends FATServlet {
     @Override
     public void init() throws ServletException {
         String contextPath = getSysProp("com.ibm.ws.microprofile.graphql.fat.contextpath", "graphql");
-        String baseUriStr = "http://localhost:" + getSysProp("bvt.prop.HTTP", "8010") + "/basicMutationApp/" + contextPath;
+        String baseUriStr = "http://localhost:" + getSysProp("bvt.prop.HTTP_default", "8010") + "/basicMutationApp/" + contextPath;
         LOG.info("baseUrl = " + baseUriStr);
         URI baseUri = URI.create(baseUriStr);
         builder = RestClientBuilder.newBuilder()

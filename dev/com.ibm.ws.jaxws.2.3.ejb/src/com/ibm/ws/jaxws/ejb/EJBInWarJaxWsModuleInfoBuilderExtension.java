@@ -47,7 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 public class EJBInWarJaxWsModuleInfoBuilderExtension extends AbstractJaxWsModuleInfoBuilderExtension {
 
-    private final TraceComponent tc = Tr.register(EJBInWarJaxWsModuleInfoBuilderExtension.class);
+    private static final TraceComponent tc = Tr.register(EJBInWarJaxWsModuleInfoBuilderExtension.class);
 
     protected final AtomicServiceReference<EndpointInfoBuilder> endpointInfoBuilderSRRef = new AtomicServiceReference<EndpointInfoBuilder>("endpointInfoBuilder");
 

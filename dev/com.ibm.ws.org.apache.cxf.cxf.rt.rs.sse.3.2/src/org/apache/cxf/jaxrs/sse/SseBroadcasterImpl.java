@@ -48,14 +48,17 @@ public class SseBroadcasterImpl implements SseBroadcaster {
     @Override
     public CompletionStage<?> broadcast(OutboundSseEvent event) {
         final Collection<CompletableFuture<?>> futures = new ArrayList<>();
-        
-        for (SseEventSink sink: subscribers) {
+        subscribers.removeIf(sink -> {
+            if (sink.isClosed()) {
+                return true;
+            }
             try {
                 futures.add(sink.send(event).toCompletableFuture());
             } catch (final Exception ex) {
                 exceptioners.forEach(exceptioner -> exceptioner.accept(sink, ex));
             }
-        }
+            return false;
+        });
         
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
     }

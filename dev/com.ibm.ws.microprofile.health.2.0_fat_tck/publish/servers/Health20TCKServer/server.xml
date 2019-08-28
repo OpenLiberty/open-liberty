@@ -15,8 +15,20 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
-   
+	
+	<webContainer deferServletLoad="false"/>
+	
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <accessLogging
+            filepath="${server.output.dir}/logs/http_defaultEndpoint_access.log"
+            logFormat='%h %u %t "%r" %s %b %D %{User-agent}i'>
+        </accessLogging>         
+     </httpEndpoint>
 </server>

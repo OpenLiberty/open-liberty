@@ -21,6 +21,7 @@ import com.ibm.ws.kernel.boot.commandline.StartCommandTest;
 import com.ibm.ws.kernel.boot.commandport.ServerCommandPortTest;
 import com.ibm.ws.kernel.boot.internal.commands.LogLevelPropertyTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageCommandTest;
+import com.ibm.ws.kernel.osgi.OSGiEmbedManagerTest;
 import com.ibm.ws.kernel.provisioning.KernelChangeTest;
 import com.ibm.ws.kernel.provisioning.ProvisioningTest;
 import com.ibm.ws.kernel.service.ServerEndpointControlMBeanTest;
@@ -58,6 +59,6 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 PauseResumeCommandTest.class,
                 EmbeddedServerMergeProductExtensionTest.class,
                 ServerEndpointControlMBeanTest.class,
-                UlimitTest.class
+                OSGiEmbedManagerTest.class
 })
 public class FATSuite {}

@@ -760,6 +760,8 @@ info.resumedListeners.target=Riattivazione dei componenti di destinazione specif
 info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. \
 Per ulteriori informazioni, \
 controllare i log del server.
+info.serverCommandAuthFailure=Il comando {0} non \u00e8 riuscito perch\u00e9 il processo non ha potuto eliminare il file {1}.
+info.serverCommandCommFailure=Il comando {0} non \u00e8 riuscito a causa di un problema di comunicazione con il server.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

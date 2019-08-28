@@ -11,5 +11,10 @@
 /**
  * @version 1.0.16
  */
+
 @org.osgi.annotation.versioning.Version("1.0.16")
+@TraceOptions(traceGroup = NLSConstants.GROUP, messageBundle = NLSConstants.LOGGING_NLS)
 package com.ibm.ws.logging.data;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.logging.internal.NLSConstants;

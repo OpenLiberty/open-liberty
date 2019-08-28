@@ -1,0 +1,190 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security OpenID Connect Server 1.0
+Bundle-SymbolicName: com.ibm.ws.security.openidconnect.server
+Bundle-Description: WAS Security OpenID Connect Server, version=${bVersion}
+
+Web-ContextPath: /oidc
+
+IBM-Authorization-Roles: com.ibm.ws.security.oauth20
+
+WS-TraceGroup: \
+  OPENIDCONNECT
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+
+-dsannotations: com.ibm.ws.security.openidconnect.web.OidcEndpointServices
+-dsannotations-inherit: true
+
+instrument.classesExcludes: com/ibm/ws/security/openidconnect/server/internal/resources/*.class
+
+Export-Package: \
+        com.ibm.ws.security.openidconnect.server;provide:=true, \
+        com.ibm.ws.security.openidconnect.server.plugins;provide:=true
+
+Private-Package: \
+        com.ibm.ws.security.openidconnect.server.internal.*, \
+        com.ibm.ws.security.openidconnect.web
+
+Import-Package: \
+   javax.servlet;version="!", \
+   javax.servlet.*;version="!", \
+   com.ibm.websphere.ras, \
+   com.ibm.ws.security.oauth20.*, \
+   org.jose4j.*;version="[0.6,1)", \
+   *
+   
+# import the JWT customized GrantTypeHandler and OIDC plugin hadnlers
+# It may not be included in a server
+DynamicImport-Package: \
+ com.ibm.ws.security.oauth20.jwt  
+    
+     
+Service-Component: \
+  com.ibm.ws.security.openidconnect.server; \
+    implementation:=com.ibm.ws.security.openidconnect.server.internal.OidcServerImpl; \
+    provide:=com.ibm.ws.webcontainer.security.openidconnect.OidcServer; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modify; \
+    deactivate:=deactivate; \
+    configuration-policy:=ignore; \
+    oidcServerConfig=com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig; \
+    oauth20Provider=com.ibm.ws.security.oauth20.api.OAuth20Provider; \
+    dynamic:='oidcServerConfig,oauth20Provider'; \
+    multiple:='oidcServerConfig,oauth20Provider'; \
+    greedy:='oidcServerConfig'; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.openidconnect.server.oidcServerConfig; \
+    implementation:=com.ibm.ws.security.openidconnect.server.internal.OidcServerConfigImpl; \
+    provide:=com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modify; \
+    deactivate:=deactivate; \
+    configuration-policy:=require; \
+    configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
+    keyStoreService=com.ibm.ws.ssl.KeyStoreService; \
+    sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
+    dynamic:='configurationAdmin,sslSupport,keyStoreService'; \
+    optional:='sslSupport,keyStoreService'; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.openidconnect.server.plugins.IDTokenHandler; \
+    implementation:=com.ibm.ws.security.openidconnect.server.plugins.IDTokenHandler; \
+    provide:=com.ibm.oauth.core.internal.oauth20.tokentype.OAuth20TokenTypeHandler; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modified; \
+    deactivate:=deactivate; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.openidconnect.server.plugins.OIDCGrantTypeHandlerFactoryImpl; \
+    implementation:=com.ibm.ws.security.openidconnect.server.plugins.OIDCGrantTypeHandlerFactoryImpl; \
+    provide:=com.ibm.oauth.core.internal.oauth20.granttype.OAuth20GrantTypeHandlerFactory; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modified; \
+    deactivate:=deactivate; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.openidconnect.server.plugins.OIDCResponseTypeHandlerFactoryImpl; \
+    implementation:=com.ibm.ws.security.openidconnect.server.plugins.OIDCResponseTypeHandlerFactoryImpl; \
+    provide:=com.ibm.oauth.core.internal.oauth20.responsetype.OAuth20ResponseTypeHandlerFactory; \
+    immediate:=true; \
+    activate:=activate; \
+    modified:=modified; \
+    deactivate:=deactivate; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM"
+
+Include-Resource: \
+    WEB-INF=resources/WEB-INF, \
+    OSGI-INF=resources/OSGI-INF, \
+    scripts=resources/scripts, \
+    resources/authzMgmt.jsp, \
+    resources/clienttable.jsp, \
+    resources/login.jsp, \
+    resources/sessionMgmt.jsp, \
+    resources/template.jsp, \
+    resources/template.html, \
+    resources/end_session_logout.html, \
+    resources/end_session_error.html, \
+    WEB-CONTENT=resources/WEB-CONTENT, \
+    WEB-CONTENT/common/lib=lib/jquery/jquery-3.2.0, \
+    WEB-CONTENT/common/fonts=lib/fonts
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.ws.common.encoder,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.security.openidconnect.common;version=latest,\
+	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
+	com.ibm.ws.security.oauth.2.0;version=latest,\
+	com.ibm.websphere.security.wim.base;version=latest,\
+	com.ibm.websphere.appserver.api.json,\
+	com.ibm.ws.security.wim.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.common.jsonwebkey;version=latest,\
+	com.ibm.ws.security.common;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.webcontainer.security.provider;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	com.ibm.ws.junit.extensions;version=latest,\
+	org.jmock:jmock-legacy;version=2.5.0,\
+	cglib:cglib-nodep;version=3.2.10,\
+	org.hamcrest:hamcrest-all;version=1.3,\
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
+	org.jmock:jmock;strategy=exact;version=2.5.1,\
+	com.ibm.ws.org.objenesis:objenesis;version=1.0,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	fattest.simplicity;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.security.test.common;version=latest,\
+	com.ibm.json4j;version=latest,\
+	commons-logging:commons-logging;version=1.1.3,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
+	com.ibm.ws.security.fat.common;version=latest,\
+ 	com.ibm.ws.crypto.passwordutil;version=latest,\
+	joda-time;version=latest,\
+	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.security.jwt;version=latest
+
+

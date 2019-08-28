@@ -756,6 +756,8 @@ info.resumeFailedException=No se ha podido reanudar el servidor {0}. Compruebe l
 info.resumingListeners.target=Reanudando los componentes de destino especificados del servidor {0}.
 info.resumedListeners.target=Se ha completado la reanudaci\u00f3n de los componentes de destino especificados del servidor {0}.
 info.resumeFailedException.target=No se han podido reanudar los componentes de destino especificados del servidor {0}. Compruebe los registros de servidor para obtener detalles.
+info.serverCommandAuthFailure=El mandato {0} ha fallado porque el proceso no ha podido suprimir el archivo {1}.
+info.serverCommandCommFailure=El mandato {0} ha fallado debido a un error de comunicaci\u00f3n con el servidor.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)

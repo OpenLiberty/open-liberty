@@ -229,7 +229,7 @@ public class LibertyServer implements LogMonitorClient {
 
     // Allow configuration updates to wait for messages in the log longer than other log
     // searches. Configuration updates may take some time on slow test systems.
-    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = (FAT_TEST_LOCALRUN ? 12 : 180) * 1000;
+    protected static int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = (FAT_TEST_LOCALRUN ? 12 : 180) * 1000;
 
     protected Set<String> installedApplications;
 
@@ -1196,7 +1196,7 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
-        if (info.VENDOR == Vendor.IBM && info.majorVersion() == 8) {
+        if (info.VENDOR == Vendor.IBM) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
         }
@@ -1582,6 +1582,14 @@ public class LibertyServer implements LogMonitorClient {
 
     public int getAppStartTimeout() {
         return APP_START_TIMEOUT;
+    }
+
+    public void setConfigUpdateTimeout(int timeout) {
+        LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = timeout;
+    }
+
+    public int getConfigUpdateTimeout() {
+        return LOG_SEARCH_TIMEOUT_CONFIG_UPDATE;
     }
 
     public void validateAppLoaded(String appName) throws Exception {
@@ -2378,7 +2386,7 @@ public class LibertyServer implements LogMonitorClient {
                     Log.warning(c, method + " Server is still running - or server lock file is still locked.");
                     break;
                 case 1:
-                    Log.info(c, method, "Server " + getServerName() + "stopped successfully");
+                    Log.info(c, method, "Server " + getServerName() + " stopped successfully");
                     break;
                 case 2:
                     Log.warning(c, method + " Unknown server - directory deleted? " + serverToUse);
@@ -3891,6 +3899,11 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void addEnvVar(String key, String value) {
+        if (!Pattern.matches("[a-zA-Z_]+[a-zA-Z0-9_]*", key)) {
+            throw new IllegalArgumentException("Invalid environment variable key '" + key +
+                                               "'. Environment variable keys must consist of characers [a-zA-Z0-9_] " +
+                                               "in order to work on all OSes.");
+        }
         if (this.isStarted())
             throw new RuntimeException("Cannot add env vars to a running server");
         envVars.put(key, value);
