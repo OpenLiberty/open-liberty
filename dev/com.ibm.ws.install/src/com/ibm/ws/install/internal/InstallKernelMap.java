@@ -633,8 +633,14 @@ public class InstallKernelMap implements Map {
             }
             if (invalidFeatures.size() > 0) {
                 System.out.println("Invalid features: " + invalidFeatures);
-                throw ExceptionUtils.create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY",
-                                                                                           InstallUtils.getFeatureListOutput(invalidFeatures)));
+                if (isOpenLiberty) {
+
+                    throw ExceptionUtils.create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY",
+                                                                                               InstallUtils.getFeatureListOutput(invalidFeatures)));
+                } else {
+                    throw ExceptionUtils.create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_RESOLVE_FEATURES",
+                                                                                               InstallUtils.getFeatureListOutput(invalidFeatures)));
+                }
 
             }
 
