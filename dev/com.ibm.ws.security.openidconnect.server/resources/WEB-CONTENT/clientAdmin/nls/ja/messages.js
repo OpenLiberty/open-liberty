@@ -36,7 +36,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "表は {0} によって昇順でソートされます。",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "表は {0} によって降順でソートされます。", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "再試行してください...",
+    "TRY_AGAIN": "再試行...",
     "UPDATE": "更新",
 
     // Common Column Names
@@ -71,12 +71,12 @@ var messages = {
     "SELECT_ONE_GRANT_TYPE": "少なくとも 1 つの認可タイプを選択してください",
     "SPACE_HELPER_TEXT": "スペースで区切った値",
     "REDIRECT_URL_HELPER_TEXT": "スペースで区切った絶対リダイレクト URL",
-    "DELETE_OAUTH_CLIENT_DESC": "この操作は、登録済みのクライアントをクライアント登録サービスから削除します。",
+    "DELETE_OAUTH_CLIENT_DESC": "この操作により、登録済みのクライアントはクライアント登録サービスから削除されます。",
     "REGISTRATION_SAVED": "クライアント ID とクライアント秘密鍵が生成され、割り当てられました。",
     "REGISTRATION_UPDATED": "このクライアント用に新規クライアント秘密鍵が生成され、割り当てられました。",
     "COPY_CLIENT_ID": "クライアント ID をクリップボードにコピー",
     "COPY_CLIENT_SECRET": "クライアント秘密鍵をクリップボードにコピー",
-    "REGISTRATION_UPDATED_NOSECRET": "{0} OAuth クライアントが更新されます。",                 // {0} - client name
+    "REGISTRATION_UPDATED_NOSECRET": "{0} OAuth クライアントが更新されました。",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "少なくとも 1 つの認可タイプを選択する必要があります。",
     "ERR_REDIRECT_URIS": "値は絶対 URI でなければなりません。",
     "GENERIC_REGISTER_FAIL": "OAuth クライアントの登録エラー",
@@ -98,6 +98,6 @@ var messages = {
     "ENTER_PLACEHOLDER": "値の入力",
     "ADD_VALUE": "エレメントの追加",
     "REMOVE_VALUE": "エレメントの削除",
-    "REGENERATE_CLIENT_SECRET": "「*」は既存の値を保持します。ブランク値の場合は、新規 client_secret を生成します。ブランク以外のパラメーター値を指定すると、新しく指定した値で既存の値をオーバーライドします。",
+    "REGENERATE_CLIENT_SECRET": "「*」は既存の値を保持します。ブランク値の場合は、新規 client_secret を生成します。ブランク以外のパラメーター値の場合は、新しく指定された値で既存の値をオーバーライドします。",
     "ALL_OPTIONAL": "すべてのフィールドはオプションです"
 };

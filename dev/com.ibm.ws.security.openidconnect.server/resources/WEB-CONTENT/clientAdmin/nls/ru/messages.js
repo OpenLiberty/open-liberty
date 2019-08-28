@@ -26,8 +26,8 @@ var messages = {
     "LOADING": "Загрузка",
     "LOGOUT": "Выход из системы",
     "NEXT_PAGE": "Следующая страница",
-    "NO_RESULTS_FOUND": "Совпадений не найдено",
-    "PAGES": "{0} из {1} страниц",   // {0} - current page number; {1} - total pages
+    "NO_RESULTS_FOUND": "Результаты не найдены",
+    "PAGES": "Стр. {0} из {1}",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Выберите номер страницы для просмотра",
     "PREVIOUS_PAGE": "Предыдущая страница",
     "PROCESSING": "Обработка",
@@ -41,15 +41,15 @@ var messages = {
 
     // Common Column Names
     "CLIENT_NAME_COL": "Имя клиента",
-    "EXPIRES_COL": "Дата истечения срока действия",
-    "ISSUED_COL": "Дата выдачи",
+    "EXPIRES_COL": "Действует до",
+    "ISSUED_COL": "Выдано",
     "NAME_COL": "Имя",
     "TYPE_COL": "Тип",
 
     // Client Admin
     "CLIENT_ADMIN_TITLE": "Управление клиентами OAuth",
-    "CLIENT_ADMIN_DESC": "Этот инструмент предназначен для добавления и редактирования клиентов, а также повторного создания паролей клиентов.",
-    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Фильтрация по имени клиента OAuth",
+    "CLIENT_ADMIN_DESC": "Этот инструмент предназначен для добавления и редактирования клиентов, а также обновления паролей клиентов.",
+    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Фильтр: имя клиента OAuth",
     "ADD_NEW_CLIENT": "Добавить новый клиент OAuth.",
     "CLIENT_NAME": "Имя клиента",
     "CLIENT_ID": "ИД клиента",

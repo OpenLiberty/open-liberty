@@ -41,6 +41,7 @@ dependencies {
     requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter')
     requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl')
     requiredLibs project(':com.ibm.ws.io.smallrye.reactive.streams.operators.1.0')
+    requiredLibs project(':com.ibm.ws.crypto.passwordutil');
 }
 
 task addKafkaClientLibs (type: Copy) {

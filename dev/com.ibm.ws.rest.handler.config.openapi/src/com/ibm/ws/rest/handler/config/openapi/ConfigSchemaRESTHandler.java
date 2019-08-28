@@ -11,7 +11,6 @@
 package com.ibm.ws.rest.handler.config.openapi;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -85,7 +84,7 @@ public class ConfigSchemaRESTHandler implements RESTHandler {
 
     private OpenAPI getOpenAPIDocument(RESTResponse response) {
         OpenAPI openAPI = null;
-        InputStream inputStream = ConfigSchemaRESTHandler.class.getResourceAsStream(File.separator + "META-INF" + File.separator + "openapi.yaml");
+        InputStream inputStream = ConfigSchemaRESTHandler.class.getResourceAsStream("/META-INF/openapi.yaml");
         if (inputStream != null) {
             String document = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n"));
             openAPI = new OpenAPIV3Parser().readContents(document, null, null, null).getOpenAPI();

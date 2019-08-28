@@ -59,7 +59,7 @@ public class KafkaTlsTest {
 
         ConnectorProperties incomingProperties = simpleIncomingChannel(TlsTests.kafkaContainer.getBootstrapServers(), BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID);
 
-        ConnectorProperties connectorProperties = new ConnectorProperties(Direction.CONNECTOR, "io.openliberty.kafka")
+        ConnectorProperties connectorProperties = new ConnectorProperties(Direction.CONNECTOR, "liberty-kafka")
                         .addProperty(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, TRUSTSTORE_FILENAME)
                         .addProperty(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, TlsTests.kafkaContainer.getKeystorePassword())
                         .addProperty("security.protocol", "SSL");

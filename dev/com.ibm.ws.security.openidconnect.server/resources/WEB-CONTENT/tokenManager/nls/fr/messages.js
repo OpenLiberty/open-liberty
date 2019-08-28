@@ -37,7 +37,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "La table est triée en fonction de {0} suivant l'ordre croissant.",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "La table est triée en fonction de {0} suivant l'ordre décroissant.", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "Réessayez...",
+    "TRY_AGAIN": "Réessayer...",
     "UPDATE": "Mettre à jour",
 
     // Common Column Names

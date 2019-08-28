@@ -15,12 +15,14 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.health20.fat.DelayAppStartupHealthCheckTest;
+import com.ibm.ws.microprofile.health20.fat.DifferentApplicationNameHealthCheckTest;
 import com.ibm.ws.microprofile.health20.fat.MultipleHealthCheckTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 DelayAppStartupHealthCheckTest.class,
-                MultipleHealthCheckTest.class
+                MultipleHealthCheckTest.class,
+                DifferentApplicationNameHealthCheckTest.class
 })
 
 public class FATSuite {

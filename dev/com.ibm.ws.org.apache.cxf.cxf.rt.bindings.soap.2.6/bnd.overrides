@@ -14,7 +14,8 @@ exportVer=2.6.2
 
 Bundle-Name: Apache CXF Runtime SOAP Binding
 Bundle-Description: Apache CXF Runtime SOAP Binding, version 2.6.2
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf-rt-bindings-soap.2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6
+Bundle-Activator: com.ibm.ws.cxf.rt.bindings.soap.NoOpActivator
 
 Import-Package: \
  javax.xml.bind.*;version="[2.2,3)", \
@@ -27,15 +28,9 @@ Import-Package: \
  com.ibm.websphere.ras, \
  com.ibm.websphere.ras.annotation, \
  com.ibm.ws.ffdc, \
- org.apache.cxf.*, \
+ org.apache.cxf.*;version="[2.6.2,2.6.3)", \
  *
  
-DynamicImport-Package: org.apache.cxf.bus;version="[2.6.2,2.6.3)", \
- org.apache.cxf.*;version="[2.6.2,2.6.3)", \
- com.sun.xml.*, \
- javax.xml.ws, \
- javax.xml.ws.*
-
 Export-Package: \
   org.apache.cxf.binding.soap;version=${exportVer},\
   org.apache.cxf.binding.soap.blueprint;version=${exportVer},\
@@ -48,6 +43,6 @@ Export-Package: \
   org.apache.cxf.binding.soap.tcp.frames;version=${exportVer},\
   org.apache.cxf.binding.soap.wsdl.extensions;version=${exportVer},\
   org.apache.cxf.binding.soap.wsdl11;version=${exportVer}
-
+  
 Private-Package: \
-  com.ibm.ws.jaxws22.cxf.rt.binding.soap
+  com.ibm.ws.jaxws.cxf.rt.bindings.soap

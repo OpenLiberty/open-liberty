@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.rational.test.lt.models.wscore.configuration:WSDLInformationContainer xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.rational.test.lt.models.wscore.configuration="http:///com/ibm/rational/test/lt/models/wscore/configuration.ecore">
+  <securityOperationConfiguration>
+    <SecurityPortConfiguration aliasName="DEFAULTCONFIGURATION"/>
+  </securityOperationConfiguration>
+  <keyStore/>
+  <wsdl name="SimpleImplService" key="SimpleImplService">
+    <SimpleProperty value="http://impl.service.cdi.jaxws.ws.ibm.com/" name="WSDLPROPERTY_TARGETNAMESPACE"/>
+    <SimpleProperty value="58509ff93a1808e960af6549ed4d28f7a174d96a58509ff93a1808e960af6549ed4d28f7a174d96aa6ceb8c0a170884ab160da56bf20ffbb1f91b2da" name="WSDLPROPERTY_HASH"/>
+    <SimpleProperty value="58509ff93a1808e960af6549ed4d28f7a174d96a58509ff93a1808e960af6549ed4d28f7a174d96a54d3c139063b8b5708bb02f2cd7bfdca8ea945f0" name="WSDLPROPERTY_PREVIOUSHASH"/>
+    <SimpleProperty value="1451320025000" name="WSDLPROPERTY_SYNCHROSTAMP"/>
+    <ResourceProxy portablePath="/SimpleJAXWS/WebContent/WEB-INF/wsdl/SimpleImplService.wsdl" timeStamp="1451320025000"/>
+    <WsdlInformationContainer versionContainer="8.7"/>
+    <WsdlBinding name="SimpleImplPortBinding">
+      <SimpleProperty value="SoapDocumentBinding" name="WSDLBINDINGPROPERTY_TYPE"/>
+      <SimpleProperty value="http://schemas.xmlsoap.org/soap/http" name="WSDLBINDINGPROPERTY_TRANSPORT_TYPE"/>
+      <SimpleProperty value="true" name="Soap11Binding"/>
+      <SimpleProperty value="false" name="Soap12Binding"/>
+      <SimpleProperty value="false" name="HttpBinding"/>
+      <SimpleProperty value="{http://impl.service.cdi.jaxws.ws.ibm.com/}SimpleImpl" name="WSDLBINDING_SERVICE_NAME"/>
+      <WsdlOperation name="echo" key="echo">
+        <WsdlPort name="SimpleImplPort" uniqueID="780793850SEPARATOR36226acf-53cf-4ce2-aa4f-2f5e688eb35d">
+          <SimpleProperty value="http://localhost:9080/SimpleJAXWS/SimpleImplService" name="WSDLPORTPROPERTY_HTTP_URL"/>
+          <in>
+            <SimpleProperty value="DEFAULTCONFIGURATION" name="operation_security_information"/>
+          </in>
+          <out>
+            <SimpleProperty value="DEFAULTCONFIGURATION" name="operation_security_information"/>
+          </out>
+        </WsdlPort>
+        <in>
+          <SimpleProperty value="http://impl.service.cdi.jaxws.ws.ibm.com/SimpleImpl/echoRequest" name="WSADDRESSING_ACTIVATOR"/>
+          <SimpleProperty value="literal" name="WSDLOPERATIONPROPERTY_ENCODING_STYLE"/>
+          <WsdlPart element="true" nameSpaceURI="http://impl.service.cdi.jaxws.ws.ibm.com/" localPart="echo" partName="parameters"/>
+        </in>
+        <SimpleProperty value="true" name="WSDLOPERATIONPROPERTY_SOAP_ACTION_REQUIRED"/>
+        <SimpleProperty value="" name="WSDLOPERATIONPROPERTY_SOAP_ACTION_URI"/>
+        <out>
+          <SimpleProperty value="http://impl.service.cdi.jaxws.ws.ibm.com/SimpleImpl/echoResponse" name="WSADDRESSING_ACTIVATOR"/>
+          <SimpleProperty value="literal" name="WSDLOPERATIONPROPERTY_ENCODING_STYLE"/>
+          <SimpleProperty name="MESSAGENAME"/>
+          <WsdlPart element="true" nameSpaceURI="http://impl.service.cdi.jaxws.ws.ibm.com/" localPart="echoResponse" partName="parameters"/>
+        </out>
+      </WsdlOperation>
+    </WsdlBinding>
+  </wsdl>
+</com.ibm.rational.test.lt.models.wscore.configuration:WSDLInformationContainer>

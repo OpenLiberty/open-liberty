@@ -1538,6 +1538,12 @@ ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: The {0} enterprise bean in the {1} mod
 ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Entity enterprise beans declared in any version module are not supported when the module is packaged in a Java EE version 7 or later application. An application is considered to be Java EE version 7 if the application.xml file is declared to be version 7 or any EJB or WAR module packaged within that application is at a version corresponding to Java EE version 7.
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Remove the use of the unsupported entity enterprise bean from the application or package the bean in a version 6 or older application.
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Each enterprise bean interface must specify a unique binding location.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Correct the binding file for one of these two bean interfaces so that each interface has a unique binding location.
+
+
 
 #-------------------------------------------------------------------------------
 #

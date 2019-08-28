@@ -62,7 +62,7 @@ var messages = {
     "DELETE_WARNING_PW": "Această acţiune va înlătura app-password alocat curent.",
     "DELETE_WARNING_TOKEN": "Această acţiune va înlătura app-token alocat curent.",
     "DELETE_MANY": "Ştergere app-password-uri/app-token-uri",
-    "DELETE_MANY_FOR": "Alocat la {0}",              // 0 - user id
+    "DELETE_MANY_FOR": "Alocate la {0}",              // 0 - user id
     "DELETE_ONE_MESSAGE": "Această acţiune va şterge app-password-urile/app-token-urile selectate.",
     "DELETE_MANY_MESSAGE": "Această acţiune va şterge app-password-urile/app-token-urile {0} selectate",  // 0 - number
     "DELETE_ALL_MESSAGE": "Această acţiune va şterge app-password-urile/app-token-urile aparţinând lui {0}.", // 0 - user id

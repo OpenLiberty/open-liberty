@@ -71,7 +71,7 @@ var messages = {
     "SELECT_ONE_GRANT_TYPE": "Selectaţi cel puţin un tip de acordare",
     "SPACE_HELPER_TEXT": "Valori separate prin spaţiu",
     "REDIRECT_URL_HELPER_TEXT": "URL-uri de redirectare absolute separate prin spaţiu",
-    "DELETE_OAUTH_CLIENT_DESC": "Această operaţie şterge client înregistrat de serviciul de înregistrare clienţi.",
+    "DELETE_OAUTH_CLIENT_DESC": "Această operaţie şterge clientul înregistrat de serviciul de înregistrare clienţi.",
     "REGISTRATION_SAVED": "Au fost generate şi alocate un ID de client şi secret de client.",
     "REGISTRATION_UPDATED": "A fost generat şi alocat un nou Secret client pentru acest client.",
     "COPY_CLIENT_ID": "Copiere ID client la clipboard",
@@ -98,6 +98,6 @@ var messages = {
     "ENTER_PLACEHOLDER": "Introduceţi valoarea",
     "ADD_VALUE": "Adăugare element",
     "REMOVE_VALUE": "Înlăturare element",
-    "REGENERATE_CLIENT_SECRET": "'*' păstrează valoarea existentă. O valoare blanc generează un nou secret client. Un parametrui care nu este blanc înlocuieşte valoarea existentă cu valoarea nou specificată. ",
+    "REGENERATE_CLIENT_SECRET": "'*' păstrează valoarea existentă. O valoare blanc generează un nou secret client. Un parametru care nu este blanc înlocuieşte valoarea existentă cu valoarea nou specificată. ",
     "ALL_OPTIONAL": "Toate câmpurile sunt opţionale. "
 };

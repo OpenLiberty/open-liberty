@@ -199,8 +199,13 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
      */
     public WebAuthenticator getWebAuthenticator(WebRequest webRequest) {
         String authMech = webAppSecurityConfig.getOverrideHttpAuthMethod();
-        if (authMech != null && authMech.equals("CLIENT_CERT")) {
-            return createCertificateLoginAuthenticator();
+        if (authMech != null) {
+            if (authMech.equals("CLIENT_CERT"))
+                return createCertificateLoginAuthenticator();
+            else if (authMech.equals("FORM"))
+                return createFormLoginAuthenticator(webRequest);
+            else if (authMech.equals("BASIC"))
+                return getBasicAuthAuthenticator();
         }
         SecurityMetadata securityMetadata = webRequest.getSecurityMetadata();
         LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();

@@ -278,6 +278,129 @@ public class RegistrationEndPointServicesTest {
         }
     }
 
+    // TODO
+    @Test
+    public void testMultipleSpacesInClientIDGET() {
+        final String methodName = "testMultipleSpacesInClientIDGET";
+        final String clientIdSpace = "0  4.ac      \t - bt ";
+        Hashtable<String, String> acceptTable = new Hashtable<String, String>();
+        acceptTable.put(CT_APPLICATION_JSON, "");
+        final Enumeration<String> acceptHeaders = acceptTable.keys();
+        final String cacheCtrHdr = "private";
+        final List<OidcBaseClient> clientSpace = new ArrayList<OidcBaseClient>();
+        clientSpace.add(setUpClient(clientIdSpace));
+
+        Hashtable<String, String> acceptCharsetTable = new Hashtable<String, String>();
+        acceptCharsetTable.put(UTF, "");
+        final Enumeration<String> acceptCharsetHeaders = acceptCharsetTable.keys();
+        final OidcOAuth20ClientProvider oidcOAuth20ClientProvider = mock.mock(OidcOAuth20ClientProvider.class);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    one(request).getLocales();
+                    will(returnValue(locales));
+                    allowing(request).getPathInfo();
+                    will(returnValue(pathInfoBase + clientIdSpace));
+                    allowing(request).getMethod();
+                    will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_GET));
+                    allowing(request).getHeaders(HDR_ACCEPT);
+                    will(returnValue(acceptHeaders));
+                    allowing(request).getHeaders(HDR_ACCEPT_CHARSET);
+                    will(returnValue(acceptCharsetHeaders));
+                    allowing(provider).getClientProvider();
+                    will(returnValue(oidcOAuth20ClientProvider));
+                    allowing(oidcOAuth20ClientProvider).get(clientIdSpace);
+                    will(returnValue(setUpClient(clientIdSpace)));
+                    allowing(oidcOAuth20ClientProvider).getAll(request);
+                    will(returnValue(clientSpace));
+                    one(response).setHeader(CACHE_CONTROL, cacheCtrHdr);
+                    one(response).setHeader(CT, CT_APPLICATION_JSON_UTF8);
+                    one(response).addHeader(with(any(String.class)), with(any(String.class)));
+                    allowing(request).getHeaders(HDR_IF_MATCH);
+                    will(returnValue(null));
+                    allowing(request).getHeaders(HDR_IF_NONE_MATCH);
+                    will(returnValue(null));
+                    allowing(request).getHeaders(HDR_IF_MODIFIED_SINCE);
+                    will(returnValue(null));
+                    allowing(request).getHeaders(HDR_IF_UNMODIFIED_SINCE);
+                    will(returnValue(null));
+                    one(response).flushBuffer();
+                    one(response).getOutputStream().print(with(any(String.class)));
+                    one(response).setStatus(with(HttpServletResponse.SC_OK));
+
+                }
+            });
+
+            RegistrationEndpointServices registrationEndpointServices = new RegistrationEndpointServices();
+            registrationEndpointServices.handleEndpointRequest(provider, request, response);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testSpecialCharactersGET() {
+        final String methodName = "testSpecialCharactersGET";
+        final String clientIdSpecialChars = "client~!@#$%^&amp;*()_+{}|:&lt;&gt;?`-=[];',.'&quot;&quot;/b";
+        Hashtable<String, String> acceptTable = new Hashtable<String, String>();
+        acceptTable.put(CT_APPLICATION_JSON, "");
+        final Enumeration<String> acceptHeaders = acceptTable.keys();
+        final String cacheCtrHdr = "private";
+        final List<OidcBaseClient> clientSpace = new ArrayList<OidcBaseClient>();
+        clientSpace.add(setUpClient(clientIdSpecialChars));
+
+        Hashtable<String, String> acceptCharsetTable = new Hashtable<String, String>();
+        acceptCharsetTable.put(UTF, "");
+        final Enumeration<String> acceptCharsetHeaders = acceptCharsetTable.keys();
+        final OidcOAuth20ClientProvider oidcOAuth20ClientProvider = mock.mock(OidcOAuth20ClientProvider.class);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    one(request).getLocales();
+                    will(returnValue(locales));
+                    allowing(request).getPathInfo();
+                    will(returnValue(pathInfoBase + clientIdSpecialChars));
+                    allowing(request).getMethod();
+                    will(returnValue(AbstractOidcEndpointServices.HTTP_METHOD_GET));
+                    allowing(request).getHeaders(HDR_ACCEPT);
+                    will(returnValue(acceptHeaders));
+                    allowing(request).getHeaders(HDR_ACCEPT_CHARSET);
+                    will(returnValue(acceptCharsetHeaders));
+                    allowing(provider).getClientProvider();
+                    will(returnValue(oidcOAuth20ClientProvider));
+                    allowing(oidcOAuth20ClientProvider).get(clientIdSpecialChars);
+                    will(returnValue(setUpClient(clientIdSpecialChars)));
+                    allowing(oidcOAuth20ClientProvider).getAll(request);
+                    will(returnValue(clientSpace));
+                    one(response).setHeader(CACHE_CONTROL, cacheCtrHdr);
+                    one(response).setHeader(CT, CT_APPLICATION_JSON_UTF8);
+                    one(response).addHeader(with(any(String.class)), with(any(String.class)));
+                    allowing(request).getHeaders(HDR_IF_MATCH);
+                    will(returnValue(null));
+                    allowing(request).getHeaders(HDR_IF_NONE_MATCH);
+                    will(returnValue(null));
+                    allowing(request).getHeaders(HDR_IF_MODIFIED_SINCE);
+                    will(returnValue(null));
+                    allowing(request).getHeaders(HDR_IF_UNMODIFIED_SINCE);
+                    will(returnValue(null));
+                    one(response).flushBuffer();
+                    one(response).getOutputStream().print(with(any(String.class)));
+                    one(response).setStatus(with(HttpServletResponse.SC_OK));
+                    allowing(request).getRequestURL();
+                    will(returnValue(new StringBuffer(registrationBase + clientIdSpecialChars)));
+
+                }
+            });
+
+            RegistrationEndpointServices registrationEndpointServices = new RegistrationEndpointServices();
+            registrationEndpointServices.handleEndpointRequest(provider, request, response);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
     @Test
     public void testSingleClientValidClientIDGET() {
         final String methodName = "testSingleClientValidClientIDGET";

@@ -11,8 +11,8 @@
 package failover1serv.web;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.concurrent.ManagedTask;
@@ -28,11 +28,13 @@ public class IncTask implements Callable<Integer>, ManagedTask, Serializable {
     private static final long serialVersionUID = 1L;
 
     int counter;
-    private final Map<String, String> execProps = Collections.singletonMap(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.toString());
+    private final Map<String, String> execProps = new TreeMap<String, String>();
     final String testIdentifier;
 
     IncTask(String testIdentifier) {
         this.testIdentifier = testIdentifier;
+        execProps.put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.toString());
+        execProps.put(ManagedTask.IDENTITY_NAME, "IncTask_" + testIdentifier);
     }
 
     @Override

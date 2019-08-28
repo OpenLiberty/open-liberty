@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.security.auth.AuthPermission;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.namespace.PackageNamespace;
 import org.osgi.framework.wiring.BundleCapability;
@@ -457,21 +458,14 @@ public class PermissionManager implements PermissionsCombiner {
     }
 
     private ClassLoader getBundleClassLoader(String className) {
-        ClassLoader classloader = null;
+        Collection<BundleCapability> bundleCapabilities = getBundlesProvidingPackage(className.substring(0, className.lastIndexOf(".")));
+        BundleWiring providerBundleWiring = getBundleWiring(bundleCapabilities);
 
-        BundleCapability bundleCapability = getBundleProvidingPackage(className.substring(0, className.lastIndexOf(".")));
-        BundleWiring providerBundleWiring = getBundleWiring(bundleCapability);
-
-        if (providerBundleWiring != null) {
-            classloader = providerBundleWiring.getClassLoader();
-        }
-
-        return classloader;
+        return providerBundleWiring != null ? providerBundleWiring.getClassLoader() : null;
     }
 
-    private BundleCapability getBundleProvidingPackage(final String classPackage) {
-        BundleCapability bundleCapability = null;
-        FrameworkWiring frameworkWiring = bundleContext.getBundle(org.osgi.framework.Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class);
+    private Collection<BundleCapability> getBundlesProvidingPackage(final String classPackage) {
+        FrameworkWiring frameworkWiring = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class);
 
         Collection<BundleCapability> matchingCapabilities = frameworkWiring.findProviders(new org.osgi.resource.Requirement() {
             public org.osgi.resource.Resource getResource() {
@@ -491,24 +485,21 @@ public class PermissionManager implements PermissionsCombiner {
                 return Collections.emptyMap();
             }
         });
-
-        Iterator<BundleCapability> capabilitiesIterator = matchingCapabilities.iterator();
-
-        if (capabilitiesIterator.hasNext()) {
-            bundleCapability = capabilitiesIterator.next();
-        }
-
-        return bundleCapability;
+        return matchingCapabilities;
     }
 
-    private BundleWiring getBundleWiring(BundleCapability bundleCapability) {
-        BundleWiring providerBundleWiring = null;
-
-        if (bundleCapability != null) {
-            providerBundleWiring = bundleCapability.getRevision().getWiring();
+    private BundleWiring getBundleWiring(Collection<BundleCapability> bundleCapabilities) {
+        BundleCapability bundleCapability = null;
+        for (BundleCapability bc : bundleCapabilities) {
+            if (bundleCapability != null && 
+                bc.getRevision().getBundle().getBundleId() == 0) {
+                // if more than one bundle exports the same package, prefer the non-system bundle
+                break;
+            }
+            bundleCapability = bc;
         }
 
-        return providerBundleWiring;
+        return bundleCapability != null ? bundleCapability.getRevision().getWiring() : null;
     }
 
     /**

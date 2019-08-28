@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
+import javax.json.JsonStructure;
 import javax.json.JsonValue;
 
 import org.junit.AfterClass;
@@ -624,6 +625,18 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "DefaultDataSource", json.getString("id"));
         assertNull(err, json.get("jndiName"));
         // other attributes are covered by testConfigDataSources
+    }
+
+    // Invoke REST endpoint with uid present, but the config element parameter missing. Expect an error.
+    @Test
+    public void testConfigDefaultDataSourceMissingElementName() throws Exception {
+        try {
+            JsonStructure json = new HttpsRequest(server, "/ibm/api/config/dataSource[DefaultDataSource]").run(JsonStructure.class);
+            String err = "unexpected response: " + json;
+            fail(err);
+        } catch (Exception ex) {
+            assertTrue("Expected 404 response", ex.getMessage().contains("404"));
+        }
     }
 
     // Ensure that the requested element type matches the returned config.

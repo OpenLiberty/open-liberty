@@ -156,11 +156,13 @@ public class WSKeyStore extends Properties {
         saveAliasInformation(keyEntryElements);
 
         // Let's get the fully resolved path to the default JKS keystore
+        String default_location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
         String fallback_keystore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
         String res = null;
         try {
             res = null;
             res = cfgSvc.resolveString(fallback_keystore);
+            default_location = cfgSvc.resolveString((default_location));
         } catch (IllegalStateException e) {
             // ignore
         }
@@ -228,16 +230,26 @@ public class WSKeyStore extends Properties {
             this.password = SerializableProtectedString.EMPTY_PROTECTED_STRING;
         }
 
+        if (this.type == null || this.location == null) {
+            Tr.error(tc, "ssl.keystore.config.error");
+            throw new IllegalArgumentException("Required keystore information is missing, must provide a location and type.");
+        }
+
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
-        if (this.isDefault) {
+        boolean storeFileExists = defaultFileExists(this.location);
+
+        if (this.isDefault && !storeFileExists) {
 
             // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
 
             // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
             File f = new File(res);
 
-            if (f.exists() && this.location != null && this.location.toLowerCase().endsWith("/key.p12")) {
+            //location from metatype sometimes has a extra slashes, need to normalize it
+            this.location = this.location.replaceAll("/+", "/");
+
+            if (f.exists() && this.location.toLowerCase().equals(default_location.toLowerCase())) {
                 // use the JKS file instead, as it exists
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
@@ -245,61 +257,65 @@ public class WSKeyStore extends Properties {
             }
 
             // check if they've specified a type, and create the corresponding key.jks or key.p12
-            if (type.equals(Constants.KEYSTORE_TYPE_JKS) && this.location != null && this.location.toLowerCase().endsWith("/key.p12")) {
+            if (type.equals(Constants.KEYSTORE_TYPE_JKS) && this.location.toLowerCase().endsWith("/key.p12")) {
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
                 this.type = Constants.KEYSTORE_TYPE_JKS;
 
-            } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location != null && this.location.toLowerCase().endsWith("/key.p12")) {
+            } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith("/key.p12")) {
                 specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
                 this.type = Constants.KEYSTORE_TYPE_PKCS12;
             } else if (!type.equals(Constants.KEYSTORE_TYPE_JKS)) {
-                if (this.location != null && (this.location.toLowerCase().endsWith(".jks"))) {
-                    type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
+                if (this.location.toLowerCase().endsWith(".jks")) {
+                    this.type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
                     specifiedType = type;
                 }
             }
 
-            // This is the default key store.. some things we'll just fill in if they
-            // are missing... we only do this for the default
-
-            // if no type was specified for the default keytore in server.xml and we have no location, use PKCS12 as the default keystore
-            if (this.location == null && specifiedType == null) {
-                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
-                specifiedType = this.type = Constants.KEYSTORE_TYPE_PKCS12;
-            }
-
-            if (password.isEmpty()) {
-                String envPassword = System.getenv("keystore_password");
-                if (envPassword != null && !envPassword.isEmpty()) {
-                    Tr.audit(tc, "ssl.defaultKeyStore.env.password.CWPKI0820A");
-                    password = new SerializableProtectedString(envPassword.toCharArray());
-                } else {
-                    Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");
-                    throw new IllegalArgumentException("Required keystore information is missing, must provide a password for the default keystore");
-                }
-            }
         } else {
             // this is not the default keystore, but a location has been specified.  If the keystore is JKS type, set the type to JKS
-            if (this.location != null
-                && (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS))) {
+            if (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS)) {
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
                 this.type = Constants.KEYSTORE_TYPE_JKS;
             }
         }
 
-        if (specifiedType == null || location == null) {
-            Tr.error(tc, "ssl.keystore.config.error");
-            throw new IllegalArgumentException("Required keystore information is missing, must provide a location and type.");
+        if (password.isEmpty() && this.isDefault) {
+            String envPassword = System.getenv("keystore_password");
+            if (envPassword != null && !envPassword.isEmpty()) {
+                Tr.audit(tc, "ssl.defaultKeyStore.env.password.CWPKI0820A");
+                password = new SerializableProtectedString(envPassword.toCharArray());
+            } else {
+                Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");
+                throw new IllegalArgumentException("Required keystore information is missing, must provide a password for the default keystore");
+            }
         }
 
-        if (getFileBased().booleanValue()) {
+        if (getFileBased().booleanValue() && this.location != null) {
             // resolve paths now
             setLocation(this.location);
         }
 
         setUpInternalProperties();
         initializeKeyStore(true);
+    }
+
+    /**
+     * @param location2
+     * @return
+     */
+    private boolean defaultFileExists(String ksFile) {
+
+        boolean exists = false;
+        // check if the file from the configuration exists.
+        if (ksFile != null) {
+            File f = new File(ksFile);
+
+            if (f.exists()) {
+                exists = true;
+            }
+        }
+        return exists;
     }
 
     /**

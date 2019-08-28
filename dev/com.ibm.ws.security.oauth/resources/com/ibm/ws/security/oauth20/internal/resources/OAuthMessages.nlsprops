@@ -149,7 +149,7 @@ OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: An update of 
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=An update request for a public client must not specify a client secret.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: An update of the client fails. The client secret cannot be updated because the request specifies an invalid configuration given the current state of the client’s registration.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: An update of the client fails. The client secret cannot be updated because the request specifies an invalid configuration given the current state of the client registration.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=The request cannot be completed because it specifies an invalid configuration given the current state of the client's registration.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Review the API documentation for this service, and retry the request with the appropriate parameters.
 

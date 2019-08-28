@@ -10,7 +10,7 @@
  *******************************************************************************/
 var messages = {
     // Common Strings
-    "ADD_NEW": "Incluir nova",
+    "ADD_NEW": "Incluir novo",
     "CANCEL": "Cancelar",
     "CLEAR": "Limpar entrada de procura",
     "CLICK_TO_SORT": "Clique para classificar a coluna",
@@ -25,8 +25,8 @@ var messages = {
     "LOADING": "Carregando",
     "LOGOUT": "Logout",
     "NEXT_PAGE": "Próxima página",
-    "NO_RESULTS_FOUND": "Nenhum Resultado Localizado",
-    "PAGES": "{0} de {1} páginas",   // {0} - current page number; {1} - total pages
+    "NO_RESULTS_FOUND": "Nenhum resultado localizado",
+    "PAGES": "{0} de {1} página(s)",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Selecione o número da página para visualização",
     "PREVIOUS_PAGE": "Página anterior",
     "PROCESSING": "Processando",
@@ -35,7 +35,7 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "A tabela é classificada por {0} em ordem crescente. ",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "A tabela é classificada por {0} em ordem decrescente. ", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "Verdadeiro",
-    "TRY_AGAIN": "Tente novamente ...",
+    "TRY_AGAIN": "Tentar novamente ...",
     "UPDATE": "Atualizar",
 
     // Common Column Names

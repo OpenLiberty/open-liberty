@@ -178,7 +178,8 @@ public class OAuthClientUtil {
     public Map<String, Object> getUserApi(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        if (accessToken != null) {
+        boolean isLinkedIn = userApi != null && userApi.contains("https://api.linkedin.com");
+        if (accessToken != null && !isLinkedIn) {  //linkedin v2 api won't tolerate this param.
             params.add(new BasicNameValuePair("access_token", accessToken));
         }
 

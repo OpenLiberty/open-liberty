@@ -10,7 +10,8 @@
  -->
 <server>
   <featureManager>
-  	<feature>componenttest-1.0</feature>
+    <feature>componenttest-1.0</feature>
+    <feature>jdbc-4.2</feature>
     <feature>jndi-1.0</feature>
     <!-- <feature>osgiConsole-1.0</feature> -->
     <feature>persistentExecutor-1.0</feature>

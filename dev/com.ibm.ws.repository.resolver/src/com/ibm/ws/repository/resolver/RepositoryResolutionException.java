@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,19 @@ package com.ibm.ws.repository.resolver;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.osgi.service.resolver.ResolutionException;
 
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.internal.LibertyVersion;
 import com.ibm.ws.repository.resolver.internal.LibertyVersionRange;
+import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
+import com.ibm.ws.repository.resources.SampleResource;
 
 /**
  * This exception is thrown when a resolution fails.
@@ -31,21 +37,24 @@ public class RepositoryResolutionException extends RepositoryException {
     private final Collection<String> allRequirementsNotFound;
     private final Collection<ProductRequirementInformation> missingProductInformation;
     private final Collection<MissingRequirement> allRequirementsResourcesNotFound;
+    private final Map<String, Collection<Chain>> featureConflicts;
 
     /**
      * @param cause
      * @param topLevelFeaturesNotResolved
      * @param allRequirementsNotFound
-     * @param missingProductInformation all the product information requirements that could not be found. Can be empty but must not be <code>null</code>
+     * @param missingProductInformation        all the product information requirements that could not be found. Can be empty but must not be <code>null</code>
      * @param allRequirementsResourcesNotFound The {@link MissingRequirement} objects that were not found. Must not be <code>null</code>.
      */
     public RepositoryResolutionException(ResolutionException cause, Collection<String> topLevelFeaturesNotResolved, Collection<String> allRequirementsNotFound,
-                                         Collection<ProductRequirementInformation> missingProductInformation, Collection<MissingRequirement> allRequirementsResourcesNotFound) {
+                                         Collection<ProductRequirementInformation> missingProductInformation, Collection<MissingRequirement> allRequirementsResourcesNotFound,
+                                         Map<String, Collection<Chain>> featureConflicts) {
         super(cause);
         this.topLevelFeaturesNotResolved = topLevelFeaturesNotResolved;
         this.allRequirementsNotFound = allRequirementsNotFound;
         this.missingProductInformation = missingProductInformation;
         this.allRequirementsResourcesNotFound = allRequirementsResourcesNotFound;
+        this.featureConflicts = featureConflicts;
     }
 
     /**
@@ -94,9 +103,9 @@ public class RepositoryResolutionException extends RepositoryException {
      * on a {@link ProductRequirementInformation} is not in the form digit.digit.digit.digit then it will be ignored.
      *
      * @param productId The product ID to find the minimum missing version for or <code>null</code> to match to all products
-     * @param version The version to find the minimum missing version for by matching the first three parts so if you supply "9.0.0.0" and this item applies to version "8.5.5.3"
-     *            and "9.0.0.1" then "9.0.0.1" will be returned. Supply <code>null</code> to match all versions
-     * @param edition The edition to find the minimum missing version for or <code>null</code> to match to all products
+     * @param version   The version to find the minimum missing version for by matching the first three parts so if you supply "9.0.0.0" and this item applies to version "8.5.5.3"
+     *                      and "9.0.0.1" then "9.0.0.1" will be returned. Supply <code>null</code> to match all versions
+     * @param edition   The edition to find the minimum missing version for or <code>null</code> to match to all products
      * @return The minimum missing version or <code>null</code> if there were no relevant matches
      */
     public String getMinimumVersionForMissingProduct(String productId, String version, String edition) {
@@ -140,7 +149,7 @@ public class RepositoryResolutionException extends RepositoryException {
      * This method will iterate through the missingProductInformation and returned a filtered collection of all the {@link ProductRequirementInformation#versionRange}s.
      *
      * @param productId The product ID to find the version for or <code>null</code> to match to all products
-     * @param edition The edition to find the version for or <code>null</code> to match to all editions
+     * @param edition   The edition to find the version for or <code>null</code> to match to all editions
      *
      * @return
      */
@@ -173,9 +182,9 @@ public class RepositoryResolutionException extends RepositoryException {
      * indicate a fairly odd repository setup.</p>
      *
      * @param productId The product ID to find the maximum missing version for or <code>null</code> to match to all products
-     * @param version The version to find the maximum missing version for by matching the first three parts so if you supply "8.5.5.2" and this item applies to version "8.5.5.3"
-     *            and "9.0.0.1" then "8.5.5.3" will be returned. Supply <code>null</code> to match all versions
-     * @param edition The edition to find the maximum missing version for or <code>null</code> to match to all products
+     * @param version   The version to find the maximum missing version for by matching the first three parts so if you supply "8.5.5.2" and this item applies to version "8.5.5.3"
+     *                      and "9.0.0.1" then "8.5.5.3" will be returned. Supply <code>null</code> to match all versions
+     * @param edition   The edition to find the maximum missing version for or <code>null</code> to match to all products
      * @return The maximum missing version or <code>null</code> if there were no relevant matches or the maximum version is unbounded
      */
     public String getMaximumVersionForMissingProduct(String productId, String version, String edition) {
@@ -225,11 +234,34 @@ public class RepositoryResolutionException extends RepositoryException {
         return this.missingProductInformation;
     }
 
+    /**
+     * Returns the details of any feature conflicts which occurred during feature resolution
+     *
+     * @see Result#getConflicts()
+     *
+     * @return the feature conflicts
+     */
+    public Map<String, Collection<Chain>> getFeatureConflicts() {
+        return featureConflicts;
+    }
+
     @Override
     public String getMessage() {
         StringBuilder sb = new StringBuilder();
         for (String missing : getTopLevelFeaturesNotResolved()) {
-            sb.append("Requirement not met: resource=").append(missing).append("\n");
+            sb.append("Top level feature not resolved: resource=").append(missing).append("\n");
+        }
+        for (MissingRequirement req : getAllRequirementsResourcesNotFound()) {
+            sb.append(req.toString()).append("\n");
+        }
+        for (ProductRequirementInformation product : getMissingProducts()) {
+            sb.append("Missing product").append(product).append("\n");
+        }
+        for (Entry<String, Collection<Chain>> conflict : getFeatureConflicts().entrySet()) {
+            sb.append("Conflict for ").append(conflict.getKey()).append("\n");
+            for (Chain chain : conflict.getValue()) {
+                sb.append(" - ").append(chain).append("\n");
+            }
         }
         return sb.toString();
     }
@@ -256,7 +288,8 @@ public class RepositoryResolutionException extends RepositoryException {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            return "MissingRequirement [requirementName=" + requirementName + ", owningResource=" + owningResource + "]";
+            String owningResourceString = getResourceName(owningResource);
+            return "MissingRequirement [requirementName=" + requirementName + ", owningResource=" + owningResourceString + "]";
         }
 
         /**
@@ -275,6 +308,21 @@ public class RepositoryResolutionException extends RepositoryException {
          */
         public RepositoryResource getOwningResource() {
             return owningResource;
+        }
+
+        private String getResourceName(RepositoryResource resource) {
+            if (resource == null) {
+                return null;
+            }
+            switch (resource.getType()) {
+                case FEATURE:
+                    return ((EsaResource) resource).getProvideFeature();
+                case PRODUCTSAMPLE:
+                case OPENSOURCE:
+                    return ((SampleResource) resource).getShortName();
+                default:
+                    return resource.toString();
+            }
         }
     }
 

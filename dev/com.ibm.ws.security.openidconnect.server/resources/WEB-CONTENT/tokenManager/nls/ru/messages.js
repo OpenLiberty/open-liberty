@@ -26,12 +26,12 @@ var messages = {
     "LOADING": "Загрузка",
     "LOGOUT": "Выход из системы",
     "NEXT_PAGE": "Следующая страница",
-    "NO_RESULTS_FOUND": "Совпадений не найдено",
-    "PAGES": "{0} из {1} страниц",   // {0} - current page number; {1} - total pages
+    "NO_RESULTS_FOUND": "Результаты не найдены",
+    "PAGES": "Стр. {0} из {1}",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Выберите номер страницы для просмотра",
     "PREVIOUS_PAGE": "Предыдущая страница",
     "PROCESSING": "Обработка",
-    "REGENERATE": "Создать повторно",
+    "REGENERATE": "Обновить",
     "REGISTER": "Зарегистрировать",
     "TABLE_BATCH_BAR": "Панель действий для таблицы",
     "TABLE_FIELD_SORT_ASC": "Таблица отсортирована по {0} в порядке возрастания.",   // {0} - column name (ie. 'Name', 'Client ID')
@@ -42,8 +42,8 @@ var messages = {
 
     // Common Column Names
     "CLIENT_NAME_COL": "Имя клиента",
-    "EXPIRES_COL": "Дата истечения срока действия",
-    "ISSUED_COL": "Дата выдачи",
+    "EXPIRES_COL": "Действует до",
+    "ISSUED_COL": "Выдано",
     "NAME_COL": "Имя",
     "TYPE_COL": "Тип",
 
@@ -66,8 +66,8 @@ var messages = {
     "DELETE_ONE_MESSAGE": "Это действие удалит выбранный элемент app-password/app-token.",
     "DELETE_MANY_MESSAGE": "Это действие удалит {0} выбранных элементов app-password/app-token.",  // 0 - number
     "DELETE_ALL_MESSAGE": "Это действие удалит все элементы app-password/app-token, принадлежащие {0}.", // 0 - user id
-    "DELETE_NONE": "Выбрать для удаления",
-    "DELETE_NONE_MESSAGE": "С помощью переключателей выберите элементы app-password или app-token для удаления.",
+    "DELETE_NONE": "Выберите элементы для удаления",
+    "DELETE_NONE_MESSAGE": "Отметьте элементы app-password или app-token, которые необходимо удалить.",
     "SINGLE_ITEM_SELECTED": "Выбрано элементов: 1",
     "ITEMS_SELECTED": "Выбрано элементов: {0}",            // 0 - number
     "SELECT_ALL_AUTHS": "Выбрать все элементы app-password и app-token для этого пользователя.",

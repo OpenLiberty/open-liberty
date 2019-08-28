@@ -301,7 +301,16 @@ public class ProfileManager implements ProfileServiceLite {
         // Extract the controls
         Map<String, Control> ctrlMap = ControlsHelper.getControlMap(inRoot);
 
-        boolean isAllowOperationIfReposDown = false;
+        boolean isAllowOperationIfReposDown;
+        /*
+         * this variable should never return null since the configManager would have isAllowOpIfRepoDown set default to false
+         * However for unit tests the configManager never gets initialized
+         */
+        try {
+            isAllowOperationIfReposDown = configMgr.isAllowOpIfRepoDown(realmName);
+        } catch (NullPointerException e) {
+            isAllowOperationIfReposDown = false;
+        }
         boolean trustEntityType = false;
 
         List<Context> contexts = inRoot.getContexts();
@@ -733,8 +742,16 @@ public class ProfileManager implements ProfileServiceLite {
         int startIndex = 0;
         String cacheKey = null;
 
-        boolean isAllowOperationIfReposDown = false;
-        boolean setByContext = false;
+        boolean isAllowOperationIfReposDown;
+        /*
+         * this variable should never return null since the configManager would have isAllowOpIfRepoDown set default to false
+         * However for unit tests the configManager never gets initialized
+         */
+        try {
+            isAllowOperationIfReposDown = configMgr.isAllowOpIfRepoDown(realmName);
+        } catch (NullPointerException e) {
+            isAllowOperationIfReposDown = false;
+        }
         Set<String> failureRepositoryIds = new HashSet<String>();
 
         List<Context> contexts = inRoot.getContexts();
@@ -743,7 +760,6 @@ public class ProfileManager implements ProfileServiceLite {
                 String key = contextInput.getKey();
                 if (key != null && Service.CONFIG_PROP_ALLOW_OPERATION_IF_REPOS_DOWN.equals(key)) {
                     isAllowOperationIfReposDown = ((Boolean) contextInput.getValue()).booleanValue();
-                    setByContext = true;
                 }
             }
         }
@@ -904,8 +920,6 @@ public class ProfileManager implements ProfileServiceLite {
                 validateChangeTypes(changeTypes);
             }
             String realm = getRealmName(inRoot);
-            if (!setByContext)
-                isAllowOperationIfReposDown = getConfigManager().isAllowOpIfRepoDown(realm);
 
             boolean isSearchBaseSet = false;
             if (searchBases.size() > 0) {
@@ -1695,13 +1709,23 @@ public class ProfileManager implements ProfileServiceLite {
         Root result = null;
 
         Root root = inRoot;
+        String realmName = getRealmName(root);
         Map<String, Integer> exceptions = new HashMap<String, Integer>();
         WIMException exp = null;
         LoginControl ctrl = null;
         String reposId = null;
         String principalName = null;
         byte[] pwd = null;
-        boolean isAllowOperationIfReposDown = false;
+        boolean isAllowOperationIfReposDown;
+        /*
+         * this variable should never return null since the configManager would have isAllowOpIfRepoDown set default to false
+         * However for unit tests the configManager never gets initialized
+         */
+        try {
+            isAllowOperationIfReposDown = configMgr.isAllowOpIfRepoDown(realmName);
+        } catch (NullPointerException e) {
+            isAllowOperationIfReposDown = false;
+        }
         Set<String> failureRepositoryIds = new HashSet<String>();
         int certExceptionCount = 0;
 

@@ -37,13 +37,13 @@ var messages = {
     "TABLE_FIELD_SORT_ASC": "Die Tabelle ist nach {0} in aufsteigender Reihenfolge sortiert. ",   // {0} - column name (ie. 'Name', 'Client ID')
     "TABLE_FIELD_SORT_DESC": "Die Tabelle ist nach {0} in absteigender Reihenfolge sortiert. ", // {0} - column name (ie. 'Name', 'Client ID')
     "TRUE": "True",
-    "TRY_AGAIN": "Wiederholen Sie den Vorgang...",
+    "TRY_AGAIN": "Vorgang wiederholen...",
     "UPDATE": "Aktualisieren",
 
     // Common Column Names
     "CLIENT_NAME_COL": "Clientname",
-    "EXPIRES_COL": "Ablaufzeit",
-    "ISSUED_COL": "Ausgegeben am",
+    "EXPIRES_COL": "Ablaufdatum",
+    "ISSUED_COL": "Austelldatum",
     "NAME_COL": "Name",
     "TYPE_COL": "Typ",
 

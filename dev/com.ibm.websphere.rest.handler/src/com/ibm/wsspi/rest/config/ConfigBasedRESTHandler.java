@@ -174,6 +174,15 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         }
         String elementName = path.length() < (apiRoot.length() + 1) ? "" : URLDecoder.decode(path.substring(apiRoot.length() + 1, endElementName), "UTF-8");
 
+        // Just in case someone tries to do /config/dataSource[DefaultDataSource] missing the config element parameter,
+        // which was somehow getting through and erroneously returning a list of one data source.
+        // TODO it would be preferable to detect this more cleanly, but for now, at least reject it so that
+        // data isn't erroneously returned.
+        if (elementName.indexOf('[') >= 0) {
+            response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName));
+            return;
+        }
+
         StringBuilder filter = new StringBuilder("(&");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
             filter.append(FilterUtils.createPropertyFilter("config.displayId", uid));

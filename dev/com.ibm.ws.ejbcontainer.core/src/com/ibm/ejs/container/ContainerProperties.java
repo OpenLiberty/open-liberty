@@ -25,10 +25,10 @@ import static com.ibm.ejs.container.ContainerConfigConstants.defaultStatefulSess
 import static com.ibm.ejs.container.ContainerConfigConstants.disableAsyncMethods;
 import static com.ibm.ejs.container.ContainerConfigConstants.disableAutomaticLightweightMethods;
 import static com.ibm.ejs.container.ContainerConfigConstants.disableMDBs;
+import static com.ibm.ejs.container.ContainerConfigConstants.disablePersistentTimers;
 import static com.ibm.ejs.container.ContainerConfigConstants.disableRemote;
 import static com.ibm.ejs.container.ContainerConfigConstants.disableShortDefaultBindings;
 import static com.ibm.ejs.container.ContainerConfigConstants.disableTimers;
-import static com.ibm.ejs.container.ContainerConfigConstants.disablePersistentTimers;
 import static com.ibm.ejs.container.ContainerConfigConstants.ee5Compatibility;
 import static com.ibm.ejs.container.ContainerConfigConstants.ee6Compatibility;
 import static com.ibm.ejs.container.ContainerConfigConstants.emptyAnnotationIgnoresExplicitInterfaces;
@@ -62,8 +62,8 @@ import com.ibm.ejs.container.util.DeploymentUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejbcontainer.diagnostics.IntrospectionWriter;
-import com.ibm.ws.ejbcontainer.diagnostics.TrDumpWriter;
 import com.ibm.wsspi.ejbcontainer.JITDeploy;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 /**
  * ContainerProperties provides access to all System properties used to
@@ -80,8 +80,7 @@ import com.ibm.wsspi.ejbcontainer.JITDeploy;
  * See {@link ContainerConfigConstants} for details about each constant,
  * including default values. <p>
  **/
-public final class ContainerProperties
-{
+public final class ContainerProperties {
     private static final TraceComponent tc = Tr.register(ContainerProperties.class, "EJBContainer", "com.ibm.ejs.container.container");
 
     /**
@@ -142,13 +141,13 @@ public final class ContainerProperties
      * Property that indicates whether or not EJBs should be bound to the server
      * root namespace.
      */
-    public static final boolean BindToServerRoot;
+    public static boolean BindToServerRoot;
 
     /**
      * Property that indicates whether or not EJBs should be bound to contexts in
      * the "java:" namespace.
      */
-    public static final boolean BindToJavaGlobal;
+    public static boolean BindToJavaGlobal;
 
     /**
      * Property that allows the user to specify whether external requests
@@ -240,7 +239,7 @@ public final class ContainerProperties
      * !null and length > 0 means only appNames in this array list are to have
      * simple interface bindings disabled
      **/
-    public static final ArrayList<String> DisableShortDefaultBindings; // d444470
+    public static ArrayList<String> DisableShortDefaultBindings; // d444470
 
     /**
      * Property that allows the user to indicate whether or not EJB timers
@@ -313,7 +312,7 @@ public final class ContainerProperties
      * Property used to allow customers to ignore duplicate elements in their
      * EJB bindings files.
      */
-    public static final boolean IgnoreDuplicateEJBBindings; // PM51230
+    public static boolean IgnoreDuplicateEJBBindings; // PM51230
 
     /**
      * Constant that indicates RemoteException should be used when possible
@@ -494,34 +493,41 @@ public final class ContainerProperties
     public static final boolean WLMAllowOptionAReadOnly;
 
     /**
+     * Property that determines the action to take in response to binding configuration errors.
+     * WARN = Issue a warning for incorrect configuration.
+     * FAIL = Fail application start when incorrect configuration is encountered.
+     * IGNORE = Ignore incorrect configuration.
+     */
+    public static OnError customBindingsOnErr;
+
+    /**
+     * Temporary property to gate custom bindings behind until feature is out of beta
+     */
+    public static boolean customBindingsEnabledBeta;
+
+    /**
      * Static constructor that will initialize all of the 'constants' based
      * on the corresponding system property. <p>
      *
      * See {@link ContainerConfigConstants} for details about each constant,
      * including default values. <p>
      **/
-    static
-    {
+    static {
         AllowCachedTimerDataFor = System.getProperty(allowCachedTimerDataFor); //F001419
 
-        AllowCustomFinderSQLForUpdate = System.getProperty
-                        (allowCustomFinderSQLForUpdate);
+        AllowCustomFinderSQLForUpdate = System.getProperty(allowCustomFinderSQLForUpdate);
 
-        AllowEarlyInsert = System.getProperty
-                        (allowEarlyInsert, "false").equalsIgnoreCase("true");
+        AllowEarlyInsert = System.getProperty(allowEarlyInsert, "false").equalsIgnoreCase("true");
 
-        AllowPrimaryKeyMutation = System.getProperty
-                        (allowPrimaryKeyMutation, "false").equalsIgnoreCase("true");
+        AllowPrimaryKeyMutation = System.getProperty(allowPrimaryKeyMutation, "false").equalsIgnoreCase("true");
 
         BindToServerRoot = System.getProperty(bindToServerRoot, "true").equalsIgnoreCase("true");
 
         BindToJavaGlobal = System.getProperty(bindToJavaGlobal, "true").equalsIgnoreCase("true");
 
-        CheckAppConfig = System.getProperty
-                        (checkAppConfigProp, "false").equalsIgnoreCase("true"); //F743-13921
+        CheckAppConfig = System.getProperty(checkAppConfigProp, "false").equalsIgnoreCase("true"); //F743-13921
 
-        CreateInstanceAtStart = System.getProperty
-                        (createInstanceAtStartup, "true").equalsIgnoreCase("true");
+        CreateInstanceAtStart = System.getProperty(createInstanceAtStartup, "true").equalsIgnoreCase("true");
 
         DeclaredRemoteAreApplicationExceptions = DeploymentUtil.DeclaredRemoteAreApplicationExceptions; // RTC116527
 
@@ -538,11 +544,9 @@ public final class ContainerProperties
         // Stateful session bean timeout property is specified in minutes, but stored and used internally as milliseconds
         long tmpStatefulSessionTimeout = 10;
         boolean caughtNFE = false;
-        try
-        {
+        try {
             tmpStatefulSessionTimeout = Long.getLong(defaultStatefulSessionTimeout, 10); // d627044
-            if (tmpStatefulSessionTimeout == 0)
-            {
+            if (tmpStatefulSessionTimeout == 0) {
                 tmpStatefulSessionTimeout = 10;
             } else if (tmpStatefulSessionTimeout < 0) {
                 caughtNFE = true;
@@ -550,8 +554,7 @@ public final class ContainerProperties
         } catch (NumberFormatException nfe) {
             caughtNFE = true;
         }
-        if (caughtNFE)
-        {
+        if (caughtNFE) {
             Object[] parms = new Object[] { defaultStatefulSessionTimeout, tmpStatefulSessionTimeout, "10" }; // d627044
             Tr.warning(tc, "INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0313W", parms);
             tmpStatefulSessionTimeout = 10;
@@ -559,44 +562,32 @@ public final class ContainerProperties
         tmpStatefulSessionTimeout = tmpStatefulSessionTimeout * 60 * 1000;
         DefaultStatefulSessionTimeout = tmpStatefulSessionTimeout; // d627044
 
-        DisableAsyncMethods = System.getProperty
-                        (disableAsyncMethods, "false").equalsIgnoreCase("true"); // F743-13022
+        DisableAsyncMethods = System.getProperty(disableAsyncMethods, "false").equalsIgnoreCase("true"); // F743-13022
 
-        DisableAutomaticLightweightMethods = System.getProperty
-                        (disableAutomaticLightweightMethods, "false").equalsIgnoreCase("true"); // F61004.1
+        DisableAutomaticLightweightMethods = System.getProperty(disableAutomaticLightweightMethods, "false").equalsIgnoreCase("true"); // F61004.1
 
-        DisableMDBs = System.getProperty
-                        (disableMDBs, "false").equalsIgnoreCase("true"); // F743-13023
+        DisableMDBs = System.getProperty(disableMDBs, "false").equalsIgnoreCase("true"); // F743-13023
 
-        DisableRemote = System.getProperty
-                        (disableRemote, "false").equalsIgnoreCase("true"); // F743-13024
+        DisableRemote = System.getProperty(disableRemote, "false").equalsIgnoreCase("true"); // F743-13024
 
-        DisableTimers = System.getProperty
-                        (disableTimers, "false").equalsIgnoreCase("true"); // F743-13022
+        DisableTimers = System.getProperty(disableTimers, "false").equalsIgnoreCase("true"); // F743-13022
 
-        DisablePersistentTimers = System.getProperty
-                        (disablePersistentTimers, "false").equalsIgnoreCase("true"); // PI50798
+        DisablePersistentTimers = System.getProperty(disablePersistentTimers, "false").equalsIgnoreCase("true"); // PI50798
 
         EE5Compatibility = Boolean.getBoolean(ee5Compatibility); // F743-14982CdRv
 
         EE6Compatibility = Boolean.getBoolean(ee6Compatibility); // RTC113949
 
-        String emptyAnnotationIgnoresExplicitInterfacesString =
-                        System.getProperty(emptyAnnotationIgnoresExplicitInterfaces);
-        EmptyAnnotationIgnoresExplicitInterfaces =
-                        emptyAnnotationIgnoresExplicitInterfacesString != null ?
-                                        Boolean.parseBoolean(emptyAnnotationIgnoresExplicitInterfacesString) :
-                                        EE6Compatibility; // RTC113949
+        String emptyAnnotationIgnoresExplicitInterfacesString = System.getProperty(emptyAnnotationIgnoresExplicitInterfaces);
+        EmptyAnnotationIgnoresExplicitInterfaces = emptyAnnotationIgnoresExplicitInterfacesString != null ? Boolean.parseBoolean(emptyAnnotationIgnoresExplicitInterfacesString) : EE6Compatibility; // RTC113949
 
         ExcludeNestedExceptions = Boolean.getBoolean(excludeNestedExceptions); // d672063
 
         //d425164: For WAS 7.0+ we should expand the CMP Connection Factory JNDI Name by default.  This is the opposite
         //of previous releases where we did NOT expand this name by default.
-        ExpandCMPCFJNDIName = System.getProperty
-                        (expandCMPCFJNDIName, "true").equalsIgnoreCase("true"); //d425164
+        ExpandCMPCFJNDIName = System.getProperty(expandCMPCFJNDIName, "true").equalsIgnoreCase("true"); //d425164
 
-        FbpkAlwaysReadOnly = System.getProperty
-                        (fbpkReadOnlyProp, "false").equalsIgnoreCase("true");
+        FbpkAlwaysReadOnly = System.getProperty(fbpkReadOnlyProp, "false").equalsIgnoreCase("true");
 
         IgnoreDuplicateEJBBindings = Boolean.getBoolean(ignoreDuplicateEJBBindings); // PM51230
 
@@ -606,8 +597,7 @@ public final class ContainerProperties
         if (tmp != null) {
             if ("true".equalsIgnoreCase(tmp)) {//pre-PK87857 value
                 op = INCLUDE_NESTED_EXCEPTIONS;
-            }
-            else {
+            } else {
                 try {
                     op = Integer.parseInt(tmp);
                 } catch (NumberFormatException e) {
@@ -638,11 +628,9 @@ public final class ContainerProperties
 
         MaxUnclaimedAsyncResults = Integer.getInteger(maxUnclaimedAsyncResults, 1000); // d690014.1
 
-        NoEJBPool = System.getProperty
-                        (noEJBPool, "false").equalsIgnoreCase("true");
+        NoEJBPool = System.getProperty(noEJBPool, "false").equalsIgnoreCase("true");
 
-        NoPrimaryKeyMutation = System.getProperty
-                        (noPrimaryKeyMutation, "false").equalsIgnoreCase("true");
+        NoPrimaryKeyMutation = System.getProperty(noPrimaryKeyMutation, "false").equalsIgnoreCase("true");
 
         PassivationPolicy = System.getProperty(passivationPolicy);
 
@@ -650,8 +638,7 @@ public final class ContainerProperties
 
         PoolSize = System.getProperty(poolSizeSpecProp);
 
-        Portable = System.getProperty
-                        (portableProp, "true").equalsIgnoreCase("true");
+        Portable = System.getProperty(portableProp, "true").equalsIgnoreCase("true");
 
         PortableFinder = System.getProperty(portableFinderProp);
 
@@ -679,15 +666,12 @@ public final class ContainerProperties
         ValidateMergedXMLFail = "fail".equals(validateMergedXMLValue);
         ValidateMergedXML = ValidateMergedXMLFail | "log".equals(validateMergedXMLValue);
 
-        WLMAllowOptionAReadOnly = System.getProperty
-                        (wlmAllowOptionAReadOnlyProp, "false").equalsIgnoreCase("true");
+        WLMAllowOptionAReadOnly = System.getProperty(wlmAllowOptionAReadOnlyProp, "false").equalsIgnoreCase("true");
 
         String simpleIntBindingsProperty = System.getProperty(disableShortDefaultBindings);
-        if (simpleIntBindingsProperty != null)
-        {
+        if (simpleIntBindingsProperty != null) {
             DisableShortDefaultBindings = new ArrayList<String>();
-            if (!simpleIntBindingsProperty.equalsIgnoreCase("*"))
-            {
+            if (!simpleIntBindingsProperty.equalsIgnoreCase("*")) {
                 String[] apps = simpleIntBindingsProperty.split(":");
                 for (int i = 0; i < apps.length; i++) {
                     DisableShortDefaultBindings.add(apps[i]);
@@ -698,8 +682,7 @@ public final class ContainerProperties
         }
 
         String extendSetRollbackOnlyProperty = System.getProperty(extendSetRollbackOnlyBehaviorBeyondInstanceFor); //d461917.1
-        if (extendSetRollbackOnlyProperty != null)
-        {
+        if (extendSetRollbackOnlyProperty != null) {
             ExtendSetRollbackOnlyBehaviorBeyondInstanceFor = new ArrayList<String>();
             String[] apps = extendSetRollbackOnlyProperty.split(":");
             for (int i = 0; i < apps.length; i++) {
@@ -710,8 +693,7 @@ public final class ContainerProperties
         }
 
         String limitSetRollbackOnlyProperty = System.getProperty(limitSetRollbackOnlyBehaviorToInstanceFor); //d461917.1
-        if (limitSetRollbackOnlyProperty != null)
-        {
+        if (limitSetRollbackOnlyProperty != null) {
             LimitSetRollbackOnlyBehaviorToInstanceFor = new ArrayList<String>();
             String[] apps = limitSetRollbackOnlyProperty.split(":");
             for (int i = 0; i < apps.length; i++) {
@@ -719,11 +701,6 @@ public final class ContainerProperties
             }
         } else {
             LimitSetRollbackOnlyBehaviorToInstanceFor = null;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        {
-            introspect(new TrDumpWriter(tc));
         }
     }
 
@@ -733,8 +710,7 @@ public final class ContainerProperties
      *
      * @param writer output resource for the introspection data
      */
-    public static void introspect(IntrospectionWriter writer)
-    {
+    public static void introspect(IntrospectionWriter writer) {
         writer.begin("Container Properties");
         writer.println("Property: AllowCachedTimerDataFor = " + AllowCachedTimerDataFor);//F001419
         writer.println("Property: AllowCustomFinderSQLForUpdate = " + AllowCustomFinderSQLForUpdate);
@@ -748,6 +724,7 @@ public final class ContainerProperties
         writer.println("Property: BlockWorkUntilAppStartedWaitTime = " + BlockWorkUntilAppStartedWaitTime); // F743-15941
         writer.println("Property: CheckAppConfig          = " + CheckAppConfig); // F743-13921
         writer.println("Property: CreateInstanceAtStart   = " + CreateInstanceAtStart);
+        writer.println("Property: CustomBindingsOnError   = " + customBindingsOnErr);
         writer.println("Property: DefaultSessionAccessTimeout = " + DefaultSessionAccessTimeout); // d704504
         writer.println("Property: DefaultStatefulSessionTimeout  = " + DefaultStatefulSessionTimeout); // F743-14726  d627044
         writer.println("Property: DisableAsyncMethods     = " + DisableAsyncMethods); // F743-13022
@@ -791,6 +768,7 @@ public final class ContainerProperties
                        ExtendSetRollbackOnlyBehaviorBeyondInstanceFor);
         writer.println("Property: LimitSetRollbackOnlyBehaviorToInstanceFor = " +
                        LimitSetRollbackOnlyBehaviorToInstanceFor);
+        writer.println("Property: customBindingsEnabledBeta = " + customBindingsEnabledBeta);
         writer.end();
     }
 
@@ -799,8 +777,7 @@ public final class ContainerProperties
      * loaded, and returns a reference to this class, which should be held to
      * insure the class is not garbage collected / unloaded. <p>
      **/
-    public static Class<ContainerProperties> init()
-    {
+    public static Class<ContainerProperties> init() {
         return ContainerProperties.class;
     }
 
@@ -809,8 +786,7 @@ public final class ContainerProperties
      * are ever created; in conjunction with the final class declaration insures
      * this class is a Singleton object. <p>
      **/
-    private ContainerProperties()
-    {
+    private ContainerProperties() {
         // Intentionally left blank - this constructor can never be called.
     }
 }

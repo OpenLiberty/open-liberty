@@ -82,6 +82,24 @@ public class Http2Client {
         timeoutHelper.start();
     }
 
+    /**
+     * Create an Http2Client with the option to use HTTP/2 with prior knowledge
+     * 
+     * @param hostName
+     * @param httpDefaultPort
+     * @param blockUntilConnectionIsDone
+     * @param defaultTimeOutToSendFrame
+     * @param useHttp2WithPriorKnowledge
+     */
+    public Http2Client(String hostName, int httpDefaultPort, CountDownLatch blockUntilConnectionIsDone, long defaultTimeOutToSendFrame, 
+            boolean useHttp2WithPriorKnowledge) {
+        this(hostName, httpDefaultPort, blockUntilConnectionIsDone, defaultTimeOutToSendFrame);
+        if (useHttp2WithPriorKnowledge) {
+            // tell the connection not to wait for a the 101 switching protocols response since we're not using h2c here
+            h2Connection.setServer101ResponseReceived(true);
+        }
+    }
+
     public void sendUpgradeHeader(String requestUri) {
         sendUpgradeHeader(requestUri, HTTPUtils.HTTPMethod.GET, null);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -2189,4 +2190,31 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return getHttpConfig().useForwardingHeadersInAccessLog();
     }
 
+    /**
+     * Check if HTTP/2 is enabled for this context
+     * 
+     * @return true if HTTP/2 is enabled for this link
+     */
+    public boolean isHttp2Enabled() {
+
+        boolean isHTTP2Enabled = false;
+
+        //If servlet-3.1 is enabled, HTTP/2 is optional and by default off.
+        if (HttpConfigConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            //If so, check if the httpEndpoint was configured for HTTP/2
+            isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() != null && getHttpConfig().getUseH2ProtocolAttribute());
+        }
+
+        //If servlet-4.0 is enabled, HTTP/2 is optional and by default on.
+        else if (HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            //If not configured as an attribute, getUseH2ProtocolAttribute will be null, which returns true
+            //to use HTTP/2.
+            isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() == null || getHttpConfig().getUseH2ProtocolAttribute());
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Has HTTP/2 been enabled on this port: " + isHTTP2Enabled);
+        }
+        return isHTTP2Enabled;
+    }
 }

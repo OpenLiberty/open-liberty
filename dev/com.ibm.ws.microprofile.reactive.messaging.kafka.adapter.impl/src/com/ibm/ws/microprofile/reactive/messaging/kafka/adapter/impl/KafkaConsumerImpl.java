@@ -55,6 +55,17 @@ public class KafkaConsumerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kaf
 
     /**
      * @param topics
+     */
+    @Override
+    public void subscribe(Collection<String> topics) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLAZZ, "subscribe", "Topics: {0}", topics);
+        }
+        this.getDelegate().subscribe(topics);
+    }
+
+    /**
+     * @param topics
      * @param ackTracker
      */
     @Override
