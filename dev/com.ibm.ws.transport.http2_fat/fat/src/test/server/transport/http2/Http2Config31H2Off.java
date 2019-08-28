@@ -27,7 +27,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 public class Http2Config31H2Off extends FATServletClient {
 
     private static final String CLASS_NAME = Http2Config40H2Off.class.getName();
@@ -80,7 +80,7 @@ public class Http2Config31H2Off extends FATServletClient {
 
     /**
      * Test Coverage: Client Sends Upgrade Header followed by a SETTINGS frame
-     * Test Outcome: Connection should work ok
+     * Test Outcome: The connection should time out
      * Spec Section: 6.5
      *
      * @throws Exception
@@ -90,4 +90,15 @@ public class Http2Config31H2Off extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Connect to server via the insecure port and immediately send the HTTP/2 magic string
+     * HTTP/2 is disabled on the server
+     * Test Outcome: The server should NOT send the HTTP/2 preface
+     *
+     * @throws Exception
+     */
+    @Test
+    public void servlet31H2OffDirectConnection() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
 }
