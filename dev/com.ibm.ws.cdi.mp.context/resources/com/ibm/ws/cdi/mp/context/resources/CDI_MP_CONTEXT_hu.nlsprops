@@ -26,10 +26,9 @@
 # com.ibm.ws.concurrent.mp.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
-CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Ahhoz, hogy a CDI komponensek \
-megfelel\u0151en m\u0171k\u00f6djenek a m\u0171veletb\u0151l vagy feladatb\u00f3l t\u00f6rt\u00e9n\u0151 hozz\u00e1f\u00e9r\u00e9s sor\u00e1n, akkor a kontextus, \
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Ahhoz, hogy a CDI komponensek megfelel\u0151en m\u0171k\u00f6djenek a m\u0171veletb\u0151l vagy feladatb\u00f3l t\u00f6rt\u00e9n\u0151 hozz\u00e1f\u00e9r\u00e9s sor\u00e1n, a kontextus, \
 illetve a kontextusf\u00fcgg\u0151 m\u0171velet vagy feladat r\u00f6gz\u00edt\u00e9se el\u0151tt el kell \u00e9rnie a CDI komponenseket. \
-A k\u00f6vetkez\u0151 CDI komponenseket kell el\u00e9rnie a kontextus r\u00f6gz\u00edt\u00e9se el\u0151tt: {0}.
+A k\u00f6vetkez\u0151 CDI komponensek nem voltak megnyitva a kontextus r\u00f6gz\u00edt\u00e9se el\u0151tt: {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=A CDI kontextus r\u00f6gz\u00edt\u00e9sekor csak az adott id\u0151pontban el\u00e9rt CDI komponenseket hozza l\u00e9tre a CDI fut\u00e1si k\u00f6rnyezet. \
 Ennek eredm\u00e9nyek\u00e9pp a kontextusf\u00fcgg\u0151 m\u0171veletekben el\u0151sz\u00f6r el\u00e9rt CDI komponensek nem tudj\u00e1k megfelel\u0151en k\u00f6z\u00f6lni \u00e1llapotukat a soron k\u00f6vetkez\u0151 kontextusf\u00fcgg\u0151 m\u0171veletekkel.
-CWWKC1158.cannot.lazy.enlist.beans.useraction=Az alkalmaz\u00e1st m\u00f3dos\u00edtani kell, hogy miel\u0151tt a m\u0171velet kontextusa r\u00f6gz\u00edt\u00e9sre ker\u00fcl, megh\u00edvjon valamilyen CDI komponens m\u0171veletet, p\u00e9ld\u00e1ul egy nyilv\u00e1nos met\u00f3dust. 
+CWWKC1158.cannot.lazy.enlist.beans.useraction=Az alkalmaz\u00e1st m\u00f3dos\u00edtani kell, hogy miel\u0151tt a m\u0171velet kontextusa r\u00f6gz\u00edt\u00e9sre ker\u00fcl, megh\u00edvjon valamilyen CDI komponens m\u0171veletet, p\u00e9ld\u00e1ul egy nyilv\u00e1nos met\u00f3dust.

@@ -42,6 +42,11 @@ duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: Se ha encontrado
 duplicate.application.configuration.name.CWMCG0203E.explanation=La configuraci\u00f3n de la aplicaci\u00f3n debe ser exclusiva.
 duplicate.application.configuration.name.CWMCG0203E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
 
+# An instance of the {0} service could not be found
+service.not.found.CWMCG0204E=CWMCG0204E: No se ha podido obtener una instancia del servicio {0}.
+service.not.found.CWMCG0204E.explanation=Se ha producido un error interno y la configuraci\u00f3n de MicroProfile no ha podido encontrar un servicio.
+service.not.found.CWMCG0204E.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.
+
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Origen de configuraci\u00f3n de propiedades de la aplicaci\u00f3n XML de servidor
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,6 +135,26 @@ FAILED_TO_WRITE_LOG.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul exist\u
 LOG_FILE_RESUMED=TRAS3006I: A fost reluat\u0103 jurnalizarea mesajelor \u00een fi\u015fierul {0}.
 LOG_FILE_RESUMED.explanation=Mesaje pot fi scrise \u00een fi\u015fier.
 LOG_FILE_RESUMED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: Maparea numelui c\u00e2mpului de jurnalizare JSON este formatat\u0103 incorect.
+JSON_FIELDS_FORMAT_WARNING.explanation=Maparea numelui c\u00e2mpului de jurnalizare JSON este formatat\u0103 incorect.
+JSON_FIELDS_FORMAT_WARNING.useraction=Asigura\u0163i-v\u0103 c\u0103 formatul propriet\u0103\u0163ii de mapare nume c\u00e2mp de jurnalizare JSON este corect. Maparea de c\u00e2mp de jurnalizare JSON poate fi specificat\u0103 \u00een diferite feluri, specificate \u00een documenta\u0163ia de configurare a jurnaliz\u0103rii.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: Proprietatea de mapare c\u00e2mp de jurnalizare JSON are \u00eentr-o intrare prea multe sau prea pu\u0163ine jetoane.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=Proprietatea de mapare c\u00e2mp de jurnalizare JSON trebuie formatat\u0103 knownFieldName:newFieldName sau eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=Proprietatea de mapare c\u00e2mp de jurnalizare JSON trebuie formatat\u0103 knownFieldName:newFieldName sau eventType:knownFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Numele de c\u00e2mp de jurnalizare JSON furnizat nu se potrive\u015fte cu niciunul din numele de c\u00e2mpuri cunoscute pentru evenimentele specificate.
+JSON_FIELDS_NO_MATCH.explanation=Numele de c\u00e2mp de jurnalizare JSON furnizat nu se potrive\u015fte cu niciunul din numele de c\u00e2mpuri cunoscute.
+JSON_FIELDS_NO_MATCH.useraction=V\u0103 rug\u0103m furniza\u0163i un nume de c\u00e2mp de jurnalizare JSON care se potrive\u015fte cu unul din numele cunoscute (de ex. message, ibm_datetime, ibm_sequence)
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Tipul de eveniment furnizat nu se potrive\u015fte cu niciunul din tipurile de eveniment cunoscute.
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Tipurile de eveniment acceptate sunt: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Tipurile de eveniment acceptate sunt: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: A fost livrat un caracter invalid \u00een proprietatea de mapare c\u00e2mp de jurnalizare JSON.
+JSON_FIELDS_INVALID_CHARACHTER.explanation= Sunt acceptate doar litere, cifre \u015fi : \u00een proprietatea de mapare c\u00e2mp de jurnalizare JSON.
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Modifica\u0163i valoarea propriet\u0103\u0163ii de mapare c\u00e2mp de jurnalizare JSON pentru a \u00eenl\u0103tura caracterele invalide.
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

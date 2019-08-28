@@ -150,3 +150,8 @@ MP_JWT_FRONT_END_ERROR.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu, 
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: Funkce MicroProfile JWT nem\u016f\u017ee prov\u00e9st ov\u011b\u0159en\u00ed, proto\u017ee se v aplikaci o\u010dek\u00e1v\u00e1 typ ov\u011b\u0159en\u00ed [{0}], ale nalezeno bylo [{1}]. Atribut [{2}] je nastaven na [{3}]. 
 MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Chcete-li \u00fasp\u011b\u0161n\u011b prov\u00e9st ov\u011b\u0159en\u00ed, prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed. a) Ujist\u011bte se, \u017ee atribut ignoreApplicationAuthMethod je "true" b) anotace loginConfig je v aplikaci nastavena na MP-JWT.
 MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Ujist\u011bte se, \u017ee je server nebo konfigurace aplikace aktualizov\u00e1na.
+
+# do not translate HttpServletRequest.logout
+JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: Funkce MicroProfile JWT nem\u016f\u017ee prov\u00e9st ov\u011b\u0159en\u00ed, proto\u017ee do\u0161lo k odhl\u00e1\u0161en\u00ed tokenu JWT v po\u017eadavku.
+JWT_PREVIOUSLY_LOGGED_OUT.explanation=P\u0159edchoz\u00ed vol\u00e1n\u00ed HttpServletRequest.logout() bylo provedeno s p\u0159edm\u011btem, kter\u00fd byl ov\u011b\u0159en t\u00edmto tokenem JWT. 
+JWT_PREVIOUSLY_LOGGED_OUT.useraction=Ode\u0161lete po\u017eadavek znovu s jin\u00fdm tokenem JWT.

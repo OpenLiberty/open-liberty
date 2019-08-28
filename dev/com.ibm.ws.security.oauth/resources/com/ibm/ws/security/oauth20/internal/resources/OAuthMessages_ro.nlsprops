@@ -113,9 +113,9 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Valoarea {0} \u00een configurarea
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Valoarea din atributul indicat este prea mare.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Seta\u0163i atributul indicat la o valoare corespunz\u0103toare.  
 
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: \u00cenregistrarea clientului OAuth sau actualizarea a e\u015fuat deoarece datele de client con\u0163in un caracter ilegal [{0}].
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: \u00cenregistrarea clientului OAuth sau actualizarea a e\u015fuat deoarece datele de client con\u0163in caracterul ilegal "{0}".
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Caracterul nu este permis \u00een datele de client.
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=\u00cenl\u0103tura\u0163i caracterul ilegal \u015fi relansa\u0163i cererea. 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=\u00cenl\u0103tura\u0163i caracterul ilegal \u015fi retrimite\u0163i cererea. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: ID-ul de client {0} nu a fost g\u0103sit.
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Cererea a con\u0163inut un ID de client care nu a fost g\u0103sit. 
@@ -138,7 +138,7 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=Valoarea JSON din corpul
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Examina\u0163i documenta\u0163ia API pentru acest serviciu, \u015fi re\u00eencerca\u0163i cererea.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: ID-ul de client {0} exist\u0103 deja.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Opera\u0163ia a e\u015fuat deoarece clientul exist\u0103 deja. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Opera\u0163ia a e\u015fuat deoarece ID-ul de client exist\u0103 deja. 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Examina\u0163i documenta\u0163ia API pentru acest serviciu, \u015fi re\u00eencerca\u0163i cererea cu parametrii corespunz\u0103tori.
 
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: O actualizare a clientului e\u015fueaz\u0103. Cererea de actualizare indic\u0103 p\u0103strarea secretului client, dar \u00eenregistrarea existent\u0103 nu are setat niciun secret client.
@@ -240,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nu este ne
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: Cererea a e\u015fuat deoarece access_token nu este valid sau a expirat.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Procesarea cererii a e\u015fuat, deoarece access_token nu este valid.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Asigura\u0163i-v\u0103 c\u0103 access_token este valid \u015fi nu a expirat.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Atributul de configura\u0163ie al furnizorului OpenId Connect, keyStoreRef, ar putea s\u0103 lipseasc\u0103 sau este incorect.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -445,7 +449,7 @@ JAVA8_REQUIRED=CWWKS1495W: Furnizorul OpenID Connect nu poate procesa cererea de
 JAVA8_REQUIRED.explanation=Versiunea Java curent\u0103 nu este 8 sau mai nou\u0103.
 JAVA8_REQUIRED.useraction=Instala\u0163i Java versiunea 8 sau mai nou\u0103
 
-JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Furnizorul OpenID Connect {0} are atributul de configura\u0163ie {1} setat s\u0103 utilizeze algoritmul {2}, ceea ce necesit\u0103 Java 8 sau mai nou\u0103. Furnizorul specificat va ignora setarea {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Furnizorul OpenID Connect {0} are atributul de configura\u0163ie {1} setat s\u0103 utilizeze algoritmul {2}, ceea ce necesit\u0103 Java 8 sau mai nou\u0103. Furnizorul OpenID Connect specificat va ignora setarea {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Versiunea Java curent\u0103 nu este 8 sau mai nou\u0103.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Instala\u0163i Java versiunea 8 sau mai nou\u0103 pentru a folosi op\u0163iunea de configura\u0163ie men\u0163ionat\u0103.
 

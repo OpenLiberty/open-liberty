@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -267,3 +267,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Nep\u0159ihla\u0161ujte se s p
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: Operaci s registrem u\u017eivatel\u016f nelze prov\u00e9st, proto\u017ee \u00falo\u017ei\u0161t\u011b {0} je jen pro \u010dten\u00ed. Operace z\u00e1pisu nepodporuje. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=\u00dalo\u017ei\u0161t\u011b je jen pro \u010dten\u00ed. Nepodporuje operace vytv\u00e1\u0159en\u00ed, aktualizace ani odstran\u011bn\u00ed.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Ujist\u011bte se, \u017ee nen\u00ed vyvol\u00e1na operace z\u00e1pisu nad \u00falo\u017ei\u0161t\u011bm jen pro \u010dten\u00ed.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Po\u017eadovan\u00e9 identifik\u00e1tory pro entitu chyb\u00ed.
+REQUIRED_IDENTIFIERS_MISSING.explanation=Identifik\u00e1tory uniqueName a uniqueId nejsou zad\u00e1ny. Zad\u00e1n mus\u00ed b\u00fdt alespo\u0148 jeden identifik\u00e1tor.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Ov\u011b\u0159te, \u017ee je pro ka\u017edou p\u0159edanou identitu zad\u00e1na vlastnost identifik\u00e1toru. Pokud n\u011bkter\u00fd identifik\u00e1tor nen\u00ed zad\u00e1n, p\u0159idejte p\u0159\u00edslu\u0161nou vlastnost a zadejte bu\u010f polo\u017eku uniqueName, nebo polo\u017eku uniqueId.

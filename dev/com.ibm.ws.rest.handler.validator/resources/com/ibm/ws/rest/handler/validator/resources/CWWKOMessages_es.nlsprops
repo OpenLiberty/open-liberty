@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Compruebe que la caracter\u00edstica que pr
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: La cabecera X-Login-Config-Props requiere un car\u00e1cter de signo de igual (=) como delimitador entre el nombre y el valor de la propiedad de configuraci\u00f3n de inicio de sesi\u00f3n.
 CWWKO1552_MISSING_DELIMITER.explanation=El delimitador de signo de igual es necesario para determinar qu\u00e9 parte de la cabecera X-Login-Config-Props es el nombre de la propiedad de configuraci\u00f3n de inicio de sesi\u00f3n y qu\u00e9 parte es el valor.
 CWWKO1552_MISSING_DELIMITER.useraction=Actualice la cabecera X-Login-Config-Props para incluir un signo de igual (=) entre el nombre y el valor de la propiedad de configuraci\u00f3n de inicio de sesi\u00f3n.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: No hay manejadores registrados que coincidan con el URL solicitado {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Se ha intentado acceder a un URL que no coincide con ninguno de los manejadores registrados.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Corrija el URL para que coincida con un manejador registrado.

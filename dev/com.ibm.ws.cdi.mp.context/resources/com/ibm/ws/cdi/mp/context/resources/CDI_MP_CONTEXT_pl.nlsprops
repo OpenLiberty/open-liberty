@@ -27,7 +27,7 @@
 
 # do not translate: CDI, CompletionStage
 CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Aby zachowanie komponent\u00f3w bean CDI w przypadku uzyskiwania dost\u0119pu z dzia\u0142ania lub zadania by\u0142o poprawne, dost\u0119p do komponent\u00f3w bean CDI nale\u017cy uzyska\u0107 przed przechwyceniem kontekstu dzia\u0142ania lub zadania kontekstowego. \
-Przed przechwyceniem kontekstu nale\u017cy uzyska\u0107 dost\u0119p do nast\u0119puj\u0105cych komponent\u00f3w bean CDI: {0}.
+Nie uzyskano dost\u0119pu do nast\u0119puj\u0105cych komponent\u00f3w bean CDI przed przechwyceniem kontekstu: {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=Tylko komponenty bean CDI, do kt\u00f3rych dost\u0119p zosta\u0142 uzyskany w momencie przechwytywania kontekstu CDI, s\u0105 tworzone przez \u015brodowisko wykonawcze CDI. \
 W wyniku tego komponenty bean CDI, do kt\u00f3rych dost\u0119p po raz pierwszy uzyskano w operacjach kontekstowych, nie mog\u0105 propagowa\u0107 poprawnie swojego stanu do kolejnych operacji kontekstowych.
 CWWKC1158.cannot.lazy.enlist.beans.useraction=Przed przechwyceniem kontekstu nale\u017cy zmieni\u0107 aplikacj\u0119 w celu wywo\u0142ania niekt\u00f3rych operacji bean CDI, takich jak metoda publiczna.

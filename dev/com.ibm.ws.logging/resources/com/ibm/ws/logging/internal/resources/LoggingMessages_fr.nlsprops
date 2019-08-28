@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -126,17 +126,35 @@ CONSOLE_FORMAT_UPDATED.useraction=Aucune action n'est requise.
 
 MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: Les messages suivants sont masqu\u00e9s et n''apparaissent pas dans le fichier console.log : {0}
 MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Les messages configur\u00e9s pour \u00eatre masqu\u00e9s ne sont pas \u00e9crits dans le fichier console.log. Ils sont \u00e9crits dans les r\u00e9f\u00e9rentiels de journaux et de donn\u00e9es de trace pour la consignation binaire.
-
 MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Aucune action n'est requise
 
 FAILED_TO_WRITE_LOG=TRAS3005E: Echec de l''\u00e9criture de messages dans le fichier {0}.
 FAILED_TO_WRITE_LOG.explanation=Une erreur est survenue lors de la tentative d'\u00e9criture du message dans le fichier.
-
 FAILED_TO_WRITE_LOG.useraction=Assurez-vous que le r\u00e9pertoire existe, qu'il est accessible en \u00e9criture et qu'il dispose d'un espace disque suffisant.
 
 LOG_FILE_RESUMED=TRAS3006I: La journalisation des messages dans le fichier {0} a repris.
 LOG_FILE_RESUMED.explanation=Les messages peuvent \u00eatre \u00e9crits dans le fichier.
 LOG_FILE_RESUMED.useraction=Aucune action n'est requise.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: Le mappage du nom de zone de journalisation JSON est incorrectement format\u00e9.
+JSON_FIELDS_FORMAT_WARNING.explanation=Le mappage du nom de zone de journalisation JSON est incorrectement format\u00e9.
+JSON_FIELDS_FORMAT_WARNING.useraction=V\u00e9rifiez que le format de la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON est correct. Le mappage du nom de zone JSON peut \u00eatre indiqu\u00e9 de diff\u00e9rentes mani\u00e8res dans la documentation de la configuration de journalisation.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON comporte trop ou trop peu de jetons dans une entr\u00e9e.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON doit \u00eatre au format knownFieldName:newFieldName ou eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON doit \u00eatre au format knownFieldName:newFieldName ou eventType:knownFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Le nom de zone de journalisation JSON fourni ne correspond pas \u00e0 l'un des noms de zone connus pour le ou les \u00e9v\u00e9nements indiqu\u00e9s
+JSON_FIELDS_NO_MATCH.explanation=Le nom de zone de journalisation JSON fourni ne correspond pas \u00e0 l'un des noms de zone connus
+JSON_FIELDS_NO_MATCH.useraction=Veuillez fournir un nom de zone de journalisation JSON qui correspond \u00e0 l'une des zones connues (par exemple, message, ibm_datetime, ibm_sequence)
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Le type d'\u00e9v\u00e9nement fourni ne correspond pas \u00e0 l'un des types d'\u00e9v\u00e9nement connus
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Les types d'\u00e9v\u00e9nement accept\u00e9s sont les suivants : liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Les types d'\u00e9v\u00e9nement accept\u00e9s sont les suivants : liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Un caract\u00e8re non valide a \u00e9t\u00e9 fourni dans la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON
+JSON_FIELDS_INVALID_CHARACHTER.explanation= Seuls les lettres, les nombres et les caract\u00e8res : sont accept\u00e9s dans la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Changez la valeur de votre propri\u00e9t\u00e9 de mappage de nom de zone de journalisation JSON pour supprimer les caract\u00e8res non valides
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

@@ -26,8 +26,8 @@
 # com.ibm.ws.concurrent.mp.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
-CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: \u00c8 necessario accedere ai bean CDI prima di catturare il contesto per l''azione o l''attivit\u00e0 contestuale affinch\u00e9 i bean CDI si comportino correttamente quando vi si accede dall''azione o dall''attivit\u00e0. \
-Prima di catturare il contesto \u00e8 necessario accedere ai seguenti bean CDI : {0}.
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: \u00c8 necessario accedere ai bean CDI prima di catturare il contesto per l''azione o l''attivit\u00e0 contestuale  affinch\u00e9 i bean CDI si comportino correttamente quando vi si accede dall''azione o dall''attivit\u00e0. \
+\u00c8 stato effettato l''accesso ai seguenti bean CDI prima che fosse catturato il contesto: {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=Quando il contesto CDI viene catturato, il runtime CDI crea solo i bean CDI a cui \u00e8 stato eseguito l'accesso in quel momento. \
 Di conseguenza, i bean CDI a cui si accede per primo nelle operazioni contestuali non possono propagare correttamente il proprio stato alle successive operazioni contestuali.
 CWWKC1158.cannot.lazy.enlist.beans.useraction=L'applicazione deve essere modificata per richiamare alcune operazioni bean CDI, come ad esempio un metodo pubblico, prima che possa essere catturato il contesto per l'operazione.

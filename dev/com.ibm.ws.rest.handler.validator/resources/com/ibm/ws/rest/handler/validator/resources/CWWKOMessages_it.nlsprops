@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Verificare che la funzione che fornisce l'e
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: L'intestazione X-Login-Config-Props richiede un segno uguale (=) come delimitatore tra il nome e il valore della propriet\u00e0 di configurazione del login.
 CWWKO1552_MISSING_DELIMITER.explanation=\u00c8 necessario il segno uguale come delimitatore per determinare quale parte dell'intestazione X-Login-Config-Props \u00e8 il nome della propriet\u00e0 di configurazione del login e quale parte \u00e8 il valore.
 CWWKO1552_MISSING_DELIMITER.useraction=Aggiornare l'intestazione X-Login-Config-Props per includere un segno uguale (=) tra il nome e il valore della propriet\u00e0 di configurazione del login.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Non vi sono gestori registrati che corrispondono all''URL richiesto {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Si \u00e8 tentato di accedere a un URL che non corrisponde ad alcuno dei gestori registrati.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Correggere l'URL in modo che corrisponda a un gestore registrato.

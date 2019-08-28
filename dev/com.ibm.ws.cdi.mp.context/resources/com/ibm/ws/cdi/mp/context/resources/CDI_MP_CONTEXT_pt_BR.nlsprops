@@ -26,8 +26,8 @@
 # com.ibm.ws.concurrent.mp.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
-CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Deve-se acessar os beans CDI antes de capturar o contexto para a a\u00e7\u00e3o contextual ou a tarefa para que os beans CDI se comportem corretamente quando acessados a partir da a\u00e7\u00e3o ou da tarefa. \
-Os beans de CDI a seguir devem ser acessados antes da captura do contexto: {0}.
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Deve-se acessar os beans CDI antes de o contexto ser capturado para a a\u00e7\u00e3o ou tarefa contextual para que os beans CDI se comportem da maneira correta quando acessados a partir da a\u00e7\u00e3o ou tarefa. \
+Os beans CDI a seguir n\u00e3o foram acessados antes de o contexto ser capturado: {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=Quando o contexto de CDI \u00e9 capturado, somente os beans CDI que foram acessados nesse momento s\u00e3o criados pelo tempo de execu\u00e7\u00e3o do CDI. \
 Como resultado, os beans CDI que s\u00e3o acessados primeiro em opera\u00e7\u00f5es contextuais n\u00e3o podem propagar seu estado corretamente para opera\u00e7\u00f5es contextuais subsequentes.
 CWWKC1158.cannot.lazy.enlist.beans.useraction=O aplicativo deve ser mudado para chamar alguma opera\u00e7\u00e3o do bean CDI, como um m\u00e9todo p\u00fablico, antes de o contexto para a opera\u00e7\u00e3o ser capturado.

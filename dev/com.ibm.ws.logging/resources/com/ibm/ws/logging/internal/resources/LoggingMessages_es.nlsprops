@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -103,13 +103,13 @@ MESSAGES_CONFIGURED_HIDDEN.useraction=No se requiere ninguna acci\u00f3n
 MSG_ROUTER_UPDATED=TRAS0042I: El grupo de direccionamiento de mensajes {0} contiene los mensajes siguientes: {1}
 MSG_ROUTER_UPDATED.explanation=El conjunto de ID de mensajes configurado para el grupo de direccionamiento de mensajes especificado ha cambiado. Se enumera el conjunto de ID de mensajes asociado actualmente a este grupo de direccionamiento de mensajes.
 MSG_ROUTER_UPDATED.useraction=No se requiere ninguna acci\u00f3n. 
+
 ## use new id range
 
 # updated the old TRAS0033E to TRAS3000E
 INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: La inyecci\u00f3n de tiempo de ejecuci\u00f3n de rastreo de m\u00e9todo detallado ha fallado para la clase {0} con la excepci\u00f3n {1}.
 INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=Se ha producido un error al inyectar el rastreo de m\u00e9todo detallado en la clase especificada.
 INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de producto: http://www.ibm.com/software/webservers/appserv/was/support.
-
 
 # updated the old TRAS0041I to TRAS3001I
 MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Los mensajes siguientes est\u00e1n ocultos de los archivos console.log y messages.log: {0}
@@ -135,6 +135,26 @@ FAILED_TO_WRITE_LOG.useraction=Aseg\u00farese de que el directorio existe, se pu
 LOG_FILE_RESUMED=TRAS3006I: Se ha reanudado el registro de mensajes en el archivo {0}.
 LOG_FILE_RESUMED.explanation=Se pueden escribir mensajes en el archivo.
 LOG_FILE_RESUMED.useraction=No se requiere ninguna acci\u00f3n.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: La correlaci\u00f3n de nombre del campo de registro de JSON no tiene un formato correcto.
+JSON_FIELDS_FORMAT_WARNING.explanation=La correlaci\u00f3n de nombre del campo de registro de JSON no tiene un formato correcto.
+JSON_FIELDS_FORMAT_WARNING.useraction=Aseg\u00farese de que la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON sea correcta. La correlaci\u00f3n de nombre del campo de registro de JSON puede especificarse varias maneras, como se indica en la documentaci\u00f3n de la configuraci\u00f3n de registro.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: La propiedad de correlaci\u00f3n de nombre del campo de registro de JSON tiene demasiadas se\u00f1ales, o demasiado pocas, en una entrada.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=El formato de la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON debe ser knownFieldName:newFieldName or eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=El formato de la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON debe ser knownFieldName:newFieldName or eventType:knownFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: El nombre de campo de registro de JSON no coincide con uno de los nombres de campo conocidos del suceso o sucesos especificado(s).
+JSON_FIELDS_NO_MATCH.explanation=El nombre de campo de registro de JSON no coincide con uno de los nombres de campo conocidos
+JSON_FIELDS_NO_MATCH.useraction=Proporcione un nombre de campo de registro de JSON que coincida con uno de los campos conocidos (p. ej;. message, ibm_datetime, ibm_sequence)
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: El tipo de suceso proporcionado no coincide con ninguno de los tipos de suceso conocidos
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Los tipos de suceso aceptados con: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Los tipos de suceso aceptados con: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Se ha especificado un car\u00e1cter no v\u00e1lido en la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON
+JSON_FIELDS_INVALID_CHARACHTER.explanation= Solo se aceptan letras, n\u00fameros y el signo : en la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Cambie el valor de la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON para eliminar los caracteres no v\u00e1lidos
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Verifica\u0163i c\u0103 este activat\u0103 
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Antetul X-Login-Config-Props necesit\u0103 un caracter de semn de egalitate (=) ca un delimitator \u00eentre numele propriet\u0103\u0163ii de configura\u0163ie de logare \u015fi valoarea sa.
 CWWKO1552_MISSING_DELIMITER.explanation=Delimitatorul semn de egalitate este necesar pentru a determina ce parte din antetul X-Login-Config-Props este numele propriet\u0103\u0163ii de configura\u0163ie de logare \u015fi ce parte este valoarea ei.
 CWWKO1552_MISSING_DELIMITER.useraction=Actualiza\u0163i antetul X-Login-Config-Props pentru a include un semn de egalitate (=) \u00eentre numele propriet\u0103\u0163ii de configura\u0163ie pentru logare \u015fi valoarea sa.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Nu exist\u0103 niciun handler \u00eenregistrat care se potrive\u015fte URL-ului cerut {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=S-a f\u0103cut o \u00eencercare de a accesa un URL care nu se potrivea cu niciunul din handlerele \u00eenregistrate.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Corecta\u0163i URL-ul pentru a se potrivi unui handler \u00eenregistrat.
