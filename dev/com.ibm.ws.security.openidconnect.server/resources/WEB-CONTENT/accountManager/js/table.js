@@ -118,7 +118,7 @@ var table = (function() {
                 regenerateButton += " class='tool_table_button regenerate_auth_button' disabled value='" + messages.REGENERATE + "' aria-label='" + regenerateAriaLabel + "'></td>";
         }
         var deleteAriaLabel = utils.formatString(messages.DELETE_ARIA, [authData.authType, authData.name]);
-        var deleteButton = "<td><input id='edit_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button delete_auth_button' value='" + messages.DELETE + "' aria-label='" + deleteAriaLabel + "'></td>";
+        var deleteButton = "<td><input id='delete_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button delete_auth_button' value='" + messages.DELETE + "' aria-label='" + deleteAriaLabel + "'></td>";
 
         // insert bidi text direction to the table row
         var textDir = bidiUtils.getDOMBidiTextDirection(); 
