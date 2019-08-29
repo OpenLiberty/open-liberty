@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: JAX-WS CDI
-Bundle-SymbolicName: com.ibm.ws.jaxws.cdi.2.3
+Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.cdi
 Bundle-Description: IBM JAX-WS CDI support; version=${bVersion}
 
 # jaxws-cdi is part of EE7 and therefore requires java 1.7
