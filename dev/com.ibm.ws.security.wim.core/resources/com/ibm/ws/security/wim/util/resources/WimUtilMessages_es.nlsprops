@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -267,3 +267,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Realice la autenticaci\u00f3n 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: La operaci\u00f3n de registro de usuarios no se ha podido completar porque el repositorio {0} es un repositorio de s\u00f3lo lectura. No da soporte a operaciones de grabaci\u00f3n. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=El repositorio es un repositorio de s\u00f3lo lectura. No da soporte a operaciones de creaci\u00f3n, actualizaci\u00f3n o supresi\u00f3n.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Aseg\u00farese de que la operaci\u00f3n de grabaci\u00f3n no se invoque en un repositorio de s\u00f3lo lectura.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Faltan los identificadores necesarios para la entidad.
+REQUIRED_IDENTIFIERS_MISSING.explanation=Los identificadores uniqueName y uniqueId no est\u00e1n especificados. Al menos se debe especificar un identificador.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Aseg\u00farese de que la propiedad del identificador est\u00e9 especificada para cada entidad que se pase. Si no se especifica un identificador, a\u00f1ada la propiedad y especifique uniqueName o uniqueId.

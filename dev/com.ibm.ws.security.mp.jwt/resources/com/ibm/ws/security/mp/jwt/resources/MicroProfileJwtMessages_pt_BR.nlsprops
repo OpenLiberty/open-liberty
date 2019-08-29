@@ -150,3 +150,8 @@ MP_JWT_FRONT_END_ERROR.useraction=Entre em contato com o administrador do sistem
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: O recurso MicroProfile JWT n\u00e3o pode executar autentica\u00e7\u00e3o porque ele est\u00e1 esperando o tipo de autentica\u00e7\u00e3o [{0}] no aplicativo, mas [{1}] foi localizado. O atributo [{2}] est\u00e1 configurado para [{3}]. 
 MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Para executar a autentica\u00e7\u00e3o com \u00eaxito, execute um dos seguintes.  a) Certifique-se de que o atributo ignoreApplicationAuthMethod seja "true" b) a anota\u00e7\u00e3o loginConfig esteja configurada para MP-JWT no aplicativo.
 MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Assegure-se de que a configura\u00e7\u00e3o do servidor ou aplicativo esteja atualizada.
+
+# do not translate HttpServletRequest.logout
+JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: O recurso MicroProfile JWT n\u00e3o pode executar a autentica\u00e7\u00e3o porque o JWT na solicita\u00e7\u00e3o foi desconectado anteriormente.
+JWT_PREVIOUSLY_LOGGED_OUT.explanation=Uma chamada HttpServletRequest.logout() anterior foi feita para um assunto autenticado com este JWT.  
+JWT_PREVIOUSLY_LOGGED_OUT.useraction=Reenvie a solicita\u00e7\u00e3o com um JWT diferente.

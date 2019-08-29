@@ -72,12 +72,6 @@ extract.primary.untyped=CWWKM0110E: A(z) {0} kor\u00e1bbi kibont\u00e1sa nem tip
 extract.primary.untyped.explanation=A be\u00e1gyazott arch\u00edvum kibont\u00e1sa nem tipiz\u00e1lhat\u00f3 f\u00e1jlt \u00e9szlelt kor\u00e1bban kibontott arch\u00edvumk\u00e9nt.
 extract.primary.untyped.useraction=T\u00f6r\u00f6lje, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, hogy biztosan ne legyen jelen kor\u00e1bbi gyors\u00edt\u00f3t\u00e1r tartalom.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: T\u00falzott k\u00e9sedelem fordult el\u0151 a f\u00fcgg\u0151ben l\u00e9v\u0151 arch\u00edvum bez\u00e1r\u00e1sok feldolgoz\u00e1sa k\u00f6zben: A t\u00e9nyleges k\u00e9sedelem {0} m\u00e1sodperc volt. A k\u00e9rt k\u00e9sleltet\u00e9s {1} m\u00e1sodperc volt.
-reaper.stall.explanation=Ez az \u00fczenet azt jelzi, hogy az alkalmaz\u00e1s arch\u00edv f\u00e1jljai a sz\u00fcks\u00e9gesn\u00e9l hosszabb ideig lettek megtartva.  Ahogyan azt a figyelmeztet\u0151 \u00fczenet jelzi, az arch\u00edv f\u00e1jlokat nem szabad a k\u00e9rt id\u0151tartamn\u00e1l hosszabb ideig megtartani, de t\u00e9nylegesen jelent\u0151sen hosszabb ideig lettek meg\u0151rizve.  A sz\u00fcks\u00e9gesn\u00e9l hosszabb ideig nyitva tartott arch\u00edv f\u00e1jlok hib\u00e1kat okozhatnak, amikor megpr\u00f3b\u00e1lja dinamikusan friss\u00edteni az alkalmaz\u00e1sf\u00e1jlokat.  Ez a figyelmeztet\u00e9s azt jelzi, hogy egy k\u00fcls\u0151 vagy bels\u0151 tev\u00e9kenys\u00e9g megtagadja a feldolgoz\u00e1si id\u0151t a kiszolg\u00e1l\u00f3 fel\u00e9.
-reaper.stall.useraction=vizsg\u00e1lja meg a k\u00f6rnyezetet \u00e9s \u00e1llap\u00edtsa meg, hogy a kiszolg\u00e1l\u00f3 folyamaton k\u00edv\u00fcl nem haszn\u00e1lj\u00e1k-e m\u00e1s folyamatok a feldolgoz\u00e1si id\u0151 t\u00fal nagy r\u00e9sz\u00e9t.  A kiszolg\u00e1l\u00f3 folyamatot sz\u00e1lki\u00edrat\u00e1sok el\u0151\u00e1ll\u00edt\u00e1s\u00e1val megvizsg\u00e1lva \u00e1llap\u00edtsa meg, hogy bizonyos kiszolg\u00e1l\u00f3 sz\u00e1lak tev\u00e9kenys\u00e9ge nem t\u00falzott-e.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: A(z) {0} nem nyithat\u00f3 meg: A(z) {1} arch\u00edv gyors\u00edt\u00f3t\u00e1r inakt\u00edv.

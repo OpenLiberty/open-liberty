@@ -72,12 +72,6 @@ extract.primary.untyped=CWWKM0110E: La extracci\u00f3n anterior de {0} no puede 
 extract.primary.untyped.explanation=La extracci\u00f3n de un archivo anidado ha detectado que hay un archivo que no se puede escribir como el anterior archivo extra\u00eddo.
 extract.primary.untyped.useraction=Haga limpieza y reinicie el servidor para garantizar que no queda contenido anterior en la memoria cach\u00e9.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: Se ha producido un retardo excesivo al procesar operaciones de cierre de archivo pendientes: el retardo real era de {0} segundos.  El retardo solicitado era de {1} segundos.
-reaper.stall.explanation=El mensaje indica que los archivos de archivado de la aplicaci\u00f3n se conservaron abiertos m\u00e1s tiempo del necesario. Tal como muestra el mensaje de aviso, los archivos de archivado no deber\u00edan haber estado abiertos m\u00e1s tiempo que la duraci\u00f3n solicitada, pero se mantuvieron abiertos significativamente m\u00e1s tiempo que la duraci\u00f3n real.  Que los archivos de archivado se mantuvieran abiertos m\u00e1s tiempo del necesario podr\u00eda provocar errores al intentar actualizar din\u00e1micamente los archivos de aplicaci\u00f3n. Este aviso indica que la actividad, externa o interna, est\u00e1 rechazando el tiempo de proceso al servidor.
-reaper.stall.useraction=Examine el entorno para determinar si hay otros procesos, aparte del proceso de servidor, que est\u00e9n consumiendo una porci\u00f3n excesiva de tiempo de proceso. Examine el proceso de servidor generando volcados de hebras para determinar si hay algunas hebras de servidor concretas que tengan una actividad excesiva.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: No se puede abrir {0}: la memoria cach\u00e9 del archivo {1} est\u00e1 inactiva.
@@ -103,7 +97,7 @@ reaper.pending.path.useraction=Este mensaje indica un error de programaci\u00f3n
 # # {1} An integer representing a file length
 # # {2} An integer representing a file length
 reaper.unexpected.length.change=CWWKM0125W: Archivo {0}: actualice la longitud de {1} a {2}.
-reaper.unexpected.length.change.explanation=Se ha realizado una actualizaci\u00f3n inesperada de un archivo de archivado de aplicaci\u00f3n mientras el archivo estaba abierto. Esto sucede normalmente porque se ha realizado una actualizaci\u00f3n din\u00e1mica a los archivos de aplicaci\u00f3n.
+reaper.unexpected.length.change.explanation=Se ha realizado una actualizaci\u00f3n inesperada de un archivo de archivado de aplicaci\u00f3n mientras el archivo estaba abierto.  Esto sucede normalmente porque se ha realizado una actualizaci\u00f3n din\u00e1mica a los archivos de aplicaci\u00f3n.
 reaper.unexpected.length.change.useraction=Reinicie el servidor.  Cuando actualice los archivos de aplicaci\u00f3n, espere a que el servidor quede inactivo y despu\u00e9s espere al menos medio segundo m\u00e1s para permitir el cierre de los archivos de aplicaci\u00f3n.
 
 # # {0} A file path
@@ -115,5 +109,5 @@ reaper.unexpected.lastmodified.change.useraction=Reinicie el servidor.  Cuando a
 
 # # {0} A file path
 reaper.reopen.active=CWWKM0127W: Reabrir {0}
-reaper.reopen.active.explanation=Un cambio inesperado ha provocado la reapertura de un archivo de archivado de aplicaci\u00f3n ya abierto. El servidor ha intentado obtener el contenido actualizado del archivo de archivado, pero quiz\u00e1 no haya listados internos actualizados completos del contenido del archivo.
+reaper.reopen.active.explanation=Un cambio inesperado ha provocado la reapertura de un archivo de archivado de aplicaci\u00f3n ya abierto.  El servidor ha intentado obtener el contenido actualizado del archivo de archivado, pero quiz\u00e1 no haya listados internos actualizados completos del contenido del archivo.
 reaper.reopen.active.useraction=Reinicie el servidor.  Cuando actualice los archivos de aplicaci\u00f3n, espere a que el servidor quede inactivo y despu\u00e9s espere al menos medio segundo m\u00e1s para permitir el cierre de los archivos de aplicaci\u00f3n.

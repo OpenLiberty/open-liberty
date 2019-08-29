@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -267,3 +267,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Effettuare l'autenticazione tr
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: Impossibile completare l''operazione del registro utente poich\u00e9 il repository {0} \u00e8 di sola lettura. Non supporta operazioni di scrittura. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Il repository \u00e8 un repository di sola lettura. Non supporta operazioni di creazione, aggiornamento o cancellazione.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Non richiamare un'operazione di scrittura su un repository di sola lettura.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Mancano gli identificativi richiesti per l'entit\u00e0.
+REQUIRED_IDENTIFIERS_MISSING.explanation=Gli identificativi uniqueName e uniqueId non sono specificati. Occorre specificare almeno un identificativo.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Assicurarsi che la propriet\u00e0 identificativo sia specificata per ogni entit\u00e0 trasmessa. Se non \u00e8 specificato un identificativo, aggiungere la propriet\u00e0 e specificare uniqueName o uniqueId.

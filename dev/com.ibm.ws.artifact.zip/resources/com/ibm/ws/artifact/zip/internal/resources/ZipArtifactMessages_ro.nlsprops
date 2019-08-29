@@ -72,12 +72,6 @@ extract.primary.untyped=CWWKM0110E: Extragerea anterioar\u0103 pentru {0} nu poa
 extract.primary.untyped.explanation=O extragere de o arhiv\u0103 imbricat\u0103 a detectat c\u0103 arhiva extras\u0103 anterior este un fi\u015fier ce nu poate fi tipizat.
 extract.primary.untyped.useraction=Cur\u0103\u0163a\u0163i \u015fi apoi reporni\u0163i serverul pentru a v\u0103 asigura c\u0103 nu este prezent un con\u0163inut de cache anterior.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: A ap\u0103rut o \u00eent\u00e2rziere excesiv\u0103 \u00een timpul proces\u0103rii \u00eenchiderilor de arhive \u00een a\u015fteptare: \u00cent\u00e2rzierea a fost de {0} secunde. \u00cent\u00e2rzierea cerut\u0103 a fost de {1} secunde.
-reaper.stall.explanation=Acest mesaj indic\u0103 faptul c\u0103 fi\u015fierele de arhiv\u0103 de aplica\u0163ie au fost p\u0103strate deschise mai mult dec\u00e2t era necesar. Dup\u0103 cum se arat\u0103 \u00een mesajul de avertizare, trebuia ca fi\u015fierele de arhiv\u0103 s\u0103 nu fie p\u0103strate deschise peste durata cerut\u0103, dar ele au fost p\u0103strate deschise o durat\u0103 semnificativ mai mare. Fi\u015fierele de arhiv\u0103 p\u0103strate deschise mai mult dec\u00e2t era necesar pot cauza erori atunci c\u00e2nd se \u00eencearc\u0103 actualizarea dinamic\u0103 a fi\u015fierelor de aplica\u0163ie. Acest avertisment indic\u0103 faptul c\u0103 o activitate, intern\u0103 sau extern\u0103, nu permite timpul de procesare pentru server.
-reaper.stall.useraction=Examina\u0163i mediul pentru a determina dac\u0103 exist\u0103 procese, altele dec\u00e2t procesul serverului, care consum\u0103 o propor\u0163ie excesiv\u0103 a timpului de procesarte. Examina\u0163i procesul serverului prin generarea dump-urilor de fire de execu\u0163ie, pentru a determina dac\u0103 anumite fire de execu\u0163ie ale serverului au o activitate excesiv\u0103.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: Nu se poate deschide {0}: Cache-ul de arhiv\u0103 {1} este inactiv.
@@ -103,17 +97,17 @@ reaper.pending.path.useraction=Acest mesaj indic\u0103 o eroare de programare in
 # # {1} An integer representing a file length
 # # {2} An integer representing a file length
 reaper.unexpected.length.change=CWWKM0125W: Arhiva {0}: Actualizare lungime de la {1} la {2}.
-reaper.unexpected.length.change.explanation=A fost realizat\u0103 o actualizare nea\u015fteptat\u0103 pentru un fi\u015fier de arhiv\u0103 de aplica\u0163ie \u00een timp ce arhiva respectiv\u0103 era deschis\u0103. De obicei, aceasta se \u00eent\u00e2mpl\u0103 din cauza unei actualiz\u0103ri dinamice a fi\u015fierelor de aplica\u0163ie.
-reaper.unexpected.length.change.useraction=Reporni\u0163i serverul. C\u00e2nd actualiza\u0163i fi\u015fiere de aplica\u0163ie, a\u015ftepta\u0163i ca serverul s\u0103 termine activitatea \u015fi apoi mai a\u015ftepta\u0163i cel pu\u0163in o jum\u0103tate de secund\u0103 pentru a permite \u00eenchiderea fi\u015fierelor de aplica\u0163ie.
+reaper.unexpected.length.change.explanation=A fost realizat\u0103 o actualizare nea\u015fteptat\u0103 pentru un fi\u015fier de arhiv\u0103 de aplica\u0163ie \u00een timp ce arhiva respectiv\u0103 era deschis\u0103.  De obicei, aceasta se \u00eent\u00e2mpl\u0103 din cauza unei actualiz\u0103ri dinamice a fi\u015fierelor de aplica\u0163ie.
+reaper.unexpected.length.change.useraction=Reporni\u0163i serverul.  C\u00e2nd actualiza\u0163i fi\u015fiere de aplica\u0163ie, a\u015ftepta\u0163i ca serverul s\u0103 termine activitatea \u015fi apoi mai a\u015ftepta\u0163i cel pu\u0163in o jum\u0103tate de secund\u0103 pentru a permite \u00eenchiderea fi\u015fierelor de aplica\u0163ie.
 
 # # {0} A file path
 # # {1} An integer representing a last modified time
 # # {2} An integer representing a last modified time
 reaper.unexpected.lastmodified.change=CWWKM0126W: Arhiva {0}: Actualizare ultima modificare de la {1} la {2}.
-reaper.unexpected.lastmodified.change.explanation=A fost realizat\u0103 o actualizare nea\u015fteptat\u0103 pentru un fi\u015fier de arhiv\u0103 de aplica\u0163ie \u00een timp ce arhiva respectiv\u0103 era deschis\u0103. De obicei, aceasta se \u00eent\u00e2mpl\u0103 din cauza unei actualiz\u0103ri dinamice a fi\u015fierelor de aplica\u0163ie.
-reaper.unexpected.lastmodified.change.useraction=Reporni\u0163i serverul. C\u00e2nd actualiza\u0163i fi\u015fiere de aplica\u0163ie, a\u015ftepta\u0163i ca serverul s\u0103 termine activitatea \u015fi apoi mai a\u015ftepta\u0163i cel pu\u0163in o jum\u0103tate de secund\u0103 pentru a permite \u00eenchiderea fi\u015fierelor de aplica\u0163ie.
+reaper.unexpected.lastmodified.change.explanation=A fost realizat\u0103 o actualizare nea\u015fteptat\u0103 pentru un fi\u015fier de arhiv\u0103 de aplica\u0163ie \u00een timp ce arhiva respectiv\u0103 era deschis\u0103.  De obicei, aceasta se \u00eent\u00e2mpl\u0103 din cauza unei actualiz\u0103ri dinamice a fi\u015fierelor de aplica\u0163ie.
+reaper.unexpected.lastmodified.change.useraction=Reporni\u0163i serverul.  C\u00e2nd actualiza\u0163i fi\u015fiere de aplica\u0163ie, a\u015ftepta\u0163i ca serverul s\u0103 termine activitatea \u015fi apoi mai a\u015ftepta\u0163i cel pu\u0163in o jum\u0103tate de secund\u0103 pentru a permite \u00eenchiderea fi\u015fierelor de aplica\u0163ie.
 
 # # {0} A file path
 reaper.reopen.active=CWWKM0127W: Redeschidere {0}
-reaper.reopen.active.explanation=O modificare nea\u015fteptat\u0103 a cauzat redeschiderea unui fi\u015fier de arhiv\u0103 de aplica\u0163ie deschis. Serverul a \u00eencercat s\u0103 ob\u0163in\u0103 con\u0163inutul actualizat din fi\u015fierul de arhiv\u0103, dar este posibil s\u0103 nu aib\u0103 list\u0103rile interne actualizate complet ale con\u0163inutului arhivei.
-reaper.reopen.active.useraction=Reporni\u0163i serverul. C\u00e2nd actualiza\u0163i fi\u015fiere de aplica\u0163ie, a\u015ftepta\u0163i ca serverul s\u0103 termine activitatea \u015fi apoi mai a\u015ftepta\u0163i cel pu\u0163in o jum\u0103tate de secund\u0103 pentru a permite \u00eenchiderea fi\u015fierelor de aplica\u0163ie.
+reaper.reopen.active.explanation=O modificare nea\u015fteptat\u0103 a cauzat redeschiderea unui fi\u015fier de arhiv\u0103 de aplica\u0163ie deschis.  Serverul a \u00eencercat s\u0103 ob\u0163in\u0103 con\u0163inutul actualizat din fi\u015fierul de arhiv\u0103, dar este posibil s\u0103 nu aib\u0103 list\u0103rile interne actualizate complet ale con\u0163inutului arhivei.
+reaper.reopen.active.useraction=Reporni\u0163i serverul.  C\u00e2nd actualiza\u0163i fi\u015fiere de aplica\u0163ie, a\u015ftepta\u0163i ca serverul s\u0103 termine activitatea \u015fi apoi mai a\u015ftepta\u0163i cel pu\u0163in o jum\u0103tate de secund\u0103 pentru a permite \u00eenchiderea fi\u015fierelor de aplica\u0163ie.
