@@ -17,7 +17,7 @@ dependencies {
   requiredLibs 'org.testcontainers:testcontainers:1.12.0',
                'org.testcontainers:database-commons:1.12.0',
                'org.testcontainers:jdbc:1.12.0',
-               'org.testcontainers:sqlserver:1.12.0',
+               'org.testcontainers:mssqlserver:1.12.0',
                'org.apache.commons:commons-compress:1.18',
                'org.rnorth.duct-tape:duct-tape:1.0.7',
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
@@ -28,11 +28,11 @@ dependencies {
   sqlserver 'com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8'
 }
 
-task copySharedSqlServer(type: Copy) {
+task copySharedSqlServerAnon(type: Copy) {
   shouldRunAfter jar
   from configurations.sqlserver
   into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
-  rename 'mssql.*.jar', 'sqlserver.jar'
+  rename 'mssql-jdbc.*.jar', 'anomyous.jar'
 }
 
-addRequiredLibraries.dependsOn copySharedSqlServer
+addRequiredLibraries.dependsOn copySharedSqlServerAnon

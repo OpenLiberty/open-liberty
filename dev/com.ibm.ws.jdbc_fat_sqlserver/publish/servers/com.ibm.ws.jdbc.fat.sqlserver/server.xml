@@ -1,3 +1,13 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <server>
   <featureManager>
     <feature>componenttest-1.0</feature>
@@ -9,45 +19,46 @@
   <include location="../fatTestPorts.xml"/>
 
   <application location="sqlserverfat.war" >
-    <classloader commonLibraryRef="SQLServerLib"/>
+    <classloader commonLibraryRef="SQLServerLibAnon"/>
   </application>
-    
-  <library id="SQLServerLib">
-    <fileset dir="${server.config.dir}/sqlserver" includes="*.jar"/>
+  
+ <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
+  <library id="SQLServerLibAnon">
+    <fileset dir="${shared.resource.dir}/sqlserver" includes="anomyous.jar"/>
   </library>
     
   <dataSource id="DefaultDataSource">
-    <jdbcDriver libraryRef="SQLServerLib"/>
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
     <properties.microsoft.sqlserver
-      databaseName="${jdbc.databaseName}" serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}"/>
-    <containerAuthData user="${jdbc.user}" password="${jdbc.password}"/>
-    <recoveryAuthData user="${jdbc.user}" password="${jdbc.password}"/>
+      databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"/>
+    <containerAuthData user="${env.USER}" password="${env.PASSWORD}"/>
+    <recoveryAuthData user="${env.USER}" password="${env.PASSWORD}"/>
   </dataSource>
 
   <dataSource jndiName="jdbc/ss" isolationLevel="TRANSACTION_SNAPSHOT">
-    <jdbcDriver libraryRef="SQLServerLib"/>
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
     <properties.microsoft.sqlserver
-      databaseName="${jdbc.databaseName}" serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}"
-      user="${jdbc.user}" password="${jdbc.password}" trustServerCertificate="true"
+      databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"
+      user="${env.USER}" password="${env.PASSWORD}" trustServerCertificate="true"
       packetSize="-1" serverNameAsACE="true" transparentNetworkIPResolution="false"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/ss-using-driver">
-  	<jdbcDriver libraryRef="SQLServerLib"/>
-  	<properties user="${jdbc.user}" password="${jdbc.password}"
-      url="jdbc:sqlserver://${jdbc.serverName}:${jdbc.portNumber};databaseName=${jdbc.databaseName};"/>
+  	<jdbcDriver libraryRef="SQLServerLibAnon"/>
+  	<properties user="${env.USER}" password="${env.PASSWORD}"
+      url="jdbc:sqlserver://${env.HOST}:${env.PORT};databaseName=${env.DBNAME};"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/ss-using-driver-type" type="java.sql.Driver">
-  	<jdbcDriver libraryRef="SQLServerLib"/>
-  	<properties.microsoft.sqlserver user="${jdbc.user}" password="${jdbc.password}" serverName="${jdbc.serverName}"
-  	  url="jdbc:sqlserver://${jdbc.serverName}:${jdbc.portNumber};databaseName=${jdbc.databaseName};" />
+  	<jdbcDriver libraryRef="SQLServerLibAnon"/>
+  	<properties.microsoft.sqlserver user="${env.USER}" password="${env.PASSWORD}" serverName="${env.HOST}"
+  	  url="jdbc:sqlserver://${env.HOST}:${env.PORT};databaseName=${env.DBNAME};" />
   </dataSource>
   
   <dataSource jndiName="jdbc/ss-inferred">
-    <jdbcDriver libraryRef="SQLServerLib"/>
-    <properties user="${jdbc.user}" password="${jdbc.password}"
-      databaseName="${jdbc.databaseName}" serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}"/>
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <properties user="${env.USER}" password="${env.PASSWORD}"
+      databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"/>
   </dataSource>
 
   <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
