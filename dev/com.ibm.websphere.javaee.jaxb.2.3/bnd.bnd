@@ -22,6 +22,7 @@ Import-Package: \
   javax.xml.namespace, \
   javax.xml.stream, \
   org.apache.geronimo.osgi.registry.api;resolution:=optional,\
+  !org.glassfish.hk2.osgiresourcelocator,\
   *
 
 DynamicImport-Package: \

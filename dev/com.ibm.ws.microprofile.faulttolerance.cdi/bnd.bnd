@@ -37,6 +37,8 @@ testsrc=test/src
 
 WS-TraceGroup: FAULTTOLERANCE
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.faulttolerance.cdi.FaultToleranceCDIExtension, \
     com.ibm.ws.microprofile.faulttolerance.cdi.FaultToleranceCDIComponent

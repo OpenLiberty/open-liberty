@@ -23,6 +23,7 @@ WS-TraceGroup: OPENTRACING
                 com.ibm.ws.opentracing.OpentracingService
                 
 Import-Package: \
+    !com.ibm.ws.opentracing, \
     io.opentracing;version=0.31.0,\
     io.opentracing.log;version=0.31.0,\
     io.opentracing.propagation;version=0.31.0,\

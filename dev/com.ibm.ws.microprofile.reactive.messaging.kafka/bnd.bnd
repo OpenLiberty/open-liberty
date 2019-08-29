@@ -22,6 +22,8 @@ Bundle-Description:MicroProfile Reactive Messaging Kafka Connector, version ${bV
 
 WS-TraceGroup: REACTIVEMESSAGE
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorCDIExtension
 

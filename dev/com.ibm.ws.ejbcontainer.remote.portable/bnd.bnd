@@ -16,6 +16,10 @@ javac.target: 1.7
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
+Import-Package: \
+    !com.ibm.ws.logging, \
+    *
+
 -includeresource: \
 	@${repo;com.ibm.ws.ejbcontainer.remote.portable.core}
 

@@ -14,33 +14,35 @@ bVersion=1.0
 Bundle-Name: Java Batch REST interface
 Bundle-SymbolicName: com.ibm.ws.jbatch.rest
 Bundle-Description:  Java Batch REST interface
-Import-Package: \
- javax.persistence;version="[2.1,3)";consumer="persistenceService", \
- com.ibm.websphere.ssl.*, com.ibm.wsspi.ssl.*, \
- *
 
 Export-Package: \
- com.ibm.ws.jbatch.rest;provide:=true, \
- com.ibm.ws.jbatch.rest.bridge, \
- com.ibm.ws.jbatch.rest.utils, \
- com.ibm.ws.jbatch.rest.internal
+  com.ibm.ws.jbatch.rest;provide:=true, \
+  com.ibm.ws.jbatch.rest.bridge, \
+  com.ibm.ws.jbatch.rest.utils, \
+  com.ibm.ws.jbatch.rest.internal
+
+Import-Package: \
+  !com.ibm.ws.jbatch.rest.bridge, \
+  javax.persistence;version="[2.1,3)";consumer="persistenceService", \
+  com.ibm.websphere.ssl.*, com.ibm.wsspi.ssl.*, \
+  *
+
+Private-Package: \
+  com.ibm.ws.jbatch.rest.*
 
 WS-TraceGroup: wsbatch
 
 # TODO: eventually move BatchJmsDispatcher to jbatch.jms bundle
 -dsannotations: \
- com.ibm.ws.jbatch.rest.bridge.AppModuleContextService, \
- com.ibm.ws.jbatch.rest.bridge.BatchLocalDispatcher, \
- com.ibm.ws.jbatch.rest.internal.BatchManagerImpl, \
- com.ibm.ws.jbatch.rest.internal.resources.BatchRoot, \
- com.ibm.ws.jbatch.rest.internal.resources.JobInstances, \
- com.ibm.ws.jbatch.rest.internal.resources.JobExecutions, \
- com.ibm.ws.jbatch.rest.internal.resources.StepExecutions, \
- com.ibm.ws.jbatch.rest.bridge.BatchInternalDispatcherImpl, \
- com.ibm.ws.jbatch.rest.internal.BatchGroupSecurityHelperImpl
-
-Private-Package: \
- com.ibm.ws.jbatch.rest.*,\
+  com.ibm.ws.jbatch.rest.bridge.AppModuleContextService, \
+  com.ibm.ws.jbatch.rest.bridge.BatchLocalDispatcher, \
+  com.ibm.ws.jbatch.rest.internal.BatchManagerImpl, \
+  com.ibm.ws.jbatch.rest.internal.resources.BatchRoot, \
+  com.ibm.ws.jbatch.rest.internal.resources.JobInstances, \
+  com.ibm.ws.jbatch.rest.internal.resources.JobExecutions, \
+  com.ibm.ws.jbatch.rest.internal.resources.StepExecutions, \
+  com.ibm.ws.jbatch.rest.bridge.BatchInternalDispatcherImpl, \
+  com.ibm.ws.jbatch.rest.internal.BatchGroupSecurityHelperImpl
 
 -buildpath: \
 	com.ibm.jbatch.container;version=latest,\

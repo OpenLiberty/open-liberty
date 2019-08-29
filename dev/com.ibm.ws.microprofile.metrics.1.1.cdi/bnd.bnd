@@ -41,6 +41,8 @@ Include-Resource: \
     META-INF=resources/META-INF
     
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: io.astefanutti.metrics.cdi.MetricsExtension
 

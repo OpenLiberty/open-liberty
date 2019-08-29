@@ -20,7 +20,11 @@ Bundle-ActivationPolicy: lazy
 WS-TraceGroup: Authorization
 
 Export-Package: \
- com.ibm.ws.security.authorization.jacc.web.impl;provide:=true
+  com.ibm.ws.security.authorization.jacc.web.impl;provide:=true
+
+Import-Package: \
+  !com.ibm.ws.security.authorization.jacc.web.impl, \
+  ${defaultPackageImport}
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.web.impl.ServletServiceImpl

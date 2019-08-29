@@ -18,6 +18,7 @@ Bundle-Description: Batch support for CDI; version=${bVersion}
 WS-TraceGroup: wsbatch
 
 Import-Package:\
+  !com.ibm.ws.jbatch.cdi, \
   javax.enterprise.*;version="[1.1,2.1)",\
   *
 
@@ -33,6 +34,8 @@ Include-Resource: \
 -dsannotations:\
   com.ibm.ws.jbatch.cdi.BatchCDIInjectionExtension,\
   com.ibm.ws.jbatch.cdi.internal.CDIBatchArtifactFactoryImpl
+
+-cdiannotations:
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

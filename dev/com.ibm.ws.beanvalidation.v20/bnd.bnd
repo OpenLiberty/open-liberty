@@ -21,8 +21,10 @@ WS-TraceGroup: BeanValidation
 
 
 Import-Package: \
-  org.apache.el,\
+  !com.ibm.ws.beanvalidation.v20, \
+  org.apache.el, \
   *
+
 Export-Package: \
    com.ibm.ws.beanvalidation.v20
  

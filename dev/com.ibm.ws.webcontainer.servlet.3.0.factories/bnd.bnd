@@ -46,6 +46,14 @@ Export-Package: com.ibm.ws.webcontainer.async.internal, \
  com.ibm.wsspi.webcontainer.util.internal
     
 Import-Package: \
+ !com.ibm.ws.webcontainer.async.internal, \
+ !com.ibm.ws.webcontainer.osgi.container.config.internal, \
+ !com.ibm.ws.webcontainer.osgi.internal, \
+ !com.ibm.ws.webcontainer.osgi.srt.internal, \
+ !com.ibm.ws.webcontainer.osgi.webapp.internal, \
+ !com.ibm.ws.webcontainer.servlet.internal, \
+ !com.ibm.ws.webcontainer.session.impl.internal, \
+ !com.ibm.wsspi.webcontainer.util.internal, \
  com.ibm.websphere.csi, \
  com.ibm.ws.webcontainer.osgi.container.config, \
  com.ibm.ws.webcontainer.osgi.srt, \
