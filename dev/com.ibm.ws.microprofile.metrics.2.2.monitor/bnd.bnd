@@ -19,6 +19,7 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.2.2.monitor
 Bundle-Description: MicroProfile Metrics Monitor Bridge Auto Feature, version ${bVersion}
 
 Import-Package: \
+    !com.ibm.ws.microprofile.metrics21.monitor, \
 	javax.enterprise.*;version="[1.1,3)",\
 	*
 

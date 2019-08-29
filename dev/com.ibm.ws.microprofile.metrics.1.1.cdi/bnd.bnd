@@ -44,6 +44,8 @@ Include-Resource: \
     
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: io.astefanutti.metrics.cdi.MetricsExtension
 

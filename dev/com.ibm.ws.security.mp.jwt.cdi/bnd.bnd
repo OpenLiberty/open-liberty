@@ -9,6 +9,7 @@ Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.cdi
 Bundle-Description: Microprofile JWT CDI, version ${bVersion}
 
 Import-Package: \
+    !com.ibm.ws.security.mp.jwt.cdi, \
 	javax.enterprise.*; version="[1.1,3)",\
 	*
 
@@ -24,6 +25,8 @@ Include-Resource: \
     META-INF=resources/META-INF
 
 WS-TraceGroup: MPJWT
+
+-cdiannotations:
 
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.security.mp.jwt.cdi.JwtCDIExtension

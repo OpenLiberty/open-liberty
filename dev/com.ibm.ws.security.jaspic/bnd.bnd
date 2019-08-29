@@ -30,6 +30,7 @@ Export-Package: \
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   com.ibm.ws.common.internal.encoder,\
+  !com.ibm.ws.security.jaspi, \
   !*.internal.*,\
   !com.ibm.ws.kernel.boot.cmdline,\
   javax.xml.bind;version=!,\

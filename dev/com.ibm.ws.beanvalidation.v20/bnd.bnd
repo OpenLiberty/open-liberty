@@ -24,8 +24,10 @@ WS-TraceGroup: BeanValidation
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
-  org.apache.el,\
+  !com.ibm.ws.beanvalidation.v20, \
+  org.apache.el, \
   *
+
 Export-Package: \
    com.ibm.ws.beanvalidation.v20
  

@@ -26,6 +26,10 @@ Export-Package: \
    javax.json.bind.serializer;version="1.0", \
    javax.json.bind.spi;version="1.0"
 
+Import-Package: \
+   !org.eclipse.yasson,\
+   *
+
 Include-Resource: \
   @${repo; javax.json.bind:javax.json.bind-api;1.0}!/META-INF/NOTICE
 

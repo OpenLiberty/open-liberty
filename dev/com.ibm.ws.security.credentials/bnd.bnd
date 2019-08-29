@@ -24,6 +24,11 @@ Export-Package: \
 	com.ibm.ws.security.credentials.wscred;provide:=true,\
 	com.ibm.ws.security.jwtsso.token.proxy
 
+Import-Package: \
+    !com.ibm.ws.security.credentials.wscred, \
+    !com.ibm.ws.security.jwtsso.token.proxy, \
+    ${defaultPackageImport}
+
 Private-Package: \
   com.ibm.ws.security.credentials.internal.*
 

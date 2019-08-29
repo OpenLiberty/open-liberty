@@ -17,6 +17,7 @@ Export-Package: \
   org.eclipse.yasson;version=1.0.6;thread-context=true
 
 Import-Package: \
+  !javax.naming, \
   com.ibm.wsspi.classloading,\
   *
 

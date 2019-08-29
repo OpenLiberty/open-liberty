@@ -20,6 +20,7 @@ Bundle-SymbolicName: com.ibm.websphere.javaee.jaxws.2.3; singleton:=true
 Export-Package: javax.xml.ws.*; version="2.3"
 
 Import-Package: javax.xml.bind.*; version="[2.3,3)", \
+  !org.glassfish.hk2.osgiresourcelocator,\
   *
 
 instrument.disabled: true

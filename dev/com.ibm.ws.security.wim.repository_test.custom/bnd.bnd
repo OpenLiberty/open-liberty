@@ -16,6 +16,10 @@ Bundle-Description: CustomRepository Sample, version ${bVersion}
 
 Export-Package: com.myorg;version=1.0.0
 
+Import-Package: \
+  !com.myorg, \
+  ${defaultPackageImport}
+
 publish.wlp.jar.disabled: false
 test.project: true
 

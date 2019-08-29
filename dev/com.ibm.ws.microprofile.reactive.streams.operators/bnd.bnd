@@ -28,10 +28,11 @@ WS-TraceGroup: REACTIVESTREAMS
 -dsannotations: com.ibm.ws.microprofile.reactive.streams.operators.spi.impl.WASReactiveStreamsEngineImpl
 
 Import-Package: \
-  org.eclipse.microprofile.reactive.streams.operators.core; version="[1.0,1.1)",\
-  org.eclipse.microprofile.reactive.streams.operators.spi; version="[1.0,1.1)",\
-  org.eclipse.microprofile.reactive.streams.operators; version="[1.0,1.1)",\
-  io.smallrye.reactive.streams; version="[1.0,1.1)",\
+  !com.ibm.ws.microprofile.reactive.streams.operators.spi.impl, \
+  org.eclipse.microprofile.reactive.streams.operators.core; version="[1.0,1.1)", \
+  org.eclipse.microprofile.reactive.streams.operators.spi; version="[1.0,1.1)", \
+  org.eclipse.microprofile.reactive.streams.operators; version="[1.0,1.1)", \
+  io.smallrye.reactive.streams; version="[1.0,1.1)", \
   *
 
 # See the app-resources.bnd included above
