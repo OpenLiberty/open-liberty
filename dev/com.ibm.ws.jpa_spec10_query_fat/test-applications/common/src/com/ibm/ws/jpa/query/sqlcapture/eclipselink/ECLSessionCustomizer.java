@@ -12,6 +12,7 @@
 package com.ibm.ws.jpa.query.sqlcapture.eclipselink;
 
 import org.eclipse.persistence.config.SessionCustomizer;
+import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.sessions.Session;
 import org.eclipse.persistence.sessions.SessionEvent;
 import org.eclipse.persistence.sessions.SessionEventAdapter;
@@ -30,10 +31,17 @@ public class ECLSessionCustomizer implements SessionCustomizer {
 
         @Override
         public void postExecuteQuery(SessionEvent event) {
-            // TODO Auto-generated method stub
             super.postExecuteQuery(event);
 
-            SQLListener.recordSQL(event.getQuery().getSQLString());
+//            final Session session = event.getSession();
+            final DatabaseQuery dbQuery = event.getQuery();
+//            AbstractRecord record = dbQuery.getTranslationRow();
+//            String sql = dbQuery.getTranslatedSQLString(session, record);
+//            SQLListener.recordSQL(sql);
+
+//            SQLListener.recordSQL(event.getQuery().getTranslatedSQLString(event.getSession(), event.getQuery().getTranslationRow()));
+
+            SQLListener.recordSQL(dbQuery.getSQLString());
 
         }
 
