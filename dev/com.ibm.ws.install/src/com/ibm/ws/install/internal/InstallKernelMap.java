@@ -600,6 +600,11 @@ public class InstallKernelMap implements Map {
             if (alreadyInstalled == featureToInstall.size()) {
                 throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
             }
+
+            RepositoryConnectionList loginInfo;
+            Director director = new Director((File) data.get(RUNTIME_INSTALL_DIR));
+            loginInfo = director.getRepositoryConnectionList();
+
             HashSet<String> invalidFeatures = new HashSet<>();
             List<EsaResource> featuresFound = new ArrayList<>();
             for (String processedFeature : (Collection<String>) data.get(FEATURES_TO_RESOLVE)) {
@@ -610,17 +615,18 @@ public class InstallKernelMap implements Map {
                 for (ProductDefinition definition : productDefinitions) {
                     try {
                         String searchStr = noVersionMode == false ? processedFeature : processedFeature.split("-")[0];
-                        featuresFound.addAll(repoList.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
-                        featuresFound.addAll(repoList.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
 
                     } catch (RepositoryException e) {
                         noVersionMode = true;
 
                         // try to find feature again without the version number
                         String searchStr = processedFeature.split("-")[0];
+                        System.out.println("Using " + searchStr + " instead.");
                         try {
-                            featuresFound.addAll(repoList.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
-                            featuresFound.addAll(repoList.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
+                            featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
+                            featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
                         } catch (RepositoryException e1) {
                             // error is not due to the version number
                         }
