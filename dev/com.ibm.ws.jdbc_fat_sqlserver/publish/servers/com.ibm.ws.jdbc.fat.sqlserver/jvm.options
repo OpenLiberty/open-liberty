@@ -1,0 +1,2 @@
+# System property to apply remaining transaction timeout to XAResource transaction timeout
+-Dcom.ibm.websphere.tx.propagateXAResourceTransactionTimeout=true

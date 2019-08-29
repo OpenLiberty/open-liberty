@@ -1,0 +1,55 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>concurrent-1.0</feature>
+    <feature>jdbc-4.1</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+    
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="sqlserverfat.war" >
+    <classloader commonLibraryRef="SQLServerLib"/>
+  </application>
+    
+  <library id="SQLServerLib">
+    <fileset dir="${server.config.dir}/sqlserver" includes="*.jar"/>
+  </library>
+    
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="SQLServerLib"/>
+    <properties.microsoft.sqlserver
+      databaseName="${jdbc.databaseName}" serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}"/>
+    <containerAuthData user="${jdbc.user}" password="${jdbc.password}"/>
+    <recoveryAuthData user="${jdbc.user}" password="${jdbc.password}"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/ss" isolationLevel="TRANSACTION_SNAPSHOT">
+    <jdbcDriver libraryRef="SQLServerLib"/>
+    <properties.microsoft.sqlserver
+      databaseName="${jdbc.databaseName}" serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}"
+      user="${jdbc.user}" password="${jdbc.password}" trustServerCertificate="true"
+      packetSize="-1" serverNameAsACE="true" transparentNetworkIPResolution="false"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/ss-using-driver">
+  	<jdbcDriver libraryRef="SQLServerLib"/>
+  	<properties user="${jdbc.user}" password="${jdbc.password}"
+      url="jdbc:sqlserver://${jdbc.serverName}:${jdbc.portNumber};databaseName=${jdbc.databaseName};"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/ss-using-driver-type" type="java.sql.Driver">
+  	<jdbcDriver libraryRef="SQLServerLib"/>
+  	<properties.microsoft.sqlserver user="${jdbc.user}" password="${jdbc.password}" serverName="${jdbc.serverName}"
+  	  url="jdbc:sqlserver://${jdbc.serverName}:${jdbc.portNumber};databaseName=${jdbc.databaseName};" />
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/ss-inferred">
+    <jdbcDriver libraryRef="SQLServerLib"/>
+    <properties user="${jdbc.user}" password="${jdbc.password}"
+      databaseName="${jdbc.databaseName}" serverName="${jdbc.serverName}" portNumber="${jdbc.portNumber}"/>
+  </dataSource>
+
+  <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/sqlserver/-" className="java.security.AllPermission"/>
+</server>
