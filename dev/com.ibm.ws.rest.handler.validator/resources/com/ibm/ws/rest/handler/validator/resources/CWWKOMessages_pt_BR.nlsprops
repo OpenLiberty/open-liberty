@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Verifique se o recurso que fornece o elemen
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: O cabe\u00e7alho X-Login-Config-Props requer um caractere de sinal de igual (=) como um delimitador entre o nome da propriedade de configura\u00e7\u00e3o de login e o valor.
 CWWKO1552_MISSING_DELIMITER.explanation=O delimitador de sinal de igual \u00e9 necess\u00e1rio para determinar qual parte do cabe\u00e7alho X-Login-Config-Props \u00e9 o nome da propriedade de configura\u00e7\u00e3o de login e qual parte \u00e9 o valor.
 CWWKO1552_MISSING_DELIMITER.useraction=Atualize o cabe\u00e7alho X-Login-Config-Props para incluir um sinal de igual (=) entre o nome da propriedade de configura\u00e7\u00e3o de login e o valor.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: N\u00e3o h\u00e1 manipuladores registrados que correspondem \u00e0 URL solicitada {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Foi feita uma tentativa de acessar uma URL que n\u00e3o corresponde a nenhum dos manipuladores registrados.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Corrija a URL para corresponder a um manipulador registrado.

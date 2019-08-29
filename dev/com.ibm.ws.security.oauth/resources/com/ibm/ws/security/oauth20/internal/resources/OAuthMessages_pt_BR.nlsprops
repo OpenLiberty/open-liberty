@@ -113,12 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: O valor de {0} na configura\u00e7
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=O valor no atributo indicado \u00e9 muito grande.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Configure o atributo indicado para um valor adequado.  
 
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: O registro ou a atualiza\u00e7\u00e3o do cliente OAuth falhou porque os dados do cliente cont\u00eam um caractere ilegal [{0}].
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: A atualiza\u00e7\u00e3o ou o registro do cliente OAuth falhou porque os dados do cliente cont\u00eam "{0}" caractere ilegal.
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=O caractere n\u00e3o \u00e9 permitido nos dados do cliente.
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Remova os caracteres ilegais e reenvie a solicita\u00e7\u00e3o. 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Remova o caractere ilegal e reenvie a solicita\u00e7\u00e3o. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: O identificador de cliente {0} n\u00e3o foi localizado.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A solicita\u00e7\u00e3o continha um identificador de cliente que n\u00e3o foi localizado. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A solicita\u00e7\u00e3o continha um ID de cliente que n\u00e3o foi localizado.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Tente a solicita\u00e7\u00e3o novamente com um identificador de cliente v\u00e1lido.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: A solicita\u00e7\u00e3o de registro foi feita para um URI incorreto.
@@ -138,7 +138,7 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=O JSON no corpo da solic
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Revise a documenta\u00e7\u00e3o da API para este servi\u00e7o e tente a solicita\u00e7\u00e3o novamente.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: O identificador de cliente {0} j\u00e1 existe.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A opera\u00e7\u00e3o falhou porque o identificador de cliente j\u00e1 existe.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A opera\u00e7\u00e3o falhou porque o ID do cliente j\u00e1 existe.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Revise a documenta\u00e7\u00e3o da API para este servi\u00e7o e tente a solicita\u00e7\u00e3o novamente com os par\u00e2metros apropriados.
 
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Uma atualiza\u00e7\u00e3o do cliente falhou. A solicita\u00e7\u00e3o de atualiza\u00e7\u00e3o indica que o segredo do cliente deve ser preservado, mas o registro existente n\u00e3o possui nenhum segredo configurado.
@@ -149,7 +149,7 @@ OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Uma atualiza\
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Uma solicita\u00e7\u00e3o de atualiza\u00e7\u00e3o para um cliente p\u00fablico n\u00e3o deve especificar um segredo do cliente.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Revise a documenta\u00e7\u00e3o da API para este servi\u00e7o e tente a solicita\u00e7\u00e3o novamente com os par\u00e2metros apropriados.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Uma atualiza\u00e7\u00e3o do cliente falhou. O segredo do cliente n\u00e3o pode ser atualizado porque a solicita\u00e7\u00e3o especifica uma configura\u00e7\u00e3o inv\u00e1lida, dado o estado atual do registro do cliente.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Uma atualiza\u00e7\u00e3o do cliente falhou. O segredo do cliente n\u00e3o pode ser atualizado porque a solicita\u00e7\u00e3o especifica uma configura\u00e7\u00e3o inv\u00e1lida, dado o atual estado do registro do cliente.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=A solicita\u00e7\u00e3o n\u00e3o pode ser conclu\u00edda porque especifica uma configura\u00e7\u00e3o inv\u00e1lida dado o estado atual do registro do cliente.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Revise a documenta\u00e7\u00e3o da API para este servi\u00e7o e tente a solicita\u00e7\u00e3o novamente com os par\u00e2metros apropriados.
 
@@ -240,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nenhuma a\
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: A solicita\u00e7\u00e3o falhou porque o access_token n\u00e3o \u00e9 v\u00e1lido ou expirou.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Falha ao processar a solicita\u00e7\u00e3o porque o access_token n\u00e3o \u00e9 v\u00e1lido.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Certifique-se de que o access_token seja v\u00e1lido e n\u00e3o tenha expirado.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=O atributo de configura\u00e7\u00e3o do provedor OpenId Connect, keyStoreRef, pode estar ausente ou incorreto.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -445,7 +449,7 @@ JAVA8_REQUIRED=CWWKS1495W: O provedor de conex\u00e3o OpenID n\u00e3o pode proce
 JAVA8_REQUIRED.explanation=A vers\u00e3o de Java em uso n\u00e3o \u00e9 a 8 ou superior.
 JAVA8_REQUIRED.useraction=Instale o Java vers\u00e3o 8 ou superior.
 
-JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: O provedor de conex\u00e3o OpenID {0} tem o atributo de configura\u00e7\u00e3o {1} configurado para usar o algoritmo {2} e isso requer Java 8 ou superior. O provedor especificado ir\u00e1 ignorar a configura\u00e7\u00e3o de {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: O provedor {0} OpenID Connect tem o atributo de configura\u00e7\u00e3o {1} definido para usar o algoritmo {2} e isso requer o Java 8 ou superior. O provedor OpenID Connect especificado ignora a configura\u00e7\u00e3o {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=A vers\u00e3o de Java em uso n\u00e3o \u00e9 a 8 ou superior.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Instale o Java vers\u00e3o 8 ou superior para usar a op\u00e7\u00e3o de configura\u00e7\u00e3o mencionada.
 

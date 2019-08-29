@@ -160,7 +160,8 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
           .append(" privateLibraries = ").append(sharedLibraries)
           .append(" commonLibraries = ").append(commonLibraries)
           .append(" providers = ").append(providers)
-          .append(" nativeLibraries = ").append(nativeLibraryContainers);
+          .append(" nativeLibraries = ").append(nativeLibraryContainers)
+          .append(" parentLast = ").append(delegateLast);
         return sb.toString();
     }
 

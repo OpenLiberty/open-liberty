@@ -113,9 +113,9 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Hodnota {0} v konfiguraci oauthPr
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Hodnota v uveden\u00e9m atributu je p\u0159\u00edli\u0161 velk\u00e1.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Nastavte uveden\u00fd atribut na \u0159\u00e1dnou hodnotu. 
 
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Registrace nebo aktualizace klienta OAuth se nezda\u0159ila, proto\u017ee data klienta obsahuj\u00ed neplatn\u00fd znak [{0}].
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Registrace nebo aktualizace klienta OAuth se nezda\u0159ila, proto\u017ee data klienta obsahuj\u00ed neplatn\u00fd znak "{0}".
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=V datech klienta nen\u00ed znak povolen.
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Odeberte neplatn\u00e9 znaky a pot\u00e9 po\u017eadavek znovu ode\u0161lete. 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Odeberte neplatn\u00fd znak a pot\u00e9 po\u017eadavek znovu ode\u0161lete. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Nebylo nalezeno ID klienta {0}.
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Po\u017eadavek obsahoval ID klienta, kter\u00e9 nebylo nalezeno. 
@@ -240,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nen\u00ed 
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: Po\u017eadavek se nezda\u0159il, proto\u017ee access_token nen\u00ed platn\u00fd nebo mu vypr\u0161ela platnost.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Nezda\u0159ilo se zpracovat po\u017eadavek, proto\u017ee access_token nen\u00ed platn\u00fd.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Ujist\u011bte se, \u017ee access_token je platn\u00fd a \u017ee nem\u00e1 vypr\u0161enou platnost.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Je mo\u017en\u00e9, \u017ee atribut konfigurace keyStoreRef poskytovatele OpenId Connect chyb\u00ed nebo je nespr\u00e1vn\u00fd.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -445,7 +449,7 @@ JAVA8_REQUIRED=CWWKS1495W: Poskytovatel OpenID Connect nem\u016f\u017ee zpracova
 JAVA8_REQUIRED.explanation=Pou\u017e\u00edvan\u00e1 verze Java nen\u00ed verze 8 nebo vy\u0161\u0161\u00ed.
 JAVA8_REQUIRED.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed.
 
-JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Poskytovatel OpenID Connect {0} m\u00e1 nastaven atribut konfigurace {1} pro pou\u017eit\u00ed algoritmu {2} a vy\u017eaduje verzi Java 8 nebo vy\u0161\u0161\u00ed. Zadan\u00fd poskytovatel bude ignorovat nastaven\u00ed {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Poskytovatel OpenID Connect {0} m\u00e1 nastaven atribut konfigurace {1} pro pou\u017eit\u00ed algoritmu {2} a vy\u017eaduje verzi Java 8 nebo vy\u0161\u0161\u00ed. Ur\u010den\u00fd poskytovatel OpenID Connect ignoruje nastaven\u00ed {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Pou\u017e\u00edvan\u00e1 verze Java nen\u00ed verze 8 nebo vy\u0161\u0161\u00ed.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed pro pou\u017eit\u00ed zm\u00edn\u011bn\u00e9 volby konfigurace.
 

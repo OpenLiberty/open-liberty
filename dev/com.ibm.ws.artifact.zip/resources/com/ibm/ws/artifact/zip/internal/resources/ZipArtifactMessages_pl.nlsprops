@@ -72,44 +72,42 @@ extract.primary.untyped=CWWKM0110E: Nie mo\u017cna okre\u015bli\u0107 typu pliku
 extract.primary.untyped.explanation=Podczas rozpakowywania zagnie\u017cd\u017conego archiwum wykryto, \u017ce wcze\u015bniej rozpakowanym archiwum jest plik nieokre\u015blonego typu.
 extract.primary.untyped.useraction=Wykonaj operacj\u0119 czyszczenia, a nast\u0119pnie zrestartuj serwer, aby mie\u0107 pewno\u015b\u0107, \u017ce nie ma ju\u017c \u017cadnej wcze\u015bniejszej zawarto\u015bci pami\u0119ci podr\u0119cznej.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: Wyst\u0105pi\u0142o nadmierne op\u00f3\u017anienie podczas przetwarzania oczekuj\u0105cych zamkni\u0119\u0107 archiw\u00f3w. Rzeczywiste op\u00f3\u017anienie: {0} s. \u017b\u0105dane op\u00f3\u017anienie: {1} s.
-reaper.stall.explanation=Ten komunikat wskazuje, \u017ce pliki archiwum aplikacji pozostawa\u0142y otwarte d\u0142u\u017cej ni\u017c to konieczne. Z komunikatu ostrzegawczego wynika, \u017ce pliki archiwum nie powinny pozostawa\u0107 otwarte d\u0142u\u017cej ni\u017c przez \u017c\u0105dany okres, ale w rzeczywisto\u015bci pozostawa\u0142y otwarte przez znacz\u0105co d\u0142u\u017cszy czas. Pliki archiwum, kt\u00f3re pozostaj\u0105 otwarte d\u0142u\u017cej ni\u017c jest to konieczne, mog\u0105 powodowa\u0107 b\u0142\u0119dy podczas pr\u00f3by dynamicznego aktualizowania plik\u00f3w aplikacji. To ostrze\u017cenie wskazuje, \u017ce dzia\u0142anie (zewn\u0119trzne lub wewn\u0119trzne) odmawia przyznania serwerowi czasu przetwarzania.
-reaper.stall.useraction=Sprawd\u017a \u015brodowisko, aby okre\u015bli\u0107, czy procesy inne ni\u017c proces serwera wykorzystuj\u0105 zbyt wiele czasu przetwarzania. Sprawd\u017a proces serwera. W tym celu wygeneruj zrzuty w\u0105tk\u00f3w, aby okre\u015bli\u0107, czy poszczeg\u00f3lne w\u0105tki serwera wykazuj\u0105 nadmiern\u0105 aktywno\u015b\u0107.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: Nie mo\u017cna otworzy\u0107 pliku {0}: pami\u0119\u0107 podr\u0119czna archiwum {1} jest nieaktywna.
 reaper.inactive.explanation=\u017b\u0105danie otwarcia pliku archiwum nie powiod\u0142o si\u0119, poniewa\u017c pami\u0119\u0107 podr\u0119czna pliku archiwum nie jest aktywna.
-reaper.inactive.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego. 
+reaper.inactive.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
 # # {0} A file path
 reaper.unregistered.path=CWWKM0122W: \u017b\u0105danie zamkni\u0119cia archiwum {0}, kt\u00f3re nie jest otwarte, zostanie zignorowane.
 reaper.unregistered.path.explanation=Za\u017c\u0105dano zamkni\u0119cia pliku archiwum, kt\u00f3re nie by\u0142o otwarte.
-reaper.unregistered.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego. 
+reaper.unregistered.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
 # # {0} A file path
 reaper.closed.path=CWWKM0123W: \u017b\u0105danie zamkni\u0119cia archiwum {0}, kt\u00f3re jest ju\u017c zamkni\u0119te, zostanie zignorowane.
 reaper.closed.path.explanation=Za\u017c\u0105dano zamkni\u0119cia pliku archiwum, kt\u00f3re by\u0142o ju\u017c zamkni\u0119te.
-reaper.closed.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego. 
+reaper.closed.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
 # # {0} A file path
 reaper.pending.path=CWWKM0243W: \u017b\u0105danie zamkni\u0119cia archiwum {0}, kt\u00f3re ju\u017c oczekuje na zamkni\u0119cie {0}, zostanie zignorowane.
 reaper.pending.path.explanation=Za\u017c\u0105dano zamkni\u0119cia pliku archiwum, kt\u00f3re ju\u017c oczekuje na zamkni\u0119cie.
-reaper.pending.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego. 
+reaper.pending.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
 # # {0} A file path
 # # {1} An integer representing a file length
 # # {2} An integer representing a file length
 reaper.unexpected.length.change=CWWKM0125W: Archiwum {0}: aktualizacja d\u0142ugo\u015bci z {1} na {2}.
-reaper.unexpected.length.change.explanation=Wykonano nieoczekiwan\u0105 aktualizacj\u0119 pliku archiwum aplikacji, gdy to archiwum by\u0142o otwarte. Taka sytuacja zwykle wyst\u0119puje w przypadku wykonywania dynamicznej aktualizacji plik\u00f3w aplikacji.
-reaper.unexpected.length.change.useraction=Zrestartuj serwer. Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
+reaper.unexpected.length.change.explanation=Wykonano nieoczekiwan\u0105 aktualizacj\u0119 pliku archiwum aplikacji, gdy to archiwum by\u0142o otwarte.  Taka sytuacja zwykle wyst\u0119puje w przypadku wykonywania dynamicznej aktualizacji plik\u00f3w aplikacji.
+reaper.unexpected.length.change.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
 
 # # {0} A file path
 # # {1} An integer representing a last modified time
 # # {2} An integer representing a last modified time
 reaper.unexpected.lastmodified.change=CWWKM0126W: Archiwum {0}: aktualizacja ostatniej modyfikacji z {1} na {2}.
-reaper.unexpected.lastmodified.change.explanation=Wykonano nieoczekiwan\u0105 aktualizacj\u0119 pliku archiwum aplikacji, gdy to archiwum by\u0142o otwarte. Taka sytuacja zwykle wyst\u0119puje w przypadku wykonywania dynamicznej aktualizacji plik\u00f3w aplikacji.
-reaper.unexpected.lastmodified.change.useraction=Zrestartuj serwer. Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
+reaper.unexpected.lastmodified.change.explanation=Wykonano nieoczekiwan\u0105 aktualizacj\u0119 pliku archiwum aplikacji, gdy to archiwum by\u0142o otwarte.  Taka sytuacja zwykle wyst\u0119puje w przypadku wykonywania dynamicznej aktualizacji plik\u00f3w aplikacji.
+reaper.unexpected.lastmodified.change.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
 
 # # {0} A file path
 reaper.reopen.active=CWWKM0127W: Ponowne otwarcie pliku {0}.
-reaper.reopen.active.explanation=Nieoczekiwana zmiana spowodowa\u0142a ponowne otwarcie otwartego pliku archiwum aplikacji. Serwer pr\u00f3bowa\u0142 uzyska\u0107 zaktualizowan\u0105 zawarto\u015b\u0107 pliku archiwum, ale prawdopodobnie nie zaktualizowa\u0142 w pe\u0142ni wewn\u0119trznych listing\u00f3w zawarto\u015bci archiwum.
-reaper.reopen.active.useraction=Zrestartuj serwer. Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
+reaper.reopen.active.explanation=Nieoczekiwana zmiana spowodowa\u0142a ponowne otwarcie otwartego pliku archiwum aplikacji.  Serwer pr\u00f3bowa\u0142 uzyska\u0107 zaktualizowan\u0105 zawarto\u015b\u0107 pliku archiwum, ale prawdopodobnie nie zaktualizowa\u0142 w pe\u0142ni wewn\u0119trznych listing\u00f3w zawarto\u015bci archiwum.
+reaper.reopen.active.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.

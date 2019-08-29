@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=V\u00e9rifiez que la fonction qui fournit l
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: L'en-t\u00eate X-Login-Config-Props requiert un signe \u00e9gal (=) comme d\u00e9limiteur entre le nom et la valeur de la propri\u00e9t\u00e9 de configuration de connexion.
 CWWKO1552_MISSING_DELIMITER.explanation=Le signe d\u00e9limiteur \u00e9gal (=) est n\u00e9cessaire pour identifier la partie de l'en-t\u00eate X-Login-Config-Props qui constitue le nom de la propri\u00e9t\u00e9 de configuration de connexion et celle qui constitue la valeur.
 CWWKO1552_MISSING_DELIMITER.useraction=Mettez \u00e0 jour l'en-t\u00eate X-Login-Config-Props pour inclure le signe \u00e9gal (=) entre le nom et la valeur de la propri\u00e9t\u00e9 de configuration de connexion.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Aucun gestionnaire enregistr\u00e9 ne correspond \u00e0 l''URL demand\u00e9e {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Une tentative d'acc\u00e8s a \u00e9t\u00e9 effectu\u00e9e pour une URL qui ne correspondait \u00e0 aucun des gestionnaires enregistr\u00e9s.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Corrigez l'URL afin qu'elle corresponde \u00e0 un gestionnaire enregistr\u00e9.

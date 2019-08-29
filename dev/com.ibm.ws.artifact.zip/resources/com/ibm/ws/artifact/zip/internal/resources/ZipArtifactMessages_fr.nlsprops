@@ -72,11 +72,6 @@ extract.primary.untyped=CWWKM0110E: L''extraction pr\u00e9c\u00e9dente de {0} ne
 extract.primary.untyped.explanation=L'extraction d'une archive imbriqu\u00e9e a d\u00e9tect\u00e9 un fichier ne pouvant pas \u00eatre associ\u00e9 \u00e0 un type comme archive pr\u00e9c\u00e9demment extraite.
 extract.primary.untyped.useraction=Nettoyez puis red\u00e9marrez le serveur pour vous assurer qu'aucun contenu de cache pr\u00e9c\u00e9dent n'existe.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: Le d\u00e9lai de traitement des fermetures d''archive en attente est excessivement long : {0} secondes. Le d\u00e9lai demand\u00e9 \u00e9tait de {1} secondes.
-reaper.stall.explanation=Ce message indique que des fichiers archive d'application sont rest\u00e9s ouverts plus longtemps que n\u00e9cessaire. Comme indiqu\u00e9 par le message d'avertissement, les fichiers archive n'auraient pas d\u00fb rester ouverts plus longtemps que la dur\u00e9e pr\u00e9vue, mais sont rest\u00e9s ouverts pendant beaucoup plus longtemps. Des erreurs peuvent \u00eatre g\u00e9n\u00e9r\u00e9es en cas de mise \u00e0 jour dynamique des fichiers d'application. Cet avertissement indique qu'une activit\u00e9, externe ou interne, refuse du temps de traitement au serveur.
-reaper.stall.useraction=Examinez l'environnement afin de d\u00e9terminer si des processus autres que le processus serveur consomment une proportion excessive du temps de traitement. Examinez le processus serveur en g\u00e9n\u00e9rant des clich\u00e9s d'unit\u00e9 d'ex\u00e9cution afin de d\u00e9terminer si des unit\u00e9s d'ex\u00e9cution particuli\u00e8res ont une activit\u00e9 excessivement \u00e9lev\u00e9e.
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: Impossible d''ouvrir {0} : le cache d''archives {1} est inactif.
@@ -102,17 +97,17 @@ reaper.pending.path.useraction=Ce messages indique une erreur de programmation i
 # # {1} An integer representing a file length
 # # {2} An integer representing a file length
 reaper.unexpected.length.change=CWWKM0125W: Archive {0} : mise \u00e0 jour de la longueur {1} avec {2}.
-reaper.unexpected.length.change.explanation=Une mise \u00e0 jour inattendue d'un fichier archive d'application a \u00e9t\u00e9 effectu\u00e9e alors que cette archive \u00e9tait ouverte. En g\u00e9n\u00e9ral, ce probl\u00e8me survient lorsqu'une mise \u00e0 jour dynamique a \u00e9t\u00e9 effectu\u00e9e pour des fichiers d'application.
-reaper.unexpected.length.change.useraction=Red\u00e9marrez le serveur. Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
+reaper.unexpected.length.change.explanation=Une mise \u00e0 jour inattendue d'un fichier archive d'application a \u00e9t\u00e9 effectu\u00e9e alors que cette archive \u00e9tait ouverte.  En g\u00e9n\u00e9ral, ce probl\u00e8me survient lorsqu'une mise \u00e0 jour dynamique a \u00e9t\u00e9 effectu\u00e9e pour des fichiers d'application.
+reaper.unexpected.length.change.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
 
 # # {0} A file path
 # # {1} An integer representing a last modified time
 # # {2} An integer representing a last modified time
 reaper.unexpected.lastmodified.change=CWWKM0126W: Archive {0} : mise \u00e0 jour de l''heure de la derni\u00e8re modification {1} avec {2}.
-reaper.unexpected.lastmodified.change.explanation=Une mise \u00e0 jour inattendue d'un fichier archive d'application a \u00e9t\u00e9 effectu\u00e9e alors que cette archive \u00e9tait ouverte. En g\u00e9n\u00e9ral, ce probl\u00e8me survient lorsqu'une mise \u00e0 jour dynamique a \u00e9t\u00e9 effectu\u00e9e pour des fichiers d'application.
-reaper.unexpected.lastmodified.change.useraction=Red\u00e9marrez le serveur. Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
+reaper.unexpected.lastmodified.change.explanation=Une mise \u00e0 jour inattendue d'un fichier archive d'application a \u00e9t\u00e9 effectu\u00e9e alors que cette archive \u00e9tait ouverte.  En g\u00e9n\u00e9ral, ce probl\u00e8me survient lorsqu'une mise \u00e0 jour dynamique a \u00e9t\u00e9 effectu\u00e9e pour des fichiers d'application.
+reaper.unexpected.lastmodified.change.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
 
 # # {0} A file path
 reaper.reopen.active=CWWKM0127W: R\u00e9ouverture de {0}
-reaper.reopen.active.explanation=Une modification inattendue a entra\u00een\u00e9 la r\u00e9ouverture d'un fichier archive d'application ouvert. Le serveur a tent\u00e9 d'obtenir le contenu mis \u00e0 jour du fichier archive, mais il se peut qu'il n'ait pas enti\u00e8rement mis \u00e0 jour les liste internes des contenus d'archive.
-reaper.reopen.active.useraction=Red\u00e9marrez le serveur. Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
+reaper.reopen.active.explanation=Une modification inattendue a entra\u00een\u00e9 la r\u00e9ouverture d'un fichier archive d'application ouvert.  Le serveur a tent\u00e9 d'obtenir le contenu mis \u00e0 jour du fichier archive, mais il se peut qu'il n'ait pas enti\u00e8rement mis \u00e0 jour les liste internes des contenus d'archive.
+reaper.reopen.active.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.

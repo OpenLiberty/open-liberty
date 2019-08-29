@@ -14,7 +14,7 @@
   <featureManager>
     <feature>cloudant-1.0</feature>
     <feature>componenttest-1.0</feature>
-    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>restConnector-2.0</feature>
     <feature>jdbc-4.2</feature>
     <feature>jca-1.7</feature>
     <feature>jms-2.0</feature>

@@ -72,12 +72,6 @@ extract.primary.untyped=CWWKM0110E: Vorherige Extraktion von {0} kann nicht typi
 extract.primary.untyped.explanation=Eine Extraktion eines verschachtelten Archivs hat eine nicht typisierbare Datei als zuvor extrahiertes Archiv erkannt.
 extract.primary.untyped.useraction=Bereinigen Sie den Server und starten Sie ihn anschlie\u00dfend erneut, um sicherzustellen, dass kein fr\u00fcherer Cacheinhalt vorhanden ist.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: Es trat eine \u00fcberm\u00e4\u00dfige Verz\u00f6gerung auf, w\u00e4hrend die Verarbeitung des ausstehenden Archivs beendet wurde: Die tats\u00e4chliche Verz\u00f6gerung betrug {0} Sekunden. Die angeforderte Verz\u00f6gerung betrug {1} Sekunden.
-reaper.stall.explanation=Diese Nachricht gibt an, dass die Anwendungsarchivdateien l\u00e4nger als erforderlich offen gehalten wurden. Wie in der Warnung angegeben, h\u00e4tten die Archivdateien nicht l\u00e4nger als die angeforderte Dauer offen gehalten werden sollen. Sie wurden jedoch erheblich l\u00e4nger offen gehalten. Wenn Archivdateien l\u00e4nger als erforderlich offen gehalten werden, kann zu Fehlern f\u00fchren, wenn versucht wird, Anwendungsdateien dynamisch zu aktualisieren. Diese Warnung gibt an, dass externe oder interne Aktivit\u00e4ten dem Server Verarbeitungszeit entziehen.
-reaper.stall.useraction=Untersuchen Sie die Umgebung, um zu ermitteln, ob andere Prozesse als der Serverprozess zus\u00e4tzliche Verarbeitungszeit des Servers verbrauchen. Untersuchen Sie den Serverprozess, indem Sie Threadspeicherausz\u00fcge generieren, um zu ermitteln, ob bestimmte Server-Threads eine \u00fcberm\u00e4\u00dfige Aktivit\u00e4t aufweisen.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: {0} kann nicht ge\u00f6ffnet werden: Der Archivcache {1} ist inaktiv.

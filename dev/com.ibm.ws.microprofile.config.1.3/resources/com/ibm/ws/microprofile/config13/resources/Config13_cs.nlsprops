@@ -42,6 +42,11 @@ duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: Bylo nalezeno v\
 duplicate.application.configuration.name.CWMCG0203E.explanation=Konfigurace aplikace mus\u00ed b\u00fdt jedine\u010dn\u00e1.
 duplicate.application.configuration.name.CWMCG0203E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
 
+# An instance of the {0} service could not be found
+service.not.found.CWMCG0204E=CWMCG0204E: Instance slu\u017eby {0} nebyla nalezena.
+service.not.found.CWMCG0204E.explanation=Do\u0161lo k intern\u00ed chyb\u011b a modul MicroProfile Config nemohl slu\u017ebu naj\u00edt.
+service.not.found.CWMCG0204E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Zdroj konfigurace vlastnost\u00ed aplikace XML serveru
 

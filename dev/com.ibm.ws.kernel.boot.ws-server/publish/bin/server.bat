@@ -128,7 +128,7 @@ if "help" == "%ACTION%" (
   if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
   if not defined WLP_DEBUG_REMOTE set WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
   if not defined WLP_DEBUG_REMOTE_HOST set WLP_DEBUG_REMOTE_HOST=""
-  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_REMOTE_HOST!!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
+  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_REMOTE_HOST!!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
   call:runServer
 ) else if "status" == "%ACTION%" (
   call:serverStatus

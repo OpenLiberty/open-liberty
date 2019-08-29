@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -267,3 +267,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Uwierzytelnij si\u0119 przy u\
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: Nie mo\u017cna zako\u0144czy\u0107 operacji dotycz\u0105cej rejestru u\u017cytkownik\u00f3w, poniewa\u017c repozytorium {0} jest dost\u0119pne tylko do odczytu. Nie obs\u0142uguje ono operacji zapisu. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Repozytorium jest dost\u0119pne tylko do odczytu. Nie obs\u0142uguje ono operacji tworzenia, aktualizowania ani usuwania.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Upewnij si\u0119, \u017ce operacja zapisu nie jest wywo\u0142ywana w repozytorium dost\u0119pnym tylko do odczytu.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Brak wymaganych identyfikator\u00f3w dla jednostki.
+REQUIRED_IDENTIFIERS_MISSING.explanation=Nie okre\u015blono identyfikator\u00f3w nazwy unikalnej i identyfikatora unikalnego. Nale\u017cy okre\u015bli\u0107 przynajmniej jeden identyfikator.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Sprawd\u017a, czy dla ka\u017cdej przekazywanej jednostki okre\u015blono w\u0142a\u015bciwo\u015b\u0107 identyfikatora. Je\u015bli identyfikator nie zosta\u0142 okre\u015blony, dodaj w\u0142a\u015bciwo\u015b\u0107 i podaj warto\u015b\u0107 uniqueName lub uniqueId.

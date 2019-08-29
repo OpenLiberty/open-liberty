@@ -150,3 +150,8 @@ MP_JWT_FRONT_END_ERROR.useraction=Skontaktuj si\u0119 z administratorem systemu,
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: Sk\u0142adnik MicroProfile JWT nie mo\u017ce wykona\u0107 uwierzytelniania, poniewa\u017c oczekuje typu uwierzytelniania [{0}] w aplikacji, a znaleziono typ [{1}]. Atrybut [{2}] ma ustawion\u0105 warto\u015b\u0107 [{3}]. 
 MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Aby pomy\u015blnie przeprowadzi\u0107 uwierzytelnianie, wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: a) Upewnij si\u0119, \u017ce atrybut ignoreApplicationAuthMethod ma warto\u015b\u0107 true. b) Ustaw dla adnotacji loginConfig warto\u015b\u0107 MP-JWT w aplikacji.
 MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Upewnij si\u0119, \u017ce konfiguracja serwera lub aplikacji zosta\u0142a zaktualizowana.
+
+# do not translate HttpServletRequest.logout
+JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: Funkcja MicroProfile JWT nie mo\u017ce przeprowadzi\u0107 uwierzytelniania, poniewa\u017c dla funkcji JWT podanej w \u017c\u0105daniu nast\u0105pi\u0142o wcze\u015bniej wylogowanie.
+JWT_PREVIOUSLY_LOGGED_OUT.explanation=Wyst\u0105pi\u0142o wcze\u015bniejsze wywo\u0142anie metody HttpServletRequest.logout() dla podmiotu, kt\u00f3ry zosta\u0142 wcze\u015bniej uwierzytelniony przy u\u017cyciu tej funkcji JWT.  
+JWT_PREVIOUSLY_LOGGED_OUT.useraction=Prze\u015blij ponownie to \u017c\u0105danie przy u\u017cyciu innej funkcji JWT.

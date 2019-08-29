@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,6 +135,26 @@ FAILED_TO_WRITE_LOG.useraction=Verificare che la directory esista, sia scrivibil
 LOG_FILE_RESUMED=TRAS3006I: La registrazione dei messaggi nel file {0} \u00e8 stata ripresa.
 LOG_FILE_RESUMED.explanation=I messaggi possono essere scritti nel file.
 LOG_FILE_RESUMED.useraction=Non \u00e8 richiesta alcuna azione.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: L'associazione del nome campo di registrazione JSON non \u00e8 formattata correttamente.
+JSON_FIELDS_FORMAT_WARNING.explanation=L'associazione del nome campo di registrazione JSON non \u00e8 formattata correttamente.
+JSON_FIELDS_FORMAT_WARNING.useraction=Assicurarsi che il formato della propriet\u00e0 di associazione del nome campo di registrazione JSON sia corretto. L'associazione del nome campo di registrazione JSON pu\u00f2 essere specificata in vari modi, indicati nella documentazione per la configurazione della registrazione.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: La propriet\u00e0 di associazione del nome campo di registrazione JSON ha un numero troppo alto o troppo basso di token in una voce.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=La propriet\u00e0 di associazione del nome campo di registrazione JSON deve essere nel formato knownFieldName:newFieldName o eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=La propriet\u00e0 di associazione del nome campo di registrazione JSON deve essere nel formato knownFieldName:newFieldName o eventType:knownFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Il nome del campo di registrazione JSON fornito non corrisponde a uno dei nomi campo noti per gli eventi specificati.
+JSON_FIELDS_NO_MATCH.explanation=Il nome del campo di registrazione JSON fornito non corrisponde a uno dei nomi campo noti.
+JSON_FIELDS_NO_MATCH.useraction=Fornire un nome campo di registrazione JSON che corrisponda a uno dei campi noti (ad es. message, ibm_datetime, ibm_sequence)
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Il tipo di evento fornito non corrisponde a uno dei tipi di evento noti.
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=I tipi di evento accettati sono: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=I tipi di evento accettati sono: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c8 stato fornito un carattere non valido nella propriet\u00e0 di associazione del nome campo di registrazione JSON.
+JSON_FIELDS_INVALID_CHARACHTER.explanation= Nella propriet\u00e0 di associazione del nome campo di registrazione JSON sono accettati solo le lettere, i numeri e :
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Modificare il valore della propriet\u00e0 di associazione del nome campo di registrazione JSON rimuovendo i caratteri non validi.
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

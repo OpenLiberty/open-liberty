@@ -1987,6 +1987,39 @@ public class H2FATDriverServlet extends FATServlet {
         handleErrors(h2Client, testName);
     }
 
+    public void testPingDoS(HttpServletRequest request,
+                                          HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testPingDoS", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testPingDoS",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testPingDoS";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        // byte[] libertyBytes = { 'l', 'i', 'b', 'e', 'r', 't', 'y', '1' };
+        // FramePing expectedPing = new FramePing(0, libertyBytes, false);
+        // expectedPing.setAckFlag();
+        // h2Client.addExpectedFrame(expectedPing);
+
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        //send a ping and expect a ping back
+        FramePing ping = new FramePing(0, null, true);
+        h2Client.sendFrame(ping);
+
+        for (int i = 0; i < 10; i++) {
+            h2Client.sendFrame(ping);
+        }
+
+        blockUntilConnectionIsDone.await(5000000, TimeUnit.MILLISECONDS);
+        handleErrors(h2Client, testName);
+    }
+
     public void testDataFrameMaxSize(HttpServletRequest request,
                                      HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
@@ -4847,8 +4880,45 @@ public class H2FATDriverServlet extends FATServlet {
             // This should be a clientPrefaceTimeoutException,
             testFailed = false;
         }
+        Assert.assertFalse(testName + " failed", testFailed);
+    }
 
-        Assert.assertFalse("In test: " + testName, testFailed);
+    /**
+     * Attempt to directly connect over HTTP/2 to a server that has servlet 3.1, but has HTTP/2 turned off.
+     * This should result in a timeout waiting for the server preface.
+     * 
+     * @param the Http2Client that will expect a header response
+     * @return the expected FrameHeaders
+     */
+    public void servlet31H2OffDirectConnection(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "servlet31H2OffDirectConnection";
+
+        // config the client to use HTTP/2 with prior knowledge
+        Http2Client h2Client =  new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 
+            defaultTimeoutToSendFrame, true);
+
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        // create a GET request
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        boolean testFailed = true;
+        try {
+            h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+            h2Client.sendFrame(frameHeadersToSend);
+        } catch (Exception cptoe) {
+            // This should be a clientPrefaceTimeoutException,
+            testFailed = false;
+        }
+        Assert.assertFalse(testName + " failed", testFailed);
     }
 
     /**
