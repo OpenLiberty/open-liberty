@@ -143,7 +143,7 @@ public class JSONFieldsTest {
         // Set jsonFields property in server.xml
         setUp(server_xml);
         //provide an unknown fieldname
-        setServerConfiguration(true, "liberty_notevent:message:log", server_xml);
+        setServerConfiguration(true, "notevent:message:log", server_xml);
 
         //a warning should be given when an entry with too many or too few tokens is provided
         List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("TRAS3010W", MESSAGE_LOG);
