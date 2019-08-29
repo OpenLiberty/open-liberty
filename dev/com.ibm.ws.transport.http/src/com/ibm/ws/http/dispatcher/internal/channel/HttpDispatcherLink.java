@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1186,46 +1186,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public boolean isHTTP2UpgradeRequest(Map<String, String> headers, boolean checkEnabledOnly) {
-
         if (isc != null) {
-
             //Returns whether HTTP/2 is enabled for this channel/port
             if (checkEnabledOnly) {
-
-                boolean isHTTP2Enabled = false;
-
-                //If servlet-3.1 is enabled, HTTP/2 is optional and by default off.
-                if (HttpConfigConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
-                    //If so, check if the httpEndpoint was configured for HTTP/2
-
-                    isHTTP2Enabled = (isc.getHttpConfig().getUseH2ProtocolAttribute() != null && isc.getHttpConfig().getUseH2ProtocolAttribute());
-                }
-
-                //If servlet-4.0 is enabled, HTTP/2 is optional and by default on.
-                else if (HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
-                    //If not configured as an attribute, getUseH2ProtocolAttribute will be null, which returns true
-                    //to use HTTP/2.
-                    isHTTP2Enabled = (isc.getHttpConfig().getUseH2ProtocolAttribute() == null || isc.getHttpConfig().getUseH2ProtocolAttribute());
-                }
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Has HTTP/2 been enabled on this port: " + isHTTP2Enabled);
-
-                }
-
-                return isHTTP2Enabled;
+                return isc.isHttp2Enabled();
             }
-
             //Check headers for HTTP/2 upgrade header
             else {
-
                 HttpInboundLink link = isc.getLink();
                 if (link != null) {
 
                     return link.isHTTP2UpgradeRequest(headers);
                 }
             }
-
         }
         return false;
     }

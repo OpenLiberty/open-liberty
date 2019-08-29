@@ -161,7 +161,7 @@ public class BasicQueryTestServlet extends FATServlet {
         List<Error> errors = response.getErrors();
         assertEquals(1, errors.size());
         Error e = errors.get(0);
-        assertEquals("Internal Server Error(s) while executing query", e.getMessage());
+        assertTrue(e.getMessage().contains("Internal Server Error"));
     }
 
     @Test
