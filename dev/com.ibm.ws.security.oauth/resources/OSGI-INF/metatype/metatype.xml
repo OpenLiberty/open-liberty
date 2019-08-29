@@ -384,9 +384,9 @@
 
            <AD id="appTokenAllowed" name="%appTokenAllowed" description="%appTokenAllowed.desc" required="false" type="Boolean" default="false" />
 
-           <AD id="proofKeyForCodeExchange" name=%proofKeyForCodeExchange description=%proofKeyForCodeExchange.desc required="false" type="Boolean" default="false" />
+           <AD id="proofKeyForCodeExchange" name="%proofKeyForCodeExchange" description="%proofKeyForCodeExchange.desc" required="false" type="Boolean" default="false" />
 
-           <AD id="publicClient" name=%publicClient description=%publicClient.desc required="false" type="Boolean" default="false" />
+           <AD id="publicClient" name="%publicClient" description="%publicClient.desc" required="false" type="Boolean" default="false" />
 
     </OCD>
     
