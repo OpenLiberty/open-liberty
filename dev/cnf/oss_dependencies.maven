@@ -1,5 +1,9 @@
-biz.aQute.bnd:biz.aQute.bnd.annotation:4.1.0
-biz.aQute.bnd:biz.aQute.bnd:4.1.0
+biz.aQute.bnd:biz.aQute.bnd.annotation:4.3.0
+biz.aQute.bnd:biz.aQute.bnd.gradle:4.3.0
+biz.aQute.bnd:biz.aQute.bnd:4.3.0
+biz.aQute.bnd:biz.aQute.resolve:4.3.0
+biz.aQute.bnd:biz.aQute.repository:4.3.0
+biz.aQute.bnd:biz.aQute.bnd.annotation:4.3.0
 cglib:cglib-nodep:3.2.10
 com.beust:jcommander:1.72
 com.cloudant:cloudant-client:2.16.0
@@ -437,6 +441,7 @@ org.reactivestreams:reactive-streams:1.0.2
 org.rnorth.duct-tape:duct-tape:1.0.7
 org.slf4j:slf4j-api:1.7.26
 org.slf4j:slf4j-api:1.7.7
+org.slf4j:slf4j-api:1.7.25
 org.slf4j:slf4j-jdk14:1.7.7
 org.slf4j:slf4j-simple:1.7.25
 org.slf4j:slf4j-simple:1.7.26

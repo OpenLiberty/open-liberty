@@ -35,6 +35,7 @@ buildscript {
                 }
                 url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
             }
+            maven { url uri(bnd_repourl) }
         } else {
             maven { url uri(bnd_repourl) }
             maven { url "https://plugins.gradle.org/m2/" }
@@ -42,7 +43,9 @@ buildscript {
     }
 
     dependencies {
-        classpath bnd_plugin
+        classpath 'biz.aQute.bnd:biz.aQute.bnd:4.3.0'
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.annotation:4.3.0'
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.3.0'
         classpath 'gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.4.11'
         classpath 'com.gradle:build-scan-plugin:2.1'
     }

@@ -15,6 +15,8 @@ Bundle-Name: FAT infrastructure
 Bundle-SymbolicName: com.ibm.ws.componenttest
 Bundle-Description: FAT infrastructure; version=${bVersion}
 
+-noclassforname=true
+
 -dsannotations: \
   componenttest.serverinfo.impl.FATServerInfoMBeanImpl
   

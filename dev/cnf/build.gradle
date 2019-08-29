@@ -30,13 +30,15 @@ dependencies {
     binaries "org.jsoup:jsoup:1.7.2"
     binaries "com.ibm.ws.javax.j2ee:servlet:3.1"
     binaries "org.jmockit:jmockit:1.25"
-    binaries "biz.aQute.bnd:biz.aQute.bnd:4.1.0"
-    binaries "biz.aQute.bnd:biz.aQute.bnd.annotation:4.1.0"
+    binaries "biz.aQute.bnd:biz.aQute.bnd:4.3.0"
+    binaries "biz.aQute.bnd:biz.aQute.bnd.annotation:4.3.0"
+    binaries "biz.aQute.bnd:biz.aQute.bnd.gradle:4.3.0"
     binaries "org.apache.maven:maven-model:3.5.0"
     binaries "javax.json:javax.json-api:1.1.2"
     binaries "org.glassfish:javax.json:1.1.2"
     binaries "org.codehaus.plexus:plexus-utils:3.0.24"
     binaries "org.apache.ant:ant:1.9.6"
+    binaries "org.slf4j:slf4j-api:1.7.25"
 }
 
 task copyMavenLibs(type: Copy) {

@@ -72,6 +72,22 @@ pluginManagement {
                   +';snapshotUrl=' + repoURL
                   +';index=${build}/oss_ibm.maven')
   props.setProperty('fetch.oss.ibm.repository', fetchRepoIBM)
+  
+ String fetchRepoBND = !isUsingArtifactory ? 
+ 		('aQute.bnd.repository.maven.provider.MavenBndRepository;'
+                  +'name = RemoteBND;'
+                  +'releaseUrl=https://repo.maven.apache.org/maven2/'
+                  +';index=${build}/oss_bnd.maven') :
+                  
+ 		('aQute.bnd.repository.maven.provider.MavenBndRepository'
+              +';name = RemoteBND'
+              +';local=~/.ibmartifactory/repository'
+              +';releaseUrl=' + bnd_repourl
+              +';snapshotUrl=' + bnd_repourl
+              +';index=${build}/oss_bnd.maven')
+  props.setProperty('fetch.oss.bnd.repository', fetchRepoBND)
+  
+  
 
   // Bnd configuration for where to download IBM Java binaries from.
   String fetchRepoIBMJava = !isUsingArtifactory ?
@@ -115,7 +131,9 @@ pluginManagement {
           }
           url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
       }
+      maven { url uri(bnd_repourl) }
     } else {
+      maven { url uri(bnd_repourl) }
       maven {
         url "https://plugins.gradle.org/m2/"
       }
