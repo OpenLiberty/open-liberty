@@ -57,7 +57,7 @@ public class FATValidateConcurrentMultiserver {
     private static final LibertyServer server2 = FATSuite.server2;
     
     private static AtomicInteger taskNumber = new AtomicInteger(1);
-    private static final String APP_NAME = "webApps";
+    private static final String APP_NAME = "webApps.war";
 
     /**
      * Start Servers.
@@ -66,14 +66,14 @@ public class FATValidateConcurrentMultiserver {
      */
     @BeforeClass
     public static void beforeClass() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME)
                 .addPackage("com.ibm.test.servlet")
                 .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/web.xml"));
         ShrinkHelper.exportToServer(server1, "apps", app);
         ShrinkHelper.exportToServer(server2, "apps", app);
     	
-    	server1.startServer();
-        server2.startServer();
+    	server1.startServer(true);
+        server2.startServer(true);
         Log.info(c, "beforeClass", "Successfully started servers");
     }
 
@@ -130,7 +130,7 @@ public class FATValidateConcurrentMultiserver {
             executor = Executors.newFixedThreadPool(2);
             
             CallableServlet callServ1 = new CallableServlet(server1);
-            CallableServlet callServ2 = new CallableServlet(server1);
+            CallableServlet callServ2 = new CallableServlet(server2);
             
             Collection<CallableServlet> collection = new ArrayList<CallableServlet>();
             collection.add(callServ1);

@@ -9,6 +9,21 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-//Get Derby and Derby Network JDBC drivers
+configurations {
+  derbyClient
+}
+
+dependencies {
+  derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
+  requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
+}
+
+task addDerbyClient(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derbyClient
+  into new File(autoFvtDir, 'publish/shared/resources/derbyclient')
+  rename 'derbyclient.*.jar', 'derbyclient.jar'
+}
+
 addRequiredLibraries.dependsOn addDerby
 addRequiredLibraries.dependsOn addDerbyClient
