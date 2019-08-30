@@ -51,6 +51,6 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
  com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1", \
- com.ibm.websphere.appserver.thirdparty.jsf-2.3; location:="dev/api/third-party/"; mavenCoordinates="org.apache.myfaces.core:myfaces-impl:2.3.3"
+ com.ibm.websphere.appserver.thirdparty.jsf-2.3; location:="dev/api/third-party/"
 kind=ga
 edition=core
