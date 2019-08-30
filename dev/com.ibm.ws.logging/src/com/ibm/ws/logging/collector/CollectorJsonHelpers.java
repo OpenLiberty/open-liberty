@@ -161,7 +161,7 @@ public class CollectorJsonHelpers {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s String to escape
+     * @param s  String to escape
      */
     protected static void jsonEscape3(StringBuilder sb, String s) {
         for (int i = 0; i < s.length(); i++) {
@@ -643,6 +643,8 @@ public class CollectorJsonHelpers {
                     extensions.addKeyValuePair(extKey, Long.parseLong(extValue));
                 } catch (NumberFormatException e) {
                 }
+            } else {
+                extensions.addKeyValuePair(extKey, extValue);
             }
         } else {
             extensions.addKeyValuePair(extKey, extValue);
