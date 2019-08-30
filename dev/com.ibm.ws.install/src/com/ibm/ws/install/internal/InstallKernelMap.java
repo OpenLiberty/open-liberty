@@ -53,6 +53,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
+import com.ibm.ws.repository.common.enums.Visibility;
 import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
 import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnection;
@@ -64,6 +65,7 @@ import com.ibm.ws.repository.parsers.EsaParser;
 import com.ibm.ws.repository.parsers.Parser;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
+import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.writeable.RepositoryResourceWritable;
 import com.ibm.ws.repository.strategies.writeable.AddThenDeleteStrategy;
@@ -599,6 +601,55 @@ public class InstallKernelMap implements Map {
                 throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
             }
 
+            RepositoryConnectionList loginInfo;
+            Director director = new Director((File) data.get(RUNTIME_INSTALL_DIR));
+            loginInfo = director.getRepositoryConnectionList();
+
+            HashSet<String> invalidFeatures = new HashSet<>();
+            List<EsaResource> featuresFound = new ArrayList<>();
+            for (String processedFeature : (Collection<String>) data.get(FEATURES_TO_RESOLVE)) {
+                System.out.println("Processing " + processedFeature);
+                featuresFound = new ArrayList<>();
+                boolean noVersionMode = false;
+
+                for (ProductDefinition definition : productDefinitions) {
+                    try {
+                        String searchStr = noVersionMode == false ? processedFeature : processedFeature.split("-")[0];
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
+                        featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
+
+                    } catch (RepositoryException e) {
+                        noVersionMode = true;
+
+                        // try to find feature again without the version number
+                        String searchStr = processedFeature.split("-")[0];
+                        System.out.println("Using " + searchStr + " instead.");
+                        try {
+                            featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.PUBLIC));
+                            featuresFound.addAll(loginInfo.findMatchingEsas(searchStr, definition, Visibility.INSTALL));
+                        } catch (RepositoryException e1) {
+                            // error is not due to the version number
+                        }
+
+                    }
+                }
+                if (featuresFound.isEmpty()) {
+                    invalidFeatures.add(processedFeature);
+                }
+            }
+            if (invalidFeatures.size() > 0) {
+                System.out.println("Invalid features: " + invalidFeatures);
+                if (isOpenLiberty) {
+
+                    throw ExceptionUtils.create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY",
+                                                                                               InstallUtils.getFeatureListOutput(invalidFeatures)));
+                } else {
+                    throw ExceptionUtils.create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_RESOLVE_FEATURES",
+                                                                                               InstallUtils.getFeatureListOutput(invalidFeatures)));
+                }
+
+            }
+
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
 
@@ -797,7 +848,7 @@ public class InstallKernelMap implements Map {
     /**
      * Populate the feature name (short name if available, otherwise symbolic name) from the ESA's manifest into the shortNameMap.
      *
-     * @param esa ESA file
+     * @param esa          ESA file
      * @param shortNameMap Map to populate with keys being ESA canonical paths and values being feature names (short name or symbolic name)
      * @throws IOException If the ESA's canonical path cannot be resolved or the ESA cannot be read
      */
@@ -836,7 +887,7 @@ public class InstallKernelMap implements Map {
      * generate a JSON from provided individual ESA files
      *
      * @param generatedJson path
-     * @param shortNameMap contains features parsed from individual esa files
+     * @param shortNameMap  contains features parsed from individual esa files
      * @return singleJson file
      * @throws IOException
      * @throws RepositoryException

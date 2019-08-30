@@ -425,10 +425,14 @@ class ResolveDirector extends AbstractDirector {
     List<List<RepositoryResource>> resolve(Collection<String> featureNames, DownloadOption downloadOption, String userId, String password) throws InstallException {
         Collection<String> featureNamesProcessed = new ArrayList<String>();
         for (String s : featureNames) {
-            featureNamesProcessed.add(s.replaceAll("\\\\+$", ""));
+            String processedFeature = s.replaceAll("\\\\+$", "");
+            featureNamesProcessed.add(processedFeature);
         }
+
+        RepositoryConnectionList loginInfo = getRepositoryConnectionList(featureNamesProcessed, userId, password, this.getClass().getCanonicalName() + ".resolve");
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
         boolean isOpenLiberty = false;
+
         try {
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
@@ -438,9 +442,8 @@ class ResolveDirector extends AbstractDirector {
             }
         } catch (Exception e) {
             throw ExceptionUtils.create(e);
-        }
 
-        RepositoryConnectionList loginInfo = getRepositoryConnectionList(featureNamesProcessed, userId, password, this.getClass().getCanonicalName() + ".resolve");
+        }
 
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
@@ -642,6 +645,7 @@ class ResolveDirector extends AbstractDirector {
 
             throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);
         } catch (RepositoryException e) {
+
             throw ExceptionUtils.create(e, assetNamesProcessed, true, proxy, defaultRepo(), isOpenLiberty);
         }
 
