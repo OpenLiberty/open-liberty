@@ -70,7 +70,7 @@ var messages = {
     "DELETE_NONE_MESSAGE": "Zaznacz pola wyboru, aby wskazać elementy app-password lub app-token do usunięcia.",
     "SINGLE_ITEM_SELECTED": "Wybrano 1 element",
     "ITEMS_SELECTED": "Wybrano następującą liczbę elementów: {0}",            // 0 - number
-    "SELECT_ALL_AUTHS": "Wybierz wszystkie elementy app-password i app-tokens dla tego użytkownika.",
+    "SELECT_ALL_AUTHS": "Wybierz wszystkie elementy app-password i app-tokens dla tego użytkownika",
     "SELECT_SPECIFIC": "Wybierz element {0} o nazwie {1} do usunięcia.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Szukasz czegoś? Wprowadź ID użytkownika, aby wyświetlić jego elementy app-password i app-token.",
     "GENERIC_FETCH_FAIL": "Błąd podczas pobierania elementu {0}",      // 0 - 'App-Passwords' or 'App-Tokens'

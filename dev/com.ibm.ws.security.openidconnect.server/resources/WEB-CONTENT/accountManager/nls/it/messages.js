@@ -39,8 +39,8 @@ var messages = {
     "UPDATE": "Aggiorna",
 
     // Common Column Names
-    "EXPIRES_COL": "Data di scadenza",
-    "ISSUED_COL": "Data di emissione",
+    "EXPIRES_COL": "Data scadenza",
+    "ISSUED_COL": "Data emissione",
     "NAME_COL": "Nome",
     "TYPE_COL": "Tipo",
 
