@@ -68,11 +68,9 @@ task testReport(type: TestReport) {
 
   doLast {
     // Save test count properties to a file, so they can be loaded by subsequent builds
-    userProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
-    userProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
-
-    File propsFile = new File('generated.properties')
-    userProps.store(propsFile.newWriter(), null)
+    gradle.userProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
+    gradle.userProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
+    rootProject.ext.storeProps()
   }
 }
 

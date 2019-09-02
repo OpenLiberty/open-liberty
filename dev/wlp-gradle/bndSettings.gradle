@@ -14,7 +14,7 @@
  */
 buildscript {
     /**
-     * Set all properties on BndWorkspace from gradle.userProps, which was configured by `gradle/propertiesSettings.gradle`.
+     * Set all properties on BndWorkspace from gradle.userProps, which was configured by `wlp-gradle/propertiesSettings.gradle`.
      */
     gradle.ext.bndWorkspaceConfigure = { workspace ->
         gradle.userProps.each { prop ->
