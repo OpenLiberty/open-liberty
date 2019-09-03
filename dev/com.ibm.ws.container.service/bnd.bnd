@@ -49,7 +49,9 @@ Export-Package: \
    com.ibm.ws.URL
 
 Import-Package: \
-    !*.internal.*, *
+    !*.internal.*, \
+    !com.ibm.ws390.xmem, \
+    *
 
 Private-Package: \
     com.ibm.jtc.adapter, \
