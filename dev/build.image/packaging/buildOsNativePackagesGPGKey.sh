@@ -7,7 +7,7 @@ then
      echo "GPG PASSPHRASE is undefined.  skip signing of rpm/deb packages"
      exit 0
 else
-     echo "GPG PASSPHRASE is defined."
+     echo "GPG PASSPHRASE is defined. It is ${GPG_PASS}"
 
      #add rpm macro for rpm signing to identify key
      touch .rpmmacros
