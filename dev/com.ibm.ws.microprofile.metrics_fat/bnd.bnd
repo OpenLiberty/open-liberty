@@ -36,7 +36,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
 	org.jmock:jmock;strategy=exact;version=2.5.1,\
-	org.apache.commons:commons-compress;version=1.18,\
+	org.apache.commons:commons-compress;version=1.19,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
