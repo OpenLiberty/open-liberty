@@ -153,7 +153,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FORMAT),
                                                           messageFormat);
 
-        jsonFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_FIELDS),
+        jsonFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_FIELD_MAPPINGS),
                                                        jsonFields);
 
         consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
@@ -235,7 +235,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValueAndSaveInit("consoleSource", c, consoleSource, isInit);
         consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValueAndSaveInit(c, consoleFormat, isInit);
 
-        jsonFields = InitConfgAttribute.JSON_FIELDS.getStringValueAndSaveInit(c, jsonFields, isInit);
+        jsonFields = InitConfgAttribute.JSON_FIELD_MAPPINGS.getStringValueAndSaveInit(c, jsonFields, isInit);
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
     }
@@ -456,7 +456,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
         CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
-        JSON_FIELDS("jsonFields", "com.ibm.ws.logging.json.fields"),
+        JSON_FIELD_MAPPINGS("jsonFieldMappings", "com.ibm.ws.logging.json.field.mappings"),
         NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
 
         final String configKey;
