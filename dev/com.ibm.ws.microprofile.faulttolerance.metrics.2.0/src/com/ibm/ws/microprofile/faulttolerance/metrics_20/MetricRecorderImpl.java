@@ -35,7 +35,7 @@ public class MetricRecorderImpl extends AbstractMetricRecorderImpl {
     }
 
     private static Metadata createMD(String metaDataName, MetricType metaDataMetricType, String metadataUnit) {
-        Metadata metaData = Metadata.builder().withDisplayName(metaDataName).withType(metaDataMetricType).withUnit(metadataUnit).build();
+        Metadata metaData = Metadata.builder().withName(metaDataName).withType(metaDataMetricType).withUnit(metadataUnit).build();
         return metaData;
     }
 
