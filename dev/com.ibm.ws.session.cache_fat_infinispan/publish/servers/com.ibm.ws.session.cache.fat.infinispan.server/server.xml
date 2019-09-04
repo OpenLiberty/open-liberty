@@ -14,10 +14,10 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false"/>
     
-    <bell libraryRef="HazelcastLib" service="javax.cache.spi.CachingProvider"/>
+    <bell libraryRef="InfinispanLib" service="javax.cache.spi.CachingProvider"/>
 
-    <library id="HazelcastLib">
-        <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
+    <library id="InfinispanLib">
+        <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
     </library>
 
 	<library id="DerbyLib">
@@ -57,6 +57,7 @@
 
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
 
     <!--  Permissions for application to access mbeans -->
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
