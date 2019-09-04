@@ -161,8 +161,8 @@ public class RequestContext {
 		return isSlow;
 	}
 	
-	public void setSlow(boolean b) {
-		 isSlow = true;
+	public void setSlow(boolean isSlowStatus) {
+		 isSlow = isSlowStatus;
 	}
 
 	/**
