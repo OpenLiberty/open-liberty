@@ -21,7 +21,8 @@ Bundle-Description:MicroProfile Fault Tolerance metrics integration, version ${b
 
 WS-TraceGroup: FAULTTOLERANCE
 
-Import-Package: *
+Import-Package: org.eclipse.microprofile.metrics.*;version="[1.1,3.0)", \
+        *
 
 Export-Package: com.ibm.ws.microprofile.faulttolerance.metrics.integration
 
@@ -38,7 +39,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
         com.ibm.ws.microprofile.faulttolerance;version=latest, \
         com.ibm.ws.microprofile.faulttolerance.spi;version=latest, \
-        com.ibm.websphere.org.eclipse.microprofile.metrics.2.0;version=latest, \
+        com.ibm.websphere.org.eclipse.microprofile.metrics.1.1.1;version=latest, \
         com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
         com.ibm.ws.microprofile.metrics;version=latest
