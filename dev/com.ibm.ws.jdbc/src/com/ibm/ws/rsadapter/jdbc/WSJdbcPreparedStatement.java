@@ -355,7 +355,6 @@ public class WSJdbcPreparedStatement extends WSJdbcStatement implements Prepared
         stmtImpl = null;
         pstmtImpl = null;
         key = null;
-        sql = null; 
 
         return sqlX == null ? null : WSJdbcUtil.mapException(this, sqlX); 
     }
