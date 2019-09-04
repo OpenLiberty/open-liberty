@@ -386,8 +386,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
             Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host.sessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.meta.default_host%2sessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.attr.default_host%2sessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
@@ -403,22 +403,22 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? false"));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  average put time:    \\d+\\.\\d+ms")));
+                            .matches("  average put time:    \\d+\\.\\d+ms")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  cache gets:      \\d+")));
+                            .matches("  cache gets:      \\d+")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
+                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
+                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);
@@ -454,8 +454,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
             Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host.sessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.meta.default_host%2sessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.attr.default_host%2sessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
@@ -469,13 +469,13 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
 
             assertFalse(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  average put time:.*")));
+                            .matches("  average put time:.*")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);
