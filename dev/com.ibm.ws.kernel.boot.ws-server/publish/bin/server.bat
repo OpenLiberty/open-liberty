@@ -124,12 +124,7 @@ if "help" == "%ACTION%" (
 ) else if "run" == "%ACTION%" (
   call:runServer
 ) else if "debug" == "%ACTION%" (
-  if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7777
-  if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
-  if not defined WLP_DEBUG_REMOTE set WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
-  if not defined WLP_DEBUG_REMOTE_HOST set WLP_DEBUG_REMOTE_HOST=""
-  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_REMOTE_HOST!!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
-  call:runServer
+  call:debugServer
 ) else if "status" == "%ACTION%" (
   call:serverStatus
 ) else if "status:fast" == "%ACTION%" (
@@ -235,6 +230,28 @@ goto:eof
 
   !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --batch-file=--create !PARAMS_QUOTED!
   set RC=%errorlevel%
+  call:javaCmdResult
+goto:eof
+
+:debugServer
+  call:serverEnvAndJVMOptions
+  if not %RC% == 0 goto:eof
+
+  if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7777
+  if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
+  if not defined WLP_DEBUG_REMOTE set WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
+  if not defined WLP_DEBUG_REMOTE_HOST set WLP_DEBUG_REMOTE_HOST=""
+  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_REMOTE_HOST!!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
+
+  call:serverExists true
+  if %RC% == 2 goto:eof
+
+  call:serverWorkingDirectory
+  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+  !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
+  set RC=%errorlevel%
+  set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
