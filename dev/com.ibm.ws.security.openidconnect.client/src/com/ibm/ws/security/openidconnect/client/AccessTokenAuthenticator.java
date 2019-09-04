@@ -11,7 +11,6 @@
 package com.ibm.ws.security.openidconnect.client;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
@@ -27,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 
@@ -48,7 +49,6 @@ import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
-import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
@@ -426,8 +426,8 @@ public class AccessTokenAuthenticator {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
 
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
-
-        // jose4jUtil will log an error if something was wrong with the token and set the PAR to 401.
+        
+        // jose4jUtil will log an error if something was wrong with the token and set the PAR to 401. 
         return jose4jUtil.createResultWithJose4JForJwt(accessToken, clientConfig, oidcClientRequest);
     }
 
