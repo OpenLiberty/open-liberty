@@ -600,7 +600,7 @@ public class InstallKernelMap implements Map {
             }
 
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
-            resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+            resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
 
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {

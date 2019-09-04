@@ -448,7 +448,14 @@ class ResolveDirector extends AbstractDirector {
         try {
             if (downloadOption == DownloadOption.all || downloadOption == DownloadOption.none) {
                 resolver = new RepositoryResolver(productDefinitions, Collections.<ProvisioningFeatureDefinition> emptySet(), Collections.<IFixInfo> emptySet(), loginInfo);
-                installResources = resolver.resolve(featureNamesProcessed);
+                if (InstallUtils.getIsServerXmlInstall()) {
+                    System.out.println("Using new resolveAsSet API");
+                    installResources = resolver.resolveAsSet(featureNamesProcessed); // use new api
+                } else {
+                    System.out.println("Using old resolve api");
+                    installResources = resolver.resolve(featureNamesProcessed);
+                }
+
             } else {
                 Collection<String> featuresToInstall = getFeaturesToInstall(featureNamesProcessed, false);
 
@@ -456,7 +463,14 @@ class ResolveDirector extends AbstractDirector {
                     return new ArrayList<List<RepositoryResource>>(0);
                 }
                 resolver = new RepositoryResolver(productDefinitions, product.getFeatureDefinitions().values(), FixAdaptor.getInstalledIFixes(product.getInstallDir()), loginInfo);
-                installResources = resolver.resolve(featuresToInstall);
+                if (InstallUtils.getIsServerXmlInstall()) {
+                    System.out.println("Using new resolveAsSet API");
+                    installResources = resolver.resolveAsSet(featureNamesProcessed); // use new api
+                } else {
+                    System.out.println("Using old resove api");
+                    installResources = resolver.resolve(featureNamesProcessed);
+                }
+
             }
 
         } catch (RepositoryResolutionException e) {

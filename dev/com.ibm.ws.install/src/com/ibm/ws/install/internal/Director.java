@@ -488,6 +488,7 @@ public class Director extends AbstractDirector {
         if (!featuresToInstall.isEmpty()) {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_ADDITIONAL_FEATURES_REQUIRED",
                                                                                   serverNames, featuresToInstall));
+            InstallUtils.setIsServerXmlInstall(true);
         } else {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_NO_ADDITIONAL_FEATURES_REQUIRED",
                                                                                   allServerNames));
