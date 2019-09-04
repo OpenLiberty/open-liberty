@@ -25,6 +25,9 @@ instrument.ffdc: false
 -dsannotations: \
     com.ibm.ws.microprofile.graphql.component.*
 
+Private-Package: \
+  com.ibm.ws.microprofile.graphql.internal
+
 Export-Package: \
   com.ibm.ws.microprofile.graphql.component;thread-context=true
 
@@ -45,6 +48,7 @@ Include-Resource: \
   com.ibm.websphere.org.eclipse.microprofile.metrics.1.1.1;version=latest, \
   com.ibm.ws.microprofile.metrics.cdi;version=latest, \
   com.ibm.websphere.javaee.servlet.4.0;version=latest, \
+  com.ibm.websphere.javaee.jsonb.1.0;version=latest, \
   com.ibm.ws.com.graphql.java.servlet.6.1;version=latest, \
   com.ibm.ws.com.graphql.java.11.0;version=latest, \
   com.ibm.ws.com.fasterxml.jackson.2.9.1;version=latest, \
