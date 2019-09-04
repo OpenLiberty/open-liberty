@@ -456,6 +456,41 @@ public class DatabaseStoreImpl implements DatabaseStore {
             .append("  </attributes>").append(EOLN)
             .append(" </entity>").append(EOLN);
         }
+        if (Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV3")) {
+            orm
+            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV2\">").append(EOLN)
+            //.append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\"/>").append(EOLN);
+            .append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\">").append(EOLN)
+            //adding index
+            .append("  <index name=\"").append(tablePrefix).append("JE_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>")
+            //end index
+            .append(EOLN).append("  </table>").append(EOLN)
+            .append("  <attributes>").append(EOLN)
+            .append("   <element-collection name=\"jobParameterElements\" target-class=\"com.ibm.jbatch.container.persistence.jpa.JobParameter\">").append(EOLN)
+            .append("    <collection-table name=\"").append(tablePrefix).append("JOBPARAMETER\">").append(EOLN)
+            .append("     <join-column name=\"FK_JOBEXECID\"/>").append(EOLN)
+            .append("     <index name=\"").append(tablePrefix).append("JP_FKJOBEXECID_IX\" column-list=\"FK_JOBEXECID\" unique=\"false\"/>").append(EOLN)
+            .append("    </collection-table>").append(EOLN)
+            .append("   </element-collection>").append(EOLN)
+            .append("  </attributes>").append(EOLN)
+            .append(" </entity>").append(EOLN)
+            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV3\">").append(EOLN)
+            //.append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\"/>").append(EOLN);
+            .append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\">").append(EOLN)
+            //adding index
+            .append("  <index name=\"").append(tablePrefix).append("JE_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>")
+            //end index
+            .append(EOLN).append("  </table>").append(EOLN)
+            .append("  <attributes>").append(EOLN)
+            .append("   <element-collection name=\"jobParameterElements\" target-class=\"com.ibm.jbatch.container.persistence.jpa.JobParameter\">").append(EOLN)
+            .append("    <collection-table name=\"").append(tablePrefix).append("JOBPARAMETER\">").append(EOLN)
+            .append("     <join-column name=\"FK_JOBEXECID\"/>").append(EOLN)
+            .append("     <index name=\"").append(tablePrefix).append("JP_FKJOBEXECID_IX\" column-list=\"FK_JOBEXECID\" unique=\"false\"/>").append(EOLN)
+            .append("    </collection-table>").append(EOLN)
+            .append("   </element-collection>").append(EOLN)
+            .append("  </attributes>").append(EOLN)
+            .append(" </entity>").append(EOLN);
+        }
         orm
         .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity\">").append(EOLN)
         .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
