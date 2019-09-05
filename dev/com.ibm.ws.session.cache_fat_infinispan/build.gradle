@@ -14,6 +14,7 @@ configurations {
   caffeine
   hazelcastJCache
   hazelcastClient
+  infinispanCommons
   infinispanCore
   infinispanJCache
   infinispanJCacheCommons
@@ -29,6 +30,7 @@ dependencies {
   caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
   hazelcastJCache 'com.hazelcast:hazelcast:3.9.2'
   hazelcastClient 'com.hazelcast:hazelcast-client:3.9.2'
+  infinispanCommons 'org.infinispan:infinispan-commons:9.4.16.Final'
   infinispanCore 'org.infinispan:infinispan-core:9.4.16.Final'
   infinispanJCache 'org.infinispan:infinispan-jcache:9.4.16.Final'
   infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:9.4.16.Final'
@@ -55,6 +57,12 @@ task addHazelcastClientToSharedDir(type: Copy) {
   from configurations.hazelcastClient
   into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
   rename 'hazelcast-client-*.jar', 'hazelcast-client.jar'
+}
+
+task addInfinispanCommonsToSharedDir(type: Copy) {
+  from configurations.infinispanCommons
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'infinispan-commons-*.jar', 'infinispan-commons.jar'
 }
 
 task addInfinispanCoreToSharedDir(type: Copy) {
@@ -110,6 +118,7 @@ addRequiredLibraries {
   dependsOn addCaffeineToSharedDir
   dependsOn addHazelcastJCacheProviderToSharedDir
   dependsOn addHazelcastClientToSharedDir
+  dependsOn addInfinispanCommonsToSharedDir
   dependsOn addInfinispanCoreToSharedDir
   dependsOn addInfinispanJCacheToSharedDir
   dependsOn addInfinispanJCacheCommonsToSharedDir
