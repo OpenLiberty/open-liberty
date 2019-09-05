@@ -386,8 +386,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
             Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host%2sessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host%2sessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
@@ -454,8 +454,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
             Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host%2sessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host%2sessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
