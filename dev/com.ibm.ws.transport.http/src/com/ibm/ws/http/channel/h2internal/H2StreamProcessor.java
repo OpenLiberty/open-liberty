@@ -121,6 +121,9 @@ public class H2StreamProcessor {
     // handle various stream close conditions
     private boolean rstStreamSent = false;
 
+    // keep track of how many empty data frames have been received
+    private int emptyFrameReceivedCount = 0;
+
     /**
      * Create a stream processor initialized in idle state
      *
@@ -244,6 +247,7 @@ public class H2StreamProcessor {
 
         ADDITIONAL_FRAME addFrame = ADDITIONAL_FRAME.FIRST_TIME;
         Http2Exception addFrameException = null;
+        H2RateState h2rs = muxLink.getH2RateState();
 
         while (addFrame != ADDITIONAL_FRAME.NO) {
 
@@ -337,6 +341,27 @@ public class H2StreamProcessor {
                                      " after a GOAWAY was sent or Closing invoked.  This frame will be ignored.");
                     }
                     return;
+                }
+                if (addFrame == null || addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
+                    // check to see if this connection is misbehaving
+                    if (isControlFrame(frame)) {
+                        h2rs.incrementReadControlFrameCount();
+                    } else {
+                        h2rs.incrementReadNonControlFrameCount();
+                    }
+                    // check to see if this connection is misbehaving
+                    if (h2rs.isControlRatioExceeded() || h2rs.isStreamMisbehaving(emptyFrameReceivedCount)) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "processNextFrame: too many no-op frames received, sending GOAWAY");
+                        }
+                        addFrame = ADDITIONAL_FRAME.GOAWAY;
+                        if (h2rs.isStreamMisbehaving(emptyFrameReceivedCount)) {
+                            addFrameException = new ProtocolException("too many empty frames generated");
+                        } else {
+                            addFrameException = new ProtocolException("too many control frames generated");
+                        }
+                        continue;
+                    }
                 }
 
                 // This frame type is artificially generated, process it as a headers frame,
@@ -503,6 +528,25 @@ public class H2StreamProcessor {
                 }
                 try {
                     verifyWriteFrameSequence();
+
+                    // check to see if this connection is misbehaving
+                    if (addFrame == null || addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
+                        if (isControlFrame(frame)) {
+                            h2rs.incrementWriteControlFrameCount();
+                        } else {
+                            h2rs.incrementWriteNonControlFrameCount();
+                        }
+                        if (h2rs.isControlRatioExceeded()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "processNextFrame: too many control frames sent, sending GOAWAY");
+                            }
+                            addFrame = ADDITIONAL_FRAME.GOAWAY;
+                            addFrameException = new ProtocolException("too many control frames generated");
+                            addFrameException.setConnectionError(false);
+                            continue;
+                        }
+                    }
+
                     readWriteTransitionState(direction);
                 } catch (CompressionException e) {
                     // if this is a compression exception, something has gone very wrong and the connection is hosed
@@ -556,6 +600,7 @@ public class H2StreamProcessor {
             || currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             writeFrameSync();
             rstStreamSent = true;
+            muxLink.getH2RateState().setStreamReset();
             this.updateStreamState(StreamState.CLOSED);
 
             if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
@@ -1377,11 +1422,13 @@ public class H2StreamProcessor {
             hbf = ((FrameContinuation) currentFrame).getHeaderBlockFragment();
         }
 
-        if (hbf != null) {
+        if (hbf != null && hbf.length > 0) {
             if (headerBlock == null) {
                 headerBlock = new ArrayList<byte[]>();
             }
             headerBlock.add(hbf);
+        } else {
+            emptyFrameReceivedCount++;
         }
     }
 
@@ -1525,7 +1572,11 @@ public class H2StreamProcessor {
             dataPayload = new ArrayList<byte[]>();
         }
         if (currentFrame.getFrameType() == FrameTypes.DATA) {
-            dataPayload.add(((FrameData) currentFrame).getData());
+            if (currentFrame.getPayloadLength() == 0) {
+                emptyFrameReceivedCount++;
+            } else {
+                dataPayload.add(((FrameData) currentFrame).getData());
+            }
         }
     }
 
@@ -1937,5 +1988,20 @@ public class H2StreamProcessor {
 
     public H2HttpInboundLinkWrap getWrappedInboundLink() {
         return h2HttpInboundLinkWrap;
+    }
+
+    /**
+     * @param frame 
+     * @return true if frame is a control frame
+     */
+    public static boolean isControlFrame(Frame frame) {
+        switch (frame.getFrameType()) {
+            case PRIORITY: return true;
+            case RST_STREAM: return true;
+            case SETTINGS: return true;
+            case PING: return true;
+            case GOAWAY: return true;
+            default: return false;
+        }
     }
 }
