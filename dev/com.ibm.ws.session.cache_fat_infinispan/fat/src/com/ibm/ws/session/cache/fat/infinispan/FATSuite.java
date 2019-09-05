@@ -30,7 +30,7 @@ import componenttest.topology.utils.HttpUtils;
                 // TODO enable tests as we get them converted over to infinispan
                 SessionCacheOneServerTest.class,
                 //SessionCacheTwoServerTest.class,
-                //SessionCacheTimeoutTest.class,
+                SessionCacheTimeoutTest.class,
                 //SessionCacheTwoServerTimeoutTest.class,
                 //HazelcastClientTest.class
 })
