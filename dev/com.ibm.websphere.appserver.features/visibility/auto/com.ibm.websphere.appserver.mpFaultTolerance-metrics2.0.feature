@@ -6,4 +6,4 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.microprofile.faulttolerance.metrics,com.ibm.ws.microprofile.faulttolerance.metrics.2.0
 kind=noship
-edition=core
+edition=full
