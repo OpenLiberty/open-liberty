@@ -134,7 +134,7 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl {
     }
 
     @FFDCIgnore({ RecoveryFailedException.class })
-    public void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
+    public synchronized void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
 
