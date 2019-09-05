@@ -448,7 +448,6 @@ class ResolveDirector extends AbstractDirector {
         try {
             if (downloadOption == DownloadOption.all || downloadOption == DownloadOption.none) {
                 resolver = new RepositoryResolver(productDefinitions, Collections.<ProvisioningFeatureDefinition> emptySet(), Collections.<IFixInfo> emptySet(), loginInfo);
-                 log(Level.INFO, "Using old resolve api in first resolve method");
                  installResources = resolver.resolve(featureNamesProcessed);
 
             } else {
@@ -458,7 +457,6 @@ class ResolveDirector extends AbstractDirector {
                     return new ArrayList<List<RepositoryResource>>(0);
                 }
                 resolver = new RepositoryResolver(productDefinitions, product.getFeatureDefinitions().values(), FixAdaptor.getInstalledIFixes(product.getInstallDir()), loginInfo);
-                log(Level.INFO, "Using old resolve api in first resolve method");
                 installResources = resolver.resolve(featureNamesProcessed);
                
             }
@@ -641,10 +639,8 @@ class ResolveDirector extends AbstractDirector {
             Collection<IFixInfo> installedIFixes = download ? Collections.<IFixInfo> emptySet() : FixAdaptor.getInstalledIFixes(product.getInstallDir());
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
             if (InstallUtils.getIsServerXmlInstall()) {
-                log(Level.INFO, "Using new resolveAsSet API");
                 installResources = resolver.resolveAsSet(assetNamesProcessed); // use new api
             } else {
-                log(Level.INFO, "Using old resolveß API");
                 installResources = resolver.resolve(assetNamesProcessed);
             }
         } catch (RepositoryResolutionException e) {
