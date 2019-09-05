@@ -59,9 +59,8 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
             return TransactionScoped.class;
         }
     };
-    
 
-    private BeanManager beanManager = null;
+    private final BeanManager beanManager;
 
     public TransactionContext(BeanManager beanManager) {
         this.beanManager = beanManager;
@@ -94,8 +93,8 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
         data = new InstanceAndContext<T>(contextual, creationalContext, t);
         storage.put(contextId, data);
 
-        //A new transaction has called get() for the first time. This is what we consider to be the start of a transaction scope. 
-        beanManager.fireEvent("Initializing transaction context" , initializedQualifier);
+        //A new transaction has called get() for the first time. This is what we consider to be the start of a transaction scope.
+        beanManager.fireEvent("Initializing transaction context", initializedQualifier);
 
         //Put this into the registry so it can be found when it's time to call destroy.
         tsr.putResource("transactionScopeDestroyer", this);
@@ -291,7 +290,6 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
             return sb.toString();
         }
     }
-
 
     //These can be removed in java 8.
     public abstract static class DestroyedQualifier extends AnnotationLiteral<Destroyed> implements Destroyed {} 
