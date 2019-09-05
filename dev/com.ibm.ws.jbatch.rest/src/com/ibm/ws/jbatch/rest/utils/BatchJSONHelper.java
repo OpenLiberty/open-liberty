@@ -41,7 +41,6 @@ import javax.json.stream.JsonGenerator;
 
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
-import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
 import com.ibm.ws.jbatch.rest.utils.WSPurgeResponse;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
@@ -53,7 +52,6 @@ import com.ibm.ws.jbatch.rest.internal.BatchRequestUtil;
 
 /**
  * This class is also used by com.ibm.ws.jbatch.wola.
- * 
  */
 public class BatchJSONHelper {
 
@@ -182,38 +180,33 @@ public class BatchJSONHelper {
 			// Loop through list - each entry is a list which contains 
 			// entry [0] as top level and entry's [1..n] which are the partitions
 			for (WSStepThreadExecutionAggregate stepExecAggregate : stepExecAggregateList) {
-
+	
 				topLevelObject = 
 						convertStepExecutionToJsonObjectInBasicFormatNoLink(stepExecAggregate.getTopLevelStepExecution(), urlRoot);
-
+	
 				stepObjectLinks = 
 						buildStepExecutionLinks(stepExecAggregate.getTopLevelStepExecution().getJobExecutionId(),
 								stepExecAggregate.getTopLevelStepExecution().getJobInstanceId(), urlRoot);
-
-				// If remotable partition entities are active, we'll use the aggregates
-				if (stepExecAggregate.getPartitionAggregate() != null) {
-					for (WSPartitionStepAggregate partitionStepAggregate : stepExecAggregate.getPartitionAggregate()) {
-						partitionBuilder.add(convertStepExecutionPartitionToJsonObject(partitionStepAggregate, 
-								urlRoot, partitionStepAggregate.getPartitionStepThread().getPartitionNumber()));
-					}
-				} else { // Otherwise we'll just use the step thread executions
-					for (WSPartitionStepThreadExecution partitionStepExec : stepExecAggregate.getPartitionLevelStepExecutions()) {
-						partitionBuilder.add(convertStepExecutionPartitionToJsonObject(partitionStepExec, 
-								urlRoot, partitionStepExec.getPartitionNumber()));
-					}
+	
+				/* 222050 - Backout 205106
+				 for (WSPartitionStepAggregate partitionStepAggregate : stepExecAggregate.getPartitionAggregate()) {
+					partitionBuilder.add(convertStepExecutionPartitionToJsonObject(partitionStepAggregate, 
+							urlRoot, partitionStepAggregate.getPartitionStepThread().getPartitionNumber()));*/
+				for (WSPartitionStepThreadExecution partitionStepExec : stepExecAggregate.getPartitionLevelStepExecutions()) {
+					partitionBuilder.add(convertStepExecutionPartitionToJsonObject(partitionStepExec, 
+							urlRoot, partitionStepExec.getPartitionNumber()));
 				}
-
+	
 				// Add the partition array to the top level execution and output
 				topLevelObject.add("partitions", partitionBuilder);
 				arrayBuilder.add(topLevelObject);
 			}
-
+	
 			// Add the links
 			arrayBuilder.add(stepObjectLinks);
 		}
 
 		writeJsonStructure(arrayBuilder.build(), outputStream);
-
 	}
 
 	/**
@@ -556,6 +549,7 @@ public class BatchJSONHelper {
 	 * @param partNumber
 	 * @return
 	 */
+	/* 222050 - Backout 205106
 	protected static JsonObjectBuilder convertStepExecutionPartitionToJsonObject(
 			WSPartitionStepAggregate partitionAggregate, String urlRoot, int partNumber) {
 
@@ -586,8 +580,7 @@ public class BatchJSONHelper {
 				);
 
 		return jsonObjBuilder;
-	}
-	
+	}*/
 	protected static JsonObjectBuilder convertStepExecutionPartitionToJsonObject(
 			StepExecution stepExecution, String urlRoot, int partNumber) {
 
