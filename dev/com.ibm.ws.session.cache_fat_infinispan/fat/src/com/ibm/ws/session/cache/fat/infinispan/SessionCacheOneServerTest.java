@@ -396,7 +396,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Verify that CacheMXBean and CacheStatisticsMXBean provided for each of the caches created by the sessionCache feature
      * can be obtained and report statistics about the cache.
      */
-    // TODO enable @Test
+    @Test
     public void testMXBeansEnabled() throws Exception {
         app.invokeServlet("testMXBeansEnabled", new ArrayList<>());
     }

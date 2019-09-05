@@ -225,7 +225,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheMXBean for session meta info cache
         CacheMXBean metaInfoCacheMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=hazelcast,Cache=com.ibm.ws.session.meta.default_host.sessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host.sessionCacheApp"),
                                           CacheMXBean.class);
         assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
         assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
@@ -235,7 +235,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheMXBean for session attributes cache
         CacheMXBean attrCacheMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=hazelcast,Cache=com.ibm.ws.session.attr.default_host.sessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host.sessionCacheApp"),
                                           CacheMXBean.class);
         assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
         assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
@@ -245,7 +245,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheStatisticsMXBean for session meta info cache
         CacheStatisticsMXBean metaInfoCacheStatsMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=hazelcast,Cache=com.ibm.ws.session.meta.default_host.sessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host.sessionCacheApp"),
                                           CacheStatisticsMXBean.class);
         metaInfoCacheStatsMXBean.clear();
         assertEquals(0, metaInfoCacheStatsMXBean.getCacheRemovals());
@@ -253,7 +253,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheStatisticsMXBean for session attributes cache
         CacheStatisticsMXBean attrCacheStatsMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=hazelcast,Cache=com.ibm.ws.session.attr.default_host.sessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host.sessionCacheApp"),
                                           CacheStatisticsMXBean.class);
         long initialPuts = attrCacheStatsMXBean.getCachePuts();
 
@@ -262,8 +262,7 @@ public class SessionCacheTestServlet extends FATServlet {
         ((IBMSession) session).sync();
 
         long puts = attrCacheStatsMXBean.getCachePuts();
-        // Sometimes this assert is failing with observed value still being the initial value. Seems to be a bug in the JCache provider
-        // assertEquals(initialPuts + 1, puts);
+        assertEquals(initialPuts + 1, puts);
 
         session.invalidate();
     }
