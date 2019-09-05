@@ -639,8 +639,10 @@ class ResolveDirector extends AbstractDirector {
             Collection<IFixInfo> installedIFixes = download ? Collections.<IFixInfo> emptySet() : FixAdaptor.getInstalledIFixes(product.getInstallDir());
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
             if (InstallUtils.getIsServerXmlInstall()) {
+                log(Level.FINE, "Using new resolveAsSet API");
                 installResources = resolver.resolveAsSet(assetNamesProcessed); // use new api
             } else {
+                log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetNamesProcessed);
             }
         } catch (RepositoryResolutionException e) {
