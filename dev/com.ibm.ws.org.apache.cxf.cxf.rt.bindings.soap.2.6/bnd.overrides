@@ -19,8 +19,8 @@ Bundle-Activator: com.ibm.ws.cxf.rt.bindings.soap.NoOpActivator
 
 Import-Package: \
  javax.xml.bind.*;version="[2.2,3)", \
- org.apache.mina.*;resolution:=optional, \
  javax.xml.soap;resolution:=optional, \
+ org.apache.mina.*;resolution:=optional, \
  javax.activation;resolution:=optional, \
  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
  !org.apache.aries.*;version="[0.3,2)", \
@@ -29,6 +29,7 @@ Import-Package: \
  com.ibm.websphere.ras.annotation, \
  com.ibm.ws.ffdc, \
  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+ !org.apache.cxf.binding.soap.*, \
  *
  
 Export-Package: \
@@ -42,7 +43,5 @@ Export-Package: \
   org.apache.cxf.binding.soap.tcp;version=${exportVer},\
   org.apache.cxf.binding.soap.tcp.frames;version=${exportVer},\
   org.apache.cxf.binding.soap.wsdl.extensions;version=${exportVer},\
-  org.apache.cxf.binding.soap.wsdl11;version=${exportVer}
-  
-Private-Package: \
-  com.ibm.ws.jaxws.cxf.rt.bindings.soap
+  org.apache.cxf.binding.soap.wsdl11;version=${exportVer},\
+  com.ibm.ws.cxf.rt.bindings.soap

@@ -11,3 +11,4 @@ Import-Package: \
 
 Export-Package: \
   com.ibm.ws.jaxws22.cxf.rt.bindings.xml,\
+  org.apache.cxf.binding.xml.*

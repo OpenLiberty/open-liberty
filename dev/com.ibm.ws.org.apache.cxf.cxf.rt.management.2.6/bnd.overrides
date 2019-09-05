@@ -8,7 +8,9 @@ Bundle-Activator: com.ibm.ws.jaxws22.cxf.rt.management.NoOpActivator
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Import-Package: \
-*
+  org.apache.cxf.*;version=2.6.2, \
+  *
 
 Export-Package: \
-com.ibm.ws.jaxws22.cxf.rt.management
+  org.apache.cxf.management.*;version=2.6.2, \
+  com.ibm.ws.jaxws22.cxf.rt.management
