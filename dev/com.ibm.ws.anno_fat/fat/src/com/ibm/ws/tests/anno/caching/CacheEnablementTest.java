@@ -105,7 +105,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
      *
      * The key cache file is:
      *
-     * BASE_FOLDER/A_TestServlet40_A/M_%2FTestServlet40_M/classes
+     * BASE_FOLDER/A_TestServlet40_A/M_TestServlet40_M/classes
      *
      * This is one of several cache files which are created for each module.
      */
@@ -180,9 +180,9 @@ public class CacheEnablementTest extends AnnoCachingTest {
 
         // wlp/usr/servers/annoFat_server/workarea/
         //   org.eclipse.osgi/43/data/anno/
-        //     A_TestServlet40_A/M_%2FTestServlet40.war_M/C_seed_C.data
+        //     A_TestServlet40_A/M_TestServlet40_M/C_seed_C.data
 
-        String targetsPath = selectSeedTargets(EAR_CACHE_NAME, WAR_NAME);
+        String targetsPath = selectSeedTargets(EAR_CACHE_NAME, WAR_CACHE_NAME);
 
         File targetsFile = new File(targetsPath);
 
@@ -234,10 +234,10 @@ public class CacheEnablementTest extends AnnoCachingTest {
         return path.substring(0, slashLoc + 1) + prefix + path.substring(slashLoc + 1);
     }
 
-    private String selectSeedTargets(String earPath, String warName) {
+    private String selectSeedTargets(String earName, String warName) {
         String targetsMerged =
-                getAnnoCacheAppRoot(EAR_CACHE_NAME).getAbsolutePath() +
-                "/M_%2F" + WAR_NAME + "_M" +
+                getAnnoCacheAppRoot(earName).getAbsolutePath() +
+                "/M_" + warName + "_M" +
                 "/C_seed_C.data";
         
         File targetsFileMerged = new File(targetsMerged);
