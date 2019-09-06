@@ -54,6 +54,9 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
                                                           .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
                                                           .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class)));
 
+        producerConfig.putIfAbsent(KafkaConnectorConstants.KEY_SERIALIZER, KafkaConnectorConstants.DEFAULT_SERIALIZER);
+        producerConfig.putIfAbsent(KafkaConnectorConstants.VALUE_SERIALIZER, KafkaConnectorConstants.DEFAULT_SERIALIZER);
+
         KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
 
         String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);

@@ -41,7 +41,25 @@ public class KafkaConnectorConstants {
     //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_RECORDS_CONFIG
     public static final String MAX_POLL_RECORDS = "max.poll.records";
 
+    //Kafka property - org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG
+    public static final String KEY_SERIALIZER = "key.serializer";
+
+    //Kafka property - org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
+    public static final String VALUE_SERIALIZER = "value.serializer";
+
+    //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG
+    public static final String KEY_DESERIALIZER = "key.deserializer";
+
+    //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG
+    public static final String VALUE_DESERIALIZER = "value.deserializer";
+
     //The unique name of this MicroProfile Reactive Messaging Connector for Kafka
     public static final String CONNECTOR_NAME = "liberty-kafka";
+
+    //The default Serializer to use if not set
+    public static final String DEFAULT_SERIALIZER = "org.apache.kafka.common.serialization.StringSerializer";
+
+    //The default Deserializer to use if not set
+    public static final String DEFAULT_DESERIALIZER = "org.apache.kafka.common.serialization.StringDeserializer";
 
 }
