@@ -27,7 +27,9 @@ Include-Resource:\
   @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfVersion};EXACT}!/schemas/**, \
   com/ibm/ws=${bin}/com/ibm/ws
 
--buildpath: org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion}, \
+-buildpath: org.apache.cxf:cxf-rt-bindings-xml;version=${cxfVersion}, \
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.logging.core, \
+  com.ibm.ws.org.apache.cxf.cxf.api.2.6, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest
