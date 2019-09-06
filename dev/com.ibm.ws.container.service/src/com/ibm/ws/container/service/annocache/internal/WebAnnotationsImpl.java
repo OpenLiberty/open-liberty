@@ -1,5 +1,5 @@
 /*******************************************************************************
-  * Copyright (c) 2012, 2018 IBM Corporation and others.
+  * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.container.service.annocache.internal;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
 import com.ibm.ws.container.service.config.WebFragmentsInfo;
-
+import com.ibm.websphere.ras.Tr;
 import com.ibm.ws.container.service.annocache.FragmentAnnotations;
 import com.ibm.ws.container.service.annocache.WebAnnotations;
 
@@ -93,6 +94,9 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
         this.webModuleName = webModuleInfo.getName();
         this.webFragments = rootAdaptableContainer.adapt(WebFragmentsInfo.class);
         // throws UnableToAdaptException
+
+        this.fragmentToPath = new IdentityHashMap<WebFragmentInfo, String>();
+        this.pathToFragments = new HashMap<String, WebFragmentInfo>();
     }
 
     //
@@ -132,26 +136,40 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
 
     //
 
-    private Map<WebFragmentInfo, String> fragmentPaths;
-
-    private void putFragmentPath(WebFragmentInfo fragment, String path) {
-        if ( fragmentPaths == null ) {
-            fragmentPaths = new IdentityHashMap<WebFragmentInfo, String>();
-        }
-        fragmentPaths.put(fragment, path);
-    }
+    private Map<String, WebFragmentInfo> pathToFragments;
+    private Map<WebFragmentInfo, String> fragmentToPath;
 
     private String getFragmentPath(WebFragmentInfo fragment) {
-        if ( fragmentPaths == null ) {
-            return null;
+        return fragmentToPath.get(fragment);
+    }
+
+    private String getUniquePath(String fragmentPath) {
+        String uniquePath = fragmentPath;
+
+        int count = 1;
+        while ( pathToFragments.containsKey(uniquePath) ) {
+            uniquePath = fragmentPath + "_" + count;
+            count++;
         }
-        return fragmentPaths.get(fragment);
+        
+        return uniquePath;
+    }
+
+    private String putUniquePath(WebFragmentInfo fragment, String fragmentPath) {
+    	String uniqueFragmentPath = getUniquePath(fragmentPath);
+
+        fragmentToPath.put(fragment, uniqueFragmentPath);
+        pathToFragments.put(uniqueFragmentPath, fragment);
+
+        return uniqueFragmentPath;
     }
 
     //
 
     @Override
     protected void addInternalToClassSource() {
+    	String methodName = "addInternalToClassSource";
+
         if ( rootClassSource == null ) {
             return;
         }
@@ -179,11 +197,21 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
             String nextUri = nextFragment.getLibraryURI();
             Container nextContainer = nextFragment.getFragmentContainer();
 
+            boolean nextIsMetadataComplete;
             ScanPolicy nextPolicy;
             if ( nextFragment.isSeedFragment() ) {
                 nextPolicy = ClassSource_Aggregate.ScanPolicy.SEED;
+                nextIsMetadataComplete = false;
             } else {
                 nextPolicy = ClassSource_Aggregate.ScanPolicy.PARTIAL;
+                nextIsMetadataComplete = true;
+            }
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + ": Fragment [ " + nextFragment + " ]");
+                Tr.debug(tc, methodName + ": URI [ " + nextUri + " ]");
+                Tr.debug(tc, methodName + ": Container [ " + nextContainer + " ]");
+                Tr.debug(tc, methodName + ": Metadata Complete [ " + nextIsMetadataComplete + " ]"); 
             }
 
             String nextPrefix;
@@ -192,6 +220,9 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
                 // local child of the module container.
                 nextContainer = nextContainer.getEnclosingContainer().getEnclosingContainer();
                 nextPrefix = "WEB-INF/classes/";
+                if ( tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName + ": Assigned Prefix [ " + nextPrefix + " ]");
+                }
             } else {
                 nextPrefix = null;
             }
@@ -200,27 +231,42 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
             if ( nextPath == null ) {
                 return; // FFDC in 'getContainerPath'
             }
+            nextPath = putUniquePath(nextFragment, nextPath);
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + ": Fragment [ " + nextFragment + " ]");
+                Tr.debug(tc, methodName + ": Path [ " + nextPath + " ]");
+            }
 
             if ( !addContainerClassSource(nextPath, nextContainer, nextPrefix, nextPolicy) ) {
                 return; // FFDC in 'addContainerClassSource'
             }
-
-            putFragmentPath(nextFragment, nextPath);
         }
 
         for ( WebFragmentInfo nextFragment : getExcludedItems() ) {
+        	String nextUri = nextFragment.getLibraryURI();
             Container nextContainer = nextFragment.getFragmentContainer();
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + ": Fragment [ " + nextFragment + " ]");
+                Tr.debug(tc, methodName + ": URI [ " + nextUri + " ]");
+                Tr.debug(tc, methodName + ": Container [ " + nextContainer + " ]");
+                Tr.debug(tc, methodName + ": Excluded [ true ]");
+            }
 
             String nextPath = getContainerPath(nextContainer);
             if ( nextPath == null ) {
                 return; // FFDC in 'getContainerPath'
             }
+            nextPath = putUniquePath(nextFragment, nextPath);
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + ": Fragment [ " + nextFragment + " ]");
+                Tr.debug(tc, methodName + ": Path [ " + nextPath + " ]");
+            }
 
             if ( !addContainerClassSource(nextPath, nextContainer, ClassSource_Aggregate.ScanPolicy.EXCLUDED) ) {
                 return; // FFDC in 'addContainerClassSource'
             }
-
-            putFragmentPath(nextFragment, nextPath);
         }
     }
 

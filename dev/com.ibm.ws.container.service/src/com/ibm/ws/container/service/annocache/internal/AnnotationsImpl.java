@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import com.ibm.wsspi.artifact.ArtifactContainer;
+import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 import com.ibm.wsspi.adaptable.module.Container;
@@ -56,51 +57,220 @@ public abstract class AnnotationsImpl implements Annotations {
 
     //
 
+    /**
+     * Data from a path lookup.
+     * 
+     * When finding the full path above a specified container, tell where
+     * a given parent container is relative to the initial container.
+     * 
+     * Set the span values to -1 if the parent container is not a parent
+     * of the specified container.
+     */
+    public static class PathData {
+        public final String path;
+        public final int spans;
+        public final int spansAboveParent;
+        public final int spansBelowParent;
+
+        public PathData(String path, int spans) {
+            this.path = path;
+            this.spans = spans;
+            this.spansAboveParent = -1;
+            this.spansBelowParent = -1;
+        }
+
+        public PathData(
+            String path, int spans,
+            int spansBelowParent, int spansAboveParent) {
+
+            this.path = path;
+            this.spans = spans;
+            this.spansBelowParent = spansBelowParent;
+            this.spansAboveParent = spansAboveParent;
+        }
+    }
+
+    public static ArtifactContainer getRootOfRoots(ArtifactContainer container) {
+        ArtifactEntry entry;
+        while ( (entry = container.getRoot().getEntryInEnclosingContainer()) != null ) {
+            container = entry.getEnclosingContainer();
+        }
+        return container;
+    }
+
+    /**
+     * Obtain the full path to a specified container.
+     * 
+     * Return data which indicates whether the path reaches above
+     * a specified parent container.
+     *
+     * @param parentContainer A parent container.
+     * @param container The container for which to obtain the full path.
+     *
+     * @return Path data for the container.
+     *
+     * @throws UnableToAdaptException Thrown if traversal from the containre
+     *     to its parents fails.
+     */
+    public static PathData getPathData(
+        Container parentContainer, Container container)
+        throws UnableToAdaptException {
+
+        StringBuilder pathBuilder = new StringBuilder();
+
+        int spans = 0;
+        boolean foundParent = ( container == parentContainer );
+
+        int spansBelow = 0;
+        int spansAbove = 0;
+
+        Entry entry;
+        while ( (entry = container.adapt(Entry.class)) != null ) { // throws UnableToAdaptException
+            // Each step upwards adds to the count of spans.
+            spans++;
+
+            // Acquire the next path-to-root.
+            pathBuilder.insert(0,  entry.getPath() );
+            container = entry.getRoot();
+
+            // Each step upwards adds to one of the span counts.
+            // If the parent hasn't been found, the span is below the
+            // parent.  Otherwise, the span is above the parent.
+
+            if ( !foundParent ) {
+                spansBelow++;
+            } else {
+                spansAbove++;
+            }
+
+            // Test now if the new parent container is the target
+            // parent container.  Do this *after* adjusting the
+            // span counts, since the current traversal was used
+            // to reach upwards towards the next parent.
+
+            if ( !foundParent ) {
+                foundParent = ( container == parentContainer );
+            }
+        }
+
+        String path = pathBuilder.toString();
+
+        if ( foundParent ) {
+            return new PathData(path, spans, spansBelow, spansAbove);
+        } else {
+            return new PathData(path, spans);
+        }
+    }
+
     public static String getPath(Container container) throws UnableToAdaptException {
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, "getPath Initial [ " + container + " ]");
+        }
         StringBuilder pathBuilder = new StringBuilder();
 
         Entry entry;
         while ( (entry = container.adapt(Entry.class)) != null ) { // throws UnableToAdaptException
             pathBuilder.insert(0,  entry.getPath() );
             container = entry.getRoot();
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, "getPath Next [ " + container + " ]");
+            }
         }
 
         return pathBuilder.toString();
     }
 
-    protected String getContainerPath(Container container) {
-        String containerPath;
-        String pathCase;
+    protected String getContainerPath(Container targetContainer) {
+        String useAppName = getAppName();
+        String useModName = getModName();
+        Container modContainer = rootAdaptableContainer;
 
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, "AppName [ " + useAppName + " ]");
+            Tr.debug(tc, "Mod Name [ " + useModName + " ]");
+            Tr.debug(tc, "Module Container [ " + modContainer + " ]");
+            Tr.debug(tc, "Target Container [ " + targetContainer + " ]");
+        }
+
+        String targetPath;
         try {
-            containerPath = getPath(container); // throws UnableToAdaptException
+            targetPath = getPath(targetContainer);
         } catch ( UnableToAdaptException e ) {
             return null; // FFDC
         }
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Target Path [ " + targetPath + " ]");
+        }
 
-        if ( containerPath.isEmpty() ) { // Root-of-roots
-            containerPath = getModName();
-            if ( (containerPath == null) || containerPath.isEmpty() ) {
-                containerPath = getAppName();
-                if ( (containerPath == null) || containerPath.isEmpty() ) {
-                    Tr.warning(tc, "Unable to obtain path for container [ " + container + " ]");
+        ArtifactContainer modDelegate;
+        try {
+            modDelegate = modContainer.adapt(ArtifactContainer.class);
+        } catch ( UnableToAdaptException e ) {
+            return null; // FFDC
+        }
+        if ( tc.isDebugEnabled() ) {
+        	Tr.debug(tc, "Module Delegate [ " + modDelegate + " ]");
+        }
+
+        ArtifactContainer targetDelegate;
+        try {
+            targetDelegate = targetContainer.adapt(ArtifactContainer.class);
+        } catch ( UnableToAdaptException e ) {
+            return null;
+        }
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Target Delegate [ " + targetDelegate + " ]");
+        }
+
+        ArtifactContainer rootOfRootsModDelegate = getRootOfRoots(modDelegate);
+    	ArtifactContainer rootOfRootsTargetDelegate = getRootOfRoots(targetDelegate);
+        if ( tc.isDebugEnabled() ) {
+        	Tr.debug(tc, "Module Delegate Root-of-roots [ " + rootOfRootsModDelegate + " ]");
+        	Tr.debug(tc, "Target Delegate Root-of-roots[ " + rootOfRootsTargetDelegate + " ]");
+        }
+
+        String targetPathCase;
+
+        if ( targetPath.isEmpty() ||
+             (modDelegate == rootOfRootsModDelegate) ||
+             (rootOfRootsModDelegate == null) || (rootOfRootsTargetDelegate == null) ||
+             (rootOfRootsModDelegate != rootOfRootsTargetDelegate) ) {
+
+            if ( (useModName == null) || useModName.isEmpty() ) {
+                if ( (useAppName == null) || useAppName.isEmpty() ) {
+                    Tr.warning(tc, "Unable to obtain path for container [ " + targetContainer + " ] relative to [ " + modContainer + " ]");
                     return null;
+
                 } else {
-                    pathCase = "root-of-roots (application name)";
+                    if ( targetPath.isEmpty() ) {
+                        targetPath = useAppName;
+                        targetPathCase = "App name replaces empty target path";
+                    } else {
+                        targetPath = useAppName + "_" + targetPath;
+                        targetPathCase = "App name prefix to non-local target path";
+                    }
                 }
+
             } else {
-                pathCase = "root-of-roots (module name)";
+                if ( targetPath.isEmpty() ) {
+                    targetPath = useModName;
+                    targetPathCase = "Mod name replaces empty target path";
+                } else {
+                    targetPath = useModName + "_" + targetPath;
+                    targetPathCase = "Mod name prefix to non-local target path";
+                }
             }
-        } else {
-            pathCase = "non-root-of-roots (full path)";
+
+        } else { 
+            targetPathCase = "Full local path";
         }
 
         String message = getClass().getSimpleName() + ".getContainerPath:" +
-            " Container [ " + container + " ]" +
-            " Path [ " + containerPath + " ]: " + pathCase;
+            " Container [ " + targetContainer + " ]" +
+            " Path [ " + targetPath + " ]: " + targetPathCase;
         Tr.debug(tc, message);
 
-        return containerPath;
+        return targetPath;
     }
 
     //
@@ -158,7 +328,7 @@ public abstract class AnnotationsImpl implements Annotations {
         ArtifactContainer rootDelegateContainer, Container rootAdaptableContainer,
         String appName, boolean isUnnamedMod, String modName, String modCatName) {
 
-    	// (new Throwable("Annotations (cache)")).printStackTrace(System.out);
+        // (new Throwable("Annotations (cache)")).printStackTrace(System.out);
 
         this.annotationsAdapter = annotationsAdapter;
 
@@ -330,18 +500,18 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public void setIsUnnamedMod(boolean isUnnamedMod) {
-    	this.isUnnamedMod = isUnnamedMod;
+        this.isUnnamedMod = isUnnamedMod;
     }
 
     @Override 
     public boolean getIsUnnamedMod() { 
-    	return isUnnamedMod;
-	}
+        return isUnnamedMod;
+    }
 
     protected void forceModName() throws UnableToAdaptException {
-    	if ( getIsUnnamedMod() ) {
-    		return;
-    	}
+        if ( getIsUnnamedMod() ) {
+            return;
+        }
 
         if ( (modName == null) || modName.isEmpty() ) {
             String modNameCase;

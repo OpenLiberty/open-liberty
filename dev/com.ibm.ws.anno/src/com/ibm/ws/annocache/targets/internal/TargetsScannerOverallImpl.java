@@ -163,15 +163,30 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         } else {
             StringBuilder builder = new StringBuilder();
             builder.append("{ ");
+
             boolean first = true;
+            int valueNo = 0;
+            int valueLim = 10;
+
             for ( String value : values ) {
                 if ( !first ) {
                     builder.append(", ");
                 } else {
                     first = false;
                 }
+
+                if ( valueNo == valueLim ) {
+                    value = "...";
+                }
                 builder.append(value);
+
+                if ( valueNo == valueLim ) {
+                    break;
+                } else {
+                    valueNo++;
+                }
             }
+
             builder.append(" }");
             return builder.toString();
         }
@@ -1017,7 +1032,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             if ( changedTable ) {
                 changedReason += "; changed tables [ " + changedContainers + " ]";
             } else {
-                changedReason += "changed tables [ " + changedContainers + " ]";
+                changedReason = "changed tables [ " + changedContainers + " ]";
             }
         }
 
@@ -1753,49 +1768,52 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
             mergeInternalResults(newTables);
 
-            int useWriteLimit = getWriteLimit();
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName,
-                            "Write limit [ {0} ]", Integer.valueOf(useWriteLimit));
-            }
+//            int useWriteLimit = getWriteLimit();
+//            if ( logger.isLoggable(Level.FINER) ) {
+//                logger.logp(Level.FINER, CLASS_NAME, methodName,
+//                            "Write limit [ {0} ]", Integer.valueOf(useWriteLimit));
+//            }
 
-            // Use of the write limit causes problems for the result tables:
-            // Often, one or more of the tables is too small to write.  But,
-            // we don't want to skip such writes when the class source data
-            // is big enough.  What would be preferred would be to key the
-            // writes of the results on the sizes of the class source tables.
-            //
-            // Here, we key the writes of the results on whether any one of
-            // the result tables is big enough to write.
-
-            boolean anyIsBigEnough = false;
-
-            for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
-                if ( scanPolicy == ScanPolicy.EXTERNAL ) {
-                    continue;
-                }
-
-                if ( modData.shouldWrite("Result container") ) {
-                    TargetsTableImpl newTable = newTables[ scanPolicy.ordinal() ];
-                    int numClasses = newTable.getClassNames().size();
-
-                    if ( logger.isLoggable(Level.FINER) ) {
-                        logger.logp(Level.FINER, CLASS_NAME, methodName,
-                                    "Result [ {0} ]: Count of classes [ {1} ]",
-                                    new Object[] { scanPolicy, Integer.valueOf(numClasses) });
-                    }
-
-                    if ( numClasses >= useWriteLimit ) {
-                        anyIsBigEnough = true;
-                    }
-                }
-            }
-
-            if ( anyIsBigEnough ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "Write threshhold crossed: Writing all results");
+//            // Use of the write limit causes problems for the result tables:
+//            // Often, one or more of the tables is too small to write.  But,
+//            // we don't want to skip such writes when the class source data
+//            // is big enough.  What would be preferred would be to key the
+//            // writes of the results on the sizes of the class source tables.
+//            //
+//            // Here, we key the writes of the results on whether any one of
+//            // the result tables is big enough to write.
+//
+//            boolean anyIsBigEnough = false;
+//
+//            for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
+//                if ( scanPolicy == ScanPolicy.EXTERNAL ) {
+//                    continue;
+//                }
+//
+//                if ( modData.shouldWrite("Result container") ) {
+//                    TargetsTableImpl newTable = newTables[ scanPolicy.ordinal() ];
+//                    int numClasses = newTable.getClassNames().size();
+//
+//          if ( logger.isLoggable(Level.FINER) ) {
+//                        logger.logp(Level.FINER, CLASS_NAME, methodName,
+//                                    "Result [ {0} ]: Count of classes [ {1} ]",
+//                                    new Object[] { scanPolicy, Integer.valueOf(numClasses) });
+//                    }
+//
+//                    if ( numClasses >= useWriteLimit ) {
+//                        anyIsBigEnough = true;
+//                    }
+//                }
+//            }
+//
+//            if ( anyIsBigEnough ) {
+//                logger.logp(Level.FINER, CLASS_NAME, methodName, "Write threshhold crossed: Writing all results");
 
                 for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
                     if ( getPolicyCount(scanPolicy) == 0 ) {
+                    	if ( logger.isLoggable(Level.FINER) ) {                    	
+                    		logger.logp(Level.FINER, CLASS_NAME, methodName, "Skip write of result [ " + scanPolicy + " ]: No sources use that policy.");
+                    	}
                         continue;
                     }
                     if ( (scanPolicy != ScanPolicy.EXTERNAL) && modData.shouldWrite("Result container") ) {
@@ -1803,9 +1821,11 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                     }
                 }
 
-            } else {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "Write threshhold was not crossed; skiping result writes");
-            }
+//            } else {
+//                if ( logger.isLoggable(Level.FINER) ) {
+//                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Write threshhold was not crossed; skiping result writes");
+//                }
+//            }
 
             cachedTables = newTables;
         }

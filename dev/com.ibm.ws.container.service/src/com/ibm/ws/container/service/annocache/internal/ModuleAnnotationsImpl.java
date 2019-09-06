@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 
 import com.ibm.ws.container.service.annocache.ModuleAnnotations;
-
 
 /*
  * Web module annotation service implementation.
@@ -163,6 +162,15 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
               moduleInfo, ClassSource_Factory.UNSET_CATEGORY_NAME );
     }
 
+//    public void debug(String text) {
+//        System.out.println("ModuleAnnotations.<init>: " + text);
+//    }
+//
+//    public void debug(String text, Object value) {
+//        System.out.println("ModuleAnnotations.<init>: " + text + ": [ " + value + " ]");
+//    }
+
+    @SuppressWarnings("unused")
     public ModuleAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
         Container rootContainer, OverlayContainer rootOverlayContainer,
@@ -174,13 +182,25 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                rootArtifactContainer, rootAdaptableContainer,
                ModuleAnnotationsImpl.getAppName(moduleInfo),
                !ClassSource_Factory.IS_UNNAMED_MOD,
-               AnnotationsImpl.getPath( moduleInfo.getContainer() ), // 'getPath' throws UnableToAdaptException
+               moduleInfo.getName(),
+               // AnnotationsImpl.getPath( moduleInfo.getContainer() ), // 'getPath' throws UnableToAdaptException
                modCatName );
 
         this.moduleInfo = moduleInfo;
-        this.classLoader = moduleInfo.getClassLoader();
+//        debug("Module info", this.moduleInfo);
+//        debug("Module info class", this.moduleInfo.getClass().getName());
+//        debug("Module info name", this.moduleInfo.getName());
+//        debug("Module info URI", this.moduleInfo.getURI());
+//        debug("Module info container", this.moduleInfo.getContainer());
 
+        this.classLoader = moduleInfo.getClassLoader();
+        
         this.appInfo = moduleInfo.getApplicationInfo();
+//        debug("App info", this.appInfo);
+//        debug("App info class", this.appInfo.getClass().getName());
+//        debug("App info name", this.appInfo.getName());
+//        debug("App info deployment name", this.appInfo.getDeploymentName());
+//        debug("App info container", this.appInfo.getContainer());
     }
 
     //
@@ -280,13 +300,6 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
         if ( moduleClassesContainerInfo == null ) {
             // Tr.info(tc, CLASS_NAME + ": No classes container info: Using the module container.");
-
-            // When there is no module classes container information, use the module container
-            // itself as the classes container.
-            //
-            // Use the full path of the module container as the container name, except,
-            // when the module container is a root of roots, use the module name as the
-            // container name, since the the full path of the module is empty.
 
             String containerPath = getContainerPath(moduleContainer);
             if ( containerPath == null ) {
