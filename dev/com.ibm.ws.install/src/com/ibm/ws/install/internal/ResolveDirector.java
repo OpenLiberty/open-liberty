@@ -457,7 +457,7 @@ class ResolveDirector extends AbstractDirector {
                     return new ArrayList<List<RepositoryResource>>(0);
                 }
                 resolver = new RepositoryResolver(productDefinitions, product.getFeatureDefinitions().values(), FixAdaptor.getInstalledIFixes(product.getInstallDir()), loginInfo);
-                installResources = resolver.resolve(featureNamesProcessed);
+                installResources = resolver.resolve(featuresToInstall);
                
             }
         } catch (RepositoryResolutionException e) {
@@ -640,10 +640,10 @@ class ResolveDirector extends AbstractDirector {
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
             if (InstallUtils.getIsServerXmlInstall()) {
                 log(Level.FINE, "Using new resolveAsSet API");
-                installResources = resolver.resolveAsSet(assetNamesProcessed); // use new api
+                installResources = resolver.resolveAsSet(assetsToInstall); // use new api
             } else {
                 log(Level.FINE, "Using old resolve API");
-                installResources = resolver.resolve(assetNamesProcessed);
+                installResources = resolver.resolve(assetsToInstall);
             }
         } catch (RepositoryResolutionException e) {
 
