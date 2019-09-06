@@ -725,9 +725,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionId = session.getId();
 
         // poll for entry to be invalidated from cache
-        if (true)
-            throw new UnsupportedOperationException("TODO implement for Infinispan");
-        System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
+        // TODO System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
         for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500));
@@ -742,9 +740,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String value = request.getParameter("value");
         String sessionId = session.getId();
         // poll for entry to be invalidated from cache
-        if (true)
-            throw new UnsupportedOperationException("TODO implement for Infinispan");
-        System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
+        // TODO System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
 
@@ -763,9 +759,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         String value = request.getParameter("value");
         String sessionId = request.getParameter("sid");
-        if (true)
-            throw new UnsupportedOperationException("TODO implement for Infinispan");
-        System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
+        // TODO System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
         Cache<String, byte[]> cacheA = Caching.getCache("com.ibm.ws.session.attr.default_host.sessionCacheApp", String.class, byte[].class);
         byte[] result = cacheA.get(key);
         assertEquals(value, result == null ? null : Arrays.toString(result));
@@ -793,9 +787,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionId = session.getId();
 
         // poll for entry to be invalidated from cache
-        if (true)
-            throw new UnsupportedOperationException("TODO implement for Infinispan");
-        System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
+        // TODO System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
         for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500));

@@ -55,15 +55,15 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
 
-        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+        //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
 
-        if (FATSuite.isMulticastDisabled()) {
-            Log.info(SessionCacheTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        }
+        //if (FATSuite.isMulticastDisabled()) {
+        //    Log.info(SessionCacheTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        //}
 
-        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-                                           "-Dhazelcast.config.file=" + hazelcastConfigFile));
+        //server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
+        //                                   "-Dhazelcast.config.file=" + hazelcastConfigFile));
         server.startServer();
 
         // Access a session before the main test logic to ensure that delays caused by lazy initialization
@@ -104,8 +104,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
      * Test that a session can still be used if it was valid when a servlet call began, even after timeout.
      * This mimics SessionDB behavior.
      */
-    @Test
-    @Mode(FULL)
+    //@Test
+    //@Mode(FULL)
     public void testServletTimeout() throws Exception {
         List<String> session = newSession();
         app.sessionPut("testServletTimeout-foo2", "bar", session, true);
@@ -117,8 +117,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
      * Tests that a locally cached session is still usable to the end of a servlet call after being invalidated,
      * and is no longer valid in a following servlet call.
      */
-    @Test
-    @Mode(FULL)
+    //@Test
+    //@Mode(FULL)
     public void testServletPutTimeout() throws Exception {
         List<String> session = newSession();
         app.invokeServlet("sessionPutTimeout&key=testServletPutTimeout-foo2&value=bar&createSession=true", session);
@@ -128,8 +128,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     /**
      * Tests that after a session times out session attributes are removed from the cache.
      */
-    @Test
-    @Mode(FULL)
+    //@Test
+    //@Mode(FULL)
     public void testCacheInvalidationAfterTimeout() throws Exception {
         List<String> session = newSession();
         String sessionID = app.sessionPut("testCacheInvalidationAfterTimeout-foo", "bar", session, true);
@@ -142,8 +142,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     /**
      * Test that the cache is invalidated after reaching invalidation timeout during a servlet call.
      */
-    @Test
-    @Mode(FULL)
+    //@Test
+    //@Mode(FULL)
     public void testCacheInvalidationAfterServletTimeout() throws Exception {
         List<String> session = newSession();
         app.sessionPut("testCacheInvalidationAfterServletTimeout-foo", "bar", session, true);
