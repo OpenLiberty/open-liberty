@@ -764,7 +764,6 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionId = session.getId();
         // poll for entry to be invalidated from cache
         CacheManager cacheManager = getCacheManager(request);
-        System.out.println("Your cache manager is " + cacheManager);
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = cacheManager.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
 
