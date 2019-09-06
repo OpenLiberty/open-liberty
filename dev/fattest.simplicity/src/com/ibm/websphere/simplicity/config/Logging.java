@@ -135,7 +135,7 @@ public class Logging extends ConfigElement {
      *
      * @param jsonFields the jsonFields to set
      */
-    @XmlAttribute(name = "jsonFields")
+    @XmlAttribute(name = "jsonFieldMappings")
     public void setjsonFields(String jsonFields) {
         this.jsonFields = ConfigElement.getValue(jsonFields);
     }
