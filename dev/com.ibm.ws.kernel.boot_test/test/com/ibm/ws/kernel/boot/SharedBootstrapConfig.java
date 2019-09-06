@@ -53,7 +53,7 @@ public class SharedBootstrapConfig extends BootstrapConfig {
 
         HashMap<String, String> map = new HashMap<String, String>();
 
-        this.findLocations(serverName, rootDirStr, null, null, null);
+        this.findLocations(serverName, rootDirStr, null, null, null, null);
         this.configure(map);
     }
 

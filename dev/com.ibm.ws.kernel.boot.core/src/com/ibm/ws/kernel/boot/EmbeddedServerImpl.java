@@ -90,7 +90,7 @@ public class EmbeddedServerImpl implements Server {
      * @see {@link ServerEventListener}
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, ServerEventListener listener) {
-        this(serverName, userDir, outputDir, null, listener, null, null);
+        this(serverName, userDir, outputDir, null, listener, null, null, null);
     }
 
     /**
@@ -110,7 +110,7 @@ public class EmbeddedServerImpl implements Server {
      * @see {@link ServerEventListener}
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener) {
-        this(serverName, userDir, outputDir, logDir, listener, null, null);
+        this(serverName, userDir, outputDir, logDir, listener, null, null, null);
     }
 
     /**
@@ -131,7 +131,7 @@ public class EmbeddedServerImpl implements Server {
      * @see {@link ServerEventListener}
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions) {
-        this(serverName, userDir, outputDir, logDir, listener, extraProductExtensions, null);
+        this(serverName, userDir, outputDir, logDir, listener, extraProductExtensions, null, null);
     }
 
     /**
@@ -154,6 +154,30 @@ public class EmbeddedServerImpl implements Server {
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions,
                               ExecutorService executor) {
+        this(serverName, userDir, outputDir, logDir, listener, extraProductExtensions, null, null);
+    }
+
+    /**
+     * This is an abridged version of what the Launcher does when invoked from the
+     * command line. The constructor just verifies the configuration of the server--
+     * reading of bootstrap properties and detailed processing of configuration is
+     * deferred until server start.
+     *
+     * <p>Note this is a new constructor with new enhancement to support an
+     * alternate workarea location for embedded servers launched by utilities.</p>
+     *
+     * @param serverName             ServerName: defaultServer will be used if this is null
+     * @param userDir                WLP_USER_DIR equivalent, may be null
+     * @param outputDir              WLP_OUTPUT_DIR equivalent, may be null
+     * @param listener               ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
+     * @param extraProductExtensions HashMap of Properties, may be null
+     * @param executor               The executor service to use for start and stop operations
+     * @param workareaDirStr         Embedded workarea location, null for default
+     *
+     * @see {@link ServerEventListener}
+     */
+    public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions,
+                              ExecutorService executor, String workareaDirStr) {
         if (executor == null) {
             opQueue = Executors.newCachedThreadPool(new ThreadFactory() {
                 @Override
@@ -180,8 +204,9 @@ public class EmbeddedServerImpl implements Server {
         externalListener = listener;
 
         // Find location will throw standard exceptions w/ translated messages
-        // for bad serverName or bad directories.
-        bootProps.findLocations(serverName, userDirPath, outputDirPath, logDirPath, null);
+        // for bad serverName or bad directories.  Workareas for a server and
+        // embedded server instances launched by admin utilities must be separate.
+        bootProps.findLocations(serverName, userDirPath, outputDirPath, logDirPath, null, workareaDirStr);
 
         // PI20344 - 2014/06/16:  Setting a couple of java properties that are needed by the
         // com.ibm.ws.kernel.boot.cmdline.Utils class, which expects to have been launched from the
