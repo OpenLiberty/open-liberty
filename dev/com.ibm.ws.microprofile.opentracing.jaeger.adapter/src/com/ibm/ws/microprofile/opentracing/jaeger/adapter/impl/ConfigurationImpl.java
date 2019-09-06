@@ -68,4 +68,18 @@ public class ConfigurationImpl extends AbstractJaegerAdapter<io.jaegertracing.Co
         getDelegate().withTracerTags(tracerTags);
         return this;
     }
+
+    @Override
+    public Configuration withCodec(CodecConfiguration codecConfig) {
+        CodecConfigurationImpl codecImpl = null;
+        if (codecConfig instanceof CodecConfigurationImpl) {
+            codecImpl = (CodecConfigurationImpl) codecConfig;
+        }
+        if (codecImpl != null) {
+            getDelegate().withCodec(codecImpl.getDelegate());
+        } else {
+            throw new JaegerAdapterException("CodecConfiguration is not an instance of CodecConfigurationImpl");
+        }
+        return this;
+    }
 }

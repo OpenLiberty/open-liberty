@@ -14,6 +14,7 @@ package com.ibm.ws.microprofile.opentracing.jaeger.adapter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.CodecConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.ReporterConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SamplerConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SenderConfiguration;
@@ -34,6 +35,9 @@ public abstract class JaegerAdapterFactory {
 
     private static final String JAEGER_SAMPLER_CONFIGURATION_IMPL = "com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl.SamplerConfigurationImpl";
     private static final Class<?>[] JAEGER_SAMPLER_CONFIGURATION_ARG_TYPES = { };
+
+    private static final String JAEGER_CODEC_CONFIGURATION_IMPL = "com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl.CodecConfigurationImpl";
+    private static final Class<?>[] JAEGER_CODEC_CONFIGURATION_ARG_TYPES = { };
 
     protected abstract ClassLoader getClassLoader();
 
@@ -93,6 +97,11 @@ public abstract class JaegerAdapterFactory {
     
     public SamplerConfiguration newSamplerConfiguration() {
         SamplerConfiguration config = getInstance(getClassLoader(), SamplerConfiguration.class, JAEGER_SAMPLER_CONFIGURATION_IMPL, JAEGER_SAMPLER_CONFIGURATION_ARG_TYPES);
+        return config;
+    }
+
+    public CodecConfiguration newCodecConfiguration() {
+        CodecConfiguration config = getInstance(getClassLoader(), CodecConfiguration.class, JAEGER_CODEC_CONFIGURATION_IMPL, JAEGER_CODEC_CONFIGURATION_ARG_TYPES);
         return config;
     }
 

@@ -78,3 +78,7 @@ JAEGER_TAGS_CANNOT_PARSE.useraction=Use a comma separated name=value pairs.
 JAEGER_CONFIG_EXCEPTION=CWMOT1005E: JaegerTracer cannot be instantiated.  Reason: {0} 
 JAEGER_CONFIG_EXCEPTION.explanation=JaegerTracer cannot be instantiated due to configuration issues.
 JAEGER_CONFIG_EXCEPTION.useraction=Correct the issues reported and try again.
+
+JAEGER_PROPAGATION_INVALID_VALUE=CWMOT1006W: JAEGER_PROPAGATION contains invalid value {0}.
+JAEGER_PROPAGATION_INVALID_VALUE.explanation=The system property or environment variable JAEGER_PROPAGATION contains an invalid value and therefore it is ignored.
+JAEGER_PROPAGATION_INVALID_VALUE.useraction=Valid values are JAEGER and B3.

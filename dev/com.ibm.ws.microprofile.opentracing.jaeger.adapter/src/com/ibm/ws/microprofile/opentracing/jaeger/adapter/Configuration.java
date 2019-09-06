@@ -25,6 +25,8 @@ public interface Configuration extends JaegerAdapter {
     
     public Configuration withTracerTags(Map<String, String> tracerTags);
     
+    public Configuration withCodec(CodecConfiguration codecConfig);
+    
     public interface SamplerConfiguration {
 
         public SamplerConfiguration withType(String type);
@@ -58,6 +60,17 @@ public interface Configuration extends JaegerAdapter {
         public ReporterConfiguration withMaxQueueSize(Integer maxQueueSize);
         
         public ReporterConfiguration withSender(SenderConfiguration senderConfiguration);
+    }
+    
+    public interface CodecConfiguration {
+        
+        public CodecConfiguration withPropagation(Propagation propagation);
+        
+    }
+    
+    public enum Propagation {
+        JAEGER,
+        B3
     }
     
 }

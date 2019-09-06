@@ -15,6 +15,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.AdapterFactoryImpl;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.CodecConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.ReporterConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SamplerConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SenderConfiguration;
@@ -60,7 +62,7 @@ public class JaegerTracerFactory {
     private static final String DEFAULT_AGENT_UDP_HOST = "localhost";
     private static final int DEFAULT_AGENT_UDP_COMPACT_PORT = 6831;
 
-    @FFDCIgnore(JaegerAdapterException.class)
+    @FFDCIgnore({JaegerAdapterException.class, IllegalArgumentException.class})
     public static Tracer createJaegerTracer(String appName) {
 
         Tracer tracer = null;
@@ -146,12 +148,28 @@ public class JaegerTracerFactory {
                 reporterConfiguration.withFlushInterval(reporterFlushInterval);
             }
 
+            //CodecConfiguration
+            String propagation = getProperty(ENV_JAEGER_PROPAGATION);
+            
+            CodecConfiguration codecConfiguration = factory.newCodecConfiguration();
+            
+            if (propagation != null) {
+                for (String format : Arrays.asList(propagation.split(","))) {
+                    try {
+                        codecConfiguration.withPropagation(Configuration.Propagation.valueOf(format.toUpperCase()));
+                    } catch (IllegalArgumentException iae) {
+                        Tr.warning(tc, "JAEGER_PROPAGATION_INVALID_VALUE", format);
+                    }
+                }
+            }
+            
             // Configuration
             Configuration configuration = factory
                     .newConfiguration(appName)
                     .withReporter(reporterConfiguration)
                     .withSampler(samplerConfiguration)
-                    .withTracerTags(tracerTagsFromEnv());
+                    .withTracerTags(tracerTagsFromEnv())
+                    .withCodec(codecConfiguration);
 
             tracer = configuration.getTracer();
 

@@ -32,7 +32,9 @@ public class AdapterFactoryImpl extends JaegerAdapterFactory {
                     Configuration.class,
                     Configuration.SenderConfiguration.class,
                     Configuration.ReporterConfiguration.class,
-                    Configuration.SamplerConfiguration.class
+                    Configuration.SamplerConfiguration.class,
+                    Configuration.Propagation.class,
+                    Configuration.CodecConfiguration.class
             );
             URL[] urls = new URL[] { AbstractJaegerAdapter.class.getProtectionDomain().getCodeSource().getLocation() };// URL for the adapter impl bundle
 
