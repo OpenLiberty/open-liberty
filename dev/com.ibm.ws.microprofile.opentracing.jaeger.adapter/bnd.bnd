@@ -41,6 +41,8 @@ instrument.disabled: true
 
 src: src, resources
 
+-dsannotations: com.ibm.ws.microprofile.opentracing.jaeger.JaegerTracerFactory
+
 -buildpath: \
   com.ibm.ws.logging;version=latest, \
   com.ibm.ws.logging.core;version=latest, \
@@ -49,6 +51,7 @@ src: src, resources
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.opentracing.1.3;version=latest, \
   com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
   io.jaegertracing:jaeger-core;version=0.34.0, \
   com.ibm.ws.crypto.passwordutil

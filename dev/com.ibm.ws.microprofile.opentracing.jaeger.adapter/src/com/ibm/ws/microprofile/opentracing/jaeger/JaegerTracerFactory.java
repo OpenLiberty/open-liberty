@@ -19,6 +19,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
@@ -34,10 +37,12 @@ import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.Reporter
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SamplerConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SenderConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterException;
+import com.ibm.ws.opentracing.tracer.OpentracingTracerFactory;
 
 import io.opentracing.Tracer;
 
-public class JaegerTracerFactory {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+public class JaegerTracerFactory implements OpentracingTracerFactory {
 
     private static final TraceComponent tc = Tr.register(JaegerTracerFactory.class);
 
@@ -63,7 +68,7 @@ public class JaegerTracerFactory {
     private static final int DEFAULT_AGENT_UDP_COMPACT_PORT = 6831;
 
     @FFDCIgnore({JaegerAdapterException.class, IllegalArgumentException.class})
-    public static Tracer createJaegerTracer(String appName) {
+    private static Tracer createJaegerTracer(String appName) {
 
         Tracer tracer = null;
         AdapterFactoryImpl factory = new AdapterFactoryImpl();
@@ -301,5 +306,10 @@ public class JaegerTracerFactory {
             }
         }
         return value;
+    }
+
+    @Override
+    public Tracer newInstance(String appName) {
+        return createJaegerTracer(appName);
     }
 }
