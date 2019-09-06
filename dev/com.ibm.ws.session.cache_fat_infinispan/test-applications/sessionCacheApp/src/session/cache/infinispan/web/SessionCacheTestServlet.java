@@ -85,11 +85,12 @@ public class SessionCacheTestServlet extends FATServlet {
      * A hacky way for the tests to get access to fields of an internal object, in order to check the
      * contents of the same cache that is used by HTTP Sessions code. NEVER DO THIS IN PRODUCTION CODE.
      */
-    private final CacheManager getCacheManager(HttpServletRequest request) throws Exception {
-        ClassLoader osgiLoader = request.getClass().getClassLoader();
+    public final static CacheManager getCacheManager() throws Exception {
+        Class<?> clclass = Thread.currentThread().getContextClassLoader().getClass();
+        ClassLoader osgiLoader = clclass.getClassLoader();
         Class<?> FrameworkUtil = osgiLoader.loadClass("org.osgi.framework.FrameworkUtil");
         Class<?> ServiceReference = osgiLoader.loadClass("org.osgi.framework.ServiceReference");
-        Object bundle = FrameworkUtil.getMethod("getBundle", Class.class).invoke(null, request.getClass());
+        Object bundle = FrameworkUtil.getMethod("getBundle", Class.class).invoke(null, clclass);
         Object bundleContext = bundle.getClass().getMethod("getBundleContext").invoke(bundle);
         Object[] serviceRefs = (Object[]) bundleContext.getClass()
                         .getMethod("getServiceReferences", String.class, String.class)
@@ -595,7 +596,7 @@ public class SessionCacheTestServlet extends FATServlet {
 
         List<String> expected = expectedAttributes == null ? Collections.emptyList() : Arrays.asList(expectedAttributes.split(","));
 
-        CacheManager cacheManager = getCacheManager(request);
+        CacheManager cacheManager = getCacheManager();
         Cache<String, ArrayList> cache = cacheManager.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
         ArrayList<?> values = cache.get(sessionId);
         @SuppressWarnings("unchecked")
@@ -622,7 +623,7 @@ public class SessionCacheTestServlet extends FATServlet {
             expected.add(o == null ? null : Arrays.toString(toBytes(o)));
         }
 
-        CacheManager cacheManager = getCacheManager(request);
+        CacheManager cacheManager = getCacheManager();
         Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheApp", String.class, byte[].class);
         byte[] bytes = cache.get(key);
 
@@ -748,7 +749,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionId = session.getId();
 
         // poll for entry to be invalidated from cache
-        CacheManager cacheManager = getCacheManager(request);
+        CacheManager cacheManager = getCacheManager();
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = cacheManager.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
         for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500));
@@ -763,7 +764,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String value = request.getParameter("value");
         String sessionId = session.getId();
         // poll for entry to be invalidated from cache
-        CacheManager cacheManager = getCacheManager(request);
+        CacheManager cacheManager = getCacheManager();
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = cacheManager.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
 
@@ -782,7 +783,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         String value = request.getParameter("value");
         String sessionId = request.getParameter("sid");
-        CacheManager cacheManager = getCacheManager(request);
+        CacheManager cacheManager = getCacheManager();
         Cache<String, byte[]> cacheA = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheApp", String.class, byte[].class);
         byte[] result = cacheA.get(key);
         assertEquals(value, result == null ? null : Arrays.toString(result));
@@ -810,7 +811,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionId = session.getId();
 
         // poll for entry to be invalidated from cache
-        CacheManager cacheManager = getCacheManager(request);
+        CacheManager cacheManager = getCacheManager();
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = cacheManager.getCache("com.ibm.ws.session.meta.default_host.sessionCacheApp", String.class, ArrayList.class);
         for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500));

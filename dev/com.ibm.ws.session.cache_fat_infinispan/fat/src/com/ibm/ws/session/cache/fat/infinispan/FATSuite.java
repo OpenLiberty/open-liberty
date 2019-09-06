@@ -29,7 +29,7 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 // TODO enable tests as we get them converted over to infinispan
                 SessionCacheOneServerTest.class,
-                //SessionCacheTwoServerTest.class,
+                SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
                 //SessionCacheTwoServerTimeoutTest.class,
                 //HazelcastClientTest.class

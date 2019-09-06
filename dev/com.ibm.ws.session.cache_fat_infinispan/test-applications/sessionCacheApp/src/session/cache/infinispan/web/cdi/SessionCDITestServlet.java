@@ -17,7 +17,7 @@ import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.cache.Cache;
-import javax.cache.Caching;
+import javax.cache.CacheManager;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import componenttest.app.FATServlet;
+import session.cache.infinispan.web.SessionCacheTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/SessionCDITestServlet")
@@ -72,15 +73,15 @@ public class SessionCDITestServlet extends FATServlet {
      * Directly read entries from the session attributes cache and writes to the servlet output so that
      * the caller can confirm that the values are written to the cache.
      */
-    public void testWeldSessionAttributes(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void testWeldSessionAttributes(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sessionId = request.getParameter("sessionId");
         String key0 = sessionId + ".WELD_S#0";
         String key1 = sessionId + ".WELD_S#1";
 
-        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host.sessionCacheApp", String.class, byte[].class);
+        CacheManager cacheManager = SessionCacheTestServlet.getCacheManager();
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheApp", String.class, byte[].class);
         byte[] value0 = cache.get(key0);
         byte[] value1 = cache.get(key1);
-        cache.close();
 
         String strValue0 = Arrays.toString(value0);
         String strValue1 = Arrays.toString(value1);
