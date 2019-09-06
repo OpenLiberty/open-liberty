@@ -2,6 +2,8 @@
 bVersion=1.0
 cxfVersion=2.6.2
 
+Bundle-Name: Apache CXF API
+Bundle-Description: Apache CXF API, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.api.2.6
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"

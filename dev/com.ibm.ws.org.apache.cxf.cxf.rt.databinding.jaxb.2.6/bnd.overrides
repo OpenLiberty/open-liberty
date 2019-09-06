@@ -18,6 +18,9 @@ Import-Package: \
  com.ibm.websphere.ras, \
  com.ibm.websphere.ras.annotation, \
  com.ibm.ws.ffdc, \
+ org.apache.cxf.bus.managers;version="[2.6.2,2.6.3)", \
+ org.apache.cxf.bus.resource;version="[2.6.2,2.6.3)", \
+ org.apache.cxf.transports.http.internal;version="[2.6.2,2.6.3)", \
  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
  *
  
