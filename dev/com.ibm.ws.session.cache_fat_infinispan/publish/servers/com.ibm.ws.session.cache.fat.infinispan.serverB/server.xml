@@ -18,10 +18,10 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="10m"/>
 
-    <bell libraryRef="HazelcastLibB" service="javax.cache.spi.CachingProvider"/>
+    <bell libraryRef="InfinispanLib" service="javax.cache.spi.CachingProvider"/>
 
-    <library id="HazelcastLibB">
-        <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
+    <library id="InfinispanLib">
+        <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
     </library>
     
     <!-- Perms needed because the application uses Hazelcast directly   -->
@@ -46,6 +46,7 @@
     <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
     
     <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
 
     <!--  Permissions for application to access mbeans -->
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
