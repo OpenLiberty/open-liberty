@@ -1,2 +1,2 @@
--Dliberty.beta=true
--Dcom.ibm.ws.anno.scan.threads=-1
+-Danno.beta=true
+-Danno.scan.threads=-1

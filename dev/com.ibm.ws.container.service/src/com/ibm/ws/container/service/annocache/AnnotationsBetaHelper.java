@@ -104,7 +104,7 @@ public class AnnotationsBetaHelper {
 
     //
 
-    public static final String LIBERTY_BETA_PROPERTY_NAME = "liberty.beta";
+    public static final String LIBERTY_BETA_PROPERTY_NAME = "anno.beta";
     public static final boolean LIBERTY_BETA_DEFAULT_VALUE = true;
     public static final boolean LIBERTY_BETA;
 
