@@ -59,26 +59,26 @@
 # Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
 # This bundle uses range 1000-1100
 #-----------------------------------------------------------------------------------------------------------------------------
-JAEGER_TRACER_CREATED=CWMOT1001I: An instance of JaegerTracer has been created for application {0}.  Tracing information is sent to {1}.
-JAEGER_TRACER_CREATED.explanation=An instance of JaegerTracer has been created to send spans from the application to the tracing backend.
-JAEGER_TRACER_CREATED.useraction=No action required.
+JAEGER_TRACER_CREATED=CWMOT1001I: A JaegerTracer instance was created for the {0} application.  Tracing information is sent to {1}.
+JAEGER_TRACER_CREATED.explanation=A JaegerTracer instance was created to send spans from the application to the tracing backend.
+JAEGER_TRACER_CREATED.useraction=No action is required.
 
-JAEGER_ENV_VAR_PARSE_ERROR=CWMOT1002W: The value of system property or environment variable {0} is not a valid type of {1}.
-JAEGER_ENV_VAR_PARSE_ERROR.explanation=The value defined in the system property or environment variable cannot be converted to the type.
+JAEGER_ENV_VAR_PARSE_ERROR=CWMOT1002W: The value of the {0} system property or environment variable is not a valid type of {1}.
+JAEGER_ENV_VAR_PARSE_ERROR.explanation=The value that is defined in the system property or environment variable cannot be converted to the specified type.
 JAEGER_ENV_VAR_PARSE_ERROR.useraction=Define a value for the system property or environment variable that matches the type. 
 
-JAEGER_PASSWORD_CANNOT_DECODE=CWMOT1003W: The value of JAEGER_PASSWORD cannot be decoded.
-JAEGER_PASSWORD_CANNOT_DECODE.explanation=The password cannot be decoded and therefore it is ignored.
-JAEGER_PASSWORD_CANNOT_DECODE.useraction=Use securityUtility to encode passwords.
+JAEGER_PASSWORD_CANNOT_DECODE=CWMOT1003W: The value of the JAEGER_PASSWORD environment variable cannot be decoded.
+JAEGER_PASSWORD_CANNOT_DECODE.explanation=The password cannot be decoded, so it is ignored.
+JAEGER_PASSWORD_CANNOT_DECODE.useraction=Use the securityUtility command to encode passwords.
 
-JAEGER_TAGS_CANNOT_PARSE=CWMOT1004W: The value of JAEGER_TAGS cannot be parsed.
-JAEGER_TAGS_CANNOT_PARSE.explanation=The tags cannot be parsed and therefore they are ignored.
-JAEGER_TAGS_CANNOT_PARSE.useraction=Use a comma separated name=value pairs.
+JAEGER_TAGS_CANNOT_PARSE=CWMOT1004W: The value of the JAEGER_TAGS environment variable cannot be parsed.
+JAEGER_TAGS_CANNOT_PARSE.explanation=The tags cannot be parsed, so they are ignored.
+JAEGER_TAGS_CANNOT_PARSE.useraction=Use comma-separated name=value pairs.
 
-JAEGER_CONFIG_EXCEPTION=CWMOT1005E: JaegerTracer cannot be instantiated.  Reason: {0} 
-JAEGER_CONFIG_EXCEPTION.explanation=JaegerTracer cannot be instantiated due to configuration issues.
-JAEGER_CONFIG_EXCEPTION.useraction=Correct the issues reported and try again.
+JAEGER_CONFIG_EXCEPTION=CWMOT1005E: A JaegerTracer instance cannot be instantiated.  Reason: {0} 
+JAEGER_CONFIG_EXCEPTION.explanation=A JaegerTracer instance cannot be instantiated due to configuration issues.
+JAEGER_CONFIG_EXCEPTION.useraction=Correct the issues that were reported and try again.
 
-JAEGER_PROPAGATION_INVALID_VALUE=CWMOT1006W: JAEGER_PROPAGATION contains invalid value {0}.
-JAEGER_PROPAGATION_INVALID_VALUE.explanation=The system property or environment variable JAEGER_PROPAGATION contains an invalid value and therefore it is ignored.
-JAEGER_PROPAGATION_INVALID_VALUE.useraction=Valid values are JAEGER and B3.
+JAEGER_PROPAGATION_INVALID_VALUE=CWMOT1006W: The JAEGER_PROPAGATION system property or environment variable contains the {0} value, which is not valid.
+JAEGER_PROPAGATION_INVALID_VALUE.explanation=The JAEGER_PROPAGATION system property or environment variable contains a value that is not valid. It is ignored.
+JAEGER_PROPAGATION_INVALID_VALUE.useraction=Use one of the valid values, which are JAEGER and B3.
