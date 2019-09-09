@@ -26,12 +26,7 @@ IBM-API-Package: javax.faces; type="spec", \
  javax.faces.validator; type="spec", \
  javax.faces.view; type="spec", \
  javax.faces.view.facelets; type="spec", \
- javax.faces.webapp; type="spec", \
- org.apache.myfaces.renderkit.html; type="third-party", \
- org.apache.myfaces.shared.config; type="third-party", \
- org.apache.myfaces.shared.renderkit; type="third-party", \
- org.apache.myfaces.shared.renderkit.html; type="third-party", \
- org.apache.myfaces.shared.renderkit.html.util; type="third-party"
+ javax.faces.webapp; type="spec"
 IBM-ShortName: jsf-2.3
 Subsystem-Name: JavaServer Faces 2.3
 -features=com.ibm.websphere.appserver.javax.cdi-2.0, \
@@ -50,7 +45,6 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.ws.jsf.shared, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
- com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1", \
- com.ibm.websphere.appserver.thirdparty.jsf-2.3; location:="dev/api/third-party/"
+ com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1"
 kind=ga
 edition=core
