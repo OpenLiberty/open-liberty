@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -26,7 +25,6 @@ import componenttest.topology.utils.FATServletClient;
 import jaxrs21sse.clientbehavior.SseClientBehaviorTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class SseClientBehaviorTest extends FATServletClient {
 
     static final String appName = "SseClientBehaviorApp";
