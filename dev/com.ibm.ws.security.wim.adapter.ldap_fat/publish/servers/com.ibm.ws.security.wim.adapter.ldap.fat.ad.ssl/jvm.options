@@ -1,1 +1,1 @@
--Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true
+-Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true -Djavax.net.debug=all
