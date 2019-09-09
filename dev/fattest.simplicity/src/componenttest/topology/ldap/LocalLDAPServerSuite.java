@@ -87,7 +87,8 @@ public class LocalLDAPServerSuite {
                 if (!isInMemoryAllowed && throwNoPhysicalLDAPServerException) {
                     throw new Exception("No physical LDAP servers are available");
                 }
-                Log.info(c, "<clinit>", "Using a local LDAP Server");
+                LDAPUtils.USE_LOCAL_LDAP_SERVER = true;
+                Log.info(c, "<clinit>", "USE_LOCAL_LDAP_SERVER set to true as physical LDAP server(s) are not available");
             } else {
                 Log.info(c, "<clinit>", "Using physical LDAP server");
             }
