@@ -104,8 +104,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         assertEquals("", output.getStderr());
 
         // Parse standard output. Examples:
-        // Server com.ibm.ws.session.cache.fat.config.infinispan dump complete in /Users/user/lgit/open-liberty/dev/build.image/wlp/usr/servers/sessionCacheServer/sessionCacheServer.dump-18.04.11_14.30.55.zip.
-        // Server com.ibm.ws.session.cache.fat.config.infinispan dump complete in C:\\jazz-build-engines\\wasrtc-proxy.hursley.ibm.com\\EBC.PROD.WASRTC\\build\\dev\\image\\output\\wlp\\usr\\servers\\sessionCacheServer\\sessionCacheServer.dump-18.06.10_00.16.59.zip.
+        // Server com.ibm.ws.session.cache.fat.config.infinispan dump complete in /Users/user/lgit/open-liberty/dev/build.image/wlp/usr/servers/com.ibm.ws.session.cache.fat.config.infinispan/com.ibm.ws.session.cache.fat.config.infinispan.dump-18.04.11_14.30.55.zip.
+        // Server com.ibm.ws.session.cache.fat.config.infinispan dump complete in C:\\jazz-build-engines\\wasrtc-proxy.hursley.ibm.com\\EBC.PROD.WASRTC\\build\\dev\\image\\output\\wlp\\usr\\servers\\com.ibm.ws.session.cache.fat.config.infinispan\\com.ibm.ws.session.cache.fat.config.infinispan.dump-18.06.10_00.16.59.zip.
 
         String out = output.getStdout();
         int end = out.lastIndexOf('.');
@@ -119,7 +119,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         // dump_18.04.11_14.30.55/introspections/SessionCacheIntrospector.txt
 
         end = dumpFileName.indexOf(".zip");
-        begin = dumpFileName.lastIndexOf("com.ibm.ws.session.cache.fat.config.infinispan.dump-", end) + 24;
+        String prefix = "com.ibm.ws.session.cache.fat.config.infinispan.dump-";
+        begin = dumpFileName.lastIndexOf(prefix, end) + prefix.length();
 
         String introspectorFileName = "dump_" + dumpFileName.substring(begin, end) + "/introspections/SessionCacheIntrospector.txt";
 
@@ -357,7 +358,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Capture a dump of the server without monitoring enabled. This means the JCache MXBeans will be unavailable
      * and so cache statistics will not be included in the dump output.
      */
-    // TODO @Test
+    @Test
     public void testServerDumpWithMonitoring() throws Exception {
         ServerConfiguration config = savedConfig.clone();
         config.getFeatureManager().getFeatures().add("monitor-1.0");
@@ -378,8 +379,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             int i = 0;
 
             assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
-            assertTrue(dumpInfo, lines.contains("CachingProvider implementation: com.hazelcast.cache.HazelcastCachingProvider"));
-            assertTrue(dumpInfo, lines.contains("Cache manager URI: hazelcast"));
+            assertTrue(dumpInfo, lines.contains("CachingProvider implementation: org.infinispan.jcache.embedded.JCachingProvider"));
+            assertTrue(dumpInfo, lines.contains("Cache manager URI: org.infinispan.jcache.embedded.JCachingProvider"));
             assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
             assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
 
@@ -429,7 +430,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Capture a dump of the server with monitoring enabled. This means the JCache MXBeans will be available
      * and should have cache statistics included in the dump output.
      */
-    // TODO @Test
+    @Test
     public void testServerDumpWithoutMonitoring() throws Exception {
         server.startServer(testName.getMethodName() + ".log");
 
@@ -446,8 +447,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             int i = 0;
 
             assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
-            assertTrue(dumpInfo, lines.contains("CachingProvider implementation: com.hazelcast.cache.HazelcastCachingProvider"));
-            assertTrue(dumpInfo, lines.contains("Cache manager URI: hazelcast"));
+            assertTrue(dumpInfo, lines.contains("CachingProvider implementation: org.infinispan.jcache.embedded.JCachingProvider"));
+            assertTrue(dumpInfo, lines.contains("Cache manager URI: org.infinispan.jcache.embedded.JCachingProvider"));
             assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
             assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
 
