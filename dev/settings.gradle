@@ -23,22 +23,6 @@ pluginManagement {
     usrHomeProps.withInputStream { props.load(it) }
   }
 
-  // Artifactory connections fail if a user accidentally adds whitespace to tokens.
-  def stripTrailingWhitespace = [
-          'artifactory.download.user',
-          'artifactory.download.token',
-          'artifactory.download.server',
-          'artifactory.upload.user',
-          'artifactory.upload.token',
-          'artifactory.upload.server',
-  ]
-  stripTrailingWhitespace.each { key ->
-    if (props.get(key) != null) {
-      String value = props.get(key)
-      props.setProperty(key, value.stripTrailing())
-    }
-  }
-
   def isUsingArtifactory = false
 
   def fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;'+
