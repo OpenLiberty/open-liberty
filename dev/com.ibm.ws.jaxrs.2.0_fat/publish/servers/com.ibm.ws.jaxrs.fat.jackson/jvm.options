@@ -1,0 +1,1 @@
+-Xdump:java+system+snap:events=throw+systhrow,filter=java/lang/reflect/GenericSignatureFormatError
