@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.legacy.fat;
+package com.ibm.ejb2x.ejbinwar.webejb2x;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.List;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import javax.ejb.EJBLocalObject;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AlwaysPassesTest.class
-})
-public class FATSuite {
+public interface Stateful2xLocal extends EJBLocalObject {
+    List<String> test(String s);
 }
