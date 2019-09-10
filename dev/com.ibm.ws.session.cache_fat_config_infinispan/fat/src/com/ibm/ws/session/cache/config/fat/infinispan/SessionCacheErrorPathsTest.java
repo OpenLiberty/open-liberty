@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.File;
+import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -322,12 +323,12 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         }
     }
 
-    //@AllowedFFDC(value = { "javax.cache.CacheException" }) // expected on error path: No CachingProviders have been configured
-    // TODO @Test
+    @AllowedFFDC(value = { "javax.cache.CacheException" }) // expected on error path: No CachingProviders have been configured
+    @Test
     public void testModifyFileset() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-        com.ibm.websphere.simplicity.config.File hazelcastFile = config.getLibraries().getById("HazelcastLib").getNestedFile();
-        String originalName = hazelcastFile.getName();
+        Fileset infinispanFileset = config.getLibraries().getById("InfinispanLib").getNestedFileset();
+        String originalDir = infinispanFileset.getDir();
         server.startServer(testName.getMethodName() + ".log");
 
         // Use sessionCache with original (good) config
@@ -336,7 +337,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         run("testCacheContains&attribute=testModifyFileset&value=0", session);
 
         // Change the fileset to reference a bogus file
-        hazelcastFile.setName("${shared.resource.dir}/hazelcast/bogus.jar");
+        infinispanFileset.setDir("${shared.resource.dir}/bogus");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -344,7 +345,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         run("testSessionCacheNotAvailable", session);
 
         // Restore the original config and expect the new cache to be usable
-        hazelcastFile.setName(originalName);
+        infinispanFileset.setDir(originalDir);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
