@@ -107,7 +107,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     /**
      * Verify that application usage of a caching provider does not interfere with the sessionCache feature.
      */
-    // TODO @Test
+    @Test
     public void testApplicationClosesCachingProvider() throws Exception {
         // Add application: jcacheApp
         ServerConfiguration config = server.getServerConfiguration();
