@@ -16,7 +16,7 @@
 global.description=Descriere:
 global.actions=Ac\u0163iuni:
 global.options=Op\u0163iuni:
-global.usage=Folosire:
+global.usage=Utilizare:
 global.required=Necesar:
 global.options.statement=\tUtiliza\u0163i help [actionName] pentru informa\u0163ii detaliate despre op\u0163iuni pentru fiecare op\u0163iune.
 
@@ -36,7 +36,7 @@ global.options.statement=\tUtiliza\u0163i help [actionName] pentru informa\u0163
 # So please feel free to place \n character at or before 72th characters if
 # the translated sentence is longer than the original sentence.
 
-help.desc=\tTip\u0103rirea informa\u0163iilor de ajutor pentru ac\u0163iunea specificat\u0103.
+help.desc=\tTip\u0103ri\u0163i informa\u0163iile de ajutor pentru ac\u0163iunea specificat\u0103.
 #Note to translator the word "help" should not be translated
 help.usage.options=\t{0} help [actionName]
 
@@ -76,17 +76,17 @@ auditreader.option-key.outputFileLocation=\ \ \ \ --outputFileLocation=[loca\u01
 auditreader.option-desc.outputFileLocation=\tLoca\u0163ia complet calificat\u0103 a istoricului de ie\u015fire rezultat
 auditreader.option-key.encrypted=\ \ \ \ --encrypted=[true|false]
 auditreader.option-desc.encrypted=\tSpecifica\u0163i dac\u0103 istoricul de auditare este decriptat.
-auditreader.option-key.encryptedKeyStoreLocation=\ \ \ \ --encKeyStoreLocation=[loca\u0163ie URL complet calificat al depozitului de chei utilizat pentru a stoca certificatul utilizat pentru a decripta \u00eenregistr\u0103rile de auditare.]
-auditreader.option-desc.encryptedKeyStoreLocation=\tSpecifica\u0163i loca\u0163ia URL-ului de fi\u015fier complet calificat al depozitului de chei care stocheaz\u0103 certificatul utilizat pentru a decripta \u00eenregistr\u0103rile de auditare.
+auditreader.option-key.encryptedKeyStoreLocation=\ \ \ \ --encKeyStoreLocation=[loca\u0163ia de fi\u015fier complet calificat\u0103 a depozitului de chei utilizat pentru stocarea certificatelor utilizate la pentru decriptarea \u00eenregistr\u0103rilor de audit.]
+auditreader.option-desc.encryptedKeyStoreLocation=\tSpecifica\u0163i loca\u0163ia de fi\u015fier complet calificat\u0103 a depozitului de chei utilizat pentru stocarea certificatelor utilizate la pentru decriptarea \u00eenregistr\u0103rilor de audit.
 auditreader.option-key.encryptedKeyStorePassword=\ \ \ \ --encKeyStorePassword=[parola]
 auditreader.option-desc.encryptedKeyStorePassword=\tSpecifica\u0163i parola pentru depozitul de chei care con\u0163ine certificatul utilizat pentru a decripta \u00eenregistr\u0103rile de auditare.
 auditreader.option-key.encryptedKeyStoreType=\ \ \ \ --encKeyStoreType=[tip de depozit de chei]
 auditreader.option-desc.encryptedKeyStoreType=\tSpecifica\u0163i tipul de criptare depozit de chei [JKS|JCEKS|PKCS12]
 auditreader.option-key.signed=\ \ \ \ --signed=[true|false]
 auditreader.option-desc.signed=\tSpecifica\u0163i dac\u0103 istoricul de auditare este semnat.
-auditreader.option-key.signingKeyStoreLocation=\ \ \ \ --signingKeyStoreLocation=[loca\u0163ie URL complet calificat al fi\u015fierului depozitului de chei utilizat pentru a stoca certificatul utilizat pentru a anula semn\u0103tura pe \u00eenregistr\u0103rile de auditare. \
+auditreader.option-key.signingKeyStoreLocation=\ \ \ \ --signingKeyStoreLocation=[loca\u0163ia de fi\u015fier complet calificat\u0103 a depozitului de chei utilizat pentru stocarea certificatelor utilizate la anularea semn\u0103rii \u00eenregistr\u0103rilor de audit. \
 ]
-auditreader.option-desc.signingKeyStoreLocation=\tSpecifica\u0163i loca\u0163ia URL-ului de fi\u015fier complet calificat al depozitului de chei care stocheaz\u0103 certificatul utilizat pentru a anula semn\u0103tura pe \u00eenregistr\u0103rile de auditare. 
+auditreader.option-desc.signingKeyStoreLocation=\tSpecifica\u0163i loca\u0163ia de fi\u015fier complet calificat\u0103 a depozitului de chei utilizat pentru stocarea certificatelor utilizate la pentru anularea semn\u0103rii \u00eenregistr\u0103rilor de audit. 
 auditreader.option-key.signingKeyStorePassword=\ \ \ \ --signingKeyStorePassword=[parol\u0103]
 auditreader.option-desc.signingKeyStorePassword=\tSpecifica\u0163i parola pentru depozitul de chei care con\u0163ine certificatul utilizat pentru a anula semn\u0103tura pe \u00eenregistr\u0103rile de auditare.
 auditreader.option-key.signingKeyStoreType=\ \ \ \ --signingKeyStoreType=[tip depozit de chei]

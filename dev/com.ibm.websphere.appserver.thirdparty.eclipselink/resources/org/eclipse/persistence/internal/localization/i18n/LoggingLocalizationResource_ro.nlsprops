@@ -485,11 +485,11 @@ javase_version_ex_method_call=Excep\u0163ie la apelarea metodei {0}: {1}
 
 javase_version_ex_method_not_found=Metoda {0} nu a fost g\u0103sit\u0103 \u00een {1}
 
-jaxb_metadata_warning_ignoring_java_attribute=Se ignor\u0103 atributul [{0}] pe clasa [{1}] \u00eentruc\u00e2t nu s-a generat nicio proprietate pentru el.
+jaxb_metadata_warning_ignoring_java_attribute=Se ignor\u0103 atributul [{0}] pentru clasa [{1}] deoarece nu a fost generat\u0103 nicio proprietate pentru el.
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
 
-jaxb_metadata_warning_ignoring_type_on_map=Se ignor\u0103 atributul de tip setat pe xml-element \u00eentruc\u00e2t xml-map este specificat pe proprietatea [{0}].
+jaxb_metadata_warning_ignoring_type_on_map=Se ignor\u0103 atributul de tip setat pentru xml-element deoarece xml-map este specificat pentru proprietatea [{0}].
 
 jaxb_metadata_warning_ignoring_type_on_map.MSGID=TOP-50238
 
@@ -524,7 +524,7 @@ jmx_mbean_runtime_services_failed_toget_initial_context=A e\u015fuat ob\u0163ine
 jmx_mbean_runtime_services_failed_toget_initial_context.MSGID=TOP-50229
 
 # START NON-TRANSLATABLE
-jmx_mbean_runtime_services_get_executethreadruntime_object_failed=Versiunea de WebLogic nu suport\u0103 executeThreadRuntime - folosind ClassLoader: {0}
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=Version of WebLogic does not support executeThreadRuntime - using ClassLoader: {0}
 # END NON-TRANSLATABLE
 
 jmx_mbean_runtime_services_get_executethreadruntime_object_failed.MSGID=TOP-50232
@@ -573,7 +573,7 @@ jmx_mbean_runtime_services_print_cache_key_value=Cheie [{0}] => Valoare [{1}]
 
 jmx_mbean_runtime_services_print_cache_key_value.MSGID=TOP-50225
 
-jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=Exist\u0103 mai multe instan\u0163e [{0}] JMX MBeanServer, vom folosi serverul de la indexul [{1}] : [{2}].
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=Exist\u0103 mai multe instan\u0163e JMX MBeanServer instances [{0}], vom utiliza serverul la indexul [{1}] : [{2}].
 
 jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances.MSGID=TOP-50242
 
@@ -624,7 +624,7 @@ key_object_null.MSGID=TOP-50015
 key_version_identity_hash_code_object={0}Cheie: {1}{2}Versiune: {5}{2}Cod hash identitate: {3}{2}Obiect: {4}
 
 # START NON-TRANSLATABLE
-locking_mode_not_valid=Modul de blocare({1}) pe entitatea ({0} \u00een orion-ejb-jar.xml nu este bine definit \u015fi, prin urmare, nu e migrat.
+locking_mode_not_valid=Locking mode({1}) on entity({0} in orion-ejb-jar.xml is not well defined and therefore not migrated.
 # END NON-TRANSLATABLE
 
 locking_mode_not_valid.MSGID=TOP-50115
@@ -1141,7 +1141,7 @@ session_key_for_mbean_name_is_null=Numele sesiunii folosit pentru \u00eenregistr
 
 session_key_for_mbean_name_is_null.MSGID=TOP-50217
 
-session_manager_no_partition=Nicio parti\u0163ie de instan\u0163\u0103 nu este asociat\u0103 cu instan\u0163a SessionManager curent\u0103.
+session_manager_no_partition=Nicio parti\u0163ie asociat\u0103 nu este asociat\u0103 cu instan\u0163a SessionManager curent\u0103.
 
 session_manager_no_partition.MSGID=TOP-50254
 

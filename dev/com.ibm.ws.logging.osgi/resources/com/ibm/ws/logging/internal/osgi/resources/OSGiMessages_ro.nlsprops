@@ -39,11 +39,11 @@ OSGI_AUDIT_MSG.explanation=Un mesaj de auditare a fost \u00eenregistrat \u00een 
 OSGI_AUDIT_MSG.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
-OSGI_WARNING_MSG.explanation=Un mesaj de avertisment a fost \u00eenregistrat \u00een istoric folosind serviciul de istoric OSGi.
+OSGI_WARNING_MSG.explanation=Un mesaj de avertisment a fost \u00eenregistrat \u00een istoric cu serviciul de jurnalizare OSGi.
 OSGI_WARNING_MSG.useraction=Consulta\u0163i mesajul de avertisment pentru informa\u0163ii.
 
 OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3}
-OSGI_ERROR_MSG.explanation=Un mesaj de eroare a fost \u00eenregistrat \u00een istoric folosind serviciul de istoric OSGi.
+OSGI_ERROR_MSG.explanation=Un mesaj de eroare a fost \u00eenregistrat \u00een istoric cu serviciul de jurnalizare OSGi.
 OSGI_ERROR_MSG.useraction=Consulta\u0163i mesajul de eroare pentru informa\u0163ii.
 
 OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}

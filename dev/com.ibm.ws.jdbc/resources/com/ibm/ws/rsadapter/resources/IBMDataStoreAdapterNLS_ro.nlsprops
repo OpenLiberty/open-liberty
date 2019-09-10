@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2016 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -257,7 +257,7 @@ DSRA4006.null.connection.useraction=Raporta\u0163i eroarea la v\u00e2nz\u0103tor
 
 DSRA4008.tran.none.unsupported=DSRA4008E: Driver-ul JDBC nu suport\u0103 un nivel de izolare de TRANSACTION_NONE, care este configurat pe sursa de date {0}.
 DSRA4008.tran.none.unsupported.explanation=Nivelul de izolare TRANSACTION_NONE care este configurat pe sursa de date nu este suportat de driver-ul JDBC.
-DSRA4008.tran.none.unsupported.useraction=Fie actualiza\u0163i configura\u0163ia sursei de date pentru a utiliza un nivel de izolare care este suportat de driver, fie folosi\u0163i un driver care suport\u0103 un nivel de isolation TRANSACTION_NONE.
+DSRA4008.tran.none.unsupported.useraction=Fie actualiza\u0163i configura\u0163ia sursei de date pentru a utiliza un nivel de izolare care este suportat de driver, fie folosi\u0163i un driver care suport\u0103 un nivel de isolation TRANSACTION_NONE. 
 
 DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Sursa de date {0} nu poate fi configurat cu un nivel de izolare TRANSACTION_NONE \u015fi transactional= true.
 DSRA4009.tran.none.transactional.unsupported.explanation=Un driver JDBC care este configurat cu un nivel de izolare TRANSACTION_NONE nu va suporta tranzac\u0163ii.
@@ -271,21 +271,13 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Driver-ul JDBC nu suport\u0
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specifica\u0163ia JDBC nu suport\u0103 comutarea la un nivel de izolare TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Evita\u0163i comutarea la un nivel de izolare TRANSACTION_NONE.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de surs\u0103 de date sunt ignorate: {0}.
-DSRA4012.ignored.datasource.config.used.explanation=Propriet\u0103\u0163ile sursei de date listate nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
-DSRA4012.ignored.datasource.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de surs\u0103 de date care nu sunt valide \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103, dac\u0103 este disponibil\u0103.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de surs\u0103 de date sunt ignorate: statementCacheSize \u015fi validationTimeout. Utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
+DSRA4012.ignored.datasource.config.used.explanation=Propriet\u0103\u0163ile de surs\u0103 de date statementCacheSize \u015fi validationTimeout nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
+DSRA4012.ignored.datasource.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de surs\u0103 de date \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Propriet\u0103\u0163ile managerului de conexiune nu sunt valide. C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de manager de conexiuni sunt valide: {0}.
-DSRA4013.ignored.connection.manager.config.used.explanation=C\u00e2nd se utilizeaz\u0103 Oracle UCP, doar propriet\u0103\u0163ile de manager de conexiuni listate sunt valide.
-DSRA4013.ignored.connection.manager.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile managerui de conexiune care nu sunt valide \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103, dac\u0103 este disponibil\u0103.
-
-DSRA4014.URL.for.Driver.missing=DSRA4014E: A fost specificat tipul java.sql.Driver pentru sursa de date {0}, dar nu a fost specificat niciun atribut URL.
-DSRA4014.URL.for.Driver.missing.explanation=Trebuie specificat un URL de conexiune pentru o surs\u0103 de date care este de tipul java.sql.Driver.
-DSRA4014.URL.for.Driver.missing.useraction=Ad\u0103uga\u0163i un URL valid URL la sursa de date.
-
-DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Sursa de date {0} a fost configurat\u0103 cu tipul {1}, care nu este suportat de Oracle UCP. Folosi\u0163i \u00een locul lui tipul XADataSource sau DataSource.
-DSRA4015.no.ucp.connection.pool.datasource.explanation=Sursa de date a fost configurat\u0103 cu tipul ConnectionPoolDataSource sau Driver, care nu este de driver-ul Oracle UCP.
-DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualiza\u0163i sursa de date pentru a utiliza tipul XADataSource sau DataSource.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de manager de conexiuni sunt ignorate: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
+DSRA4013.ignored.connection.manager.config.used.explanation=Propriet\u0103\u0163ile de manager de conexiuni listate nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
+DSRA4013.ignored.connection.manager.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de manager de conexiuni \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
 
 # ----------------------------------------------------------------------------
 # 
@@ -488,16 +480,16 @@ UNSUPPORTED_JDBC30_METHOD.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul d
 #
 # {0}        The vendor interface requested for the wrapper.
 # {1}        The underlying connection implementation class of the pooled connection.
-VENDOR_IMPL_NOT_FOUND=DSRA8760W: Nu poate s\u0103 localizeze implementarea pentru interfa\u0163a furnizorului {0} dup\u0103 trecerea la o alt\u0103 conexiune pool. Aliasul de conexiune unwrapped nu mai este utilizabil\u0103 ca acea interfa\u0163\u0103. Noua clas\u0103 de implementare a conexiunii este: {1}
-VENDOR_IMPL_NOT_FOUND.explanation=Aliasul de conexiune este asociat acum cu o conexiune pooled care este diferit\u0103 \u015fi care nu implementeaz\u0103 interfa\u0163a care este cerut\u0103 pentru wrapper.
+VENDOR_IMPL_NOT_FOUND=DSRA8760W: Nu poate s\u0103 localizeze implementarea pentru interfa\u0163a furnizorului {0} dup\u0103 trecerea la o alt\u0103 conexiune din pool. Aliasul de conexiune ne\u00eenf\u0103\u015furat\u0103 nu mai este utilizabil\u0103 ca acea interfa\u0163\u0103. Noua clas\u0103 de implementare a conexiunii este: {1}
+VENDOR_IMPL_NOT_FOUND.explanation=Aliasul de conexiune este asociat acum cu o conexiune din pool care este diferit\u0103 \u015fi care nu implementeaz\u0103 interfa\u0163a care este cerut\u0103 pentru wrapper.
 VENDOR_IMPL_NOT_FOUND.useraction=Wrapper-ele pentru interfa\u0163a care este specificat\u0103 ar trebui s\u0103 nu fie utilizate c\u00e2nd metoda Wrapper.isWrapperFor indic\u0103 faptul c\u0103 conexiunea nu este un wrapper al interfe\u0163ei.
 
 # 8770I      DEFAULT_MATCH_ORIGINAL
 # 
 # {0}        The name of the connection property.
 # {1}        The name of the data source custom property.
-DEFAULT_MATCH_ORIGINAL=DSRA8770I: \u00cen mod implicit, proprietatea conexiune, {0}, este potrivit\u0103 mai degrab\u0103 pentru conecxiunile partajate bazat pe cererile conexiunii originale dec\u00e2t pentru starea curent\u0103 a conexiunii. Pute\u0163i utiliza proprietatea personalizat\u0103 surs\u0103 de date, {1}, pentru a configura acest comportament.
-DEFAULT_MATCH_ORIGINAL.explanation=Proprietatea personalizat\u0103 surs\u0103 de date v\u0103 d\u0103 poisibilitatea s\u0103 alege\u0163i ce comportament de partajare conexiune dori\u0163i.
+DEFAULT_MATCH_ORIGINAL=DSRA8770I: \u00cen mod implicit, proprietatea conexiune, {0}, este potrivit\u0103 mai degrab\u0103 pentru conexiunile partajate bazate pe cererea de conexiune original\u0103 dec\u00e2t pe starea curent\u0103 a conexiunii. Pute\u0163i utiliza proprietatea personalizat\u0103 surs\u0103 de date, {1}, pentru a configura acest comportament.
+DEFAULT_MATCH_ORIGINAL.explanation=Proprietatea personalizat\u0103 surs\u0103 de date v\u0103 d\u0103 posibilitatea s\u0103 alege\u0163i ce comportament de partajare conexiune dori\u0163i.
 DEFAULT_MATCH_ORIGINAL.useraction=Verifica\u0163i c\u0103 proprietatea personalizat\u0103 surs\u0103 de date este configurat\u0103 pentru comportamentul dorit de dumneavoastr\u0103.
 
 # 8780 deleted
