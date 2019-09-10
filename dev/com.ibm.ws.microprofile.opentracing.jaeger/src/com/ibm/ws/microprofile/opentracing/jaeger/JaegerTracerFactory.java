@@ -30,7 +30,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.opentracing.jaeger.adapter.AdapterFactoryImpl;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.CodecConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.ReporterConfiguration;
@@ -200,8 +199,10 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
                 Tr.debug(tc, "Jaeger library was not found or exception occurred during loading.  Exception:"
                         + jae.getMessage(), jae);
             }
+            throw jae;
         } catch (IllegalArgumentException e) {
             Tr.error(tc, "JAEGER_CONFIG_EXCEPTION", e.getMessage());
+            throw e;
         }
         return tracer;
     }

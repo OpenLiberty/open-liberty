@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.microprofile.opentracing.jaeger.adapter;
+package com.ibm.ws.microprofile.opentracing.jaeger;
 
 import java.net.URL;
 import java.security.AccessController;
@@ -17,6 +17,10 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.AppLibraryClassLoader;
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterException;
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterFactory;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl.AbstractJaegerAdapter;
 
 public class AdapterFactoryImpl extends JaegerAdapterFactory {
