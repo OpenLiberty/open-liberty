@@ -72,7 +72,7 @@ public class OpentracingTracerManager {
         synchronized (applicationTracersLock) {
             tracer = getTracer(appName);
             if (tracer == null) {
-                tracer = createTracerFromUserFeature(appName);
+                tracer = createTracer(appName);
                 putTracer(appName, tracer);
                 tracerCase = "newly created";
             } else {
@@ -80,9 +80,7 @@ public class OpentracingTracerManager {
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-
-        {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, methodName + " (" + tracerCase + ")", OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
@@ -98,7 +96,7 @@ public class OpentracingTracerManager {
      * @return The new tracer.
      */
     @Trivial
-    private static Tracer createTracerFromUserFeature(String appName) {
+    private static Tracer createTracer(String appName) {
         return OpentracingUserFeatureAccessService.getTracerInstance(appName);
     }
 
