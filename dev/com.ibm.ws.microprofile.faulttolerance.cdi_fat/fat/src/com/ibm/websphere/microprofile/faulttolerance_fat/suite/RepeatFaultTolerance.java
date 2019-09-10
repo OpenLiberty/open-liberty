@@ -22,23 +22,28 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class RepeatFaultTolerance {
 
-    static final String[] MP13_FEATURES_ARRAY = { "mpConfig-1.2", "mpFaultTolerance-1.0", "servlet-3.1", "cdi-1.2", "appSecurity-2.0" };
+    static final String[] MP13_FEATURES_ARRAY = { "mpConfig-1.2", "mpFaultTolerance-1.0", "servlet-3.1", "cdi-1.2", "appSecurity-2.0", "mpMetrics-1.0" };
     static final Set<String> MP13_FEATURE_SET = new HashSet<>(Arrays.asList(MP13_FEATURES_ARRAY));
     static final String MP13_FEATURES_ID = "MICROPROFILE13";
 
-    static final String[] MP20_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-1.1", "servlet-4.0", "cdi-2.0", "appSecurity-3.0" };
+    static final String[] MP20_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-1.1", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-1.1" };
     static final Set<String> MP20_FEATURE_SET = new HashSet<>(Arrays.asList(MP20_FEATURES_ARRAY));
     static final String MP20_FEATURES_ID = "MICROPROFILE20";
 
-    static final String[] FT20_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0" };
+    static final String[] FT20_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-1.1" };
     static final Set<String> FT20_FEATURE_SET = new HashSet<>(Arrays.asList(FT20_FEATURES_ARRAY));
     static final String FT20_FEATURES_ID = "FAULTTOLERANCE20";
+
+    static final String[] MP30_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.0", "mpFT-Metrics-2.0-guard" };
+    static final Set<String> MP30_FEATURE_SET = new HashSet<>(Arrays.asList(MP30_FEATURES_ARRAY));
+    static final String MP30_FEATURES_ID = "MICROPROFILE30";
 
     static final Set<String> ALL_FEATURE_SET = new HashSet<>();
     static {
         ALL_FEATURE_SET.addAll(MP13_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP20_FEATURE_SET);
         ALL_FEATURE_SET.addAll(FT20_FEATURE_SET);
+        ALL_FEATURE_SET.addAll(MP30_FEATURE_SET);
     }
 
     public static FeatureReplacementAction mp20Features(String server) {
@@ -59,18 +64,24 @@ public class RepeatFaultTolerance {
                         .forServers(server);
     }
 
+    public static FeatureReplacementAction mp30Features(String server) {
+        return new FeatureReplacementAction(ALL_FEATURE_SET, MP30_FEATURE_SET)
+                        .withID(MP30_FEATURES_ID)
+                        .forServers(server);
+    }
+
     /**
      * Return a rule to repeat tests for FT 1.1 and 2.0
      * <p>
      * This is the default because FT 1.1 and 2.0 have a mostly separate implementation so we want to ensure both are tested
-     * mp20Features includes FT 1.1, as it is an older version it will only run in full mode. 
+     * mp20Features includes FT 1.1, as it is an older version it will only run in full mode.
      *
      * @param server the server name
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault(String server) {
         return RepeatTests.with(mp20Features(server).fullFATOnly())
-                        .andWith(ft20Features(server));
+                        .andWith(mp30Features(server));
     }
 
     /**
@@ -84,7 +95,8 @@ public class RepeatFaultTolerance {
     public static RepeatTests repeatAll(String server) {
         return RepeatTests.with(mp13Features(server))
                         .andWith(mp20Features(server))
-                        .andWith(ft20Features(server));
+                        .andWith(ft20Features(server))
+                        .andWith(mp30Features(server));
     }
 
 }
