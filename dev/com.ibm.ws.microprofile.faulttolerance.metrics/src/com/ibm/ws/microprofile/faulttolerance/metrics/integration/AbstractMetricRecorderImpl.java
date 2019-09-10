@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,22 +31,23 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
 /**
- * Records metrics using MP Metrics API 1.1
+ *
  */
-public class MetricRecorderImpl implements MetricRecorder {
+public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
+
+    protected interface MetaDataFactory {
+        Metadata create(String name, MetricType type, String unit);
+    }
 
     private final Counter invocationCounter;
     private final Counter invocationFailedCounter;
-
     private final Counter retryCallsSuccessImmediateCounter;
     private final Counter retryCallsSuccessRetryCounter;
     private final Counter retryCallsFailureCounter;
     private final Counter retryRetriesCounter;
-
     private final Histogram timeoutDurationHistogram;
     private final Counter timeoutTrueCalls;
     private final Counter timeoutFalseCalls;
-
     private final Counter circuitBreakerCallsSuccessCounter;
     private final Counter circuitBreakerCallsFailureCounter;
     private final Counter circuitBreakerCallsOpenCounter;
@@ -57,7 +58,6 @@ public class MetricRecorderImpl implements MetricRecorder {
     @SuppressWarnings("unused")
     private final Gauge<Long> circuitBreakerClosedTime;
     private final Counter circuitBreakerTimesOpenedCounter;
-
     @SuppressWarnings("unused")
     private final Gauge<Long> bulkheadConcurrentExecutions;
     private final Counter bulkheadRejectionsCounter;
@@ -66,27 +66,24 @@ public class MetricRecorderImpl implements MetricRecorder {
     @SuppressWarnings("unused")
     private final Gauge<Long> bulkheadQueuePopulation;
     private final Histogram bulkheadQueueWaitTimeHistogram;
-
     private final Counter fallbackCalls;
-
     private LongSupplier concurrentExecutionCountSupplier = null;
     private LongSupplier queuePopulationSupplier = null;
     private long openNanos;
     private long halfOpenNanos;
     private long closedNanos;
 
+    private final MetaDataFactory metadataFactory;
+
     private enum CircuitBreakerState {
         CLOSED,
         HALF_OPEN,
         OPEN
-    };
+    }
 
-    private CircuitBreakerState circuitBreakerState = CircuitBreakerState.CLOSED;
-    private long lastCircuitBreakerTransitionTime;
-
-    public MetricRecorderImpl(String metricPrefix, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
-                              BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
-
+    public AbstractMetricRecorderImpl(String metricPrefix, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
+                                      BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync, MetaDataFactory mdFactory) {
+        this.metadataFactory = mdFactory;
         if (retryPolicy != null || timeoutPolicy != null || circuitBreakerPolicy != null || bulkheadPolicy != null || fallbackPolicy != null) {
             invocationCounter = registry.counter(metricPrefix + ".invocations.total");
             invocationFailedCounter = registry.counter(metricPrefix + ".invocations.failed.total");
@@ -108,7 +105,9 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
 
         if (timeoutPolicy != null) {
-            timeoutDurationHistogram = registry.histogram(new Metadata(metricPrefix + ".timeout.executionDuration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS));
+            Metadata tdhMetricsMetadata = metadataFactory.create(metricPrefix
+                                                                 + ".timeout.executionDuration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS);
+            timeoutDurationHistogram = registry.histogram(tdhMetricsMetadata);
             timeoutTrueCalls = registry.counter(metricPrefix + ".timeout.callsTimedOut.total");
             timeoutFalseCalls = registry.counter(metricPrefix + ".timeout.callsNotTimedOut.total");
         } else {
@@ -136,10 +135,12 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null) {
+            Metadata bheMetricsMetadata = metadataFactory.create(metricPrefix
+                                                                 + ".bulkhead.executionDuration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS);
             bulkheadConcurrentExecutions = gauge(registry, metricPrefix + ".bulkhead.concurrentExecutions", MetricUnits.NONE, this::getConcurrentExecutions);
             bulkheadRejectionsCounter = registry.counter(metricPrefix + ".bulkhead.callsRejected.total");
             bulkheadAcceptedCounter = registry.counter(metricPrefix + ".bulkhead.callsAccepted.total");
-            bulkheadExecutionDuration = registry.histogram(new Metadata(metricPrefix + ".bulkhead.executionDuration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS));
+            bulkheadExecutionDuration = registry.histogram(bheMetricsMetadata);
         } else {
             bulkheadConcurrentExecutions = null;
             bulkheadRejectionsCounter = null;
@@ -148,8 +149,10 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null && isAsync == AsyncType.ASYNC) {
+            Metadata bhWaitingTimeMeta = metadataFactory.create(metricPrefix
+                                                                + ".bulkhead.waiting.duration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS);
             bulkheadQueuePopulation = gauge(registry, metricPrefix + ".bulkhead.waitingQueue.population", MetricUnits.NONE, this::getQueuePopulation);
-            bulkheadQueueWaitTimeHistogram = registry.histogram(new Metadata(metricPrefix + ".bulkhead.waiting.duration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS));
+            bulkheadQueueWaitTimeHistogram = registry.histogram(bhWaitingTimeMeta);
         } else {
             bulkheadQueuePopulation = null;
             bulkheadQueueWaitTimeHistogram = null;
@@ -164,16 +167,8 @@ public class MetricRecorderImpl implements MetricRecorder {
         lastCircuitBreakerTransitionTime = System.nanoTime();
     }
 
-    @FFDCIgnore(IllegalArgumentException.class)
-    private Gauge<Long> gauge(MetricRegistry registry, String name, String units, Gauge<Long> supplier) {
-        Gauge<Long> result = null;
-        try {
-            result = registry.register(new Metadata(name, MetricType.GAUGE, units), supplier);
-        } catch (IllegalArgumentException ex) {
-            // Thrown if metric already exists
-        }
-        return result;
-    }
+    private CircuitBreakerState circuitBreakerState = CircuitBreakerState.CLOSED;
+    protected long lastCircuitBreakerTransitionTime;
 
     /** {@inheritDoc} */
     @Trivial
@@ -430,6 +425,18 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementFallbackCalls() {
         fallbackCalls.inc();
+    }
+
+    @FFDCIgnore(IllegalArgumentException.class)
+    private Gauge<Long> gauge(MetricRegistry registry, String name, String units, Gauge<Long> supplier) {
+        Gauge<Long> result = null;
+        try {
+            Metadata gaugeMeta = metadataFactory.create(name, MetricType.GAUGE, units);
+            result = registry.register(gaugeMeta, supplier);
+        } catch (IllegalArgumentException ex) {
+            // Thrown if metric already exists
+        }
+        return result;
     }
 
 }
