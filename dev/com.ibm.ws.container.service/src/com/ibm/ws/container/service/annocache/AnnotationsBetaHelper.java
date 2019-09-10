@@ -13,16 +13,96 @@ package com.ibm.ws.container.service.annocache;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public class AnnotationsBetaHelper {
     private static final TraceComponent tc = Tr.register(AnnotationsBetaHelper.class);
+
+    //
+
+    /**
+     * Setting of whether this is a liberty beta product.  That is, if the
+     * product edition is set to "EARLY_ACCESS".  If available, the product
+     * "com.ibm.websphere.appserver" is tested.  If that product is not
+     * available, the product "io.openliberty" is tested instead.
+     */
+    public static final boolean IS_LIBERTY_BETA_PRODUCT =
+        setIsLibertyBetaProduct();
+
+    // TODO: This is quite expensive, especially if there are multiple
+    //       product files.  However, this is temporary code which will
+    //       be removed after the beta period.
+
+    public static final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+    public static final String OPEN_LIBERTY_CD_PRODUCT_ID = "com.ibm.websphere.appserver";
+
+    public static final String EARLY_ACCESS = "EARLY_ACCESS";
+
+    /**
+     * Determine if the current product is a beta edition product.  That is,
+     * if the product edition is set to "EARLY_ACCESS".  If available, the
+     * product "com.ibm.websphere.appserver" is tested.  If that product is
+     * not available, the product "io.openliberty" is tested instead.
+     *
+     * @return True or false telling if the current product is a beta
+     *     edition product.
+     */
+    public static boolean setIsLibertyBetaProduct() {
+        Map<String, ? extends ProductInfo> allProductInfo;
+
+        try {
+            allProductInfo = ProductInfo.getAllProductInfo();
+        } catch ( Exception e ) {
+            allProductInfo = null;
+            // FFDC
+        }
+
+        boolean isBeta;
+        String isBetaReason;
+
+        if ( allProductInfo == null ) {
+            isBeta = false;
+            isBetaReason = "Failed to read any product information";
+
+        } else {
+            ProductInfo productInfo = allProductInfo.get(OPEN_LIBERTY_CD_PRODUCT_ID);
+            if ( productInfo == null ) {
+                productInfo = allProductInfo.get(OPEN_LIBERTY_PRODUCT_ID);
+            }
+
+            if ( productInfo == null ) {
+                isBeta = false;
+                isBetaReason = "No product information (" + OPEN_LIBERTY_PRODUCT_ID + " or " + OPEN_LIBERTY_CD_PRODUCT_ID + ")";
+
+            } else {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, "<static init>", "Using product information [ " + productInfo.getId() + " ]");
+                }
+
+                String productEdition = productInfo.getEdition();
+                if ( productEdition == null ) {
+                    isBeta = false;
+                    isBetaReason = "No edition in product information (" + ProductInfo.COM_IBM_WEBSPHERE_PRODUCTEDITION_KEY + ")";
+                } else {
+                    isBeta = productEdition.equals(EARLY_ACCESS);
+                    isBetaReason = "Product edition (" + ProductInfo.COM_IBM_WEBSPHERE_PRODUCTEDITION_KEY + ") is (" + productEdition + ")";
+                }
+            }
+        }
+
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "<static init>", "Annotations beta enablement [ " + isBeta + " ]: " + isBetaReason);
+        }
+        return isBeta;
+    }
 
     // See "com.ibm.ws.artifact.zip.internal.SystemUtils"
 
@@ -54,70 +134,47 @@ public class AnnotationsBetaHelper {
     // See: "com.ibm.ws.artifact.zip.cache.ZipCachingProperties"
 
     @Trivial
-    public static boolean getProperty(String methodName, String propertyName, boolean propertyDefaultValue) {
+    public static Boolean getProperty(String methodName, String propertyName) {
         String propertyText = AnnotationsBetaHelper.getProperty(propertyName);
-        boolean propertyValue;
-        boolean propertyDefaulted;
-        if ( propertyDefaulted = (propertyText == null) ) {
-            propertyValue = propertyDefaultValue;
+
+        Boolean propertyValue;
+        if ( propertyText == null ) {
+            propertyValue = null;
         } else {
-            propertyValue = Boolean.parseBoolean(propertyText);
+            propertyValue = Boolean.valueOf(propertyText);
         }
-        AnnotationsBetaHelper.debugProperty(methodName, propertyName, propertyValue, propertyDefaulted);
+
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName +
+                ": Property [ " + propertyName + " ]" + " [ " + propertyValue + " ]");
+        }
         return propertyValue;
-    }
-
-    /**
-     * Conditionally log information about a property: If the property was defaulted,
-     * emit property information as debugging output.  If the property was explicitly
-     * assigned (not default) emit property information as info output.
-     *
-     * @param methodName The name of the method requesting property logging.
-     * @param propertyName The name of the property.
-     * @param propertyValue The value of the property.
-     * @param defaulted True or false telling if the property value was defaulted.
-     */
-    @Trivial
-    public static void debugProperty(
-        String methodName,
-        String propertyName, boolean propertyValue, boolean defaulted) {
-
-        if ( !TraceComponent.isAnyTracingEnabled() ) {
-            return;
-        } else if ( !tc.isDebugEnabled() && (!defaulted || !tc.isInfoEnabled()) ) {
-            return;
-        }
-
-        String propertyText =
-            "Property [ " + propertyName + " ]" +
-            " [ " + propertyValue + " ]" +
-            " (" + (defaulted ? SOURCE_DEFAULTED : SOURCE_PROPERTY) + ")";
-
-        if ( !defaulted ) {
-            Tr.info(tc, methodName, propertyText);
-        } else {
-            Tr.debug(tc, methodName, propertyText);
-        }
-
-        // System.out.println(propertyText);
     }
 
     //
 
-    public static final String LIBERTY_BETA_PROPERTY_NAME = "anno.beta";
-    public static final boolean LIBERTY_BETA_DEFAULT_VALUE = true;
-    public static final boolean LIBERTY_BETA;
+    /** Property used to override beta enablement, but only for the annotations function. */
+    public static final String ANNO_BETA_PROPERTY_NAME = "anno.beta";
 
+    public static final Boolean ANNO_BETA_PROPERTY_VALUE =
+        getProperty("<static init>", ANNO_BETA_PROPERTY_NAME);
+
+    /**
+     * Tell if the current product is a liberty beta product.
+     * 
+     * If a property / JVM option has been set, use the value of that property
+     * as an override.  Otherwise, answer the value obtained from the liberty
+     * product information.
+     *
+     * @return True or false telling if the current product is a liberty beta product.
+     */
     @Trivial
     public static boolean getLibertyBeta() {
-        return LIBERTY_BETA;
-    }
-
-    static {
-        String methodName = "<static init>";
-
-        LIBERTY_BETA = getProperty(methodName,
-            LIBERTY_BETA_PROPERTY_NAME, LIBERTY_BETA_DEFAULT_VALUE);
+        if ( ANNO_BETA_PROPERTY_VALUE != null ) {
+            return ANNO_BETA_PROPERTY_VALUE.booleanValue();
+        } else {
+            return IS_LIBERTY_BETA_PRODUCT;
+        }
     }
 
     //
