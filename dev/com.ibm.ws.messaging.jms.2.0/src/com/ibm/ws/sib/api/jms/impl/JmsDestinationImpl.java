@@ -460,7 +460,7 @@ public class JmsDestinationImpl implements JmsDestination, ApiJmsConstants, JmsI
         String busName = (String) properties.get(JmsInternalConstants.BUS_NAME);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "getBusName", busName);
+            SibTr.exit(this, tc, "getBusName", (null!=busName:busname?"<NO BUS NAME>"));
         return busName;
     }
 
