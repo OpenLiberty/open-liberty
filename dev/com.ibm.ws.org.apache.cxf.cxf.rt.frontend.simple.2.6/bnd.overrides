@@ -11,14 +11,11 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 Export-Package: \
   !schemas.blueprint, \
   !schemas, \
-  com.ibm.ws.cxf.rt.frontend.simple,\
+  com.ibm.ws.cxf.rt.frontend.simple, \
   org.apache.cxf.frontend;version="2.6.2", \
   org.apache.cxf.frontend.blueprint;version="2.6.2", \
   org.apache.cxf.frontend.spring;version="2.6.2", \
-  org.apache.cxf.simple;version="2.6.2", \
-  org.apache.cxf.wsdl11, \
-  org.w3c.dom", \
-  service.model
+  org.apache.cxf.simple;version="2.6.2"
 
 Import-Package: \
   !org.springframework.*;resolution:=optional;version="[2.5,4)", \
