@@ -234,7 +234,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         OidcBaseClient newClient = getOidcBaseClientFromRequestBody(request);
 
         if (newClient == null) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_REQUEST_MISSING_CLIENT");
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT");
             Tr.error(tc, errorMsg.getServerErrorMessage());
             throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
 
@@ -609,7 +609,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     private OidcOAuth20Client validateClientIdExists(String clientId, OidcOAuth20ClientProvider clientProvider) throws OidcServerException {
         OidcOAuth20Client client = clientProvider.get(clientId);
         if (client == null) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_NOT_FOUND", new Object[] { clientId });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND", new Object[] { clientId });
             Tr.error(tc, errorMsg.getServerErrorMessage());
             throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_CLIENT, HttpServletResponse.SC_NOT_FOUND);
         }
@@ -620,7 +620,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     private String validateRequestContainsClientId(HttpServletRequest request) throws OidcServerException {
         String clientId = extractClientId(request.getPathInfo());
         if (OidcOAuth20Util.isNullEmpty(clientId)) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENT_ID", new Object[] { clientId });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { clientId });
             Tr.error(tc, errorMsg.getServerErrorMessage());
             throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
 
