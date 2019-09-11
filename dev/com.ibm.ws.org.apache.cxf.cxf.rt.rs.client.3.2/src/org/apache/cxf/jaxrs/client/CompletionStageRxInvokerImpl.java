@@ -18,36 +18,37 @@
  */
 package org.apache.cxf.jaxrs.client;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.CompletionStageRxInvoker; 
+import javax.ws.rs.client.CompletionStageRxInvoker;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+
 //Liberty code change start
 import org.eclipse.microprofile.context.ManagedExecutor;
-//Liberty code change end
+import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig;
 
+import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
+
+//Liberty code change end
 public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     private WebClient wc;
     private ExecutorService ex;    
-  //Liberty code change start  
+  //Liberty code change start
     private boolean isManagedExecutor = false;
-    private boolean isExecutorNull = false;    
+    private CompletionStageFactory completionStageFactory = JAXRSClientCompletionStageFactoryConfig.getCompletionStageFactory();
+        
     CompletionStageRxInvokerImpl(WebClient wc, ExecutorService ex) {
         this.ex = ex;        
         if (this.ex instanceof ManagedExecutor) {            
             isManagedExecutor = true;
         }
-        if (this.ex == null) {
-            isExecutorNull = true;            
-        }
         this.wc = wc;
-    }
+    }   
   //Liberty code change end
 
     @Override
@@ -185,16 +186,11 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     }
 
   //Liberty code change start
-    private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {
-        if (isExecutorNull) {
-          // Run on Liberty executor thread and do not propagate the thread context  
-          // TODO use ManagedCompleteableFuture.supplyAsync(supplier, ex) when ready
-            return CompletableFuture.supplyAsync(supplier);
-         }      
+    private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {      
          if (isManagedExecutor) {
              return ((ManagedExecutor) ex).supplyAsync(supplier);
-         }
-         return CompletableFuture.supplyAsync(supplier, ex);
+         }        
+        return completionStageFactory.supplyAsync(supplier, ex); 
     }
   //Liberty code change end
 }
