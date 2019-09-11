@@ -66,6 +66,8 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
 
     private static final String DEFAULT_AGENT_UDP_HOST = "localhost";
     private static final int DEFAULT_AGENT_UDP_COMPACT_PORT = 6831;
+    
+    private static boolean isErrorPrinted = false;
 
     @FFDCIgnore({JaegerAdapterException.class, IllegalArgumentException.class})
     private static Tracer createJaegerTracer(String appName) {
@@ -196,16 +198,24 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
             Tr.info(tc, "JAEGER_TRACER_CREATED", appName, dest);
 
         } catch (JaegerAdapterException jae) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jaeger library was not found or exception occurred during loading.  Exception:"
-                        + jae.getMessage(), jae);
-            }
+            boolean rethrow = true;
             if ((jae.getCause() != null) && (jae.getCause() instanceof InvocationTargetException)) {
                 InvocationTargetException ite = (InvocationTargetException) jae.getCause();
-                if (ite.getTargetException() instanceof NoClassDefFoundError) {
-                    Tr.error(tc, "JAEGER_CLASS_NOT_FOUND");
+                if ((ite.getTargetException() != null) && (ite.getTargetException() instanceof NoClassDefFoundError)) {
+                    if (!isErrorPrinted) {
+                        // Print error once only
+                        String[] lines = ite.getTargetException().toString().split("\n", 2);
+                        Tr.error(tc, "JAEGER_CLASS_NOT_FOUND", lines[0]);
+                        isErrorPrinted = true;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Jaeger library was not found or exception occurred during loading.  Exception:"
+                                    + jae.getMessage(), jae);
+                        }
+                    }
+                    rethrow = false;
                 }
-            } else {
+            }
+            if (rethrow) {
                 throw jae;
             }
         } catch (IllegalArgumentException e) {
