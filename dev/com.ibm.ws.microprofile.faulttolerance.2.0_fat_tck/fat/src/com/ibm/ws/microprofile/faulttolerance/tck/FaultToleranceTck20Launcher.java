@@ -15,14 +15,19 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
@@ -38,8 +43,14 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class FaultToleranceTck20Launcher {
 
-    @Server("FaultTolerance20TCKServer")
+    private static final String SERVER_NAME = "FaultTolerance20TCKServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20Features(SERVER_NAME).fullFATOnly())
+                    .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -113,7 +124,16 @@ public class FaultToleranceTck20Launcher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultToleranceTCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
-        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
+        boolean isMetrics11 = RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.FT20_FEATURES_ID;
+
+        String suiteFileName;
+        if (isMetrics11) {
+            // For the repeat with FT 2.0 and mpMetrics 1.1, run only the metrics tests
+            suiteFileName = "tck-suite-metrics-only.xml";
+        } else {
+            suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
+        }
+
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
                               Collections.emptyMap(), Collections.emptySet());
     }

@@ -24,19 +24,19 @@ public class RepeatFaultTolerance {
 
     static final String[] MP13_FEATURES_ARRAY = { "mpConfig-1.2", "mpFaultTolerance-1.0", "servlet-3.1", "cdi-1.2", "appSecurity-2.0", "mpMetrics-1.0" };
     static final Set<String> MP13_FEATURE_SET = new HashSet<>(Arrays.asList(MP13_FEATURES_ARRAY));
-    static final String MP13_FEATURES_ID = "MICROPROFILE13";
+    public static final String MP13_FEATURES_ID = "MICROPROFILE13";
 
     static final String[] MP20_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-1.1", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-1.1" };
     static final Set<String> MP20_FEATURE_SET = new HashSet<>(Arrays.asList(MP20_FEATURES_ARRAY));
-    static final String MP20_FEATURES_ID = "MICROPROFILE20";
+    public static final String MP20_FEATURES_ID = "MICROPROFILE20";
 
     static final String[] FT20_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-1.1" };
     static final Set<String> FT20_FEATURE_SET = new HashSet<>(Arrays.asList(FT20_FEATURES_ARRAY));
-    static final String FT20_FEATURES_ID = "FAULTTOLERANCE20";
+    public static final String FT20_FEATURES_ID = "FAULTTOLERANCE20";
 
     static final String[] MP30_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.0", "mpFT-Metrics-2.0-guard" };
     static final Set<String> MP30_FEATURE_SET = new HashSet<>(Arrays.asList(MP30_FEATURES_ARRAY));
-    static final String MP30_FEATURES_ID = "MICROPROFILE30";
+    public static final String MP30_FEATURES_ID = "MICROPROFILE30";
 
     static final Set<String> ALL_FEATURE_SET = new HashSet<>();
     static {
