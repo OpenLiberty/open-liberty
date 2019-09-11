@@ -145,7 +145,6 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
         if (clientMetadataAsJson != null && clientMetadataAsJson.has(OAuth20Constants.CLIENT_SECRET)) {
             String metaClientSecret = clientMetadataAsJson.get(OAuth20Constants.CLIENT_SECRET).getAsString();
             if (metaClientSecret != null && !metaClientSecret.isEmpty()) {
-                String meta = null;
                 if (isHash) {
                     HashSecretUtils.hashClientMetaTypeSecret(clientMetadataAsJson, client.getClientId(), true);
                 } else {
