@@ -1,6 +1,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.2.6
+cxfVersion=3.2.4
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2
 
@@ -30,4 +30,4 @@ javax.xml.ws.*;version="[2.3,3)", \
 
 Export-Package: \
   com.ibm.ws.jaxws23.cxf.rt.ws.addr,\
-  org.apache.cxf.ws.addr.*
+  org.apache.cxf.ws.addr.*;version=${cxfVersion}

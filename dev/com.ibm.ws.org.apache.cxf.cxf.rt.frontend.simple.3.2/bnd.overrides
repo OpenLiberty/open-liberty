@@ -1,6 +1,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.2.6
+cxfVersion=3.2.4
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2
 
@@ -28,6 +28,6 @@ Import-Package: \
 
 Export-Package: \
   com.ibm.ws.jaxws23.cxf.rt.frontend.simple,\
-  org.apache.cxf.frontend.*,\
-  org.apache.cxf.endpoint.dynamic.*,\
-  org.apache.cxf.simple.*
+  org.apache.cxf.frontend.*;version=${cxfVersion},\
+  org.apache.cxf.endpoint.dynamic.*;version=${cxfVersion},\
+  org.apache.cxf.simple.*;version=${cxfVersion}

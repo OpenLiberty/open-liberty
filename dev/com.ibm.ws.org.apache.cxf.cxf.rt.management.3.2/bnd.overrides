@@ -1,6 +1,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.3.0
+cxfVersion=3.2.4
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2
 
@@ -29,5 +29,5 @@ javax.xml.bind.attachment;version=!,\
 
 Export-Package: \
 com.ibm.ws.jaxws23.cxf.rt.management, \
-org.apache.cxf.management.*, \
-org.apache.cxf.tracing.*
+org.apache.cxf.management.*;version=${cxfVersion},\
+org.apache.cxf.tracing.*;version=${cxfVersion}

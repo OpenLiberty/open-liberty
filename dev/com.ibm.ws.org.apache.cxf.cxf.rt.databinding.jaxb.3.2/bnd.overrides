@@ -1,6 +1,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.2.6
+cxfVersion=3.2.4
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2
 
@@ -29,4 +29,4 @@ javax.xml.bind.attachment;version=!,\
 
 Export-Package: \
   com.ibm.ws.jaxws23.cxf.rt.databinding.jaxb,\
-  org.apache.cxf.jaxb.*
+  org.apache.cxf.jaxb.*;version=${cxfVersion}
