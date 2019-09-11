@@ -200,7 +200,7 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
                 Tr.debug(tc, "Jaeger library was not found or exception occurred during loading.  Exception:"
                         + jae.getMessage(), jae);
             }
-            if (jae.getCause() instanceof InvocationTargetException) {
+            if ((jae.getCause() != null) && (jae.getCause() instanceof InvocationTargetException)) {
                 InvocationTargetException ite = (InvocationTargetException) jae.getCause();
                 if (ite.getTargetException() instanceof NoClassDefFoundError) {
                     Tr.error(tc, "JAEGER_CLASS_NOT_FOUND");
