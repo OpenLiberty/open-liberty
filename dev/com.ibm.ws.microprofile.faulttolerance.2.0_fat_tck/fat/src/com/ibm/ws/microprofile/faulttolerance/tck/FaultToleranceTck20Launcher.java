@@ -49,7 +49,7 @@ public class FaultToleranceTck20Launcher {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20Features(SERVER_NAME).fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME).fullFATOnly())
                     .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME));
 
     @BeforeClass
@@ -124,7 +124,7 @@ public class FaultToleranceTck20Launcher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultToleranceTCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
-        boolean isMetrics11 = RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.FT20_FEATURES_ID;
+        boolean isMetrics11 = RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.FT20_METRICS11_ID;
 
         String suiteFileName;
         if (isMetrics11) {

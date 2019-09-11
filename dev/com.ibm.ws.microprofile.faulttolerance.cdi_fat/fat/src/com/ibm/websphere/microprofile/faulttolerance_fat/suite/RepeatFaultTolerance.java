@@ -30,9 +30,9 @@ public class RepeatFaultTolerance {
     static final Set<String> MP20_FEATURE_SET = new HashSet<>(Arrays.asList(MP20_FEATURES_ARRAY));
     public static final String MP20_FEATURES_ID = "MICROPROFILE20";
 
-    static final String[] FT20_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-1.1" };
-    static final Set<String> FT20_FEATURE_SET = new HashSet<>(Arrays.asList(FT20_FEATURES_ARRAY));
-    public static final String FT20_FEATURES_ID = "FAULTTOLERANCE20";
+    static final String[] FT20_METRICS11_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-1.1" };
+    static final Set<String> FT20_METRICS11_FEATURE_SET = new HashSet<>(Arrays.asList(FT20_METRICS11_ARRAY));
+    public static final String FT20_METRICS11_ID = "FT20_METRICS11";
 
     static final String[] MP30_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.0", "mpFT-Metrics-2.0-guard" };
     static final Set<String> MP30_FEATURE_SET = new HashSet<>(Arrays.asList(MP30_FEATURES_ARRAY));
@@ -46,7 +46,7 @@ public class RepeatFaultTolerance {
     static {
         ALL_FEATURE_SET.addAll(MP13_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP20_FEATURE_SET);
-        ALL_FEATURE_SET.addAll(FT20_FEATURE_SET);
+        ALL_FEATURE_SET.addAll(FT20_METRICS11_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP30_FEATURE_SET);
         ALL_FEATURE_SET.addAll(FT11_METRICS20_FEATURE_SET);
     }
@@ -63,9 +63,9 @@ public class RepeatFaultTolerance {
                         .forServers(server);
     }
 
-    public static FeatureReplacementAction ft20Features(String server) {
-        return new FeatureReplacementAction(ALL_FEATURE_SET, FT20_FEATURE_SET)
-                        .withID(FT20_FEATURES_ID)
+    public static FeatureReplacementAction ft20metrics11Features(String server) {
+        return new FeatureReplacementAction(ALL_FEATURE_SET, FT20_METRICS11_FEATURE_SET)
+                        .withID(FT20_METRICS11_ID)
                         .forServers(server);
     }
 
@@ -106,7 +106,7 @@ public class RepeatFaultTolerance {
     public static RepeatTests repeatAll(String server) {
         return RepeatTests.with(mp13Features(server))
                         .andWith(mp20Features(server))
-                        .andWith(ft20Features(server))
+                        .andWith(ft20metrics11Features(server))
                         .andWith(mp30Features(server));
     }
 
