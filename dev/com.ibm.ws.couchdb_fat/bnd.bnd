@@ -1,0 +1,33 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+src: \
+	fat/src,\
+	test-applications/couchdb/src
+
+fat.project: true
+
+# Define additional tested features that are NOT present any any XML files in this bucket.
+tested.features:\
+	servlet-4.0
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	org.ektorp:org.ektorp;version=1.4.1,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+	org.testcontainers:database-commons;version=1.12.0,\
+	org.testcontainers:testcontainers;version=1.12.0,\
+	org.slf4j:slf4j-api;version=1.7.7

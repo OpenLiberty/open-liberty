@@ -13,9 +13,9 @@ package com.ibm.websphere.simplicity.config;
 import javax.xml.bind.annotation.XmlAttribute;
 
 public class CouchDBElement extends ConfigElement {
-    private String jndiName, libraryRef, host, username, password, connectionTimeout, socketTimeout;
+    private String jndiName, libraryRef, host, port, username, password, connectionTimeout, socketTimeout;
     private Boolean enableSSL, relaxedSSLSettings, caching, useExpectContinue, cleanupIdleConnections;
-    private Integer port, maxConnections, maxCacheEntries, maxObjectSizeBytes;
+    private Integer maxConnections, maxCacheEntries, maxObjectSizeBytes;
 
     /**
      * @return the host
@@ -200,7 +200,8 @@ public class CouchDBElement extends ConfigElement {
     /**
      * @return the port
      */
-    public Integer getPort() {
+    public String getPort() {
+        // Integer in metatype, but need String to support properties.
         return port;
     }
 
@@ -208,7 +209,8 @@ public class CouchDBElement extends ConfigElement {
      * @param port the port to set
      */
     @XmlAttribute
-    public void setPort(Integer port) {
+    public void setPort(String port) {
+        // Integer in metatype, but need String to support properties.
         this.port = port;
     }
 
