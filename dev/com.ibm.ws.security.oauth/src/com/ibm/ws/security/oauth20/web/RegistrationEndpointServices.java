@@ -620,7 +620,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     private String validateRequestContainsClientId(HttpServletRequest request) throws OidcServerException {
         String clientId = extractClientId(request.getPathInfo());
         if (OidcOAuth20Util.isNullEmpty(clientId)) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { clientId });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID });
             Tr.error(tc, errorMsg.getServerErrorMessage());
             throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
 
