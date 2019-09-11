@@ -27,6 +27,11 @@ REQUEST_TIMER_WARNING=TRAS0112W: Request {0} has been running on thread {1} for 
 REQUEST_TIMER_WARNING.explanation=The request has been running for longer than the configured slow request duration. The information in the table shows what events have already run as part of the request. Events that are still running are indicated with a + next to the duration. The default value for slow request duration is 10 seconds, check the server.xml file for the current value.
 REQUEST_TIMER_WARNING.useraction=Use the information in the table to determine what part of the request is slower than expected.  If many warnings are provided for different requests at nearly the same time it may indicate that something slowed down the entire server process, such as another process on the same system consuming a large amount of processing resources.
 
+# Information message telling the user that the previously detected slow request has finished in a set amount of time.
+REQUEST_TIMER_FINISH_SLOW=TRAS0113I: Request {0} on thread {1}, which was previously detected as slow, completed after {2} ms.
+REQUEST_TIMER_FINISH_SLOW.explanation=The request has been running for longer than the configured slow request duration. The request completed in the posted time.
+REQUEST_TIMER_FINISH_SLOW.useraction=No action required.
+
 # Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
 HUNG_REQUEST_WARNING=TRAS0114W: Request {0} has been running on thread {1} for at least {2}ms. The following table shows the events that have run during this request.\n{3}
 HUNG_REQUEST_WARNING.explanation=The request has been running for longer than the configured hung request duration. The information in the table shows what events have already run as part of the request. Java cores will automatically be triggered to collect further information about what may be causing the request to hang. The default value for hung request duration is 10 minutes, check the server.xml file for the current value.
