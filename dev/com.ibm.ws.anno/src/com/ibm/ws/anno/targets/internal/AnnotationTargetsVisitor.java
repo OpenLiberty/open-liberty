@@ -395,12 +395,13 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
             //       classes lists by an alternate step.
 
             if (!className.equals(getExternalName())) {
+                // ANNO_TARGETS_CLASS_NAME_MISMATCH=
                 // CWWKC0105W: 
-                // Class scanning internal error: The visitor [ {0} ] read class [ {1] ]
-                // from a resource which matches class [ {2} ].
+                // Class scanning internal error: Visitor {0} read class name {1}
+                // from a resource which should have class name {2}.
 
                 Tr.warning(tc, "ANNO_TARGETS_CLASS_NAME_MISMATCH",
-                    getHashText(), i_className, getExternalName() );
+                    getHashText(), className, getExternalName() );
 
                 throw VISIT_ENDED_CLASS_MISMATCH;
             }
@@ -408,7 +409,12 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
             i_className = internClassName(className); // Remember this for recording annotations.
 
             if (!i_recordScannedClassName(i_className)) {
-                Tr.warning(tc, "ANNO_TARGETS_DUPLICATE_CLASS", getHashText(), i_className); // CWWKC0055W
+                // ANNO_TARGETS_DUPLICATE_CLASS=
+                // CWWKC0055W: 
+                // Class scanning internal error: The visitor [ {0} ] 
+                // attempted a second scan of class [ {1} ].
+
+                Tr.warning(tc, "ANNO_TARGETS_DUPLICATE_CLASS", getHashText(), i_className); // CWWKC055W
                 throw VISIT_ENDED_DUPLICATE_CLASS;
             }
 
