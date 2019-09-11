@@ -38,12 +38,17 @@ public class RepeatFaultTolerance {
     static final Set<String> MP30_FEATURE_SET = new HashSet<>(Arrays.asList(MP30_FEATURES_ARRAY));
     public static final String MP30_FEATURES_ID = "MICROPROFILE30";
 
+    static final String[] FT11_METRICS20_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-1.1", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.0", "mpFT-Metrics-2.0-guard" };
+    static final Set<String> FT11_METRICS20_FEATURE_SET = new HashSet<>(Arrays.asList(FT11_METRICS20_ARRAY));
+    public static final String FT11_METRICS20_ID = "FT11_METRICS20";
+
     static final Set<String> ALL_FEATURE_SET = new HashSet<>();
     static {
         ALL_FEATURE_SET.addAll(MP13_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP20_FEATURE_SET);
         ALL_FEATURE_SET.addAll(FT20_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP30_FEATURE_SET);
+        ALL_FEATURE_SET.addAll(FT11_METRICS20_FEATURE_SET);
     }
 
     public static FeatureReplacementAction mp20Features(String server) {
@@ -67,6 +72,12 @@ public class RepeatFaultTolerance {
     public static FeatureReplacementAction mp30Features(String server) {
         return new FeatureReplacementAction(ALL_FEATURE_SET, MP30_FEATURE_SET)
                         .withID(MP30_FEATURES_ID)
+                        .forServers(server);
+    }
+
+    public static FeatureReplacementAction ft11metrics20Features(String server) {
+        return new FeatureReplacementAction(ALL_FEATURE_SET, FT11_METRICS20_FEATURE_SET)
+                        .withID(FT11_METRICS20_ID)
                         .forServers(server);
     }
 
