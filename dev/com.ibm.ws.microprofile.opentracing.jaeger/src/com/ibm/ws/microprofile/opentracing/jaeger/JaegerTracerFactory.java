@@ -11,6 +11,7 @@
 
 package com.ibm.ws.microprofile.opentracing.jaeger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.NumberFormat;
@@ -199,7 +200,14 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
                 Tr.debug(tc, "Jaeger library was not found or exception occurred during loading.  Exception:"
                         + jae.getMessage(), jae);
             }
-            throw jae;
+            if (jae.getCause() instanceof InvocationTargetException) {
+                InvocationTargetException ite = (InvocationTargetException) jae.getCause();
+                if (ite.getTargetException() instanceof NoClassDefFoundError) {
+                    Tr.error(tc, "JAEGER_CLASS_NOT_FOUND");
+                }
+            } else {
+                throw jae;
+            }
         } catch (IllegalArgumentException e) {
             Tr.error(tc, "JAEGER_CONFIG_EXCEPTION", e.getMessage());
             throw e;
