@@ -30,5 +30,6 @@ Include-Resource:\
 -buildpath: org.apache.cxf:cxf-rt-core;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.logging.core, \
   com.ibm.ws.org.apache.cxf.cxf.api.2.6, \
   com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3

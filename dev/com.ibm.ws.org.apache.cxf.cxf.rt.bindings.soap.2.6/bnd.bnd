@@ -30,6 +30,8 @@ Include-Resource:\
 -buildpath: org.apache.cxf:cxf-rt-bindings-soap;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.com.sun.xml.messaging.saaj;version=latest, \
+  com.ibm.ws.logging.core, \
   com.ibm.ws.org.apache.cxf.cxf.api.2.6;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   org.apache.mina:mina-core;strategy=exact;version=2.1.3

@@ -28,6 +28,7 @@ Include-Resource:\
  -buildpath: org.apache.cxf:cxf-rt-frontend-simple;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.logging.core, \
   com.ibm.ws.org.apache.cxf.cxf.api.2.6, \
   com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6, \
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6, \

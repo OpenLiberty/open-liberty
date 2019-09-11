@@ -80,6 +80,9 @@ Import-Package: \
   !org.apache.aries.*;version="[0.3,2)", \
   !org.osgi.service.blueprint.*, \
   !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
   com.sun.xml.fastinfoset.stax;resolution:=optional, \
   com.sun.xml.bind.marshaller, \
   com.sun.xml.bind.api;resolution:=optional, \
@@ -167,6 +170,9 @@ Import-Package: \
   org.apache.ws.commons.schema.resolver, \
   org.apache.ws.commons.schema.utils, \
   org.objectweb.asm;resolution:=optional;version="[2.0,8)", \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
   org.slf4j;resolution:=optional;version="[1.5,2)", \
   org.slf4j.spi;resolution:=optional;version="[1.5,2)", \
   org.w3c.dom, \

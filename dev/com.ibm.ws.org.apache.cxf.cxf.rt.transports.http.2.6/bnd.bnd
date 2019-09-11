@@ -29,6 +29,7 @@ Include-Resource:\
 -buildpath: org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.javaee.servlet.3.0;version=latest, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
+  com.ibm.ws.logging.core, \
   com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest, \
   org.osgi:org.osgi.core;version=4.2.0, \
-  org.osgi:org.osgi.compendium;version=4.2.0, \
+  org.osgi:org.osgi.compendium;version=4.2.0

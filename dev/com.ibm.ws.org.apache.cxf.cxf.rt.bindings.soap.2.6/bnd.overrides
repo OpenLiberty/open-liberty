@@ -104,6 +104,9 @@ Import-Package: \
   org.apache.mina.filter.logging;resolution:=optional, \
   org.apache.mina.transport.socket.nio;resolution:=optional, \
   org.apache.ws.commons.schema, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
   org.w3c.dom, \
   org.xml.sax
 

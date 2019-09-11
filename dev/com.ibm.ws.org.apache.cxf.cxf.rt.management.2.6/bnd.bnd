@@ -26,4 +26,5 @@ Include-Resource:\
 
 -buildpath: org.apache.cxf:cxf-rt-management;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.logging.core, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

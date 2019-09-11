@@ -26,6 +26,9 @@ Export-Package: \
   org.apache.cxf.ws.addressing.spring;version="2.6.2"
 
 Import-Package: \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
   javax.wsdl, \
   javax.wsdl.extensions, \
   javax.xml.bind;version="[2.2,3)", \
@@ -66,6 +69,9 @@ Import-Package: \
   org.apache.neethi, \
   org.apache.neethi.builders, \
   org.apache.neethi.builders.xml, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
   org.w3c.dom
 
 Private-Package: \

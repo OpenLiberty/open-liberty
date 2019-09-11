@@ -66,6 +66,9 @@ Import-Package: \
   org.apache.ws.commons.schema, \
   org.apache.ws.commons.schema.extensions, \
   org.apache.ws.commons.schema.utils, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
   org.w3c.dom, \
   org.xml.sax, \
   org.xml.sax.helpers

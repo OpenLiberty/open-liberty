@@ -26,6 +26,7 @@ Include-Resource:\
   @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/org/apache/cxf/**, \
   com/ibm/ws=${bin}/com/ibm/ws
 
--buildpath: org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfVersion},\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+-buildpath: org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest

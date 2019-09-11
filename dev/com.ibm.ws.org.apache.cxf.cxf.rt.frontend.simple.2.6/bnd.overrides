@@ -21,6 +21,9 @@ Import-Package: \
   !org.springframework.*;resolution:=optional;version="[2.5,4)", \
   !org.apache.aries.*;version="[0.3,2)", \
   !org.osgi.service.blueprint.*, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
   javax.wsdl, \
   javax.wsdl.extensions, \
   javax.wsdl.extensions.schema, \
@@ -65,6 +68,9 @@ Import-Package: \
   org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
   org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
   org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
   org.w3c.dom, \
   org.xml.sax
 

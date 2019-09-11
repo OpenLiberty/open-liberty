@@ -39,6 +39,9 @@ Import-Package: \
   !org.apache.aries.*;version="[0.3,2)", \
   !org.osgi.service.blueprint.*, \
   !org.apache.cxf.ws.policy.attachment.wsdl11.*, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
   javax.annotation, \
   javax.wsdl, \
   javax.wsdl.extensions, \
@@ -87,6 +90,9 @@ Import-Package: \
   org.apache.neethi, \
   org.apache.neethi.builders, \
   org.apache.neethi.builders.xml, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
   org.w3c.dom, \
   org.xml.sax
 

@@ -39,6 +39,9 @@ Import-Package: \
   !org.springframework.*;resolution:=optional;version="[2.5,4)", \
   !org.apache.aries.*;version="[0.3,2)", \
   !org.osgi.service.blueprint.*, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
   javax.activation, \
   javax.annotation, \
   javax.naming, \
@@ -58,8 +61,6 @@ Import-Package: \
   javax.xml.bind;version="[2.2,3)", \
   javax.xml.bind.annotation;version="[2.2,3)", \
   javax.xml.namespace, \
-  org.apache.cxf.ws.policy;resolution:=optional;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.ws.policy.builder.jaxb;resolution:=optional;version="[2.6.2,2.6.3)", \
   org.apache.cxf;version="[2.6.2,2.6.3)", \
   org.apache.cxf.attachment;version="[2.6.2,2.6.3)", \
   org.apache.cxf.common.classloader;version="[2.6.2,2.6.3)", \
@@ -99,6 +100,8 @@ Import-Package: \
   org.apache.cxf.version;version="[2.6.2,2.6.3)", \
   org.apache.cxf.workqueue;version="[2.6.2,2.6.3)", \
   org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy;resolution:=optional;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.builder.jaxb;resolution:=optional;version="[2.6.2,2.6.3)", \
   org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
   org.apache.cxf.wsdl.http;version="[2.6.2,2.6.3)", \
   org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
@@ -107,7 +110,7 @@ Import-Package: \
   org.osgi.framework, \
   org.osgi.service.cm, \
   org.osgi.util.tracker, \
-  org.w3c.dom
+  org.w3c.dom, \
 
 Private-Package: \
   schemas.configuration, \

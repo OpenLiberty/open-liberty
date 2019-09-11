@@ -147,6 +147,9 @@ Import-Package: \
   org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
   org.apache.cxf.wsdl.http;version="[2.6.2,2.6.3)", \
   org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
   org.w3c.dom, \
 
 Private-Package: \
