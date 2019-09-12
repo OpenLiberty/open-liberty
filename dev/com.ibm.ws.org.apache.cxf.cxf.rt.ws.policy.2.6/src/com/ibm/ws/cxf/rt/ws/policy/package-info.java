@@ -9,4 +9,4 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0.0")
-package com.ibm.ws.jaxws22.cxf.rt.management;
+package com.ibm.ws.cxf.rt.ws.policy;

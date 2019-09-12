@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxws22.cxf.rt.management;
+package com.ibm.ws.cxf.rt.ws.policy;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -27,7 +27,7 @@ public class NoOpActivator implements BundleActivator {
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
-        // no op
-    }
+   public void stop(BundleContext context) throws Exception {
+       // no op
+   }
 }
