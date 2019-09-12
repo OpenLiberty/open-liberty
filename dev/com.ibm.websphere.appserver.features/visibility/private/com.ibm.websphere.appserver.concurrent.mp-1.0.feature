@@ -13,3 +13,4 @@ com.ibm.websphere.appserver.contextService-1.0
   com.ibm.ws.concurrent
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

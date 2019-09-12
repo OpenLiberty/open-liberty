@@ -4,3 +4,4 @@ visibility=protected
 -bundles=com.ibm.ws.concurrency.policy
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
