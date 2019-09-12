@@ -26,7 +26,7 @@ cxfVersion=3.3.3
    @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/META-INF/NOTICE, \
    META-INF/services/javax.xml.ws.spi.Provider=resources/META-INF/services/javax.xml.ws.spi.Provider
    
--buildpath: org.apache.cxf:cxf-rt-frontend-jaxws;version=${cxfVersion},\
+-buildpath: org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core

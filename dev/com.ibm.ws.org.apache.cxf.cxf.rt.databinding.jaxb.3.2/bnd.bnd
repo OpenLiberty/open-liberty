@@ -20,7 +20,7 @@ cxfVersion=3.3.3
    com/ibm/ws=${bin}/com/ibm/ws,\
    org/apache/cxf=${bin}/org/apache/cxf
 
--buildpath: org.apache.cxf:cxf-rt-databinding-jaxb;version=${cxfVersion},\
+-buildpath: org.apache.cxf:cxf-rt-databinding-jaxb;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core
