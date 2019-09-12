@@ -99,8 +99,8 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
         // Configure our defaults
         Map<String, Object> consumerConfig = new HashMap<>();
 
-        consumerConfig.putIfAbsent(KafkaConnectorConstants.KEY_DESERIALIZER, KafkaConnectorConstants.DEFAULT_DESERIALIZER);
-        consumerConfig.putIfAbsent(KafkaConnectorConstants.VALUE_DESERIALIZER, KafkaConnectorConstants.DEFAULT_DESERIALIZER);
+        consumerConfig.put(KafkaConnectorConstants.KEY_DESERIALIZER, KafkaConnectorConstants.DEFAULT_DESERIALIZER);
+        consumerConfig.put(KafkaConnectorConstants.VALUE_DESERIALIZER, KafkaConnectorConstants.DEFAULT_DESERIALIZER);
 
         // Default behaviour is that connector handles commit in response to ack()
         consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false");
