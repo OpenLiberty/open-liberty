@@ -63,7 +63,7 @@ public class EJB2xTestServlet extends FATServlet {
     @Test
     public void testStatelessRemote() throws Exception {
         Stateless2xRemoteHome home = lookupBean(Stateless2xRemoteHome.class);
-        assertEquals("paramparam", home.create().test("param"));
+        assertEquals("Call to remote home of stateless bean was not successful", "paramparam", home.create().test("param"));
     }
 
     /**
@@ -88,7 +88,8 @@ public class EJB2xTestServlet extends FATServlet {
      *
      * <p>The remote home is looked up from a custom binding location defined in
      * ibm-ejb-jar-bnd.xmi, an instance is created with an input parameter, and
-     * a method is called.
+     * a method is called, which causes reactivation of the bean because of the
+     * activationAt specified in ibm-ejb-jar-ext.xmi
      *
      * <p>The test expects that the final method call succeeds in returning a
      * list of events, which includes variants of the creation and method
@@ -98,9 +99,8 @@ public class EJB2xTestServlet extends FATServlet {
     public void testStatefulRemote() throws Exception {
         Stateful2xRemoteHome home = lookupBean(Stateful2xRemoteHome.class);
         Stateful2xRemote bean = home.create("create");
-        // Removed passivation/activation cycles since extensions are not supported at this time
-        // assertEquals(Arrays.asList("createcreate", "passivate", "activate", "paramparam", "passivate"), bean.test("param"));
-        assertEquals(Arrays.asList("createcreate", "paramparam"), bean.test("param"));
+        assertEquals("Call to remote home of stateful bean was not successful", Arrays.asList("createcreate", "passivate", "activate", "paramparam", "passivate"),
+                     bean.test("param"));
         bean.remove();
     }
 }

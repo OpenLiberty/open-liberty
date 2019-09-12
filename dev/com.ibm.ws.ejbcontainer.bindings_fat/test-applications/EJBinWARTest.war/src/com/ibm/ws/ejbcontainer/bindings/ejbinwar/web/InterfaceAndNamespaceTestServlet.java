@@ -37,7 +37,7 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
     private final static Logger svLogger = Logger.getLogger(CLASSNAME);
 
     private final static String APPLICATION = "EJBinWARTestApp";
-    private final static String WAR_MODULE = "EJBinWARTest";
+    private final static String WAR_MODULE = "EJBinWARTest.war";
 
     /**
      * This test verifies the following: 1) A singleton bean inside an ejb.jar
@@ -55,7 +55,7 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
 
         svLogger.info("--> singletonInJarInWar.callVerifyLookup() = " + singletonInJarInWar.callVerifyLookup());
 
-        assertTrue("--> Local lookup of a bean inside a .war from another bean inside the .war using the java:comp namespace was successful.",
+        assertTrue("Failed to lookup the local interface of a bean inside a .war from another bean inside the .war using the java:comp namespace",
                    singletonInJarInWar.callVerifyLookup());
     }
 
@@ -75,14 +75,14 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
 
         svLogger.info("--> looseStateless.callVerifyRemoteJavaCompLookup() = " + looseStateless.callVerifyRemoteJavaCompLookup());
 
-        assertTrue("--> Remote lookup of a bean inside a .war from another bean inside the .war using the java:comp namespace was successful.",
+        assertTrue("Failed to lookup the remote interface of a bean inside a .war from another bean inside the .war using the java:comp namespace",
                    looseStateless.callVerifyRemoteJavaCompLookup());
     }
 
     /**
      * This test verifies the following: 1) A stateless bean inside the
      * WEB-INF/classes dir inside the .war can successfully lookup (the local
-     * interface) a standalone bean outside of the .war via the global local
+     * interface) of a standalone bean outside of the .war via the global local
      * namespace (i.e. ejblocal:)
      *
      */
@@ -95,14 +95,14 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
 
         svLogger.info("--> looseStateless.callVerifyGlobalLocalLookup() = " + looseStateless.callVerifyGlobalLocalLookup());
 
-        assertTrue("--> Local lookup of a standalone bean outside of the .war from a bean inside the .war using the global namespace (i.e. ejblocal:).",
+        assertTrue("Failed to lookup the local interface of a standalone bean outside of the .war from a bean inside the .war using the global namespace (i.e. ejblocal:)",
                    looseStateless.callVerifyGlobalLocalLookup());
     }
 
     /**
      * This test verifies the following: 1) A stateless bean inside the
      * WEB-INF/classes dir inside the .war can successfully lookup (the remote
-     * interface) a standalone bean outside of the .war via the global remote
+     * interface) of a standalone bean outside of the .war via the global remote
      * namespace (i.e. ejb/)
      *
      */
@@ -115,7 +115,7 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
 
         svLogger.info("--> looseStateless.callVerifyGlobalRemoteLookup() = " + looseStateless.callVerifyGlobalRemoteLookup());
 
-        assertTrue("--> Remote lookup of a standalone bean outside of the .war from a bean inside the .war using the remote global namespace (i.e. ejb/).",
+        assertTrue("Failed to lookup the remote interface of a standalone bean outside of the .war from a bean inside the .war using the remote global namespace (i.e. ejb/)",
                    looseStateless.callVerifyGlobalRemoteLookup());
     }
 }

@@ -40,11 +40,11 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
     private final static Logger svLogger = Logger.getLogger(CLASSNAME);
 
     private final static String APPLICATION = "EJBinWARTestApp";
-    private final static String WAR_MODULE = "EJBinWARTest";
+    private final static String WAR_MODULE = "EJBinWARTest.war";
 
     /**
-     * This test verifies the following: 1) the 2.X CompView Remote interface, 2)
-     * the client can access an ejb using a 2.X remote interface
+     * This test verifies the following: 1) the 2.x CompView Remote interface, 2)
+     * the client can access an ejb using a 2.x remote interface
      */
     @Test
     public void testRemote2xCompViewFromClient() throws Exception {
@@ -56,13 +56,12 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
         svLogger.info("--> Creating bean...");
         Comp2xViewStatefulRemote remote2xCompViewBean = remote2xCompViewHome.create();
 
-        assertTrue("--> Remote 2.X CompView Interface worked successfully, remote2xCompViewBean.verifyComp2xStatefulLookup() = "
-                   + remote2xCompViewBean.verifyComp2xStatefulLookup(), remote2xCompViewBean.verifyComp2xStatefulLookup());
+        assertTrue("Remote 2.x component interface was not usable", remote2xCompViewBean.verifyComp2xStatefulLookup());
     }
 
     /**
      * This test verifies the following: 1) a bean inside the .war can access
-     * another ejb inside the .war using a 2.X local interface, 2) Injection of
+     * another ejb inside the .war using a 2.x local interface, 2) Injection of
      * the CompView Bean's home 3) Lookup of the CompView Bean's home from the
      * EJBContext
      */
@@ -73,15 +72,12 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
                                                                                                                                                             APPLICATION, WAR_MODULE,
                                                                                                                                                             "LooseStatelessBean");
 
-        svLogger.info("--> looseStateless.callVerifyComp2xStatefulLocalLookup() = " + looseStateless.callVerifyComp2xStatefulLocalLookup());
-
-        assertTrue("--> Use of compview 2.x bean's local interface was successful, looseStateless.callVerifyComp2xStatefulLocalLookup() = "
-                   + looseStateless.callVerifyComp2xStatefulLocalLookup(), looseStateless.callVerifyComp2xStatefulLocalLookup());
+        assertTrue("Local 2.x component interface was not usable from an EJB in the war", looseStateless.callVerifyComp2xStatefulLocalLookup());
     }
 
     /**
      * This test verifies the following: 1) a bean inside the .war can access
-     * another ejb inside the .war using a 2.X remote interface, 2) Injection of
+     * another ejb inside the .war using a 2.x remote interface, 2) Injection of
      * the CompView Bean's home 3) Lookup of the CompView Bean's home from the
      * EJBContext
      */
@@ -94,15 +90,14 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
 
         svLogger.info("--> looseStateless.callVerifyComp2xStatefulRemoteLookup() = " + looseStateless.callVerifyComp2xStatefulRemoteLookup());
 
-        assertTrue("--> Use of compview 2.x bean's local interface was successful, looseStateless.callVerifyComp2xStatefulRemoteLookup() = "
-                   + looseStateless.callVerifyComp2xStatefulRemoteLookup(), looseStateless.callVerifyComp2xStatefulRemoteLookup());
+        assertTrue("Remote 2.x component interface was not usable from an EJB in the war", looseStateless.callVerifyComp2xStatefulRemoteLookup());
     }
 
     /**
      * XML version:
      *
-     * This test verifies the following: 1) the 2.X CompView Remote interface, 2)
-     * the client can access an ejb using a 2.X remote interface
+     * This test verifies the following: 1) the 2.x CompView Remote interface, 2)
+     * the client can access an ejb using a 2.x remote interface
      */
     @Test
     public void testXMLRemote2xCompViewFromClient() throws Exception {
@@ -115,15 +110,14 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
         svLogger.info("--> Creating bean...");
         XMLComp2xViewStatefulRemote xmlRemote2xCompViewBean = xmlRemote2xCompViewHome.create();
 
-        assertTrue("--> Remote 2.X CompView Interface worked successfully, xmlRemote2xCompViewBean.verifyXMLComp2xStatefulLookup() = "
-                   + xmlRemote2xCompViewBean.verifyXMLComp2xStatefulLookup(), xmlRemote2xCompViewBean.verifyXMLComp2xStatefulLookup());
+        assertTrue("Remote 2.x component interface was not usable", xmlRemote2xCompViewBean.verifyXMLComp2xStatefulLookup());
     }
 
     /**
      * XML version:
      *
      * This test verifies the following: 1) a bean inside the .war can access
-     * another ejb inside the .war using a 2.X local interface, 2) Injection of
+     * another ejb inside the .war using a 2.x local interface, 2) Injection of
      * the CompView Bean's home 3) Lookup of the CompView Bean's home from the
      * EJBContext
      */
@@ -136,15 +130,14 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
 
         svLogger.info("--> looseStateless.callVerifyXMLComp2xStatefulLocalLookup() = " + looseStateless.callVerifyXMLComp2xStatefulLocalLookup());
 
-        assertTrue("--> Use of compview 2.x bean's local interface was successful, looseStateless.callVerifyXMLComp2xStatefulLocalLookup() = "
-                   + looseStateless.callVerifyXMLComp2xStatefulLocalLookup(), looseStateless.callVerifyXMLComp2xStatefulLocalLookup());
+        assertTrue("Local 2.x component interface was not usable from an EJB in the war", looseStateless.callVerifyXMLComp2xStatefulLocalLookup());
     }
 
     /**
      * XML version:
      *
      * This test verifies the following: 1) a bean inside the .war can access
-     * another ejb inside the .war using a 2.X remote interface, 2) Injection of
+     * another ejb inside the .war using a 2.x remote interface, 2) Injection of
      * the CompView Bean's home 3) Lookup of the CompView Bean's home from the
      * EJBContext
      */
@@ -157,7 +150,6 @@ public class InterfaceAndNamespaceTestServlet extends FATServlet {
 
         svLogger.info("--> looseStateless.callVerifyXMLComp2xStatefulRemoteLookup() = " + looseStateless.callVerifyXMLComp2xStatefulRemoteLookup());
 
-        assertTrue("--> Use of compview 2.x bean's local interface was successful, looseStateless.callVerifyXMLComp2xStatefulRemoteLookup() = "
-                   + looseStateless.callVerifyXMLComp2xStatefulRemoteLookup(), looseStateless.callVerifyXMLComp2xStatefulRemoteLookup());
+        assertTrue("Remote 2.x component interface was not usable from an EJB in the war", looseStateless.callVerifyXMLComp2xStatefulRemoteLookup());
     }
 }

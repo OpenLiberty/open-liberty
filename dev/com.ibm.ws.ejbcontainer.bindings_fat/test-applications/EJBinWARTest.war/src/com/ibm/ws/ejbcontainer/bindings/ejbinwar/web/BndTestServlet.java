@@ -32,7 +32,7 @@ public class BndTestServlet extends FATServlet {
     private final static Logger svLogger = Logger.getLogger(CLASSNAME);
 
     private final static String APPLICATION = "EJBinWARTestApp";
-    private final static String WAR_MODULE = "EJBinWARTest";
+    private final static String WAR_MODULE = "EJBinWARTest.war";
 
     /**
      * This test verifies the following: 1) The ibm-ejb-jar-bnd.xml file located
@@ -48,7 +48,7 @@ public class BndTestServlet extends FATServlet {
         XMLDefinedStatelessInJarInWarInterfaceRemote xmlSLSBRemote = (XMLDefinedStatelessInJarInWarInterfaceRemote) new InitialContext().lookup("ejb/core/RemoteXMLSLSB");
 
         svLogger.info("--> Calling the method to verify the bean lookup was successful...");
-        assertEquals("The xmlSLSBRemote.verifyLookup wass sucessfully called.", "Success", xmlSLSBRemote.verifyLookup("Success"));
+        assertEquals("Failed to lookup stateless EJB via remote custom binding", "Success", xmlSLSBRemote.verifyLookup("Success"));
     }
 
     /**
@@ -70,6 +70,6 @@ public class BndTestServlet extends FATServlet {
 
         svLogger.info("--> Calling the Singleton's method that verifies that the SLSB was able to be successfully looked up using the local interface...");
 
-        assertEquals("The local lookup of the SLSB was sucessful.", "Success", xmlSingBean.verifyBNDofSLSBLocal());
+        assertEquals("Failed to lookup stateless EJB via local custom binding", "Success", xmlSingBean.verifyBNDofSLSBLocal());
     }
 }
