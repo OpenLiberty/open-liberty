@@ -21,6 +21,7 @@ configurations {
   jbossLogging
   jbossMarshalling
   jbossMarshallingRiver
+  jGroups
   reactiveStreams
   rxjava
 }
@@ -37,6 +38,7 @@ dependencies {
   jbossLogging 'org.jboss.logging:jboss-logging:3.3.2.Final'
   jbossMarshalling 'org.jboss.marshalling:jboss-marshalling:2.0.9.Final'
   jbossMarshallingRiver 'org.jboss.marshalling:jboss-marshalling-river:2.0.9.Final'
+  jGroups 'org.jgroups:jgroups:4.0.0.Final'
   reactiveStreams 'org.reactivestreams:reactive-streams:1.0.2'
   rxjava 'io.reactivex.rxjava2:rxjava:2.2.6'
 }
@@ -101,6 +103,12 @@ task addJbossMarshallingRiverToSharedDir(type: Copy) {
   rename 'jboss-marshalling-river-*.jar', 'jboss-marshalling-river.jar'
 }
 
+task addJGroupsToSharedDir(type: Copy) {
+  from configurations.jGroups
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'jgroups*.jar', 'jgroups.jar'
+}
+
 task addReactiveStreamsToSharedDir(type: Copy) {
   from configurations.reactiveStreams
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
@@ -125,6 +133,7 @@ addRequiredLibraries {
   dependsOn addJbossLoggingToSharedDir
   dependsOn addJbossMarshallingToSharedDir
   dependsOn addJbossMarshallingRiverToSharedDir
+  dependsOn addJGroupsToSharedDir
   dependsOn addReactiveStreamsToSharedDir
   dependsOn addRxJavaToSharedDir
 }
