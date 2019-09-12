@@ -21,6 +21,7 @@
 		<feature>servlet-4.0</feature>
 		<feature>mpFaultTolerance-2.0</feature>
 		<feature>mpMetrics-1.1</feature>
+		<feature>mpFT-Metrics-2.0-guard</feature>
 	</featureManager>
 
 	<!-- Usually, we recommend customers not to change this, however our Async 
