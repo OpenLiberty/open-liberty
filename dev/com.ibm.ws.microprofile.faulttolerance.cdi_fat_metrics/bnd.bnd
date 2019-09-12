@@ -28,8 +28,7 @@ tested.features: mpFaultTolerance-1.1,\
                  cdi-2.0,\
                  appsecurity-3.0,\
                  el-3.0,\
-                 mpMetrics-2.0,\
-                 mpFT-Metrics-2.0-guard
+                 mpMetrics-2.0
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
