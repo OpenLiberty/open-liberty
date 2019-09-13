@@ -230,6 +230,8 @@ public final class EndpointReferenceUtils {
                         impl.setSystemId(source.getSystemId());
                         impl.setPublicId(source.getPublicId());
                     }
+                // Liberty Change:
+                // Catch the Exception now being thrown in TransportURIResolver and log it
                 } catch (Exception e) {
                     LOG.log(Level.FINEST, "Conduit initiator could not resolve " + baseURI + " " + systemId, e);
                 }

@@ -42,6 +42,8 @@ public class ExtendedURIResolver {
         currentResolver = new org.apache.cxf.resource.URIResolver();        
     }
 
+    // Liberty Change:
+    // Method now throws ConnectException and SocketTimeoutException
     public InputSource resolve(String curUri, String baseUri) throws ConnectException, SocketTimeoutException {
         try { 
             currentResolver.resolve(baseUri, curUri, getClass());
@@ -64,6 +66,8 @@ public class ExtendedURIResolver {
                 return source;
             }
         } catch (IOException e) {
+            // Liberty Change:
+            // Log Caught Exception
             LOG.log(Level.FINE, "Ignoring IOException 2: " + e);
             // move on...
         } finally {

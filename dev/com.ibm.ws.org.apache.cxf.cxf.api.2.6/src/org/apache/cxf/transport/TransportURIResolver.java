@@ -152,6 +152,8 @@ public class TransportURIResolver extends ExtendedURIResolver {
                     currentResolver.unresolve();
                     return src;
                 }
+            // Liberty Change:
+            // Catch ConnectionException and SocketTimeoutException when thrown in ExtenedURIResolver
             } catch (ConnectException ce1) {
                 LOG.log(Level.FINE, "Throwing ConnectException: " + ce1);
                 throw ce1;

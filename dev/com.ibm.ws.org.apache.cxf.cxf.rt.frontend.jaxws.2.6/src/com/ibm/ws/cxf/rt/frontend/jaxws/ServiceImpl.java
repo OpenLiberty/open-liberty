@@ -204,6 +204,8 @@ public class ServiceImpl extends ServiceDelegate {
         } catch (Throwable e) {
 
             LOG.log(Level.FINE, "Caught Throwable : e");
+            // Liberty Change 
+            // Log the original ConnectionException and throw a new WebServicesException
             if (e.getMessage().contains("ConnectException")) {
                 LOG.log(Level.FINE, "Throwing WebServiceException: ConnectException...");
                 throw new WebServiceException(e);
