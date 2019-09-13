@@ -16,14 +16,14 @@ javac.target: 1.8
 cxfVersion=3.3.3
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/!*-INF/*, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/META-INF/cxf/**, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/META-INF/spring.handlers, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/META-INF/spring.schemas, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/schemas/**, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/META-INF/DEPENDENCIES, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/META-INF/LICENSE, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion}}!/META-INF/NOTICE, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/cxf/**, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/schemas/**, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/NOTICE, \
    META-INF/services/javax.xml.ws.spi.Provider=resources/META-INF/services/javax.xml.ws.spi.Provider
    
 -buildpath: org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\

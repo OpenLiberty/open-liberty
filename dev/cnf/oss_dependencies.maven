@@ -172,7 +172,6 @@ org.apache.cxf.xjcplugins:cxf-xjc-ts:2.6.0
 org.apache.cxf:cxf-api:2.6.2
 org.apache.cxf:cxf-core:3.1.18
 org.apache.cxf:cxf-rt-bindings-soap:2.6.2
-org.apache.cxf:cxf-rt-bindings-soap:3.3.0
 org.apache.cxf:cxf-rt-bindings-soap:3.3.3
 org.apache.cxf:cxf-rt-bindings-xml:2.6.2
 org.apache.cxf:cxf-rt-bindings-xml:3.3.0

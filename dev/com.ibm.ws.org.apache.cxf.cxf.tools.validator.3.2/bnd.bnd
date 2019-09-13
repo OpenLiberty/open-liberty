@@ -16,7 +16,7 @@ javac.target: 1.8
 cxfVersion=3.3.3
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-tools-validator;3.3.3}!/!META-INF/*
+   @${repo;org.apache.cxf:cxf-tools-validator;${cxfVersion};EXACT}!/!META-INF/*
 
 -buildpath: org.apache.cxf:cxf-tools-validator;strategy=exact;version=${cxfVersion},\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2

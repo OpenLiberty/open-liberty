@@ -16,7 +16,7 @@ javac.target: 1.8
 cxfVersion=3.3.3
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion}}!/!*-INF/*
+   @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion};EXACT}!/!*-INF/*
    com/ibm/ws=${bin}/com/ibm/ws,\
    org/apache/cxf=${bin}/org/apache/cxf
 
