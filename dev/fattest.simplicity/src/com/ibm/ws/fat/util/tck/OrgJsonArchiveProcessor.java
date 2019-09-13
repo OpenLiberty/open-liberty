@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,12 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * We weave in the hamcrest jar that is used by some of the microprofile config tck tests.
- * The build.gradle file pull the hamcrest jar from maven and puts it in the lib directory
+ * The TCK makes references to org.json classes that must be provided; others CNFEs ensue...
  */
-public class HamcrestArchiveProcessor extends AbstractArchiveWeaver {
+public class OrgJsonArchiveProcessor extends AbstractArchiveWeaver {
 
-    private final Set<File> files = Collections.singleton(new File("../../../lib/hamcrest-all-1.3.jar"));
+    private final Set<File> files = Collections.singleton(new File(System.getProperty("wlp"),
+                                                                   "/usr/servers/FATServer/json-20190722.jar"));
 
     @Override
     protected Set<File> getFilesToWeave() {
