@@ -764,14 +764,17 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] [ {1} ] Class load", logParms);
             }
 
-            if (!className.equals(getExternalName())) {
-                if (logger.isLoggable(Level.FINER)) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName,
-                            "[ {0} ] Class name mismatch [ {1} ]",
-                            new Object[] { getHashText(), className });
-                }
-                throw VISIT_ENDED_CLASS_MISMATCH;
-            }
+            // This test cannot be used: JSP pre-compilation does not create the
+            // appropriate directory structure for generated classes.
+
+//            if (!className.equals(getExternalName())) {
+//                if (logger.isLoggable(Level.FINER)) {
+//                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+//                            "[ {0} ] Class name mismatch [ {1} ]",
+//                            new Object[] { getHashText(), className });
+//                }
+//                throw VISIT_ENDED_CLASS_MISMATCH;
+//            }
 
             recordDefinition( classData.setClassName(ClassData.IS_CLASS, className) );
 

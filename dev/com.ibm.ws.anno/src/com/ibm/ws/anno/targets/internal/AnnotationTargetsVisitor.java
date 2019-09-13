@@ -394,17 +394,20 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
             //       will need to be removed from the pending referenced
             //       classes lists by an alternate step.
 
-            if (!className.equals(getExternalName())) {
-                // ANNO_TARGETS_CLASS_NAME_MISMATCH=
-                // CWWKC0105W: 
-                // Class scanning internal error: Visitor {0} read class name {1}
-                // from a resource which should have class name {2}.
+            // This test cannot be used: JSP pre-compilation does not create the
+            // appropriate directory structure for generated classes.
 
-                Tr.warning(tc, "ANNO_TARGETS_CLASS_NAME_MISMATCH",
-                    getHashText(), className, getExternalName() );
-
-                throw VISIT_ENDED_CLASS_MISMATCH;
-            }
+//            if (!className.equals(getExternalName())) {
+//                // ANNO_TARGETS_CLASS_NAME_MISMATCH=
+//                // CWWKC0105W: 
+//                // Class scanning internal error: Visitor {0} read class name {1}
+//                // from a resource which should have class name {2}.
+//
+//                Tr.warning(tc, "ANNO_TARGETS_CLASS_NAME_MISMATCH",
+//                    getHashText(), className, getExternalName() );
+//
+//                throw VISIT_ENDED_CLASS_MISMATCH;
+//            }
 
             i_className = internClassName(className); // Remember this for recording annotations.
 
