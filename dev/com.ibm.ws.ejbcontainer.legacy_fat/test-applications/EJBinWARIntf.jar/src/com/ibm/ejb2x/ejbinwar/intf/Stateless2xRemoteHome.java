@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.legacy.fat;
+package com.ibm.ejb2x.ejbinwar.intf;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.rmi.RemoteException;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import javax.ejb.CreateException;
+import javax.ejb.EJBHome;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AlwaysPassesTest.class
-})
-public class FATSuite {
+public interface Stateless2xRemoteHome extends EJBHome {
+    Stateless2xRemote create() throws CreateException, RemoteException;
 }
