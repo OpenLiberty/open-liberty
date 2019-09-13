@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.AppLibraryClassLoader;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapter;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterException;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterFactory;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl.AbstractJaegerAdapter;
@@ -31,6 +32,7 @@ public class AdapterFactoryImpl extends JaegerAdapterFactory {
         super();
         this.appLibLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
             List<Class<?>> interfaces = Arrays.asList(
+                    JaegerAdapter.class,
                     JaegerAdapterFactory.class,
                     JaegerAdapterException.class,
                     Configuration.class,

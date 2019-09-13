@@ -82,3 +82,7 @@ JAEGER_CONFIG_EXCEPTION.useraction=Correct the issues that were reported and try
 JAEGER_PROPAGATION_INVALID_VALUE=CWMOT1006W: The JAEGER_PROPAGATION system property or environment variable contains the {0} value, which is not valid.
 JAEGER_PROPAGATION_INVALID_VALUE.explanation=The JAEGER_PROPAGATION system property or environment variable contains a value that is not valid. It is ignored.
 JAEGER_PROPAGATION_INVALID_VALUE.useraction=Use one of the valid values, which are JAEGER and B3.
+
+JAEGER_CLASS_NOT_FOUND=CWMOT1007E: The Jaeger client libraries are not defined in the server.xml file or in WEB-INF/lib directory inside the web application. Reason: {0}
+JAEGER_CLASS_NOT_FOUND.explanation=The Jaeger client libraries are not found in the application classpath.
+JAEGER_CLASS_NOT_FOUND.useraction=Define the Jaeger client libraries in the server.xml file or in the WEB-INF/lib directory inside the web application.
