@@ -133,6 +133,14 @@ public class BootstrapConfig {
 
     }
 
+    protected void findLocations(String newServerName,
+                                 String instanceDirStr,
+                                 String outputDirStr,
+                                 String logDirStr,
+                                 String consoleLogFileStr) throws LocationException {
+        findLocations(newServerName, instanceDirStr, outputDirStr, logDirStr, consoleLogFileStr, null);
+    }
+
     /**
      * Light processing: find main locations
      *
@@ -143,6 +151,7 @@ public class BootstrapConfig {
      * @param outputDirStr      Value of WLP_OUTPUT_DIR environment variable
      * @param logDirStr         Value of X_LOG_DIR or LOG_DIR environment variable
      * @param consoleLogFileStr Value of X_LOG_FILE or LOG_FILE environment variable
+     * @param workareaDirStr    Value of alternate workarea subpath or null for default
      *
      * @throws LocationException
      */
@@ -150,7 +159,8 @@ public class BootstrapConfig {
                                  String instanceDirStr,
                                  String outputDirStr,
                                  String logDirStr,
-                                 String consoleLogFileStr) throws LocationException {
+                                 String consoleLogFileStr,
+                                 String workareaDirStr) throws LocationException {
 
         // Server name only found via command line
         setProcessName(newServerName);
@@ -233,7 +243,10 @@ public class BootstrapConfig {
         consoleLogFile = new File(logDir, consoleLogFileStr != null ? consoleLogFileStr : BootstrapConstants.CONSOLE_LOG);
 
         // Server workarea always a child of outputDir
-        workarea = new File(outputDir, BootstrapConstants.LOC_AREA_NAME_WORKING);
+        if (workareaDirStr == null)
+            workarea = new File(outputDir, BootstrapConstants.LOC_AREA_NAME_WORKING);
+        else
+            workarea = new File(outputDir, BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + workareaDirStr);
     }
 
     /**
@@ -482,7 +495,7 @@ public class BootstrapConfig {
     /**
      * Set a new property into the set of initial properties only if the
      * key does not already have an existing value.
-     * 
+     *
      * @param key   the key to set
      * @param value the value to set
      * @return the previous value associated with the specified key, or

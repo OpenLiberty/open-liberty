@@ -426,18 +426,9 @@ public class AccessTokenAuthenticator {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
 
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
-        try {
-            oidcResult = jose4jUtil.createResultWithJose4JForJwt(accessToken, clientConfig, oidcClientRequest);
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "exception during introspectToken =", e.getMessage());
-                // Tr.debug(tc, "debugging:" + OidcUtil.dumpStackTrace(new
-                // Exception(), -1));
-            }
-            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INTERNAL_ERR", e.getLocalizedMessage(), clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
-            return oidcResult;
-        }
-        return oidcResult;
+        
+        // jose4jUtil will log an error if something was wrong with the token and set the PAR to 401. 
+        return jose4jUtil.createResultWithJose4JForJwt(accessToken, clientConfig, oidcClientRequest);
     }
 
     /**

@@ -42,6 +42,11 @@ duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: Znaleziono wi\u0
 duplicate.application.configuration.name.CWMCG0203E.explanation=Konfiguracja aplikacji musi by\u0107 unikalna.
 duplicate.application.configuration.name.CWMCG0203E.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
 
+# An instance of the {0} service could not be found
+service.not.found.CWMCG0204E=CWMCG0204E: Nie mo\u017cna znale\u017a\u0107 instancji us\u0142ugi {0}.
+service.not.found.CWMCG0204E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny i nie mo\u017cna znale\u017a\u0107 us\u0142ugi w konfiguracji MicroProfile.
+service.not.found.CWMCG0204E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=\u0179r\u00f3d\u0142o konfiguracji w\u0142a\u015bciwo\u015bci aplikacji XML serwera
 

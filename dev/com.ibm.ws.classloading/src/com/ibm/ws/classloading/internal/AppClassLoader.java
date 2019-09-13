@@ -13,6 +13,7 @@ package com.ibm.ws.classloading.internal;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.DELEGATES;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.PARENT;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.SELF;
+import static com.ibm.ws.classloading.internal.ClassLoadingConstants.LS;
 import static com.ibm.ws.classloading.internal.Util.freeze;
 import static com.ibm.ws.classloading.internal.Util.list;
 
@@ -35,6 +36,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.jar.Manifest;
@@ -672,5 +674,23 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Override
     public ClassLoaderIdentity getKey() {
         return config.getId();
+    }
+
+    public String toDiagString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(config).append(LS);
+        
+        sb.append("    API Visibility: ");
+        for (ApiType type : apiAccess.getApiTypeVisibility()) {
+            sb.append(type).append(" ");
+        }
+        sb.append(LS);
+        
+        sb.append("    CodeSources: ");
+        for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
+            sb.append(LS).append("      ").append(entry.getKey()).append(" = ")
+              .append(entry.getValue().getCodeSource().getLocation());
+        }
+        return sb.toString();
     }
 }

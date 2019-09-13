@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Stellen Sie sicher, dass das Feature, das d
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Der X-Login-Config-Props-Header setzt als Trennzeichen zwischen dem Namen und dem Wert f\u00fcr die Anmeldekonfigurationseigenschaft ein Gleichheitszeichen (=) voraus.
 CWWKO1552_MISSING_DELIMITER.explanation=Das Gleichheitszeichen ist als Trennzeichen erforderlich, um zu ermitteln, welcher Teil des X-Login-Config-Props-Headers der Name der Anmeldekonfigurationseigenschaft und welcher der zugeh\u00f6rige Wert ist.
 CWWKO1552_MISSING_DELIMITER.useraction=Aktualisieren Sie den X-Login-Config-Props-Header, um ein Gleichheitszeichen (=) zwischen dem Namen und dem Wert f\u00fcr die Anmeldekonfigurationseigenschaft einzuschlie\u00dfen.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Es sind keine registrierten Handler vorhanden, die der angeforderten URL {0} entsprechen.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Es wurde versucht, auf eine URL zuzugreifen, die keinem der registrierten Handler entspricht.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Korrigieren Sie die URL so, dass sie einem registrierten Handler entspricht.

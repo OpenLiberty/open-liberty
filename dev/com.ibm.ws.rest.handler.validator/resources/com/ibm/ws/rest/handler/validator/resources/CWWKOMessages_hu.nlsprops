@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Ellen\u0151rizze, hogy a konfigur\u00e1ci\u
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Az X-Login-Config-Props fejl\u00e9c hat\u00e1rol\u00f3k\u00e9nt ig\u00e9nyel egy egyenl\u0151s\u00e9gjelet (=) a bejelentkez\u00e9si konfigur\u00e1ci\u00f3s tulajdons\u00e1g neve \u00e9s \u00e9rt\u00e9ke k\u00f6z\u00f6tt.
 CWWKO1552_MISSING_DELIMITER.explanation=Az egyenl\u0151s\u00e9gjel elv\u00e1laszt\u00f3 annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges, hogy az X-Login-Config-Props fejl\u00e9c melyik r\u00e9sze a bejelentkez\u00e9si konfigur\u00e1ci\u00f3s tulajdons\u00e1g neve, \u00e9s melyik az \u00e9rt\u00e9k.
 CWWKO1552_MISSING_DELIMITER.useraction=Friss\u00edtse az X-Login-Config-Props fejl\u00e9cet \u00fagy, hogy tartalmazzon egy egyenl\u0151s\u00e9gjelet (=) a bejelentkez\u00e9si konfigur\u00e1ci\u00f3s tulajdons\u00e1g neve \u00e9s \u00e9rt\u00e9ke k\u00f6z\u00f6tt.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Nincsenek a k\u00e9rt URL c\u00edmnek ({0}) megfelel\u0151 regisztr\u00e1lt kezel\u0151k.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Olyan URL el\u00e9r\u00e9s\u00e9re t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely a regisztr\u00e1lt kezel\u0151k egyik\u00e9nek sem felel meg.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Jav\u00edtsa az URL c\u00edmet, hogy megfeleljen valamelyik regisztr\u00e1lt kezel\u0151nek.

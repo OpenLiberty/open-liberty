@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,6 +135,26 @@ FAILED_TO_WRITE_LOG.useraction=Stellen Sie sicher, dass das Verzeichnis vorhande
 LOG_FILE_RESUMED=TRAS3006I: Die Protokollierung von Nachrichten in der Datei {0} wurde wieder aufgenommen.
 LOG_FILE_RESUMED.explanation=Es k\u00f6nnen Nachrichten in die Datei geschrieben werden.
 LOG_FILE_RESUMED.useraction=Es ist keine Aktion erforderlich.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen ist nicht korrekt formatiert.
+JSON_FIELDS_FORMAT_WARNING.explanation=Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen ist nicht korrekt formatiert.
+JSON_FIELDS_FORMAT_WARNING.useraction=Stellen Sie sicher, dass das Format der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen korrekt ist. Die Zuordnung von JSON-Feldnamen kann auf verschiedene Arten angegeben werden. Hinweise hierzu finden Sie in der Dokumentation zur Protokollierungskonfiguration.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen enth\u00e4lt zu viele oder zu wenige Token in einem Eintrag.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen muss folgenderma\u00dfen formatiert sein: knownFieldName:newFieldName oder eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen muss folgenderma\u00dfen formatiert sein: knownFieldName:newFieldName oder eventType:knownFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Der angegebene Name f\u00fcr das JSON-Protokollierungsfeld entspricht nicht den bekannten Feldnamen f\u00fcr die angegebenen Ereignisse.
+JSON_FIELDS_NO_MATCH.explanation=Der angegebene Name f\u00fcr das JSON-Protokollierungsfeld entspricht nicht den bekannten Feldnamen.
+JSON_FIELDS_NO_MATCH.useraction=Geben Sie einen JSON-Protokollierungsfeldnamen an, der einem der bekannten Felder (z. B. message, ibm_datetime, ibm_sequence) entspricht.
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Der angegebene Ereignistyp entspricht keinem der bekannten Ereignistypen.
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Zu den g\u00fcltigen Ereignistypen geh\u00f6ren liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Zu den g\u00fcltigen Ereignistypen geh\u00f6ren liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Es wurde ein ung\u00fcltiges Zeichen in der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen angegeben.
+JSON_FIELDS_INVALID_CHARACHTER.explanation= In der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen k\u00f6nnen Sie nur Buchstaben, Zahlen und : (Doppelpunkt) angeben.
+JSON_FIELDS_INVALID_CHARACHTER.useraction= \u00c4ndern Sie den Wert f\u00fcr die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen und entfernen Sie die ung\u00fcltigen Zeichen.
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

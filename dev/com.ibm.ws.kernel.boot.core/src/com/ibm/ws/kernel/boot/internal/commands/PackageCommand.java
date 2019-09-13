@@ -42,7 +42,6 @@ import com.ibm.ws.kernel.boot.internal.commands.ArchiveProcessor.Pair;
 import com.ibm.ws.kernel.boot.internal.commands.PackageProcessor.PackageOption;
 import com.ibm.ws.kernel.boot.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.kernel.embeddable.Server;
-import com.ibm.wsspi.kernel.embeddable.ServerBuilder;
 
 /**
  *
@@ -352,9 +351,7 @@ public class PackageCommand {
         //tell user we are collecting.
         System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverPackagingCollectingInformation"),
                                                 serverName));
-        EmbeddedServerImpl server = (EmbeddedServerImpl) (new ServerBuilder()).setName(serverName).setOutputDir(new File(serverOutputDir).getParentFile()).setUserDir(bootProps.getUserRoot())
-                        //.setServerEventListener(this)
-                        .build();
+        EmbeddedServerImpl server = new EmbeddedServerImpl(serverName, bootProps.getUserRoot(), new File(serverOutputDir).getParentFile(), null, null, null, null, BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS);
 
         //add in the 'do not pass go' property.
         //this will prevent the server raising the start level, preventing features starting

@@ -33,7 +33,7 @@ dependencies {
     requiredLibs 'org.rnorth.visible-assertions:visible-assertions:2.1.2'
     requiredLibs 'org.rnorth:tcp-unix-socket-proxy:1.0.2'
     requiredLibs 'net.java.dev.jna:jna:5.2.0'
-    requiredLibs 'org.apache.commons:commons-compress:1.18'
+    requiredLibs 'org.apache.commons:commons-compress:1.19'
     requiredLibs 'org.testng:testng:6.14.3'
     requiredLibs 'org.reactivestreams:reactive-streams-tck:1.0.2'
     requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')

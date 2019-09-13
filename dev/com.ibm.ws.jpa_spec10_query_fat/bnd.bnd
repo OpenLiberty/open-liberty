@@ -19,6 +19,7 @@ src: \
 	test-applications/helpers/DatabaseManagement/src,\
 	test-applications/common/src,\
 	test-applications/query/aggregate_functions/src,\
+	test-applications/query/jpql/src,\
 	test-applications/apars/src,\
 	test-framework/src
 

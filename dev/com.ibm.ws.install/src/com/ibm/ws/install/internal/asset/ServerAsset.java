@@ -36,7 +36,6 @@ import com.ibm.ws.kernel.boot.EmbeddedServerImpl;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.wsspi.kernel.embeddable.Server;
-import com.ibm.wsspi.kernel.embeddable.ServerBuilder;
 
 public class ServerAsset implements Comparable<ServerAsset> {
     private static final String TEMP_SERVER_NAME = "tempServer";
@@ -292,17 +291,20 @@ public class ServerAsset implements Comparable<ServerAsset> {
         private static EmbeddedServerImpl startServer(File serverXML, String serverName, Map<String, String> serverProps, boolean isTempServer) throws InstallException {
             validateFile(serverXML);
 
-            ServerBuilder sb = new ServerBuilder().setName(serverName);
+            File outputDir = null;
+            File logDir = null;
+            String workareaDirStr = null;
             if (isTempServer) {
-                sb.setOutputDir(serverXML.getParentFile().getParentFile());
+                outputDir = serverXML.getParentFile().getParentFile();
             } else {
-                sb.setOutputDir(Utils.getOutputDir());
+                outputDir = Utils.getOutputDir();
                 InstallLogUtils.getInstallLogger().log(Level.FINEST, "Set output dir to " + Utils.getOutputDir());
-                sb.setLogDir(Utils.getLogDir());
+                logDir = Utils.getLogDir();
                 InstallLogUtils.getInstallLogger().log(Level.FINEST, "Set log dir to " + (Utils.getLogDir() != null ? Utils.getLogDir() : Utils.getOutputDir()));
+                workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS;
             }
-            sb.setUserDir(serverXML.getParentFile().getParentFile().getParentFile());
-            EmbeddedServerImpl server = (EmbeddedServerImpl) sb.build();
+            File userDir = serverXML.getParentFile().getParentFile().getParentFile();
+            EmbeddedServerImpl server = new EmbeddedServerImpl(serverName, userDir, outputDir, logDir, null, null, null, workareaDirStr);
 
             if (server.isRunning()) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER",

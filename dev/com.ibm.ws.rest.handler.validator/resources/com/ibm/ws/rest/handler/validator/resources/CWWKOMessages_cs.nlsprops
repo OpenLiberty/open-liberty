@@ -35,3 +35,7 @@ CWWKO1551_CANNOT_VALIDATE.useraction=Ov\u011b\u0159te, \u017ee funkce, kter\u00e
 CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Z\u00e1hlav\u00ed X-Login-Config-Props vy\u017eaduje znak rovn\u00edtka (=) jako odd\u011blova\u010de mezi n\u00e1zvem a hodnotou vlastnosti konfigurace p\u0159ihl\u00e1\u0161en\u00ed.
 CWWKO1552_MISSING_DELIMITER.explanation=Odd\u011blova\u010d znaku rovn\u00edtka je nezbytn\u00fd k ur\u010den\u00ed, kter\u00e1 \u010d\u00e1st z\u00e1hlav\u00ed X-Login-Config-Props je n\u00e1zvem vlastnosti konfigurace p\u0159ihl\u00e1\u0161en\u00ed a kter\u00e1 \u010d\u00e1st je hodnotou.
 CWWKO1552_MISSING_DELIMITER.useraction=Aktualizujte z\u00e1hlav\u00ed X-Login-Config-Props tak, aby obsahovalo znak rovn\u00edtka (=) mezi n\u00e1zvem a hodnotou vlastnosti konfigurace p\u0159ihl\u00e1\u0161en\u00ed.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Nejsou registrovan\u00e9 \u017e\u00e1dn\u00e9 obslu\u017en\u00e9 rutiny odpov\u00eddaj\u00edc\u00ed po\u017eadovan\u00e9 adrese URL {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Do\u0161lo k pokusu o p\u0159\u00edstup k adrese URL, kter\u00e1 neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 z registrovan\u00fdch obslu\u017en\u00fdch rutin.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Opravte adresu URL tak, aby odpov\u00eddala registrovan\u00e9 obslu\u017en\u00e9 rutin\u011b.

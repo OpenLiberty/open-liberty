@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -423,6 +423,20 @@ public class URAPIs_TDSLDAPTest {
         Log.info(c, "getGroupsByDN", "Checking with a valid pattern and limit of 2.");
         SearchResult result = servlet.getGroups(group, 2);
         assertEquals("The number of entries did not match.", 1, result.getList().size());
+    }
+
+    /**
+     * Hit the test servlet to see if getGroups works when passed in a valid group pattern
+     * with an upper case DN and a limit of 2; should only expect to find one entry
+     * This verifies the various required bundles got installed and are working.
+     * Test added for OLGH8840
+     */
+    @Test
+    public void getGroupsByUpperCaseDN() throws Exception {
+        String group = "CN=vmmgrp1,o=ibm,c=us";
+        Log.info(c, "getGroupsByUpperCaseDN", "Checking with a valid pattern and limit of 2: " + group);
+        SearchResult result = servlet.getGroups(group, 2);
+        assertEquals("The number of entries did not match for " + group, 1, result.getList().size());
     }
 
     /**

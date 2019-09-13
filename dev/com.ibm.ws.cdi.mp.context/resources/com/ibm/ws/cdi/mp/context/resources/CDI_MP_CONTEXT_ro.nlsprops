@@ -26,8 +26,8 @@
 # com.ibm.ws.concurrent.mp.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
-CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Trebuie s\u0103 accesa\u0163i bean-urile CDI \u00eenainte de a captura contextul pentru ac\u0163iunea sau taskul contextual pentru ca bean-urile CDI s\u0103 se comporte corect c\u00e2nd sunt accesate de la ac\u0163iune sau task. \
-Urm\u0103toarele bean-uri CDI trebuie accesate \u00eenainte de capturarea contextului: {0}.
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Trebuie s\u0103 accesa\u0163i bean-urile CDI \u00eenainte de a fi capturat contextul pentru ac\u0163iunea sau taskul contextual pentru ca bean-urile CDI s\u0103 se comporte corect c\u00e2nd sunt accesate de la ac\u0163iune sau task. \
+Urm\u0103toarele bean-uri CDI nu au fost accesate \u00eenainte de a fi capturat contextul: {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=C\u00e2nd este capturat contextul CDI, doar bean-urile CDI care au fost accesate la acel moment de timp au fost create de runtime-ul CDI. \
 Ca rezultat, bean-urile CDI care au fost accesate primele \u00een opera\u0163iile contextuale nu pot propaga corect starea lor la opera\u0163iile contextuale urm\u0103toare.
 CWWKC1158.cannot.lazy.enlist.beans.useraction=Aplica\u0163ia trebuie modificat\u0103 pentru a invoca o opera\u0163ie de bean CDI, cum ar fi o metod\u0103 public, \u00eenainte de a fi capturat contextul pentru opera\u0163ie.

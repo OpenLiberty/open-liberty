@@ -155,7 +155,7 @@ var table = (function() {
 
         // Action button
         var deleteAriaLabel = utils.formatString(messages.DELETE_ARIA, [authData.authType, authData.name]);
-        var deleteButton = "<td><input id='edit_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button delete_auth_button' value='" + messages.DELETE + "' aria-label='" + deleteAriaLabel + "'></td>";
+        var deleteButton = "<td><input id='delete_" + authData.authID + "' type='button' authID = " + authData.authID + " class='tool_table_button delete_auth_button' value='" + messages.DELETE + "' aria-label='" + deleteAriaLabel + "'></td>";
 
         // Create a table row and add the filter data attribute as the name lowecased.
         // This is used in sorting and filtering (when implemented).

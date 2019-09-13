@@ -42,6 +42,11 @@ duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: Pi\u00f9 di una 
 duplicate.application.configuration.name.CWMCG0203E.explanation=La configurazione dell'applicazione deve essere univoca.
 duplicate.application.configuration.name.CWMCG0203E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
 
+# An instance of the {0} service could not be found
+service.not.found.CWMCG0204E=CWMCG0204E: Impossibile trovare un'istanza del servizio {0}.
+service.not.found.CWMCG0204E.explanation=Si \u00e8 verificato un errore interno e la configurazione microprofilo non \u00e8 riuscita a trovare un servizio.
+service.not.found.CWMCG0204E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Origine di configurazione delle propriet\u00e0 dell'applicazione XML server
 

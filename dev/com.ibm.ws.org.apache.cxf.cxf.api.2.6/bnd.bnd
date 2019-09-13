@@ -13,7 +13,7 @@
 cxfVersion=2.6.2
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-api;${cxfVersion}}!/!*-INF/*,\
+   @${repo;org.apache.cxf:cxf-api;${cxfVersion};EXACT}!/!*-INF/*,\
    org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: org.apache.cxf:cxf-api;version=${cxfVersion},\

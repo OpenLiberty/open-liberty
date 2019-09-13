@@ -66,7 +66,7 @@ var messages = {
     "MODAL_REGISTER_TITLE": "Rejestracja nowego klienta OAuth",
     "MODAL_SECRET_REGISTER_TITLE": "Zapisano rejestrację OAuth",
     "MODAL_SECRET_UPDATED_TITLE": "Zaktualizowano rejestrację OAuth",
-    "MODAL_DELETE_CLIENT_TITLE": "Usuń tego klienta OAuth",
+    "MODAL_DELETE_CLIENT_TITLE": "Usuń klient OAuth",
     "RESET_GRANT_TYPE": "Wyczyść wszystkie typy nadań.",
     "SELECT_ONE_GRANT_TYPE": "Wybierz co najmniej jeden typ nadania",
     "SPACE_HELPER_TEXT": "Wartości rozdzielane spacjami",

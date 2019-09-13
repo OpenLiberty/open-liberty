@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,6 +135,26 @@ FAILED_TO_WRITE_LOG.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 exist
 LOG_FILE_RESUMED=TRAS3006I: Zpr\u00e1vy protokolov\u00e1n\u00ed do souboru {0} byly obnoveny.
 LOG_FILE_RESUMED.explanation=Zpr\u00e1vy lze zapsat do souboru.
 LOG_FILE_RESUMED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: Mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON je nespr\u00e1vn\u011b form\u00e1tovan\u00e9.
+JSON_FIELDS_FORMAT_WARNING.explanation=Mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON je nespr\u00e1vn\u011b form\u00e1tovan\u00e9.
+JSON_FIELDS_FORMAT_WARNING.useraction=Ov\u011b\u0159te, \u017ee je form\u00e1t vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON spr\u00e1vn\u00fd. Mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed JSON lze ur\u010dit n\u011bkolika zp\u016fsoby, kter\u00e9 jsou uvedeny v dokumentaci konfigurace protokolov\u00e1n\u00ed.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: Vlastnost mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON m\u00e1 v polo\u017ece p\u0159\u00edli\u0161 mnoho nebo p\u0159\u00edli\u0161 m\u00e1lo token\u016f.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=Vlastnost mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON by m\u011bla m\u00edt form\u00e1t zn\u00e1m\u00fd_n\u00e1zev_pole:nov\u00fd_n\u00e1zev_pole nebo typ_ud\u00e1losti:zn\u00e1m\u00fd_n\u00e1zev_pole:nov\u00fd_n\u00e1zev_pole.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=Vlastnost mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON by m\u011bla m\u00edt form\u00e1t zn\u00e1m\u00fd_n\u00e1zev_pole:nov\u00fd_n\u00e1zev_pole nebo typ_ud\u00e1losti:zn\u00e1m\u00fd_n\u00e1zev_pole:nov\u00fd_n\u00e1zev_pole.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Zadan\u00fd n\u00e1zev pole protokolov\u00e1n\u00ed JSON neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu zn\u00e1m\u00e9mu n\u00e1zvu pole pro ur\u010den\u00e9 ud\u00e1losti.
+JSON_FIELDS_NO_MATCH.explanation=Zadan\u00fd n\u00e1zev pole protokolov\u00e1n\u00ed JSON neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu zn\u00e1m\u00e9mu n\u00e1zvu pole.
+JSON_FIELDS_NO_MATCH.useraction=Zadejte n\u00e1zev pole protokolov\u00e1n\u00ed JSON, kter\u00fd odpov\u00edd\u00e1 n\u011bkter\u00e9mu zn\u00e1m\u00e9mu poli (nap\u0159. message, ibm_datetime, ibm_sequence)
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Zadan\u00fd typ ud\u00e1losti neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu zn\u00e1m\u00e9mu typu ud\u00e1losti.
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=P\u0159\u00edpustn\u00e9 typy ud\u00e1losti: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=P\u0159\u00edpustn\u00e9 typy ud\u00e1losti: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Ve vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON byl zad\u00e1n neplatn\u00fd znak.
+JSON_FIELDS_INVALID_CHARACHTER.explanation= Ve vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON lze pou\u017e\u00edvat pouze p\u00edsmena, \u010d\u00edslice a dvojte\u010dku.
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Zm\u011b\u0148te hodnotu vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON, aby neobsahovala neplatn\u00fd znak.
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

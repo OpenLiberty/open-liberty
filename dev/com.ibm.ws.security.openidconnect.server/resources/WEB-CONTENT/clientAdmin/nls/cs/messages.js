@@ -42,7 +42,7 @@ var messages = {
     // Common Column Names
     "CLIENT_NAME_COL": "Jméno klienta",
     "EXPIRES_COL": "Vypršení platnosti",
-    "ISSUED_COL": "Vydáno v",
+    "ISSUED_COL": "Vydáno",
     "NAME_COL": "Název",
     "TYPE_COL": "Typ",
 

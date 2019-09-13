@@ -113,12 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: A(z) {0} \u00e9rt\u00e9ke az oaut
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=A jelzett attrib\u00fatum \u00e9rt\u00e9ke t\u00fal nagy.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=\u00c1ll\u00edtsa be a jelzett attrib\u00fatumot egy megfelel\u0151 \u00e9rt\u00e9kre.  
 
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Az OAuth \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3ja vagy friss\u00edt\u00e9se meghi\u00fasult, mivel az \u00fcgyf\u00e9ladatok illeg\u00e1lis [{0}] karaktert tartalmaznak.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Az OAuth \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3ja vagy friss\u00edt\u00e9se meghi\u00fasult, mivel az \u00fcgyf\u00e9ladatok illeg\u00e1lis "{0}" karaktert tartalmaznak.
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=A karakter \u00fcgyf\u00e9ladatokban nem megengedett.
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=T\u00e1vol\u00edtsa el az illeg\u00e1lis karaktereket, majd k\u00fcldje el \u00fajra a k\u00e9r\u00e9st. 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=T\u00e1vol\u00edtsa el az illeg\u00e1lis karaktert, majd k\u00fcldje el \u00fajra a k\u00e9r\u00e9st. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 nem tal\u00e1lhat\u00f3.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A k\u00e9r\u00e9s tartalmazott egy nem tal\u00e1lhat\u00f3 \u00fcgyf\u00e9l-azonos\u00edt\u00f3t. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9l-azonos\u00edt\u00f3t tartalmazott, amely nem tal\u00e1lhat\u00f3. 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a k\u00e9r\u00e9ssel \u00fagy, hogy egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3t ad meg.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: A regisztr\u00e1ci\u00f3s k\u00e9r\u00e9s egy helytelen URI azonos\u00edt\u00f3hoz lett kiadva.
@@ -138,7 +138,7 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=A k\u00e9r\u00e9s t\u00f
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A m\u0171velet meghi\u00fasult, mivel az \u00fcgyf\u00e9l-azonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A m\u0171velet meghi\u00fasult, mivel az \u00fcgyf\u00e9l-azonos\u00edt\u00f3 m\u00e1r l\u00e9tezik. 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
 
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. A friss\u00edt\u00e9si k\u00e9r\u00e9s azt jelzi, hogy az \u00fcgyf\u00e9ltitkot meg kell \u0151rizni, azonban a megl\u00e9v\u0151 regisztr\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva titkos kulcs.
@@ -240,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nincs teen
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: A k\u00e9r\u00e9s meghi\u00fasult, mert az hozz\u00e1f\u00e9r\u00e9si token nem \u00e9rv\u00e9nyes vagy lej\u00e1rt.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=A k\u00e9r\u00e9s feldolgoz\u00e1sa meghi\u00fasult, mert a hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nytelen.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nyes, \u00e9s nem j\u00e1rt le.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Az OpenId Connect szolg\u00e1ltat\u00f3 keyStoreRef konfigur\u00e1ci\u00f3s attrib\u00fatuma lehet, hogy hi\u00e1nyzik vagy hib\u00e1s.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -445,7 +449,7 @@ JAVA8_REQUIRED=CWWKS1495W: Az OpenID Connect szolg\u00e1ltat\u00f3 nem tudja fel
 JAVA8_REQUIRED.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
 JAVA8_REQUIRED.useraction=Telep\u00edtsen Java 8 vagy \u00fajabb v\u00e1ltozatot.
 
-JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: A(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 a(z) {1} konfigur\u00e1ci\u00f3s attrib\u00fatummal {2} algoritmus haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, \u00e9s ez Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel. A megadott szolg\u00e1ltat\u00f3 figyelmen k\u00edv\u00fcl hagyja a(z) {3} be\u00e1ll\u00edt\u00e1st.
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: A(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 a(z) {1} konfigur\u00e1ci\u00f3s attrib\u00fatummal {2} algoritmus haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, \u00e9s ez Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel. A megadott OpenID Connect szolg\u00e1ltat\u00f3 figyelmen k\u00edv\u00fcl hagyja a(z) {3} be\u00e1ll\u00edt\u00e1st.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Telep\u00edtse a Java 8 vagy \u00fajabb v\u00e1ltozat\u00e1t az eml\u00edtett konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz.
 

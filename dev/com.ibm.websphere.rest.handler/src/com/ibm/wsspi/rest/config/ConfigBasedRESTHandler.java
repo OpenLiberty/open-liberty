@@ -35,7 +35,8 @@ import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
-// TODO When ready to GA, make this class be SPI in the following feature:
+// TODO When/if we provide an SPI for plugging into the generic resource test capability,
+// make this class be SPI in the following feature:
 // com.ibm.websphere.features.internal.webapp/com.ibm.websphere.appserver.restHandler-1.0.feature
 /**
  * Partial implementation of RESTHandler for API that is based on server configuration.
@@ -157,10 +158,6 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 Tr.exit(this, tc, "handleRequest", "403 Forbidden");
             return;
         }
-
-        // TODO would like to do the following, but cannot figure out how to get path parameters with %2F (/) in values from being considered separate path parameter values
-        //String uid = request.getPathVariable("uid");
-        //String elementName = request.getPathVariable("elementName");
 
         String apiRoot = getAPIRoot();
         String uid = null;

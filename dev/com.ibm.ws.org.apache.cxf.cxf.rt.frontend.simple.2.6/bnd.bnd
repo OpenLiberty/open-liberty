@@ -13,7 +13,7 @@ bVersion=1.0
 cxfVersion=2.6.2
 
 Include-Resource:\
-  @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion}}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion};EXACT}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf
  
  -buildpath: org.apache.cxf:cxf-rt-frontend-simple;version=${cxfVersion},\
