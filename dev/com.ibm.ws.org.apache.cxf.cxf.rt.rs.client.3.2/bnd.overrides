@@ -19,4 +19,12 @@ Export-Package: com.ibm.ws.jaxrs21.clientconfig,\
   org.apache.cxf.jaxrs.client;version=3.3.0,\
   org.apache.cxf.jaxrs.client.blueprint;version=3.3.0,\
   org.apache.cxf.jaxrs.client.spec;version=3.3.0
-  
+ 
+Service-Component: \
+  com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig; \
+  configuration-policy:=ignore; \
+  immediate:=true;\
+  implementation:=com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig; \
+  provide:=com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig; \
+  completionStageFactory=com.ibm.ws.concurrent.mp.spi.CompletionStageFactory; \
+  properties:="service.vendor=IBM" 
