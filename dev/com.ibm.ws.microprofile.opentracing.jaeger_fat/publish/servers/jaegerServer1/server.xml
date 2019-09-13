@@ -1,0 +1,33 @@
+<server description="jaegerServer">
+
+	<featureManager>
+		<feature>jaeger-1.0</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+
+	<application location="mpOpenTracing.war">
+		<classloader
+			apiTypeVisibility="api, spec, ibm-api, third-party, stable"
+			commonLibraryRef="jaeger" />
+	</application>
+
+	<library id="jaeger"
+		apiTypeVisibility="api,spec,ibm-api,stable,third-party">
+		<file
+			name="${server.config.dir}/lib/jaeger-tracerresolver-0.33.1.jar" />
+		<file name="${server.config.dir}/lib/jaeger-client-0.33.1.jar" />
+		<file name="${server.config.dir}/lib/jaeger-core-0.33.1.jar" />
+		<file name="${server.config.dir}/lib/jaeger-thrift-0.33.1.jar" />
+		<file name="${server.config.dir}/lib/slf4j-api-1.7.26.jar" />
+		<file name="${server.config.dir}/lib/slf4j-simple-1.7.26.jar" />
+		<file name="${server.config.dir}/lib/libthrift-0.11.0.jar" />
+		<file name="${server.config.dir}/lib/gson-2.8.2.jar" />
+		<file name="${server.config.dir}/lib/opentracing-util-0.31.0.jar" />
+		<file name="${server.config.dir}/lib/opentracing-noop-0.31.0.jar" />
+	</library>
+
+	<javaPermission
+		codebase="${server.config.dir}/lib/slf4j-api-1.7.26.jar"
+		className="java.security.AllPermission" />
+</server>
