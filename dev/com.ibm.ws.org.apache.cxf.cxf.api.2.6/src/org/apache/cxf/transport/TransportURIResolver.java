@@ -21,10 +21,15 @@ package org.apache.cxf.transport;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.net.ConnectException;
 
 import javax.xml.namespace.QName;
 
@@ -39,12 +44,16 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.resource.ExtendedURIResolver;
 import org.apache.cxf.service.model.EndpointInfo;
+import org.apache.cxf.common.logging.LogUtils;
+
 
 /**
  * 
  */
 public class TransportURIResolver extends ExtendedURIResolver {
     private static final Set<String> DEFAULT_URI_RESOLVER_HANDLES = new HashSet<String>();
+    private static final Logger LOG = LogUtils.getL7dLogger(TransportURIResolver.class);
+
     static {
         //bunch we really don't want to have the conduits checked for
         //as we know the conduits don't handle.  No point
@@ -62,8 +71,9 @@ public class TransportURIResolver extends ExtendedURIResolver {
         bus = b;
     }
     
-    public InputSource resolve(String curUri, String baseUri) {
+    public InputSource resolve(String curUri, String baseUri) throws ConnectException, SocketTimeoutException {
         
+        LOG.log(Level.FINE, "Enter resolve: curUri: " + curUri + " and baseUri: " + baseUri);
         // Spaces must be encoded or URI.resolve() will choke
         curUri = curUri.replace(" ", "%20");
         
@@ -77,7 +87,8 @@ public class TransportURIResolver extends ExtendedURIResolver {
                 base = base.resolve(curUri);
             }
         } catch (URISyntaxException use) {
-            //ignore
+            // ignore
+            LOG.log(Level.FINE, "Ignoring URISyntaxException: " + use);
             base = null;
         }
         try {
@@ -87,6 +98,7 @@ public class TransportURIResolver extends ExtendedURIResolver {
             }
         } catch (Exception ex) {
             //nothing
+            LOG.log(Level.FINE, "Ignoring Exception 1: " + ex);
         }
         if (is == null && base != null 
             && base.getScheme() != null
@@ -120,6 +132,7 @@ public class TransportURIResolver extends ExtendedURIResolver {
                                 message.getExchange().put(InputStream.class, bout.createInputStream());
                                 c.close(message);
                             } catch (IOException e) {
+                                LOG.log(Level.FINE, "Ignoring IOException: " + e);
                                 //ignore
                             }
                         }
@@ -139,8 +152,15 @@ public class TransportURIResolver extends ExtendedURIResolver {
                     currentResolver.unresolve();
                     return src;
                 }
+            } catch (ConnectException ce1) {
+                LOG.log(Level.FINE, "Throwing ConnectException: " + ce1);
+                throw ce1;
+            } catch (SocketTimeoutException se1) {
+                LOG.log(Level.FINE, "Throwing SocketTimeoutException: " + se1);
+                throw se1;
             } catch (Exception e) {
                 //ignore
+                LOG.log(Level.FINE, "Ignoring Exception 2: " + e);
             }
         }
         if (is == null 
