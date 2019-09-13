@@ -284,40 +284,33 @@ public class SessionCacheConfigTestServlet extends FATServlet {
      */
     public void testMXBeansEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName name;
 
         // CacheMXBean for session meta info cache
-        CacheMXBean metaInfoCacheMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"),
-                                          CacheMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"), null).iterator().next();
+        CacheMXBean metaInfoCacheMXBean = JMX.newMBeanProxy(mbs,name, CacheMXBean.class);
         assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
         assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
         assertTrue(metaInfoCacheMXBean.isManagementEnabled());
         assertTrue(metaInfoCacheMXBean.isStatisticsEnabled());
 
         // CacheMXBean for session attributes cache
-        CacheMXBean attrCacheMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"),
-                                          CacheMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"), null).iterator().next();
+        CacheMXBean attrCacheMXBean = JMX.newMBeanProxy(mbs, name, CacheMXBean.class);
         assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
         assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
         assertTrue(attrCacheMXBean.isManagementEnabled());
         assertTrue(attrCacheMXBean.isStatisticsEnabled());
 
         // CacheStatisticsMXBean for session meta info cache
-        CacheStatisticsMXBean metaInfoCacheStatsMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"),
-                                          CacheStatisticsMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"), null).iterator().next();
+        CacheStatisticsMXBean metaInfoCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
         metaInfoCacheStatsMXBean.clear();
         assertEquals(0, metaInfoCacheStatsMXBean.getCacheEvictions());
 
         // CacheStatisticsMXBean for session attributes cache
-        CacheStatisticsMXBean attrCacheStatsMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"),
-                                          CacheStatisticsMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"), null).iterator().next();
+        CacheStatisticsMXBean attrCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
         // TODO found value of 1 with Infinispan assertEquals(0, attrCacheStatsMXBean.getCacheRemovals());
 
         HttpSession session = request.getSession();
