@@ -149,7 +149,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertEquals("test456", results[0]);
 
         String executionThreadName = (String) results[1];
-     // assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-")); // TODO still fails, runs on ForkJoinPool thread
+        assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
         assertTrue(resultString, results[2] instanceof NamingException);
     }
 
@@ -274,7 +274,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertEquals("test123", results[0]);
 
         String executionThreadName = (String) results[1];
-     // TODO still fails (runs on ForkJoinPool thread) : assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
+        assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
 
         if (submitterThreadName.equals(executionThreadName)) {
             System.out.println("*** Unable to properly complete test because CompletionStage ran on submitter thread.");

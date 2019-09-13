@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ejbext:EJBJarExtension
+    xmlns:ejb="ejb.xmi"
+    xmlns:ejbext="ejbext.xmi"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+>
+  <ejbJar href="WEB-INF/ejb-jar.xml#EJBJar_ID"/>
+
+  <ejbExtensions xmi:type="ejbext:SessionExtension">
+    <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateful2xLocalBean_ID"/>
+    <beanCache activateAt="TRANSACTION"/>
+  </ejbExtensions>
+
+  <ejbExtensions xmi:type="ejbext:SessionExtension">
+    <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateful2xRemoteBean_ID"/>
+    <beanCache activateAt="TRANSACTION"/>
+  </ejbExtensions>
+</ejbext:EJBJarExtension>

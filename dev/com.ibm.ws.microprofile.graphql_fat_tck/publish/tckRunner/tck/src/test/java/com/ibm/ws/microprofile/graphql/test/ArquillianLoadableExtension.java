@@ -19,6 +19,6 @@ import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
 public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
     @Override
     public Set<TCKArchiveModifications> getModifications() {
-        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER);
+        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.ORG_JSON);
     }
 }

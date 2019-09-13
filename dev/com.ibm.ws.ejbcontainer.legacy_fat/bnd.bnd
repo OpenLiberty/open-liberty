@@ -13,12 +13,15 @@ bVersion=1.0
 
 src: \
 	fat/src, \
+	test-applications/EJB2xInWARBean.war/src, \
 	test-applications/EJB2XSFLocalSpecEJB.jar/src, \
 	test-applications/EJB2XSLLocalSpecEJB.jar/src, \
 	test-applications/EJB2XLocalSpecWeb.war/src, \
 	test-applications/EJB2XSFRemoteSpecEJB.jar/src, \
 	test-applications/EJB2XSLRemoteSpecEJB.jar/src, \
 	test-applications/EJB2XRemoteSpecWeb.war/src, \
+	test-applications/EJBinWARIntf.jar/src, \
+	test-applications/EJBinWARTest.war/src, \
 	test-applications/StatefulPassivationEJB.jar/src, \
 	test-applications/StatefulPassivationWeb.war/src
 

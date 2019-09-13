@@ -46,7 +46,7 @@ public class TestMultiModuleClassLoading extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .with(RepeatFaultTolerance.mp13Features(SERVER_NAME))
-                    .andWith(RepeatFaultTolerance.ft20Features(SERVER_NAME));
+                    .andWith(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME));
 
     @BeforeClass
     public static void setupApp() throws Exception {

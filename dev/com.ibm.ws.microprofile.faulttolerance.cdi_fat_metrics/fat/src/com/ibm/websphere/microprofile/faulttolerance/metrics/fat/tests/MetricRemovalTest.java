@@ -49,7 +49,8 @@ public class MetricRemovalTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME);
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
+                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     private final static String TEST_METRIC = "ft.com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean.doWorkWithRetry.invocations.total";
 

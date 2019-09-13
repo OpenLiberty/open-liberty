@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.sse.fat;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,7 +17,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -31,7 +28,6 @@ import jaxrs21sse.jsonb.SseJsonbTestServlet;
  * This test of jsonb SSE function.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class SseJsonbTest extends FATServletClient {
     private static final String SERVLET_PATH = "SseJsonbApp/SseJsonbTestServlet";
 
@@ -43,11 +39,7 @@ public class SseJsonbTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war")
-                        .addPackage("jaxrs21sse.jsonb");
-        ShrinkHelper.exportAppToServer(server, app);
-
-        server.addInstalledAppForValidation(appName);
+        ShrinkHelper.defaultApp(server, appName, "jaxrs21sse.jsonb");
         server.startServer();
     }
 

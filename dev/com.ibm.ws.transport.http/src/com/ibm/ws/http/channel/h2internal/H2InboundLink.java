@@ -779,6 +779,13 @@ public class H2InboundLink extends HttpInboundLink {
                 }
             }
 
+            if (e.getIOException() != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writeSync - IOException recived while writing: " + e);
+                }
+                throw (e.getIOException());
+            }
+
         } finally {
             synchronized (OutstandingWriteCountSync) {
                 OutstandingWriteCount--;

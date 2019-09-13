@@ -101,8 +101,8 @@
         </AD>
         
         <AD name="%json.fields" description="%json.fields.desc" 
-            ibm:variable="com.ibm.ws.logging.json.fields"
-            id="jsonFields" required="false" type="String" default="" ibm:beta="true">
+            ibm:variable="com.ibm.ws.logging.json.field.mappings"
+            id="jsonFieldMappings" required="false" type="String" default="" ibm:beta="true">
         </AD>
     </OCD>
   
