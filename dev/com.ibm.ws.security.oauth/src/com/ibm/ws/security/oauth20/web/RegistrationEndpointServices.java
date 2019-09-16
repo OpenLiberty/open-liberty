@@ -304,7 +304,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         newClient.setClientId(clientId);
 
         // Validate client and set defaults if necessary
-        OidcBaseClient validatedClient = OidcBaseClientValidator.getInstance(newClient).validateCreateUpdate();
+        OidcBaseClient validatedClient = OidcBaseClientValidator.getInstance(newClient, request.getLocales()).validateCreateUpdate();
 
         // Copy applicable output params from existing client back to new client
         // client_id_issued_at && client_secret_expires_at

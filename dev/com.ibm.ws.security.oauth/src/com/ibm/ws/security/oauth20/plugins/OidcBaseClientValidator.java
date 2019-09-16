@@ -14,7 +14,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +27,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.AbstractOidcEndpointServices;
@@ -37,14 +40,31 @@ public class OidcBaseClientValidator {
     private static final String[] illegalChars = new String[] { "<", ">" };
 
     private final OidcBaseClient client; // Defensive copy of OidcBaseClient reference used in constructor
+    private Enumeration<Locale> locale = null;
+
+    private OidcBaseClientValidator(OidcBaseClient client, Enumeration<Locale> locale) {
+        this.client = client.getDeepCopy();
+        this.locale = locale;
+
+    }
 
     private OidcBaseClientValidator(OidcBaseClient client) {
         this.client = client.getDeepCopy();
+
+    }
+
+    public static OidcBaseClientValidator getInstance(OidcBaseClient client, Enumeration<Locale> locale) {
+        return new OidcBaseClientValidator(clientGetClientName(client), locale);
+
     }
 
     public static OidcBaseClientValidator getInstance(OidcBaseClient client) {
         // This method could be called from various callers (CachedDBOidcClientProvider, RegistrationEndpointServices, etc)
         // and the existing client name may or may not be decoded.
+        return new OidcBaseClientValidator(clientGetClientName(client));
+    }
+
+    public static OidcBaseClient clientGetClientName(OidcBaseClient client) {
         try {
             if (client.getClientName() != null) {
                 client.setClientName(URLDecoder.decode(client.getClientName(), "UTF-8"));
@@ -52,7 +72,7 @@ public class OidcBaseClientValidator {
         } catch (UnsupportedEncodingException ex) {
             // keep the existing client name
         }
-        return new OidcBaseClientValidator(client);
+        return client;
     }
 
     /**
@@ -116,6 +136,12 @@ public class OidcBaseClientValidator {
         }
         for (int i = 0; i < illegalChars.length; i++) {
             if (s.contains(illegalChars[i])) {
+                /*
+                 * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID });
+                 * Tr.error(tc, errorMsg.getServerErrorMessage());
+                 * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+                 */
+                BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID });
                 String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
                         MESSAGE_BUNDLE,
                         "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", // CWWKS1423E
