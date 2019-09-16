@@ -177,7 +177,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.generator = generator;
         this.hook = ClassLoaderHookFactory.getClassLoaderHook(this);
 
-        this.verityNoAccess();
+        this.verifyNoAccess();
     }
 
     /** Provides the delegate loaders so the {@link ShadowClassLoader} can mimic the structure. */
