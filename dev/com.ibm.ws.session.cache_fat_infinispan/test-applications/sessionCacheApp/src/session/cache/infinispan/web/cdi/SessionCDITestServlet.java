@@ -79,7 +79,7 @@ public class SessionCDITestServlet extends FATServlet {
         String key1 = sessionId + ".WELD_S#1";
 
         CacheManager cacheManager = SessionCacheTestServlet.getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
         byte[] value0 = cache.get(key0);
         byte[] value1 = cache.get(key1);
 
