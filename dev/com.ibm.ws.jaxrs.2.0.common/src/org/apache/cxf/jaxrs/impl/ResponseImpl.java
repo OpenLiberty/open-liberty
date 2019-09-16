@@ -331,7 +331,7 @@ public final class ResponseImpl extends Response {
                     return true;
                 }
                 
-                String[] links = o.toString().split(",(?=\\<|$)");
+                String[] links = linkDelimiter.split(o.toString());
                 for (String splitLink : links) {
                     Link link = Link.valueOf(splitLink);
                     if (relation.equals(link.getRel())) {

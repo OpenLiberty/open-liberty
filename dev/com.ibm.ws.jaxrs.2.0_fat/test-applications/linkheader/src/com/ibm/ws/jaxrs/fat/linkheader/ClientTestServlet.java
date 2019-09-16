@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs.fat.linkheader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Set;
 
@@ -57,15 +58,25 @@ public class ClientTestServlet extends FATServlet {
         System.out.println(response.getHeaders());
 
         Set<Link> links = response.getLinks();
+        assertEquals(3, links.size());
 
         System.out.println("Links:");
         for (Link link : links) {
             System.out.println(link);
+            if (link.toString().contains("first")) {
+                assertEquals("<http://test>;rel=\"first\"", link.toString());
+            } else if (link.toString().contains("next")) {
+                assertEquals("<http://test>;rel=\"next\"", link.toString());
+            } else if (link.toString().contains("last")) {
+                assertEquals("<http://test>;rel=\"last\"", link.toString());
+            } else {
+                fail("invalid link returned");
+            }
         }
 
-        Link link = response.getLink("next");
-        System.out.println("next:");
-        System.out.println(link);
+        assertEquals("<http://test>;rel=\"first\"", response.getLink("first").toString());
+        assertEquals("<http://test>;rel=\"next\"", response.getLink("next").toString());
+        assertEquals("<http://test>;rel=\"last\"", response.getLink("last").toString());
     }
 
     @Test
@@ -82,14 +93,24 @@ public class ClientTestServlet extends FATServlet {
         System.out.println(response.getHeaders());
 
         Set<Link> links = response.getLinks();
+        assertEquals(3, links.size());
 
         System.out.println("Links:");
         for (Link link : links) {
             System.out.println(link);
+            if (link.toString().contains("first")) {
+                assertEquals("<http://test>;rel=\"first\"", link.toString());
+            } else if (link.toString().contains("next")) {
+                assertEquals("<http://test>;rel=\"next\"", link.toString());
+            } else if (link.toString().contains("last")) {
+                assertEquals("<http://test>;rel=\"last\"", link.toString());
+            } else {
+                fail("invalid link returned");
+            }
         }
 
-        Link link = response.getLink("next");
-        System.out.println("next:");
-        System.out.println(link);
+        assertEquals("<http://test>;rel=\"first\"", response.getLink("first").toString());
+        assertEquals("<http://test>;rel=\"next\"", response.getLink("next").toString());
+        assertEquals("<http://test>;rel=\"last\"", response.getLink("last").toString());
     }
 }

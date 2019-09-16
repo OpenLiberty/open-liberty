@@ -40,7 +40,7 @@ public class TestResource {
         ResponseBuilder builder = Response.ok();
         builder.header("Link", "<http://test>;rel=\"first\","
                        + "<http://test>;rel=\"next\","
-                       + "<http:test>;rel=\"last\"");
+                       + "<http://test>;rel=\"last\"");
         return builder.build();
     }
 }
